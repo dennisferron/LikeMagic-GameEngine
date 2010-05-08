@@ -1,0 +1,64 @@
+#pragma once
+
+#include "LikeMagic/Backends/Io/API_Io.hpp"
+#include "LikeMagic/SFMO/CppObjProxy.hpp"
+
+namespace LikeMagic { namespace Backends { namespace Io {
+
+class IoVM
+{
+private:
+    AbstractTypeSystem const& type_system;
+    IoState* self;
+
+    boost::intrusive_ptr<AbstractExpression> get_abs_expr(std::string io_code, BetterTypeInfo type) const;
+
+public:
+    IoVM(AbstractTypeSystem& type_system_);
+    ~IoVM();
+    
+    void add_proto(std::string name, AbstractCppObjProxy* proxy) const;
+
+    template <typename T>
+    void add_proto(std::string name,  T obj=T()) const
+    {
+        add_proto
+        (
+            name,
+            CppObjProxy<T&>::create
+            (
+                Term<T>::create
+                (
+                    obj
+                ),
+                type_system
+            )
+        );
+    }
+
+    void run_cli() const;
+    IoObject* do_string(std::string io_code) const;
+
+    template <typename T>
+    boost::intrusive_ptr<Expression<T>> get_expr(std::string io_code) const
+    {
+        auto abs_expr = get_abs_expr(io_code, BetterTypeInfo::create<T>());
+        return type_system.try_conv<T>(abs_expr);
+    }
+
+    // This is intended for pointers but I used "T" instead of "T*" so that you can specify a smart pointer instead.
+    template <typename T>
+    T get_resource(std::string io_code) const
+    {
+        auto ptr = get_expr<T>(io_code)->eval();
+
+        if (ptr == NULL)
+            throw std::logic_error("Failed to get resource object '" + io_code + "'");
+
+        return ptr;
+    }
+
+};
+
+
+}}}
