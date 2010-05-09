@@ -32,15 +32,24 @@ struct IfCanMark<T, false>
     }
 };
 
-template <typename T>
+template <typename T, bool IsCopyable>
 class Term : 
     public Expression<T&>
 {
 private:
     T value;
 
+    Term() : value()
+    {
+    }
+
     template <typename... Args>
-    Term(Args... args) : value(args...)
+    Term(Args && ... args) : value(std::forward<Args>(args)...)
+    {
+    }
+
+    template <typename... Args>
+    Term(Args const& ... args) : value(args...)
     {
     }
 
@@ -61,11 +70,18 @@ private:
 
 public:
 
+    static boost::intrusive_ptr<Expression<T&>> create() { return new Term(); }
+
     template <typename... Args>
-    static boost::intrusive_ptr<Expression<T&>> create(Args... args) { return new Term(args...); }
+    static boost::intrusive_ptr<Expression<T&>> create(Args && ... args) { return new Term(std::forward<Args>(args)...); }
+
+    template <typename... Args>
+    static boost::intrusive_ptr<Expression<T&>> create(Args const& ... args) { return new Term(args...); }
 
     inline virtual T& eval() { return value; }
-    virtual boost::intrusive_ptr<Expression<T&>> clone() const { return new Term<T>(value); }
+
+    virtual boost::intrusive_ptr<Expression<T&>> clone() const { return new Term<T, IsCopyable>(value); }
+
     virtual std::set<AbstractObjectSet*> get_objsets() const { return std::set<AbstractObjectSet*>(); }
     virtual bool is_terminal() const { return true; }
     virtual bool is_lazy() const { return false; }
@@ -82,8 +98,79 @@ public:
 
 };
 
-template <>
-class Term<void> : public Expression<void>
+
+template <typename T>
+class Term<T, false> :
+    public Expression<T&>
+{
+private:
+    T value;
+
+    Term() : value()
+    {
+    }
+
+    template <typename... Args>
+    Term(Args && ... args) : value(std::forward<Args>(args)...)
+    {
+    }
+
+    template <typename... Args>
+    Term(Args const& ... args) : value(args...)
+    {
+    }
+
+    template <typename T_>
+    typename boost::disable_if<boost::is_base_of<LikeMagic::IMarkable, T_>>::type
+    mark(T_ const&) const
+    {
+        std::cout << "Not marking: " << description() << std::endl;
+    }
+
+    template <typename T_>
+    typename boost::enable_if<boost::is_base_of<LikeMagic::IMarkable, T_>>::type
+    mark(LikeMagic::IMarkable const& obj) const
+    {
+        std::cout << "Marking: " << description() << std::endl;
+        obj.mark();
+    }
+
+public:
+
+    static boost::intrusive_ptr<Expression<T&>> create() { return new Term(); }
+
+    template <typename... Args>
+    static boost::intrusive_ptr<Expression<T&>> create(Args && ... args) { return new Term(std::forward<Args>(args)...); }
+
+    template <typename... Args>
+    static boost::intrusive_ptr<Expression<T&>> create(Args const& ... args) { return new Term(args...); }
+
+    inline virtual T& eval() { return value; }
+
+    virtual boost::intrusive_ptr<Expression<T&>> clone() const
+    {
+        throw std::logic_error("Cannot clone " + description() + " because the class is registered as not having a copy constructor.");
+    }
+
+    virtual std::set<AbstractObjectSet*> get_objsets() const { return std::set<AbstractObjectSet*>(); }
+    virtual bool is_terminal() const { return true; }
+    virtual bool is_lazy() const { return false; }
+
+    virtual std::string description() const
+    {
+        return std::string("Term<" + LikeMagic::Utility::TypeDescr<T>::text() + ">");
+    }
+
+    virtual void mark() const
+    {
+        IfCanMark<T>::mark(value);
+    }
+
+};
+
+
+template <bool IsCopyable>
+class Term<void, IsCopyable> : public Expression<void>
 {
 private:
     Term()

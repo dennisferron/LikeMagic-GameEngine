@@ -29,7 +29,7 @@ private:
     template <typename T>
     AbstractCppObjProxy* make_proxy(T t) const
     {
-        return CppObjProxy<T&>::create(Term<T>::create(t), *type_sys);
+        return CppObjProxy<T&, true>::create(Term<T, true>::create(t), *type_sys);
     }
 
     void add_arg(IoMessage* m, AbstractCppObjProxy* proxy) const;

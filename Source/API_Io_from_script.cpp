@@ -20,7 +20,7 @@ ExprPtr from_vector(IoObject* io_obj)
 
     copy(io_vector.begin(), io_vector.end(), cpp_vector.begin());
 
-    return Term<std::vector<T>>::create(cpp_vector);
+    return Term<std::vector<T>, true>::create(cpp_vector);
 }
 
 template <typename T>
@@ -32,14 +32,14 @@ ExprPtr from_list(IoObject* io_obj)
 
     copy(io_list.begin(), io_list.end(), cpp_vector.begin());
 
-    return Term<std::vector<T>>::create(cpp_vector);
+    return Term<std::vector<T>, true>::create(cpp_vector);
 }
 
 
 ExprPtr from_script(IoObject* self, IoObject* io_obj, BetterTypeInfo expected_type, AbstractTypeSystem const& type_sys)
 {
     if (ISNUMBER(io_obj))
-        return Term<double>::create(IoNumber_asDouble(io_obj));
+        return Term<double, true>::create(IoNumber_asDouble(io_obj));
     else if (ISVECTOR(io_obj))
     {
         if (expected_type.bare_type().is_type<std::vector<double>>())
@@ -75,13 +75,13 @@ ExprPtr from_script(IoObject* self, IoObject* io_obj, BetterTypeInfo expected_ty
                 + expected_type.describe());
     }
     else if (ISSEQ(io_obj))
-        return Term<std::string>::create(IoSeq_asCString(io_obj));
+        return Term<std::string, true>::create(IoSeq_asCString(io_obj));
     else if (ISNIL(io_obj))
         return NullExpr<void*>::create();
     else if (ISBOOL(io_obj))
-        return Term<bool>::create(ISTRUE(io_obj));
+        return Term<bool, true>::create(ISTRUE(io_obj));
     else if (ISBLOCK(io_obj))
-        return Term<IoBlock>::create(&type_sys, io_obj, self);
+        return Term<IoBlock, true>::create(&type_sys, io_obj, self);
     else if (is_sfmo_obj(io_obj))
     {
         AbstractCppObjProxy* proxy(

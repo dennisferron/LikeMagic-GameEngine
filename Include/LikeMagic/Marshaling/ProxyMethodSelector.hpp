@@ -39,8 +39,8 @@ private:
             AbstractCppObjProxy*>::type
     do_proxy_op(AbstractCppObjProxy* proxy, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
     {
-        return CppObjProxy<R&>::create(
-                Term<R>::create(
+        return CppObjProxy<R&, true>::create(
+                Term<R, true>::create(
                     (proxy->*func_ptr)(type_system.try_conv<Args>(args[Indices])->eval()...)
                 ), type_system
         );

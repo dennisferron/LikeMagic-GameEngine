@@ -24,8 +24,11 @@
             <itemPath>../../Include/LikeMagic/Marshaling/CallTargetSelector.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/Marshaling/Class.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/Marshaling/ConstructorCallTarget.hpp</itemPath>
+            <itemPath>../../Include/LikeMagic/Marshaling/CustomFieldGetterTarget.hpp</itemPath>
+            <itemPath>../../Include/LikeMagic/Marshaling/CustomFieldSetterTarget.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/Marshaling/FieldGetterTarget.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/Marshaling/FieldSetterTarget.hpp</itemPath>
+            <itemPath>../../Include/LikeMagic/Marshaling/ICustomField.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/Marshaling/MethodCallGenerator.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/Marshaling/ProxyMethodSelector.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/Marshaling/ProxyMethods.hpp</itemPath>

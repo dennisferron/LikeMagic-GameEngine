@@ -42,8 +42,8 @@ public:
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
-        return CppObjProxy<FieldType&>::create(
-                Term<FieldType>::create(
+        return CppObjProxy<FieldType&, true>::create(
+                Term<FieldType, true>::create(
                     f->get(
                         type_system.try_conv<CallAs>(proxy->get_expr())->eval()
                     )

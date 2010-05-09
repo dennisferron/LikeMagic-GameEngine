@@ -23,9 +23,9 @@ private:
     FieldPtr f_ptr;
     AbstractTypeSystem const& type_system;
 
-    typedef FieldPtrTraits<FieldPtr> Traits;
+    typedef FieldPtrTraits<FieldPtr, CallAs> Traits;
 
-    typedef typename Traits::R& FieldType;
+    typedef typename Traits::R FieldType;
 
 public:
 
@@ -35,8 +35,8 @@ public:
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
-        return CppObjProxy<FieldType&>::create(
-                Term<FieldType>::create(
+        return CppObjProxy<FieldType&, true>::create(
+                Term<FieldType, true>::create(
                     SetField<CallAs>::getAt(
                         type_system.try_conv<size_t>(args[0])->eval(),
                         type_system.try_conv<CallAs>(proxy->get_expr())->eval(),

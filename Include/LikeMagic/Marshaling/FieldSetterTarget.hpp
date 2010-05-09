@@ -23,7 +23,7 @@ private:
     FieldPtr f_ptr;
     AbstractTypeSystem const& type_system;
 
-    typedef FieldPtrTraits<FieldPtr> Traits;
+    typedef FieldPtrTraits<FieldPtr, CallAs> Traits;
 
     typedef typename Traits::R FieldType;
 

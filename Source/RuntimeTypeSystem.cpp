@@ -49,7 +49,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     this->unknown_class = unknown_class;
 
     register_class<std::string>("string");
-    register_class<std::string>("wstring");
+    register_class<std::wstring>("wstring");
     register_class<short>("short");
     register_class<unsigned short>("ushort");
     register_class<int>("int");

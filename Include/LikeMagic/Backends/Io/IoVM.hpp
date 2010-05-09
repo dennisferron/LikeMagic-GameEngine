@@ -25,9 +25,9 @@ public:
         add_proto
         (
             name,
-            CppObjProxy<T&>::create
+            CppObjProxy<T&, true>::create
             (
-                Term<T>::create
+                Term<T, true>::create
                 (
                     obj
                 ),

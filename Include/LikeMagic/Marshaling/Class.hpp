@@ -65,14 +65,14 @@ public:
     template <typename F>
     void bind_method(std::string method_name, F f)
     {
-        auto calltarget = new CallTargetSelector<MethodCallGenerator, T, F, is_copyable>(f, type_system);
+        auto calltarget = new CallTargetSelector<MethodCallGenerator, T, F>(f, type_system);
         add_method(method_name, calltarget);
     }
 
     template <typename... Args>
     void bind_constructor(std::string method_name="new")
     {
-        auto calltarget = new ConstructorCallTarget<T, Args...>(type_system);
+        auto calltarget = new ConstructorCallTarget<T, is_copyable, Args...>(type_system);
         add_method(method_name, calltarget);
     }
 
@@ -80,9 +80,9 @@ public:
     template <typename F>
     void bind_field(std::string field_name, F f)
     {
-        auto setter = new CallTargetSelector<FieldSetterTarget, T, F, is_copyable>(f, type_system);
+        auto setter = new CallTargetSelector<FieldSetterTarget, T, F>(f, type_system);
         add_method("set_" + field_name, setter);
-        auto getter = new CallTargetSelector<FieldGetterTarget, T, F, is_copyable>(f, type_system);
+        auto getter = new CallTargetSelector<FieldGetterTarget, T, F>(f, type_system);
         add_method("get_" + field_name, getter);
     }
 
@@ -90,9 +90,9 @@ public:
     template <typename F>
     void bind_array_field(std::string field_name, F f)
     {
-        auto setter = new CallTargetSelector<ArrayFieldSetterTarget, T, F, is_copyable>(f, type_system);
+        auto setter = new CallTargetSelector<ArrayFieldSetterTarget, T, F>(f, type_system);
         add_method("set_" + field_name, setter);
-        auto getter = new CallTargetSelector<ArrayFieldGetterTarget, T, F, is_copyable>(f, type_system);
+        auto getter = new CallTargetSelector<ArrayFieldGetterTarget, T, F>(f, type_system);
         add_method("get_" + field_name, getter);
     }
 
@@ -100,9 +100,9 @@ public:
     template <typename FieldAccessor>
     void bind_custom_field(std::string field_name, FieldAccessor f)
     {
-        auto setter = new CallTargetSelector<CustomFieldSetterTarget, T, FieldAccessor, is_copyable>(f, type_system);
+        auto setter = new CallTargetSelector<CustomFieldSetterTarget, T, FieldAccessor>(f, type_system);
         add_method("set_" + field_name, setter);
-        auto getter = new CallTargetSelector<CustomFieldGetterTarget, T, FieldAccessor, is_copyable>(f, type_system);
+        auto getter = new CallTargetSelector<CustomFieldGetterTarget, T, FieldAccessor>(f, type_system);
         add_method("get_" + field_name, getter);
     }
 

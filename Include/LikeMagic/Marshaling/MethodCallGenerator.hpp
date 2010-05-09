@@ -59,7 +59,7 @@ public:
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
-       auto result_proxy = CppObjProxy<typename Traits::R>::create(build_method_call(proxy->get_expr(), args, TPack(), IPack()), type_system);
+       auto result_proxy = CppObjProxy<typename Traits::R, true>::create(build_method_call(proxy->get_expr(), args, TPack(), IPack()), type_system);
        result_proxy->check_magic();
        return result_proxy;
     }

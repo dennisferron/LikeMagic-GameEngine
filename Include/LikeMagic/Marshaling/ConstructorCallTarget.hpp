@@ -11,7 +11,7 @@ namespace LikeMagic { namespace Marshaling {
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::SFMO;
 
-template <typename ObjT, typename... Args>
+template <typename ObjT, bool IsCopyable, typename... Args>
 class ConstructorCallTarget : public AbstractCallTargetSelector
 {
 private:
@@ -21,8 +21,8 @@ private:
     template<int... Indices>
     AbstractCppObjProxy* construct_obj(AbstractCppObjProxy* proxy, ArgList args, IndexPack<Indices...>) const
     {
-        return CppObjProxy<ObjT&>::create(
-                Term<ObjT>::create(
+        return CppObjProxy<ObjT&, IsCopyable>::create(
+                Term<ObjT, IsCopyable>::create(
                     type_system.try_conv<Args>(args[Indices])->eval()...
                 ), type_system
         );

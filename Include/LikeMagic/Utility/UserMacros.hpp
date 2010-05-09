@@ -29,6 +29,8 @@
 
 #define LM_CLASS(type_sys, class_name) auto& class_name##_LM = (type_sys).register_class<class_name>(#class_name);
 
+#define LM_CLASS_NO_COPY(type_sys, class_name) auto& class_name##_LM = (type_sys).register_class<class_name, false>(#class_name);
+
 // Your LikeMagic Class object must be named with the class name followed by "_LM" (do not provide the _LM to the macro)
 #define LM_FUNC_IMPL(r, data, elem) data##_LM.bind_method(BOOST_PP_STRINGIZE(elem), &data::elem);
 #define LM_FUNC(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_FUNC_IMPL, class_name, SEQ)

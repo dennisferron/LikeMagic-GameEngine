@@ -39,34 +39,36 @@ using LikeMagic::Marshaling::AbstractFunctionoid;
 
 */
 
-template <typename T>
+
+template <typename T, bool IsCopyable>
 class CppObjProxy : public AbstractCppObjProxy
 {
 private:
     boost::intrusive_ptr<Expression<T>> expr;
 
-    template <typename T_>
-    AbstractCppObjProxy* wrap_value(T_ value)
-    {
-        return CppObjProxy<T_&>::create(
-            Term<T_>::create(value), type_system);
-    }
-
     // Nonvoid expressions get a value returned.
     // This is a template so that run(boost::intrusive_ptr<Expression<void>>) will be a better
     // match if the expression is in fact void type.
     template <typename T_>
-    AbstractCppObjProxy* eval(boost::intrusive_ptr<Expression<T_>> expr)
+    typename boost::enable_if_c<IsCopyable || boost::is_reference<T_>::value || boost::is_pointer<T_>::value,
+        AbstractCppObjProxy*>::type
+    eval(boost::intrusive_ptr<Expression<T_>> expr)
     {
-        return wrap_value(expr->eval());
+        return CppObjProxy<T&, IsCopyable>::create(
+            Term<T, IsCopyable>::create(expr->eval()), type_system);
     }
 
-    // Void expressions return null.  This matches over the template
-    // version when T in fact equals void.
+    // Void expressions return null.
     AbstractCppObjProxy* eval(boost::intrusive_ptr<Expression<void>> expr)
     {
         expr->eval();
         return 0;
+    }
+
+    // This will be matched last of all.
+    AbstractCppObjProxy* eval(...)
+    {
+        throw std::logic_error("Cannot eval(): the return type is by-value but the class is registered as not copyable.");
     }
 
     template <typename T_>
@@ -139,7 +141,7 @@ private:
     {
         typedef typename std::remove_reference<T_>::type ElementType;
 
-        auto result = Term<std::vector<ElementType>>::create(std::vector<ElementType>());
+        auto result = Term<std::vector<ElementType>, true>::create(std::vector<ElementType>());
 
         for (reset(objsets); !at_end(objsets); advance(objsets))
             result->eval().push_back(type_system.try_conv<ElementType>(expr)->eval());
@@ -147,7 +149,7 @@ private:
         std::cout << "Collected " << result->eval().size() << " results." << std::endl;
 
         return
-                CppObjProxy<std::vector<ElementType>&>::create(result, type_system);
+                CppObjProxy<std::vector<ElementType>&, true>::create(result, type_system);
     }
 
     template <typename T_>
@@ -182,8 +184,8 @@ private:
 
         // The return value of "each" is not the bound type per se; the bound type a collection
         // and the return value of "each" is actually a proxy of Expression<T::reference>!
-        auto term = Term<ObjT_>::create(expr->eval());
-        return CppObjProxy<typename ContainerSet<ContainerType>::ReturnType>::create(
+        auto term = Term<ObjT_, true>::create(expr->eval());
+        return CppObjProxy<typename ContainerSet<ContainerType>::ReturnType, IsCopyable>::create(
                 ContainerSet<ContainerType>::create(term), type_system);
     }
 
