@@ -40,6 +40,13 @@
 // Use this for const member functions.
 #define LM_FUNC_OVERLOAD_CONST(class_name, given_func_name, actual_func, ret_type, ...) class_name##_LM.bind_method<ret_type (class_name::*)(__VA_ARGS__) const>(given_func_name, &class_name::actual_func);
 
+// For LM_FUNC_OVERLOAD_BOTH
+template <typename T> struct LM_InsertConst { typedef T const type; };
+template <typename T> struct LM_InsertConst<T*> { typedef T const* type; };
+template <typename T> struct LM_InsertConst<T&> { typedef T const& type; };
+
+#define LM_FUNC_OVERLOAD_BOTH(class_name, actual_func, ret_type, ...) LM_FUNC_OVERLOAD_CONST(class_name, #actual_func "_c", actual_func, LM_InsertConst<ret_type>::type, __VA_ARGS__) LM_FUNC_OVERLOAD(class_name, #actual_func "_nc", actual_func, ret_type, __VA_ARGS__)
+
 #define LM_OP_OVERLOAD(class_name, CONST, op, ret_type, ...) class_name##_LM.bind_method<ret_type (class_name::*)(__VA_ARGS__) CONST>(#op, &class_name::operator op);
 
 #define LM_OP_IMPL(r, data, elem) data##_LM.bind_method(BOOST_PP_STRINGIZE(elem), &data::operator elem);
@@ -56,6 +63,8 @@
 
 #define LM_ARRAY_FIELD_IMPL(r, data, elem) data##_LM.bind_array_field(BOOST_PP_STRINGIZE(elem), &data::elem);
 #define LM_ARRAY_FIELD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ARRAY_FIELD_IMPL, class_name, SEQ)
+
+#define LM_STATIC_FUNC(type_sys, class_name, func_name) type_sys.register_functions().bind_method(#func_name, class_name::func_name);
 
 #include "../Marshaling/ICustomField.hpp"
 

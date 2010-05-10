@@ -530,8 +530,20 @@ Most of the work is done using templates, which use type inference to automate m
 <div title="Dropecho Studios" modifier="DennisFerron" created="201001122108" changecount="1">
 <pre>http://dropecho.com/</pre>
 </div>
-<div title="FAQ" modifier="YourName" created="201001122251" modified="201004280726" changecount="23">
-<pre>Q: // &quot;No type converter from double&amp; to &lt;some pointer type&gt;&quot; //
+<div title="FAQ" modifier="DennisFerron" created="201001122251" modified="201005100034" changecount="28">
+<pre>//Note:  These are in completely random order; I'm going to break this into subtopics once there are enough of them to get an idea what subtopics are needed.  It might be somewhat incorrect to call these &quot;questions&quot; as no one has asked them yet, but they are random pieces of trivia I've been jotting down as they come up, which seem to fit best in the FAQ format.//
+
+Q: //  &quot;error: &#8216;f&#8217; cannot be used as a member pointer, since it is of type &#8216;const return_type&amp; (*)()&#8217;&quot; //
+A:  This can be caused by trying to bind a static function as if it were a member function.  (Note the lack of a class name in the signature; if it were a pointer-to-member-function, it should say &#8216;const return_type&amp; (ClassName::*)()&#8217;.)  Unfortunately due to GCC's horrible error reporting, it doesn't tell you WHICH function name that was bound was the one that caused the error, and the line number it reports will be the last line in the binding file.  This is exemplary of what is wrong with all of GCC's error reporting:  it reports the error deep down in the code where a problem was first encountered, but doesn't give you the higher level information that is actually useful.  And I say GCC, not C++ in general, because although it is difficult to give good error reporting for C++ and template code, it is not impossible, as the Clang project is currently demonstrating.
+
+OK, enough ranting:  what you'll need to do is examine the function signature carefully and make a guess which function it might be.  Then, you can use LM_STATIC_FUNC(type_sys, class_name, func_name) to bind that function.
+
+(You can also use LM_STATIC_FUNC to register global functions; it will always place a &quot;::&quot; between class_name and func_name, but you can pass a blank class name, so LM_STATIC_FUNC(type_sys, , func_name) will bind '::func_name' (in the global namespace) while LM_STATIC_FUNC(type_sys, Namespace::NestedNamespace, func_name) will bind &quot;Namespace::NestedNamespace::func_name&quot;.)
+
+Q: // &quot;error: &#8216;BOOST_PP_IIF_0&#8217; was not declared in this scope&quot; //
+A:  This can be caused by leaving off the parenthesis inside function lists for LM_FUNC (or for LM_FIELD).  The syntax for LM_FUNC is &quot;LM_FUNC(class_name, (func1)(func2)(func3)(etc.))&quot;.  Even if you are only declaring one function, you still need the parenthesis around its name, e.g. &quot;LM_FUNC(class_name, (func))&quot;.  Note that you do not put commas between the function names.  Spaces and line breaks are ok though.
+
+Q: // &quot;No type converter from double&amp; to &lt;some pointer type&gt;&quot; //
 A: In C++, the number zero and the null pointer are the same thing, but in Io they are different.  If you need to pass NULL to a C++ function that takes a pointer, use [[nil]].  LikeMagic has special fancy magic to turn Io's [[nil]] into a C++ null pointer of any type, so that you can pass NULL's when you need to.  On the other hand, were you to pass a &quot;0&quot; in Io it will always come through to LikeMagic as the number 0, not a pointer at all.  Io's native number type is double, hence the error message saying it can't convert a number to a pointer.
 
 Q: // &quot;Error:  'f' cannot be used as a member pointer, ...&quot; //
