@@ -7,6 +7,10 @@ using namespace std;
 
 using namespace LikeMagic;
 
+AbstractCppObjProxy* AbstractTypeSystem::create_class_proxy(BetterTypeInfo type) const
+{
+    return get_class(type)->create_class_proxy();
+}
 
 bool AbstractTypeSystem::is_ref_to_value_conv(BetterTypeInfo from_type, BetterTypeInfo to_type) const
 {

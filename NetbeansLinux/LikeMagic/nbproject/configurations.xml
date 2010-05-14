@@ -26,6 +26,7 @@
             <itemPath>../../Include/LikeMagic/Marshaling/ConstructorCallTarget.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/Marshaling/CustomFieldGetterTarget.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/Marshaling/CustomFieldSetterTarget.hpp</itemPath>
+            <itemPath>../../Include/LikeMagic/Marshaling/DummyClass.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/Marshaling/FieldGetterTarget.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/Marshaling/FieldSetterTarget.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/Marshaling/ICustomField.hpp</itemPath>
@@ -38,6 +39,7 @@
             <itemPath>../../Include/LikeMagic/SFMO/AbstractCppObjProxy.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/SFMO/AbstractExpression.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/SFMO/AbstractObjectSet.hpp</itemPath>
+            <itemPath>../../Include/LikeMagic/SFMO/ClassExpr.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/SFMO/ContainerSet.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/SFMO/CppObjProxy.hpp</itemPath>
             <itemPath>../../Include/LikeMagic/SFMO/Expression.hpp</itemPath>

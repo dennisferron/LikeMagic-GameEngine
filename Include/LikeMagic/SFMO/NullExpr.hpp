@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include <boost/utility/enable_if.hpp>
-
 #include "Expression.hpp"
 
 #include "../Utility/TypeDescr.hpp"

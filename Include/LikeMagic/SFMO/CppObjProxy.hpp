@@ -58,6 +58,16 @@ private:
             Term<T, IsCopyable>::create(expr->eval()), type_system);
     }
 
+    template <typename T_>
+    typename boost::enable_if_c<!IsCopyable && !boost::is_reference<T_>::value && !boost::is_pointer<T_>::value,
+        AbstractCppObjProxy*>::type
+    eval(boost::intrusive_ptr<Expression<T_>> expr)
+    {
+        throw std::logic_error("Cannot eval() expression '" + describe() + ": " +
+                    "the return type is by-value but the class is registered as not copyable."
+        );
+    }
+
     // Void expressions return null.
     AbstractCppObjProxy* eval(boost::intrusive_ptr<Expression<void>> expr)
     {
@@ -65,11 +75,6 @@ private:
         return 0;
     }
 
-    // This will be matched last of all.
-    AbstractCppObjProxy* eval(...)
-    {
-        throw std::logic_error("Cannot eval(): the return type is by-value but the class is registered as not copyable.");
-    }
 
     template <typename T_>
     typename boost::enable_if<std::is_convertible<T_, double>, double>::type

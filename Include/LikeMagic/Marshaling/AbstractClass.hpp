@@ -30,6 +30,7 @@ using LikeMagic::Utility::BetterTypeInfo;
 class AbstractClass
 {
 private:
+    AbstractCppObjProxy* class_proxy;  // Allows you to call constructors without already having C++ object
     std::map<std::string, AbstractClass const*> bases;
     std::string class_name;
     std::map<std::string, AbstractCallTargetSelector*> methods;
@@ -49,6 +50,7 @@ protected:
 
 public:
     virtual ~AbstractClass() {}
+    virtual AbstractCppObjProxy* create_class_proxy() const = 0;
     std::string get_class_name() const;
     std::vector<std::string> get_method_names() const;
     std::vector<BetterTypeInfo> get_arg_types(std::string method_name) const;

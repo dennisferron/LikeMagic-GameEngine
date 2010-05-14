@@ -42,6 +42,10 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
                 "LikeMagic classes " + type_system.get_class_name(*it) + " := LikeMagic clone do(type = \"" + type_system.get_class_name(*it) + "\")");
         IoObject_addMethodTable_(mset_proto, 
                 make_io_method_table(type_system.get_method_names(*it)));
+
+        // Give the proto a C++ proxy object so constructors and proxy methods can be called on it.
+        AbstractCppObjProxy* proxy = type_system.create_class_proxy(*it);
+        IoObject_setDataPointer_(mset_proto, proxy);
     }
 
     // Then hook up all the bases as protos

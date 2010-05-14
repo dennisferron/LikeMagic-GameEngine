@@ -2,6 +2,8 @@
 
 #include "AbstractClass.hpp"
 #include "ProxyMethodSelector.hpp"
+#include "LikeMagic/SFMO/ClassExpr.hpp"
+#include "LikeMagic/Marshaling/DummyClass.hpp"
 
 // Used in friend declaration.
 namespace LikeMagic { class RuntimeTypeSystem; }
@@ -10,16 +12,15 @@ namespace LikeMagic { namespace Marshaling {
 
 using LikeMagic::AbstractTypeSystem;
 
-class ProxyMethods : public AbstractClass
+class ProxyMethods : public DummyClass<ProxyMethods>
 {
 private:
-
-    // No unnamed ProxyMethods, no passing ProxyMethods copies around.
-    ProxyMethods();
-    ProxyMethods(const ProxyMethods&);
+    // No copying or assignment.
+    ProxyMethods(ProxyMethods const&);
+    ProxyMethods& operator=(ProxyMethods const&);
 
     friend class LikeMagic::RuntimeTypeSystem;
-    ProxyMethods(std::string name_, AbstractTypeSystem& type_system_) : AbstractClass(name_, type_system_)
+    ProxyMethods(std::string name_, AbstractTypeSystem& type_system_) : DummyClass<ProxyMethods>(name_, type_system_)
     {
     }
 

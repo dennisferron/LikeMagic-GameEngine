@@ -36,14 +36,13 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     proxy_methods.bind_method("describe", &AbstractCppObjProxy::describe);
 
     // register void so functions returning void will work right.
-    // Can we do register_class here?
-    auto void_class = new Class<void, false>("void", *this);
+    auto void_class = new DummyClass<void>("void", *this);
     classes[BetterTypeInfo::create<void>()] = void_class;
     void_class->add_base_abstr(&proxy_methods);
 
     // register the Unknown_CppObj so functions returning unregistered classes
     // can still be called.
-    auto unknown_class = new Class<Unknown_CppObj, false>("Unknown_CppObj", *this);
+    auto unknown_class = new DummyClass<Unknown_CppObj>("Unknown_CppObj", *this);
     classes[BetterTypeInfo::create<Unknown_CppObj>()] = unknown_class;
     unknown_class->add_base_abstr(&proxy_methods);
     this->unknown_class = unknown_class;
@@ -82,6 +81,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
 
 
     add_conv<  double&,         float,   NumberConv>();
+    add_conv<  double&,         float&,   NumberConv>();
 
     // Allow string conversions
     add_conv<  std::string&,    std::wstring,   StringConv>();

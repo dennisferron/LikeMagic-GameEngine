@@ -15,6 +15,8 @@
 #include "CustomFieldGetterTarget.hpp"
 #include "CustomFieldSetterTarget.hpp"
 
+#include "LikeMagic/SFMO/ClassExpr.hpp"
+
 // Used in friend declaration.
 namespace LikeMagic { class RuntimeTypeSystem; }
 
@@ -27,16 +29,30 @@ class Class : public AbstractClass
 {
 private:
 
-    // No unnamed Class, no passing Class copies around.
+    // No unnamed Class, no passing Class copies around, no assignment.
     Class();
     Class(const Class&);
+    Class& operator =(const Class&);
 
     friend class LikeMagic::RuntimeTypeSystem;
-    Class(std::string name_, RuntimeTypeSystem& type_system_) : AbstractClass(name_, type_system_)
+    Class(std::string name_, AbstractTypeSystem& type_system_) : AbstractClass(name_, type_system_)
     {
     }
 
 public:
+
+    virtual AbstractCppObjProxy* create_class_proxy() const
+    {
+        return
+            // Return as call by reference, not call by value, in case type is not copyable.
+            // It doesn't matter whether we use call by reference or
+            // call by pointer, because LikeMagic supports both.
+            CppObjProxy<T&, is_copyable>::create
+            (
+                ClassExpr<T&>::create(),
+                type_system
+            );
+    }
 
     template <typename Base, bool base_is_copyable, template <typename From, typename To> class Converter=BaseConv>
     void add_base(Class<Base, base_is_copyable> const& base_class)

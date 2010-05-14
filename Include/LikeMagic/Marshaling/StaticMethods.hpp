@@ -2,6 +2,8 @@
 
 #include "AbstractClass.hpp"
 #include "MethodCallGenerator.hpp"
+#include "LikeMagic/SFMO/ClassExpr.hpp"
+#include "LikeMagic/Marshaling/DummyClass.hpp"
 
 namespace LikeMagic { namespace Utility { struct StaticMethod; }}
 
@@ -13,16 +15,15 @@ namespace LikeMagic { namespace Marshaling {
 using LikeMagic::AbstractTypeSystem;
 using LikeMagic::Utility::StaticMethod;
 
-class StaticMethods : public AbstractClass
+class StaticMethods : public DummyClass<StaticMethods>
 {
 private:
-
-    // No unnamed StaticMethods, no passing StaticMethods copies around.
-    StaticMethods();
-    StaticMethods(const StaticMethods&);
+    // No copying or assignment.
+    StaticMethods(StaticMethods const&);
+    StaticMethods& operator=(StaticMethods const&);
 
     friend class LikeMagic::RuntimeTypeSystem;
-    StaticMethods(std::string name_, AbstractTypeSystem& type_system_) : AbstractClass(name_, type_system_)
+    StaticMethods(std::string name_, AbstractTypeSystem& type_system_) : DummyClass<StaticMethods>(name_, type_system_)
     {
     }
 
