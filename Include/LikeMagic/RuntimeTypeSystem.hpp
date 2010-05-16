@@ -70,17 +70,20 @@ private:
     template <typename T>
     void register_collection(std::string name)
     {
-        auto& collection = register_class_impl<std::vector<T>, true>("vector_of_" + name);
-        collection.template bind_constructor<>();
-        collection.add_base_abstr(&collection_methods);
-        collection.template bind_method<
-            void (std::vector<T>::*)(const T&)>("push_back", &std::vector<T>::push_back);
-        collection.bind_method("size", &std::vector<T>::size);
+        if (!has_class(BetterTypeInfo::create<std::vector<T>>()))
+        {
+            auto& collection = register_class_impl<std::vector<T>, true>("vector_of_" + name);
+            collection.template bind_constructor<>();
+            collection.add_base_abstr(&collection_methods);
+            collection.template bind_method<
+                void (std::vector<T>::*)(const T&)>("push_back", &std::vector<T>::push_back);
+            collection.bind_method("size", &std::vector<T>::size);
 
-        // make the collection convertible to a pointer.
-        add_conv<std::vector<T>&, T*, VectorConv>();
-        add_conv<std::vector<T>&, T const*, VectorConv>();
-        add_conv<std::vector<T> const&, T const*, VectorConv>();
+            // make the collection convertible to a pointer.
+            add_conv<std::vector<T>&, T*, VectorConv>();
+            add_conv<std::vector<T>&, T const*, VectorConv>();
+            add_conv<std::vector<T> const&, T const*, VectorConv>();
+        }
     }
 
     template <typename T, bool is_copyable>

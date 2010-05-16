@@ -33,13 +33,13 @@ private:
     AbstractCppObjProxy* class_proxy;  // Allows you to call constructors without already having C++ object
     std::map<std::string, AbstractClass const*> bases;
     std::string class_name;
-    std::map<std::string, AbstractCallTargetSelector*> methods;
+    std::map<std::string, std::map<int, AbstractCallTargetSelector*>> methods;
 
 protected:
     AbstractTypeSystem& type_system;
 
     void add_method(std::string method_name, AbstractCallTargetSelector* method);
-    AbstractCallTargetSelector* get_method(std::string method_name) const;
+    AbstractCallTargetSelector* get_method(std::string method_name, int num_args) const;
 
     AbstractClass(std::string name_, AbstractTypeSystem& type_system_) :
         class_name(name_),
@@ -53,9 +53,9 @@ public:
     virtual AbstractCppObjProxy* create_class_proxy() const = 0;
     std::string get_class_name() const;
     std::vector<std::string> get_method_names() const;
-    std::vector<BetterTypeInfo> get_arg_types(std::string method_name) const;
+    std::vector<BetterTypeInfo> get_arg_types(std::string method_name, int num_args) const;
     AbstractCppObjProxy* call(AbstractCppObjProxy* target, std::string method_name, std::vector<boost::intrusive_ptr<AbstractExpression>> args) const;
-    bool has_method(std::string method_name) const;
+    bool has_method(std::string method_name, int num_args) const;
 
     // support inheritance
     void add_base_abstr(AbstractClass const* base);

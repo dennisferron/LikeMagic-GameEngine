@@ -94,7 +94,7 @@ public:
 
     std::string get_class_name() const;
     AbstractCppObjProxy* call(std::string method_name, ArgList args);
-    std::vector<BetterTypeInfo> get_arg_types(std::string method_name) const;
+    std::vector<BetterTypeInfo> get_arg_types(std::string method_name, int num_args) const;
 
     BetterTypeInfo get_type() const { return type; }
     AbstractTypeSystem const& get_type_system() const { return type_system; }

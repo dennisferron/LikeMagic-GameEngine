@@ -4,6 +4,8 @@
 #include "LikeMagic/SFMO/NullExpr.hpp"
 #include "LikeMagic/Backends/Io/IoBlock.hpp"
 
+#include "boost/lexical_cast.hpp"
+
 namespace LikeMagic { namespace Backends { namespace Io {
 
 
@@ -171,7 +173,7 @@ IoObject* API_io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
         auto type_sys = proxy->get_type_system();
 
         std::vector<boost::intrusive_ptr<AbstractExpression>> args;
-        std::vector<BetterTypeInfo> arg_types = proxy->get_arg_types(method_name);
+        std::vector<BetterTypeInfo> arg_types = proxy->get_arg_types(method_name, IoMessage_argCount(m));
 
         for (int i=0; i<arg_types.size(); i++)
         {

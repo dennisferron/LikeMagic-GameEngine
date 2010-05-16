@@ -83,10 +83,11 @@ std::vector<std::string> AbstractTypeSystem::get_method_names(BetterTypeInfo typ
 
 std::vector<BetterTypeInfo> AbstractTypeSystem::get_arg_types(
     BetterTypeInfo type,
-    std::string method_name
+    std::string method_name,
+    int num_args
 ) const
 {
-    return get_class(type)->get_arg_types(method_name);
+    return get_class(type)->get_arg_types(method_name, num_args);
 }
 
 bool AbstractTypeSystem::has_class(BetterTypeInfo type) const

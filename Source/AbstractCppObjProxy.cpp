@@ -29,9 +29,9 @@ AbstractCppObjProxy* AbstractCppObjProxy::call(std::string method_name, ArgList 
     }
 }
 
-std::vector<BetterTypeInfo> AbstractCppObjProxy::get_arg_types(std::string method_name) const
+std::vector<BetterTypeInfo> AbstractCppObjProxy::get_arg_types(std::string method_name, int num_args) const
 {
-    return type_system.get_arg_types(get_type(), method_name);
+    return type_system.get_arg_types(get_type(), method_name, num_args);
 }
 
 void AbstractCppObjProxy::check_magic()

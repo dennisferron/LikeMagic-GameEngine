@@ -2,29 +2,64 @@
 #include "LikeMagic/Marshaling/AbstractCallTargetSelector.hpp"
 #include "LikeMagic/SFMO/AbstractExpression.hpp"
 
+#include "boost/lexical_cast.hpp"
+
 using namespace LikeMagic::Marshaling;
 
 void AbstractClass::add_method(std::string method_name, AbstractCallTargetSelector* method)
 {
-    methods[method_name] = method;
+    int num_args = method->get_arg_types().size();
+
+    if (has_method(method_name, num_args))
+    {
+        std::cout <<
+                class_name + "::" + method_name + " taking " + boost::lexical_cast<std::string>(num_args) + " arguments"
+                + " has previously been registered."
+                + " (Method names can be overloaded, but only if they have different arg counts. You will have to give one"
+                + " of the methods a different name.)" << std::endl;
+    }
+    
+    methods[method_name][num_args] = method;
 }
 
-AbstractCallTargetSelector* AbstractClass::get_method(std::string method_name) const
+AbstractCallTargetSelector* AbstractClass::get_method(std::string method_name, int num_args) const
 {
-    if (has_method(method_name))
-        return methods.find(method_name)->second;
+    if (has_method(method_name, num_args))
+        return methods.find(method_name)->second.find(num_args)->second;
     else
         for (auto it=bases.begin(); it != bases.end(); it++)
-            if (it->second->has_method(method_name))
-                return it->second->get_method(method_name);
+            if (it->second->has_method(method_name, num_args))
+                return it->second->get_method(method_name, num_args);
 
-    throw std::logic_error("Class " + get_class_name() + " does not have method " + method_name);
+    auto candidates = methods.find(method_name);
+
+    if (candidates == methods.end())
+        throw std::logic_error("Class " + get_class_name() + " does not have any method named " + method_name);
+    else
+    {
+        std::string arg_nums_list = "";
+
+        int count = 0;
+        for (auto it=candidates->second.begin(); it!=candidates->second.end(); ++it, ++count)
+        {
+            if (count > 0)
+                arg_nums_list += ", ";
+
+            arg_nums_list += boost::lexical_cast<std::string>(it->first);
+        }
+
+        std::string msg = "Class " + get_class_name() + " does have a method called " + method_name
+                + " but that method does not have any overload that takes " + boost::lexical_cast<std::string>(num_args)
+                + " arguments.  There is/are " + boost::lexical_cast<std::string>(candidates->second.size())
+                + " version(s) of that method taking " + boost::lexical_cast<std::string>(arg_nums_list) + " argument(s).";
+        throw std::invalid_argument(msg);
+    }
 }
 
 
-std::vector<BetterTypeInfo> AbstractClass::get_arg_types(std::string method_name) const
+std::vector<BetterTypeInfo> AbstractClass::get_arg_types(std::string method_name, int num_args) const
 {
-    return get_method(method_name)->get_arg_types();
+    return get_method(method_name, num_args)->get_arg_types();
 }
 
 std::vector<std::string> AbstractClass::get_method_names() const
@@ -37,9 +72,14 @@ std::vector<std::string> AbstractClass::get_method_names() const
     return result;
 }
 
-bool AbstractClass::has_method(std::string method_name) const
+bool AbstractClass::has_method(std::string method_name, int num_args) const
 {
-    return methods.find(method_name) != methods.end();
+    auto candidates = methods.find(method_name);
+    
+    return 
+        candidates != methods.end()
+    &&
+        candidates->second.find(num_args) != candidates->second.end();
 }
 
 void AbstractClass::add_base_abstr(AbstractClass const* base)
@@ -64,5 +104,5 @@ std::string AbstractClass::get_class_name() const
 
 AbstractCppObjProxy* AbstractClass::call(AbstractCppObjProxy* target, std::string method_name, std::vector<boost::intrusive_ptr<AbstractExpression>> args) const
 {
-    return get_method(method_name)->call(target, args);
+    return get_method(method_name, args.size())->call(target, args);
 }
