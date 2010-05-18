@@ -61,6 +61,10 @@ IoObject* to_script(IoObject *self, IoObject *locals, IoMessage *m, AbstractCppO
         }
         else if (proxy->is_number())
         {
+            double d = proxy->to_number();
+            if (d!=d)
+                std::cout << "NaN!" << std::endl;
+
             result = IONUMBER(proxy->to_number());
             delete proxy;
             return result;
