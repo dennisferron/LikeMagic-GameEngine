@@ -67,6 +67,13 @@ private:
         }
     }
 
+    /*
+     *
+     * These three functions were part of a feature that is not used at this moment.
+     * They were slowing down build times.
+     * When the feature is re-enabled, most likely I'll have the user manually
+     * register classes they want to use this with, rather than registering all classes this way.
+
     template <typename T>
     void register_collection(std::string name)
     {
@@ -107,7 +114,7 @@ private:
         return register_class_impl<T, is_copyable>(name);
     }
 
-     
+    */
 
 public:
 
@@ -116,7 +123,8 @@ public:
     template <typename T, bool is_copyable=!boost::is_abstract<T>::value>
     Class<T, is_copyable>& register_class(std::string name)
     {
-        return check_for_collection<T, is_copyable>(name);
+        //return check_for_collection<T, is_copyable>(name);
+        return register_class_impl<T, is_copyable>(name);
     }
 
     StaticMethods& register_functions()
