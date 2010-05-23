@@ -18,8 +18,12 @@ void AbstractClass::add_method(std::string method_name, AbstractCallTargetSelect
                 + " (Method names can be overloaded, but only if they have different arg counts. You will have to give one"
                 + " of the methods a different name.)" << std::endl;
     }
-    
-    methods[method_name][num_args] = method;
+    else
+    {
+        // Don't add the same method name if it already has the method.
+        method_names.push_back(method_name);
+        methods[method_name][num_args] = method;
+    }
 }
 
 AbstractCallTargetSelector* AbstractClass::get_method(std::string method_name, int num_args) const
@@ -62,14 +66,9 @@ std::vector<BetterTypeInfo> AbstractClass::get_arg_types(std::string method_name
     return get_method(method_name, num_args)->get_arg_types();
 }
 
-std::vector<std::string> AbstractClass::get_method_names() const
+std::vector<std::string> const& AbstractClass::get_method_names() const
 {
-    std::vector<std::string> result;
-
-    for (auto it=methods.begin(); it != methods.end(); it++)
-        result.push_back(it->first);
-
-    return result;
+    return method_names;
 }
 
 bool AbstractClass::has_method(std::string method_name, int num_args) const

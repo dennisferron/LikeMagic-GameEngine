@@ -72,6 +72,7 @@ IoObject* to_script(IoObject *self, IoObject *locals, IoMessage *m, AbstractCppO
         else if (proxy->is_string())
         {
             std::string str = proxy->to_string();
+            // IOSEQ makes a copy of the string's bytes, so str.c_str() is safe here.
             result = IOSEQ(reinterpret_cast<const unsigned char*>(str.c_str()), str.length());
             delete proxy;
             return result;

@@ -35,6 +35,12 @@ private:
     std::string class_name;
     std::map<std::string, std::map<int, AbstractCallTargetSelector*>> methods;
 
+    // Although a list of method names can be derived from the std::map methods,
+    // the make_io_method_table function requires a long-lived vector of strings in order
+    // for the method names' c_str() buffers to still point to valid memory long enough
+    // for the Io code to make local copies of the method names.
+    std::vector<std::string> method_names;
+
 protected:
     AbstractTypeSystem& type_system;
 
@@ -52,7 +58,7 @@ public:
     virtual ~AbstractClass() {}
     virtual AbstractCppObjProxy* create_class_proxy() const = 0;
     std::string get_class_name() const;
-    std::vector<std::string> get_method_names() const;
+    std::vector<std::string> const& get_method_names() const;
     std::vector<BetterTypeInfo> get_arg_types(std::string method_name, int num_args) const;
     AbstractCppObjProxy* call(AbstractCppObjProxy* target, std::string method_name, std::vector<boost::intrusive_ptr<AbstractExpression>> args) const;
     bool has_method(std::string method_name, int num_args) const;

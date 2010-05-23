@@ -47,8 +47,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=
-CXXFLAGS=
+CCFLAGS=--std=c++0x -Wall -Werror=return-type -fdiagnostics-show-option -Wno-unused-variable
+CXXFLAGS=--std=c++0x -Wall -Werror=return-type -fdiagnostics-show-option -Wno-unused-variable
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -72,57 +72,57 @@ dist/Release/GNU-Linux-x86/liblikemagic.a: ${OBJECTFILES}
 ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/AbstractCppObjProxy.o: nbproject/Makefile-${CND_CONF}.mk ../../Source/AbstractCppObjProxy.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/AbstractCppObjProxy.o ../../Source/AbstractCppObjProxy.cpp
+	$(COMPILE.cc) -O2 -I/usr/local/../../Include/io -I../../Include -I/usr/local/include/boost-1_39 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/AbstractCppObjProxy.o ../../Source/AbstractCppObjProxy.cpp
 
 ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/AbstractTypeSystem.o: nbproject/Makefile-${CND_CONF}.mk ../../Source/AbstractTypeSystem.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/AbstractTypeSystem.o ../../Source/AbstractTypeSystem.cpp
+	$(COMPILE.cc) -O2 -I/usr/local/../../Include/io -I../../Include -I/usr/local/include/boost-1_39 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/AbstractTypeSystem.o ../../Source/AbstractTypeSystem.cpp
 
 ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/AbstractExpression.o: nbproject/Makefile-${CND_CONF}.mk ../../Source/AbstractExpression.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/AbstractExpression.o ../../Source/AbstractExpression.cpp
+	$(COMPILE.cc) -O2 -I/usr/local/../../Include/io -I../../Include -I/usr/local/include/boost-1_39 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/AbstractExpression.o ../../Source/AbstractExpression.cpp
 
 ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/IoBlock.o: nbproject/Makefile-${CND_CONF}.mk ../../Source/IoBlock.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/IoBlock.o ../../Source/IoBlock.cpp
+	$(COMPILE.cc) -O2 -I/usr/local/../../Include/io -I../../Include -I/usr/local/include/boost-1_39 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/IoBlock.o ../../Source/IoBlock.cpp
 
 ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/API_Io.o: nbproject/Makefile-${CND_CONF}.mk ../../Source/API_Io.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/API_Io.o ../../Source/API_Io.cpp
+	$(COMPILE.cc) -O2 -I/usr/local/../../Include/io -I../../Include -I/usr/local/include/boost-1_39 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/API_Io.o ../../Source/API_Io.cpp
 
 ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/API_Io_from_script.o: nbproject/Makefile-${CND_CONF}.mk ../../Source/API_Io_from_script.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/API_Io_from_script.o ../../Source/API_Io_from_script.cpp
+	$(COMPILE.cc) -O2 -I/usr/local/../../Include/io -I../../Include -I/usr/local/include/boost-1_39 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/API_Io_from_script.o ../../Source/API_Io_from_script.cpp
 
 ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/API_Io_to_script.o: nbproject/Makefile-${CND_CONF}.mk ../../Source/API_Io_to_script.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/API_Io_to_script.o ../../Source/API_Io_to_script.cpp
+	$(COMPILE.cc) -O2 -I/usr/local/../../Include/io -I../../Include -I/usr/local/include/boost-1_39 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/API_Io_to_script.o ../../Source/API_Io_to_script.cpp
 
 ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/TypeDescr.o: nbproject/Makefile-${CND_CONF}.mk ../../Source/TypeDescr.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/TypeDescr.o ../../Source/TypeDescr.cpp
+	$(COMPILE.cc) -O2 -I/usr/local/../../Include/io -I../../Include -I/usr/local/include/boost-1_39 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/TypeDescr.o ../../Source/TypeDescr.cpp
 
 ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/AbstractClass.o: nbproject/Makefile-${CND_CONF}.mk ../../Source/AbstractClass.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/AbstractClass.o ../../Source/AbstractClass.cpp
+	$(COMPILE.cc) -O2 -I/usr/local/../../Include/io -I../../Include -I/usr/local/include/boost-1_39 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/AbstractClass.o ../../Source/AbstractClass.cpp
 
 ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/RuntimeTypeSystem.o: nbproject/Makefile-${CND_CONF}.mk ../../Source/RuntimeTypeSystem.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/RuntimeTypeSystem.o ../../Source/RuntimeTypeSystem.cpp
+	$(COMPILE.cc) -O2 -I/usr/local/../../Include/io -I../../Include -I/usr/local/include/boost-1_39 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/RuntimeTypeSystem.o ../../Source/RuntimeTypeSystem.cpp
 
 ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/IoVM.o: nbproject/Makefile-${CND_CONF}.mk ../../Source/IoVM.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/IoVM.o ../../Source/IoVM.cpp
+	$(COMPILE.cc) -O2 -I/usr/local/../../Include/io -I../../Include -I/usr/local/include/boost-1_39 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/_DOTDOT/_DOTDOT/Source/IoVM.o ../../Source/IoVM.cpp
 
 # Subprojects
 .build-subprojects:

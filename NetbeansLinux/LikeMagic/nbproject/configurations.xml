@@ -113,7 +113,7 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
-    <Elem>/home/dennis/code/likemagic/LikeMagic/NetbeansLinux/LikeMagic</Elem>
+    <Elem>/home/dennis/code/LikeMagic/LikeMagic/NetbeansLinux/LikeMagic/../../../../likemagic/LikeMagic/NetbeansLinux/LikeMagic</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -130,7 +130,7 @@
             <pElem>../../Include</pElem>
             <pElem>/usr/local/include/boost-1_39</pElem>
           </incDir>
-          <commandLine>-std=c++0x</commandLine>
+          <commandLine>--std=c++0x -Wall -Werror=return-type -fdiagnostics-show-option -Wno-unused-variable</commandLine>
         </ccTool>
         <archiverTool>
         </archiverTool>
@@ -148,6 +148,12 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
+          <incDir>
+            <pElem>/usr/local/../../Include/io</pElem>
+            <pElem>../../Include</pElem>
+            <pElem>/usr/local/include/boost-1_39</pElem>
+          </incDir>
+          <commandLine>--std=c++0x -Wall -Werror=return-type -fdiagnostics-show-option -Wno-unused-variable</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

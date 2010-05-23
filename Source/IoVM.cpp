@@ -12,6 +12,8 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <sstream>
+#include <stdexcept>
 
 using namespace std;
 using namespace LikeMagic::Marshaling;
@@ -31,15 +33,29 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
     IoObject_setSlot_to_(self->lobby, SIOSYMBOL("LikeMagic"),
         API_io_proto(self));
 
-    string io_code = "LikeMagic classes := Object clone";
-    do_string(io_code);
+    string io_code = "LikeMagic classes := Object clone do(type=\"C++Classes\")";
+    IoObject* classes = do_string(io_code);
+
+    if (!classes)
+    {
+        throw std::logic_error("Cannot get LikeMagic classes object.");
+    }
 
     // Get the methods of all the classes
     auto types = type_system.get_registered_types();
     for (auto it=types.begin(); it != types.end(); it++)
     {
-        IoObject* mset_proto = do_string(
-                "LikeMagic classes " + type_system.get_class_name(*it) + " := LikeMagic clone do(type = \"" + type_system.get_class_name(*it) + "\")");
+        std::string name = type_system.get_class_name(*it);
+        do_string("LikeMagic classes " + name + " := LikeMagic clone do(type = \"" + name + "\")");
+
+        std::string code = "LikeMagic classes " + name;
+        IoObject* mset_proto = do_string(code);
+
+        if (!mset_proto)
+        {
+            throw std::logic_error("Error getting proto for methodset, return value null:  " + code);
+        }
+
         IoObject_addMethodTable_(mset_proto, 
                 make_io_method_table(type_system.get_method_names(*it)));
 
@@ -75,7 +91,14 @@ void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy) const
 
 IoObject* IoVM::do_string(std::string io_code) const
 {
-    IoState_doCString_(self, io_code.c_str());
+    //std::cout << "IoVM::do_string(" << io_code << ")" << std::endl;
+
+    IoObject* result = IoState_doCString_(self, io_code.c_str());
+
+    if (!result)
+        throw std::logic_error("IoVM::do_string: IoState_doCString_ returned null when executing code this Io code: " + io_code);
+
+    return result;
 }
 
 void IoVM::run_cli() const

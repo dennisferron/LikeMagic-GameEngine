@@ -76,7 +76,7 @@ AbstractCppObjProxy* AbstractTypeSystem::call
     return get_class(type)->call(proxy, method_name, args);
 }
 
-std::vector<std::string> AbstractTypeSystem::get_method_names(BetterTypeInfo type) const
+std::vector<std::string> const& AbstractTypeSystem::get_method_names(BetterTypeInfo type) const
 {
     return get_class(type)->get_method_names();
 }
@@ -131,7 +131,6 @@ std::string AbstractTypeSystem::get_class_name(BetterTypeInfo type) const
         name = std::string("Unknown_CppObj");
         std::cout << "warning: nothing registered for type "
             << type.describe() << std::endl;
-        int x = 99;
     }
 
     return name;

@@ -46,7 +46,7 @@ using namespace LikeMagic::Utility;
 bool is_sfmo_obj(IoObject* io_obj);
 boost::intrusive_ptr<AbstractExpression> from_script(IoObject* self, IoObject* io_obj, BetterTypeInfo expected_type);
 
-IoMethodTable* make_io_method_table(std::vector<std::string> method_names);
+IoMethodTable* make_io_method_table(std::vector<std::string> const& method_names);
 IoObject* arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos);
 boost::intrusive_ptr<LikeMagic::SFMO::AbstractExpression> arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos, std::vector<BetterTypeInfo> arg_types);
 

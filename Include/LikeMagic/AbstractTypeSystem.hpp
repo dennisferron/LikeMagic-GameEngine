@@ -149,7 +149,7 @@ public:
     std::vector<std::string> get_base_names(BetterTypeInfo type) const;
     std::string get_class_name(BetterTypeInfo type) const;
     AbstractCppObjProxy* create_class_proxy(BetterTypeInfo type) const;
-    std::vector<std::string> get_method_names(BetterTypeInfo type) const;
+    std::vector<std::string> const& get_method_names(BetterTypeInfo type) const;
     AbstractCppObjProxy* call(BetterTypeInfo type, std::string method_name, AbstractCppObjProxy* proxy, std::vector<ExprPtr> args) const;
     std::vector<BetterTypeInfo> get_arg_types(BetterTypeInfo type, std::string method_name, int num_args) const;
 

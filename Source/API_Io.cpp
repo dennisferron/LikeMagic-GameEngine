@@ -9,7 +9,7 @@
 namespace LikeMagic { namespace Backends { namespace Io {
 
 
-IoMethodTable* make_io_method_table(std::vector<std::string> method_names)
+IoMethodTable* make_io_method_table(std::vector<std::string> const& method_names)
 {
     IoMethodTable* table;
 
@@ -22,7 +22,9 @@ IoMethodTable* make_io_method_table(std::vector<std::string> method_names)
     int i = 0;
     for (auto it = method_names.begin(); it != method_names.end(); it++, i++)
     {
-        // I believe Io makes a copy of the std::string's c_str.  I hope...
+        // Io will make a copy of the string's c_str() bytes for method name,
+        // and the method names vector object lives inside AbstractClass,
+        // so that we can be sure it survives long enough for Io to make the copy.
         IoMethodTable entry = { it->c_str(), &API_io_userfunc };  // All point to same userfunc
         table[i] = entry;
     }
@@ -175,7 +177,7 @@ IoObject* API_io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
         std::vector<boost::intrusive_ptr<AbstractExpression>> args;
         std::vector<BetterTypeInfo> arg_types = proxy->get_arg_types(method_name, IoMessage_argCount(m));
 
-        for (int i=0; i<arg_types.size(); i++)
+        for (size_t i=0; i<arg_types.size(); i++)
         {
             ExprPtr expr = arg_at(self, locals, m, i, arg_types, type_sys);
             //std::cout << "arg " << i << " expects " << arg_types[i].describe() << " got " << expr->get_type().describe() << std::endl;
