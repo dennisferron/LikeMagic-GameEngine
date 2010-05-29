@@ -24,6 +24,19 @@ namespace LikeMagic { namespace Marshaling {
 
 using LikeMagic::AbstractTypeSystem;
 
+
+/*
+"In the same way, when using the machine up in the attic in the early days,
+I was solving one problem after another after another; a fair number were
+successful and there were a few failures. I went home one Friday after
+finishing a problem, and curiously enough I wasn't happy; I was depressed.
+I could see life being a long sequence of one problem after another
+after another. After quite a while of thinking I decided, ``No, I should
+be in the mass production of a variable product. I should be concerned
+with all of next year's problems, not just the one in front of my face.''
+    -- Richard Hamming, "You and Your Research."
+*/
+
 template <typename T, bool is_copyable>
 class Class : public AbstractClass
 {
