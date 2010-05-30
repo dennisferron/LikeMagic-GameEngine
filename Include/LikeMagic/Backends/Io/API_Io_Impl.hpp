@@ -10,7 +10,7 @@
 // Note:  IoVM.h not the same thing as IoVM.hpp
 #include "io/IoVM.h"
 
-#include <io/IoBlock.h>
+#include "io/IoBlock.h"
 
 #include "io/IoState.h"
 #include "io/IoNumber.h"
