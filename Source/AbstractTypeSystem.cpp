@@ -7,6 +7,20 @@ using namespace std;
 
 using namespace LikeMagic;
 
+AbstractTypeSystem::AbstractTypeSystem() : leak_memory_flag(false)
+{
+}
+
+bool AbstractTypeSystem::leak_memory() const
+{
+    return leak_memory_flag;
+}
+
+void AbstractTypeSystem::set_leak_memory(bool flag)
+{
+    leak_memory_flag = flag;
+}
+
 AbstractCppObjProxy* AbstractTypeSystem::create_class_proxy(BetterTypeInfo type) const
 {
     return get_class(type)->create_class_proxy();

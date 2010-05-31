@@ -3,6 +3,8 @@
 
 #include "LikeMagic/TypeConv/StringConv.hpp"
 
+#include "LikeMagic/Utility/UserMacros.hpp"
+
 using namespace LikeMagic;
 using namespace LikeMagic::SFMO;
 using namespace LikeMagic::TypeConv;
@@ -12,6 +14,10 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     proxy_methods("ProxyMethods", *this),
     collection_methods("CollectionMethods", *this)
 {
+    // Add the abstract type system itself as a class.
+    LM_CLASS((*this), AbstractTypeSystem)
+    LM_FUNC(AbstractTypeSystem, (set_leak_memory)(leak_memory))
+
     // Register the special classes
     classes[BetterTypeInfo::create<StaticMethod>()] = &functions;
     classes[BetterTypeInfo::create<AbstractCppObjProxy>()] = &proxy_methods;

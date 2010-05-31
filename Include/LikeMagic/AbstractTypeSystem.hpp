@@ -78,6 +78,8 @@ struct DoConv<T, true>
 class AbstractTypeSystem
 {
 private:
+    // This is used for debugging.
+    bool leak_memory_flag;
 
     ExprPtr search_for_conv(ExprPtr from, BetterTypeInfo from_type, BetterTypeInfo to_type) const;
 
@@ -127,7 +129,9 @@ private:
 
 
 protected:
-   
+
+    AbstractTypeSystem();
+
     std::map<BetterTypeInfo, AbstractClass*> classes;
     AbstractClass const* unknown_class;
 
@@ -144,6 +148,13 @@ protected:
     AbstractClass const* get_class(BetterTypeInfo type) const;
 
 public:
+
+    virtual ~AbstractTypeSystem() {}
+
+    // These are used to turn off deletion of the C++ objects
+    // to troubleshoot garbage collection issues.
+    bool leak_memory() const;
+    void set_leak_memory(bool flag);
 
     std::vector<BetterTypeInfo> get_registered_types() const;
     std::vector<std::string> get_base_names(BetterTypeInfo type) const;

@@ -34,7 +34,7 @@ using LikeMagic::Marshaling::AbstractFunctionoid;
  in CppObjProxy which depend on classes derived from Expression<T>.
  Since the expression classes are all templates, this creates an unresolvable circular
  dependency between Expression.hpp and Term.hpp, ContainerSet.hpp, etc.
- 
+
  Adding additional classes to break that dependency will put you right back
  where we are now, with the same methods implemented in them as are now
  in the Proxy classes!
@@ -53,6 +53,8 @@ protected:
     AbstractCppObjProxy(AbstractTypeSystem const& type_system_, BetterTypeInfo type_) : magic_number(0xCAFEBABE), type_system(type_system_), type(type_) {}
 
 public:
+
+    virtual void dispose() const = 0;
 
     virtual ~AbstractCppObjProxy() { magic_number = 0xFFFFFFFF; }
 

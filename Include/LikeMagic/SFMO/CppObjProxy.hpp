@@ -208,12 +208,20 @@ public:
     static AbstractCppObjProxy* create(boost::intrusive_ptr<Expression<T>> expr_, AbstractTypeSystem const& type_system)
         { return new CppObjProxy(expr_, type_system); }
 
+    virtual void dispose() const
+    {
+        if (type_system.leak_memory())
+            std::cout << "Not deleting " << describe() << std::endl;
+        else
+            delete this;
+    }
+
     virtual boost::intrusive_ptr<AbstractExpression> get_expr() { return expr; }
 
     virtual AbstractCppObjProxy* eval()
     {
         auto objsets = expr->get_objsets();
-        
+
         if (!objsets.empty())
             return collect(expr, expr->get_objsets());
         else

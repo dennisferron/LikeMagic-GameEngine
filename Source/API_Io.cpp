@@ -126,7 +126,7 @@ void API_io_free_proxy(IoObject* self)
 
         auto proxy = reinterpret_cast<LikeMagic::SFMO::AbstractCppObjProxy*>(IoObject_dataPointer(self));
         proxy->check_magic();
-        delete proxy;
+        proxy->dispose();
         IoObject_setDataPointer_(self, 0);
     }
 }

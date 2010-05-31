@@ -7,7 +7,7 @@
 #include "LikeMagic/Utility/TypeDescr.hpp"
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
-
+#include "LikeMagic/Utility/UserMacros.hpp"
 
 #include <iostream>
 #include <vector>
@@ -24,6 +24,11 @@ using namespace LikeMagic::Utility;
 
 IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
 {
+
+    // Register this vm
+    LM_CLASS(dynamic_cast<RuntimeTypeSystem&>(type_system_), IoVM)
+    LM_FUNC(IoVM, (run_cli)(do_string))
+
     type_system_.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock>();
     type_system_.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock const&>();
 
@@ -56,7 +61,7 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
             throw std::logic_error("Error getting proto for methodset, return value null:  " + code);
         }
 
-        IoObject_addMethodTable_(mset_proto, 
+        IoObject_addMethodTable_(mset_proto,
                 make_io_method_table(type_system.get_method_names(*it)));
 
         // Give the proto a C++ proxy object so constructors and proxy methods can be called on it.
@@ -72,8 +77,16 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
             do_string("LikeMagic classes " + type_system.get_class_name(*it) + " appendProto(LikeMagic classes " + *base + ")");
     }
 
+    // You cannot add protos until after all the above code is finished.
+
     // Add a proto to support all the static class members and namespace level C++ functions.
     add_proto<StaticMethod>("CppFunc");
+
+    // Make this vm itself accessible
+    add_proto<IoVM&>("IoVM", *this);
+
+    // Also make the abstract type system available by pointer.
+    add_proto<AbstractTypeSystem&>("CppTypeSystem", type_system_);
 }
 
 IoVM::~IoVM()
