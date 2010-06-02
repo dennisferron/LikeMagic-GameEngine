@@ -80,7 +80,7 @@ public:
         type_system.add_conv<T&, Base*, AddrOfConv>();
         type_system.add_conv<T&, Base const*, AddrOfConv>();
         type_system.add_conv<T const&, Base const*, AddrOfConv>();
-        
+
         type_system.add_conv<T*, Base*, Converter>();
         type_system.add_conv<T*, Base const*, Converter>();
         type_system.add_conv<T const*, Base const*, Converter>();
@@ -101,8 +101,22 @@ public:
     template <typename... Args>
     void bind_constructor(std::string method_name="new")
     {
-        auto calltarget = new ConstructorCallTarget<T, is_copyable, Args...>(type_system);
-        add_method(method_name, calltarget);
+        // When the object is created under the name of "new", it is a resource
+        // and must be deleted when you are finished with it.
+        auto resources = new ConstructorCallTarget<T*, is_copyable, Args...>(type_system);
+        add_method(method_name, resources);
+
+        // Convert the "newXXXX" method name to "tmpXXXX" for temporary objects.
+        std::string temps_name;
+        if (method_name.substr(0, 3) == "new")
+            temps_name = "tmp" + method_name.substr(3);
+        else
+            temps_name = "tmp_" + method_name;
+
+        // Create the temp objects version of the constructor.
+        // This one stores the value directly in the term.
+        auto temps = new ConstructorCallTarget<T, is_copyable, Args...>(type_system);
+        add_method(temps_name, temps);
     }
 
     // Use this to bind fields.
