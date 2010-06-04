@@ -7,6 +7,8 @@
 #include "LikeMagic/TypeConv/NumberConv.hpp"
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
 #include "LikeMagic/TypeConv/VectorConv.hpp"
+#include "LikeMagic/TypeConv/AddrOfConv.hpp"
+#include "LikeMagic/TypeConv/PtrDerefConv.hpp"
 
 namespace LikeMagic {
 
@@ -26,7 +28,7 @@ using namespace LikeMagic::Marshaling;
 class RuntimeTypeSystem : public AbstractTypeSystem
 {
 private:
-    
+
 
     // Dummy type to represent SFMO collection methods
     struct SFMOCollection {};
@@ -38,6 +40,20 @@ private:
     StaticMethods functions;
     ProxyMethods proxy_methods;
     ProxyMethods collection_methods;
+
+    template <typename T, bool is_copyable>
+    typename boost::enable_if_c<is_copyable>::type
+    register_copyable_conv()
+    {
+        add_conv<T*&, T, PtrDerefConv>();
+        add_conv<T*&, T const, PtrDerefConv>();
+    }
+
+    template <typename T, bool is_copyable>
+    typename boost::disable_if_c<is_copyable>::type
+    register_copyable_conv()
+    {
+    }
 
     template <typename T, bool is_copyable>
     Class<T, is_copyable>& register_class_impl(std::string name)
@@ -60,6 +76,15 @@ private:
             add_conv<T&, T*, AddrOfConv>();
             add_conv<T&, T const*, AddrOfConv>();
             add_conv<T const&, T const*, AddrOfConv>();
+
+            // Also allow converting pointers back to references.
+            add_conv<T*, T&, PtrDerefConv>();
+            add_conv<T*, T const&, PtrDerefConv>();
+            add_conv<T*&, T&, PtrDerefConv>();
+            add_conv<T*&, T const&, PtrDerefConv>();
+
+            // enable pointer to value conversions only if class is copyable.
+            register_copyable_conv<T, is_copyable>();
 
             classes[type.bare_type()] = result;
 

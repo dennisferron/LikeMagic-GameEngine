@@ -9,6 +9,8 @@
 #include "LikeMagic/Utility/StripConst.hpp"
 #include "LikeMagic/SFMO/Trampoline.hpp"
 
+#include "LikeMagic/Utility/TupleForEach.hpp"
+
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits.hpp>
 
@@ -127,6 +129,31 @@ private:
         }
     }
 
+    // Functor used with tuple_for_each_pair_in_seq by make_conv_chain
+    struct ConvChainBuilder;
+    friend struct ConvChainBuilder;
+    struct ConvChainBuilder
+    {
+        AbstractTypeSystem const& type_sys;
+        ExprPtr expr;
+
+        ConvChainBuilder(AbstractTypeSystem const& type_sys_, ExprPtr expr_)
+            : type_sys(type_sys_), expr(expr_) {}
+
+        void operator()(BetterTypeInfo from_type, BetterTypeInfo to_type)
+        {
+            // "decorate" the existing expression with the next conversion, and store it in place of existing one.
+            expr = type_sys.get_converter(from_type, to_type)->wrap_expr(expr);
+        }
+    };
+
+    template <typename... T>
+    ExprPtr make_conv_chain(ExprPtr from, std::tuple<T...> types) const
+    {
+        ConvChainBuilder f(*this, from);
+        tuple_for_each_pair_in_seq(f, types);
+        return f.expr;
+    }
 
 protected:
 

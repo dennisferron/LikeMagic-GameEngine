@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/home/dennis/code/LikeMagic/LikeMagic/Include/LikeMagic/Backends/Io/API_Io_Impl.hpp</file>
+        <file>file:/home/dennis/code/LikeMagic/LikeMagic/Source/API_Io.cpp</file>
+        <file>file:/home/dennis/code/LikeMagic/LikeMagic/Source/IoVM.cpp</file>
+        <file>file:/home/dennis/code/LikeMagic/LikeMagic/Source/AbstractTypeSystem.cpp</file>
+        <file>file:/home/dennis/code/LikeMagic/LikeMagic/Include/LikeMagic/Marshaling/Class.hpp</file>
+        <file>file:/home/dennis/code/LikeMagic/LikeMagic/Include/LikeMagic/AbstractTypeSystem.hpp</file>
+    </open-files>
 </project-private>

@@ -61,22 +61,27 @@ bool AbstractTypeSystem::is_const_adding_conv(BetterTypeInfo from_type, BetterTy
 
 ExprPtr AbstractTypeSystem::search_for_conv(ExprPtr from, BetterTypeInfo from_type, BetterTypeInfo to_type) const
 {
-    AbstractTypeConverter const* abstract_converter;
-
+    // Single conversions
     if (has_converter(from_type, to_type))
-        abstract_converter = get_converter(from_type, to_type);
-    else if (has_converter(from_type.as_const_type(), to_type))
-        abstract_converter = get_converter(from_type.as_const_type(), to_type);
-    else if (has_converter(from_type, to_type.as_const_type()))
-        abstract_converter = get_converter(from_type, to_type.as_const_type());
-    else if (has_converter(from_type, to_type.as_nonconst_type()))
-        abstract_converter = get_converter(from_type, to_type.as_nonconst_type());
-    else if (has_converter(from_type.as_const_type(), to_type.as_nonconst_type()))
-        abstract_converter = get_converter(from_type.as_const_type(), to_type.as_nonconst_type());
-    else
-        throw std::logic_error("No type converter from " + from_type.describe() + " to " + to_type.describe());
+        return get_converter(from_type, to_type)->wrap_expr(from);
 
-    return abstract_converter->wrap_expr(from);
+    if (has_converter(from_type.as_const_type(), to_type))
+        return get_converter(from_type.as_const_type(), to_type)->wrap_expr(from);
+
+    if (has_converter(from_type, to_type.as_const_type()))
+        return get_converter(from_type, to_type.as_const_type())->wrap_expr(from);
+
+    if (has_converter(from_type, to_type.as_nonconst_type()))
+        return get_converter(from_type, to_type.as_nonconst_type())->wrap_expr(from);
+
+    if (has_converter(from_type.as_const_type(), to_type.as_nonconst_type()))
+        return get_converter(from_type.as_const_type(), to_type.as_nonconst_type())->wrap_expr(from);
+
+    // Double conversions
+    if (from_type.is_ptr && has_converter(from_type, from_type.remove_reference()) && has_converter(from_type.remove_reference(), to_type))
+        return make_conv_chain(from, std::make_tuple(from_type, from_type.remove_reference(), to_type));
+
+    throw std::logic_error("No type converter from " + from_type.describe() + " to " + to_type.describe());
 }
 
 AbstractCppObjProxy* AbstractTypeSystem::call

@@ -56,6 +56,11 @@ public:
         return BetterTypeInfo(info, info, false, is_ref, is_ptr, is_const_ptr);
     }
 
+    BetterTypeInfo remove_reference() const
+    {
+        return BetterTypeInfo(info, info, is_const, false, is_ptr, is_const_ptr);
+    }
+
     BetterTypeInfo as_ptr_to_const_type() const
     {
         if (!is_ptr)

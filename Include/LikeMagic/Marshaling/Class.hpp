@@ -3,6 +3,7 @@
 #include "AbstractClass.hpp"
 #include "CallTargetSelector.hpp"
 #include "ConstructorCallTarget.hpp"
+#include "DestructorCallTarget.hpp"
 #include "LikeMagic/TypeConv/NumberConv.hpp"
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
 #include "LikeMagic/TypeConv/BaseConv.hpp"
@@ -50,6 +51,9 @@ private:
     friend class LikeMagic::RuntimeTypeSystem;
     Class(std::string name_, AbstractTypeSystem& type_system_) : AbstractClass(name_, type_system_)
     {
+        // In C++, any type can be deleted.
+        auto deleter = new DestructorCallTarget<T>(type_system);
+        add_method("delete", deleter);
     }
 
 public:
