@@ -41,11 +41,14 @@ private:
     // for the Io code to make local copies of the method names.
     std::vector<std::string> method_names;
 
+    void suggest_method(std::string method_name, int num_args) const;
+
 protected:
     AbstractTypeSystem& type_system;
 
     void add_method(std::string method_name, AbstractCallTargetSelector* method);
     AbstractCallTargetSelector* get_method(std::string method_name, int num_args) const;
+    AbstractCallTargetSelector* try_get_method(std::string method_name, int num_args) const;
 
     AbstractClass(std::string name_, AbstractTypeSystem& type_system_) :
         class_name(name_),

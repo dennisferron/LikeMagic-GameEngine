@@ -28,13 +28,20 @@ void AbstractClass::add_method(std::string method_name, AbstractCallTargetSelect
 
 AbstractCallTargetSelector* AbstractClass::get_method(std::string method_name, int num_args) const
 {
-    if (has_method(method_name, num_args))
-        return methods.find(method_name)->second.find(num_args)->second;
-    else
-        for (auto it=bases.begin(); it != bases.end(); it++)
-            if (it->second->has_method(method_name, num_args))
-                return it->second->get_method(method_name, num_args);
+    AbstractCallTargetSelector* method =
+        try_get_method(method_name, num_args);
 
+    if (method)
+        return method;
+    else
+    {
+        suggest_method(method_name, num_args);
+        return 0;  // never get here
+    }
+}
+
+void AbstractClass::suggest_method(std::string method_name, int num_args) const
+{
     auto candidates = methods.find(method_name);
 
     if (candidates == methods.end())
@@ -60,6 +67,22 @@ AbstractCallTargetSelector* AbstractClass::get_method(std::string method_name, i
     }
 }
 
+AbstractCallTargetSelector* AbstractClass::try_get_method(std::string method_name, int num_args) const
+{
+    if (has_method(method_name, num_args))
+        return methods.find(method_name)->second.find(num_args)->second;
+    else
+    {
+        for (auto it=bases.begin(); it != bases.end(); it++)
+        {
+            AbstractCallTargetSelector* method = it->second->try_get_method(method_name, num_args);
+            if (method)
+                return method;
+        }
+    }
+
+    return 0;
+}
 
 std::vector<BetterTypeInfo> AbstractClass::get_arg_types(std::string method_name, int num_args) const
 {
@@ -74,8 +97,8 @@ std::vector<std::string> const& AbstractClass::get_method_names() const
 bool AbstractClass::has_method(std::string method_name, int num_args) const
 {
     auto candidates = methods.find(method_name);
-    
-    return 
+
+    return
         candidates != methods.end()
     &&
         candidates->second.find(num_args) != candidates->second.end();
