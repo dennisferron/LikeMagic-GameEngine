@@ -1,7 +1,6 @@
 #pragma once
 
-#include "LikeMagic/Utility/BetterTypeInfo.hpp"
-#include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
+#include "LikeMagic/TypeConv/TypeConvGraph.hpp"
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
 #include "LikeMagic/SFMO/NullExpr.hpp"
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
@@ -168,6 +167,8 @@ protected:
 
     ConvMap converters;
 
+    TypeConvGraph conv_graph;
+
     bool has_converter(BetterTypeInfo from, BetterTypeInfo to) const;
     AbstractTypeConverter const* get_converter(BetterTypeInfo from, BetterTypeInfo to) const;
 
@@ -177,6 +178,8 @@ protected:
 public:
 
     virtual ~AbstractTypeSystem() {}
+
+    void print_type_graph() const;
 
     // These are used to turn off deletion of the C++ objects
     // to troubleshoot garbage collection issues.

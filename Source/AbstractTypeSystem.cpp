@@ -11,6 +11,11 @@ AbstractTypeSystem::AbstractTypeSystem() : leak_memory_flag(false)
 {
 }
 
+void AbstractTypeSystem::print_type_graph() const
+{
+    conv_graph.print_graph();
+}
+
 bool AbstractTypeSystem::leak_memory() const
 {
     return leak_memory_flag;
@@ -78,8 +83,10 @@ ExprPtr AbstractTypeSystem::search_for_conv(ExprPtr from, BetterTypeInfo from_ty
         return get_converter(from_type.as_const_type(), to_type.as_nonconst_type())->wrap_expr(from);
 
     // Double conversions
-    if (from_type.is_ptr && has_converter(from_type, from_type.remove_reference()) && has_converter(from_type.remove_reference(), to_type))
-        return make_conv_chain(from, std::make_tuple(from_type, from_type.remove_reference(), to_type));
+    //if (from_type.is_ptr && has_converter(from_type, from_type.remove_reference()) && has_converter(from_type.remove_reference(), to_type))
+    //    return make_conv_chain(from, std::make_tuple(from_type, from_type.remove_reference(), to_type));
+
+    return conv_graph.wrap_expr(from, from_type, to_type);
 
     throw std::logic_error("No type converter from " + from_type.describe() + " to " + to_type.describe());
 }
@@ -176,8 +183,10 @@ AbstractTypeConverter const* AbstractTypeSystem::get_converter(BetterTypeInfo fr
 
 void AbstractTypeSystem::add_converter(BetterTypeInfo from, BetterTypeInfo to, AbstractTypeConverter const* conv)
 {
-    if (has_converter(from, to))
-        delete converters[from][to];
+    conv_graph.add_conv(from, to, conv);
+
+    //if (has_converter(from, to))
+    //    delete converters[from][to];
 
     converters[from][to] = conv;
 }

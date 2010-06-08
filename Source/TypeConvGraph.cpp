@@ -1,10 +1,33 @@
 #include "LikeMagic/TypeConv/TypeConvGraph.hpp"
 
 #include "boost/graph/breadth_first_search.hpp"
+#include <iostream>
+
+#include <boost/config.hpp>
+
+#include <algorithm>
+#include <vector>
+#include <utility>
+#include <iostream>
+
+#include <boost/graph/visitors.hpp>
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/breadth_first_search.hpp>
+#include <boost/property_map/property_map.hpp>
+#include <boost/graph/graph_utility.hpp>
+
+#include "LikeMagic/TypeConv/TypeConvGraph.hpp"
+
+#include "boost/graph/breadth_first_search.hpp"
 
 using namespace LikeMagic::SFMO;
 
 namespace LikeMagic { namespace TypeConv {
+
+void TypeConvGraph::print_graph() const
+{
+    boost::print_graph(graph);
+}
 
 bool TypeConvGraph::has_type(BetterTypeInfo type) const
 {
@@ -17,62 +40,85 @@ void TypeConvGraph::add_type(BetterTypeInfo type)
         vertex_map[type] = add_vertex(graph);
 }
 
-void TypeConvGraph::add_conv(BetterTypeInfo from, BetterTypeInfo to, AbstractTypeConverter const* conv)
+void TypeConvGraph::add_conv(BetterTypeInfo from, BetterTypeInfo to, p_conv_t conv)
 {
     add_type(from);
     add_type(to);
-    // TODO:  figure out correct syntax for accessing the edge property.
-    //add_edge(vertex_map[from], vertex_map[to], graph).second.conv = conv;
+    graph[add_edge(vertex_map[from], vertex_map[to], graph).first].conv = conv;
 }
 
-struct ConvChainBuilder : public boost::default_bfs_visitor
+struct FindType
 {
-    TypeConvGraph::vertex_t dest;
-    std::vector<AbstractTypeConverter const*> chain;
+    struct TypeFoundException {};
 
-    ConvChainBuilder(TypeConvGraph::vertex_t dest_)
+    typedef boost::on_finish_vertex event_filter;
+    TypeConvGraph::vertex_t dest;
+
+    FindType(TypeConvGraph::vertex_t dest_)
         : dest(dest_) {}
 
     template <class Vertex, class Graph>
-    void discover_vertex(Vertex u, Graph& g)
+    void operator()(Vertex u, const Graph&)
     {
         if (u == dest)
-            throw chain;
-    }
-
-    template <typename Edge, typename Graph>
-    void tree_edge(Edge e, const Graph& g) const
-    {
-        // TODO: Figure out how to access the type conv object from the edge.
-        //chain.push_back(e.conv);
+            throw TypeFoundException();
     }
 };
 
-ExprPtr TypeConvGraph::use_conv_chain(ExprPtr from, conv_vect_t const& chain, size_t pos)
+ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, vertex_t cur, std::vector<vertex_t> const& pred_list) const
 {
-    return
-        pos == chain.size()?
-            from
-        :
-            chain[pos]->wrap_expr(
-                use_conv_chain(from, chain, pos+1));
+    vertex_t pred = pred_list[cur];
+
+    if (pred == cur)
+        return from_expr;
+    else
+    {
+        AbstractTypeConverter const* conv = graph[edge(pred, cur, graph).first].conv;
+        std::cout << conv->describe() << std::endl;
+        return build_conv_chain(conv->wrap_expr(from_expr), pred, pred_list);
+    }
 }
 
 ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, BetterTypeInfo from, BetterTypeInfo to) const
 {
     vertex_t source = vertex_map.find(from)->second;
     vertex_t dest = vertex_map.find(to)->second;
+    std::vector<vertex_t> pred(boost::num_vertices(graph));
+
+    for (size_t i=0; i<pred.size(); i++)
+        pred[i] = -1;
 
     try
     {
-        breadth_first_search(graph, source, visitor(ConvChainBuilder(dest)));
+        pred[source] = source;
+        boost::breadth_first_search
+        (
+            graph,
+            source,
+            boost::visitor
+            (
+                boost::make_bfs_visitor
+                (
+                    std::make_pair
+                    (
+                        FindType(dest),
+                        boost::record_predecessors
+                        (
+                            &pred[0],
+                            boost::on_tree_edge()
+                        )
+                    )
+                )
+            )
+        );
     }
-    catch (conv_vect_t const& chain)
+    catch (FindType::TypeFoundException const&)
     {
-        return use_conv_chain(from_expr, chain);
+        return build_conv_chain(from_expr, dest, pred);
     }
     throw std::logic_error(std::string("No type conversion path connecting ") + from.describe() + " to " + to.describe());
 
 }
+
 
 }}

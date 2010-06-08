@@ -10,6 +10,9 @@
 
 namespace LikeMagic { namespace Utility {
 
+// Used for default constructed BetterTypeInfo with no type stored in it.
+struct no_type {};
+
 class BetterTypeInfo
 {
 private:
@@ -17,6 +20,13 @@ private:
         : info(info_), raw_info(raw_info_), is_const(is_const_), is_ref(is_ref_), is_ptr(is_ptr_), is_const_ptr(is_const_ptr_) {}
 
 public:
+    BetterTypeInfo() :
+        info(&typeid(no_type)),
+        raw_info(&typeid(no_type)),
+        is_const(false), is_ref(false),
+        is_ptr(false), is_const_ptr(false)
+    {}
+
     std::type_info const* info;
     std::type_info const* raw_info;
     bool is_const;  // when type is pointer, this means the pointed-at object is const; to find if the bits of the pointer are const see is_const_ptr
