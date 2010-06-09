@@ -64,6 +64,8 @@ public:
     virtual bool is_terminal() const = 0;
     virtual bool is_lazy() const = 0;
     virtual BetterTypeInfo get_type() const = 0;
+    virtual std::string description() const = 0;
+
     //virtual void eval_and_serialize(std::vector<char>& buffer) = 0;
 
 };

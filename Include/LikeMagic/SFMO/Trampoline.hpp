@@ -27,13 +27,13 @@ public:
     virtual boost::intrusive_ptr<Expression<To>> clone() const { return new Trampoline(from_expr); }
 
     virtual std::set<AbstractObjectSet*> get_objsets() const { return from_expr->get_objsets(); }
-    
+
     virtual bool is_terminal() const { return false; }
     virtual bool is_lazy() const { return from_expr->is_lazy(); }
 
     virtual std::string description() const
     {
-        return "converts " + from_expr->description() + " from " + LikeMagic::Utility::TypeDescr<From>::text() + " to " + LikeMagic::Utility::TypeDescr<To>::text();
+        return "(" + from_expr->description() + " from " + LikeMagic::Utility::TypeDescr<From>::text() + " to " + LikeMagic::Utility::TypeDescr<To>::text() + ")";
     }
 
     virtual void mark() const

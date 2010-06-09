@@ -2,6 +2,8 @@
 #include "LikeMagic/AbstractTypeSystem.hpp"
 #include "LikeMagic/Marshaling/AbstractClass.hpp"
 
+#include "LikeMagic/TypeConv/NoChangeConv.hpp"
+
 #include <iostream>
 using namespace std;
 
@@ -66,6 +68,8 @@ bool AbstractTypeSystem::is_const_adding_conv(BetterTypeInfo from_type, BetterTy
 
 ExprPtr AbstractTypeSystem::search_for_conv(ExprPtr from, BetterTypeInfo from_type, BetterTypeInfo to_type) const
 {
+    return conv_graph.wrap_expr(from, from_type, to_type);
+
     // Single conversions
     if (has_converter(from_type, to_type))
         return get_converter(from_type, to_type)->wrap_expr(from);
@@ -85,8 +89,6 @@ ExprPtr AbstractTypeSystem::search_for_conv(ExprPtr from, BetterTypeInfo from_ty
     // Double conversions
     //if (from_type.is_ptr && has_converter(from_type, from_type.remove_reference()) && has_converter(from_type.remove_reference(), to_type))
     //    return make_conv_chain(from, std::make_tuple(from_type, from_type.remove_reference(), to_type));
-
-    return conv_graph.wrap_expr(from, from_type, to_type);
 
     throw std::logic_error("No type converter from " + from_type.describe() + " to " + to_type.describe());
 }
@@ -181,9 +183,18 @@ AbstractTypeConverter const* AbstractTypeSystem::get_converter(BetterTypeInfo fr
     return to_it->second;
 }
 
+
 void AbstractTypeSystem::add_converter(BetterTypeInfo from, BetterTypeInfo to, AbstractTypeConverter const* conv)
 {
     conv_graph.add_conv(from, to, conv);
+
+    // Support the const forms of this conversion too
+    conv_graph.add_conv(from, to.as_const_type(), conv);
+    conv_graph.add_conv(from.as_const_type(), to.as_const_type(), conv);
+
+    // Also add converters to make either type const.
+    conv_graph.add_conv(from, from.as_const_type(), new NoChangeConv);
+    conv_graph.add_conv(to, to.as_const_type(), new NoChangeConv);
 
     //if (has_converter(from, to))
     //    delete converters[from][to];

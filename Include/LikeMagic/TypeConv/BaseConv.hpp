@@ -24,7 +24,7 @@ public:
                 reinterpret_cast<LikeMagic::SFMO::Expression<From>*>(expr.get())));
     }
 
-    virtual std::string describe() const { return describe_converter<From, To>("BaseConv") + " (inherits from " + ConvertibleTo<To>::describe() + ")"; }
+    virtual std::string describe() const { return describe_converter<From, To>("BaseConv"); }
 };
 
 }}

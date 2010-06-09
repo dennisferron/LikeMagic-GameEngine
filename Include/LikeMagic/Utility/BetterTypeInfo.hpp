@@ -120,7 +120,8 @@ public:
                 + (is_ptr? "*" : "")
                 + (is_const_ptr? " const" : "")
                 + (is_ref? "&" : "")
-                + " (raw typeid: " + raw_info->name() + ")";
+                /*+ " (raw typeid: " + raw_info->name() + ")" */
+                ;
     }
 };
 

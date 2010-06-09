@@ -32,7 +32,7 @@ template <typename From, typename To>
 std::string describe_converter(std::string converter_name)
 {
     return
-            converter_name +
+            "type_conv " + converter_name +
             " from " + BetterTypeInfo::create<From>().describe() +
             " to " + BetterTypeInfo::create<To>().describe();
 }

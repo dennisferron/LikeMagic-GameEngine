@@ -77,21 +77,23 @@ public:
         add_base_abstr(&base_class);
 
         type_system.add_conv<T&, Base&, Converter>();
-        type_system.add_conv<T&, Base const&, Converter>();
-        type_system.add_conv<T const&, Base const&, Converter>();
+        type_system.add_conv<T*, Base*, Converter>();
+
+        //type_system.add_conv<T&, Base const&, Converter>();
+        //type_system.add_conv<T const&, Base const&, Converter>();
 
         // Autoconvert references into base pointers (so we can pass Term objects by pointer)
-        type_system.add_conv<T&, Base*, AddrOfConv>();
-        type_system.add_conv<T&, Base const*, AddrOfConv>();
-        type_system.add_conv<T const&, Base const*, AddrOfConv>();
-
-        type_system.add_conv<T*, Base*, Converter>();
-        type_system.add_conv<T*, Base const*, Converter>();
-        type_system.add_conv<T const*, Base const*, Converter>();
-
-        type_system.add_conv<T*&, Base*, Converter>();
-        type_system.add_conv<T*&, Base const*, Converter>();
-        type_system.add_conv<T const*&, Base const*, Converter>();
+//        type_system.add_conv<T&, Base*, AddrOfConv>();
+//        type_system.add_conv<T&, Base const*, AddrOfConv>();
+//        type_system.add_conv<T const&, Base const*, AddrOfConv>();
+//
+//        type_system.add_conv<T*, Base*, Converter>();
+//        type_system.add_conv<T*, Base const*, Converter>();
+//        type_system.add_conv<T const*, Base const*, Converter>();
+//
+//        type_system.add_conv<T*&, Base*, Converter>();
+//        type_system.add_conv<T*&, Base const*, Converter>();
+//        type_system.add_conv<T const*&, Base const*, Converter>();
     }
 
     // Use this to declare methods of your C++ class callable from script.

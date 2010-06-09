@@ -75,7 +75,7 @@ ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, vertex_t cur, std::ve
     {
         AbstractTypeConverter const* conv = graph[edge(pred, cur, graph).first].conv;
         std::cout << conv->describe() << std::endl;
-        return build_conv_chain(conv->wrap_expr(from_expr), pred, pred_list);
+        return conv->wrap_expr(build_conv_chain(from_expr, pred, pred_list));
     }
 }
 
@@ -114,7 +114,9 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, BetterTypeInfo from, BetterT
     }
     catch (FindType::TypeFoundException const&)
     {
-        return build_conv_chain(from_expr, dest, pred);
+        ExprPtr expr = build_conv_chain(from_expr, dest, pred);
+        std::cout << expr->description() << std::endl;
+        return expr;
     }
     throw std::logic_error(std::string("No type conversion path connecting ") + from.describe() + " to " + to.describe());
 

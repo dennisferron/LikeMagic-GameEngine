@@ -14,7 +14,7 @@ class Expression : public AbstractExpression
 private:
     Expression(Expression<T> const& other);
 protected:
-    Expression() 
+    Expression()
     {
         //std::cout << "created expression with T=" << LikeMagic::Utility::TypeDescr<T>::text() << std::endl;
     }
@@ -23,7 +23,6 @@ public:
     virtual T eval() = 0;
     virtual boost::intrusive_ptr<Expression<T>> clone() const = 0;
     typedef T ReturnType;
-    virtual std::string description() const = 0;
     virtual BetterTypeInfo get_type() const { return BetterTypeInfo::create<T>(); }
 
     /*

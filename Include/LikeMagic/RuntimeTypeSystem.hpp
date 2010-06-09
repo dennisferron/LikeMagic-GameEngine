@@ -45,8 +45,11 @@ private:
     typename boost::enable_if_c<is_copyable>::type
     register_copyable_conv()
     {
+        // Allow pointers and references to be converted to value
+        // only if the object is copyable.
         add_conv<T*&, T, PtrDerefConv>();
-        add_conv<T*&, T const, PtrDerefConv>();
+        add_conv<T&, T>();
+        //add_conv<T*&, T const, PtrDerefConv>();
     }
 
     template <typename T, bool is_copyable>
@@ -74,14 +77,18 @@ private:
 
             // Allow passing the actual object to things that need the pointer to the object.
             add_conv<T&, T*, AddrOfConv>();
-            add_conv<T&, T const*, AddrOfConv>();
-            add_conv<T const&, T const*, AddrOfConv>();
+            //add_conv<T&, T const*, AddrOfConv>();
+            //add_conv<T const&, T const*, AddrOfConv>();
 
             // Also allow converting pointers back to references.
             add_conv<T*, T&, PtrDerefConv>();
-            add_conv<T*, T const&, PtrDerefConv>();
-            add_conv<T*&, T&, PtrDerefConv>();
-            add_conv<T*&, T const&, PtrDerefConv>();
+            //add_conv<T*, T const&, PtrDerefConv>();
+
+            // References to pointers can be converted to pointers.
+            add_conv<T*&, T*>();
+            //add_conv<T*&, T&, PtrDerefConv>();
+
+            //add_conv<T*&, T const&, PtrDerefConv>();
 
             // enable pointer to value conversions only if class is copyable.
             register_copyable_conv<T, is_copyable>();
