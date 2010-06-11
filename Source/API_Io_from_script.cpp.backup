@@ -77,7 +77,7 @@ ExprPtr from_script(IoObject* self, IoObject* io_obj, BetterTypeInfo expected_ty
     else if (ISSEQ(io_obj))
         return Term<std::string, true>::create(IoSeq_asCString(io_obj));
     else if (ISNIL(io_obj))
-        return NullExpr<IoNilExprTag*>::create();
+        return NullExpr<NilExprTag>::create();
     else if (ISBOOL(io_obj))
         return Term<bool, true>::create(ISTRUE(io_obj));
     else if (ISBLOCK(io_obj))

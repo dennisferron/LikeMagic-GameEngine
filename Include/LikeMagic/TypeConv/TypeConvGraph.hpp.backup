@@ -36,7 +36,7 @@ private:
         BetterTypeInfo type;
     };
 
-    typedef adjacency_list<vecS, vecS, directedS, vertex_info, edge_info> graph_t;
+    typedef adjacency_list<vecS, vecS, undirectedS, vertex_info, edge_info> graph_t;
     typedef graph_traits<graph_t>::vertex_descriptor vertex_t;
     typedef graph_traits<graph_t>::edge_descriptor edge_t;
     typedef std::map<BetterTypeInfo, vertex_t> vertex_map_t;
@@ -45,12 +45,11 @@ private:
     vertex_map_t vertex_map;
 
     bool has_type(BetterTypeInfo type) const;
+    void add_type(BetterTypeInfo type);
 
     ExprPtr build_conv_chain(ExprPtr from_expr, vertex_t cur, std::vector<vertex_t> const& pred_list) const;
 
 public:
-    TypeConvGraph();
-    vertex_t  add_type(BetterTypeInfo type);
     void add_conv(BetterTypeInfo from, BetterTypeInfo to, AbstractTypeConverter const* conv);
     ExprPtr wrap_expr(ExprPtr from_expr, BetterTypeInfo from, BetterTypeInfo to) const;
     void print_graph() const;

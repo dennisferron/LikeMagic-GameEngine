@@ -9,8 +9,6 @@
 
 namespace LikeMagic { namespace SFMO {
 
-// Designates that an argument was Io nil.  Nil can be converted to any pointer type.
-struct IoNilExprTag {};
 
 // When IoNil is encountered, it is marshaled as a NullExpr object.
 // The type can be converted to any other pointer in TypeConvGraph.

@@ -47,7 +47,7 @@ private:
     {
         // Allow pointers and references to be converted to value
         // only if the object is copyable.
-        add_conv<T*&, T, PtrDerefConv>();
+        //add_conv<T*&, T, PtrDerefConv>();
         add_conv<T&, T>();
         //add_conv<T*&, T const, PtrDerefConv>();
     }
