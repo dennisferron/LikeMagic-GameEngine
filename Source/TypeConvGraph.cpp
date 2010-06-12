@@ -73,24 +73,36 @@ struct FindType
     }
 };
 
-ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, vertex_t cur, std::vector<vertex_t> const& pred_list) const
+ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, std::vector<AbstractTypeConverter const*> const& chain) const
 {
-    vertex_t pred = pred_list[cur];
+    auto expr = from_expr;
 
-    if (pred == cur)
-        return from_expr;
-    else
-    {
-        AbstractTypeConverter const* conv = graph[edge(pred, cur, graph).first].conv;
-        //std::cout << "From expr: " << from_expr->description() << " adding converter: " << conv->describe() << std::endl;
-        return conv->wrap_expr(build_conv_chain(from_expr, pred, pred_list));
-    }
+    for (auto it=chain.begin(); it!=chain.end(); it++)
+        expr = (*it)->wrap_expr(expr);
+
+    return expr;
 }
 
 ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, BetterTypeInfo from, BetterTypeInfo to) const
 {
+    auto key = std::make_pair(from, to);
+
+    if (conv_cache.find(key) == conv_cache.end())
+        conv_cache[key] = search_for_conv(from, to);
+
+    return build_conv_chain(from_expr, conv_cache[key]);
+}
+
+std::vector<AbstractTypeConverter const*> TypeConvGraph::search_for_conv(BetterTypeInfo from, BetterTypeInfo to) const
+{
+    //std::cout << "Search for conv from " << from.describe() << " to " << to.describe() << std::endl;
+
+    if (!has_type(from) || !has_type(to))
+        throw std::logic_error("From or to type not found in TypeConvGraph in search_for_conv from " + from.describe() + " to " + to.describe());
+
     vertex_t source = vertex_map.find(from)->second;
     vertex_t dest = vertex_map.find(to)->second;
+
     std::vector<vertex_t> pred(boost::num_vertices(graph));
 
     for (size_t i=0; i<pred.size(); i++)
@@ -122,15 +134,21 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, BetterTypeInfo from, BetterT
     }
     catch (FindType::TypeFoundException const&)
     {
+        std::vector<AbstractTypeConverter const*> result;
+
+        for (vertex_t cur=dest; cur != pred[cur]; cur=pred[cur])
+            result.push_back(graph[edge(pred[cur], cur, graph).first].conv);
+
+        reverse(result.begin(), result.end());
+
         /*
-        std::cout << "PredList: " << std::endl;
-        for (size_t i=0; i<pred.size(); i++)
-            std::cout << (int)pred[i] << "   ";
+        std::cout << "converter list: " << std::endl;
+        for (size_t i=0; i<result.size(); i++)
+            std::cout << i << " " << result[i]->describe() << std::endl;
         std::cout << std::endl;
         */
 
-        ExprPtr expr = build_conv_chain(from_expr, dest, pred);
-        return expr;
+        return result;
     }
     throw std::logic_error(std::string("No type conversion path from ") + from.describe() + " to " + to.describe());
 

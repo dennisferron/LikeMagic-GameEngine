@@ -16,10 +16,12 @@ namespace LikeMagic { namespace Marshaling {
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::SFMO;
 
-template <typename CallAs, typename FieldPtr>
+template <typename T, typename FieldPtr>
 class ArrayFieldSetterTarget : public AbstractCallTargetSelector
 {
 private:
+    typedef T& CallAs;
+
     FieldPtr f_ptr;
     AbstractTypeSystem const& type_system;
 

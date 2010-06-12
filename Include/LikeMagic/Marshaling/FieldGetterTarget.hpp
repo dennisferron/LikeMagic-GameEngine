@@ -16,10 +16,12 @@ namespace LikeMagic { namespace Marshaling {
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::SFMO;
 
-template <typename CallAs, typename FieldPtr>
+template <typename T, typename FieldPtr>
 class FieldGetterTarget : public AbstractCallTargetSelector
 {
 private:
+    typedef T const& CallAs;
+
     FieldPtr f_ptr;
     AbstractTypeSystem const& type_system;
 
@@ -29,7 +31,7 @@ private:
 
 public:
 
-    static bool const is_const_func = true;
+    //static bool const is_const_func = true;
 
     FieldGetterTarget(FieldPtr f_ptr_, AbstractTypeSystem const& type_system_) : f_ptr(f_ptr_), type_system(type_system_) {}
 

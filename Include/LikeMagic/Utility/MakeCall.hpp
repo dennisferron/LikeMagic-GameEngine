@@ -24,6 +24,7 @@ struct MakeCall
 
 };
 
+/*
 // Call by pointer
 template <typename T>
 struct MakeCall<T*>
@@ -43,6 +44,7 @@ struct MakeCall<T*>
     }
 
 };
+*/
 
 template <>
 struct MakeCall<StaticMethod>

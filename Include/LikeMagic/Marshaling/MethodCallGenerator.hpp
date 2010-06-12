@@ -2,13 +2,16 @@
 
 #include "../Utility/FuncPtrTraits.hpp"
 
-
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_void.hpp"
 
-#include "../SFMO/MethodCall.hpp"
-#include "../SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/MethodCall.hpp"
+#include "LikeMagic/SFMO/CppObjProxy.hpp"
+
+#include "LikeMagic/Marshaling/AbstractCallTargetSelector.hpp"
+
+#include "boost/mpl/if.hpp"
 
 namespace LikeMagic { namespace Marshaling {
 
@@ -22,14 +25,22 @@ using namespace LikeMagic::SFMO;
  */
 
 
-template <typename CallAs, typename F>
+template <typename T, typename F>
 class MethodCallGenerator : public AbstractCallTargetSelector
 {
 private:
+    typedef FuncPtrTraits<F> Traits;
+
+    // Decide whether to generate the call by-ref or by-const-ref.
+    // Const functions convert the target to const ref, while
+    // nonconst functions convert target to nonconst ref, which
+    // fails by design for calling nonconst functions on value types.
+    typedef
+        typename boost::mpl::if_<boost::is_same<T, StaticMethod>, StaticMethod,
+            typename boost::mpl::if_c<Traits::is_const, T const&, T&>::type>::type CallAs;
+
     F func_ptr;
     AbstractTypeSystem const& type_system;
-
-    typedef FuncPtrTraits<F> Traits;
 
     typedef typename Traits::TPack TPack;
     typedef typename Traits::IPack IPack;
@@ -53,7 +64,7 @@ private:
 
 public:
 
-    static bool const is_const_func = Traits::is_const;
+    //static bool const is_const_func = Traits::is_const;
 
     MethodCallGenerator(F func_ptr_, AbstractTypeSystem const& type_system_) : func_ptr(func_ptr_), type_system(type_system_) {}
 

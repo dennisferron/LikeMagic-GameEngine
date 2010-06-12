@@ -44,9 +44,15 @@ private:
     graph_t graph;
     vertex_map_t vertex_map;
 
+    // Mutable is for when the object is logically const, but technically a member needs
+    // to sometimes change in a way that's not visible from outside the class.
+    // Caching is a perfect example of this.
+    mutable std::map<std::pair<BetterTypeInfo, BetterTypeInfo>, std::vector<AbstractTypeConverter const*>> conv_cache;
+
     bool has_type(BetterTypeInfo type) const;
 
-    ExprPtr build_conv_chain(ExprPtr from_expr, vertex_t cur, std::vector<vertex_t> const& pred_list) const;
+    ExprPtr build_conv_chain(ExprPtr from_expr, std::vector<AbstractTypeConverter const*> const& chain) const;
+    std::vector<AbstractTypeConverter const*> search_for_conv(BetterTypeInfo from, BetterTypeInfo to) const;
 
 public:
     TypeConvGraph();

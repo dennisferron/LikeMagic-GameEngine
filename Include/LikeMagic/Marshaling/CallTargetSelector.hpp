@@ -53,13 +53,13 @@ public:
 
 private:
     MethodCallImpl<TargetType&, F> ref_target;
-    MethodCallImpl<TargetType*, F> ptr_target;
+    //MethodCallImpl<TargetType*, F> ptr_target;
 
 public:
 
     CallTargetSelector(F f, AbstractTypeSystem const& type_sys) :
-        ref_target(f, type_sys),
-        ptr_target(f, type_sys)
+        ref_target(f, type_sys)
+        //ptr_target(f, type_sys)
     {
     }
 
@@ -69,9 +69,9 @@ public:
             std::vector<boost::intrusive_ptr<AbstractExpression>> args
         ) const
     {
-        if (target->get_type().is_ptr)
-            return ptr_target.call(target, args);
-        else if (target->get_type().is_ref)
+        //if (target->get_type().is_ptr)
+        //    return ptr_target.call(target, args);
+        /*else*/ if (target->get_type().is_ref)
             return ref_target.call(target, args);
         else
             throw std::logic_error("Methods on this object can only be called by reference or by pointer");
@@ -83,7 +83,7 @@ public:
     }
 };
 
-
+/*
 
 // On the other hand if we are creating the value target, extend the previous with the addition of value-target calls.
 template <
@@ -115,6 +115,6 @@ public:
     }
 };
 
-
+*/
 
 }}

@@ -1,7 +1,8 @@
 #pragma once
 
 #include "AbstractClass.hpp"
-#include "CallTargetSelector.hpp"
+//#include "CallTargetSelector.hpp"
+#include "LikeMagic/Marshaling/MethodCallGenerator.hpp"
 #include "ConstructorCallTarget.hpp"
 #include "DestructorCallTarget.hpp"
 #include "LikeMagic/TypeConv/NumberConv.hpp"
@@ -56,6 +57,7 @@ private:
         add_method("delete", deleter);
     }
 
+
 public:
 
     virtual AbstractCppObjProxy* create_class_proxy() const
@@ -100,7 +102,8 @@ public:
     template <typename F>
     void bind_method(std::string method_name, F f)
     {
-        auto calltarget = new CallTargetSelector<MethodCallGenerator, T, F>(f, type_system);
+        //auto calltarget = new CallTargetSelector<MethodCallGenerator, T, F>(f, type_system);
+        auto calltarget = new MethodCallGenerator<T, F>(f, type_system);
         add_method(method_name, calltarget);
     }
 
@@ -129,9 +132,11 @@ public:
     template <typename F>
     void bind_field(std::string field_name, F f)
     {
-        auto setter = new CallTargetSelector<FieldSetterTarget, T, F>(f, type_system);
+        //auto setter = new CallTargetSelector<FieldSetterTarget, T, F>(f, type_system);
+        auto setter = new FieldSetterTarget<T, F>(f, type_system);
         add_method("set_" + field_name, setter);
-        auto getter = new CallTargetSelector<FieldGetterTarget, T, F>(f, type_system);
+        //auto getter = new CallTargetSelector<FieldGetterTarget, T, F>(f, type_system);
+        auto getter = new FieldGetterTarget<T, F>(f, type_system);
         add_method("get_" + field_name, getter);
     }
 
@@ -139,9 +144,11 @@ public:
     template <typename F>
     void bind_array_field(std::string field_name, F f)
     {
-        auto setter = new CallTargetSelector<ArrayFieldSetterTarget, T, F>(f, type_system);
+        //auto setter = new CallTargetSelector<ArrayFieldSetterTarget, T, F>(f, type_system);
+        auto setter = new ArrayFieldSetterTarget<T, F>(f, type_system);
         add_method("set_" + field_name, setter);
-        auto getter = new CallTargetSelector<ArrayFieldGetterTarget, T, F>(f, type_system);
+        //auto getter = new CallTargetSelector<ArrayFieldGetterTarget, T, F>(f, type_system);
+        auto getter = new ArrayFieldGetterTarget<T, F>(f, type_system);
         add_method("get_" + field_name, getter);
     }
 
@@ -149,9 +156,11 @@ public:
     template <typename FieldAccessor>
     void bind_custom_field(std::string field_name, FieldAccessor f)
     {
-        auto setter = new CallTargetSelector<CustomFieldSetterTarget, T, FieldAccessor>(f, type_system);
+        //auto setter = new CallTargetSelector<CustomFieldSetterTarget, T, FieldAccessor>(f, type_system);
+        auto setter = new CustomFieldSetterTarget<T, FieldAccessor>(f, type_system);
         add_method("set_" + field_name, setter);
-        auto getter = new CallTargetSelector<CustomFieldGetterTarget, T, FieldAccessor>(f, type_system);
+        //auto getter = new CallTargetSelector<CustomFieldGetterTarget, T, FieldAccessor>(f, type_system);
+        auto getter = new CustomFieldGetterTarget<T, FieldAccessor>(f, type_system);
         add_method("get_" + field_name, getter);
     }
 
