@@ -16,11 +16,11 @@ private:
 public:
     IoVM(AbstractTypeSystem& type_system_);
     ~IoVM();
-    
-    void add_proto(std::string name, AbstractCppObjProxy* proxy) const;
+
+    void add_proto(std::string name, AbstractCppObjProxy* proxy, bool to_script=false) const;
 
     template <typename T>
-    void add_proto(std::string name,  T obj=T()) const
+    void add_proto(std::string name,  T obj=T(), bool to_script=false) const
     {
         add_proto
         (
@@ -32,7 +32,8 @@ public:
                     obj
                 ),
                 type_system
-            )
+            ),
+            to_script
         );
     }
 

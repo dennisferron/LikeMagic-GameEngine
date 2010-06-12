@@ -94,11 +94,20 @@ IoVM::~IoVM()
     IoState_free(self);
 }
 
-void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy) const
+void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, bool to_script) const
 {
-    string io_code = "LikeMagic classes " + proxy->get_class_name() + " clone";
-    IoObject* clone = do_string(io_code);
-    IoObject_setDataPointer_(clone, proxy);
+    IoObject* clone;
+    if (to_script)
+    {
+        clone = LikeMagic::Backends::Io::to_script(self->lobby, self->lobby, NULL, proxy);
+    }
+    else
+    {
+        string io_code = "LikeMagic classes " + proxy->get_class_name() + " clone";
+        clone = do_string(io_code);
+        IoObject_setDataPointer_(clone, proxy);
+    }
+
     IoObject_setSlot_to_(self->lobby, SIOSYMBOL(name.c_str()), clone);
 }
 

@@ -10,6 +10,9 @@
 
 #define LM_ADD_PROTO(vm_name, class_name, ...) vm_name.add_proto(#class_name, class_name(__VA_ARGS__));
 
+// Does a to-script conversion on the proto, turning doubles into IoNumber and strings into IoSeq, etc.
+#define LM_ADD_NATIVE_PROTO(vm_name, class_name, ...) vm_name.add_proto(#class_name, class_name(__VA_ARGS__), true);
+
 #define LM_ADD_PROTOS_IMPL(r, data, elem) LM_ADD_PROTO(data, elem)
 #define LM_ADD_PROTOS(vm_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ADD_PROTOS_IMPL, vm_name, SEQ)
 
