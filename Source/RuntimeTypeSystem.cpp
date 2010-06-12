@@ -15,7 +15,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     collection_methods("CollectionMethods", *this)
 {
     // Add the abstract type system itself as a class.
-    LM_CLASS((*this), AbstractTypeSystem)
+    LM_CLASS_NO_COPY((*this), AbstractTypeSystem)
     LM_FUNC(AbstractTypeSystem, (set_leak_memory)(leak_memory))
 
     // Register the special classes

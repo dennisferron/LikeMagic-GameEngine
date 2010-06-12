@@ -26,7 +26,7 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
 {
 
     // Register this vm
-    LM_CLASS(dynamic_cast<RuntimeTypeSystem&>(type_system_), IoVM)
+    LM_CLASS_NO_COPY(dynamic_cast<RuntimeTypeSystem&>(type_system_), IoVM)
     LM_FUNC(IoVM, (run_cli)(do_string))
 
     type_system_.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock>();

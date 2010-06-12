@@ -54,6 +54,10 @@ private:
     // This is used for debugging.
     bool leak_memory_flag;
 
+    // Don't allow accidently making copies of this class
+    AbstractTypeSystem(AbstractTypeSystem const&) = delete;
+    AbstractTypeSystem & operator =(AbstractTypeSystem const&) = delete;
+
 protected:
 
     AbstractTypeSystem();

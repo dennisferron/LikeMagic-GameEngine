@@ -172,7 +172,7 @@ IoObject* API_io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
         auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
         proxy->check_magic();
 
-        auto type_sys = proxy->get_type_system();
+        auto& type_sys = proxy->get_type_system();
 
         std::vector<boost::intrusive_ptr<AbstractExpression>> args;
         std::vector<BetterTypeInfo> arg_types = proxy->get_arg_types(method_name, IoMessage_argCount(m));

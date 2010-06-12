@@ -54,6 +54,10 @@ private:
     ExprPtr build_conv_chain(ExprPtr from_expr, std::vector<AbstractTypeConverter const*> const& chain) const;
     std::vector<AbstractTypeConverter const*> search_for_conv(BetterTypeInfo from, BetterTypeInfo to) const;
 
+    // Don't allow TypeConvGraph to be copied accidently.
+    TypeConvGraph(TypeConvGraph const&)=delete;
+    TypeConvGraph& operator =(TypeConvGraph const&)=delete;
+
 public:
     TypeConvGraph();
     vertex_t  add_type(BetterTypeInfo type);

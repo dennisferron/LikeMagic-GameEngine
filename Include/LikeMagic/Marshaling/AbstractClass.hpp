@@ -43,6 +43,10 @@ private:
 
     void suggest_method(std::string method_name, int num_args) const;
 
+    // Don't allow the class to be accidently copied.
+    AbstractClass(AbstractClass const&) = delete;
+    AbstractClass& operator =(AbstractClass const&) = delete;
+
 protected:
     AbstractTypeSystem& type_system;
 
