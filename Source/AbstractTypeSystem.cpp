@@ -111,6 +111,10 @@ std::string AbstractTypeSystem::get_class_name(BetterTypeInfo type) const
 }
 
 
+void AbstractTypeSystem::add_type(BetterTypeInfo type)
+{
+    conv_graph.add_type(type);
+}
 
 void AbstractTypeSystem::add_converter(BetterTypeInfo from, BetterTypeInfo to, AbstractTypeConverter const* conv)
 {

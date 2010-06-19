@@ -29,7 +29,7 @@ public:
     {
         throw std::logic_error(description() + " represents a class from C++. " +
                 " Only constructors and proxy methods can be called on C++ class protos." +
-                " To call a member method, first call a constructor to make an instance of this class.");
+                " To call a member method, first call a constructor (using new or tmp) to make an instance of this class.");
     }
 
     virtual boost::intrusive_ptr<Expression<T>> clone() const { return new ClassExpr(); }

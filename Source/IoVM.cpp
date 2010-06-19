@@ -1,6 +1,7 @@
 #include "LikeMagic/Backends/Io/API_Io_Impl.hpp"
 #include "LikeMagic/Backends/Io/IoVM.hpp"
 #include "LikeMagic/Backends/Io/IoBlock.hpp"
+#include "LikeMagic/Backends/Io/IoObjectExpr.hpp"
 
 #include "LikeMagic/SFMO/CppObjProxy.hpp"
 
@@ -24,6 +25,8 @@ using namespace LikeMagic::Utility;
 
 IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
 {
+    // IoObjectExpr expression holds unconverted Io objects; it has type of struct IoObjectExprTag.
+    type_system_.add_type(BetterTypeInfo::create<IoObjectExprTag>());
 
     // Register this vm
     LM_CLASS_NO_COPY(dynamic_cast<RuntimeTypeSystem&>(type_system_), IoVM)

@@ -90,6 +90,7 @@ public:
     std::vector<BetterTypeInfo> get_arg_types(BetterTypeInfo type, std::string method_name, int num_args) const;
 
     void add_converter(BetterTypeInfo from, BetterTypeInfo to, AbstractTypeConverter const* conv);
+    void add_type(BetterTypeInfo type);
 
     template <typename From, typename To, template <typename From, typename To> class Converter=ImplicitConv>
     void add_conv()
@@ -107,10 +108,17 @@ public:
     template <typename To>
     boost::intrusive_ptr<Expression<To>> try_conv(ExprPtr from) const
     {
-        BetterTypeInfo from_type = from->get_type();
-        BetterTypeInfo to_type = BetterTypeInfo::create<To>();
-        auto to_expr = conv_graph.wrap_expr(from, from_type, to_type);
-        return static_cast<Expression<To>*>(to_expr.get());
+        try
+        {
+            BetterTypeInfo from_type = from->get_type();
+            BetterTypeInfo to_type = BetterTypeInfo::create<To>();
+            auto to_expr = conv_graph.wrap_expr(from, from_type, to_type);
+            return static_cast<Expression<To>*>(to_expr.get());
+        }
+        catch (std::logic_error const& le)
+        {
+            throw std::logic_error(le.what() + std::string(" Note: From expression is ") + from->description());
+        }
     }
 
 };

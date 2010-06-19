@@ -189,14 +189,14 @@ IoObject* API_io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
     }
     catch (std::logic_error le)
     {
-        std::cout << "Caught exception: " << le.what() << std::endl;
-        IoState_error_(IOSTATE,  m, "Caught C++ exception: type=%s, what()=%s", typeid(le).name(), le.what());
+        //std::cout << "Caught exception: " << le.what() << std::endl;
+        IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(le).name()).c_str(), le.what());
         return IONIL(self);
     }
     catch (std::exception e)
     {
-        std::cout << "Caught exception: " << e.what() << std::endl;
-        IoState_error_(IOSTATE,  m, "Caught C++ exception: type=%s, what()=%s", typeid(e).name(), e.what());
+        //std::cout << "Caught exception: " << e.what() << std::endl;
+        IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(e).name()).c_str(), e.what());
         return IONIL(self);
     }
 }

@@ -2,6 +2,7 @@
 #include "LikeMagic/SFMO/Term.hpp"
 #include "LikeMagic/SFMO/NullExpr.hpp"
 #include "LikeMagic/Backends/Io/IoBlock.hpp"
+#include "LikeMagic/Backends/Io/IoObjectExpr.hpp"
 
 #include "LikeMagic/Backends/Io/IoListSTL.hpp"
 #include "LikeMagic/Backends/Io/IoVectorSTL.hpp"
@@ -38,6 +39,9 @@ ExprPtr from_list(IoObject* io_obj)
 
 ExprPtr from_script(IoObject* self, IoObject* io_obj, BetterTypeInfo expected_type, AbstractTypeSystem const& type_sys)
 {
+    // TODO:  These can all be made into converters that convert IoObjectExpr into the needed expression type.
+    // These converters could be plugged into the type graph, and then from_script need only do: return IoObjectExpr::create(io_obj);
+
     if (ISNUMBER(io_obj))
         return Term<double, true>::create(IoNumber_asDouble(io_obj));
     else if (ISVECTOR(io_obj))
@@ -55,8 +59,9 @@ ExprPtr from_script(IoObject* self, IoObject* io_obj, BetterTypeInfo expected_ty
         else if (expected_type.bare_type().is_type<unsigned short>() && expected_type.is_ptr)
             return from_vector<unsigned short>(io_obj);
         else
-            throw std::invalid_argument(std::string("Cannot convert Io Vector to STL vector of type ")
-                + expected_type.bare_type().describe());
+            //throw std::invalid_argument(std::string("Cannot convert Io Vector to STL vector of type ")
+            //    + expected_type.bare_type().describe());
+            return IoObjectExpr::create(io_obj);
     }
     else if (ISLIST(io_obj))
     {
@@ -71,8 +76,9 @@ ExprPtr from_script(IoObject* self, IoObject* io_obj, BetterTypeInfo expected_ty
 //        else if (expected_type.is_type<std::vector<unsigned short>>())
 //            return from_list<unsigned short>(io_obj);
         else
-            throw std::invalid_argument(std::string("Cannot convert Io List to STL vector of type ")
-                + expected_type.describe());
+            //throw std::invalid_argument(std::string("Cannot convert Io List to STL vector of type ")
+            //    + expected_type.describe());
+            return IoObjectExpr::create(io_obj);
     }
     else if (ISSEQ(io_obj))
         return Term<std::string, true>::create(IoSeq_asCString(io_obj));
@@ -92,8 +98,9 @@ ExprPtr from_script(IoObject* self, IoObject* io_obj, BetterTypeInfo expected_ty
     }
     else
     {
-        throw std::invalid_argument(std::string("CallContext_io::from_script:  I don't know what to do with an Io object with tag of ")
-                + IoObject_tag(io_obj)->name);
+        //throw std::invalid_argument(std::string("CallContext_io::from_script:  I don't know what to do with an Io object with tag of ")
+        //        + IoObject_tag(io_obj)->name);
+        return IoObjectExpr::create(io_obj);
     }
 }
 
