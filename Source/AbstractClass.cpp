@@ -1,3 +1,11 @@
+// LikeMagic C++ Binding Library
+// Copyright 2008-2010 Dennis Ferron
+// Co-founder DropEcho Studios, LLC.
+// Visit our website at dropecho.com.
+// 
+// LikeMagic is BSD-licensed.
+// (See the license file in LikeMagic/Licenses.)
+
 #include "LikeMagic/Marshaling/AbstractClass.hpp"
 #include "LikeMagic/Marshaling/AbstractCallTargetSelector.hpp"
 #include "LikeMagic/SFMO/AbstractExpression.hpp"

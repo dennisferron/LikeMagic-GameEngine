@@ -1,3 +1,11 @@
+// LikeMagic C++ Binding Library
+// Copyright 2008-2010 Dennis Ferron
+// Co-founder DropEcho Studios, LLC.
+// Visit our website at dropecho.com.
+// 
+// LikeMagic is BSD-licensed.
+// (See the license file in LikeMagic/Licenses.)
+
 #include "LikeMagic/Backends/Io/API_Io_Impl.hpp"
 #include "LikeMagic/Backends/Io/IoVM.hpp"
 #include "LikeMagic/Backends/Io/IoBlock.hpp"
