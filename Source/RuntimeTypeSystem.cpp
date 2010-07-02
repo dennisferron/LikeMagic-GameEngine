@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -108,6 +108,9 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     add_conv<  wchar_t const*&, std::string,    StringConv>();
     add_conv<  char const*,     std::string,    StringConv>();
     add_conv<  char const*&,    std::string,    StringConv>();
+
+    // Allow char*& terms to be converted to char* values.
+    add_conv<  char const*&,    char const*,    ImplicitConv>();
 
     // enable std::vector conversions to pointers for primitives
     //register_collection<unsigned short>("ushort");
