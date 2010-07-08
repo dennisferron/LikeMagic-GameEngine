@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -113,20 +113,13 @@ public:
     std::string get_class_name() const
         { return get_class_name(BetterTypeInfo::create<T>()); }
 
+    ExprPtr try_conv(ExprPtr from_expr, BetterTypeInfo to_type) const;
+
     template <typename To>
     boost::intrusive_ptr<Expression<To>> try_conv(ExprPtr from) const
     {
-        try
-        {
-            BetterTypeInfo from_type = from->get_type();
-            BetterTypeInfo to_type = BetterTypeInfo::create<To>();
-            auto to_expr = conv_graph.wrap_expr(from, from_type, to_type);
-            return static_cast<Expression<To>*>(to_expr.get());
-        }
-        catch (std::logic_error const& le)
-        {
-            throw std::logic_error(le.what() + std::string(" Note: From expression is ") + from->description());
-        }
+        BetterTypeInfo to_type = BetterTypeInfo::create<To>();
+        return static_cast<Expression<To>*>(try_conv(from, to_type).get());
     }
 
 };

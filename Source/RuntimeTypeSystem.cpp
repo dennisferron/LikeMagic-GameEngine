@@ -40,6 +40,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     proxy_methods.bind_method("eval", &AbstractCppObjProxy::eval);
     proxy_methods.bind_method("exec", &AbstractCppObjProxy::exec);
     proxy_methods.bind_method("lazy", &AbstractCppObjProxy::lazy);
+    proxy_methods.bind_method("expr_equals", &AbstractCppObjProxy::expr_equals);
 
     proxy_methods.bind_method("elem", &AbstractCppObjProxy::elem);
     proxy_methods.bind_method("iterate", &AbstractCppObjProxy::iterate);

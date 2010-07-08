@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -74,8 +74,12 @@ public:
     virtual BetterTypeInfo get_type() const = 0;
     virtual std::string description() const = 0;
 
-    //virtual void eval_and_serialize(std::vector<char>& buffer) = 0;
-
+    // Compares the expression contents to the other expression's contents.
+    // It can't be const because it may cause an eval().
+    // Important:  Use AbstractTypeSystem::try_conv to convert the other expression to this type.
+    // The result of calling equals if ExprPtr other isn't really of a compatible
+    // type to this expression is undefined.
+    virtual bool equals(ExprPtr other);
 };
 
 // Most of the time you will be using an expression via smart ptr.

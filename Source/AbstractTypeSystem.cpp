@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -13,12 +13,25 @@
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 #include "LikeMagic/SFMO/NullExpr.hpp"
 #include "LikeMagic/TypeConv/NilConv.hpp"
-
+#include "LikeMagic/TypeConv/ToAbstractExpressionConv.hpp"
 
 #include <iostream>
 using namespace std;
 
 using namespace LikeMagic;
+
+ExprPtr AbstractTypeSystem::try_conv(ExprPtr from_expr, BetterTypeInfo to_type) const
+{
+    try
+    {
+        BetterTypeInfo from_type = from_expr->get_type();
+        return conv_graph.wrap_expr(from_expr, from_type, to_type);
+    }
+    catch (std::logic_error const& le)
+    {
+        throw std::logic_error(le.what() + std::string(" Note: From expression is ") + from_expr->description());
+    }
+}
 
 AbstractTypeSystem::AbstractTypeSystem() : leak_memory_flag(false)
 {
@@ -138,6 +151,11 @@ void AbstractTypeSystem::add_converter(BetterTypeInfo from, BetterTypeInfo to, A
 
     // Allow NULL (aka nil) to be converted to these types.
     auto nil_tag = BetterTypeInfo::create<IoNilExprTag*>();
+
+    // Allow this expression type to be converted to an expression.
+    BetterTypeInfo to_expr = BetterTypeInfo::create<ExprPtr>();
+    conv_graph.add_conv(from, to_expr, new ToAbstractExpressionConv);
+    conv_graph.add_conv(from.as_const_type(), to_expr, new ToAbstractExpressionConv);
 
     if (from.is_ptr)
         conv_graph.add_conv(nil_tag, from, new NilConv);

@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -123,6 +123,10 @@ public:
     virtual bool to_bool() const = 0;
     virtual std::string to_string() const = 0;
     virtual std::string describe() const = 0;
+
+    // Compares the proxied expression to the other expression.
+    // It can't be const because it may cause an eval().
+    virtual bool expr_equals(ExprPtr other) = 0;
 };
 
 }}

@@ -350,6 +350,21 @@ public:
     // mark Io objects held by this object so the garbage collector won't free them
     virtual void mark() { expr->mark(); }
 
+    // Compares the proxied expression to the other expression.
+    // It can't be const because it may cause an eval().
+    virtual bool expr_equals(ExprPtr other)
+    {
+        try
+        {
+            ExprPtr conv_expr = type_system.try_conv(other, expr->get_type());
+            return expr->equals(conv_expr);
+        }
+        catch (std::logic_error le)
+        {
+            throw std::logic_error(std::string("Error doing type conversion on from expression for expr_equals() compare.  ") + le.what());
+        }
+    }
+
 };
 
 }}
