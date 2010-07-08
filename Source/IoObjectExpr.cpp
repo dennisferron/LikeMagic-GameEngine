@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -27,7 +27,7 @@ std::string IoObjectExpr::description() const
     return std::string("an Io object of type '") + IoObject_tag(io_object)->name + "'";
 }
 
-void IoObjectExpr::mark() const
+void IoObjectExpr::mark()
 {
     IoObject_shouldMarkIfNonNull(io_object);
 }

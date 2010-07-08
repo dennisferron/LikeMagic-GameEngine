@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -24,7 +24,7 @@ using namespace LikeMagic::Utility;
 template <typename T, bool is_markable=boost::is_base_of<LikeMagic::IMarkable, T>::value>
 struct IfCanMark
 {
-    static void mark(IMarkable const& obj)
+    static void mark(IMarkable& obj)
     {
         //std::cout << "Marking " << BetterTypeInfo::create<T>().describe() << std::endl;
         obj.mark();
@@ -41,7 +41,7 @@ struct IfCanMark<T, false>
 };
 
 template <typename T, bool IsCopyable>
-class Term : 
+class Term :
     public Expression<T&>
 {
 private:
@@ -99,7 +99,7 @@ public:
         return std::string("Term<" + LikeMagic::Utility::TypeDescr<T>::text() + ">");
     }
 
-    virtual void mark() const
+    virtual void mark()
     {
         IfCanMark<T>::mark(value);
     }
@@ -169,7 +169,7 @@ public:
         return std::string("Term<" + LikeMagic::Utility::TypeDescr<T>::text() + ">");
     }
 
-    virtual void mark() const
+    virtual void mark()
     {
         IfCanMark<T>::mark(value);
     }
@@ -207,7 +207,7 @@ public:
         return std::string("Term<void>");
     }
 
-    virtual void mark() const {}
+    virtual void mark() {}
 
 };
 

@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -27,10 +27,10 @@ class IoBlock : public LikeMagic::IMarkable
 {
 private:
     AbstractTypeSystem const* type_sys;
-    
+
     // The block to activate
     IoObject* io_block;
-    
+
     // The target on which to activate the block.
     IoObject* io_target;
 
@@ -50,7 +50,7 @@ private:
         add_arg(m, make_proxy(arg0));
         add_args(m, args...);
     }
-    
+
     IoObject* activate(IoMessage* m) const;
 
 public:
@@ -87,7 +87,7 @@ public:
 
     bool empty() const;
 
-    virtual void mark() const;
+    virtual void mark();
 };
 
 

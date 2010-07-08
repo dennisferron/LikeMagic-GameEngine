@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -22,7 +22,7 @@ public:
 
 private:
     boost::intrusive_ptr<Expression<Container&>> container_expr;
- 
+
     typename Container::iterator iter;
     typename Container::iterator end;
 
@@ -33,7 +33,7 @@ public:
     static boost::intrusive_ptr<Expression<ReturnType>> create(boost::intrusive_ptr<Expression<Container&>> expr)
         { return new ContainerSet(expr); }
 
-    virtual std::set<AbstractObjectSet*> get_objsets() 
+    virtual std::set<AbstractObjectSet*> get_objsets()
     {
         std::set<AbstractObjectSet*> objsets;
         objsets.insert(this);
@@ -67,7 +67,7 @@ public:
     }
 
     virtual bool at_end() const { return iter == end; }
-    
+
     virtual void advance()
     {
         if (iter==end)
@@ -80,7 +80,7 @@ public:
     virtual std::string obj_type_descr() { return LikeMagic::Utility::TypeDescr<typename Container::value_type>::text(); }
 
     // mark Io objects held by this object so the garbage collector won't free them
-    virtual void mark() const { container_expr->mark(); }
+    virtual void mark() { container_expr->mark(); }
 
 };
 

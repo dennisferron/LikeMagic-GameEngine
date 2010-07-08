@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -48,7 +48,7 @@ public:
     }
 
     // mark Io objects held by this object so the garbage collector won't free them
-    virtual void mark() const { wrapped_expr->mark(); }
+    virtual void mark() { wrapped_expr->mark(); }
 };
 
 template <>
@@ -85,7 +85,7 @@ public:
     }
 
     // mark Io objects held by this object so the garbage collector won't free them
-    virtual void mark() const { wrapped_expr->mark(); }
+    virtual void mark() { wrapped_expr->mark(); }
 
 };
 

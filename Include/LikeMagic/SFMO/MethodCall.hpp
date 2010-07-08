@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -57,7 +57,7 @@ public:
     virtual std::set<AbstractObjectSet*> get_objsets() const { return methodcall_args::get_objsets(target, args); }
 
     // mark Io objects held by this object so the garbage collector won't free them
-    virtual void mark() const
+    virtual void mark()
     {
         target->mark();
         methodcall_args::mark_args(args, IPack());
@@ -106,7 +106,7 @@ public:
     virtual std::set<AbstractObjectSet*> get_objsets() const { return methodcall_args::get_objsets(target, args); }
 
     // mark Io objects held by this object so the garbage collector won't free them
-    virtual void mark() const
+    virtual void mark()
     {
         target->mark();
         methodcall_args::mark_args(args, IPack());

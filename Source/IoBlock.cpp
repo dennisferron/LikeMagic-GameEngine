@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -27,7 +27,7 @@ IoObject* IoBlock::activate(IoMessage* m) const
     return IoBlock_activate(io_block, io_target, io_target, m, io_target);
 }
 
-void IoBlock::mark() const
+void IoBlock::mark()
 {
     //std::cout << "Marking IoBlock, block = " << io_block << ", target = " << io_target << std::endl;
     IoObject_shouldMarkIfNonNull(io_block);
