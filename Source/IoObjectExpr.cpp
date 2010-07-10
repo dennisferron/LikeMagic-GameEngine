@@ -14,7 +14,9 @@ using namespace LikeMagic::Utility;
 namespace LikeMagic { namespace Backends { namespace Io {
 
 
-IoObjectExpr::IoObjectExpr(IoObject* io_object_) : io_object(io_object_), type_info(FromIoTypeInfo(IoObject_tag(io_object)->name)) {}
+IoObjectExpr::IoObjectExpr(IoObject* io_object_) : io_object(io_object_), type_info(get_type_name(io_object))
+{
+}
 
 AbstractTypeInfo const& IoObjectExpr::get_type() const
 {
@@ -23,7 +25,7 @@ AbstractTypeInfo const& IoObjectExpr::get_type() const
 
 std::string IoObjectExpr::description() const
 {
-    return std::string("an Io object of type '") + IoObject_tag(io_object)->name + "'";
+    return std::string("an Io object of type '") + get_type_name(io_object) + "'";
 }
 
 void IoObjectExpr::mark()

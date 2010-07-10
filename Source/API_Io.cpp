@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -15,6 +15,20 @@
 #include "boost/lexical_cast.hpp"
 
 namespace LikeMagic { namespace Backends { namespace Io {
+
+std::string get_type_name(IoObject* io_obj)
+{
+    // IOSTATE macro needs an IoObject* called "self" to get the tag from.
+    IoObject* self = io_obj;
+
+    // Special cases (for when tag->name is incorrect).
+    if (ISNIL(io_obj))  // ISBOOL captures nil too, so check for nil first
+        return "Nil";
+    else if (ISBOOL(io_obj))
+        return "Bool";
+    else  // For many cases the tag->name will work.
+        return IoObject_tag(io_obj)->name;
+}
 
 
 IoMethodTable* make_io_method_table(std::vector<std::string> const& method_names)
@@ -59,8 +73,10 @@ IoObject* arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos)
 
 bool is_sfmo_obj(IoObject* io_obj)
 {
-    const std::string magic_tag("LikeMagic");
-    return 0 == magic_tag.compare(0, 4, IoObject_tag(io_obj)->name, 0, 4) && IoObject_dataPointer(io_obj);
+    return
+        IoObject_dataPointer(io_obj)
+    &&
+        std::string(IoObject_tag(io_obj)->name) == std::string("LikeMagic");
 }
 
 
