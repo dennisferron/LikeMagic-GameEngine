@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -16,16 +16,39 @@
 #include "TypeDescr.hpp"
 #include "StripModifiers.hpp"
 
+#include "LikeMagic/Utility/AbstractTypeInfo.hpp"
+
 namespace LikeMagic { namespace Utility {
 
 // Used for default constructed BetterTypeInfo with no type stored in it.
 struct no_type {};
 
-class BetterTypeInfo
+class BetterTypeInfo : public AbstractTypeInfo
 {
 private:
     BetterTypeInfo(std::type_info const* info_, std::type_info const* raw_info_, bool is_const_, bool is_ref_, bool is_ptr_, bool is_const_ptr_)
         : info(info_), raw_info(raw_info_), is_const(is_const_), is_ref(is_ref_), is_ptr(is_ptr_), is_const_ptr(is_const_ptr_) {}
+
+protected:
+
+    virtual std::type_info const* comparator_typeid() const
+    {
+        return &typeid(this);
+    }
+
+    virtual bool less(const AbstractTypeInfo& other) const
+    {
+        // Dynamic cast is safer, but this function gets called A LOT (I profiled it).
+        // So static cast for better speed.  The base class is supposed to ensure we
+        // never get called except when the other really is the same type.
+        BetterTypeInfo const& that = static_cast<BetterTypeInfo const&>(other);
+        return
+            is_const != that.is_const? is_const < that.is_const :
+                is_ref != that.is_ref? is_ref < that.is_ref :
+                    is_ptr != that.is_ptr? is_ptr < that.is_ptr :
+                        is_const_ptr != that.is_const_ptr? is_const_ptr < that.is_const_ptr :
+                            info->before(*that.info);
+    }
 
 public:
     BetterTypeInfo() :
@@ -49,7 +72,6 @@ public:
 
         return BetterTypeInfo
         (
-
             &typeid(typename stripped::type),
             &typeid(T),
             stripped::is_const,
@@ -100,28 +122,13 @@ public:
         return BetterTypeInfo(info, info, false, is_ref, is_ptr, false);
     }
 
-    bool operator <(const BetterTypeInfo& that) const
-    {
-        return
-            is_const != that.is_const? is_const < that.is_const :
-                is_ref != that.is_ref? is_ref < that.is_ref :
-                    is_ptr != that.is_ptr? is_ptr < that.is_ptr :
-                        is_const_ptr != that.is_const_ptr? is_const_ptr < that.is_const_ptr :
-                            info->before(*that.info);
-    }
-
-    bool operator ==(const BetterTypeInfo& that) const
-    {
-        return !(*this<that) && !(that<*this);
-    }
-
     template <typename T>
     bool is_type()
     {
         return *this == BetterTypeInfo::create<T>();
     }
 
-    std::string describe() const
+    virtual std::string describe() const
     {
         return std::string(demangle_name(info->name()))
                 + (is_const? " const" : "")
