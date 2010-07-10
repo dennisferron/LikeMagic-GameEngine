@@ -20,12 +20,12 @@ using namespace std;
 
 using namespace LikeMagic;
 
-ExprPtr AbstractTypeSystem::try_conv(ExprPtr from_expr, BetterTypeInfo to_type) const
+ExprPtr AbstractTypeSystem::try_conv(ExprPtr from_expr, AbstractTypeInfo const& to_type) const
 {
     try
     {
-        BetterTypeInfo from_type = from_expr->get_type();
-        return conv_graph.wrap_expr(from_expr, from_type, to_type);
+        //AbstractTypeInfo const& from_type = from_expr->get_type();
+        return conv_graph.wrap_expr(from_expr, from_expr->get_type(), to_type);
     }
     catch (std::logic_error const& le)
     {
@@ -132,9 +132,14 @@ std::string AbstractTypeSystem::get_class_name(BetterTypeInfo type) const
 }
 
 
-void AbstractTypeSystem::add_type(BetterTypeInfo type)
+void AbstractTypeSystem::add_type(AbstractTypeInfo const& type)
 {
     conv_graph.add_type(type);
+}
+
+void AbstractTypeSystem::add_converter(AbstractTypeInfo const& from, AbstractTypeInfo const& to, AbstractTypeConverter const* conv)
+{
+    conv_graph.add_conv(from, to, conv);
 }
 
 void AbstractTypeSystem::add_converter(BetterTypeInfo from, BetterTypeInfo to, AbstractTypeConverter const* conv)

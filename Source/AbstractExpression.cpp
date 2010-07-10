@@ -23,7 +23,7 @@ void intrusive_ptr_release(AbstractExpression* p)
         delete p;
 }
 
-bool AbstractExpression::equals(ExprPtr other)
+bool AbstractExpression::eval_equals(ExprPtr other)
 {
     throw std::logic_error("equals() not defined for this type.");
 }

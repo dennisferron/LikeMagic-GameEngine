@@ -357,7 +357,7 @@ public:
         try
         {
             ExprPtr conv_expr = type_system.try_conv(other, expr->get_type());
-            return expr->equals(conv_expr);
+            return expr->eval_equals(conv_expr);
         }
         catch (std::logic_error le)
         {

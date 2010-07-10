@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -25,6 +25,7 @@ using namespace LikeMagic::Utility;
 
 bool is_sfmo_obj(IoObject* io_obj);
 boost::intrusive_ptr<AbstractExpression> from_script(IoObject* self, IoObject* io_obj, BetterTypeInfo expected_type, AbstractTypeSystem const& type_sys);
+void add_convs_from_script(AbstractTypeSystem& type_sys);
 
 IoObject* to_script(IoObject *self, IoObject *locals, IoMessage *m, AbstractCppObjProxy* proxy);
 

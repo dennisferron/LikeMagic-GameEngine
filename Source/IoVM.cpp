@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -34,7 +34,9 @@ using namespace LikeMagic::Utility;
 IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
 {
     // IoObjectExpr expression holds unconverted Io objects; it has type of struct IoObjectExprTag.
-    type_system_.add_type(BetterTypeInfo::create<IoObjectExprTag>());
+    //type_system_.add_type(BetterTypeInfo::create<IoObjectExprTag>());
+
+    add_convs_from_script(type_system_);
 
     // Register this vm
     LM_CLASS_NO_COPY(dynamic_cast<RuntimeTypeSystem&>(type_system_), IoVM)

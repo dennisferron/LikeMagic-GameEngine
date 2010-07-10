@@ -11,6 +11,8 @@
 #include <typeinfo>
 #include <stdexcept>
 
+#include "boost/shared_ptr.hpp"
+
 namespace LikeMagic { namespace Utility {
 
 class AbstractTypeInfo
@@ -38,6 +40,8 @@ public:
     }
 
     virtual std::string describe() const = 0;
+
+    virtual boost::shared_ptr<AbstractTypeInfo const> clone() const = 0;
 };
 
 }}

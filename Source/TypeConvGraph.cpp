@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -27,6 +27,7 @@
 #include "boost/graph/breadth_first_search.hpp"
 
 using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Utility;
 
 namespace LikeMagic { namespace TypeConv {
 
@@ -39,22 +40,22 @@ void TypeConvGraph::print_graph() const
     boost::print_graph(graph);
 }
 
-bool TypeConvGraph::has_type(BetterTypeInfo type) const
+bool TypeConvGraph::has_type(AbstractTypeInfo const& type) const
 {
     return vertex_map.find(type) != vertex_map.end();
 }
 
-TypeConvGraph::vertex_t TypeConvGraph::add_type(BetterTypeInfo type)
+TypeConvGraph::vertex_t TypeConvGraph::add_type(AbstractTypeInfo const& type)
 {
     if (!has_type(type))
     {
-        vertex_map[type] = add_vertex(graph);
+        vertex_map[make_key_wrapper(type)] = add_vertex(graph);
     }
 
-    return vertex_map[type];
+    return vertex_map[make_key_wrapper(type)];
 }
 
-void TypeConvGraph::add_conv(BetterTypeInfo from, BetterTypeInfo to, p_conv_t conv)
+void TypeConvGraph::add_conv(AbstractTypeInfo const& from, AbstractTypeInfo const& to, p_conv_t conv)
 {
     auto from_vert = add_type(from);
     auto to_vert = add_type(to);
@@ -91,9 +92,9 @@ ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, std::vector<AbstractT
     return expr;
 }
 
-ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, BetterTypeInfo from, BetterTypeInfo to) const
+ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, AbstractTypeInfo const& from, AbstractTypeInfo const& to) const
 {
-    auto key = std::make_pair(from, to);
+    auto key = std::make_pair(make_key_wrapper(from), make_key_wrapper(to));
 
     if (conv_cache.find(key) == conv_cache.end())
         conv_cache[key] = search_for_conv(from, to);
@@ -101,7 +102,7 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, BetterTypeInfo from, BetterT
     return build_conv_chain(from_expr, conv_cache[key]);
 }
 
-std::vector<AbstractTypeConverter const*> TypeConvGraph::search_for_conv(BetterTypeInfo from, BetterTypeInfo to) const
+std::vector<AbstractTypeConverter const*> TypeConvGraph::search_for_conv(AbstractTypeInfo const& from, AbstractTypeInfo const& to) const
 {
     //std::cout << "Search for conv from " << from.describe() << " to " << to.describe() << std::endl;
 

@@ -138,6 +138,11 @@ public:
                 /*+ " (raw typeid: " + raw_info->name() + ")" */
                 ;
     }
+
+    virtual boost::shared_ptr<AbstractTypeInfo const> clone() const
+    {
+        return boost::shared_ptr<AbstractTypeInfo const>(new BetterTypeInfo(*this));
+    }
 };
 
 

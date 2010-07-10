@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -11,12 +11,17 @@
 #include "LikeMagic/SFMO/NullExpr.hpp"
 #include "LikeMagic/Backends/Io/IoBlock.hpp"
 #include "LikeMagic/Backends/Io/IoObjectExpr.hpp"
+#include "LikeMagic/Backends/Io/FromIoTypeInfo.hpp"
 
 #include "LikeMagic/Backends/Io/IoListSTL.hpp"
 #include "LikeMagic/Backends/Io/IoVectorSTL.hpp"
 
+#include "LikeMagic/AbstractTypeSystem.hpp"
+
 #include <vector>
 #include <algorithm>
+
+using LikeMagic::Utility::BetterTypeInfo;
 
 namespace LikeMagic { namespace Backends { namespace Io {
 
@@ -45,13 +50,32 @@ ExprPtr from_list(IoObject* io_obj)
 }
 
 
+struct FromNumber : public AbstractTypeConverter
+{
+    virtual ExprPtr wrap_expr(ExprPtr expr) const
+    {
+        boost::intrusive_ptr<IoObjectExpr> io_expr = static_cast<IoObjectExpr*>(expr.get());
+        return Term<double, true>::create(IoNumber_asDouble(io_expr->eval()));
+    }
+
+    virtual std::string describe() const { return "From Number Conv"; }
+};
+
+void add_convs_from_script(AbstractTypeSystem& type_sys)
+{
+    type_sys.add_converter(FromIoTypeInfo("Number"), BetterTypeInfo::create<double&>(), new FromNumber);
+}
+
 ExprPtr from_script(IoObject* self, IoObject* io_obj, BetterTypeInfo expected_type, AbstractTypeSystem const& type_sys)
 {
     // TODO:  These can all be made into converters that convert IoObjectExpr into the needed expression type.
     // These converters could be plugged into the type graph, and then from_script need only do: return IoObjectExpr::create(io_obj);
 
     if (ISNUMBER(io_obj))
-        return Term<double, true>::create(IoNumber_asDouble(io_obj));
+    {
+        //return Term<double, true>::create(IoNumber_asDouble(io_obj));
+        return IoObjectExpr::create(io_obj);
+    }
     else if (ISVECTOR(io_obj))
     {
         if (expected_type.bare_type().is_type<std::vector<double>>())

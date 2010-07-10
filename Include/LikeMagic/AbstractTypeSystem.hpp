@@ -98,7 +98,8 @@ public:
     std::vector<BetterTypeInfo> get_arg_types(BetterTypeInfo type, std::string method_name, int num_args) const;
 
     void add_converter(BetterTypeInfo from, BetterTypeInfo to, AbstractTypeConverter const* conv);
-    void add_type(BetterTypeInfo type);
+    void add_converter(AbstractTypeInfo const& from, AbstractTypeInfo const& to, AbstractTypeConverter const* conv);
+    void add_type(AbstractTypeInfo const& type);
 
     template <typename From, typename To, template <typename From, typename To> class Converter=ImplicitConv>
     void add_conv()
@@ -113,7 +114,7 @@ public:
     std::string get_class_name() const
         { return get_class_name(BetterTypeInfo::create<T>()); }
 
-    ExprPtr try_conv(ExprPtr from_expr, BetterTypeInfo to_type) const;
+    ExprPtr try_conv(ExprPtr from_expr, AbstractTypeInfo const& to_type) const;
 
     template <typename To>
     boost::intrusive_ptr<Expression<To>> try_conv(ExprPtr from) const
