@@ -83,6 +83,7 @@ private:
         return 0;
     }
 
+    /*
 
     template <typename T_>
     typename boost::enable_if<std::is_convertible<T_, double>, double>::type
@@ -105,6 +106,8 @@ private:
     {
         throw std::logic_error("to_bool called on SFMO object that is not a bool!");
     }
+
+    */
 
     static void reset(std::set<AbstractObjectSet*> total_objsets)
     {
@@ -276,14 +279,17 @@ public:
         return create(expr->clone(), type_system);
     }
 
-    virtual bool is_reference() const
-    {
-        return std::is_reference<T>::value;
-    }
-
     virtual bool is_terminal() const
     {
         return expr->is_terminal();
+    }
+
+
+    /*
+
+    virtual bool is_reference() const
+    {
+        return std::is_reference<T>::value;
     }
 
     virtual bool is_number() const
@@ -330,6 +336,8 @@ public:
     {
         return type_system.try_conv<std::string>(expr)->eval();
     }
+
+    */
 
     virtual std::string describe() const
     {

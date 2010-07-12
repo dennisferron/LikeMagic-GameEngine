@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -35,7 +35,7 @@ private:
 
     typedef FieldPtrTraits<FieldPtr, CallAs> Traits;
 
-    typedef typename Traits::R FieldType;
+    typedef typename Traits::R const& ArgType;
 
 public:
 
@@ -46,13 +46,13 @@ public:
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
         SetField<CallAs>::set(type_system.try_conv<CallAs>(proxy->get_expr())->eval(), f_ptr,
-            type_system.try_conv<FieldType>(args[0]));
+            type_system.try_conv<ArgType>(args[0]));
         return 0;
     }
 
     virtual std::vector<BetterTypeInfo> get_arg_types() const
     {
-        return make_arg_list(TypePack<FieldType>());
+        return make_arg_list(TypePack<ArgType>());
     }
 
 };

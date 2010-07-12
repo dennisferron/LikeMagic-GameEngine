@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -10,16 +10,21 @@
 #include "LikeMagic/SFMO/Term.hpp"
 #include "LikeMagic/SFMO/NullExpr.hpp"
 #include "LikeMagic/Backends/Io/IoBlock.hpp"
+#include "LikeMagic/Backends/Io/ToIoObjectExpr.hpp"
+#include "LikeMagic/Backends/Io/IoObjectExpr.hpp"
+
+using namespace LikeMagic;
+using namespace LikeMagic::Utility;
+using namespace LikeMagic::TypeConv;
+using namespace LikeMagic::SFMO;
 
 namespace LikeMagic { namespace Backends { namespace Io {
 
+// Note:  This is not Io strings-as-sequences, but actually stuff like vector which is implemented as a sequence.
 template <typename T>
-IoObject* to_seq(LikeMagic::SFMO::AbstractCppObjProxy* proxy, IoState* self)
+IoObject* to_seq(std::vector<T> const& vect, IoState* self)
 {
     BetterTypeInfo to_type = BetterTypeInfo::create<T>();
-
-    auto expr = proxy->try_conv<std::vector<T>&>();
-    auto vect = expr->eval();
 
     // Yuck!  C-style memory alloc!  NAasty...  At least Io frees it for us (I *think*...)
     T* c_buf = reinterpret_cast<T*>(io_calloc(vect.size(), sizeof(T)));
@@ -43,69 +48,72 @@ IoObject* to_seq(LikeMagic::SFMO::AbstractCppObjProxy* proxy, IoState* self)
 }
 
 
+#define DECL_CONV(name, type, code) \
+struct To##name : public AbstractTypeConverter \
+{ \
+    static IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m, type value) \
+    { \
+        return code; \
+    } \
+    \
+    virtual ExprPtr wrap_expr(ExprPtr expr) const \
+    { \
+        return ToIoObjectExpr<type, To##name>::create(expr); \
+    } \
+\
+    virtual std::string describe() const { return "To " #name " Conv"; } \
+}; \
+
+#define ADD_CONV(name, type) \
+type_sys.add_converter(BetterTypeInfo::create<type>(), ToIoTypeInfo(), new To##name);
+
+DECL_CONV(Number, double, IONUMBER(value))
+DECL_CONV(Bool, bool, value? IOTRUE(self) : IOFALSE(self))
+DECL_CONV(String, std::string, IOSEQ(reinterpret_cast<const unsigned char*>(value.c_str()), value.length()))
+
+DECL_CONV(Vector_of_Int, std::vector<int> const&, to_seq<int>(value, IOSTATE))
+DECL_CONV(Vector_of_UInt, std::vector<unsigned int> const&, to_seq<unsigned int>(value, IOSTATE))
+
+void add_convs_to_script(AbstractTypeSystem& type_sys)
+{
+    ADD_CONV(Number, double)
+    ADD_CONV(Bool, bool)
+    ADD_CONV(String, std::string)
+
+    ADD_CONV(Vector_of_Int, std::vector<int> const&)
+    ADD_CONV(Vector_of_UInt, std::vector<unsigned int> const&)
+}
+
+
+
 IoObject* to_script(IoObject *self, IoObject *locals, IoMessage *m, AbstractCppObjProxy* proxy)
 {
-    IoState* state = IOSTATE;
-
     if (!proxy)
+        return IOSTATE->ioNil;
+    else
+        proxy->check_magic();
+
+    AbstractTypeSystem const& type_sys = proxy->get_type_system();
+    ExprPtr from_expr = proxy->get_expr();
+
+    bool is_terminal = proxy->is_terminal();
+    bool has_conv = type_sys.has_conv(from_expr->get_type(), ToIoTypeInfo());
+
+    if (is_terminal && has_conv)
     {
-        //cout << "to_script(): no proxy, returning nil." << endl;
-        return state->ioNil;
+        ExprPtr to_expr = type_sys.try_conv(from_expr, ToIoTypeInfo());
+        boost::intrusive_ptr<AbstractToIoObjectExpr> io_expr = static_cast<AbstractToIoObjectExpr*>(to_expr.get());
+        IoObject* io_obj = io_expr->eval_in_context(self, locals, m);
+        delete proxy;
+        return io_obj;
     }
     else
     {
-        proxy->check_magic();
+        string io_code = "LikeMagic classes " + proxy->get_class_name() + " clone";
+        IoObject* result = IoState_doCString_(IOSTATE, io_code.c_str());
+        IoObject_setDataPointer_(result, proxy);
+        return result;
     }
-
-    IoObject* result;
-
-    if (proxy->is_terminal())
-    {
-        if (proxy->is_bool())
-        {
-            result = proxy->to_bool()? IOTRUE(self) : IOFALSE(self);
-            delete proxy;
-            return result;
-        }
-        else if (proxy->is_number())
-        {
-            double d = proxy->to_number();
-            if (d!=d)
-                std::cout << "NaN!" << std::endl;
-
-            result = IONUMBER(proxy->to_number());
-            delete proxy;
-            return result;
-        }
-        else if (proxy->is_string())
-        {
-            std::string str = proxy->to_string();
-            // IOSEQ makes a copy of the string's bytes, so str.c_str() is safe here.
-            result = IOSEQ(reinterpret_cast<const unsigned char*>(str.c_str()), str.length());
-            delete proxy;
-            return result;
-        }
-        else if (proxy->is_vector_of(typeid(int)))
-        {
-            result = to_seq<int>(proxy, state);
-            delete proxy;
-            return result;
-        }
-        else if (proxy->is_vector_of(typeid(unsigned int)))
-        {
-            result = to_seq<unsigned int>(proxy, state);
-            delete proxy;
-            return result;
-        }
-    }
-
-    // else proxy is not terminal or does not have implicit conversion to Io type.
-
-    string io_code = "LikeMagic classes " + proxy->get_class_name() + " clone";
-    result = IoState_doCString_(state, io_code.c_str());
-    IoObject_setDataPointer_(result, proxy);
-
-    return result;
 }
 
 }}}

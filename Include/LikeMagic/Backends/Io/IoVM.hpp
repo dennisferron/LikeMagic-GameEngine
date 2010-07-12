@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -16,7 +16,7 @@ namespace LikeMagic { namespace Backends { namespace Io {
 class IoVM
 {
 private:
-    AbstractTypeSystem const& type_system;
+    AbstractTypeSystem& type_system;
     IoState* self;
 
     boost::intrusive_ptr<AbstractExpression> get_abs_expr(std::string io_code, BetterTypeInfo type) const;
@@ -67,6 +67,7 @@ public:
         return ptr;
     }
 
+    IoObject* castToIoObjectPointer(void* object);
 };
 
 

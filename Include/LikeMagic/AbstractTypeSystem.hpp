@@ -115,6 +115,7 @@ public:
         { return get_class_name(BetterTypeInfo::create<T>()); }
 
     ExprPtr try_conv(ExprPtr from_expr, AbstractTypeInfo const& to_type) const;
+    bool has_conv(AbstractTypeInfo const&  from_type, AbstractTypeInfo const& to_type) const;
 
     template <typename To>
     boost::intrusive_ptr<Expression<To>> try_conv(ExprPtr from) const

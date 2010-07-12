@@ -10,6 +10,8 @@
 #include "LikeMagic/Backends/Io/IoVM.hpp"
 #include "LikeMagic/Backends/Io/IoBlock.hpp"
 #include "LikeMagic/Backends/Io/IoObjectExpr.hpp"
+#include "LikeMagic/Backends/Io/ToIoObjectExpr.hpp"
+#include "LikeMagic/TypeConv/NoChangeConv.hpp"
 
 #include "LikeMagic/SFMO/CppObjProxy.hpp"
 
@@ -30,6 +32,36 @@ using namespace LikeMagic::SFMO;
 using namespace LikeMagic::Backends::Io;
 using namespace LikeMagic::Utility;
 
+struct SequenceToToIoTypeInfoConv : public LikeMagic::TypeConv::AbstractTypeConverter
+{
+    AbstractTypeSystem const& type_sys;
+    SequenceToToIoTypeInfoConv(AbstractTypeSystem const& type_sys_) : type_sys(type_sys_) {}
+
+    virtual ExprPtr wrap_expr(ExprPtr expr) const
+    {
+        auto str_expr = type_sys.try_conv<std::string>(expr);
+        return Term<ToIoTypeInfo, true>::create(str_expr->eval());
+    }
+
+    virtual std::string describe() const { return "SequenceToToIoTypeInfoConv"; }
+};
+
+// The difference between this and a no-change or implicit conv is this evals in context to return IoObject* directly.
+struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter
+{
+    static IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m, IoObject* value)
+    {
+        return value;
+    }
+
+    virtual ExprPtr wrap_expr(ExprPtr expr) const
+    {
+        return ToIoObjectExpr<IoObject*, PtrToIoObjectConv>::create(expr);
+    }
+
+    virtual std::string describe() const { return "PtrToIoObjectConv"; }
+};
+
 
 IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
 {
@@ -37,10 +69,38 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
     //type_system_.add_type(BetterTypeInfo::create<IoObjectExprTag>());
 
     add_convs_from_script(type_system_);
+    add_convs_to_script(type_system_);
 
     // Register this vm
-    LM_CLASS_NO_COPY(dynamic_cast<RuntimeTypeSystem&>(type_system_), IoVM)
-    LM_FUNC(IoVM, (run_cli)(do_string))
+    RuntimeTypeSystem& runtime_type_sys = dynamic_cast<RuntimeTypeSystem&>(type_system_);
+    LM_CLASS_NO_COPY(runtime_type_sys, IoVM)
+    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer))
+
+    LM_CLASS(runtime_type_sys, AbstractTypeInfo)
+
+    LM_CLASS(runtime_type_sys, ToIoTypeInfo)
+    LM_BASE(ToIoTypeInfo, AbstractTypeInfo)
+    LM_CONSTR(ToIoTypeInfo,,)
+    LM_CONSTR(ToIoTypeInfo,, std::string)
+
+    // Make the ToIoTypeInfo constructible from a string so that
+    // the proxy as_script_type() can be called using a string and receive a ToIoTypeInfo.
+    // Using Sequence instead of string for the from type so as not to conflict with other languages' type conversions.
+    type_system.add_converter(FromIoTypeInfo("Sequence"), BetterTypeInfo::create<ToIoTypeInfo>(), new SequenceToToIoTypeInfoConv(type_system));
+
+    // To convert an Io object to a void*
+    type_system.add_converter(FromIoTypeInfo("Object"), BetterTypeInfo::create<void*>(), new LikeMagic::TypeConv::ImplicitConv<IoObject*, void*>);
+
+    LM_CLASS(runtime_type_sys, FromIoTypeInfo)
+    LM_BASE(FromIoTypeInfo, AbstractTypeInfo)
+    LM_CONSTR(FromIoTypeInfo,, std::string)
+
+    LM_CLASS(runtime_type_sys, IoObject)
+
+    // Make general Io objects convertible with IoObject*.
+    type_system.add_converter(FromIoTypeInfo("Object"), BetterTypeInfo::create<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
+    type_system.add_converter(BetterTypeInfo::create<IoObject*>(), ToIoTypeInfo("Object"), new PtrToIoObjectConv);
+    type_system.add_converter(ToIoTypeInfo("Object"), ToIoTypeInfo(), new LikeMagic::TypeConv::NoChangeConv);
 
     type_system_.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock>();
     type_system_.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock const&>();
@@ -105,6 +165,11 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
 IoVM::~IoVM()
 {
     IoState_free(self);
+}
+
+IoObject* IoVM::castToIoObjectPointer(void* p)
+{
+    return reinterpret_cast<IoObject*>(p);
 }
 
 void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, bool to_script) const

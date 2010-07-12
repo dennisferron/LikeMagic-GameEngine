@@ -29,6 +29,7 @@ namespace LikeMagic { namespace Marshaling {
 
 namespace LikeMagic { namespace SFMO {
 
+using LikeMagic::Utility::AbstractTypeInfo;
 using LikeMagic::Utility::BetterTypeInfo;
 using LikeMagic::AbstractTypeSystem;
 using LikeMagic::Marshaling::AbstractMethodset;
@@ -66,7 +67,7 @@ public:
 
     virtual ~AbstractCppObjProxy() { magic_number = 0xFFFFFFFF; }
 
-    virtual boost::intrusive_ptr<AbstractExpression> get_expr() = 0;
+    virtual ExprPtr get_expr() = 0;
 
     void check_magic();
 
@@ -112,9 +113,12 @@ public:
     // determines whether you have to use "eval" or "exec" at the end of the expression
     virtual bool is_lazy() const = 0;
     virtual AbstractCppObjProxy* lazy() = 0;
+    virtual bool is_terminal() const = 0;
+    virtual std::string describe() const = 0;
+
+    /*
 
     virtual bool is_reference() const = 0;
-    virtual bool is_terminal() const = 0;
     virtual bool is_number() const = 0;
     virtual bool is_bool() const = 0;
     virtual bool is_string() const = 0;
@@ -122,11 +126,14 @@ public:
     virtual double to_number() const = 0;
     virtual bool to_bool() const = 0;
     virtual std::string to_string() const = 0;
-    virtual std::string describe() const = 0;
+
+    */
 
     // Compares the proxied expression to the other expression.
     // It can't be const because it may cause an eval().
     virtual bool expr_equals(ExprPtr other) = 0;
+
+    virtual AbstractCppObjProxy* to_script_obj(AbstractTypeInfo const& type);
 };
 
 }}

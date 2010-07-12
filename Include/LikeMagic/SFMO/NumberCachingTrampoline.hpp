@@ -44,8 +44,6 @@ public:
     {
         cached_number = Converter::do_conv(from_expr->eval());
 
-        //std::cout << "Cached value: " << cached_value << std::endl;
-
         // Here we may be returning a reference to the cached value instead of by-value.
         return cached_number;
     }

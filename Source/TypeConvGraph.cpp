@@ -102,6 +102,56 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, AbstractTypeInfo const& from
     return build_conv_chain(from_expr, conv_cache[key]);
 }
 
+
+bool TypeConvGraph::has_conv(AbstractTypeInfo const& from_type, AbstractTypeInfo const& to_type) const
+{
+    if (!has_type(from_type) || !has_type(to_type))
+        return false;
+
+    auto key = std::make_pair(make_key_wrapper(from_type), make_key_wrapper(to_type));
+
+    if (conv_cache.find(key) != conv_cache.end())
+        return true;
+
+    vertex_t source = vertex_map.find(from_type)->second;
+    vertex_t dest = vertex_map.find(to_type)->second;
+
+    std::vector<vertex_t> pred(boost::num_vertices(graph));
+
+    for (size_t i=0; i<pred.size(); i++)
+        pred[i] = -1;
+
+    try
+    {
+        pred[source] = source;
+        boost::breadth_first_search
+        (
+            graph,
+            source,
+            boost::visitor
+            (
+                boost::make_bfs_visitor
+                (
+                    std::make_pair
+                    (
+                        FindType(dest),
+                        boost::record_predecessors
+                        (
+                            &pred[0],
+                            boost::on_tree_edge()
+                        )
+                    )
+                )
+            )
+        );
+    }
+    catch (FindType::TypeFoundException const&)
+    {
+        return true;
+    }
+    return false;
+}
+
 std::vector<AbstractTypeConverter const*> TypeConvGraph::search_for_conv(AbstractTypeInfo const& from, AbstractTypeInfo const& to) const
 {
     //std::cout << "Search for conv from " << from.describe() << " to " << to.describe() << std::endl;

@@ -33,6 +33,12 @@ ExprPtr AbstractTypeSystem::try_conv(ExprPtr from_expr, AbstractTypeInfo const& 
     }
 }
 
+bool AbstractTypeSystem::has_conv(AbstractTypeInfo const& from_type, AbstractTypeInfo const& to_type) const
+{
+    return conv_graph.has_conv(from_type, to_type);
+}
+
+
 AbstractTypeSystem::AbstractTypeSystem() : leak_memory_flag(false)
 {
     // Allow conversions from nil to any pointer.
@@ -126,6 +132,7 @@ std::string AbstractTypeSystem::get_class_name(BetterTypeInfo type) const
         name = std::string("Unknown_CppObj");
         std::cout << "warning: nothing registered for type "
             << type.describe() << std::endl;
+        //throw std::logic_error("Nothing registered for type " + type.describe());
     }
 
     return name;

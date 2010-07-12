@@ -75,6 +75,7 @@ public:
     vertex_t  add_type(AbstractTypeInfo const& type);
     void add_conv(AbstractTypeInfo const& from, AbstractTypeInfo const& to, AbstractTypeConverter const* conv);
     ExprPtr wrap_expr(ExprPtr from_expr, AbstractTypeInfo const& from, AbstractTypeInfo const& to) const;
+    bool has_conv(AbstractTypeInfo const& from_type, AbstractTypeInfo const& to_type) const;
     void print_graph() const;
 };
 

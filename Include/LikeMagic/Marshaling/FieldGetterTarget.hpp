@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -35,7 +35,7 @@ private:
 
     typedef FieldPtrTraits<FieldPtr, CallAs> Traits;
 
-    typedef typename Traits::R FieldType;
+    typedef typename Traits::R& RType;
 
 public:
 
@@ -45,8 +45,8 @@ public:
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
-        return CppObjProxy<FieldType&, true>::create(
-                Term<FieldType, true>::create(
+        return CppObjProxy<RType, true>::create(
+                Term<RType, true>::create(
                     SetField<CallAs>::get(type_system.try_conv<CallAs>(proxy->get_expr())->eval(), f_ptr)
                 ), type_system
         );

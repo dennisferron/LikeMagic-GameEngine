@@ -2,14 +2,23 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/SFMO/AbstractCppObjProxy.hpp"
+#include "LikeMagic/SFMO/ScriptObjProxy.hpp"
 
 using namespace LikeMagic::Marshaling;
 using namespace LikeMagic::SFMO;
+
+
+AbstractCppObjProxy* AbstractCppObjProxy::to_script_obj(AbstractTypeInfo const& type)
+{
+    ExprPtr result = type_system.try_conv(get_expr(), type);
+    return ScriptObjProxy::create(result, type_system);
+}
+
 
 std::string AbstractCppObjProxy::get_class_name() const
 {

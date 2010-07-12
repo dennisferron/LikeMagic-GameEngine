@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -46,38 +46,38 @@ struct FieldPtrTraits
 
     // Nonconst member variables.
     template <typename R, typename ClassT>
-    static Sig<false, R&, ClassT> test(R ClassT::*f, ClassT* o);
+    static Sig<false, R, ClassT> test(R ClassT::*f, ClassT* o);
 
     // Const member variables.
     template <typename R, typename ClassT>
-    static Sig<true, R const&, ClassT> test(const R ClassT::*f, ClassT* o);
+    static Sig<true, R const, ClassT> test(const R ClassT::*f, ClassT* o);
 
     // Static member variables and ordinary (namespace-level) variables.
     template <typename R>
-    static Sig<false, R&, StaticField> test(R *f, StaticField* o);
+    static Sig<false, R, StaticField> test(R *f, StaticField* o);
 
     // Const static member variables and const ordinary (namespace-level) variables.
     template <typename R>
-    static Sig<true, R const&, StaticField> test(const R *f, StaticField* o);
+    static Sig<true, R const, StaticField> test(const R *f, StaticField* o);
 
 
     // for arrays:  we want R to be the type of an array element, not an array itself.
 
     // Nonconst member variables.
     template <typename R, typename ClassT, int N>
-    static Sig<false, R&, ClassT> test(R (ClassT::*f)[N], ClassT* o);
+    static Sig<false, R, ClassT> test(R (ClassT::*f)[N], ClassT* o);
 
     // Const member variables.
     template <typename R, typename ClassT, int N>
-    static Sig<true, R const&, ClassT> test(const R (ClassT::*f)[N], ClassT* o);
+    static Sig<true, R const, ClassT> test(const R (ClassT::*f)[N], ClassT* o);
 
     // Static member variables and ordinary (namespace-level) variables.
     template <typename R, int N>
-    static Sig<false, R&, StaticField> test(R (*f)[N], StaticField* o);
+    static Sig<false, R, StaticField> test(R (*f)[N], StaticField* o);
 
     // Const static member variables and const ordinary (namespace-level) variables.
     template <typename R, int N>
-    static Sig<true, R const&, StaticField> test(const R (*f)[N], StaticField* o);
+    static Sig<true, R const, StaticField> test(const R (*f)[N], StaticField* o);
 
 
     /////////////////////////////////////////////////////////

@@ -13,6 +13,29 @@
 
 #include "LikeMagic/Utility/UserMacros.hpp"
 
+#include "boost/preprocessor/seq/for_each.hpp"
+
+#define add_num_conv(type) \
+add_conv<type, type const&, NumberConv>(); \
+add_conv<type&, type, NumberConv>(); \
+add_conv<type const&, type, NumberConv>(); \
+add_conv<double, type, NumberConv>(); \
+add_conv<double, type const&, NumberConv>(); \
+add_conv<double&, type, NumberConv>(); \
+add_conv<double&, type const&, NumberConv>(); \
+add_conv<double const&, type, NumberConv>(); \
+add_conv<double const&, type const&, NumberConv>(); \
+add_conv<type, double, NumberConv>(); \
+add_conv<type, double const&, NumberConv>(); \
+add_conv<type&, double, NumberConv>(); \
+add_conv<type&, double const&, NumberConv>(); \
+add_conv<type const&, double, NumberConv>(); \
+add_conv<type const&, double const&, NumberConv>();
+
+#define add_all_num_conv_impl(r, data, elem) add_num_conv(elem);
+#define add_all_num_conv(SEQ) BOOST_PP_SEQ_FOR_EACH(add_all_num_conv_impl,, SEQ)
+
+
 using namespace LikeMagic;
 using namespace LikeMagic::SFMO;
 using namespace LikeMagic::TypeConv;
@@ -50,6 +73,8 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
 
     proxy_methods.bind_method("describe", &AbstractCppObjProxy::describe);
 
+    proxy_methods.bind_method("to_script_obj", &AbstractCppObjProxy::to_script_obj);
+
     // register void so functions returning void will work right.
     auto void_class = new DummyClass<void>("void", *this);
     classes[BetterTypeInfo::create<void>()] = void_class;
@@ -71,6 +96,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     register_class<long>("long");
     register_class<unsigned long>("ulong");
     register_class<double>("double");
+    register_class<float>("float");
     register_class<bool>("bool");
 
 
@@ -80,6 +106,9 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     // and replace it with a NullExpr of the appropriate pointer type for the function argument.
     register_class<void*>("void_ptr");
 
+    add_all_num_conv((signed char)(short)(int)(long)(unsigned char)(unsigned short)(unsigned int)(unsigned long)(float)(double))
+
+    /*
     add_conv<  double&,         unsigned short,   NumberConv>();
     add_conv<  double&,         unsigned short&,   NumberConv>();
     add_conv<  double&,         unsigned int,   NumberConv>();
@@ -94,9 +123,29 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     add_conv<  double&,         long,   NumberConv>();
     add_conv<  double&,         long&,   NumberConv>();
 
+    add_conv<  double&,         float,   NumberConv>();
+    add_conv<  double&,         float&,   NumberConv>();
+
+
+    add_conv<  unsigned short,   NumberConv>();
+    add_conv<  unsigned short&,   NumberConv>();
+    add_conv<  unsigned int,   NumberConv>();
+    add_conv<  unsigned int&,   NumberConv>();
+    add_conv<  unsigned long,   NumberConv>();
+    add_conv<  double&,         unsigned long&,   NumberConv>();
+
+    add_conv<  double&,         short,   NumberConv>();
+    add_conv<  double&,         short&,   NumberConv>();
+    add_conv<  double&,         int,   NumberConv>();
+    add_conv<  double&,         int&,   NumberConv>();
+    add_conv<  double&,         long,   NumberConv>();
+    add_conv<  double&,         long&,   NumberConv>();
 
     add_conv<  double&,         float,   NumberConv>();
     add_conv<  double&,         float&,   NumberConv>();
+
+    */
+
 
     // Allow string conversions
     add_conv<  std::string&,    std::wstring,   StringConv>();
@@ -115,5 +164,10 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
 
     // enable std::vector conversions to pointers for primitives
     //register_collection<unsigned short>("ushort");
+    register_class<std::vector<int>>("vector_of_int");
+    register_class<std::vector<unsigned int>>("vector_of_uint");
+    register_class<std::vector<short>>("vector_of_short");
+    register_class<std::vector<unsigned short>>("vector_of_ushort");
+
 }
 
