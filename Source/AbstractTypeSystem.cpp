@@ -24,7 +24,6 @@ ExprPtr AbstractTypeSystem::try_conv(ExprPtr from_expr, AbstractTypeInfo const& 
 {
     try
     {
-        //AbstractTypeInfo const& from_type = from_expr->get_type();
         return conv_graph.wrap_expr(from_expr, from_expr->get_type(), to_type);
     }
     catch (std::logic_error const& le)
