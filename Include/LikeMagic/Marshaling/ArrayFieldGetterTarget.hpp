@@ -56,7 +56,7 @@ public:
         );
     }
 
-    virtual std::vector<BetterTypeInfo> get_arg_types() const
+    virtual TypeInfoList get_arg_types() const
     {
         return make_arg_list(TypePack<>());
     }

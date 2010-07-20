@@ -20,7 +20,7 @@ using namespace std;
 
 using namespace LikeMagic;
 
-ExprPtr AbstractTypeSystem::try_conv(ExprPtr from_expr, AbstractTypeInfo const& to_type) const
+ExprPtr AbstractTypeSystem::try_conv(ExprPtr from_expr, TypeInfoPtr to_type) const
 {
     try
     {
@@ -32,7 +32,7 @@ ExprPtr AbstractTypeSystem::try_conv(ExprPtr from_expr, AbstractTypeInfo const& 
     }
 }
 
-bool AbstractTypeSystem::has_conv(AbstractTypeInfo const& from_type, AbstractTypeInfo const& to_type) const
+bool AbstractTypeSystem::has_conv(TypeInfoPtr from_type, TypeInfoPtr to_type) const
 {
     return conv_graph.has_conv(from_type, to_type);
 }
@@ -59,7 +59,7 @@ void AbstractTypeSystem::set_leak_memory(bool flag)
     leak_memory_flag = flag;
 }
 
-AbstractCppObjProxy* AbstractTypeSystem::create_class_proxy(BetterTypeInfo type) const
+AbstractCppObjProxy* AbstractTypeSystem::create_class_proxy(TypeInfoPtr type) const
 {
     return get_class(type)->create_class_proxy();
 }
@@ -67,7 +67,7 @@ AbstractCppObjProxy* AbstractTypeSystem::create_class_proxy(BetterTypeInfo type)
 
 AbstractCppObjProxy* AbstractTypeSystem::call
 (
-    BetterTypeInfo type,
+    TypeInfoPtr type,
     std::string method_name,
     AbstractCppObjProxy* proxy,
     std::vector<ExprPtr> args
@@ -76,13 +76,13 @@ AbstractCppObjProxy* AbstractTypeSystem::call
     return get_class(type)->call(proxy, method_name, args);
 }
 
-std::vector<std::string> const& AbstractTypeSystem::get_method_names(BetterTypeInfo type) const
+std::vector<std::string> const& AbstractTypeSystem::get_method_names(TypeInfoPtr type) const
 {
     return get_class(type)->get_method_names();
 }
 
-std::vector<BetterTypeInfo> AbstractTypeSystem::get_arg_types(
-    BetterTypeInfo type,
+TypeInfoList AbstractTypeSystem::get_arg_types(
+    TypeInfoPtr type,
     std::string method_name,
     int num_args
 ) const
@@ -90,37 +90,37 @@ std::vector<BetterTypeInfo> AbstractTypeSystem::get_arg_types(
     return get_class(type)->get_arg_types(method_name, num_args);
 }
 
-bool AbstractTypeSystem::has_class(BetterTypeInfo type) const
+bool AbstractTypeSystem::has_class(TypeInfoPtr type) const
 {
-    return classes.find(type.bare_type()) != classes.end();
+    return classes.find(type->bare_type()) != classes.end();
 }
 
-AbstractClass const* AbstractTypeSystem::get_class(BetterTypeInfo type) const
+AbstractClass const* AbstractTypeSystem::get_class(TypeInfoPtr type) const
 {
     if (has_class(type))
-        return classes.find(type.bare_type())->second;
+        return classes.find(type->bare_type())->second;
     else
         return unknown_class;
 }
 
-std::vector<BetterTypeInfo>
+TypeInfoList
     AbstractTypeSystem::get_registered_types() const
 {
-    std::vector<BetterTypeInfo> list;
+    TypeInfoList list;
 
     for (auto it=classes.begin(); it != classes.end(); it++)
-        list.push_back(it->first);
+        list.push_back(it->first.key);
 
     return list;
 }
 
 std::vector<std::string>
-    AbstractTypeSystem::get_base_names(BetterTypeInfo type) const
+    AbstractTypeSystem::get_base_names(TypeInfoPtr type) const
 {
     return get_class(type)->get_base_names();
 }
 
-std::string AbstractTypeSystem::get_class_name(BetterTypeInfo type) const
+std::string AbstractTypeSystem::get_class_name(TypeInfoPtr type) const
 {
     std::string name = "";
 
@@ -130,7 +130,7 @@ std::string AbstractTypeSystem::get_class_name(BetterTypeInfo type) const
     {
         name = std::string("Unknown_CppObj");
         std::cout << "warning: nothing registered for type "
-            << type.describe() << std::endl;
+            << type->describe() << std::endl;
         //throw std::logic_error("Nothing registered for type " + type.describe());
     }
 
@@ -138,42 +138,41 @@ std::string AbstractTypeSystem::get_class_name(BetterTypeInfo type) const
 }
 
 
-void AbstractTypeSystem::add_type(AbstractTypeInfo const& type)
+void AbstractTypeSystem::add_type(TypeInfoPtr type)
 {
     conv_graph.add_type(type);
 }
 
-void AbstractTypeSystem::add_converter(AbstractTypeInfo const& from, AbstractTypeInfo const& to, AbstractTypeConverter const* conv)
+void AbstractTypeSystem::add_converter_simple(TypeInfoPtr from, TypeInfoPtr to, AbstractTypeConverter const* conv)
 {
     conv_graph.add_conv(from, to, conv);
 }
 
-void AbstractTypeSystem::add_converter(BetterTypeInfo from, BetterTypeInfo to, AbstractTypeConverter const* conv)
+void AbstractTypeSystem::add_converter_variations(TypeInfoPtr from, TypeInfoPtr to, AbstractTypeConverter const* conv)
 {
     conv_graph.add_conv(from, to, conv);
 
     // Support the const forms of this conversion too
-    conv_graph.add_conv(from, to.as_const_type(), conv);
-    conv_graph.add_conv(from.as_const_type(), to.as_const_type(), conv);
+    conv_graph.add_conv(from, to->as_const_type(), conv);
+    conv_graph.add_conv(from->as_const_type(), to->as_const_type(), conv);
 
     // Also add converters to make either type const.
-    conv_graph.add_conv(from, from.as_const_type(), new NoChangeConv);
-    conv_graph.add_conv(to, to.as_const_type(), new NoChangeConv);
+    conv_graph.add_conv(from, from->as_const_type(), new NoChangeConv);
+    conv_graph.add_conv(to, to->as_const_type(), new NoChangeConv);
 
     // Allow NULL (aka nil) to be converted to these types.
     auto nil_tag = BetterTypeInfo::create<IoNilExprTag*>();
 
     // Allow this expression type to be converted to an expression.
-    BetterTypeInfo to_expr = BetterTypeInfo::create<ExprPtr>();
-    conv_graph.add_conv(from, to_expr, new ToAbstractExpressionConv);
-    conv_graph.add_conv(from.as_const_type(), to_expr, new ToAbstractExpressionConv);
+    TypeInfoPtr to_expr_type = BetterTypeInfo::create<ExprPtr>();
+    conv_graph.add_conv(from, to_expr_type, new ToAbstractExpressionConv);
+    conv_graph.add_conv(from->as_const_type(), to_expr_type, new ToAbstractExpressionConv);
 
-    if (from.is_ptr)
+    if (from->get_is_ptr())
         conv_graph.add_conv(nil_tag, from, new NilConv);
 
-    if (to.is_ptr)
+    if (to->get_is_ptr())
         conv_graph.add_conv(nil_tag, to, new NilConv);
-
 
 }
 

@@ -6,18 +6,16 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-#include "LikeMagic/SFMO/AbstractExpression.hpp"
+#include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 
-#include <stdexcept>
+namespace LikeMagic { namespace Utility {
 
-namespace LikeMagic { namespace SFMO {
-
-void intrusive_ptr_add_ref(AbstractExpression* p)
+void intrusive_ptr_add_ref(AbstractTypeInfo const* p)
 {
     ++(p->ref_count);
 }
 
-void intrusive_ptr_release(AbstractExpression* p)
+void intrusive_ptr_release(AbstractTypeInfo const* p)
 {
     if (!--(p->ref_count))
         delete p;

@@ -29,7 +29,9 @@ namespace LikeMagic { namespace Marshaling {
 
 namespace LikeMagic { namespace SFMO {
 
-using LikeMagic::Utility::AbstractTypeInfo;
+using LikeMagic::Utility::TypeInfoPtr;
+using LikeMagic::Utility::TypeInfoKey;
+using LikeMagic::Utility::TypeInfoList;
 using LikeMagic::Utility::BetterTypeInfo;
 using LikeMagic::AbstractTypeSystem;
 using LikeMagic::Marshaling::AbstractMethodset;
@@ -58,8 +60,7 @@ private:
 
 protected:
     AbstractTypeSystem const& type_system;
-    BetterTypeInfo type;
-    AbstractCppObjProxy(AbstractTypeSystem const& type_system_, BetterTypeInfo type_) : magic_number(0xCAFEBABE), type_system(type_system_), type(type_) {}
+    AbstractCppObjProxy(AbstractTypeSystem const& type_system_) : magic_number(0xCAFEBABE), type_system(type_system_) {}
 
 public:
 
@@ -105,9 +106,9 @@ public:
 
     std::string get_class_name() const;
     AbstractCppObjProxy* call(std::string method_name, ArgList args);
-    std::vector<BetterTypeInfo> get_arg_types(std::string method_name, int num_args) const;
+    TypeInfoList get_arg_types(std::string method_name, int num_args) const;
 
-    BetterTypeInfo get_type() const { return type; }
+    virtual TypeInfoPtr get_type() const = 0;
     AbstractTypeSystem const& get_type_system() const { return type_system; }
 
     // determines whether you have to use "eval" or "exec" at the end of the expression
@@ -115,25 +116,6 @@ public:
     virtual AbstractCppObjProxy* lazy() = 0;
     virtual bool is_terminal() const = 0;
     virtual std::string describe() const = 0;
-
-    /*
-
-    virtual bool is_reference() const = 0;
-    virtual bool is_number() const = 0;
-    virtual bool is_bool() const = 0;
-    virtual bool is_string() const = 0;
-    virtual bool is_vector_of(const std::type_info&) const = 0;
-    virtual double to_number() const = 0;
-    virtual bool to_bool() const = 0;
-    virtual std::string to_string() const = 0;
-
-    */
-
-    // Compares the proxied expression to the other expression.
-    // It can't be const because it may cause an eval().
-    virtual bool expr_equals(ExprPtr other) = 0;
-
-    virtual AbstractCppObjProxy* to_script_obj(AbstractTypeInfo const& type);
 };
 
 }}

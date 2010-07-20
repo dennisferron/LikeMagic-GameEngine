@@ -11,8 +11,11 @@
 
 #include <utility> // std::pair
 #include <map>
-#include <boost/graph/graph_traits.hpp>
-#include <boost/graph/adjacency_list.hpp>
+
+#include "boost/graph/graph_traits.hpp"
+#include "boost/graph/adjacency_list.hpp"
+
+#include "boost/unordered_map.hpp"
 
 using namespace boost;
 
@@ -24,9 +27,10 @@ using namespace boost;
 
 namespace LikeMagic { namespace TypeConv {
 
-using LikeMagic::Utility::AbstractTypeInfo;
-using LikeMagic::Utility::KeyWrapper;
 using namespace boost::graph;
+using LikeMagic::Utility::TypeInfoKey;
+using LikeMagic::Utility::TypeInfoPtr;
+using LikeMagic::Utility::TypeInfoList;
 
 struct FindType;
 
@@ -45,13 +49,13 @@ private:
 
     struct vertex_info
     {
-        KeyWrapper<AbstractTypeInfo> type;
+        TypeInfoKey type;
     };
 
     typedef adjacency_list<vecS, vecS, directedS, vertex_info, edge_info> graph_t;
     typedef graph_traits<graph_t>::vertex_descriptor vertex_t;
     typedef graph_traits<graph_t>::edge_descriptor edge_t;
-    typedef std::map<KeyWrapper<AbstractTypeInfo>, vertex_t> vertex_map_t;
+    typedef std::map<TypeInfoKey, vertex_t> vertex_map_t;
 
     graph_t graph;
     vertex_map_t vertex_map;
@@ -59,23 +63,26 @@ private:
     // Mutable is for when the object is logically const, but technically a member needs
     // to sometimes change in a way that's not visible from outside the class.
     // Caching is a perfect example of this.
-    mutable std::map<std::pair<KeyWrapper<AbstractTypeInfo>, KeyWrapper<AbstractTypeInfo>>, std::vector<AbstractTypeConverter const*>> conv_cache;
+    mutable boost::unordered_map<std::pair<TypeInfoKey, TypeInfoKey>, std::vector<AbstractTypeConverter const*>*> conv_cache;
 
-    bool has_type(AbstractTypeInfo const& type) const;
+    bool has_type(TypeInfoKey type) const;
 
-    ExprPtr build_conv_chain(ExprPtr from_expr, std::vector<AbstractTypeConverter const*> const& chain) const;
-    std::vector<AbstractTypeConverter const*> search_for_conv(AbstractTypeInfo const& from, AbstractTypeInfo const& to) const;
+    ExprPtr build_conv_chain(ExprPtr from_expr, std::vector<AbstractTypeConverter const*> const* chain) const;
+    std::vector<AbstractTypeConverter const*>* search_for_conv(TypeInfoKey from, TypeInfoKey to) const;
 
     // Don't allow TypeConvGraph to be copied accidently.
     TypeConvGraph(TypeConvGraph const&)=delete;
     TypeConvGraph& operator =(TypeConvGraph const&)=delete;
 
+    vertex_t const no_vertex;
+
 public:
     TypeConvGraph();
-    vertex_t  add_type(AbstractTypeInfo const& type);
-    void add_conv(AbstractTypeInfo const& from, AbstractTypeInfo const& to, AbstractTypeConverter const* conv);
-    ExprPtr wrap_expr(ExprPtr from_expr, AbstractTypeInfo const& from, AbstractTypeInfo const& to) const;
-    bool has_conv(AbstractTypeInfo const& from_type, AbstractTypeInfo const& to_type) const;
+    ~TypeConvGraph();
+    vertex_t  add_type(TypeInfoPtr type);
+    void add_conv(TypeInfoPtr from, TypeInfoPtr to, AbstractTypeConverter const* conv);
+    ExprPtr wrap_expr(ExprPtr from_expr, TypeInfoPtr from, TypeInfoPtr to) const;
+    bool has_conv(TypeInfoPtr from_type, TypeInfoPtr to_type) const;
     void print_graph() const;
 };
 

@@ -30,7 +30,7 @@ class AbstractTypeConverter;
 
 namespace LikeMagic { namespace SFMO {
 
-using LikeMagic::Utility::AbstractTypeInfo;
+using LikeMagic::Utility::TypeInfoPtr;
 
 // more forward declarations
 class AbstractObjectSet;
@@ -71,15 +71,8 @@ public:
     virtual std::set<AbstractObjectSet*> get_objsets() { return std::set<AbstractObjectSet*>(); }
     virtual bool is_terminal() const = 0;
     virtual bool is_lazy() const = 0;
-    virtual AbstractTypeInfo const& get_type() const = 0;
+    virtual TypeInfoPtr get_type() const = 0;
     virtual std::string description() const = 0;
-
-    // Compares the expression contents to the other expression's contents.
-    // It can't be const because it causes an eval().
-    // Important:  Use AbstractTypeSystem::try_conv to convert the other expression to this type.
-    // The result of calling equals if ExprPtr other isn't really of a compatible
-    // type to this expression is undefined.
-    virtual bool eval_equals(ExprPtr other);
 };
 
 // Most of the time you will be using an expression via smart ptr.

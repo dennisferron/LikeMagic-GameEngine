@@ -14,6 +14,8 @@
 
 #include "boost/lexical_cast.hpp"
 
+using namespace LikeMagic::Utility;
+
 namespace LikeMagic { namespace Backends { namespace Io {
 
 std::string get_type_name(IoObject* io_obj)
@@ -58,7 +60,7 @@ IoMethodTable* make_io_method_table(std::vector<std::string> const& method_names
 }
 
 
-IoObject* arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos)
+IoObject* get_io_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos)
 {
     if (pos >= IoMessage_argCount(m))
         throw std::invalid_argument("Not enough arguments passed to function");
@@ -92,10 +94,10 @@ IoMessage* new_message(IoObject* self, std::string name)
 }
 
 // Gets the script object argument at a certain position.
-boost::intrusive_ptr<LikeMagic::SFMO::AbstractExpression> arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos, std::vector<BetterTypeInfo> arg_types, AbstractTypeSystem const& type_sys)
+ExprPtr get_expr_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos, AbstractTypeSystem const& type_sys)
 {
     //std::cout << "Arg " << pos << " = " << IoObject_tag(self)->name << std::endl;
-    return from_script(self, arg_at(self, locals, m, pos), arg_types[pos], type_sys);
+    return from_script(self, get_io_arg_at(self, locals, m, pos), type_sys);
 }
 
 
@@ -198,12 +200,12 @@ IoObject* API_io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
 
         auto& type_sys = proxy->get_type_system();
 
-        std::vector<boost::intrusive_ptr<AbstractExpression>> args;
-        std::vector<BetterTypeInfo> arg_types = proxy->get_arg_types(method_name, IoMessage_argCount(m));
+        std::vector<ExprPtr> args;
+        TypeInfoList arg_types = proxy->get_arg_types(method_name, IoMessage_argCount(m));
 
         for (size_t i=0; i<arg_types.size(); i++)
         {
-            ExprPtr expr = arg_at(self, locals, m, i, arg_types, type_sys);
+            ExprPtr expr = get_expr_arg_at(self, locals, m, i, type_sys);
             //std::cout << "arg " << i << " expects " << arg_types[i].describe() << " got " << expr->get_type().describe() << std::endl;
             args.push_back(expr);
         }

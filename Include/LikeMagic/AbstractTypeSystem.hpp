@@ -18,6 +18,8 @@
 
 #include "LikeMagic/Utility/TupleForEach.hpp"
 
+#include "LikeMagic/Utility/KeyWrapper.hpp"
+
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits.hpp>
 
@@ -39,6 +41,9 @@ namespace Marshaling {
 using LikeMagic::Marshaling::AbstractMethodset;
 using LikeMagic::Marshaling::AbstractClass;
 using LikeMagic::Utility::BetterTypeInfo;
+using LikeMagic::Utility::TypeInfoKey;
+using LikeMagic::Utility::TypeInfoPtr;
+using LikeMagic::Utility::TypeInfoList;
 using namespace LikeMagic::TypeConv;
 using namespace LikeMagic::SFMO;
 using namespace LikeMagic::Utility;
@@ -70,13 +75,13 @@ protected:
 
     AbstractTypeSystem();
 
-    std::map<BetterTypeInfo, AbstractClass*> classes;
+    std::map<TypeInfoKey, AbstractClass*> classes;
     AbstractClass const* unknown_class;
 
     TypeConvGraph conv_graph;
 
-    bool has_class(BetterTypeInfo type) const;
-    AbstractClass const* get_class(BetterTypeInfo type) const;
+    bool has_class(TypeInfoPtr type) const;
+    AbstractClass const* get_class(TypeInfoPtr type) const;
 
 public:
 
@@ -89,22 +94,22 @@ public:
     bool leak_memory() const;
     void set_leak_memory(bool flag);
 
-    std::vector<BetterTypeInfo> get_registered_types() const;
-    std::vector<std::string> get_base_names(BetterTypeInfo type) const;
-    std::string get_class_name(BetterTypeInfo type) const;
-    AbstractCppObjProxy* create_class_proxy(BetterTypeInfo type) const;
-    std::vector<std::string> const& get_method_names(BetterTypeInfo type) const;
-    AbstractCppObjProxy* call(BetterTypeInfo type, std::string method_name, AbstractCppObjProxy* proxy, std::vector<ExprPtr> args) const;
-    std::vector<BetterTypeInfo> get_arg_types(BetterTypeInfo type, std::string method_name, int num_args) const;
+    TypeInfoList get_registered_types() const;
+    std::vector<std::string> get_base_names(TypeInfoPtr type) const;
+    std::string get_class_name(TypeInfoPtr type) const;
+    AbstractCppObjProxy* create_class_proxy(TypeInfoPtr type) const;
+    std::vector<std::string> const& get_method_names(TypeInfoPtr type) const;
+    AbstractCppObjProxy* call(TypeInfoPtr type, std::string method_name, AbstractCppObjProxy* proxy, std::vector<ExprPtr> args) const;
+    TypeInfoList get_arg_types(TypeInfoPtr type, std::string method_name, int num_args) const;
 
-    void add_converter(BetterTypeInfo from, BetterTypeInfo to, AbstractTypeConverter const* conv);
-    void add_converter(AbstractTypeInfo const& from, AbstractTypeInfo const& to, AbstractTypeConverter const* conv);
-    void add_type(AbstractTypeInfo const& type);
+    void add_converter_variations(TypeInfoPtr from, TypeInfoPtr to, AbstractTypeConverter const* conv);
+    void add_converter_simple(TypeInfoPtr from, TypeInfoPtr to, AbstractTypeConverter const* conv);
+    void add_type(TypeInfoPtr type);
 
     template <typename From, typename To, template <typename From, typename To> class Converter=ImplicitConv>
     void add_conv()
     {
-        add_converter(
+        add_converter_variations(
             BetterTypeInfo::create<From>(),
             BetterTypeInfo::create<To>(),
                 new Converter<From, To>);
@@ -112,16 +117,18 @@ public:
 
     template <typename T>
     std::string get_class_name() const
-        { return get_class_name(BetterTypeInfo::create<T>()); }
+    {
+        static auto c_type = BetterTypeInfo::create<T>();
+        return get_class_name(c_type);
+    }
 
-    ExprPtr try_conv(ExprPtr from_expr, AbstractTypeInfo const& to_type) const;
-    bool has_conv(AbstractTypeInfo const&  from_type, AbstractTypeInfo const& to_type) const;
+    ExprPtr try_conv(ExprPtr from_expr, TypeInfoPtr to_type) const;
+    bool has_conv(TypeInfoPtr  from_type, TypeInfoPtr to_type) const;
 
     template <typename To>
     boost::intrusive_ptr<Expression<To>> try_conv(ExprPtr from) const
     {
-        BetterTypeInfo to_type = BetterTypeInfo::create<To>();
-        return static_cast<Expression<To>*>(try_conv(from, to_type).get());
+        return static_cast<Expression<To>*>(try_conv(from, BetterTypeInfo::create<To>()).get());
     }
 
 };

@@ -76,7 +76,7 @@ public:
             IoMessage* m = new_message(io_target, "foo");
             add_args(m, args...);
             IoObject* result = activate(m);
-            ExprPtr expr = from_script(io_target, result, BetterTypeInfo::create<R>(), *type_sys);
+            ExprPtr expr = from_script(io_target, result, *type_sys);
             return type_sys->try_conv<R>(expr)->eval();
         }
         else

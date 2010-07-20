@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -92,7 +92,7 @@ AbstractCallTargetSelector* AbstractClass::try_get_method(std::string method_nam
     return 0;
 }
 
-std::vector<BetterTypeInfo> AbstractClass::get_arg_types(std::string method_name, int num_args) const
+TypeInfoList AbstractClass::get_arg_types(std::string method_name, int num_args) const
 {
     return get_method(method_name, num_args)->get_arg_types();
 }

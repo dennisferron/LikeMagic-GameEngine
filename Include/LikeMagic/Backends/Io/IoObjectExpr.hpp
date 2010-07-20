@@ -12,7 +12,6 @@
 #include "LikeMagic/SFMO/Expression.hpp"
 #include "LikeMagic/Utility/TypeDescr.hpp"
 #include "LikeMagic/Backends/Io/API_Io.hpp"
-#include "LikeMagic/Backends/Io/FromIoTypeInfo.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -21,13 +20,13 @@ namespace LikeMagic { namespace Backends { namespace Io {
 
 using LikeMagic::SFMO::ExprPtr;
 using LikeMagic::SFMO::Expression;
-using LikeMagic::Utility::AbstractTypeInfo;
+using LikeMagic::Utility::TypeInfoPtr;
 
 class IoObjectExpr : public Expression<IoObject*>
 {
 private:
     IoObject* io_object;
-    FromIoTypeInfo type_info;
+    TypeInfoPtr type_info;
 
     IoObjectExpr(IoObject* io_object_);
 
@@ -37,7 +36,7 @@ public:
     virtual bool is_terminal() const { return true; }
     virtual bool is_lazy() const { return false; }
 
-    virtual AbstractTypeInfo const& get_type() const;
+    virtual TypeInfoPtr get_type() const;
     virtual std::string description() const;
     virtual void mark();
     virtual IoObject* eval() { return io_object; }

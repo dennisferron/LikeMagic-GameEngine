@@ -25,17 +25,24 @@ namespace LikeMagic { namespace Utility {
 template <typename T>
 struct KeyWrapper
 {
-    boost::shared_ptr<T const> key;
+    boost::intrusive_ptr<T const> key;
 
     KeyWrapper() {}
-    KeyWrapper(T const& key_) : key(key_.clone()) {}
+    KeyWrapper(T const* key_) : key(key_) {}
+    KeyWrapper(boost::intrusive_ptr<T const> key_) : key(key_) {}
 
     inline bool operator <(KeyWrapper<T> const& that) const
         { return *this->key < *that.key; }
+
+    inline bool operator ==(KeyWrapper<T> const& that) const
+        { return *this->key == *that.key; }
 };
 
 // Convenience function.
 template <typename T>
-KeyWrapper<T> make_key_wrapper(T const& key) { return KeyWrapper<T>(key); }
+KeyWrapper<T> make_key_wrapper(boost::intrusive_ptr<T> key) { return KeyWrapper<T>(key); }
+
+template <typename T>
+inline std::size_t hash_value(KeyWrapper<T> const& kw) { return kw.key->hash_value(); }
 
 }}

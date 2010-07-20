@@ -8,17 +8,18 @@
 
 #include "LikeMagic/Backends/Io/IoObjectExpr.hpp"
 #include "LikeMagic/Backends/Io/API_Io_Impl.hpp"
+#include "LikeMagic/Backends/Io/FromIoTypeInfo.hpp"
 
 using namespace LikeMagic::Utility;
 
 namespace LikeMagic { namespace Backends { namespace Io {
 
 
-IoObjectExpr::IoObjectExpr(IoObject* io_object_) : io_object(io_object_), type_info(get_type_name(io_object))
+IoObjectExpr::IoObjectExpr(IoObject* io_object_) : io_object(io_object_), type_info(FromIoTypeInfo::create(get_type_name(io_object)))
 {
 }
 
-AbstractTypeInfo const& IoObjectExpr::get_type() const
+TypeInfoPtr IoObjectExpr::get_type() const
 {
     return type_info;
 }

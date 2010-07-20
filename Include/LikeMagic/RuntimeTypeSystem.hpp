@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -22,6 +22,7 @@ namespace LikeMagic {
 
 using namespace LikeMagic::Marshaling;
 
+using LikeMagic::Utility::TypeInfoKey;
 
 // The reason why TypeSystem is split into AbstractTypeSystem and
 // the concrete RuntimeTypeSystem is that things like class Class
@@ -69,7 +70,7 @@ private:
     template <typename T, bool is_copyable>
     Class<T, is_copyable>& register_class_impl(std::string name)
     {
-        BetterTypeInfo type = BetterTypeInfo::create<T>();
+        static TypeInfoKey type(BetterTypeInfo::create<T>());
         if (classes.find(type) != classes.end())
         {
             return *dynamic_cast<Class<T, is_copyable>*>(classes[type]);
@@ -101,7 +102,7 @@ private:
             // enable pointer to value conversions only if class is copyable.
             register_copyable_conv<T, is_copyable>();
 
-            classes[type.bare_type()] = result;
+            classes[TypeInfoKey(type.key->bare_type())] = result;
 
             return *result;
         }

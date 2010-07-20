@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -32,7 +32,7 @@ template <typename To>
 class ConvertibleTo : public virtual AbstractTypeConverter
 {
 public:
-    virtual std::string describe() const { return BetterTypeInfo::create<decltype(this)>().describe(); }
+    virtual std::string describe() const { return BetterTypeInfo::create<decltype(this)>()->describe(); }
 };
 
 }}

@@ -31,6 +31,9 @@ class ToIoTypeInfo : public AbstractTypeInfo
 private:
     std::string type_name;
 
+    ToIoTypeInfo() : type_name("<unspecified>") {}
+    ToIoTypeInfo(std::string type_name_) : type_name(type_name_) {}
+
 protected:
 
     virtual std::type_info const* comparator_typeid() const
@@ -44,21 +47,28 @@ protected:
         return this->type_name < that.type_name;
     }
 
+    virtual bool equals(const AbstractTypeInfo& other) const
+    {
+        ToIoTypeInfo const& that = static_cast<ToIoTypeInfo const&>(other);
+        return this->type_name == that.type_name;
+    }
+
+    virtual std::size_t calc_hash() const
+    {
+        std::size_t seed = 0;
+        boost::hash_combine(seed, type_name);
+        return seed;
+    }
+
 public:
 
-    ToIoTypeInfo() : type_name("<unspecified>") {}
-    ToIoTypeInfo(std::string type_name_) : type_name(type_name_) {}
+    static TypeInfoPtr create() { return new ToIoTypeInfo(); }
+    static TypeInfoPtr create(std::string type_name) { return new ToIoTypeInfo(type_name); }
 
     virtual std::string describe() const
     {
         return "To Io Type " + type_name;
     }
-
-    virtual boost::shared_ptr<AbstractTypeInfo const> clone() const
-    {
-        return boost::shared_ptr<AbstractTypeInfo const>(new ToIoTypeInfo(*this));
-    }
-
 };
 
 

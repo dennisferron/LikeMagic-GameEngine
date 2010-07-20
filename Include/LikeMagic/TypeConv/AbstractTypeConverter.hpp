@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -41,8 +41,8 @@ std::string describe_converter(std::string converter_name)
 {
     return
             "type_conv " + converter_name +
-            " from " + BetterTypeInfo::create<From>().describe() +
-            " to " + BetterTypeInfo::create<To>().describe();
+            " from " + BetterTypeInfo::create<From>()->describe() +
+            " to " + BetterTypeInfo::create<To>()->describe();
 }
 
 

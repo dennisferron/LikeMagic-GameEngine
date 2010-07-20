@@ -83,32 +83,6 @@ private:
         return 0;
     }
 
-    /*
-
-    template <typename T_>
-    typename boost::enable_if<std::is_convertible<T_, double>, double>::type
-    to_number(boost::intrusive_ptr<Expression<T_>> expr) const { return expr->eval(); }
-
-    template <typename T_>
-    typename boost::disable_if<std::is_convertible<T_, double>, double>::type
-    to_number(boost::intrusive_ptr<Expression<T_>> expr) const
-    {
-        throw std::logic_error("to_number called on SFMO object that is not a number!");
-    }
-
-    bool to_bool(boost::intrusive_ptr<Expression<bool>> expr) const { return expr->eval(); }
-    bool to_bool(boost::intrusive_ptr<Expression<bool&>> expr) const { return expr->eval(); }
-    bool to_bool(boost::intrusive_ptr<Expression<bool const>> expr) const { return expr->eval(); }
-    bool to_bool(boost::intrusive_ptr<Expression<bool const&>> expr) const { return expr->eval(); }
-
-    template <typename T_>
-    bool to_bool(boost::intrusive_ptr<Expression<T_>> expr) const
-    {
-        throw std::logic_error("to_bool called on SFMO object that is not a bool!");
-    }
-
-    */
-
     static void reset(std::set<AbstractObjectSet*> total_objsets)
     {
         for (auto iter=total_objsets.begin(); iter != total_objsets.end(); iter++)
@@ -181,7 +155,7 @@ private:
 
 private:
     CppObjProxy(boost::intrusive_ptr<Expression<T>> expr_, AbstractTypeSystem const& type_system) :
-        AbstractCppObjProxy(type_system, BetterTypeInfo::create<T>()), expr(expr_)
+        AbstractCppObjProxy(type_system), expr(expr_)
     {
     }
 
@@ -284,61 +258,6 @@ public:
         return expr->is_terminal();
     }
 
-
-    /*
-
-    virtual bool is_reference() const
-    {
-        return std::is_reference<T>::value;
-    }
-
-    virtual bool is_number() const
-    {
-        return std::is_convertible<T, double>::value;
-    }
-
-    virtual bool is_bool() const
-    {
-        return boost::is_same<
-                typename boost::remove_const<
-                    typename boost::remove_reference<T>::type
-                >::type, bool>::value;
-    }
-
-    virtual bool is_string() const
-    {
-        return IsString<T>::value;
-    }
-
-    virtual bool is_vector_of(const std::type_info& type) const
-    {
-        // TODO: fix this for other types of vectors
-        if ( (type == typeid(int) && typeid(T) == typeid(std::vector<int>&))
-        ||
-            (type == typeid(unsigned int) && typeid(T) == typeid(std::vector<unsigned int>&))
-        )
-            return true;
-        else
-            return false;
-    }
-
-    virtual double to_number() const
-    {
-        return to_number(expr);
-    }
-
-    virtual bool to_bool() const
-    {
-        return to_bool(expr);
-    }
-
-    virtual std::string to_string() const
-    {
-        return type_system.try_conv<std::string>(expr)->eval();
-    }
-
-    */
-
     virtual std::string describe() const
     {
         //std::cout << "Description: " << expr->description() << (is_lazy()? " (lazy)" : "") << std::endl;
@@ -358,21 +277,7 @@ public:
     // mark Io objects held by this object so the garbage collector won't free them
     virtual void mark() { expr->mark(); }
 
-    // Compares the proxied expression to the other expression.
-    // It can't be const because it may cause an eval().
-    virtual bool expr_equals(ExprPtr other)
-    {
-        try
-        {
-            ExprPtr conv_expr = type_system.try_conv(other, expr->get_type());
-            return expr->eval_equals(conv_expr);
-        }
-        catch (std::logic_error le)
-        {
-            throw std::logic_error(std::string("Error doing type conversion on from expression for expr_equals() compare.  ") + le.what());
-        }
-    }
-
+    virtual TypeInfoPtr get_type() const { return expr->get_type(); }
 };
 
 }}

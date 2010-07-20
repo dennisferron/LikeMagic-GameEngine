@@ -11,6 +11,7 @@
 #include "LikeMagic/Backends/Io/IoBlock.hpp"
 #include "LikeMagic/Backends/Io/IoObjectExpr.hpp"
 #include "LikeMagic/Backends/Io/ToIoObjectExpr.hpp"
+#include "LikeMagic/Backends/Io/FromIoTypeInfo.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 
 #include "LikeMagic/SFMO/CppObjProxy.hpp"
@@ -32,6 +33,7 @@ using namespace LikeMagic::SFMO;
 using namespace LikeMagic::Backends::Io;
 using namespace LikeMagic::Utility;
 
+/*
 struct SequenceToToIoTypeInfoConv : public LikeMagic::TypeConv::AbstractTypeConverter
 {
     AbstractTypeSystem const& type_sys;
@@ -45,6 +47,7 @@ struct SequenceToToIoTypeInfoConv : public LikeMagic::TypeConv::AbstractTypeConv
 
     virtual std::string describe() const { return "SequenceToToIoTypeInfoConv"; }
 };
+*/
 
 // The difference between this and a no-change or implicit conv is this evals in context to return IoObject* directly.
 struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter
@@ -76,6 +79,7 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
     LM_CLASS_NO_COPY(runtime_type_sys, IoVM)
     LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer))
 
+    /*
     LM_CLASS(runtime_type_sys, AbstractTypeInfo)
 
     LM_CLASS(runtime_type_sys, ToIoTypeInfo)
@@ -83,24 +87,28 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
     LM_CONSTR(ToIoTypeInfo,,)
     LM_CONSTR(ToIoTypeInfo,, std::string)
 
+
     // Make the ToIoTypeInfo constructible from a string so that
     // the proxy as_script_type() can be called using a string and receive a ToIoTypeInfo.
     // Using Sequence instead of string for the from type so as not to conflict with other languages' type conversions.
-    type_system.add_converter(FromIoTypeInfo("Sequence"), BetterTypeInfo::create<ToIoTypeInfo>(), new SequenceToToIoTypeInfoConv(type_system));
+    //type_system.add_converter_simple(FromIoTypeInfo::create("Sequence"), BetterTypeInfo::create<ToIoTypeInfo>(), new SequenceToToIoTypeInfoConv(type_system));
 
-    // To convert an Io object to a void*
-    type_system.add_converter(FromIoTypeInfo("Object"), BetterTypeInfo::create<void*>(), new LikeMagic::TypeConv::ImplicitConv<IoObject*, void*>);
 
     LM_CLASS(runtime_type_sys, FromIoTypeInfo)
     LM_BASE(FromIoTypeInfo, AbstractTypeInfo)
     LM_CONSTR(FromIoTypeInfo,, std::string)
 
+    */
+
     LM_CLASS(runtime_type_sys, IoObject)
 
+    // To convert an Io object to a void*
+    type_system.add_converter_simple(FromIoTypeInfo::create("Object"), BetterTypeInfo::create<void*>(), new LikeMagic::TypeConv::ImplicitConv<IoObject*, void*>);
+
     // Make general Io objects convertible with IoObject*.
-    type_system.add_converter(FromIoTypeInfo("Object"), BetterTypeInfo::create<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
-    type_system.add_converter(BetterTypeInfo::create<IoObject*>(), ToIoTypeInfo("Object"), new PtrToIoObjectConv);
-    type_system.add_converter(ToIoTypeInfo("Object"), ToIoTypeInfo(), new LikeMagic::TypeConv::NoChangeConv);
+    type_system.add_converter_simple(FromIoTypeInfo::create("Object"), BetterTypeInfo::create<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
+    type_system.add_converter_simple(BetterTypeInfo::create<IoObject*>(), ToIoTypeInfo::create("Object"), new PtrToIoObjectConv);
+    type_system.add_converter_simple(ToIoTypeInfo::create("Object"), ToIoTypeInfo::create(), new LikeMagic::TypeConv::NoChangeConv);
 
     type_system_.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock>();
     type_system_.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock const&>();
@@ -206,8 +214,8 @@ void IoVM::run_cli() const
     IoState_runCLI(self);
 }
 
-boost::intrusive_ptr<AbstractExpression> IoVM::get_abs_expr(std::string io_code, BetterTypeInfo type) const
+ExprPtr IoVM::get_abs_expr(std::string io_code) const
 {
     auto io_obj = do_string(io_code);
-    return from_script(self->lobby, io_obj, type, type_system);
+    return from_script(self->lobby, io_obj, type_system);
 }

@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -20,18 +20,18 @@
 namespace LikeMagic { namespace Utility {
 
 template <typename FirstArg, typename... Args>
-std::vector<BetterTypeInfo> make_arg_list(TypePack<FirstArg, Args...> args)
+TypeInfoList make_arg_list(TypePack<FirstArg, Args...> args)
 {
-    std::vector<BetterTypeInfo> list;
+    TypeInfoList list;
     list.push_back(BetterTypeInfo::create<FirstArg>());
-    std::vector<BetterTypeInfo> others = make_arg_list(TypePack<Args...>());
+    TypeInfoList others = make_arg_list(TypePack<Args...>());
     list.insert(list.end(), others.begin(), others.end());
     return list;
 }
 
-inline std::vector<BetterTypeInfo> make_arg_list(TypePack<> args)
+inline TypeInfoList make_arg_list(TypePack<> args)
 {
-    return std::vector<BetterTypeInfo>();
+    return TypeInfoList();
 }
 
 
@@ -101,7 +101,7 @@ struct FuncPtrTraits
     enum { num_args = Signature::num_args };
 
     // Get a list of type info for at most the first N arg types.
-    static std::vector<BetterTypeInfo> get_arg_types()
+    static TypeInfoList get_arg_types()
     {
         return make_arg_list(TPack());
     }

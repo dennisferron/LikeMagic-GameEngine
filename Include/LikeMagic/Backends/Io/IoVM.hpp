@@ -19,7 +19,7 @@ private:
     AbstractTypeSystem& type_system;
     IoState* self;
 
-    boost::intrusive_ptr<AbstractExpression> get_abs_expr(std::string io_code, BetterTypeInfo type) const;
+    ExprPtr get_abs_expr(std::string io_code) const;
 
 public:
     IoVM(AbstractTypeSystem& type_system_);

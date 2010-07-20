@@ -77,7 +77,7 @@ std::vector<T> from_list(IoObject* io_obj)
         virtual std::string describe() const { return "From " #scriptType " Conv"; } \
     }; \
 \
-    type_sys.add_converter(FromIoTypeInfo(#scriptType), BetterTypeInfo::create<cppType&>(), new From##scriptType); \
+    type_sys.add_converter_simple(FromIoTypeInfo::create(#scriptType), BetterTypeInfo::create<cppType&>(), new From##scriptType); \
 }
 
 
@@ -97,7 +97,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys)
 
         virtual std::string describe() const { return "From Nil Conv"; }
     };
-    type_sys.add_converter(FromIoTypeInfo("Nil"), FromNil().wrap_expr(0)->get_type(), new FromNil);
+    type_sys.add_converter_simple(FromIoTypeInfo::create("Nil"), FromNil().wrap_expr(0)->get_type(), new FromNil);
 
     // IoBlock requires an extra argument (type_sys)
     struct FromIoBlock : public AbstractTypeConverter
@@ -115,7 +115,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys)
         virtual std::string describe() const { return "From Block Conv"; }
     };
 
-    type_sys.add_converter(FromIoTypeInfo("Block"), BetterTypeInfo::create<IoBlock&>(), new FromIoBlock(type_sys));
+    type_sys.add_converter_simple(FromIoTypeInfo::create("Block"), BetterTypeInfo::create<IoBlock&>(), new FromIoBlock(type_sys));
 
     //MKCONV(type_sys, Vector, std::vector<long double>, from_vector<long double>)
     MKCONV(type_sys, Vector, std::vector<double>, from_vector<double>)
@@ -147,7 +147,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys)
     //MKCONV(type_sys, List, std::vector<unsigned char>, from_list<unsigned char>)
 }
 
-ExprPtr from_script(IoObject* self, IoObject* io_obj, BetterTypeInfo expected_type, AbstractTypeSystem const& type_sys)
+ExprPtr from_script(IoObject* self, IoObject* io_obj, AbstractTypeSystem const& type_sys)
 {
     if (is_sfmo_obj(io_obj))
     {

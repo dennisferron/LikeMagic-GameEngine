@@ -7,22 +7,14 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/SFMO/AbstractCppObjProxy.hpp"
-#include "LikeMagic/SFMO/ScriptObjProxy.hpp"
 
 using namespace LikeMagic::Marshaling;
 using namespace LikeMagic::SFMO;
-
-
-AbstractCppObjProxy* AbstractCppObjProxy::to_script_obj(AbstractTypeInfo const& type)
-{
-    ExprPtr result = type_system.try_conv(get_expr(), type);
-    return ScriptObjProxy::create(result, type_system);
-}
-
+using namespace LikeMagic::Utility;
 
 std::string AbstractCppObjProxy::get_class_name() const
 {
-    return type_system.get_class_name(type);
+    return type_system.get_class_name(get_type());
 }
 
 AbstractCppObjProxy* AbstractCppObjProxy::call(std::string method_name, ArgList args)
@@ -46,7 +38,7 @@ AbstractCppObjProxy* AbstractCppObjProxy::call(std::string method_name, ArgList 
     }
 }
 
-std::vector<BetterTypeInfo> AbstractCppObjProxy::get_arg_types(std::string method_name, int num_args) const
+TypeInfoList AbstractCppObjProxy::get_arg_types(std::string method_name, int num_args) const
 {
     return type_system.get_arg_types(get_type(), method_name, num_args);
 }

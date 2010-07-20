@@ -63,7 +63,6 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     proxy_methods.bind_method("eval", &AbstractCppObjProxy::eval);
     proxy_methods.bind_method("exec", &AbstractCppObjProxy::exec);
     proxy_methods.bind_method("lazy", &AbstractCppObjProxy::lazy);
-    proxy_methods.bind_method("expr_equals", &AbstractCppObjProxy::expr_equals);
 
     proxy_methods.bind_method("elem", &AbstractCppObjProxy::elem);
     proxy_methods.bind_method("iterate", &AbstractCppObjProxy::iterate);
@@ -72,8 +71,6 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     proxy_methods.bind_method("loop_at_end", &AbstractCppObjProxy::loop_at_end);
 
     proxy_methods.bind_method("describe", &AbstractCppObjProxy::describe);
-
-    proxy_methods.bind_method("to_script_obj", &AbstractCppObjProxy::to_script_obj);
 
     // register void so functions returning void will work right.
     auto void_class = new DummyClass<void>("void", *this);

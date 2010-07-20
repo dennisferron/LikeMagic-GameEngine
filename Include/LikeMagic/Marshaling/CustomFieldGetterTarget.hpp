@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -59,7 +59,7 @@ public:
         );
     }
 
-    virtual std::vector<BetterTypeInfo> get_arg_types() const
+    virtual TypeInfoList get_arg_types() const
     {
         return make_arg_list(TypePack<>());
     }

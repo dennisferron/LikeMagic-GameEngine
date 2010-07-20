@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -79,7 +79,7 @@ public:
     {
         //if (target->get_type().is_ptr)
         //    return ptr_target.call(target, args);
-        /*else*/ if (target->get_type().is_ref)
+        /*else*/ if (target->get_type()->get_is_ref())
             return ref_target.call(target, args);
         else
             throw std::logic_error("Methods on this object can only be called by reference or by pointer");

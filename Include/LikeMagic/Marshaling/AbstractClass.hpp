@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -16,7 +16,7 @@
 
 #include <boost/intrusive_ptr.hpp>
 
-#include "LikeMagic/Utility/BetterTypeInfo.hpp"
+#include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 
 namespace LikeMagic {
     class AbstractTypeSystem;
@@ -33,7 +33,9 @@ class AbstractCallTargetSelector;
 using LikeMagic::SFMO::AbstractCppObjProxy;
 using LikeMagic::SFMO::AbstractExpression;
 using LikeMagic::AbstractTypeSystem;
-using LikeMagic::Utility::BetterTypeInfo;
+using LikeMagic::Utility::TypeInfoKey;
+using LikeMagic::Utility::TypeInfoPtr;
+using LikeMagic::Utility::TypeInfoList;
 
 class AbstractClass
 {
@@ -74,7 +76,7 @@ public:
     virtual AbstractCppObjProxy* create_class_proxy() const = 0;
     std::string get_class_name() const;
     std::vector<std::string> const& get_method_names() const;
-    std::vector<BetterTypeInfo> get_arg_types(std::string method_name, int num_args) const;
+    TypeInfoList get_arg_types(std::string method_name, int num_args) const;
     AbstractCppObjProxy* call(AbstractCppObjProxy* target, std::string method_name, std::vector<boost::intrusive_ptr<AbstractExpression>> args) const;
     bool has_method(std::string method_name, int num_args) const;
 

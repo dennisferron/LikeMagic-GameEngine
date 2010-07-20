@@ -21,24 +21,16 @@ namespace LikeMagic { namespace Backends { namespace Io {
 
 using LikeMagic::SFMO::ExprPtr;
 using LikeMagic::SFMO::Expression;
-using LikeMagic::Utility::AbstractTypeInfo;
-using LikeMagic::Utility::BetterTypeInfo;
+using LikeMagic::Utility::TypeInfoPtr;
 
 class AbstractToIoObjectExpr : public AbstractExpression
 {
-protected:
-    ToIoTypeInfo type_info;
-
 public:
 
     virtual void mark() {}
 
     virtual bool is_terminal() const { return true; }
     virtual bool is_lazy() const { return false; }
-
-    virtual AbstractTypeInfo const& get_type() const { return type_info; }
-
-    virtual bool eval_equals(ExprPtr other) { throw std::logic_error("To-Io expressions require an Io CFunction call context to eval in."); }
 
     virtual IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m) = 0;
 
@@ -68,6 +60,13 @@ public:
         return result;
     }
 
+    virtual TypeInfoPtr get_type() const
+    {
+        // TODO:  Change this if we start using multiple to-io types.
+        static TypeInfoPtr cache = ToIoTypeInfo::create();
+        return cache;
+    }
+
     virtual IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m)
     {
         return F::eval_in_context(self, locals, m, from_expr->eval());
@@ -75,7 +74,11 @@ public:
 
     virtual std::string description() const
     {
-        return "To-Io expression from C++ type " + BetterTypeInfo::create<T>().describe() + " to Io type " + type_info.describe();
+        return
+          "To-Io expression from C++ type "
+        + BetterTypeInfo::create<T>()->describe()
+        + " to Io type "
+        + get_type()->describe();
     }
 
 };
