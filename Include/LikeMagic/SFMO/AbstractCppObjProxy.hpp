@@ -108,6 +108,8 @@ public:
     AbstractCppObjProxy* call(std::string method_name, ArgList args);
     TypeInfoList get_arg_types(std::string method_name, int num_args) const;
 
+    std::string get_base_names() const;
+
     virtual TypeInfoPtr get_type() const = 0;
     AbstractTypeSystem const& get_type_system() const { return type_system; }
 

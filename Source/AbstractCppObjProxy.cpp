@@ -17,6 +17,15 @@ std::string AbstractCppObjProxy::get_class_name() const
     return type_system.get_class_name(get_type());
 }
 
+std::string AbstractCppObjProxy::get_base_names() const
+{
+    std::vector<std::string> names = type_system.get_base_names(get_type());
+    std::string total;
+    for (auto it=names.begin(); it != names.end(); ++it)
+        total += *it + " ";
+    return total;
+}
+
 AbstractCppObjProxy* AbstractCppObjProxy::call(std::string method_name, ArgList args)
 {
     auto proxy1 = type_system.call(get_type(), method_name, this, args);

@@ -71,6 +71,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     proxy_methods.bind_method("loop_at_end", &AbstractCppObjProxy::loop_at_end);
 
     proxy_methods.bind_method("describe", &AbstractCppObjProxy::describe);
+    proxy_methods.bind_method("get_base_names", &AbstractCppObjProxy::get_base_names);
 
     // register void so functions returning void will work right.
     auto void_class = new DummyClass<void>("void", *this);
