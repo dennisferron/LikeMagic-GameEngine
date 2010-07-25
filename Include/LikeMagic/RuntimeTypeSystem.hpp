@@ -95,6 +95,7 @@ private:
 
             // References to pointers can be converted to pointers.
             add_conv<T*&, T*>();
+            add_conv<T* const&, T*>();
             //add_conv<T*&, T&, PtrDerefConv>();
 
             //add_conv<T*&, T const&, PtrDerefConv>();
