@@ -77,18 +77,27 @@ void AbstractClass::suggest_method(std::string method_name, int num_args) const
 
 AbstractCallTargetSelector* AbstractClass::try_get_method(std::string method_name, int num_args) const
 {
-    if (has_method(method_name, num_args))
-        return methods.find(method_name)->second.find(num_args)->second;
-    else
+    // First try to find the name and arg number method in this class.
+    auto name_iter = methods.find(method_name);
+    if (name_iter != methods.end())
     {
-        for (auto it=bases.begin(); it != bases.end(); it++)
+        auto overloads = name_iter->second;
+        auto num_iter = overloads.find(num_args);
+        if (num_iter != overloads.end())
         {
-            AbstractCallTargetSelector* method = it->second->try_get_method(method_name, num_args);
-            if (method)
-                return method;
+            return num_iter->second;
         }
     }
 
+    // Second try to find it in the bases.
+    for (auto it=bases.begin(); it != bases.end(); it++)
+    {
+        AbstractCallTargetSelector* method = it->second->try_get_method(method_name, num_args);
+        if (method)
+            return method;
+    }
+
+    // Lastly return null if not found.
     return 0;
 }
 

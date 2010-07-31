@@ -238,8 +238,11 @@ IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
 
         auto& type_sys = proxy->get_type_system();
 
+        int arg_count = IoMessage_argCount(m);
+        auto* method = proxy->get_method(method_name, arg_count);
+
         std::vector<ExprPtr> args;
-        TypeInfoList arg_types = proxy->get_arg_types(method_name, IoMessage_argCount(m));
+        TypeInfoList arg_types = method->get_arg_types();
 
         for (size_t i=0; i<arg_types.size(); i++)
         {
@@ -256,7 +259,7 @@ IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
         if (iovm->self != IOSTATE)
             throw std::logic_error("Failed to retrieve IoVM object from IoState callback context.");
 
-        auto result = proxy->call(method_name, args);
+        auto result = proxy->call(method, args);
         return iovm->to_script(self, locals, m, result);
     }
     catch (std::logic_error le)

@@ -7,6 +7,8 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/SFMO/AbstractCppObjProxy.hpp"
+#include "LikeMagic/Marshaling/AbstractCallTargetSelector.hpp"
+#include "LikeMagic/Marshaling/AbstractClass.hpp"
 
 using namespace LikeMagic::Marshaling;
 using namespace LikeMagic::SFMO;
@@ -28,7 +30,17 @@ std::string AbstractCppObjProxy::get_base_names() const
 
 AbstractCppObjProxy* AbstractCppObjProxy::call(std::string method_name, ArgList args)
 {
-    auto proxy1 = type_system.call(get_type(), method_name, this, args);
+    auto method = get_method(method_name, args.size());
+    return call(method, args);
+}
+
+
+AbstractCppObjProxy* AbstractCppObjProxy::call(AbstractCallTargetSelector* method, ArgList args)
+{
+    if (!method)
+        throw std::logic_error("Method is null.");
+
+    auto proxy1 = method->call(this, args);
 
     if (!proxy1)
     {
@@ -41,16 +53,27 @@ AbstractCppObjProxy* AbstractCppObjProxy::call(std::string method_name, ArgList 
     else
     {
         // eagerly evaluate the first result, delete that proxy, and return the new result instead.
-        auto proxy2 = type_system.call(proxy1->get_type(), "eval", proxy1, ArgList());
+        auto proxy2 = proxy1->eval();
         delete proxy1;
         return proxy2;
     }
 }
 
+
 TypeInfoList AbstractCppObjProxy::get_arg_types(std::string method_name, int num_args) const
 {
     return type_system.get_arg_types(get_type(), method_name, num_args);
 }
+
+
+AbstractCallTargetSelector* AbstractCppObjProxy::get_method(std::string method_name, int num_args) const
+{
+    if (!class_)
+        throw std::logic_error("This type of proxy has no associated C++ class.");
+
+    return class_->get_method(method_name, num_args);
+}
+
 
 void AbstractCppObjProxy::check_magic()
 {

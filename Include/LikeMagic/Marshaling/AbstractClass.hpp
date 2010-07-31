@@ -14,7 +14,8 @@
 #include <map>
 #include <vector>
 
-#include <boost/intrusive_ptr.hpp>
+#include "boost/intrusive_ptr.hpp"
+#include "boost/unordered_map.hpp"
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 
@@ -41,9 +42,9 @@ class AbstractClass
 {
 private:
     AbstractCppObjProxy* class_proxy;  // Allows you to call constructors without already having C++ object
-    std::map<std::string, AbstractClass const*> bases;
+    boost::unordered_map<std::string, AbstractClass const*> bases;
     std::string class_name;
-    std::map<std::string, std::map<int, AbstractCallTargetSelector*>> methods;
+    boost::unordered_map<std::string, std::map<int, AbstractCallTargetSelector*>> methods;
 
     // Although a list of method names can be derived from the std::map methods,
     // the make_io_method_table function requires a long-lived vector of strings in order
@@ -61,7 +62,6 @@ protected:
     AbstractTypeSystem& type_system;
 
     void add_method(std::string method_name, AbstractCallTargetSelector* method);
-    AbstractCallTargetSelector* get_method(std::string method_name, int num_args) const;
     AbstractCallTargetSelector* try_get_method(std::string method_name, int num_args) const;
 
     AbstractClass(std::string name_, AbstractTypeSystem& type_system_) :
@@ -79,6 +79,7 @@ public:
     TypeInfoList get_arg_types(std::string method_name, int num_args) const;
     AbstractCppObjProxy* call(AbstractCppObjProxy* target, std::string method_name, std::vector<boost::intrusive_ptr<AbstractExpression>> args) const;
     bool has_method(std::string method_name, int num_args) const;
+    AbstractCallTargetSelector* get_method(std::string method_name, int num_args) const;
 
     // support inheritance
     void add_base_abstr(AbstractClass const* base);

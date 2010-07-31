@@ -30,7 +30,6 @@
 namespace LikeMagic { namespace SFMO {
 
 using LikeMagic::Marshaling::AbstractMethodset;
-using LikeMagic::Marshaling::AbstractFunctionoid;
 
 /*
 
@@ -155,7 +154,7 @@ private:
 
 private:
     CppObjProxy(boost::intrusive_ptr<Expression<T>> expr_, AbstractTypeSystem const& type_system) :
-        AbstractCppObjProxy(type_system), expr(expr_)
+        AbstractCppObjProxy(type_system, type_system.get_class(BetterTypeInfo::create<T>())), expr(expr_)
     {
     }
 

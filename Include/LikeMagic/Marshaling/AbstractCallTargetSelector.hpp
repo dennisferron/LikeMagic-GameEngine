@@ -13,8 +13,6 @@
 
 namespace LikeMagic { namespace Marshaling {
 
-class AbstractFunctionoid;
-
 class AbstractCallTargetSelector
 {
 public:

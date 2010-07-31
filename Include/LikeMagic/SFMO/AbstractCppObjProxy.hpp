@@ -24,7 +24,7 @@
 // forward declarations
 namespace LikeMagic { namespace Marshaling {
     class AbstractMethodset;
-    class AbstractFunctionoid;
+    class AbstractCallTargetSelector;
 }}
 
 namespace LikeMagic { namespace SFMO {
@@ -35,7 +35,7 @@ using LikeMagic::Utility::TypeInfoList;
 using LikeMagic::Utility::BetterTypeInfo;
 using LikeMagic::AbstractTypeSystem;
 using LikeMagic::Marshaling::AbstractMethodset;
-using LikeMagic::Marshaling::AbstractFunctionoid;
+using LikeMagic::Marshaling::AbstractCallTargetSelector;
 
 /*
 
@@ -60,7 +60,8 @@ private:
 
 protected:
     AbstractTypeSystem const& type_system;
-    AbstractCppObjProxy(AbstractTypeSystem const& type_system_) : magic_number(0xCAFEBABE), type_system(type_system_) {}
+    AbstractClass const* class_;
+    AbstractCppObjProxy(AbstractTypeSystem const& type_system_, AbstractClass const* class__) : magic_number(0xCAFEBABE), type_system(type_system_), class_(class__) {}
 
 public:
 
@@ -106,7 +107,10 @@ public:
 
     std::string get_class_name() const;
     AbstractCppObjProxy* call(std::string method_name, ArgList args);
+    AbstractCppObjProxy* call(AbstractCallTargetSelector* method, ArgList args);
     TypeInfoList get_arg_types(std::string method_name, int num_args) const;
+    AbstractClass const* get_class() const { return 0; }
+    AbstractCallTargetSelector* get_method(std::string method_name, int num_args) const;
 
     std::string get_base_names() const;
 

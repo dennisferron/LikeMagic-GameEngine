@@ -20,8 +20,10 @@
 
 #include "LikeMagic/Utility/KeyWrapper.hpp"
 
-#include <boost/utility/enable_if.hpp>
-#include <boost/type_traits.hpp>
+#include "boost/utility/enable_if.hpp"
+#include "boost/type_traits.hpp"
+
+#include "boost/unordered_map.hpp"
 
 #include <map>
 #include <stdexcept>
@@ -75,13 +77,10 @@ protected:
 
     AbstractTypeSystem();
 
-    std::map<TypeInfoKey, AbstractClass*> classes;
+    boost::unordered_map<TypeInfoKey, AbstractClass*> classes;
     AbstractClass const* unknown_class;
 
     TypeConvGraph conv_graph;
-
-    bool has_class(TypeInfoPtr type) const;
-    AbstractClass const* get_class(TypeInfoPtr type) const;
 
 public:
 
@@ -101,6 +100,8 @@ public:
     std::vector<std::string> const& get_method_names(TypeInfoPtr type) const;
     AbstractCppObjProxy* call(TypeInfoPtr type, std::string method_name, AbstractCppObjProxy* proxy, std::vector<ExprPtr> args) const;
     TypeInfoList get_arg_types(TypeInfoPtr type, std::string method_name, int num_args) const;
+    bool has_class(TypeInfoPtr type) const;
+    AbstractClass const* get_class(TypeInfoPtr type) const;
 
     void add_converter_variations(TypeInfoPtr from, TypeInfoPtr to, AbstractTypeConverter const* conv);
     void add_converter_simple(TypeInfoPtr from, TypeInfoPtr to, AbstractTypeConverter const* conv);
