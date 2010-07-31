@@ -81,7 +81,7 @@ std::vector<T> from_list(IoObject* io_obj)
 }
 
 
-void add_convs_from_script(AbstractTypeSystem& type_sys)
+void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
 {
     MKCONV(type_sys, Number, double, IoNumber_asDouble)
     MKCONV(type_sys, Sequence, std::string, IoSeq_asCString)
@@ -103,19 +103,20 @@ void add_convs_from_script(AbstractTypeSystem& type_sys)
     struct FromIoBlock : public AbstractTypeConverter
     {
         AbstractTypeSystem const& type_sys;
-        FromIoBlock(AbstractTypeSystem const& type_sys_) : type_sys(type_sys_) {}
+        IoVM* iovm;
+        FromIoBlock(AbstractTypeSystem const& type_sys_, IoVM* iovm_) : type_sys(type_sys_), iovm(iovm_) {}
 
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
             boost::intrusive_ptr<IoObjectExpr> io_expr = static_cast<IoObjectExpr*>(expr.get());
             IoObject* io_obj = io_expr->eval();
-            return Term<IoBlock, true>::create(&type_sys, io_obj, io_obj);
+            return Term<IoBlock, true>::create(&type_sys, iovm, io_obj, io_obj);
         }
 
         virtual std::string describe() const { return "From Block Conv"; }
     };
 
-    type_sys.add_converter_simple(FromIoTypeInfo::create("Block"), BetterTypeInfo::create<IoBlock&>(), new FromIoBlock(type_sys));
+    type_sys.add_converter_simple(FromIoTypeInfo::create("Block"), BetterTypeInfo::create<IoBlock&>(), new FromIoBlock(type_sys, iovm));
 
     //MKCONV(type_sys, Vector, std::vector<long double>, from_vector<long double>)
     MKCONV(type_sys, Vector, std::vector<double>, from_vector<double>)

@@ -11,21 +11,31 @@
 #include "LikeMagic/Backends/Io/API_Io.hpp"
 #include "LikeMagic/SFMO/CppObjProxy.hpp"
 
+#include "boost/unordered_map.hpp"
+
 namespace LikeMagic { namespace Backends { namespace Io {
+
 
 class IoVM
 {
 private:
     AbstractTypeSystem& type_system;
     IoState* self;
+    boost::unordered_map<TypeInfoKey, IoObject*> cpp_protos;
 
     ExprPtr get_abs_expr(std::string io_code) const;
+
+    IoObject* to_script(IoObject *self, IoObject *locals, IoMessage *m, AbstractCppObjProxy* proxy) const;
+
+    friend class IoBlock;
 
 public:
     IoVM(AbstractTypeSystem& type_system_);
     ~IoVM();
 
-    void add_proto(std::string name, AbstractCppObjProxy* proxy, bool to_script=false) const;
+    static IoObject* io_userfunc(IoObject *self, IoObject *locals, IoMessage *m);
+
+    void add_proto(std::string name, AbstractCppObjProxy* proxy, bool conv_to_script=false) const;
 
     template <typename T>
     void add_proto(std::string name,  T obj=T(), bool to_script=false) const

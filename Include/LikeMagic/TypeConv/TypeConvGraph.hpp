@@ -17,8 +17,6 @@
 
 #include "boost/unordered_map.hpp"
 
-using namespace boost;
-
 #include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
 #include "LikeMagic/SFMO/AbstractExpression.hpp"
 
@@ -52,9 +50,9 @@ private:
         TypeInfoKey type;
     };
 
-    typedef adjacency_list<vecS, vecS, directedS, vertex_info, edge_info> graph_t;
-    typedef graph_traits<graph_t>::vertex_descriptor vertex_t;
-    typedef graph_traits<graph_t>::edge_descriptor edge_t;
+    typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, vertex_info, edge_info> graph_t;
+    typedef boost::graph_traits<graph_t>::vertex_descriptor vertex_t;
+    typedef boost::graph_traits<graph_t>::edge_descriptor edge_t;
     typedef std::map<TypeInfoKey, vertex_t> vertex_map_t;
 
     graph_t graph;

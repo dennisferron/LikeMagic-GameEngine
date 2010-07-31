@@ -11,6 +11,7 @@
 #include "LikeMagic/SFMO/Term.hpp"
 #include "LikeMagic/SFMO/NullExpr.hpp"
 #include "LikeMagic/Backends/Io/IoBlock.hpp"
+#include "LikeMagic/Backends/Io/IoVM.hpp"
 
 #include "boost/lexical_cast.hpp"
 
@@ -188,41 +189,5 @@ IoObject *API_io_proto(IoState* state)
 
 IoObject* API_io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
 {
-    IOASSERT(IoObject_dataPointer(self), "No C++ object");
-    try
-    {
-        std::string method_name = CSTRING(IoMessage_name(m));
-
-        //std::cout << "Method called is: "  << method_name << std::endl;
-
-        auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
-        proxy->check_magic();
-
-        auto& type_sys = proxy->get_type_system();
-
-        std::vector<ExprPtr> args;
-        TypeInfoList arg_types = proxy->get_arg_types(method_name, IoMessage_argCount(m));
-
-        for (size_t i=0; i<arg_types.size(); i++)
-        {
-            ExprPtr expr = get_expr_arg_at(self, locals, m, i, type_sys);
-            //std::cout << "arg " << i << " expects " << arg_types[i].describe() << " got " << expr->get_type().describe() << std::endl;
-            args.push_back(expr);
-        }
-
-        auto result = proxy->call(method_name, args);
-        return to_script(self, locals, m, result);
-    }
-    catch (std::logic_error le)
-    {
-        //std::cout << "Caught exception: " << le.what() << std::endl;
-        IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(le).name()).c_str(), le.what());
-        return IONIL(self);
-    }
-    catch (std::exception e)
-    {
-        //std::cout << "Caught exception: " << e.what() << std::endl;
-        IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(e).name()).c_str(), e.what());
-        return IONIL(self);
-    }
+    return IoVM::io_userfunc(self, locals, m);
 }

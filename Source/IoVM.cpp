@@ -71,8 +71,8 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
     // IoObjectExpr expression holds unconverted Io objects; it has type of struct IoObjectExprTag.
     //type_system_.add_type(BetterTypeInfo::create<IoObjectExprTag>());
 
-    add_convs_from_script(type_system_);
-    add_convs_to_script(type_system_);
+    add_convs_from_script(type_system_, this);
+    add_convs_to_script(type_system_, this);
 
     // Register this vm
     RuntimeTypeSystem& runtime_type_sys = dynamic_cast<RuntimeTypeSystem&>(type_system_);
@@ -115,6 +115,7 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
 
     self = IoState_new();
     IoState_init(self);
+    self->callbackContext = reinterpret_cast<void*>(this);
 
     IoObject_setSlot_to_(self->lobby, SIOSYMBOL("LikeMagic"),
         API_io_proto(self));
@@ -136,6 +137,8 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
 
         std::string code = "LikeMagic classes " + name;
         IoObject* mset_proto = do_string(code);
+
+        cpp_protos[TypeInfoKey(*it)] = mset_proto;
 
         if (!mset_proto)
         {
@@ -180,12 +183,12 @@ IoObject* IoVM::castToIoObjectPointer(void* p)
     return reinterpret_cast<IoObject*>(p);
 }
 
-void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, bool to_script) const
+void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, bool conv_to_script) const
 {
     IoObject* clone;
-    if (to_script)
+    if (conv_to_script)
     {
-        clone = LikeMagic::Backends::Io::to_script(self->lobby, self->lobby, NULL, proxy);
+        clone = to_script(self->lobby, self->lobby, NULL, proxy);
     }
     else
     {
@@ -219,3 +222,101 @@ ExprPtr IoVM::get_abs_expr(std::string io_code) const
     auto io_obj = do_string(io_code);
     return from_script(self->lobby, io_obj, type_system);
 }
+
+
+IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    IOASSERT(IoObject_dataPointer(self), "No C++ object");
+    try
+    {
+        std::string method_name = CSTRING(IoMessage_name(m));
+
+        //std::cout << "Method called is: "  << method_name << std::endl;
+
+        auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
+        proxy->check_magic();
+
+        auto& type_sys = proxy->get_type_system();
+
+        std::vector<ExprPtr> args;
+        TypeInfoList arg_types = proxy->get_arg_types(method_name, IoMessage_argCount(m));
+
+        for (size_t i=0; i<arg_types.size(); i++)
+        {
+            ExprPtr expr = get_expr_arg_at(self, locals, m, i, type_sys);
+            //std::cout << "arg " << i << " expects " << arg_types[i].describe() << " got " << expr->get_type().describe() << std::endl;
+            args.push_back(expr);
+        }
+
+        if (!IOSTATE->callbackContext)
+            throw std::logic_error("The IoState does not have a callbackContext (supposed to contain pointer to IoVM object).");
+
+        IoVM* iovm = reinterpret_cast<IoVM*>(IOSTATE->callbackContext);
+
+        if (iovm->self != IOSTATE)
+            throw std::logic_error("Failed to retrieve IoVM object from IoState callback context.");
+
+        auto result = proxy->call(method_name, args);
+        return iovm->to_script(self, locals, m, result);
+    }
+    catch (std::logic_error le)
+    {
+        //std::cout << "Caught exception: " << le.what() << std::endl;
+        IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(le).name()).c_str(), le.what());
+        return IONIL(self);
+    }
+    catch (std::exception e)
+    {
+        //std::cout << "Caught exception: " << e.what() << std::endl;
+        IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(e).name()).c_str(), e.what());
+        return IONIL(self);
+    }
+}
+
+
+IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, AbstractCppObjProxy* proxy) const
+{
+    static TypeInfoPtr to_io_type = ToIoTypeInfo::create();
+
+    if (!proxy)
+        return IOSTATE->ioNil;
+    else
+        proxy->check_magic();
+
+    AbstractTypeSystem const& type_sys = proxy->get_type_system();
+    ExprPtr from_expr = proxy->get_expr();
+
+    bool is_terminal = proxy->is_terminal();
+    bool has_conv = type_sys.has_conv(from_expr->get_type(), to_io_type);
+
+    if (is_terminal && has_conv)
+    {
+        ExprPtr to_expr = type_sys.try_conv(from_expr, to_io_type);
+        boost::intrusive_ptr<AbstractToIoObjectExpr> io_expr = static_cast<AbstractToIoObjectExpr*>(to_expr.get());
+        IoObject* io_obj = io_expr->eval_in_context(self, locals, m);
+        delete proxy;
+        return io_obj;
+    }
+    else
+    {
+        auto iter = cpp_protos.find(proxy->get_type()->bare_type());
+
+        if (iter == cpp_protos.end())
+            throw std::logic_error("No class proto for " + proxy->get_type()->describe() );
+
+        IoObject* proto = iter->second;
+        IoObject* clone = IOCLONE(proto);
+        IoObject_setDataPointer_(clone, proxy);
+
+        return clone;
+    }
+}
+
+
+
+
+
+
+
+
+

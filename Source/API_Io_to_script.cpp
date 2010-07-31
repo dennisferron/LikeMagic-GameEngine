@@ -12,6 +12,7 @@
 #include "LikeMagic/Backends/Io/IoBlock.hpp"
 #include "LikeMagic/Backends/Io/ToIoObjectExpr.hpp"
 #include "LikeMagic/Backends/Io/IoObjectExpr.hpp"
+#include "LikeMagic/Backends/Io/IoVM.hpp"
 
 using namespace LikeMagic;
 using namespace LikeMagic::Utility;
@@ -74,7 +75,7 @@ DECL_CONV(String, std::string, IOSEQ(reinterpret_cast<const unsigned char*>(valu
 DECL_CONV(Vector_of_Int, std::vector<int> const&, to_seq<int>(value, IOSTATE))
 DECL_CONV(Vector_of_UInt, std::vector<unsigned int> const&, to_seq<unsigned int>(value, IOSTATE))
 
-void add_convs_to_script(AbstractTypeSystem& type_sys)
+void add_convs_to_script(AbstractTypeSystem& type_sys, IoVM* iovm)
 {
     ADD_CONV(Number, double)
     ADD_CONV(Bool, bool)
@@ -82,40 +83,6 @@ void add_convs_to_script(AbstractTypeSystem& type_sys)
 
     ADD_CONV(Vector_of_Int, std::vector<int> const&)
     ADD_CONV(Vector_of_UInt, std::vector<unsigned int> const&)
-}
-
-
-
-IoObject* to_script(IoObject *self, IoObject *locals, IoMessage *m, AbstractCppObjProxy* proxy)
-{
-    static TypeInfoPtr to_io_type = ToIoTypeInfo::create();
-
-    if (!proxy)
-        return IOSTATE->ioNil;
-    else
-        proxy->check_magic();
-
-    AbstractTypeSystem const& type_sys = proxy->get_type_system();
-    ExprPtr from_expr = proxy->get_expr();
-
-    bool is_terminal = proxy->is_terminal();
-    bool has_conv = type_sys.has_conv(from_expr->get_type(), to_io_type);
-
-    if (is_terminal && has_conv)
-    {
-        ExprPtr to_expr = type_sys.try_conv(from_expr, to_io_type);
-        boost::intrusive_ptr<AbstractToIoObjectExpr> io_expr = static_cast<AbstractToIoObjectExpr*>(to_expr.get());
-        IoObject* io_obj = io_expr->eval_in_context(self, locals, m);
-        delete proxy;
-        return io_obj;
-    }
-    else
-    {
-        string io_code = "LikeMagic classes " + proxy->get_class_name() + " clone";
-        IoObject* result = IoState_doCString_(IOSTATE, io_code.c_str());
-        IoObject_setDataPointer_(result, proxy);
-        return result;
-    }
 }
 
 }}}

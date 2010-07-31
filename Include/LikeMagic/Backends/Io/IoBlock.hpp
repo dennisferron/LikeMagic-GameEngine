@@ -27,6 +27,7 @@ class IoBlock : public LikeMagic::IMarkable
 {
 private:
     AbstractTypeSystem const* type_sys;
+    IoVM* iovm;
 
     // The block to activate
     IoObject* io_block;
@@ -55,7 +56,7 @@ private:
 
 public:
     IoBlock();
-    IoBlock(AbstractTypeSystem const* type_sys_, IoObject* io_block_, IoObject* io_target_);
+    IoBlock(AbstractTypeSystem const* type_sys_, IoVM* iovm_, IoObject* io_block_, IoObject* io_target_);
 
     template <typename... Args>
     void operator()(Args... args) const
