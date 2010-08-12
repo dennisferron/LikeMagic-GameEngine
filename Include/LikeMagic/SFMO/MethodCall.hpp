@@ -57,7 +57,7 @@ public:
     virtual std::set<AbstractObjectSet*> get_objsets() const { return methodcall_args::get_objsets(target, args); }
 
     // mark Io objects held by this object so the garbage collector won't free them
-    virtual void mark()
+    virtual void mark() const
     {
         target->mark();
         methodcall_args::mark_args(args, IPack());
@@ -106,7 +106,7 @@ public:
     virtual std::set<AbstractObjectSet*> get_objsets() const { return methodcall_args::get_objsets(target, args); }
 
     // mark Io objects held by this object so the garbage collector won't free them
-    virtual void mark()
+    virtual void mark() const
     {
         target->mark();
         methodcall_args::mark_args(args, IPack());

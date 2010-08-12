@@ -42,7 +42,7 @@ public:
         return std::string("NULL");
     }
 
-    virtual void mark() {}
+    virtual void mark() const {}
 };
 
 }}

@@ -29,7 +29,7 @@ std::string IoObjectExpr::description() const
     return std::string("an Io object of type '") + get_type_name(io_object) + "'";
 }
 
-void IoObjectExpr::mark()
+void IoObjectExpr::mark() const
 {
     IoObject_shouldMarkIfNonNull(io_object);
 }

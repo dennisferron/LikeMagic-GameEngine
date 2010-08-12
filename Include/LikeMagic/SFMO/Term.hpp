@@ -21,24 +21,6 @@ namespace LikeMagic { namespace SFMO {
 
 using namespace LikeMagic::Utility;
 
-template <typename T, bool is_markable=boost::is_base_of<LikeMagic::IMarkable, T>::value>
-struct IfCanMark
-{
-    static void mark(IMarkable& obj)
-    {
-        //std::cout << "Marking " << BetterTypeInfo::create<T>().describe() << std::endl;
-        obj.mark();
-    }
-};
-
-template <typename T>
-struct IfCanMark<T, false>
-{
-    static void mark(T const& obj)
-    {
-        //std::cout << BetterTypeInfo::create<T>().describe() << " is not markable." << std::endl;
-    }
-};
 
 // The compiler seems to treat numeric temporaries as "extra temporary",
 // too aggressively deciding the temporary isn't needed and dropping it off the stack.
@@ -77,21 +59,6 @@ private:
     {
     }
 
-    template <typename T_>
-    typename boost::disable_if<boost::is_base_of<LikeMagic::IMarkable, T_>>::type
-    mark(T_ const&) const
-    {
-        std::cout << "Not marking: " << description() << std::endl;
-    }
-
-    template <typename T_>
-    typename boost::enable_if<boost::is_base_of<LikeMagic::IMarkable, T_>>::type
-    mark(LikeMagic::IMarkable const& obj) const
-    {
-        std::cout << "Marking: " << description() << std::endl;
-        obj.mark();
-    }
-
 public:
 
     static boost::intrusive_ptr<Expression<T&>> create() { return new Term(); }
@@ -115,9 +82,9 @@ public:
         return std::string("Term<" + LikeMagic::Utility::TypeDescr<T>::text() + ">");
     }
 
-    virtual void mark()
+    virtual void mark() const
     {
-        IfCanMark<T>::mark(value);
+        IMarkable::markIfMarkable(value);
     }
 
 };
@@ -142,21 +109,6 @@ private:
     template <typename... Args>
     Term(Args const& ... args) : value(args...)
     {
-    }
-
-    template <typename T_>
-    typename boost::disable_if<boost::is_base_of<LikeMagic::IMarkable, T_>>::type
-    mark(T_ const&) const
-    {
-        std::cout << "Not marking: " << description() << std::endl;
-    }
-
-    template <typename T_>
-    typename boost::enable_if<boost::is_base_of<LikeMagic::IMarkable, T_>>::type
-    mark(LikeMagic::IMarkable const& obj) const
-    {
-        std::cout << "Marking: " << description() << std::endl;
-        obj.mark();
     }
 
 public:
@@ -185,9 +137,9 @@ public:
         return std::string("Term<" + LikeMagic::Utility::TypeDescr<T>::text() + ">");
     }
 
-    virtual void mark()
+    virtual void mark() const
     {
-        IfCanMark<T>::mark(value);
+        IMarkable::markIfMarkable(value);
     }
 
 };
@@ -223,7 +175,7 @@ public:
         return std::string("Term<void>");
     }
 
-    virtual void mark() {}
+    virtual void mark() const { /* can't mark void */ }
 
 };
 

@@ -27,8 +27,6 @@ class AbstractToIoObjectExpr : public AbstractExpression
 {
 public:
 
-    virtual void mark() {}
-
     virtual bool is_terminal() const { return true; }
     virtual bool is_lazy() const { return false; }
 
@@ -80,6 +78,8 @@ public:
         + " to Io type "
         + get_type()->describe();
     }
+
+    virtual void mark() const { from_expr->mark(); }
 
 };
 

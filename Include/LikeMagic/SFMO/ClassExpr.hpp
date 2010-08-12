@@ -49,7 +49,7 @@ public:
         return std::string("C++ class " + TypeDescr<T>::text());
     }
 
-    virtual void mark() {}
+    virtual void mark() const {}
 };
 
 }}

@@ -80,7 +80,7 @@ public:
     virtual std::string obj_type_descr() { return LikeMagic::Utility::TypeDescr<typename Container::value_type>::text(); }
 
     // mark Io objects held by this object so the garbage collector won't free them
-    virtual void mark() { container_expr->mark(); }
+    virtual void mark() const { container_expr->mark(); }
 
 };
 

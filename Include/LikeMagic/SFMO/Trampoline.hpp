@@ -44,7 +44,7 @@ public:
         return "(" + from_expr->description() + " from " + LikeMagic::Utility::TypeDescr<From>::text() + " to " + LikeMagic::Utility::TypeDescr<To>::text() + ")";
     }
 
-    virtual void mark()
+    virtual void mark() const
     {
         from_expr->mark();
     }

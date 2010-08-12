@@ -38,7 +38,7 @@ public:
 
     virtual TypeInfoPtr get_type() const;
     virtual std::string description() const;
-    virtual void mark();
+    virtual void mark() const;
     virtual IoObject* eval() { return io_object; }
 
     virtual boost::intrusive_ptr<Expression<IoObject*>> clone() const

@@ -88,7 +88,7 @@ public:
 
     bool empty() const;
 
-    virtual void mark();
+    virtual void mark() const;
 };
 
 
