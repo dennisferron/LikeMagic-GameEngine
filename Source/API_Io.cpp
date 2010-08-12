@@ -91,7 +91,7 @@ IoState* get_io_state(IoObject* self)
 
 IoMessage* new_message(IoObject* self, std::string name)
 {
-    std::cout << "new_message, name: " << name << std::endl;
+    //std::cout << "new_message, name: " << name << std::endl;
 
     if (!self)
         throw std::logic_error("Cannot create message; self is null!");
