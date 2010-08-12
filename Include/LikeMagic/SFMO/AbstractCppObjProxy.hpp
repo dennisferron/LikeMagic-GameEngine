@@ -67,7 +67,7 @@ public:
 
     virtual void dispose() const = 0;
 
-    virtual ~AbstractCppObjProxy() { magic_number = 0xFFFFFFFF; }
+    virtual ~AbstractCppObjProxy() { magic_number = 0xEEEEEEEE; }
 
     virtual ExprPtr get_expr() = 0;
 

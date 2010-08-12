@@ -145,8 +145,9 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
             throw std::logic_error("Error getting proto for methodset, return value null:  " + code);
         }
 
-        IoObject_addMethodTable_(mset_proto,
-                make_io_method_table(type_system.get_method_names(*it)));
+        auto mtbl = make_io_method_table(type_system.get_method_names(*it));
+        IoObject_addMethodTable_(mset_proto, mtbl);
+        delete[] mtbl;
 
         // Give the proto a C++ proxy object so constructors and proxy methods can be called on it.
         AbstractCppObjProxy* proxy = type_system.create_class_proxy(*it);

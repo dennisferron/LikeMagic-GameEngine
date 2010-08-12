@@ -94,7 +94,7 @@ struct FindType
     }
 };
 
-ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, std::vector<AbstractTypeConverter const*> const* chain) const
+ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, TypeConvGraph::p_chain_t chain) const
 {
     auto expr = from_expr;
 
@@ -109,7 +109,7 @@ ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, std::vector<AbstractT
 
 ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeInfoPtr from, TypeInfoPtr to) const
 {
-    auto* result = search_for_conv(from, to);
+    auto result = search_for_conv(from, to);
 
     if (!result)
         throw std::logic_error(std::string("No type conversion path from ") + from->describe() + " to " + to->describe());
@@ -124,7 +124,7 @@ bool TypeConvGraph::has_conv(TypeInfoPtr from_type, TypeInfoPtr to_type) const
 }
 
 
-std::vector<AbstractTypeConverter const*>*  TypeConvGraph::search_for_conv(TypeInfoKey from, TypeInfoKey to) const
+TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeInfoKey from, TypeInfoKey to) const
 {
     static int count = 0;
 
@@ -178,10 +178,10 @@ std::vector<AbstractTypeConverter const*>*  TypeConvGraph::search_for_conv(TypeI
         }
 
         if (pred[dest] == no_vertex)
-            return conv_cache[key] = NULL;
+            return conv_cache[key] = p_chain_t();
         else
         {
-            std::vector<AbstractTypeConverter const*>* result = new std::vector<AbstractTypeConverter const*>;
+            p_chain_t result(new std::vector<p_conv_t>);
 
             for (vertex_t cur=dest; cur != pred[cur]; cur=pred[cur])
                 result->push_back(graph[edge(pred[cur], cur, graph).first].conv);

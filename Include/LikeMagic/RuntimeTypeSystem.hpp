@@ -46,9 +46,9 @@ private:
     // (which may be the return value of a function)
     struct Unknown_CppObj {};
 
-    StaticMethods functions;
-    ProxyMethods proxy_methods;
-    ProxyMethods collection_methods;
+    StaticMethods* functions;
+    ProxyMethods* proxy_methods;
+    ProxyMethods* collection_methods;
 
     template <typename T, bool is_copyable>
     typename boost::enable_if_c<is_copyable>::type
@@ -78,7 +78,7 @@ private:
         else
         {
             auto result = new LikeMagic::Marshaling::Class<T, is_copyable>(name, *this);
-            result->add_base_abstr(&proxy_methods);
+            result->add_base_abstr(proxy_methods);
 
             // If the user wants to give their class collection_methods, let them do it via an API function!
             //if (IsContainer<T>::value)
@@ -171,7 +171,7 @@ public:
 
     StaticMethods& register_functions()
     {
-        return functions;
+        return *functions;
     }
 };
 

@@ -84,7 +84,7 @@ protected:
 
 public:
 
-    virtual ~AbstractTypeSystem() {}
+    virtual ~AbstractTypeSystem();
 
     void print_type_graph() const;
 
@@ -103,8 +103,8 @@ public:
     bool has_class(TypeInfoPtr type) const;
     AbstractClass const* get_class(TypeInfoPtr type) const;
 
-    void add_converter_variations(TypeInfoPtr from, TypeInfoPtr to, AbstractTypeConverter const* conv);
-    void add_converter_simple(TypeInfoPtr from, TypeInfoPtr to, AbstractTypeConverter const* conv);
+    void add_converter_variations(TypeInfoPtr from, TypeInfoPtr to, p_conv_t conv);
+    void add_converter_simple(TypeInfoPtr from, TypeInfoPtr to, p_conv_t conv);
     void add_type(TypeInfoPtr type);
 
     template <typename From, typename To, template <typename From, typename To> class Converter=ImplicitConv>

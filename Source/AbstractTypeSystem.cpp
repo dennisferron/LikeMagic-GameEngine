@@ -15,10 +15,23 @@
 #include "LikeMagic/TypeConv/NilConv.hpp"
 #include "LikeMagic/TypeConv/ToAbstractExpressionConv.hpp"
 
+#include <set>
+
 #include <iostream>
 using namespace std;
 
 using namespace LikeMagic;
+
+AbstractTypeSystem::~AbstractTypeSystem()
+{
+    //std::cout << "Typesystem destructed" << std::endl;
+
+    for (auto it=classes.begin(); it != classes.end(); it++)
+    {
+        delete it->second;
+    }
+}
+
 
 ExprPtr AbstractTypeSystem::try_conv(ExprPtr from_expr, TypeInfoPtr to_type) const
 {
@@ -143,12 +156,12 @@ void AbstractTypeSystem::add_type(TypeInfoPtr type)
     conv_graph.add_type(type);
 }
 
-void AbstractTypeSystem::add_converter_simple(TypeInfoPtr from, TypeInfoPtr to, AbstractTypeConverter const* conv)
+void AbstractTypeSystem::add_converter_simple(TypeInfoPtr from, TypeInfoPtr to, p_conv_t conv)
 {
     conv_graph.add_conv(from, to, conv);
 }
 
-void AbstractTypeSystem::add_converter_variations(TypeInfoPtr from, TypeInfoPtr to, AbstractTypeConverter const* conv)
+void AbstractTypeSystem::add_converter_variations(TypeInfoPtr from, TypeInfoPtr to, p_conv_t conv)
 {
     conv_graph.add_conv(from, to, conv);
 

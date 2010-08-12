@@ -91,6 +91,14 @@ IoState* get_io_state(IoObject* self)
 
 IoMessage* new_message(IoObject* self, std::string name)
 {
+    std::cout << "new_message, name: " << name << std::endl;
+
+    if (!self)
+        throw std::logic_error("Cannot create message; self is null!");
+
+    if (!self->object)
+        throw std::logic_error("Cannot create message; self has no object!");
+
     return IoMessage_newWithName_(get_io_state(self), IOSYMBOL(name.c_str()));
 }
 

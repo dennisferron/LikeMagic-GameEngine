@@ -16,10 +16,17 @@ IoBlock::IoBlock()
     : type_sys(0), iovm(0), io_block(0), io_target(0) {}
 
 IoBlock::IoBlock(AbstractTypeSystem const* type_sys_, IoVM* iovm_, IoObject* io_block_, IoObject* io_target_)
-    : type_sys(type_sys_), iovm(iovm_), io_block(io_block_), io_target(io_target_) {}
+    : type_sys(type_sys_), iovm(iovm_), io_block(io_block_), io_target(io_target_)
+    {
+        if (!io_target_->object)
+            throw std::logic_error("Target has no object!");
+    }
 
 void IoBlock::add_arg(IoMessage* m, AbstractCppObjProxy* proxy) const
 {
+    if (!m->object)
+        throw std::logic_error("Invalid message target; message object is null");
+
     IoMessage_addCachedArg_(m, iovm->to_script(io_block, io_block, m, proxy));
 }
 

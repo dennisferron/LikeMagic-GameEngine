@@ -83,10 +83,6 @@ std::vector<T> from_list(IoObject* io_obj)
 
 void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
 {
-    MKCONV(type_sys, Number, double, IoNumber_asDouble)
-    MKCONV(type_sys, Sequence, std::string, IoSeq_asCString)
-    MKCONV(type_sys, Bool, bool, ISTRUE)
-
     // Nil requires special handling because it produces not a term but a NullExpr.
     struct FromNil : public AbstractTypeConverter
     {
@@ -97,7 +93,12 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
 
         virtual std::string describe() const { return "From Nil Conv"; }
     };
-    type_sys.add_converter_simple(FromIoTypeInfo::create("Nil"), FromNil().wrap_expr(0)->get_type(), new FromNil);
+    static const char* name1 = "Nil";
+    static std::string name2(name1);
+    static auto from_type(FromIoTypeInfo::create(name2));
+    auto to_type = FromNil().wrap_expr(0)->get_type();
+    auto conv = new FromNil;
+    type_sys.add_converter_simple(from_type, to_type, conv);
 
     // IoBlock requires an extra argument (type_sys)
     struct FromIoBlock : public AbstractTypeConverter
@@ -117,6 +118,10 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     };
 
     type_sys.add_converter_simple(FromIoTypeInfo::create("Block"), BetterTypeInfo::create<IoBlock&>(), new FromIoBlock(type_sys, iovm));
+
+    MKCONV(type_sys, Number, double, IoNumber_asDouble)
+    MKCONV(type_sys, Sequence, std::string, IoSeq_asCString)
+    MKCONV(type_sys, Bool, bool, ISTRUE)
 
     //MKCONV(type_sys, Vector, std::vector<long double>, from_vector<long double>)
     MKCONV(type_sys, Vector, std::vector<double>, from_vector<double>)

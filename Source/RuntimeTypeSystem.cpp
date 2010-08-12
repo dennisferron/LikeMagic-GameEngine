@@ -41,48 +41,48 @@ using namespace LikeMagic::SFMO;
 using namespace LikeMagic::TypeConv;
 
 RuntimeTypeSystem::RuntimeTypeSystem()  :
-    functions("CppFunc", *this),
-    proxy_methods("ProxyMethods", *this),
-    collection_methods("CollectionMethods", *this)
+    functions(new StaticMethods("CppFunc", *this)),
+    proxy_methods(new ProxyMethods("ProxyMethods", *this)),
+    collection_methods(new ProxyMethods("CollectionMethods", *this))
 {
     // Add the abstract type system itself as a class.
     LM_CLASS_NO_COPY((*this), AbstractTypeSystem)
     LM_FUNC(AbstractTypeSystem, (set_leak_memory)(leak_memory))
 
     // Register the special classes
-    classes[BetterTypeInfo::create<StaticMethod>()] = &functions;
-    classes[BetterTypeInfo::create<AbstractCppObjProxy>()] = &proxy_methods;
-    classes[BetterTypeInfo::create<SFMOCollection>()] = &collection_methods;
+    classes[BetterTypeInfo::create<StaticMethod>()] = functions;
+    classes[BetterTypeInfo::create<AbstractCppObjProxy>()] = proxy_methods;
+    classes[BetterTypeInfo::create<SFMOCollection>()] = collection_methods;
 
     // StaticMethods is by value but a Term returns by reference;
     // need to give type system ability to do the conversion.
     add_conv<StaticMethod&, StaticMethod>();
 
-    collection_methods.bind_method("each", &AbstractCppObjProxy::each);
+    collection_methods->bind_method("each", &AbstractCppObjProxy::each);
 
-    proxy_methods.bind_method("eval", &AbstractCppObjProxy::eval);
-    proxy_methods.bind_method("exec", &AbstractCppObjProxy::exec);
-    proxy_methods.bind_method("lazy", &AbstractCppObjProxy::lazy);
+    proxy_methods->bind_method("eval", &AbstractCppObjProxy::eval);
+    proxy_methods->bind_method("exec", &AbstractCppObjProxy::exec);
+    proxy_methods->bind_method("lazy", &AbstractCppObjProxy::lazy);
 
-    proxy_methods.bind_method("elem", &AbstractCppObjProxy::elem);
-    proxy_methods.bind_method("iterate", &AbstractCppObjProxy::iterate);
-    proxy_methods.bind_method("adv_loop", &AbstractCppObjProxy::adv_loop);
-    proxy_methods.bind_method("begin_loop", &AbstractCppObjProxy::begin_loop);
-    proxy_methods.bind_method("loop_at_end", &AbstractCppObjProxy::loop_at_end);
+    proxy_methods->bind_method("elem", &AbstractCppObjProxy::elem);
+    proxy_methods->bind_method("iterate", &AbstractCppObjProxy::iterate);
+    proxy_methods->bind_method("adv_loop", &AbstractCppObjProxy::adv_loop);
+    proxy_methods->bind_method("begin_loop", &AbstractCppObjProxy::begin_loop);
+    proxy_methods->bind_method("loop_at_end", &AbstractCppObjProxy::loop_at_end);
 
-    proxy_methods.bind_method("describe", &AbstractCppObjProxy::describe);
-    proxy_methods.bind_method("get_base_names", &AbstractCppObjProxy::get_base_names);
+    proxy_methods->bind_method("describe", &AbstractCppObjProxy::describe);
+    proxy_methods->bind_method("get_base_names", &AbstractCppObjProxy::get_base_names);
 
     // register void so functions returning void will work right.
     auto void_class = new DummyClass<void>("void", *this);
     classes[BetterTypeInfo::create<void>()] = void_class;
-    void_class->add_base_abstr(&proxy_methods);
+    void_class->add_base_abstr(proxy_methods);
 
     // register the Unknown_CppObj so functions returning unregistered classes
     // can still be called.
     auto unknown_class = new DummyClass<Unknown_CppObj>("Unknown_CppObj", *this);
     classes[BetterTypeInfo::create<Unknown_CppObj>()] = unknown_class;
-    unknown_class->add_base_abstr(&proxy_methods);
+    unknown_class->add_base_abstr(proxy_methods);
     this->unknown_class = unknown_class;
 
     register_class<std::string>("string");

@@ -14,6 +14,16 @@
 
 using namespace LikeMagic::Marshaling;
 
+AbstractClass::~AbstractClass()
+{
+    for (auto it=methods.begin(); it != methods.end(); it++)
+    {
+        std::map<int, AbstractCallTargetSelector*> const& overloads(it->second);
+        for (auto it2=overloads.begin(); it2 != overloads.end(); it2++)
+            delete it2->second;
+    }
+}
+
 void AbstractClass::add_method(std::string method_name, AbstractCallTargetSelector* method)
 {
     int num_args = method->get_arg_types().size();

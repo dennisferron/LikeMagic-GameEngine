@@ -27,9 +27,19 @@ namespace LikeMagic { namespace TypeConv {
 using LikeMagic::Utility::BetterTypeInfo;
 using LikeMagic::SFMO::ExprPtr;
 
+class AbstractTypeConverter;
+void intrusive_ptr_add_ref(AbstractTypeConverter const* p);
+void intrusive_ptr_release(AbstractTypeConverter const* p);
+
 class AbstractTypeConverter
 {
+private:
+    friend void intrusive_ptr_add_ref(AbstractTypeConverter const* p);
+    friend void intrusive_ptr_release(AbstractTypeConverter const* p);
+    mutable int ref_count;
+
 public:
+    AbstractTypeConverter();
     virtual ~AbstractTypeConverter() {}
     virtual std::string describe() const = 0;
     virtual ExprPtr wrap_expr(ExprPtr expr) const = 0;
@@ -45,5 +55,6 @@ std::string describe_converter(std::string converter_name)
             " to " + BetterTypeInfo::create<To>()->describe();
 }
 
+typedef boost::intrusive_ptr<AbstractTypeConverter const> p_conv_t;
 
 }}

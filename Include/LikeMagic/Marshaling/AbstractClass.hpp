@@ -72,7 +72,7 @@ protected:
     }
 
 public:
-    virtual ~AbstractClass() {}
+    virtual ~AbstractClass();
     virtual AbstractCppObjProxy* create_class_proxy() const = 0;
     std::string get_class_name() const;
     std::vector<std::string> const& get_method_names() const;

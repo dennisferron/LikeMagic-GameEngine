@@ -38,7 +38,8 @@ private:
     // To give it acess to our private typedefs.
     friend struct FindType;
 
-    typedef AbstractTypeConverter const* p_conv_t;
+    typedef boost::intrusive_ptr<AbstractTypeConverter const> p_conv_t;
+    typedef boost::shared_ptr<std::vector<p_conv_t>> p_chain_t;
 
     struct edge_info
     {
@@ -61,12 +62,12 @@ private:
     // Mutable is for when the object is logically const, but technically a member needs
     // to sometimes change in a way that's not visible from outside the class.
     // Caching is a perfect example of this.
-    mutable boost::unordered_map<std::pair<TypeInfoKey, TypeInfoKey>, std::vector<AbstractTypeConverter const*>*> conv_cache;
+    mutable boost::unordered_map<std::pair<TypeInfoKey, TypeInfoKey>, p_chain_t> conv_cache;
 
     bool has_type(TypeInfoKey type) const;
 
-    ExprPtr build_conv_chain(ExprPtr from_expr, std::vector<AbstractTypeConverter const*> const* chain) const;
-    std::vector<AbstractTypeConverter const*>* search_for_conv(TypeInfoKey from, TypeInfoKey to) const;
+    ExprPtr build_conv_chain(ExprPtr from_expr, p_chain_t chain) const;
+    p_chain_t search_for_conv(TypeInfoKey from, TypeInfoKey to) const;
 
     // Don't allow TypeConvGraph to be copied accidently.
     TypeConvGraph(TypeConvGraph const&)=delete;
@@ -78,7 +79,7 @@ public:
     TypeConvGraph();
     ~TypeConvGraph();
     vertex_t  add_type(TypeInfoPtr type);
-    void add_conv(TypeInfoPtr from, TypeInfoPtr to, AbstractTypeConverter const* conv);
+    void add_conv(TypeInfoPtr from, TypeInfoPtr to, p_conv_t conv);
     ExprPtr wrap_expr(ExprPtr from_expr, TypeInfoPtr from, TypeInfoPtr to) const;
     bool has_conv(TypeInfoPtr from_type, TypeInfoPtr to_type) const;
     void print_graph() const;
