@@ -12,16 +12,27 @@
 #include "LikeMagic/SFMO/CppObjProxy.hpp"
 
 #include "boost/unordered_map.hpp"
+#include "boost/unordered_set.hpp"
+
+extern "C"
+{
+    typedef void (CollectorFreeFunc)(void *);
+}
 
 namespace LikeMagic { namespace Backends { namespace Io {
-
 
 class IoVM
 {
 private:
     AbstractTypeSystem& type_system;
-    IoState* self;
+    IoState* self;  // Has to be named "self" for a lot of the Io macros to work.
     boost::unordered_map<TypeInfoKey, IoObject*> cpp_protos;
+    boost::unordered_map<IoObject*, std::string> watch_for_free;
+    boost::unordered_set<IoObject*> freed_objects;
+    bool disable_free_flag;
+    bool record_freed_flag;
+    bool free_watch_flag;
+    CollectorFreeFunc* original_free_func;
 
     ExprPtr get_abs_expr(std::string io_code) const;
 
@@ -32,6 +43,17 @@ private:
 public:
     IoVM(AbstractTypeSystem& type_system_);
     ~IoVM();
+
+    void on_collector_free(IoObject* io_obj);
+
+    bool free_is_disabled() const;
+    void set_disable_free(bool value);
+    bool record_freed_objects() const;
+    void set_record_freed_objects(bool value);
+    bool watch_freed_objects() const;
+    void set_watch_freed_objects(bool value);
+    void add_watch_for_freed_object(IoObject* io_obj, std::string message);
+    bool check_if_freed(IoObject* io_obj);
 
     static IoObject* io_userfunc(IoObject *self, IoObject *locals, IoMessage *m);
 

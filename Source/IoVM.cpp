@@ -33,6 +33,17 @@ using namespace LikeMagic::SFMO;
 using namespace LikeMagic::Backends::Io;
 using namespace LikeMagic::Utility;
 
+extern "C"
+{
+    void collector_free(void* ptr)
+    {
+        IoObject* io_obj = reinterpret_cast<IoObject*>(ptr);
+        IoState* state = IoObject_state(io_obj);
+        IoVM* iovm = reinterpret_cast<IoVM*>(state->callbackContext);
+        iovm->on_collector_free(io_obj);
+    }
+}
+
 /*
 struct SequenceToToIoTypeInfoConv : public LikeMagic::TypeConv::AbstractTypeConverter
 {
@@ -66,7 +77,8 @@ struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter
 };
 
 
-IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
+IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_),
+    disable_free_flag(false), record_freed_flag(false), free_watch_flag(false)
 {
     // IoObjectExpr expression holds unconverted Io objects; it has type of struct IoObjectExprTag.
     //type_system_.add_type(BetterTypeInfo::create<IoObjectExprTag>());
@@ -116,6 +128,8 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_)
     self = IoState_new();
     IoState_init(self);
     self->callbackContext = reinterpret_cast<void*>(this);
+    original_free_func = self->collector->freeFunc;
+    Collector_setFreeFunc_(self->collector, &collector_free);
 
     IoObject_setSlot_to_(self->lobby, SIOSYMBOL("LikeMagic"),
         API_io_proto(self));
@@ -316,9 +330,57 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
     }
 }
 
+void IoVM::on_collector_free(IoObject* io_obj)
+{
+    if(record_freed_flag)
+       freed_objects.insert(io_obj);
 
+    if(free_watch_flag && watch_for_free.find(io_obj) != watch_for_free.end())
+        throw std::runtime_error("Watch object freed: " + watch_for_free[io_obj]);
 
+    if(!disable_free_flag)
+        (*original_free_func)(io_obj);
+}
 
+bool IoVM::free_is_disabled() const
+{
+    return disable_free_flag;
+}
+
+void IoVM::set_disable_free(bool value)
+{
+    disable_free_flag = value;
+}
+
+bool IoVM::record_freed_objects() const
+{
+    return record_freed_flag;
+}
+
+void IoVM::set_record_freed_objects(bool value)
+{
+    record_freed_flag = value;
+}
+
+bool IoVM::watch_freed_objects() const
+{
+    return free_watch_flag;
+}
+
+void IoVM::set_watch_freed_objects(bool value)
+{
+    free_watch_flag = value;
+}
+
+void IoVM::add_watch_for_freed_object(IoObject* io_obj, std::string message)
+{
+    watch_for_free[io_obj] = message;
+}
+
+bool IoVM::check_if_freed(IoObject* io_obj)
+{
+    return freed_objects.find(io_obj) != freed_objects.end();
+}
 
 
 
