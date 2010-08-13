@@ -29,7 +29,6 @@ private:
     boost::unordered_map<TypeInfoKey, IoObject*> cpp_protos;
     boost::unordered_map<IoObject*, std::string> watch_for_free;
     boost::unordered_set<IoObject*> freed_objects;
-    bool disable_free_flag;
     bool record_freed_flag;
     bool free_watch_flag;
     CollectorFreeFunc* original_free_func;
@@ -46,8 +45,6 @@ public:
 
     void on_collector_free(IoObject* io_obj);
 
-    bool free_is_disabled() const;
-    void set_disable_free(bool value);
     bool record_freed_objects() const;
     void set_record_freed_objects(bool value);
     bool watch_freed_objects() const;

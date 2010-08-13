@@ -37,7 +37,7 @@ IoObject* IoBlock::activate(IoMessage* m) const
 
 void IoBlock::mark() const
 {
-    //std::cout << "Marking IoBlock, block = " << io_block << ", target = " << io_target << std::endl;
+    std::cout << "Marking IoBlock, block = " << io_block << ", target = " << io_target << std::endl;
     IoObject_shouldMarkIfNonNull(io_block);
     IoObject_shouldMarkIfNonNull(io_target);
 }

@@ -274,7 +274,10 @@ public:
     }
 
     // mark Io objects held by this object so the garbage collector won't free them
-    virtual void mark() const { expr->mark(); }
+    virtual void mark() const
+    {
+        expr->mark();
+    }
 
     virtual TypeInfoPtr get_type() const { return expr->get_type(); }
 };

@@ -78,7 +78,7 @@ struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter
 
 
 IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_),
-    disable_free_flag(false), record_freed_flag(false), free_watch_flag(false)
+    record_freed_flag(false), free_watch_flag(false)
 {
     // IoObjectExpr expression holds unconverted Io objects; it has type of struct IoObjectExprTag.
     //type_system_.add_type(BetterTypeInfo::create<IoObjectExprTag>());
@@ -89,7 +89,7 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_),
     // Register this vm
     RuntimeTypeSystem& runtime_type_sys = dynamic_cast<RuntimeTypeSystem&>(type_system_);
     LM_CLASS_NO_COPY(runtime_type_sys, IoVM)
-    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer))
+    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(record_freed_objects)(set_record_freed_objects)(watch_freed_objects)(set_watch_freed_objects)(add_watch_for_freed_object)(check_if_freed))
 
     /*
     LM_CLASS(runtime_type_sys, AbstractTypeInfo)
@@ -122,6 +122,10 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_),
     type_system.add_converter_simple(BetterTypeInfo::create<IoObject*>(), ToIoTypeInfo::create("Object"), new PtrToIoObjectConv);
     type_system.add_converter_simple(ToIoTypeInfo::create("Object"), ToIoTypeInfo::create(), new LikeMagic::TypeConv::NoChangeConv);
 
+    // Allow conversion of Io blocks to IoObject*
+    type_system.add_converter_simple(FromIoTypeInfo::create("Block"), BetterTypeInfo::create<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
+
+    // Allow reference/value conversions for IoBlock.
     type_system_.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock>();
     type_system_.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock const&>();
 
@@ -338,18 +342,9 @@ void IoVM::on_collector_free(IoObject* io_obj)
     if(free_watch_flag && watch_for_free.find(io_obj) != watch_for_free.end())
         throw std::runtime_error("Watch object freed: " + watch_for_free[io_obj]);
 
-    if(!disable_free_flag)
-        (*original_free_func)(io_obj);
-}
-
-bool IoVM::free_is_disabled() const
-{
-    return disable_free_flag;
-}
-
-void IoVM::set_disable_free(bool value)
-{
-    disable_free_flag = value;
+    // BAD THINGS happen if you don't allow the original free function run.
+    // I imagine it must be doing some necessary cleanup or fixing up collector marker pointers.
+    (*original_free_func)(io_obj);
 }
 
 bool IoVM::record_freed_objects() const
