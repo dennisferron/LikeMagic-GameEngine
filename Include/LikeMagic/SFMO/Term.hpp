@@ -9,11 +9,15 @@
 
 #pragma once
 
-#include "Expression.hpp"
+#include "LikeMagic/SFMO/Expression.hpp"
 
+#include "LikeMagic/IMarkable.hpp"
 #include "LikeMagic/Utility/TypeDescr.hpp"
+#include "LikeMagic/Utility/StripModifiers.hpp"
+#include "LikeMagic/Utility/TypePack.hpp"
 
-#include <boost/type_traits/is_base_of.hpp>
+#include "boost/utility/enable_if.hpp"
+#include "boost/type_traits/is_base_of.hpp"
 
 #include <iostream>
 
@@ -37,13 +41,41 @@ template <> struct TermStoreAs<unsigned int const&> { typedef unsigned int type;
 template <> struct TermStoreAs<unsigned long const&> { typedef unsigned long type; };
 template <> struct TermStoreAs<unsigned long long const&> { typedef unsigned long long type; };
 
+// For Debugging.
+template <> struct TermStoreAs<bool&> { typedef bool type; };
+
 
 template <typename T, bool IsCopyable>
 class Term :
     public Expression<T&>
 {
 private:
+    char debug_padding[13];
+
     typename TermStoreAs<T>::type value;
+
+    static void mark(IMarkable const* obj)
+    {
+        obj->mark();
+    }
+
+    static void mark(IMarkable const& obj)
+    {
+        obj.mark();
+    }
+
+    template <typename MarkType>
+    typename boost::enable_if<boost::is_base_of<IMarkable, MarkType>
+        >::type mark_if_possible(TypePack<MarkType>) const
+    {
+        mark(value);
+    }
+
+    template <typename MarkType>
+    typename boost::disable_if<boost::is_base_of<IMarkable, MarkType>
+        >::type mark_if_possible(TypePack<MarkType>) const
+    {
+    }
 
     Term() : value()
     {
@@ -61,15 +93,45 @@ private:
 
 public:
 
-    static boost::intrusive_ptr<Expression<T&>> create() { return new Term(); }
+    static boost::intrusive_ptr<Expression<T&>> create()
+    {
+        boost::intrusive_ptr<Expression<T&>> result = new Term();
+
+        if (!result.get())
+            throw std::logic_error("create Term is null!");
+
+        return result;
+    }
 
     template <typename... Args>
-    static boost::intrusive_ptr<Expression<T&>> create(Args && ... args) { return new Term(std::forward<Args>(args)...); }
+    static boost::intrusive_ptr<Expression<T&>> create(Args && ... args)
+    {
+        boost::intrusive_ptr<Expression<T&>> result = new Term(std::forward<Args>(args)...);
+
+        if (!result.get())
+            throw std::logic_error("create Term is null!");
+
+        return result;
+    }
 
     template <typename... Args>
-    static boost::intrusive_ptr<Expression<T&>> create(Args const& ... args) { return new Term(args...); }
+    static boost::intrusive_ptr<Expression<T&>> create(Args const& ... args)
+    {
+        boost::intrusive_ptr<Expression<T&>> result = new Term(args...);
 
-    inline virtual T& eval() { return value; }
+        if (!result.get())
+            throw std::logic_error("create Term is null!");
+
+        return result;
+    }
+
+    inline virtual T& eval()
+    {
+        if (!this)
+            throw std::logic_error("Term 'this' pointer is null!");
+
+        return value;
+    }
 
     virtual boost::intrusive_ptr<Expression<T&>> clone() const { return new Term<T, IsCopyable>(value); }
 
@@ -84,7 +146,8 @@ public:
 
     virtual void mark() const
     {
-        IMarkable::markIfMarkable(value);
+        typedef typename StripModifiers<T>::strip::type MarkType;
+        mark_if_possible(TypePack<MarkType>());
     }
 
 };
@@ -95,7 +158,32 @@ class Term<T, false> :
     public Expression<T&>
 {
 private:
+    char debug_padding[13];
+
     T value;
+
+    static void mark(IMarkable const* obj)
+    {
+        obj->mark();
+    }
+
+    static void mark(IMarkable const& obj)
+    {
+        obj.mark();
+    }
+
+    template <typename MarkType>
+    typename boost::enable_if<boost::is_base_of<IMarkable, MarkType>
+        >::type mark_if_possible(TypePack<MarkType>) const
+    {
+        mark(value);
+    }
+
+    template <typename MarkType>
+    typename boost::disable_if<boost::is_base_of<IMarkable, MarkType>
+        >::type mark_if_possible(TypePack<MarkType>) const
+    {
+    }
 
     Term() : value()
     {
@@ -113,15 +201,45 @@ private:
 
 public:
 
-    static boost::intrusive_ptr<Expression<T&>> create() { return new Term(); }
+    static boost::intrusive_ptr<Expression<T&>> create()
+    {
+        boost::intrusive_ptr<Expression<T&>> result = new Term();
+
+        if (!result.get())
+            throw std::logic_error("create Term is null!");
+
+        return result;
+    }
 
     template <typename... Args>
-    static boost::intrusive_ptr<Expression<T&>> create(Args && ... args) { return new Term(std::forward<Args>(args)...); }
+    static boost::intrusive_ptr<Expression<T&>> create(Args && ... args)
+    {
+        boost::intrusive_ptr<Expression<T&>> result = new Term(std::forward<Args>(args)...);
+
+        if (!result.get())
+            throw std::logic_error("create Term is null!");
+
+        return result;
+    }
 
     template <typename... Args>
-    static boost::intrusive_ptr<Expression<T&>> create(Args const& ... args) { return new Term(args...); }
+    static boost::intrusive_ptr<Expression<T&>> create(Args const& ... args)
+    {
+        boost::intrusive_ptr<Expression<T&>> result = new Term(args...);
 
-    inline virtual T& eval() { return value; }
+        if (!result.get())
+            throw std::logic_error("create Term is null!");
+
+        return result;
+    }
+
+    inline virtual T& eval()
+    {
+        if (!this)
+            throw std::logic_error("Term 'this' pointer is null!");
+
+        return value;
+    }
 
     virtual boost::intrusive_ptr<Expression<T&>> clone() const
     {
@@ -139,7 +257,8 @@ public:
 
     virtual void mark() const
     {
-        IMarkable::markIfMarkable(value);
+        typedef typename StripModifiers<T>::strip::type MarkType;
+        mark_if_possible(TypePack<MarkType>());
     }
 
 };

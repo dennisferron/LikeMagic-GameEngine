@@ -9,6 +9,7 @@
 #include "LikeMagic/Backends/Io/API_Io_Impl.hpp"
 #include "LikeMagic/SFMO/Term.hpp"
 #include "LikeMagic/SFMO/NullExpr.hpp"
+#include "LikeMagic/SFMO/FalseExpr.hpp"
 #include "LikeMagic/Backends/Io/IoBlock.hpp"
 #include "LikeMagic/Backends/Io/IoObjectExpr.hpp"
 #include "LikeMagic/Backends/Io/FromIoTypeInfo.hpp"
@@ -80,7 +81,6 @@ std::vector<T> from_list(IoObject* io_obj)
     type_sys.add_converter_simple(FromIoTypeInfo::create(#scriptType), BetterTypeInfo::create<cppType&>(), new From##scriptType); \
 }
 
-
 void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
 {
     // Nil requires special handling because it produces not a term but a NullExpr.
@@ -88,7 +88,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     {
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            return NullExpr<IoNilExprTag*>::create();
+            return NullExpr<NilExprTag*>::create();
         }
 
         virtual std::string describe() const { return "From Nil Conv"; }
@@ -99,6 +99,19 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     auto to_type = FromNil().wrap_expr(0)->get_type();
     auto conv = new FromNil;
     type_sys.add_converter_simple(from_type, to_type, conv);
+
+    // Interpret nil as false in bool contexts.
+    struct FromNilToFalse : public AbstractTypeConverter
+    {
+        virtual ExprPtr wrap_expr(ExprPtr expr) const
+        {
+            return FalseExpr::create();
+        }
+
+        virtual std::string describe() const { return "From Nil to 'false' Conv"; }
+    };
+    type_sys.add_converter_simple(FromIoTypeInfo::create("Nil"), BetterTypeInfo::create<bool>(), new FromNilToFalse);
+
 
     // IoBlock requires an extra argument (type_sys)
     struct FromIoBlock : public AbstractTypeConverter
@@ -121,7 +134,38 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
 
     MKCONV(type_sys, Number, double, IoNumber_asDouble)
     MKCONV(type_sys, Sequence, std::string, IoSeq_asCString)
-    MKCONV(type_sys, Bool, bool, ISTRUE)
+    //MKCONV(type_sys, Bool, bool, ISTRUE)
+
+    struct FromBool : public AbstractTypeConverter
+    {
+        virtual ExprPtr wrap_expr(ExprPtr expr) const
+        {
+            if (!expr.get())
+                throw std::logic_error("FromBool wrap_expr is null");
+
+            boost::intrusive_ptr<IoObjectExpr> io_expr = static_cast<IoObjectExpr*>(expr.get());
+
+            if (!io_expr.get())
+                throw std::logic_error("FromBool io_expr is null");
+
+            bool value = ISTRUE(io_expr->eval());
+
+            boost::intrusive_ptr<Expression<bool&>> result = Term<bool, true>::create(value);
+
+            if (!result.get())
+                throw std::logic_error("FromBool result expression is null");
+
+            if (!&result->eval())
+                throw std::logic_error("FromBool address of evaled term is null");
+
+            return result;
+        }
+
+        virtual std::string describe() const { return "From Bool Conv"; }
+    };
+
+    type_sys.add_converter_simple(FromIoTypeInfo::create("Bool"), BetterTypeInfo::create<bool&>(), new FromBool);
+
 
     //MKCONV(type_sys, Vector, std::vector<long double>, from_vector<long double>)
     MKCONV(type_sys, Vector, std::vector<double>, from_vector<double>)

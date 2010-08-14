@@ -54,7 +54,7 @@ bool AbstractTypeSystem::has_conv(TypeInfoPtr from_type, TypeInfoPtr to_type) co
 AbstractTypeSystem::AbstractTypeSystem() : leak_memory_flag(false)
 {
     // Allow conversions from nil to any pointer.
-    conv_graph.add_type(BetterTypeInfo::create<IoNilExprTag*>());
+    conv_graph.add_type(BetterTypeInfo::create<NilExprTag*>());
 }
 
 void AbstractTypeSystem::print_type_graph() const
@@ -173,13 +173,13 @@ void AbstractTypeSystem::add_converter_variations(TypeInfoPtr from, TypeInfoPtr 
     conv_graph.add_conv(from, from->as_const_type(), new NoChangeConv);
     conv_graph.add_conv(to, to->as_const_type(), new NoChangeConv);
 
-    // Allow NULL (aka nil) to be converted to these types.
-    auto nil_tag = BetterTypeInfo::create<IoNilExprTag*>();
-
     // Allow this expression type to be converted to an expression.
     TypeInfoPtr to_expr_type = BetterTypeInfo::create<ExprPtr>();
     conv_graph.add_conv(from, to_expr_type, new ToAbstractExpressionConv);
     conv_graph.add_conv(from->as_const_type(), to_expr_type, new ToAbstractExpressionConv);
+
+    // Allow NULL (aka nil) to be converted to pointers to these types.
+    auto nil_tag = BetterTypeInfo::create<NilExprTag*>();
 
     if (from->get_is_ptr())
         conv_graph.add_conv(nil_tag, from, new NilConv);

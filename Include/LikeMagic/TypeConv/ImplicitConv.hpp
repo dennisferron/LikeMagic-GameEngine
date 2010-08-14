@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -45,12 +45,26 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, ImplicitConvImpl<From, To>>::create(
-            boost::intrusive_ptr<Expression<From>>(
-                reinterpret_cast<Expression<From>*>(expr.get())));
+        if (!expr.get())
+            throw std::logic_error("wrap_expr: expr is null pointer");
+
+        Expression<From>* from_expr = static_cast<Expression<From>*>(expr.get());
+
+        if (!from_expr)
+            throw std::logic_error("wrap_expr: from_expr is null pointer");
+
+        ExprPtr result = Trampoline<From, To, ImplicitConvImpl<From, To>>::create(
+            from_expr
+        );
+
+        if (!result.get())
+            throw std::logic_error("result of wrap_expr is null pointer!");
+
+        return result;
     }
 
     virtual std::string describe() const { return describe_converter<From, To>("ImplicitConv") + " (inherits from " + ConvertibleTo<To>::describe() + ")"; }
 };
+
 
 }}

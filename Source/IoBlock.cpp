@@ -32,12 +32,26 @@ void IoBlock::add_arg(IoMessage* m, AbstractCppObjProxy* proxy) const
 
 IoObject* IoBlock::activate(IoMessage* m) const
 {
-    return IoBlock_activate(io_block, io_target, io_target, m, io_target);
+    IoObject* result = IoBlock_activate(io_block, io_target, io_target, m, io_target);
+
+    {
+        IoCoroutine *self = iovm->self->currentCoroutine;
+        if (!ISNIL(IoCoroutine_rawException(self)))
+        {
+            IoCoroutine_rawPrintBackTrace(self);
+            throw std::logic_error("Io Exception; see back trace above.");
+        }
+    }
+
+    if (!result)
+        throw std::logic_error("Error in IoBlock: activating the block returned null (may be caused by an error in script).");
+
+    return result;
 }
 
 void IoBlock::mark() const
 {
-    std::cout << "Marking IoBlock, block = " << io_block << ", target = " << io_target << std::endl;
+    //std::cout << "Marking IoBlock, block = " << io_block << ", target = " << io_target << std::endl;
     IoObject_shouldMarkIfNonNull(io_block);
     IoObject_shouldMarkIfNonNull(io_target);
 }

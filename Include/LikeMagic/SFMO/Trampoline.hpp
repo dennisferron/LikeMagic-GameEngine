@@ -19,16 +19,37 @@ class Trampoline : public Expression<To>
 private:
     boost::intrusive_ptr<Expression<From>> from_expr;
 
-    Trampoline(boost::intrusive_ptr<Expression<From>> expr) : from_expr(expr) {}
+    Trampoline(boost::intrusive_ptr<Expression<From>> expr) : from_expr(expr)
+    {
+        if (!this)
+            throw std::logic_error("Trampoline 'this' is a null pointer!");
+
+        if (!expr.get())
+            throw std::logic_error("Trampoline From expression is a null pointer!");
+    }
 
 public:
     static boost::intrusive_ptr<Expression<To>> create(ExprPtr expr)
     {
-        return new Trampoline(reinterpret_cast<Expression<From>*>(expr.get()));
+        if (!expr.get())
+            throw std::logic_error("Trampoline From expression is a null pointer!");
+
+        boost::intrusive_ptr<Expression<To>> result = new Trampoline(reinterpret_cast<Expression<From>*>(expr.get()));
+
+        if (!result.get())
+            throw std::logic_error("result of create trampoline is null");
+
+        return result;
     }
 
     inline virtual To eval()
     {
+        if (!this)
+            throw std::logic_error("Trampoline 'this' is a null pointer!");
+
+        if (!from_expr.get())
+            throw std::logic_error("Trampoline From expression is a null pointer!");
+
         return Converter::do_conv(from_expr->eval());
     }
 
