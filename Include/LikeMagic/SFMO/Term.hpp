@@ -96,10 +96,6 @@ public:
     static boost::intrusive_ptr<Expression<T&>> create()
     {
         boost::intrusive_ptr<Expression<T&>> result = new Term();
-
-        if (!result.get())
-            throw std::logic_error("create Term is null!");
-
         return result;
     }
 
@@ -107,10 +103,6 @@ public:
     static boost::intrusive_ptr<Expression<T&>> create(Args && ... args)
     {
         boost::intrusive_ptr<Expression<T&>> result = new Term(std::forward<Args>(args)...);
-
-        if (!result.get())
-            throw std::logic_error("create Term is null!");
-
         return result;
     }
 
@@ -118,18 +110,11 @@ public:
     static boost::intrusive_ptr<Expression<T&>> create(Args const& ... args)
     {
         boost::intrusive_ptr<Expression<T&>> result = new Term(args...);
-
-        if (!result.get())
-            throw std::logic_error("create Term is null!");
-
         return result;
     }
 
     inline virtual T& eval()
     {
-        if (!this)
-            throw std::logic_error("Term 'this' pointer is null!");
-
         return value;
     }
 
@@ -204,10 +189,6 @@ public:
     static boost::intrusive_ptr<Expression<T&>> create()
     {
         boost::intrusive_ptr<Expression<T&>> result = new Term();
-
-        if (!result.get())
-            throw std::logic_error("create Term is null!");
-
         return result;
     }
 
@@ -215,10 +196,6 @@ public:
     static boost::intrusive_ptr<Expression<T&>> create(Args && ... args)
     {
         boost::intrusive_ptr<Expression<T&>> result = new Term(std::forward<Args>(args)...);
-
-        if (!result.get())
-            throw std::logic_error("create Term is null!");
-
         return result;
     }
 
@@ -226,18 +203,11 @@ public:
     static boost::intrusive_ptr<Expression<T&>> create(Args const& ... args)
     {
         boost::intrusive_ptr<Expression<T&>> result = new Term(args...);
-
-        if (!result.get())
-            throw std::logic_error("create Term is null!");
-
         return result;
     }
 
     inline virtual T& eval()
     {
-        if (!this)
-            throw std::logic_error("Term 'this' pointer is null!");
-
         return value;
     }
 

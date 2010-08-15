@@ -44,7 +44,7 @@ public:
 
     virtual R eval()
     {
-       return MakeCall<ObjType>::call_nonvoid(target->eval(), func, args, IPack());
+       return call_nonvoid<ObjType>(target->eval(), func, args, IPack());
     }
 
     virtual boost::intrusive_ptr<Expression<R>> clone() const { return new MethodCall(target, func, methodcall_args::clone_args(args, IPack())); }
@@ -89,7 +89,7 @@ public:
 
     virtual void eval()
     {
-       MakeCall<ObjType>::call_void(target->eval(), func, args, IPack());
+       call_void<ObjType>(target->eval(), func, args, IPack());
     }
 
     virtual boost::intrusive_ptr<Expression<void>> clone() const

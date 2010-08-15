@@ -44,10 +44,11 @@ struct FuncPtrTraits
 {
 
     // A helper type that wraps up all values of the function traits.
-    template <bool is_const_, typename R_, typename ObjT_, typename... Args_>
+    template <bool is_const_, bool is_static_, typename R_, typename ObjT_, typename... Args_>
     struct Sig
     {
         enum { is_const = is_const_ };
+        enum { is_static = is_static_ };
         enum { num_args = sizeof...(Args_) };
 
         typedef R_ R;
@@ -67,15 +68,15 @@ struct FuncPtrTraits
 
     // Nonconst member functions.
     template <typename R, typename ObjT, typename... Args>
-    static Sig<false, R, ObjT, Args...> test(R (ObjT::*f)(Args...));
+    static Sig<false, false, R, ObjT, Args...> test(R (ObjT::*f)(Args...));
 
     // Const member functions.
     template <typename R, typename ObjT, typename... Args>
-    static Sig<true, R, ObjT, Args...> test(R (ObjT::*f)(Args...) const);
+    static Sig<true, false, R, ObjT, Args...> test(R (ObjT::*f)(Args...) const);
 
     // Static member functions and ordinary (namespace-level) functions.
     template <typename R, typename... Args>
-    static Sig<false, R, StaticMethod, Args...> test(R (*f)(Args...));
+    static Sig<false, true, R, StaticMethod, Args...> test(R (*f)(Args...));
 
     // Figure out what result of invoking test() on a pointer of type "F" would be.
     typedef decltype(test(F(0))) Signature;
@@ -98,6 +99,7 @@ struct FuncPtrTraits
     typedef typename Signature::TPack TPack;
 
     enum { is_const = Signature::is_const };
+    enum { is_static = Signature::is_static };
     enum { num_args = Signature::num_args };
 
     // Get a list of type info for at most the first N arg types.

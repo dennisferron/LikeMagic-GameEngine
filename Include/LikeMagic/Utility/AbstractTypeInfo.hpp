@@ -109,26 +109,14 @@ public:
 
     std::size_t hash_value() const
     {
-//        static int hits = 0;
-//        static int misses = 0;
-//        static int count = 0;
 
         if (!has_cached_hash)
         {
-//            ++misses;
             cached_hash = 0;
             boost::hash_combine(cached_hash, comparator_typeid());
             boost::hash_combine(cached_hash, calc_hash());
             has_cached_hash = true;
         }
-//        else
-//        {
-//            ++hits;
-//        }
-
-//        if (++count % 100 == 0)
-//            std::cout << "hits: " << hits << " misses: " << misses << " hit%: " << (1000.0*hits)/(count*10.0) << std::endl;
-
         return cached_hash;
     }
 

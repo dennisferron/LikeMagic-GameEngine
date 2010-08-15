@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include "boost/type_traits/is_enum.hpp"
+#include "LikeMagic/Utility/EnumHelper.hpp"
+
 #include "LikeMagic/AbstractTypeSystem.hpp"
 #include "LikeMagic/Marshaling/Class.hpp"
 #include "LikeMagic/Marshaling/StaticMethods.hpp"
@@ -23,6 +26,7 @@ namespace LikeMagic {
 using namespace LikeMagic::Marshaling;
 
 using LikeMagic::Utility::TypeInfoKey;
+using LikeMagic::Utility::EnumHelper;
 
 // The reason why TypeSystem is split into AbstractTypeSystem and
 // the concrete RuntimeTypeSystem is that things like class Class
@@ -58,6 +62,7 @@ private:
         // only if the object is copyable.
         //add_conv<T*&, T, PtrDerefConv>();
         add_conv<T&, T>();
+        add_conv<T const&, T>();
         //add_conv<T*&, T const, PtrDerefConv>();
     }
 
@@ -66,6 +71,23 @@ private:
     register_copyable_conv()
     {
     }
+
+
+    template <typename T, bool is_copyable>
+    typename boost::enable_if<boost::is_enum<T>>::type
+    register_enum(Class<T, is_copyable>& result)
+    {
+        result.bind_nonmember_op("==",    &EnumHelper<T>::equals);
+        result.bind_nonmember_op("!=",    &EnumHelper<T>::not_equals);
+        result.bind_nonmember_op("value", &EnumHelper<T>::value);
+    }
+
+    template <typename T, bool is_copyable>
+    typename boost::disable_if<boost::is_enum<T>>::type
+    register_enum(Class<T, is_copyable>& result)
+    {
+    }
+
 
     template <typename T, bool is_copyable>
     Class<T, is_copyable>& register_class_impl(std::string name)
@@ -102,6 +124,9 @@ private:
 
             // enable pointer to value conversions only if class is copyable.
             register_copyable_conv<T, is_copyable>();
+
+            // Add enum-specific things if applicable.
+            register_enum<T, is_copyable>(*result);
 
             classes[TypeInfoKey(type.key->bare_type())] = result;
 
@@ -166,7 +191,22 @@ public:
     Class<T, is_copyable>& register_class(std::string name)
     {
         //return check_for_collection<T, is_copyable>(name);
-        return register_class_impl<T, is_copyable>(name);
+        auto& result = register_class_impl<T, is_copyable>(name);
+
+        return result;
+    }
+
+    // Currently register_class is capable of discerning enums.
+    template <typename T>
+    Class<T, true>& register_enum(std::string name)
+    {
+        auto& result = register_class_impl<T, true>(name);
+
+        //result.bind_nonmember_op("==",    &EnumHelper<T>::equals);
+        //result.bind_nonmember_op("!=",    &EnumHelper<T>::not_equals);
+        //result.bind_nonmember_op("value", &EnumHelper<T>::value);
+
+        return result;
     }
 
     StaticMethods& register_functions()

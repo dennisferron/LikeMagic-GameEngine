@@ -36,11 +36,14 @@ IoObject* IoBlock::activate(IoMessage* m) const
 
     {
         IoCoroutine *self = iovm->self->currentCoroutine;
+
+        /*   This isn't how to handle exceptions - Io would have already exited by now:
         if (!ISNIL(IoCoroutine_rawException(self)))
         {
             IoCoroutine_rawPrintBackTrace(self);
             throw std::logic_error("Io Exception; see back trace above.");
         }
+        */
     }
 
     if (!result)

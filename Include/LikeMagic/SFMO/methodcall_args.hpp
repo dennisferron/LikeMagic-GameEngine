@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -56,7 +56,7 @@ struct MarkArgs
 };
 
 template <typename ArgTuple, int... Indices>
-ArgTuple clone_args(ArgTuple args, IndexPack<Indices...>) 
+ArgTuple clone_args(ArgTuple args, IndexPack<Indices...>)
 {
     return ArgTuple(std::get<Indices>(args)->clone()...);
 }
@@ -74,12 +74,33 @@ std::set<AbstractObjectSet*> get_objsets(T target, ArgTuple args)
     return objsets;
 }
 
+template <typename ArgTuple>
+std::set<AbstractObjectSet*> get_objsets(ArgTuple args)
+{
+    std::set<AbstractObjectSet*> objsets;
+
+    CollectObjSets f;
+    tuple_for_each(f, args);
+
+    objsets.insert(f.objsets.begin(), f.objsets.end());
+
+    return objsets;
+}
+
 template <typename T, typename ArgTuple>
 std::string description(T target, ArgTuple args)
 {
     DescribeArgs f;
     tuple_for_each(f, args);
     return "(" + target->description() + ").method(" + f.description + ")";
+}
+
+template <typename ArgTuple>
+std::string description(ArgTuple args)
+{
+    DescribeArgs f;
+    tuple_for_each(f, args);
+    return "static method(" + f.description + ")";
 }
 
 template <typename ArgTuple, int... Indices>

@@ -140,24 +140,9 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     {
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            if (!expr.get())
-                throw std::logic_error("FromBool wrap_expr is null");
-
             boost::intrusive_ptr<IoObjectExpr> io_expr = static_cast<IoObjectExpr*>(expr.get());
-
-            if (!io_expr.get())
-                throw std::logic_error("FromBool io_expr is null");
-
             bool value = ISTRUE(io_expr->eval());
-
             boost::intrusive_ptr<Expression<bool&>> result = Term<bool, true>::create(value);
-
-            if (!result.get())
-                throw std::logic_error("FromBool result expression is null");
-
-            if (!&result->eval())
-                throw std::logic_error("FromBool address of evaled term is null");
-
             return result;
         }
 

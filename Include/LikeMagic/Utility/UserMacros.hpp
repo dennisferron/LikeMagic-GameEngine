@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -10,8 +10,8 @@
 
 #include "LikeMagic/RuntimeTypeSystem.hpp"
 
-#include <boost/preprocessor/seq/for_each.hpp>
-#include <boost/preprocessor/stringize.hpp>
+#include "boost/preprocessor/seq/for_each.hpp"
+#include "boost/preprocessor/stringize.hpp"
 
 #define LM_ENUM_PROTOS_IMPL(r, data, elem) data.add_proto(BOOST_PP_STRINGIZE(elem), elem);
 #define LM_ENUM_PROTOS(vm_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ENUM_PROTOS_IMPL, vm_name, SEQ)
@@ -41,6 +41,8 @@
 #define LM_CLASS(type_sys, class_name) auto& class_name##_LM = (type_sys).register_class<class_name>(#class_name);
 
 #define LM_CLASS_NO_COPY(type_sys, class_name) auto& class_name##_LM = (type_sys).register_class<class_name, false>(#class_name);
+
+#define LM_ENUM(type_sys, class_name) auto& class_name##_LM = (type_sys).register_enum<class_name>(#class_name);
 
 // Your LikeMagic Class object must be named with the class name followed by "_LM" (do not provide the _LM to the macro)
 #define LM_FUNC_IMPL(r, data, elem) data##_LM.bind_method(BOOST_PP_STRINGIZE(elem), &data::elem);

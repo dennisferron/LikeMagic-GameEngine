@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -112,6 +112,22 @@ public:
     {
         //auto calltarget = new CallTargetSelector<MethodCallGenerator, T, F>(f, type_system);
         auto calltarget = new MethodCallGenerator<T, F>(f, type_system);
+        add_method(method_name, calltarget);
+    }
+
+    // A "hack" to allow binding static class methods without using class StaticMethods::bind_method.
+    template <typename F>
+    void bind_static_method(std::string method_name, F f)
+    {
+        auto calltarget = new MethodCallGenerator<T, F, true, false>(f, type_system);
+        add_method(method_name, calltarget);
+    }
+
+    // A further "hack" to allow binding nonmember operators.  Target object gets converted to first function argument.
+    template <typename F>
+    void bind_nonmember_op(std::string method_name, F f)
+    {
+        auto calltarget = new MethodCallGenerator<T, F, true, true>(f, type_system);
         add_method(method_name, calltarget);
     }
 

@@ -6,23 +6,18 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
+#include <iostream>
 
 #pragma once
 
 namespace LikeMagic { namespace Utility {
 
-
-// Used to wrap up the types of a function pointer into a set of types.
-template <typename... Types> struct TypePack
+template <typename E>
+struct EnumHelper
 {
-    /*
-    template <typename T>
-    struct Prepend
-    {
-        typedef TypePack<T, Types...> type;
-    };
-    */
+    static bool equals(E a, E b) { return a == b; }
+    static bool not_equals(E a, E b) { return a != b; }
+    static int value(E e) { return static_cast<int>(e); }
 };
-
 
 }}
