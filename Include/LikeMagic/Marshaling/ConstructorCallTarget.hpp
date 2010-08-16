@@ -52,6 +52,8 @@ public:
         return make_arg_list(TypePack<Args...>());
     }
 
+    // Some methods (like constructors) should not be inherited.
+    virtual bool is_inherited() const { return false; }
 };
 
 // Create by pointer.
@@ -87,6 +89,8 @@ public:
         return make_arg_list(TypePack<Args...>());
     }
 
+    // Some methods (like constructors) should not be inherited.
+    virtual bool is_inherited() const { return false; }
 };
 
 

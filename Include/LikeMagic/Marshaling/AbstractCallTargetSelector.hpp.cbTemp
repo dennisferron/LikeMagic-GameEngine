@@ -24,7 +24,7 @@ public:
         ) const = 0;
     virtual TypeInfoList get_arg_types() const = 0;
 
-    // Some methods (like constructors) should not be inherited.
+    // Some methods (like constructors) only apply to current
     virtual bool is_inherited() const { return true; }
 };
 

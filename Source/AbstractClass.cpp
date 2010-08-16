@@ -85,7 +85,7 @@ void AbstractClass::suggest_method(std::string method_name, int num_args) const
     }
 }
 
-AbstractCallTargetSelector* AbstractClass::try_get_method(std::string method_name, int num_args) const
+AbstractCallTargetSelector* AbstractClass::try_get_method(std::string method_name, int num_args, bool in_base_class) const
 {
     // First try to find the name and arg number method in this class.
     auto name_iter = methods.find(method_name);
@@ -95,14 +95,20 @@ AbstractCallTargetSelector* AbstractClass::try_get_method(std::string method_nam
         auto num_iter = overloads.find(num_args);
         if (num_iter != overloads.end())
         {
-            return num_iter->second;
+            AbstractCallTargetSelector* method = num_iter->second;
+
+            // Methods that cannot be inherited (like constructors) must not be returned from base class search.
+            if (in_base_class && !method->is_inherited())
+                return 0;
+            else
+                return num_iter->second;
         }
     }
 
     // Second try to find it in the bases.
     for (auto it=bases.begin(); it != bases.end(); it++)
     {
-        AbstractCallTargetSelector* method = it->second->try_get_method(method_name, num_args);
+        AbstractCallTargetSelector* method = it->second->try_get_method(method_name, num_args, true);
         if (method)
             return method;
     }
