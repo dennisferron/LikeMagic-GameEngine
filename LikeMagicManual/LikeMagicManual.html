@@ -521,6 +521,39 @@ Most of the work is done using templates, which use type inference to automate m
 [[LM_FUNCS]](class_name, func1, func2, func3, ...)
 </pre>
 </div>
+<div title="Building LikeMagic" modifier="YourName" created="201010162031" modified="201010162236" changecount="5">
+<pre>Note: In these instructions I use &quot;cd LikeMagic/some_folder&quot; to indicate that you should cd to a certain submodule's directory within the LikeMagic repository.
+
+On Linux
+
+Get prereq programs:
+sudo apt-get install gcc g++ git codeblocks cmake build-essential
+(Note:  On Ubuntu 10.10, installing only gcc did not also install g++.)
+
+Clone the LikeMagic repo:
+git clone github/LikeMagic
+
+Build the Io submodule:
+cd LikeMagic/io
+make
+
+Install OpenGL and GLUT libraries for Irrlicht:
+sudo apt-get install glutg3-dev libxxf86vm-dev
+
+Build Irrlicht:
+cd LikeMagic/irrlicht/source/Irrlicht
+make
+
+Build the bullet submodule in LikeMagic/bullet/bullet-build:
+cd LikeMagic/bullet
+mkdir bullet-build
+cd bullet-build
+cmake .. -G &quot;Unix Makefiles&quot;
+make
+
+
+</pre>
+</div>
 <div title="DefaultTiddlers" modifier="DennisFerron" created="201001122119" changecount="1">
 <pre>[[LikeMagic]]</pre>
 </div>
@@ -533,14 +566,14 @@ Most of the work is done using templates, which use type inference to automate m
 <div title="FAQ" modifier="DennisFerron" created="201001122251" modified="201005100034" changecount="28">
 <pre>//Note:  These are in completely random order; I'm going to break this into subtopics once there are enough of them to get an idea what subtopics are needed.  It might be somewhat incorrect to call these &quot;questions&quot; as no one has asked them yet, but they are random pieces of trivia I've been jotting down as they come up, which seem to fit best in the FAQ format.//
 
-Q: //  &quot;error: &#8216;f&#8217; cannot be used as a member pointer, since it is of type &#8216;const return_type&amp; (*)()&#8217;&quot; //
-A:  This can be caused by trying to bind a static function as if it were a member function.  (Note the lack of a class name in the signature; if it were a pointer-to-member-function, it should say &#8216;const return_type&amp; (ClassName::*)()&#8217;.)  Unfortunately due to GCC's horrible error reporting, it doesn't tell you WHICH function name that was bound was the one that caused the error, and the line number it reports will be the last line in the binding file.  This is exemplary of what is wrong with all of GCC's error reporting:  it reports the error deep down in the code where a problem was first encountered, but doesn't give you the higher level information that is actually useful.  And I say GCC, not C++ in general, because although it is difficult to give good error reporting for C++ and template code, it is not impossible, as the Clang project is currently demonstrating.
+Q: //  &quot;error: ‘f’ cannot be used as a member pointer, since it is of type ‘const return_type&amp; (*)()’&quot; //
+A:  This can be caused by trying to bind a static function as if it were a member function.  (Note the lack of a class name in the signature; if it were a pointer-to-member-function, it should say ‘const return_type&amp; (ClassName::*)()’.)  Unfortunately due to GCC's horrible error reporting, it doesn't tell you WHICH function name that was bound was the one that caused the error, and the line number it reports will be the last line in the binding file.  This is exemplary of what is wrong with all of GCC's error reporting:  it reports the error deep down in the code where a problem was first encountered, but doesn't give you the higher level information that is actually useful.  And I say GCC, not C++ in general, because although it is difficult to give good error reporting for C++ and template code, it is not impossible, as the Clang project is currently demonstrating.
 
 OK, enough ranting:  what you'll need to do is examine the function signature carefully and make a guess which function it might be.  Then, you can use LM_STATIC_FUNC(type_sys, class_name, func_name) to bind that function.
 
 (You can also use LM_STATIC_FUNC to register global functions; it will always place a &quot;::&quot; between class_name and func_name, but you can pass a blank class name, so LM_STATIC_FUNC(type_sys, , func_name) will bind '::func_name' (in the global namespace) while LM_STATIC_FUNC(type_sys, Namespace::NestedNamespace, func_name) will bind &quot;Namespace::NestedNamespace::func_name&quot;.)
 
-Q: // &quot;error: &#8216;BOOST_PP_IIF_0&#8217; was not declared in this scope&quot; //
+Q: // &quot;error: ‘BOOST_PP_IIF_0’ was not declared in this scope&quot; //
 A:  This can be caused by leaving off the parenthesis inside function lists for LM_FUNC (or for LM_FIELD).  The syntax for LM_FUNC is &quot;LM_FUNC(class_name, (func1)(func2)(func3)(etc.))&quot;.  Even if you are only declaring one function, you still need the parenthesis around its name, e.g. &quot;LM_FUNC(class_name, (func))&quot;.  Note that you do not put commas between the function names.  Spaces and line breaks are ok though.
 
 Q: // &quot;No type converter from double&amp; to &lt;some pointer type&gt;&quot; //
