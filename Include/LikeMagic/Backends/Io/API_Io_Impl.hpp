@@ -16,16 +16,16 @@
 #define REPLACE_IOINLINE __attribute__((always_inline)) inline
 
 // Note:  IoVM.h not the same thing as IoVM.hpp
-#include "io/IoVM.h"
+#include "IoVM.h"
 
-#include "io/IoBlock.h"
+#include "IoBlock.h"
 
-#include "io/IoState.h"
-#include "io/IoNumber.h"
-#include "io/IoSeq.h"
-#include "io/IoState.h"
-#include "io/IoObject.h"
-#include "io/IoTag.h"
+#include "IoState.h"
+#include "IoNumber.h"
+#include "IoSeq.h"
+#include "IoState.h"
+#include "IoObject.h"
+#include "IoTag.h"
 
 using namespace std;
 using namespace LikeMagic::SFMO;

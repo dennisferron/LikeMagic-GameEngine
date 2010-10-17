@@ -521,7 +521,7 @@ Most of the work is done using templates, which use type inference to automate m
 [[LM_FUNCS]](class_name, func1, func2, func3, ...)
 </pre>
 </div>
-<div title="Building LikeMagic" modifier="YourName" created="201010162031" modified="201010162236" changecount="5">
+<div title="Building LikeMagic" modifier="YourName" created="201010162031" modified="201010162244" changecount="6">
 <pre>Note: In these instructions I use &quot;cd LikeMagic/some_folder&quot; to indicate that you should cd to a certain submodule's directory within the LikeMagic repository.
 
 On Linux
@@ -530,8 +530,11 @@ Get prereq programs:
 sudo apt-get install gcc g++ git codeblocks cmake build-essential
 (Note:  On Ubuntu 10.10, installing only gcc did not also install g++.)
 
-Clone the LikeMagic repo:
-git clone github/LikeMagic
+Clone the LikeMagic repo and submodules:
+git clone git@github.com:dennisferron/LikeMagic.git
+cd LikeMagic
+git submodule init
+git submodule update
 
 Build the Io submodule:
 cd LikeMagic/io
