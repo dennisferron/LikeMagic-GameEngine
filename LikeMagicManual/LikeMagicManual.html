@@ -521,14 +521,74 @@ Most of the work is done using templates, which use type inference to automate m
 [[LM_FUNCS]](class_name, func1, func2, func3, ...)
 </pre>
 </div>
-<div title="Building LikeMagic" modifier="YourName" created="201010162031" modified="201010162244" changecount="6">
+<div title="Building LikeMagic" modifier="DennisFerron" created="201010162031" modified="201011150204" changecount="9">
 <pre>Note: In these instructions I use &quot;cd LikeMagic/some_folder&quot; to indicate that you should cd to a certain submodule's directory within the LikeMagic repository.
 
 On Linux
 
 Get prereq programs:
 sudo apt-get install gcc g++ git codeblocks cmake build-essential
-(Note:  On Ubuntu 10.10, installing only gcc did not also install g++.)
+
+* * *
+
+Special Instructions For Ubuntu 10.10!!
+
+The gcc 4.4 that is included by default with Ubuntu 10.10 is broken and it segfaults while compiling most C++ programs.  (Seriously Canonical, wtf?)  You can fix this by installing gcc 4.5, but you also need to remove the 4.4 version and create some links to make gcc-4.5 replace the old one:
+sudo apt-get remove g++
+sudo apt-get remore gcc
+sudo rm /usr/bin/g++
+sudo rm /usr/bin/gcc
+sudo ln /usr/bin/g++-4.5 /usr/bin/g++
+sudo ln /usr/bin/g++
+
+* * *
+
+Set Up Distcc (Optional)
+
+LikeMagic takes a long time to compile.  If you have several machines, using distcc is helpful.  However, Ubuntu's distcc package installs it in a broken state by default (lovely).
+Steps to get distcc to work (do this on every machine):
+sudo apt-get install distcc distccmon-gnome
+
+sudo gedit /etc/default/distcc
+(In this file, change STARTDISTCC to true, change ALLOWEDNETS to &quot;localhost 192.168.1.0/24&quot; (or whatever your home network address is), and change LISTENER to the machine's IP address.  Change JOBS to equal the number of cores on the machine.)
+
+Now set up the hosts file:
+rm ~/.distcc/hosts
+touch ~/.distcc/hosts
+echo &quot;127.0.0.1/6&quot; &gt;&gt; ~/.distcc/hosts
+echo &quot;192.168.1.10/4&quot; &gt;&gt; ~/.distcc/hosts
+
+Replace &quot;192.168.1.10&quot; with the IP address of the remote machine.  Repeat that last command for each remote machine you want to add.  The /6 and /4 on the end of the IP address is the number of jobs to distribute to each host.  Set number this equal to the number of cores on each machine.  (Warning:  Once I tried setting this to 2 more than the number of cores on the local machine, and the mouse and GUI became unresponsive during compilation!)
+
+Troubleshooting Distcc
+
+No method I tried for getting the distcc daemon to auto start actually resulted in the damn thing running when the server was rebooted!  You may need to ssh into each machine and run &quot;service distcc start&quot; each time you want to run it.
+
+If distcc doesn't work at all, first of all make sure gcc and g++ are properly installed on each machine.  The error message distcc throws up when the remote machine doesn't have gcc/g++ installed doesn't indicate that is what is wrong.  ssh into each machine and ensure you can compile a file locally with gcc/g++ first.  (Remember to do the steps in the Special Instructions for Ubuntu 10.10.)
+
+If distcc works but compilation is the same speed as a local compile, make sure the remote machine is actually being used (for instance, to test it, try removing localhost and make sure a compile that runs only remotely works too.)
+
+Also make sure the build program (e.g., codeblocks) is set to issue multiple jobs.
+
+If distcc is actually slower than a local compile, make sure localhost is included in the hosts list, and make sure the number of jobs is specified BOTH in DISTCC_HOSTS (or ~/.distcc/hosts) and in 
+
+You can use distccmon-gnome to view the compilation jobs in realtime.  Note that distccmon-gnome will work off the DISTCC_HOSTS (or ~/.distcc/hosts ?) settings present when you started the monitor, so if you change these settings and restart the distccd daemon, distccmon-gnome will still display old slot values until you restart the monitor.  This can be confusing because there may be jobs running that distccmon-gnome doesn't show if it's using the wrong configuration settings.
+
+FYI: the default port for distccd is 3632.
+FYI: there are apparently two places to specify the number of jobs; you can specify the number of jobs when starting the daemon and in the DISTCC_HOSTS or ~/.distcc/hosts settings.  I don't know for sure but experiments lead me to believe the maximum number of concurrent is the LESSER of the two values.  If you 
+FYI: you can export the $DISTCC_HOSTS variable instead of the ~/.distcc/hosts to set the hosts.  I do not know which one takes precedence.
+
+ssh user@remote_machine
+echo &quot;int main() { return 0: }&quot; &gt; test.cpp
+gcc test.cpp
+distcc test.cpp
+
+Try running distccd (the distcc daemon) locally from the commandline.
+sudo killall distcc
+sudo killall distccd
+distccd ALLOW &amp;
+
+* * * 
 
 Clone the LikeMagic repo and submodules:
 git clone git@github.com:dennisferron/LikeMagic.git
