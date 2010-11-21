@@ -521,7 +521,7 @@ Most of the work is done using templates, which use type inference to automate m
 [[LM_FUNCS]](class_name, func1, func2, func3, ...)
 </pre>
 </div>
-<div title="Building LikeMagic" modifier="DennisFerron" created="201010162031" modified="201011150204" changecount="9">
+<div title="BuildingLikeMagic" modifier="DennisFerron" created="201010162031" modified="201011210334" changecount="12">
 <pre>Note: In these instructions I use &quot;cd LikeMagic/some_folder&quot; to indicate that you should cd to a certain submodule's directory within the LikeMagic repository.
 
 On Linux
@@ -615,6 +615,31 @@ cmake .. -G &quot;Unix Makefiles&quot;
 make
 
 
+Building On Windows
+
+Install the TDM version of MinGW (the prerequisite libs for LikeMagic don't work with 64-bit TDM yet so use the regular 32-bit TDM version):
+http://tdm-gcc.tdragon.net/download
+
+When installing, change the directory from MinGW32 to just MinGW (in case CMake has trouble finding MinGW directory).
+
+Install msys 1.1.0.11 and msys dtk (links to the exes on this page):
+http://www.mingw.org/wiki/MSYS
+
+Install GLUT:
+Download the zip file with GLUT binaries and headers from this page and follow the installation instructions.
+(Note:  You do not need GLee or GLEW, just GLUT.)
+http://www.opengl.org/wiki/MinGW
+
+Install CMake
+
+Run CMake-GUI to compile the Bullet library:
+Select C:/code/LikeMagic-All/bullet for &quot;Where is the source code&quot;
+Select C:/code/LikeMagic-All/bullet/bullet-build for &quot;Where to build the binaries&quot; (note, bullet-build directory doesn't exist yet)
+Check &quot;Grouped&quot; and &quot;Advanced&quot;
+Click configure.  Everything will be red because stupid CMake can't find GLUT even though we installed it.
+Expand the GLUT group
+Change GLUT_INCLUDE_DIR to C:/MinGW/include/GL (having previously put the file there in the step above)
+Change GLUT_glut_LIBRARY to C:/MinGW/lib/glut32.dll (having previously put the file there in the step above)
 </pre>
 </div>
 <div title="DefaultTiddlers" modifier="DennisFerron" created="201001122119" changecount="1">
@@ -711,12 +736,13 @@ LikeMagic was designed for use in game engines, and comes with example bindings 
 
 LikeMagic has a unique speed optimization feature specifically for game engines.  This feature, called [[SFMO]] (&quot;Single Function, Multiple Objects&quot;, pronounced &quot;SwiFt-MO&quot;) allows you to operate on whole sets of objects at once.  Instead of incurring overhead type checking the expression and marshaling script objects with each loop iteration, [[SFMO]] allows you to perform that work once and reuse the precomputed expression structure for all the objects in the set.  This optimization allows you to replace more of your time-critical C++ code with script, while retaining a reasonable percentage of the original C++ speed.</pre>
 </div>
-<div title="MainMenu" modifier="YourName" created="201001121822" modified="201001122224" changecount="3">
+<div title="MainMenu" modifier="YourName" created="201001121822" modified="201011210240" changecount="4">
 <pre>[[GettingStarted]]
 [[FAQ]]
 [[LikeMagic]]
 [[IoLanguage]]
-[[IrrlichtBindings]]</pre>
+[[IrrlichtBindings]]
+[[BuildingLikeMagic]]</pre>
 </div>
 <div title="SFMO" modifier="DennisFerron" created="201001121924" modified="201001121952" changecount="4">
 <pre>Often a game engine will need to perform an identical operation on hundreds or even thousands of objects.  Ordinarily passing back and forth between script and C++ thousands of times for a small operation would have too much overhead and create lots of short lived script objects.  But when you pass LikeMagic an StlCompatibleCollection of objects, the library allows you to apply a single expression over the entire collection of objects.  This feature, called SFMO (&quot;Single Function, Multiple Objects&quot;, pronounced &quot;SwiFt-MO&quot;) avoids the overhead of type checking the expression and marshaling script objects with each loop iteration.  Instead, LikeMagic can verify the type safety of the expression just once, marshal all the script objects just once, and then do the entire collection in a tight C++ loop, switching out the target object while keeping the precomputed expression structure intact.  
