@@ -521,7 +521,7 @@ Most of the work is done using templates, which use type inference to automate m
 [[LM_FUNCS]](class_name, func1, func2, func3, ...)
 </pre>
 </div>
-<div title="BuildingLikeMagic" modifier="DennisFerron" created="201010162031" modified="201011210334" changecount="12">
+<div title="BuildingLikeMagic" modifier="DennisFerron" created="201010162031" modified="201011210442" changecount="13">
 <pre>Note: In these instructions I use &quot;cd LikeMagic/some_folder&quot; to indicate that you should cd to a certain submodule's directory within the LikeMagic repository.
 
 On Linux
@@ -625,21 +625,26 @@ When installing, change the directory from MinGW32 to just MinGW (in case CMake 
 Install msys 1.1.0.11 and msys dtk (links to the exes on this page):
 http://www.mingw.org/wiki/MSYS
 
-Install GLUT:
-Download the zip file with GLUT binaries and headers from this page and follow the installation instructions.
-(Note:  You do not need GLee or GLEW, just GLUT.)
-http://www.opengl.org/wiki/MinGW
-
 Install CMake
 
 Run CMake-GUI to compile the Bullet library:
+Choose MSYS makefiles for the generator to use
 Select C:/code/LikeMagic-All/bullet for &quot;Where is the source code&quot;
 Select C:/code/LikeMagic-All/bullet/bullet-build for &quot;Where to build the binaries&quot; (note, bullet-build directory doesn't exist yet)
 Check &quot;Grouped&quot; and &quot;Advanced&quot;
 Click configure.  Everything will be red because stupid CMake can't find GLUT even though we installed it.
 Expand the GLUT group
-Change GLUT_INCLUDE_DIR to C:/MinGW/include/GL (having previously put the file there in the step above)
-Change GLUT_glut_LIBRARY to C:/MinGW/lib/glut32.dll (having previously put the file there in the step above)
+Change GLUT_INCLUDE_DIR to the GLUT/GL subdirectory in bullet directory
+Change GLUT_glut_LIBRARY to the GLUT/glut32.lib in bullet directory
+Uncheck &quot;USE -&gt; USE_MSVC_RUNTIME_LIBRARY_DLL&quot;
+Uncheck BUILD_DEMOS and BUILD_EXTRAS (to avoid a build error)
+Click configure again; there should be no more red
+Then click generate
+
+Open msys from the start menu (Start Menu - MinGW32 - MSYS - MSYS (rxvt) ).
+cd /c/code/LikeMagic-All/bullet/bullet-build
+make  (note:  you must be in the bullet-build subdirectory to run make, not the main bullet dir!)
+
 </pre>
 </div>
 <div title="DefaultTiddlers" modifier="DennisFerron" created="201001122119" changecount="1">
