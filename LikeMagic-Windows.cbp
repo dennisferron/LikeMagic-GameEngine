@@ -115,6 +115,7 @@
 		<Unit filename="Include\LikeMagic\TypeConv\VectorConv.hpp" />
 		<Unit filename="Include\LikeMagic\Utility\AbstractTypeInfo.hpp" />
 		<Unit filename="Include\LikeMagic\Utility\BetterTypeInfo.hpp" />
+		<Unit filename="Include\LikeMagic\Utility\DLLHelper.hpp" />
 		<Unit filename="Include\LikeMagic\Utility\EnumHelper.hpp" />
 		<Unit filename="Include\LikeMagic\Utility\FieldPtrTraits.hpp" />
 		<Unit filename="Include\LikeMagic\Utility\FuncPtrTraits.hpp" />

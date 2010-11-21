@@ -521,10 +521,67 @@ Most of the work is done using templates, which use type inference to automate m
 [[LM_FUNCS]](class_name, func1, func2, func3, ...)
 </pre>
 </div>
-<div title="BuildingLikeMagic" modifier="DennisFerron" created="201010162031" modified="201011210442" changecount="13">
-<pre>Note: In these instructions I use &quot;cd LikeMagic/some_folder&quot; to indicate that you should cd to a certain submodule's directory within the LikeMagic repository.
+<div title="BuildingBulletOnWindows" modifier="DennisFerron" created="201011211937" modified="201011212036" changecount="2">
+<pre>!Building Bullet
+I've included pre-built lib files in the bullet submodule but if you need to rebuild bullet from scratch on Windows, here are the instructions.
 
-On Linux
+!!Install CMake
+http://www.cmake.org/cmake/resources/software.html
+# Use the Win32 installer
+# Direct link:  http://www.cmake.org/files/v2.8/cmake-2.8.3-win32-x86.exe
+# The installer gives an option to add CMake to the path.  This isn't required but might be convenient.
+
+!!Run CMake-GUI for Bullet
+# Select {{{C:/code/LikeMagic-All/bullet}}} for &quot;Where is the source code&quot;
+# Select {{{C:/code/LikeMagic-All/bullet/build-gcc-win32}}} for &quot;Where to build the binaries&quot;
+#* Note:  Don't mess this up. Using the build-gcc-win32 subdirectory here instead of the main bullet directory serves two purposes:
+#*# The .gitignore file is set to ignore the build folder so that the binaries you build don't end up checked into the source repository.
+#*# The LikeMagic Bullet bindings Code::Blocks project is set to look in the build-gcc-win32 folder for the bullet libraries.
+# Check &quot;Grouped&quot; and &quot;Advanced&quot;
+# Click configure.
+# Click &quot;Yes&quot; to create bullet-build directory
+# Choose MSYS makefiles for the generator to use
+# Fix the settings for GLUT:
+#* Everything will be red because CMake can't find GLUT
+#* Bullet actually comes with a copy of GLUT that you should use
+#** (Using a copy of GLUT that came from another source caused me build errors, so you should use the copy that comes with Bullet.)
+#* Directions for pointing CMake at GLUT in the Bullet directory:
+#** Expand the GLUT group
+#** Change GLUT_INCLUDE_DIR to {{{C:/code/LikeMagic-All/bullet/Glut/GL}}}
+#** Change GLUT_glut_LIBRARY to {{{C:/code/LikeMagic-All/bullet/Glut/glut32.lib}}}
+# Further CMake setup:
+# Uncheck &quot;USE -&gt; USE_MSVC_RUNTIME_LIBRARY_DLL&quot;
+# Click configure again; there should be no more red at the top
+#* There may be messages in red at the bottom about OPENCL, OPENGL, etc.  You can probably ignore those.
+# Finally, click Generate
+
+!! Troubleshooting Bullet/CMake (optional)
+If you can't get Bullet to build right with make (below) or can't get CMake to generate the makefiles at all, you can try unchecking USE_GLUT, BUILD_DEMOS, and BUILD_EXTRAS.  You won't be able to test early if Bullet works but it is still possible LikeMagic may work.
+
+!!Use MSYS terminal to build Bullet using the makefiles generated in the step above
+#Open msys from the Start Menu
+#* Start Menu - MinGW - MSYS - MSYS (rxvt)
+#** Note:  You may have both MinGW32 and MinGW in the start menu; look for MSYS under MinGW.
+# {{{ cd /c/code/LikeMagic-All/bullet/bullet-build }}}
+# {{{ make }}}
+#* Note:  you must cd into the {{{bullet-build}}} subdirectory to run make, not the main bullet dir!
+#* If you get {{{ make: *** No targets specified and no makefile found.  Stop. }}} then either you have the wrong directory or you need to go back to CMake-GUI and reconfigure and generate the makefiles.
+
+!!Test Bullet (optional)
+LikeMagic takes a long time to link.  You probably want to test that Bullet is working OK before going through the long link process for LikeMagic.
+# Check the directory {{{ C:\code\LikeMagic-All\bullet\bullet-build\lib }}}.  It must at a minimum contain libLinearMath.a, libBulletCollision.a, libBulletDynamics.a, and libBulletSoftBody.a.  (It is ok if it has other libs in there too.)
+# Try running {{{ C:\code\LikeMagic-All\bullet\bullet-build\Demos\AllBulletDemos\AppAllBulletDemos.exe }}}.
+#* If that file is not there, try looking in the other subfolders of {{{ C:\code\LikeMagic-All\bullet\bullet-build\Demos\ }}} for other demos.
+#* If none of the demos built (for instance, you may have had to uncheck Build Demos in CMake to avoid a build error) it is still possible that LikeMagic will work (as long as all the *.a files are in the bullet-build/libs directory).  You just can't verify that it will work.
+
+</pre>
+</div>
+<div title="BuildingLikeMagic" modifier="DennisFerron" created="201010162031" modified="201011211708" changecount="40">
+<pre>BuildingOnWindows
+BuildingOnLinux</pre>
+</div>
+<div title="BuildingOnLinux" modifier="DennisFerron" created="201011211708" changecount="1">
+<pre>!On Linux
 
 Get prereq programs:
 sudo apt-get install gcc g++ git codeblocks cmake build-essential
@@ -613,38 +670,64 @@ mkdir bullet-build
 cd bullet-build
 cmake .. -G &quot;Unix Makefiles&quot;
 make
+</pre>
+</div>
+<div title="BuildingOnWindows" modifier="DennisFerron" created="201011211706" modified="201011212211" changecount="29">
+<pre>!Building On Windows
 
+Building on Windows is a pain in the ass because several things need to be installed to get Windows ready for git, gcc, C++0x, and CMake, Makefiles and a bash prompt, and Windows has no package management system so each piece is installed via a different method than the other pieces.  If you have a choice of operating system to use, building LikeMagic on Ubuntu is much easier.
 
-Building On Windows
+!!Directories
 
-Install the TDM version of MinGW (the prerequisite libs for LikeMagic don't work with 64-bit TDM yet so use the regular 32-bit TDM version):
+Although every attempt has been made to make sure all paths are relative and independent of the directory in which LikeMagic is installed, for simplicity and compatibility it is recommended you create a C:\code folder and put the LikeMagic repository into C:\code\LikeMagic-All.  (This is what you will end up with simply by following the instructions below.)
+
+!!Install msys-GIT
+http://code.google.com/p/msysgit/downloads/detail?name=Git-1.7.3.1-preview20101002.exe
+
+!!Clone the LikeMagic-All repository
+# Click Start Menu - Git - Git Bash
+# Type the following commands:
+## {{{ cd /c }}}
+## {{{ mkdir code }}}
+## {{{ cd code }}}
+## {{{ git clone git://github.com/dennisferron/LikeMagic-All.git }}}
+## {{{ git submodule init }}}
+## {{{ git submodule update }}}
+
+!!Install the TDM version of &quot;&quot;&quot;MinGW&quot;&quot;&quot;
 http://tdm-gcc.tdragon.net/download
+# Note:  Do ''not'' install MinGW any ''other'' way than the TDM version.  If you try to install the MinGW packages by manually downloading them or building from source, it is ridiculously easy to get things subtly screwed up such that LikeMagic gets strange build errors later.  I don't care if manual download is the new &quot;official&quot; way to install mingw - that advice is just the MinGW devs being lazy and not making an installer.  Luckily TDM made a great installer for us.  So if you installed mingw from source, from the MinGW wiki, or by downloading packages manually, I will not help you.  Delete that screwed up mingw directory, then go back and install TDM mingw, and then we'll talk, ok?
+# Note:  The prerequisite libs for LikeMagic haven't been gotten to work yet with 64-bit TDM, so just use the regular 32-bit TDM version.
+# It's fine to use the web/on-demand installer; just select the non-64-bit option in the installer.
+# When installing, it might be good to change the install directory from &quot;&quot;&quot;C:\MinGW32&quot;&quot;&quot; to &quot;&quot;&quot;C:\MinGW&quot;&quot;&quot; just in case CMake has trouble finding &quot;&quot;&quot;MinGW&quot;&quot;&quot; directory.
 
-When installing, change the directory from MinGW32 to just MinGW (in case CMake has trouble finding MinGW directory).
+!!Install MSYS 1.1.0.11 and MSYS DTK
+Note:  You can follow the instructions on http://www.mingw.org/wiki/MSYS or just click the links below. (You don't actually need to install the &quot;MSYS Core&quot; that the wiki page refers to.)
+# Direct link for MSYS Installer:  http://downloads.sourceforge.net/mingw/MSYS-1.0.11.exe
+#* Say &quot;y&quot; to the post install process.  Give &quot;&quot;&quot;C:/MinGW&quot;&quot;&quot; as the location of your &quot;&quot;&quot;MinGW&quot;&quot;&quot; directory (or where ever you installed &quot;&quot;&quot;MinGW&quot;&quot;&quot;).
+# Direct link for MSYS DTK - http://downloads.sourceforge.net/mingw/msysDTK-1.0.1.exe
 
-Install msys 1.1.0.11 and msys dtk (links to the exes on this page):
-http://www.mingw.org/wiki/MSYS
+!!Bullet Physics
+*The easy way:  Manually copy the four *.a files from bullet/prebuilt-gcc-win32/lib to bullet/build-win32-gcc/lib.
+*The hard way:  BuildingBulletOnWindows
 
-Install CMake
+!!Irrlicht
+Irrlicht comes with the binaries pre-built in the submodule.  There are no additional steps for Irrlicht.
 
-Run CMake-GUI to compile the Bullet library:
-Choose MSYS makefiles for the generator to use
-Select C:/code/LikeMagic-All/bullet for &quot;Where is the source code&quot;
-Select C:/code/LikeMagic-All/bullet/bullet-build for &quot;Where to build the binaries&quot; (note, bullet-build directory doesn't exist yet)
-Check &quot;Grouped&quot; and &quot;Advanced&quot;
-Click configure.  Everything will be red because stupid CMake can't find GLUT even though we installed it.
-Expand the GLUT group
-Change GLUT_INCLUDE_DIR to the GLUT/GL subdirectory in bullet directory
-Change GLUT_glut_LIBRARY to the GLUT/glut32.lib in bullet directory
-Uncheck &quot;USE -&gt; USE_MSVC_RUNTIME_LIBRARY_DLL&quot;
-Uncheck BUILD_DEMOS and BUILD_EXTRAS (to avoid a build error)
-Click configure again; there should be no more red
-Then click generate
+!!IoLanguage
+*The easy way:  Copy libiovmall.a from io/build-gcc-win32/lib to io/_build/lib
+*Or build Io (using MSYS terminal):
+*# {{{ cd /c/code/LikeMagic-All/io }}}
+*# {{{ make CC=gcc }}
 
-Open msys from the start menu (Start Menu - MinGW32 - MSYS - MSYS (rxvt) ).
-cd /c/code/LikeMagic-All/bullet/bullet-build
-make  (note:  you must be in the bullet-build subdirectory to run make, not the main bullet dir!)
+!!Install Code::Blocks
+# http://www.codeblocks.org/downloads/26#windows
+# Note:  Do ''not'' use the link to codeblocks-10.05mingw-setup.exe.  Instead, use the link to the plain Code::Blocks that does ''not'' include mingw (because we want to use the mingw we installed above).
 
+!!Open The Projects In Code::Blocks
+# Click Start Menu - Programs - Code::Blocks  - Code::Blocks
+# On first run it will do compiler autodetection.  Select gcc (first option, detected) and set as default.
+# Open the Code::Blocks workspace C:\code\LikeMagic-All\LikeMagic-All-gcc-win32.workspace
 </pre>
 </div>
 <div title="DefaultTiddlers" modifier="DennisFerron" created="201001122119" changecount="1">
