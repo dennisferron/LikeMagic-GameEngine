@@ -58,14 +58,11 @@
 	<File name="Source\AbstractExpression.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="431" topLine="0" />
 	</File>
-	<File name="Source\AbstractTypeSystem.cpp" open="1" top="0" tabpos="6">
+	<File name="Source\AbstractTypeSystem.cpp" open="0" top="0" tabpos="6">
 		<Cursor position="1714" topLine="49" />
 	</File>
-	<File name="Source\BetterTypeInfo.cpp" open="1" top="0" tabpos="1">
+	<File name="Source\BetterTypeInfo.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="1579" topLine="18" />
-	</File>
-	<File name="Source\IoBlock.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="1247" topLine="11" />
 	</File>
 	<File name="Source\IoVM.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="11425" topLine="272" />
@@ -73,7 +70,7 @@
 	<File name="Source\RuntimeTypeSystem.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="3709" topLine="72" />
 	</File>
-	<File name="Source\TypeConvGraph.cpp" open="1" top="0" tabpos="2">
+	<File name="Source\TypeConvGraph.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="3263" topLine="127" />
 	</File>
 </CodeBlocks_layout_file>
