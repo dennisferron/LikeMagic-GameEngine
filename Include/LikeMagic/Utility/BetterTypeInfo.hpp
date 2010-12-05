@@ -54,7 +54,7 @@ protected:
         boost::hash_combine(seed, is_ref);
         boost::hash_combine(seed, is_ptr);
         boost::hash_combine(seed, is_const_ptr);
-        boost::hash_combine(seed, info->name());
+        boost::hash_combine(seed, std::string(info->name()));
         return seed;
     }
 

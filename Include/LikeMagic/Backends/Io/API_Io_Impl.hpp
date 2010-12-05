@@ -11,6 +11,10 @@
 #include "LikeMagic/Backends/Io/API_Io.hpp"
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
 
+// The Io headers cause some compiler warnings; ignoring them to avoid cluttering error messages screen.
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wtype-limits"
+
 // This makes it compile under windows.  Apparently both "inline" and the
 // attribute are required together for it to work.
 #define REPLACE_IOINLINE __attribute__((always_inline)) inline

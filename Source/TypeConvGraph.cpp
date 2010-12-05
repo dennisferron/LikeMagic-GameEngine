@@ -84,15 +84,17 @@ struct FindType
 
     typedef boost::on_finish_vertex event_filter;
     TypeConvGraph::vertex_t dest;
+    bool& found_conv;
 
-    FindType(TypeConvGraph::vertex_t dest_)
-        : dest(dest_) {}
+    FindType(TypeConvGraph::vertex_t dest_, bool& found_conv_)
+        : dest(dest_), found_conv(found_conv_) {}
 
     template <class Vertex, class Graph>
     void operator()(Vertex u, const Graph&)
     {
         if (u == dest)
         {
+            found_conv = true;
             throw TypeFoundException("Found: " + boost::lexical_cast<std::string>(u));
         }
     }
@@ -153,6 +155,9 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeInfoKey from, TypeI
         for (size_t i=0; i<pred.size(); i++)
             pred[i] = no_vertex;
 
+        bool found_conv = false;
+        FindType finder(dest, found_conv);
+
         try
         {
             pred[source] = source;
@@ -166,7 +171,7 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeInfoKey from, TypeI
                     (
                         std::make_pair
                         (
-                            FindType(dest),
+                            finder,
                             boost::record_predecessors
                             (
                                 &pred[0],
@@ -179,14 +184,14 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeInfoKey from, TypeI
         }
         catch (FindType::TypeFoundException const& tfe)
         {
-            std::cout << "Found the type. " << tfe.msg << std::endl;
+            //std::cout << "Found the type. " << tfe.msg << std::endl;
         }
         catch (...)
         {
-            std::cout << "Unknown exception in type conv graph search." << std::endl;
+            //std::cout << "Unknown exception in type conv graph search." << std::endl;
         }
 
-        if (pred[dest] == no_vertex)
+        if (!finder.found_conv || pred[dest] == no_vertex)
             return conv_cache[key] = p_chain_t();
         else
         {

@@ -580,11 +580,15 @@ LikeMagic takes a long time to link.  You probably want to test that Bullet is w
 <pre>BuildingOnWindows
 BuildingOnLinux</pre>
 </div>
-<div title="BuildingOnLinux" modifier="DennisFerron" created="201011211708" changecount="1">
+<div title="BuildingOnLinux" modifier="DennisFerron" created="201011211708" modified="201012052201" changecount="4">
 <pre>!On Linux
 
 Get prereq programs:
 sudo apt-get install gcc g++ git codeblocks cmake build-essential
+
+* * *
+
+# '''Important:'''  On all operating systems, you must disable Code::Blocks catching C++ exceptions - if you do not, the program will appear to freeze up in the debugger.  This is because throwing exceptions is part of ''normal operation'' of LikeMagic, but Code::Blocks treats them as errors and interrupts the program!  The Boost Graph Library ''requires an exception to be thrown'' to terminate graph search in a normal fashion; unfortunately Code::Blocks acts strangely and will not show any source location after the exception.  (It's pretty rude of Boost to have chosen to use exceptions in this manner for their graph library just because it is so likely to cause people problems with their IDE/debuggers, but it is what it is.)  It makes the program appear to be frozen although actually it is not.  (It is stuck in an assembly listing which you can't see unless you have the assembly listing window open already, and single stepping steps individual assembly instructions so that you'd have to step 100s of times to get out of it.)  To disable Code::Blocks catching C++ exceptions, click Settings - Compiler and Debugger.  Click the giant icon of an ant with a slashed circle around it (Debugger Settings).  Uncheck &quot;Catch C++ exceptions&quot; and click OK.
 
 * * *
 
@@ -672,7 +676,7 @@ cmake .. -G &quot;Unix Makefiles&quot;
 make
 </pre>
 </div>
-<div title="BuildingOnWindows" modifier="DennisFerron" created="201011211706" modified="201011212211" changecount="29">
+<div title="BuildingOnWindows" modifier="DennisFerron" created="201011211706" modified="201012052202" changecount="31">
 <pre>!Building On Windows
 
 Building on Windows is a pain in the ass because several things need to be installed to get Windows ready for git, gcc, C++0x, and CMake, Makefiles and a bash prompt, and Windows has no package management system so each piece is installed via a different method than the other pieces.  If you have a choice of operating system to use, building LikeMagic on Ubuntu is much easier.
@@ -723,6 +727,7 @@ Irrlicht comes with the binaries pre-built in the submodule.  There are no addit
 !!Install Code::Blocks
 # http://www.codeblocks.org/downloads/26#windows
 # Note:  Do ''not'' use the link to codeblocks-10.05mingw-setup.exe.  Instead, use the link to the plain Code::Blocks that does ''not'' include mingw (because we want to use the mingw we installed above).
+# '''Important:'''  On all operating systems, you must disable Code::Blocks catching C++ exceptions - if you do not, the program will appear to freeze up in the debugger.  This is because throwing exceptions is part of ''normal operation'' of LikeMagic, but Code::Blocks treats them as errors and interrupts the program!  The Boost Graph Library ''requires an exception to be thrown'' to terminate graph search in a normal fashion; unfortunately Code::Blocks acts strangely and will not show any source location after the exception.  (It's pretty rude of Boost to have chosen to use exceptions in this manner for their graph library just because it is so likely to cause people problems with their IDE/debuggers, but it is what it is.)  It makes the program appear to be frozen although actually it is not.  (It is stuck in an assembly listing which you can't see unless you have the assembly listing window open already, and single stepping steps individual assembly instructions so that you'd have to step 100s of times to get out of it.)  To disable Code::Blocks catching C++ exceptions, click Settings - Compiler and Debugger.  Click the giant icon of an ant with a slashed circle around it (Debugger Settings).  Uncheck &quot;Catch C++ exceptions&quot; and click OK.
 
 !!Open The Projects In Code::Blocks
 # Click Start Menu - Programs - Code::Blocks  - Code::Blocks

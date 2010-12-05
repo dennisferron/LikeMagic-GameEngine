@@ -74,11 +74,22 @@ public:
     {
         if (!empty())
         {
-            IoMessage* m = new_message(io_target, "foo");
-            add_args(m, args...);
-            IoObject* result = activate(m);
-            ExprPtr expr = from_script(io_target, result, *type_sys);
-            return type_sys->try_conv<R>(expr)->eval();
+            try
+            {
+                IoMessage* m = new_message(io_target, "foo");
+                add_args(m, args...);
+                IoObject* result = activate(m);
+                ExprPtr expr = from_script(io_target, result, *type_sys);
+                return type_sys->try_conv<R>(expr)->eval();
+            }
+            catch (std::logic_error le)
+            {
+                throw std::logic_error(std::string() + "Error during eval IoBlock (possibly while converting the return value): " + le.what());
+            }
+            catch (std::exception e)
+            {
+                throw std::logic_error(std::string() + "Error during eval IoBlock (possibly while converting the return value): " + e.what());
+            }
         }
         else
         {

@@ -21,6 +21,8 @@
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
 #include "LikeMagic/Utility/UserMacros.hpp"
 
+#include "boost/lexical_cast.hpp"
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -265,9 +267,20 @@ IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
 
         for (size_t i=0; i<arg_types.size(); i++)
         {
-            ExprPtr expr = get_expr_arg_at(self, locals, m, i, type_sys);
-            //std::cout << "arg " << i << " expects " << arg_types[i].describe() << " got " << expr->get_type().describe() << std::endl;
-            args.push_back(expr);
+            try
+            {
+                ExprPtr expr = get_expr_arg_at(self, locals, m, i, type_sys);
+                //std::cout << "arg " << i << " expects " << arg_types[i].describe() << " got " << expr->get_type().describe() << std::endl;
+                args.push_back(expr);
+            }
+            catch (std::logic_error le)
+            {
+                throw std::logic_error(std::string() + "Error converting argument " + boost::lexical_cast<std::string>(i) + ": " + le.what());
+            }
+            catch (std::exception e)
+            {
+                throw std::logic_error(std::string() + "Error converting argument " + boost::lexical_cast<std::string>(i) + ": " + e.what());
+            }
         }
 
         if (!IOSTATE->callbackContext)

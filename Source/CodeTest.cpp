@@ -3,6 +3,7 @@
 
 #include "LikeMagic/Utility/TupleForEach.hpp"
 
+/*
 std::string a() { return "a called"; }
 std::string b() { return "b called"; }
 
@@ -48,5 +49,4 @@ struct Runner
         Test<decltype(&b), &b, IoCall, V8Call>::doit();
     }
 } instance;
-
-
+*/
