@@ -32,7 +32,8 @@ void IoBlock::add_arg(IoMessage* m, AbstractCppObjProxy* proxy) const
 
 IoObject* IoBlock::activate(IoMessage* m) const
 {
-    IoObject* result = IoBlock_activate(io_block, io_target, io_target, m, io_target);
+    // Apparently Io doesn't export IoBlock_activate, but hopefully IoObject_activate works just as well.
+    IoObject* result = IoObject_activate(io_block, io_target, io_target, m, io_target);
 
     {
         IoCoroutine *self = iovm->self->currentCoroutine;

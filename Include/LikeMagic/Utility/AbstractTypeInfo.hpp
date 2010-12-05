@@ -16,6 +16,7 @@
 #include "boost/intrusive_ptr.hpp"
 #include "boost/functional/hash.hpp"
 
+#include "LikeMagic/Utility/TypeInfoCache.hpp"
 #include "LikeMagic/Utility/KeyWrapper.hpp"
 
 namespace LikeMagic { namespace Utility {
@@ -127,8 +128,6 @@ inline std::size_t hash_value(AbstractTypeInfo const& info)
     return info.hash_value();
 }
 
-typedef AbstractTypeInfo::TypeInfoPtr TypeInfoPtr;
 typedef AbstractTypeInfo::TypeInfoKey TypeInfoKey;
-typedef std::vector<TypeInfoPtr> TypeInfoList;
 
 }}
