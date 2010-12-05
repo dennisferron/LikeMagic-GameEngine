@@ -11,7 +11,7 @@
 #include "boost/graph/breadth_first_search.hpp"
 #include <iostream>
 
-#include <boost/config.hpp>
+#include "boost/config.hpp"
 
 #include <algorithm>
 #include <vector>
@@ -19,13 +19,15 @@
 #include <iostream>
 #include <limits>
 
-#include <boost/graph/visitors.hpp>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/breadth_first_search.hpp>
+#include "boost/graph/visitors.hpp"
+#include "boost/graph/adjacency_list.hpp"
+#include "boost/graph/breadth_first_search.hpp"
 //#include <boost/property_map/property_map.hpp>
-#include <boost/graph/graph_utility.hpp>
+#include "boost/graph/graph_utility.hpp"
 
 #include "boost/graph/breadth_first_search.hpp"
+
+#include "boost/lexical_cast.hpp"
 
 #include <assert.h>
 
@@ -78,7 +80,7 @@ void TypeConvGraph::add_conv(TypeInfoPtr from, TypeInfoPtr to, p_conv_t conv)
 
 struct FindType
 {
-    struct TypeFoundException {};
+    struct TypeFoundException { std::string msg; TypeFoundException(std::string msg_) : msg(msg_) {}; };
 
     typedef boost::on_finish_vertex event_filter;
     TypeConvGraph::vertex_t dest;
@@ -90,7 +92,9 @@ struct FindType
     void operator()(Vertex u, const Graph&)
     {
         if (u == dest)
-            throw TypeFoundException();
+        {
+            throw TypeFoundException("Found: " + boost::lexical_cast<std::string>(u));
+        }
     }
 };
 
@@ -173,8 +177,13 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeInfoKey from, TypeI
                 )
             );
         }
-        catch (FindType::TypeFoundException const&)
+        catch (FindType::TypeFoundException const& tfe)
         {
+            std::cout << "Found the type. " << tfe.msg << std::endl;
+        }
+        catch (...)
+        {
+            std::cout << "Unknown exception in type conv graph search." << std::endl;
         }
 
         if (pred[dest] == no_vertex)

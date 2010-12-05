@@ -35,9 +35,9 @@ private:
 
 protected:
 
-    virtual std::type_info const* comparator_typeid() const
+    virtual std::string get_system() const
     {
-        return &typeid(this);
+        return "Io (from)";
     }
 
     virtual bool less(const AbstractTypeInfo& other) const

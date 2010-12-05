@@ -42,7 +42,7 @@ private:
 protected:
     AbstractTypeInfo() : ref_count(0), has_cached_hash(false) {}
 
-    virtual std::type_info const* comparator_typeid() const = 0;
+    virtual std::string get_system() const = 0;
     virtual bool less(const AbstractTypeInfo& that) const = 0;
     virtual bool equals(const AbstractTypeInfo& that) const = 0;
     virtual std::size_t calc_hash() const = 0;
@@ -51,9 +51,9 @@ public:
 
     bool operator <(const AbstractTypeInfo& that) const
     {
-        if (this->comparator_typeid() < that.comparator_typeid())
+        if (this->get_system() < that.get_system())
             return true;
-        else if (that.comparator_typeid() < this->comparator_typeid())
+        else if (that.get_system() < this->get_system())
             return false;
         else
             return this->less(that);
@@ -61,7 +61,7 @@ public:
 
     bool operator ==(const AbstractTypeInfo& that) const
     {
-        if (this->comparator_typeid() != that.comparator_typeid())
+        if (this->get_system() != that.get_system())
             return false;
         else
             return this->equals(that);
@@ -114,7 +114,7 @@ public:
         if (!has_cached_hash)
         {
             cached_hash = 0;
-            boost::hash_combine(cached_hash, comparator_typeid());
+            boost::hash_combine(cached_hash, get_system());
             boost::hash_combine(cached_hash, calc_hash());
             has_cached_hash = true;
         }

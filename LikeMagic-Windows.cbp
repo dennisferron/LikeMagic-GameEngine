@@ -142,6 +142,7 @@
 		<Unit filename="Source\AbstractTypeConverter.cpp" />
 		<Unit filename="Source\AbstractTypeInfo.cpp" />
 		<Unit filename="Source\AbstractTypeSystem.cpp" />
+		<Unit filename="Source\BetterTypeInfo.cpp" />
 		<Unit filename="Source\CodeTest.cpp" />
 		<Unit filename="Source\IoBlock.cpp" />
 		<Unit filename="Source\IoObjectExpr.cpp" />
