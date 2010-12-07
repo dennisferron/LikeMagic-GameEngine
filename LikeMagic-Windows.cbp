@@ -131,6 +131,7 @@
 		<Unit filename="Include\LikeMagic\Utility\StripModifiers.hpp" />
 		<Unit filename="Include\LikeMagic\Utility\TupleForEach.hpp" />
 		<Unit filename="Include\LikeMagic\Utility\TypeDescr.hpp" />
+		<Unit filename="Include\LikeMagic\Utility\TypeInfoCache.hpp" />
 		<Unit filename="Include\LikeMagic\Utility\TypePack.hpp" />
 		<Unit filename="Include\LikeMagic\Utility\UserMacros.hpp" />
 		<Unit filename="Source\API_Io.cpp" />
@@ -150,6 +151,7 @@
 		<Unit filename="Source\RuntimeTypeSystem.cpp" />
 		<Unit filename="Source\TypeConvGraph.cpp" />
 		<Unit filename="Source\TypeDescr.cpp" />
+		<Unit filename="Source\TypeInfoCache.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

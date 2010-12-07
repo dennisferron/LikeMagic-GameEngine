@@ -41,7 +41,7 @@ using LikeMagic::Utility::EnumHelper;
 class RuntimeTypeSystem : public AbstractTypeSystem
 {
 private:
-
+    TypeInfoCache* dll_shared_typeinfo;
 
     // Dummy type to represent SFMO collection methods
     struct SFMOCollection {};
@@ -186,6 +186,9 @@ private:
 public:
 
     RuntimeTypeSystem();
+
+    // Important:  you must set the type info cache instances in all your DLLs to this pointer.
+    TypeInfoCache* get_typeinfo_cache() { return dll_shared_typeinfo; }
 
     template <typename T, bool is_copyable=!boost::is_abstract<T>::value>
     Class<T, is_copyable>& register_class(std::string name)

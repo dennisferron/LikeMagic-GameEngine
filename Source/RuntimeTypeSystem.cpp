@@ -39,12 +39,18 @@ add_conv<type const&, double const&, NumberConv>();
 using namespace LikeMagic;
 using namespace LikeMagic::SFMO;
 using namespace LikeMagic::TypeConv;
+using namespace LikeMagic::Utility;
 
 RuntimeTypeSystem::RuntimeTypeSystem()  :
     functions(new StaticMethods("CppFunc", *this)),
     proxy_methods(new ProxyMethods("ProxyMethods", *this)),
     collection_methods(new ProxyMethods("CollectionMethods", *this))
 {
+    // The runtime type system creates the type info cache.
+    // In order to get the DLLs using the same static TypeInfo instance we have to "smuggle" in a pointer to it via this object.
+    dll_shared_typeinfo = new TypeInfoCache;
+    TypeInfoCache::set_instance(dll_shared_typeinfo);
+
     // Add the abstract type system itself as a class.
     LM_CLASS_NO_COPY((*this), AbstractTypeSystem)
     LM_FUNC(AbstractTypeSystem, (set_leak_memory)(leak_memory))

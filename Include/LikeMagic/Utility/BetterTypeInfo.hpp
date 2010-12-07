@@ -79,21 +79,11 @@ public:
     }
 
     template <typename T>
-    static TypeToken create_token()
+    static TypeIndex create_index()
     {
-        typedef typename StripModifiers<T>::strip stripped;
-
-        static TypeToken cached(
-            TypeInfoCache::get_instance()->get_token(
-                std::auto_ptr<AbstractTypeInfo const>(
-                    new BetterTypeInfo(
-                        &typeid(typename stripped::type),
-                        stripped::is_const,
-                        stripped::is_ref,
-                        stripped::is_ptr,
-                        stripped::is_const_ptr
-                    )
-                )
+        static TypeIndex cached(
+            TypeInfoCache::get_instance()->get_index(
+                create<T>()
             )
         );
 

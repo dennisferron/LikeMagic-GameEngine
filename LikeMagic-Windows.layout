@@ -22,6 +22,9 @@
 	<File name="Include\LikeMagic\IMarkable.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="340" topLine="0" />
 	</File>
+	<File name="Include\LikeMagic\Marshaling\AbstractClass.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="0" topLine="40" />
+	</File>
 	<File name="Include\LikeMagic\SFMO\AbstractExpression.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="1573" topLine="27" />
 	</File>
@@ -38,19 +41,31 @@
 		<Cursor position="1437" topLine="21" />
 	</File>
 	<File name="Include\LikeMagic\TypeConv\TypeConvGraph.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="1603" topLine="39" />
+		<Cursor position="2674" topLine="43" />
 	</File>
 	<File name="Include\LikeMagic\Utility\AbstractTypeInfo.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="3439" topLine="94" />
+		<Cursor position="3544" topLine="89" />
 	</File>
-	<File name="Include\LikeMagic\Utility\BetterTypeInfo.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="1561" topLine="40" />
+	<File name="Include\LikeMagic\Utility\BetterTypeInfo.hpp" open="1" top="0" tabpos="4">
+		<Cursor position="2405" topLine="69" />
 	</File>
 	<File name="Include\LikeMagic\Utility\DLLHelper.hpp" open="0" top="0" tabpos="4">
 		<Cursor position="765" topLine="0" />
 	</File>
 	<File name="Include\LikeMagic\Utility\KeyWrapper.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="995" topLine="0" />
+	</File>
+	<File name="Include\LikeMagic\Utility\TypeInfoCache.hpp" open="1" top="1" tabpos="5">
+		<Cursor position="947" topLine="25" />
+	</File>
+	<File name="Include\LikeMagic\Utility\UserMacros.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="5950" topLine="67" />
+	</File>
+	<File name="Source\API_Io_from_script.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="4066" topLine="73" />
+	</File>
+	<File name="Source\AbstractClass.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="2090" topLine="43" />
 	</File>
 	<File name="Source\AbstractCppObjProxy.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="2651" topLine="85" />
@@ -65,12 +80,15 @@
 		<Cursor position="1579" topLine="18" />
 	</File>
 	<File name="Source\IoVM.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="11425" topLine="272" />
+		<Cursor position="11425" topLine="280" />
 	</File>
 	<File name="Source\RuntimeTypeSystem.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="3709" topLine="72" />
+		<Cursor position="3739" topLine="45" />
 	</File>
 	<File name="Source\TypeConvGraph.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="3263" topLine="127" />
+	</File>
+	<File name="Source\TypeInfoCache.cpp" open="1" top="0" tabpos="6">
+		<Cursor position="300" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>

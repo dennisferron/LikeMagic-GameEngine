@@ -28,28 +28,29 @@ typedef std::vector<TypeInfoPtr> TypeInfoList;
 
 class TypeInfoCache;
 
-class TypeToken
+class TypeIndex
 {
 private:
     friend class TypeInfoCache;
-    friend std::size_t hash_value(TypeToken info);
+    friend std::size_t hash_value(TypeIndex info);
     std::size_t id;
 
-    TypeToken(std::size_t id_) : id(id_) {}
+    TypeIndex(std::size_t id_) : id(id_) {}
 
 public:
-    TypeToken(TypeToken const& that) : id(that.id) {}
+    TypeIndex() : id(-1) {}
+    TypeIndex(TypeIndex const& that) : id(that.id) {}
 
-    inline bool operator <(TypeToken const& that) const
+    inline bool operator <(TypeIndex const& that) const
         { return this->id < that.id; }
 
-    inline bool operator ==(TypeToken const& that) const
+    inline bool operator ==(TypeIndex const& that) const
         { return this->id == that.id; }
 
     TypeInfoPtr get_info() const;
 };
 
-inline std::size_t hash_value(TypeToken info)
+inline std::size_t hash_value(TypeIndex info)
 {
     return hash_value(info.id);
 }
@@ -58,23 +59,26 @@ class TypeInfoCache
 {
 private:
     static TypeInfoCache* instance;
-    std::vector<std::pair<TypeToken, TypeInfoPtr>> cache;
+    boost::unordered_map<TypeInfoPtr, TypeIndex> info_to_index;
+    std::vector<TypeInfoPtr> index_to_info;
+
+    void add(TypeInfoPtr candidate);
 
 public:
 
-    TypeToken get_token(std::auto_ptr<AbstractTypeInfo const> candidate);
+    TypeIndex get_index(TypeInfoPtr candidate);
+    TypeInfoPtr get_info(TypeIndex tok);
 
-    TypeInfoPtr get_info(TypeToken tok);
-
+    // I'm not a fan of singletons but in this case it makes sense.
     static TypeInfoCache* get_instance()
     {
         if (!instance)
-            throw std::logic_error("No TypeInfoCache singleton exists!");
+            throw std::logic_error("Error:  TypeInfoCache instance has not been created yet!");
 
         return instance;
     }
 
-    static void set_instance(TypeInfoCache* instance_) { instance = instance_; }
+    static void set_instance(TypeInfoCache* instance_);
 };
 
 

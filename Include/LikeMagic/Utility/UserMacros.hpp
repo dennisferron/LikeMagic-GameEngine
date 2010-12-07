@@ -107,3 +107,7 @@ template <typename T> struct LM_InsertConst<T&> { typedef T const& type; };
     FieldAccessor f(new BitField); \
     class_name##_LM.bind_custom_field<FieldAccessor>(#field_name, f); \
 }
+
+// This needs to be done once in every DLL to set the type info cache singleton to a shared value.
+#define LM_SET_TYPE_INFO(type_sys) \
+LikeMagic::Utility::TypeInfoCache::set_instance(type_sys.get_typeinfo_cache());

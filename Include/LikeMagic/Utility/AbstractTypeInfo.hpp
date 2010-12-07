@@ -128,6 +128,11 @@ inline std::size_t hash_value(AbstractTypeInfo const& info)
     return info.hash_value();
 }
 
+inline std::size_t hash_value(TypeInfoPtr info_p)
+{
+    return info_p->hash_value();
+}
+
 typedef AbstractTypeInfo::TypeInfoKey TypeInfoKey;
 
 }}
