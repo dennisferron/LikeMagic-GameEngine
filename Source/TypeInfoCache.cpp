@@ -6,8 +6,6 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-#pragma once
-
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 #include "LikeMagic/Utility/TypeInfoCache.hpp"
 
@@ -15,6 +13,15 @@ namespace LikeMagic { namespace Utility {
 
 TypeInfoCache* TypeInfoCache::instance = new TypeInfoCache;
 
+TypeInfoPtr TypeIndex::get_info() const
+{
+    return TypeInfoCache::get_instance()->get_info(id);
+}
+
+std::string TypeIndex::describe() const
+{
+    return get_info()->describe();
+}
 
 void TypeInfoCache::set_instance(TypeInfoCache* instance_)
 {
@@ -38,9 +45,9 @@ TypeIndex TypeInfoCache::get_index(TypeInfoPtr candidate)
     return iter->second;
 }
 
-TypeInfoPtr TypeInfoCache::get_info(TypeIndex tok)
+TypeInfoPtr TypeInfoCache::get_info(TypeIndex id) const
 {
-    return index_to_info[tok.id];
+    return index_to_info[id.id];
 }
 
 void TypeInfoCache::add(TypeInfoPtr candidate)

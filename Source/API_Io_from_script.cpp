@@ -78,7 +78,7 @@ std::vector<T> from_list(IoObject* io_obj)
         virtual std::string describe() const { return "From " #scriptType " Conv"; } \
     }; \
 \
-    type_sys.add_converter_simple(FromIoTypeInfo::create(#scriptType), BetterTypeInfo::create<cppType&>(), new From##scriptType); \
+    type_sys.add_converter_simple(FromIoTypeInfo::create_index(#scriptType), BetterTypeInfo::create_index<cppType&>(), new From##scriptType); \
 }
 
 void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
@@ -95,7 +95,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     };
     static const char* name1 = "Nil";
     static std::string name2(name1);
-    static auto from_type(FromIoTypeInfo::create(name2));
+    static auto from_type(FromIoTypeInfo::create_index(name2));
     auto to_type = FromNil().wrap_expr(0)->get_type();
     auto conv = new FromNil;
     type_sys.add_converter_simple(from_type, to_type, conv);
@@ -110,7 +110,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
 
         virtual std::string describe() const { return "From Nil to 'false' Conv"; }
     };
-    type_sys.add_converter_simple(FromIoTypeInfo::create("Nil"), BetterTypeInfo::create<bool>(), new FromNilToFalse);
+    type_sys.add_converter_simple(FromIoTypeInfo::create_index("Nil"), BetterTypeInfo::create_index<bool>(), new FromNilToFalse);
 
 
     // IoBlock requires an extra argument (type_sys)
@@ -130,7 +130,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
         virtual std::string describe() const { return "From Block Conv"; }
     };
 
-    type_sys.add_converter_simple(FromIoTypeInfo::create("Block"), BetterTypeInfo::create<IoBlock&>(), new FromIoBlock(type_sys, iovm));
+    type_sys.add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoBlock&>(), new FromIoBlock(type_sys, iovm));
 
     MKCONV(type_sys, Number, double, IoNumber_asDouble)
     MKCONV(type_sys, Sequence, std::string, IoSeq_asCString)
@@ -149,7 +149,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
         virtual std::string describe() const { return "From Bool Conv"; }
     };
 
-    type_sys.add_converter_simple(FromIoTypeInfo::create("Bool"), BetterTypeInfo::create<bool&>(), new FromBool);
+    type_sys.add_converter_simple(FromIoTypeInfo::create_index("Bool"), BetterTypeInfo::create_index<bool&>(), new FromBool);
 
 
     //MKCONV(type_sys, Vector, std::vector<long double>, from_vector<long double>)

@@ -21,7 +21,7 @@ namespace LikeMagic { namespace Backends { namespace Io {
 
 using LikeMagic::SFMO::ExprPtr;
 using LikeMagic::SFMO::Expression;
-using LikeMagic::Utility::TypeInfoPtr;
+using LikeMagic::Utility::TypeIndex;
 
 class AbstractToIoObjectExpr : public AbstractExpression
 {
@@ -58,11 +58,9 @@ public:
         return result;
     }
 
-    virtual TypeInfoPtr get_type() const
+    virtual LikeMagic::Utility::TypeIndex get_type() const
     {
-        // TODO:  Change this if we start using multiple to-io types.
-        static TypeInfoPtr cache = ToIoTypeInfo::create();
-        return cache;
+        return ToIoTypeInfo::create_index();
     }
 
     virtual IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m)
@@ -72,11 +70,14 @@ public:
 
     virtual std::string description() const
     {
+        return "testing";
+        /*
         return
           "To-Io expression from C++ type "
-        + BetterTypeInfo::create<T>()->describe()
+        + BetterTypeInfo::create<T>().describe()
         + " to Io type "
-        + get_type()->describe();
+        + get_type().describe();
+        */
     }
 
     virtual void mark() const { from_expr->mark(); }

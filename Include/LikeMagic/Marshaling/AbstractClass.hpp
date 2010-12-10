@@ -34,8 +34,8 @@ class AbstractCallTargetSelector;
 using LikeMagic::SFMO::AbstractCppObjProxy;
 using LikeMagic::SFMO::AbstractExpression;
 using LikeMagic::AbstractTypeSystem;
-using LikeMagic::Utility::TypeInfoKey;
-using LikeMagic::Utility::TypeInfoPtr;
+using LikeMagic::Utility::TypeIndex;
+using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeInfoList;
 
 class AbstractClass

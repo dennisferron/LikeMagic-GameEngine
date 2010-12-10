@@ -56,9 +56,9 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     LM_FUNC(AbstractTypeSystem, (set_leak_memory)(leak_memory))
 
     // Register the special classes
-    classes[BetterTypeInfo::create<StaticMethod>()] = functions;
-    classes[BetterTypeInfo::create<AbstractCppObjProxy>()] = proxy_methods;
-    classes[BetterTypeInfo::create<SFMOCollection>()] = collection_methods;
+    classes[BetterTypeInfo::create_index<StaticMethod>()] = functions;
+    classes[BetterTypeInfo::create_index<AbstractCppObjProxy>()] = proxy_methods;
+    classes[BetterTypeInfo::create_index<SFMOCollection>()] = collection_methods;
 
     // StaticMethods is by value but a Term returns by reference;
     // need to give type system ability to do the conversion.
@@ -81,13 +81,13 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
 
     // register void so functions returning void will work right.
     auto void_class = new DummyClass<void>("void", *this);
-    classes[BetterTypeInfo::create<void>()] = void_class;
+    classes[BetterTypeInfo::create_index<void>()] = void_class;
     void_class->add_base_abstr(proxy_methods);
 
     // register the Unknown_CppObj so functions returning unregistered classes
     // can still be called.
     auto unknown_class = new DummyClass<Unknown_CppObj>("Unknown_CppObj", *this);
-    classes[BetterTypeInfo::create<Unknown_CppObj>()] = unknown_class;
+    classes[BetterTypeInfo::create_index<Unknown_CppObj>()] = unknown_class;
     unknown_class->add_base_abstr(proxy_methods);
     this->unknown_class = unknown_class;
 

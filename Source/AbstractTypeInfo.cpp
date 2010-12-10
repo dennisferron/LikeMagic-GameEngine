@@ -21,4 +21,9 @@ void intrusive_ptr_release(AbstractTypeInfo const* p)
         delete p;
 }
 
+TypeIndex AbstractTypeInfo::get_index() const
+{
+    return TypeInfoCache::get_instance()->get_index(this);
+}
+
 }}

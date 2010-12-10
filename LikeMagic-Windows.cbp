@@ -59,7 +59,6 @@
 		<Unit filename="Include\LikeMagic\Backends\Io\IoObjectExpr.hpp" />
 		<Unit filename="Include\LikeMagic\Backends\Io\IoVM.hpp" />
 		<Unit filename="Include\LikeMagic\Backends\Io\IoVectorSTL.hpp" />
-		<Unit filename="Include\LikeMagic\Backends\Io\ToIoObjectExpr.hpp" />
 		<Unit filename="Include\LikeMagic\Backends\Io\ToIoTypeInfo.hpp" />
 		<Unit filename="Include\LikeMagic\Common.hpp" />
 		<Unit filename="Include\LikeMagic\IMarkable.hpp" />

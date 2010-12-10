@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -42,13 +42,13 @@ template <> struct IsString<wchar_t const *&> { enum { value = true }; };
 template <typename F, typename T> struct StringConvImpl
 {
     static_assert(false && sizeof(T), "Invalid string conversion impl");
-    
+
     inline static T do_conv(F obj)
     {
         throw std::logic_error("Error, StringConvImpl:  cannot do string conversion from type "
-                + BetterTypeInfo::create<F>().describe()
+                + BetterTypeInfo::create_index<F>().describe()
                 + " to type "
-                + BetterTypeInfo::create<T>().describe());
+                + BetterTypeInfo::create_index<T>().describe());
     }
 };
 

@@ -54,22 +54,22 @@ void TypeConvGraph::print_graph() const
     boost::print_graph(graph);
 }
 
-bool TypeConvGraph::has_type(TypeInfoKey type) const
+bool TypeConvGraph::has_type(TypeIndex type) const
 {
     return vertex_map.find(type) != vertex_map.end();
 }
 
-TypeConvGraph::vertex_t TypeConvGraph::add_type(TypeInfoPtr type)
+TypeConvGraph::vertex_t TypeConvGraph::add_type(TypeIndex type)
 {
     if (!has_type(type))
     {
-        vertex_map[make_key_wrapper(type)] = add_vertex(graph);
+        vertex_map[type] = add_vertex(graph);
     }
 
-    return vertex_map[make_key_wrapper(type)];
+    return vertex_map[type];
 }
 
-void TypeConvGraph::add_conv(TypeInfoPtr from, TypeInfoPtr to, p_conv_t conv)
+void TypeConvGraph::add_conv(TypeIndex from, TypeIndex to, p_conv_t conv)
 {
     auto from_vert = add_type(from);
     auto to_vert = add_type(to);
@@ -113,24 +113,24 @@ ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, TypeConvGraph::p_chai
 }
 
 
-ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeInfoPtr from, TypeInfoPtr to) const
+ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to) const
 {
     auto result = search_for_conv(from, to);
 
     if (!result)
-        throw std::logic_error(std::string("No type conversion path from ") + from->describe() + " to " + to->describe());
+        throw std::logic_error(std::string("No type conversion path from ") + from.describe() + " to " + to.describe());
 
     return build_conv_chain(from_expr, result);
 }
 
 
-bool TypeConvGraph::has_conv(TypeInfoPtr from_type, TypeInfoPtr to_type) const
+bool TypeConvGraph::has_conv(TypeIndex from_type, TypeIndex to_type) const
 {
     return search_for_conv(from_type, to_type) != NULL;
 }
 
 
-TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeInfoKey from, TypeInfoKey to) const
+TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeIndex from, TypeIndex to) const
 {
     static int count = 0;
 
@@ -141,7 +141,7 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeInfoKey from, TypeI
     {
 
         if (!has_type(from) || !has_type(to))
-            throw std::logic_error("From or to type not found in TypeConvGraph in search_for_conv from " + from.key->describe() + " to " + to.key->describe());
+            throw std::logic_error("From or to type not found in TypeConvGraph in search_for_conv from " + from.describe() + " to " + to.describe());
 
         vertex_t source = vertex_map.find(from)->second;
         vertex_t dest = vertex_map.find(to)->second;

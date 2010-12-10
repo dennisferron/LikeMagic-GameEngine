@@ -25,7 +25,7 @@ namespace LikeMagic {
 
 using namespace LikeMagic::Marshaling;
 
-using LikeMagic::Utility::TypeInfoKey;
+using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::EnumHelper;
 
 // The reason why TypeSystem is split into AbstractTypeSystem and
@@ -92,7 +92,7 @@ private:
     template <typename T, bool is_copyable>
     Class<T, is_copyable>& register_class_impl(std::string name)
     {
-        static TypeInfoKey type(BetterTypeInfo::create<T>());
+        static TypeIndex type(BetterTypeInfo::create_index<T>());
         if (classes.find(type) != classes.end())
         {
             return *dynamic_cast<Class<T, is_copyable>*>(classes[type]);
@@ -128,7 +128,7 @@ private:
             // Add enum-specific things if applicable.
             register_enum<T, is_copyable>(*result);
 
-            classes[TypeInfoKey(type.key->bare_type())] = result;
+            classes[type.get_info()->bare_type()->get_index()] = result;
 
             return *result;
         }
@@ -144,7 +144,7 @@ private:
     template <typename T>
     void register_collection(std::string name)
     {
-        if (!has_class(BetterTypeInfo::create<std::vector<T>>()))
+        if (!has_class(BetterTypeInfo::create_index<std::vector<T>>()))
         {
             auto& collection = register_class_impl<std::vector<T>, true>("vector_of_" + name);
             collection.template bind_constructor<>();

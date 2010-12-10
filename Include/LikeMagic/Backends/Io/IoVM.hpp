@@ -26,7 +26,7 @@ class IoVM
 private:
     AbstractTypeSystem& type_system;
     IoState* self;  // Has to be named "self" for a lot of the Io macros to work.
-    boost::unordered_map<TypeInfoKey, IoObject*> cpp_protos;
+    boost::unordered_map<TypeIndex, IoObject*> cpp_protos;
     boost::unordered_map<IoObject*, std::string> watch_for_free;
     boost::unordered_set<IoObject*> freed_objects;
     bool record_freed_flag;
@@ -80,7 +80,7 @@ public:
     template <typename T>
     boost::intrusive_ptr<Expression<T>> get_expr(std::string io_code) const
     {
-        auto abs_expr = get_abs_expr(io_code, BetterTypeInfo::create<T>());
+        auto abs_expr = get_abs_expr(io_code, BetterTypeInfo::create_index<T>());
         return type_system.try_conv<T>(abs_expr);
     }
 

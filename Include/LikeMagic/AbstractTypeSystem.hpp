@@ -43,8 +43,8 @@ namespace Marshaling {
 using LikeMagic::Marshaling::AbstractMethodset;
 using LikeMagic::Marshaling::AbstractClass;
 using LikeMagic::Utility::BetterTypeInfo;
-using LikeMagic::Utility::TypeInfoKey;
-using LikeMagic::Utility::TypeInfoPtr;
+using LikeMagic::Utility::TypeIndex;
+using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeInfoList;
 using namespace LikeMagic::TypeConv;
 using namespace LikeMagic::SFMO;
@@ -77,7 +77,7 @@ protected:
 
     AbstractTypeSystem();
 
-    boost::unordered_map<TypeInfoKey, AbstractClass*> classes;
+    boost::unordered_map<TypeIndex, AbstractClass*> classes;
     AbstractClass const* unknown_class;
 
     TypeConvGraph conv_graph;
@@ -94,42 +94,42 @@ public:
     void set_leak_memory(bool flag);
 
     TypeInfoList get_registered_types() const;
-    std::vector<std::string> get_base_names(TypeInfoPtr type) const;
-    std::string get_class_name(TypeInfoPtr type) const;
-    AbstractCppObjProxy* create_class_proxy(TypeInfoPtr type) const;
-    std::vector<std::string> const& get_method_names(TypeInfoPtr type) const;
-    AbstractCppObjProxy* call(TypeInfoPtr type, std::string method_name, AbstractCppObjProxy* proxy, std::vector<ExprPtr> args) const;
-    TypeInfoList get_arg_types(TypeInfoPtr type, std::string method_name, int num_args) const;
-    bool has_class(TypeInfoPtr type) const;
-    AbstractClass const* get_class(TypeInfoPtr type) const;
+    std::vector<std::string> get_base_names(TypeIndex type) const;
+    std::string get_class_name(TypeIndex type) const;
+    AbstractCppObjProxy* create_class_proxy(TypeIndex type) const;
+    std::vector<std::string> const& get_method_names(TypeIndex type) const;
+    AbstractCppObjProxy* call(TypeIndex type, std::string method_name, AbstractCppObjProxy* proxy, std::vector<ExprPtr> args) const;
+    TypeInfoList get_arg_types(TypeIndex type, std::string method_name, int num_args) const;
+    bool has_class(TypeIndex type) const;
+    AbstractClass const* get_class(TypeIndex type) const;
 
-    void add_converter_variations(TypeInfoPtr from, TypeInfoPtr to, p_conv_t conv);
-    void add_converter_simple(TypeInfoPtr from, TypeInfoPtr to, p_conv_t conv);
-    void add_type(TypeInfoPtr type);
+    void add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv);
+    void add_converter_simple(TypeIndex from, TypeIndex to, p_conv_t conv);
+    void add_type(TypeIndex type);
 
     template <typename From, typename To, template <typename From, typename To> class Converter=ImplicitConv>
     void add_conv()
     {
         add_converter_variations(
-            BetterTypeInfo::create<From>(),
-            BetterTypeInfo::create<To>(),
+            BetterTypeInfo::create_index<From>(),
+            BetterTypeInfo::create_index<To>(),
                 new Converter<From, To>);
     }
 
     template <typename T>
     std::string get_class_name() const
     {
-        static auto c_type = BetterTypeInfo::create<T>();
+        static auto c_type = BetterTypeInfo::create_index<T>();
         return get_class_name(c_type);
     }
 
-    ExprPtr try_conv(ExprPtr from_expr, TypeInfoPtr to_type) const;
-    bool has_conv(TypeInfoPtr  from_type, TypeInfoPtr to_type) const;
+    ExprPtr try_conv(ExprPtr from_expr, TypeIndex to_type) const;
+    bool has_conv(TypeIndex  from_type, TypeIndex to_type) const;
 
     template <typename To>
     boost::intrusive_ptr<Expression<To>> try_conv(ExprPtr from) const
     {
-        return static_cast<Expression<To>*>(try_conv(from, BetterTypeInfo::create<To>()).get());
+        return static_cast<Expression<To>*>(try_conv(from, BetterTypeInfo::create_index<To>()).get());
     }
 
 };

@@ -65,6 +65,20 @@ public:
     static TypeInfoPtr create() { return new ToIoTypeInfo(); }
     static TypeInfoPtr create(std::string type_name) { return new ToIoTypeInfo(type_name); }
 
+    static TypeIndex create_index()
+    {
+        return TypeInfoCache::get_instance()->get_index(
+                create()
+        );
+    }
+
+    static TypeIndex create_index(std::string type_name)
+    {
+        return TypeInfoCache::get_instance()->get_index(
+                create(type_name)
+        );
+    }
+
     virtual std::string describe() const
     {
         return "To Io Type " + type_name;

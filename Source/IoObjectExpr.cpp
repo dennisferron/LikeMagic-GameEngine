@@ -15,11 +15,11 @@ using namespace LikeMagic::Utility;
 namespace LikeMagic { namespace Backends { namespace Io {
 
 
-IoObjectExpr::IoObjectExpr(IoObject* io_object_) : io_object(io_object_), type_info(FromIoTypeInfo::create(get_type_name(io_object)))
+IoObjectExpr::IoObjectExpr(IoObject* io_object_) : io_object(io_object_), type_info(FromIoTypeInfo::create_index(get_type_name(io_object)))
 {
 }
 
-TypeInfoPtr IoObjectExpr::get_type() const
+TypeIndex IoObjectExpr::get_type() const
 {
     return type_info;
 }

@@ -26,8 +26,8 @@
 namespace LikeMagic { namespace TypeConv {
 
 using namespace boost::graph;
-using LikeMagic::Utility::TypeInfoKey;
-using LikeMagic::Utility::TypeInfoPtr;
+using LikeMagic::Utility::TypeIndex;
+using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeInfoList;
 
 struct FindType;
@@ -48,13 +48,13 @@ private:
 
     struct vertex_info
     {
-        TypeInfoKey type;
+        TypeIndex type;
     };
 
     typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, vertex_info, edge_info> graph_t;
     typedef boost::graph_traits<graph_t>::vertex_descriptor vertex_t;
     typedef boost::graph_traits<graph_t>::edge_descriptor edge_t;
-    typedef std::map<TypeInfoKey, vertex_t> vertex_map_t;
+    typedef std::map<TypeIndex, vertex_t> vertex_map_t;
 
     graph_t graph;
     vertex_map_t vertex_map;
@@ -62,12 +62,12 @@ private:
     // Mutable is for when the object is logically const, but technically a member needs
     // to sometimes change in a way that's not visible from outside the class.
     // Caching is a perfect example of this.
-    mutable boost::unordered_map<std::pair<TypeInfoKey, TypeInfoKey>, p_chain_t> conv_cache;
+    mutable boost::unordered_map<std::pair<TypeIndex, TypeIndex>, p_chain_t> conv_cache;
 
-    bool has_type(TypeInfoKey type) const;
+    bool has_type(TypeIndex type) const;
 
     ExprPtr build_conv_chain(ExprPtr from_expr, p_chain_t chain) const;
-    p_chain_t search_for_conv(TypeInfoKey from, TypeInfoKey to) const;
+    p_chain_t search_for_conv(TypeIndex from, TypeIndex to) const;
 
     // Don't allow TypeConvGraph to be copied accidently.
     TypeConvGraph(TypeConvGraph const&)=delete;
@@ -78,10 +78,10 @@ private:
 public:
     TypeConvGraph();
     ~TypeConvGraph();
-    vertex_t  add_type(TypeInfoPtr type);
-    void add_conv(TypeInfoPtr from, TypeInfoPtr to, p_conv_t conv);
-    ExprPtr wrap_expr(ExprPtr from_expr, TypeInfoPtr from, TypeInfoPtr to) const;
-    bool has_conv(TypeInfoPtr from_type, TypeInfoPtr to_type) const;
+    vertex_t  add_type(TypeIndex type);
+    void add_conv(TypeIndex from, TypeIndex to, p_conv_t conv);
+    ExprPtr wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to) const;
+    bool has_conv(TypeIndex from_type, TypeIndex to_type) const;
     void print_graph() const;
 };
 

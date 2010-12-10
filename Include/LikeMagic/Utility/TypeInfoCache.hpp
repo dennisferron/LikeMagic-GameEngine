@@ -24,7 +24,6 @@ namespace LikeMagic { namespace Utility {
 
 class AbstractTypeInfo;
 typedef boost::intrusive_ptr<AbstractTypeInfo const> TypeInfoPtr;
-typedef std::vector<TypeInfoPtr> TypeInfoList;
 
 class TypeInfoCache;
 
@@ -48,12 +47,15 @@ public:
         { return this->id == that.id; }
 
     TypeInfoPtr get_info() const;
+    std::string describe() const;
 };
 
 inline std::size_t hash_value(TypeIndex info)
 {
     return hash_value(info.id);
 }
+
+typedef std::vector<TypeIndex> TypeInfoList;
 
 class TypeInfoCache
 {
@@ -67,7 +69,7 @@ private:
 public:
 
     TypeIndex get_index(TypeInfoPtr candidate);
-    TypeInfoPtr get_info(TypeIndex tok);
+    TypeInfoPtr get_info(TypeIndex id) const;
 
     // I'm not a fan of singletons but in this case it makes sense.
     static TypeInfoCache* get_instance()

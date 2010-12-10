@@ -25,7 +25,7 @@ namespace LikeMagic { namespace Backends { namespace Io {
 template <typename T>
 IoObject* to_seq(std::vector<T> const& vect, IoState* self)
 {
-    static TypeInfoPtr to_type = BetterTypeInfo::create<T>();
+    static TypeIndex to_type = BetterTypeInfo::create_index<T>();
 
     // Yuck!  C-style memory alloc!  NAasty...  At least Io frees it for us (I *think*...)
     T* c_buf = reinterpret_cast<T*>(io_calloc(vect.size(), sizeof(T)));
@@ -33,12 +33,12 @@ IoObject* to_seq(std::vector<T> const& vect, IoState* self)
     // TODO:  change CTYPE depending on T.
     UArray* uarray;
 
-    if (*to_type == *BetterTypeInfo::create<int>())
+    if (to_type == BetterTypeInfo::create_index<int>())
         uarray = UArray_newWithData_type_encoding_size_copy_(c_buf, CTYPE_int32_t, CENCODING_NUMBER, vect.size(), 0);
-    else if (*to_type == *BetterTypeInfo::create<unsigned int>())
+    else if (to_type == BetterTypeInfo::create_index<unsigned int>())
         uarray = UArray_newWithData_type_encoding_size_copy_(c_buf, CTYPE_uint32_t, CENCODING_NUMBER, vect.size(), 0);
     else
-        throw std::logic_error(std::string("No code implemented yet in LikeMagic for converting to IoSeq from ") + to_type->describe());
+        throw std::logic_error(std::string("No code implemented yet in LikeMagic for converting to IoSeq from ") + to_type.describe());
 
     // In this case all iterators are pointers, so the STL algorithm here actually uses memcpy for efficiency.
     copy(vect.begin(), vect.end(), c_buf);
@@ -66,7 +66,7 @@ struct To##name : public AbstractTypeConverter \
 }; \
 
 #define ADD_CONV(name, type) \
-type_sys.add_converter_simple(BetterTypeInfo::create<type>(), ToIoTypeInfo::create(), new To##name);
+type_sys.add_converter_simple(BetterTypeInfo::create_index<type>(), ToIoTypeInfo::create_index(), new To##name);
 
 DECL_CONV(Number, double, IONUMBER(value))
 DECL_CONV(Bool, bool, value? IOTRUE(self) : IOFALSE(self))

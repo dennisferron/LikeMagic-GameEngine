@@ -20,13 +20,13 @@ namespace LikeMagic { namespace Backends { namespace Io {
 
 using LikeMagic::SFMO::ExprPtr;
 using LikeMagic::SFMO::Expression;
-using LikeMagic::Utility::TypeInfoPtr;
+using LikeMagic::Utility::TypeIndex;
 
 class IoObjectExpr : public Expression<IoObject*>
 {
 private:
     IoObject* io_object;
-    TypeInfoPtr type_info;
+    TypeIndex type_info;
 
     IoObjectExpr(IoObject* io_object_);
 
@@ -36,7 +36,7 @@ public:
     virtual bool is_terminal() const { return true; }
     virtual bool is_lazy() const { return false; }
 
-    virtual TypeInfoPtr get_type() const;
+    virtual TypeIndex get_type() const;
     virtual std::string description() const;
     virtual void mark() const;
     virtual IoObject* eval() { return io_object; }

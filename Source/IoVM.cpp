@@ -83,7 +83,7 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_),
     record_freed_flag(false), free_watch_flag(false)
 {
     // IoObjectExpr expression holds unconverted Io objects; it has type of struct IoObjectExprTag.
-    //type_system_.add_type(BetterTypeInfo::create<IoObjectExprTag>());
+    //type_system_.add_type(BetterTypeInfo::create_index<IoObjectExprTag>());
 
     add_convs_from_script(type_system_, this);
     add_convs_to_script(type_system_, this);
@@ -105,7 +105,7 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_),
     // Make the ToIoTypeInfo constructible from a string so that
     // the proxy as_script_type() can be called using a string and receive a ToIoTypeInfo.
     // Using Sequence instead of string for the from type so as not to conflict with other languages' type conversions.
-    //type_system.add_converter_simple(FromIoTypeInfo::create("Sequence"), BetterTypeInfo::create<ToIoTypeInfo>(), new SequenceToToIoTypeInfoConv(type_system));
+    //type_system.add_converter_simple(FromIoTypeInfo::create_index("Sequence"), BetterTypeInfo::create_index<ToIoTypeInfo>(), new SequenceToToIoTypeInfoConv(type_system));
 
 
     LM_CLASS(runtime_type_sys, FromIoTypeInfo)
@@ -117,15 +117,15 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_),
     LM_CLASS(runtime_type_sys, IoObject)
 
     // To convert an Io object to a void*
-    type_system.add_converter_simple(FromIoTypeInfo::create("Object"), BetterTypeInfo::create<void*>(), new LikeMagic::TypeConv::ImplicitConv<IoObject*, void*>);
+    type_system.add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<void*>(), new LikeMagic::TypeConv::ImplicitConv<IoObject*, void*>);
 
     // Make general Io objects convertible with IoObject*.
-    type_system.add_converter_simple(FromIoTypeInfo::create("Object"), BetterTypeInfo::create<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
-    type_system.add_converter_simple(BetterTypeInfo::create<IoObject*>(), ToIoTypeInfo::create("Object"), new PtrToIoObjectConv);
-    type_system.add_converter_simple(ToIoTypeInfo::create("Object"), ToIoTypeInfo::create(), new LikeMagic::TypeConv::NoChangeConv);
+    type_system.add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
+    type_system.add_converter_simple(BetterTypeInfo::create_index<IoObject*>(), ToIoTypeInfo::create_index("Object"), new PtrToIoObjectConv);
+    type_system.add_converter_simple(ToIoTypeInfo::create_index("Object"), ToIoTypeInfo::create_index(), new LikeMagic::TypeConv::NoChangeConv);
 
     // Allow conversion of Io blocks to IoObject*
-    type_system.add_converter_simple(FromIoTypeInfo::create("Block"), BetterTypeInfo::create<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
+    type_system.add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
 
     // Allow reference/value conversions for IoBlock.
     type_system_.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock>();
@@ -158,7 +158,7 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_),
         std::string code = "LikeMagic classes " + name;
         IoObject* mset_proto = do_string(code);
 
-        cpp_protos[TypeInfoKey(*it)] = mset_proto;
+        cpp_protos[TypeIndex(*it)] = mset_proto;
 
         if (!mset_proto)
         {
@@ -311,7 +311,7 @@ IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
 
 IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, AbstractCppObjProxy* proxy) const
 {
-    static TypeInfoPtr to_io_type = ToIoTypeInfo::create();
+    static TypeIndex to_io_type = ToIoTypeInfo::create_index();
 
     if (!proxy)
         return IOSTATE->ioNil;
@@ -334,10 +334,10 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
     }
     else
     {
-        auto iter = cpp_protos.find(proxy->get_type()->bare_type());
+        auto iter = cpp_protos.find(proxy->get_type().get_info()->bare_type()->get_index());
 
         if (iter == cpp_protos.end())
-            throw std::logic_error("No class proto for " + proxy->get_type()->describe() );
+            throw std::logic_error("No class proto for " + proxy->get_type().describe() );
 
         IoObject* proto = iter->second;
         IoObject* clone = IOCLONE(proto);

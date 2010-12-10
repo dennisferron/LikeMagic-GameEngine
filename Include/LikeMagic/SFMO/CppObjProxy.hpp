@@ -154,7 +154,7 @@ private:
 
 private:
     CppObjProxy(boost::intrusive_ptr<Expression<T>> expr_, AbstractTypeSystem const& type_system) :
-        AbstractCppObjProxy(type_system, type_system.get_class(BetterTypeInfo::create<T>())), expr(expr_)
+        AbstractCppObjProxy(type_system, type_system.get_class(BetterTypeInfo::create_index<T>())), expr(expr_)
     {
     }
 
@@ -279,7 +279,7 @@ public:
         expr->mark();
     }
 
-    virtual TypeInfoPtr get_type() const { return expr->get_type(); }
+    virtual TypeIndex get_type() const { return expr->get_type(); }
 };
 
 }}

@@ -121,6 +121,7 @@ public:
         return cached_hash;
     }
 
+    TypeIndex get_index() const;
 };
 
 inline std::size_t hash_value(AbstractTypeInfo const& info)

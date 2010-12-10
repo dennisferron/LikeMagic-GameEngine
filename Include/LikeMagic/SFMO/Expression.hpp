@@ -19,7 +19,7 @@
 namespace LikeMagic { namespace SFMO {
 
 using LikeMagic::Utility::BetterTypeInfo;
-using LikeMagic::Utility::TypeInfoPtr;
+using LikeMagic::Utility::TypeIndex;
 
 template <typename T>
 class Expression : public AbstractExpression
@@ -35,7 +35,7 @@ public:
     virtual T eval() = 0;
     virtual boost::intrusive_ptr<Expression<T>> clone() const = 0;
     typedef T ReturnType;
-    virtual TypeInfoPtr get_type() const { return BetterTypeInfo::create<T>(); }
+    virtual TypeIndex get_type() const { return BetterTypeInfo::create_index<T>(); }
 };
 
 }}

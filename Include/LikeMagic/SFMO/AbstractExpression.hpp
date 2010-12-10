@@ -30,7 +30,7 @@ class AbstractTypeConverter;
 
 namespace LikeMagic { namespace SFMO {
 
-using LikeMagic::Utility::TypeInfoPtr;
+using LikeMagic::Utility::TypeIndex;
 
 // more forward declarations
 class AbstractObjectSet;
@@ -71,7 +71,7 @@ public:
     virtual std::set<AbstractObjectSet*> get_objsets() { return std::set<AbstractObjectSet*>(); }
     virtual bool is_terminal() const = 0;
     virtual bool is_lazy() const = 0;
-    virtual TypeInfoPtr get_type() const = 0;
+    virtual LikeMagic::Utility::TypeIndex get_type() const = 0;
     virtual std::string description() const = 0;
 };
 

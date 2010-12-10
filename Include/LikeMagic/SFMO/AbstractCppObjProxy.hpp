@@ -29,8 +29,8 @@ namespace LikeMagic { namespace Marshaling {
 
 namespace LikeMagic { namespace SFMO {
 
-using LikeMagic::Utility::TypeInfoPtr;
-using LikeMagic::Utility::TypeInfoKey;
+using LikeMagic::Utility::TypeIndex;
+using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeInfoList;
 using LikeMagic::Utility::BetterTypeInfo;
 using LikeMagic::AbstractTypeSystem;
@@ -114,7 +114,7 @@ public:
 
     std::string get_base_names() const;
 
-    virtual TypeInfoPtr get_type() const = 0;
+    virtual TypeIndex get_type() const = 0;
     AbstractTypeSystem const& get_type_system() const { return type_system; }
 
     // determines whether you have to use "eval" or "exec" at the end of the expression

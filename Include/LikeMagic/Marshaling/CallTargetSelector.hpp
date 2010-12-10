@@ -79,7 +79,7 @@ public:
     {
         //if (target->get_type().is_ptr)
         //    return ptr_target.call(target, args);
-        /*else*/ if (target->get_type()->get_is_ref())
+        /*else*/ if (target->get_type().get_info()->get_is_ref())
             return ref_target.call(target, args);
         else
             throw std::logic_error("Methods on this object can only be called by reference or by pointer");
