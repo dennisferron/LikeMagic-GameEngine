@@ -53,8 +53,6 @@ bool AbstractTypeSystem::has_conv(TypeIndex from_type, TypeIndex to_type) const
 
 AbstractTypeSystem::AbstractTypeSystem() : leak_memory_flag(false)
 {
-    // Allow conversions from nil to any pointer.
-    conv_graph.add_type(BetterTypeInfo::create_index<NilExprTag*>());
 }
 
 void AbstractTypeSystem::print_type_graph() const

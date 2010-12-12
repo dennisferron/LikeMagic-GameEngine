@@ -34,7 +34,7 @@ private:
     friend std::size_t hash_value(TypeIndex info);
     std::size_t id;
 
-    TypeIndex(std::size_t id_) : id(id_) {}
+    explicit TypeIndex(std::size_t id_) : id(id_) {}
 
 public:
     TypeIndex() : id(-1) {}
@@ -52,7 +52,7 @@ public:
 
 inline std::size_t hash_value(TypeIndex info)
 {
-    return hash_value(info.id);
+    return boost::hash_value(info.id);
 }
 
 typedef std::vector<TypeIndex> TypeInfoList;
@@ -72,14 +72,7 @@ public:
     TypeInfoPtr get_info(TypeIndex id) const;
 
     // I'm not a fan of singletons but in this case it makes sense.
-    static TypeInfoCache* get_instance()
-    {
-        if (!instance)
-            throw std::logic_error("Error:  TypeInfoCache instance has not been created yet!");
-
-        return instance;
-    }
-
+    static TypeInfoCache* get_instance();
     static void set_instance(TypeInfoCache* instance_);
 };
 

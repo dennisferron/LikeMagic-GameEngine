@@ -11,11 +11,11 @@
 
 namespace LikeMagic { namespace Utility {
 
-TypeInfoCache* TypeInfoCache::instance = new TypeInfoCache;
+TypeInfoCache* TypeInfoCache::instance = NULL;
 
 TypeInfoPtr TypeIndex::get_info() const
 {
-    return TypeInfoCache::get_instance()->get_info(id);
+    return TypeInfoCache::get_instance()->get_info(*this);
 }
 
 std::string TypeIndex::describe() const
@@ -25,11 +25,20 @@ std::string TypeIndex::describe() const
 
 void TypeInfoCache::set_instance(TypeInfoCache* instance_)
 {
-    if (instance->index_to_info.size())
-        throw std::logic_error("Error: While replacing type info cache, discovered the old type info cache is not empty.  This means there is a problem related to DLLs or the RuntimeTypeSystem object.");
+    if (instance != NULL)
+        throw std::logic_error("Error: TypeInfoCache already exists.");
 
     instance = instance_;
 }
+
+TypeInfoCache* TypeInfoCache::get_instance()
+{
+    if (!instance)
+        throw std::logic_error("Error:  TypeInfoCache instance has not been created yet!");
+
+    return instance;
+}
+
 
 
 TypeIndex TypeInfoCache::get_index(TypeInfoPtr candidate)
@@ -52,7 +61,7 @@ TypeInfoPtr TypeInfoCache::get_info(TypeIndex id) const
 
 void TypeInfoCache::add(TypeInfoPtr candidate)
 {
-    info_to_index[candidate] = index_to_info.size();
+    info_to_index[candidate] = TypeIndex(index_to_info.size());
     index_to_info.push_back(candidate);
 }
 

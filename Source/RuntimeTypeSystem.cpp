@@ -51,6 +51,9 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     dll_shared_typeinfo = new TypeInfoCache;
     TypeInfoCache::set_instance(dll_shared_typeinfo);
 
+    // Allow conversions from nil to any pointer.
+    conv_graph.add_type(BetterTypeInfo::create_index<NilExprTag*>());
+
     // Add the abstract type system itself as a class.
     LM_CLASS_NO_COPY((*this), AbstractTypeSystem)
     LM_FUNC(AbstractTypeSystem, (set_leak_memory)(leak_memory))

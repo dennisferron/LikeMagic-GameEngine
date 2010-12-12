@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="Include\LikeMagic\AbstractTypeSystem.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="3488" topLine="96" />
+	<File name="Include\LikeMagic\AbstractTypeSystem.hpp" open="1" top="0" tabpos="5">
+		<Cursor position="3488" topLine="70" />
 	</File>
 	<File name="Include\LikeMagic\Backends\Io\API_Io_Impl.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="1833" topLine="37" />
@@ -79,8 +79,8 @@
 	<File name="Include\LikeMagic\Utility\KeyWrapper.hpp" open="0" top="0" tabpos="10">
 		<Cursor position="1169" topLine="22" />
 	</File>
-	<File name="Include\LikeMagic\Utility\TypeInfoCache.hpp" open="0" top="0" tabpos="2">
-		<Cursor position="1228" topLine="41" />
+	<File name="Include\LikeMagic\Utility\TypeInfoCache.hpp" open="1" top="0" tabpos="3">
+		<Cursor position="695" topLine="8" />
 	</File>
 	<File name="Include\LikeMagic\Utility\TypePack.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="558" topLine="7" />
@@ -97,8 +97,8 @@
 	<File name="Source\AbstractClass.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="2090" topLine="43" />
 	</File>
-	<File name="Source\AbstractCppObjProxy.cpp" open="0" top="0" tabpos="5">
-		<Cursor position="2651" topLine="77" />
+	<File name="Source\AbstractCppObjProxy.cpp" open="1" top="0" tabpos="10">
+		<Cursor position="2651" topLine="55" />
 	</File>
 	<File name="Source\AbstractExpression.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="431" topLine="0" />
@@ -106,25 +106,28 @@
 	<File name="Source\AbstractTypeInfo.cpp" open="0" top="0" tabpos="9">
 		<Cursor position="638" topLine="5" />
 	</File>
-	<File name="Source\AbstractTypeSystem.cpp" open="0" top="0" tabpos="1">
-		<Cursor position="2208" topLine="91" />
+	<File name="Source\AbstractTypeSystem.cpp" open="1" top="1" tabpos="4">
+		<Cursor position="2531" topLine="84" />
 	</File>
 	<File name="Source\CodeTest.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="1028" topLine="31" />
 	</File>
+	<File name="Source\IoBlock.cpp" open="1" top="0" tabpos="9">
+		<Cursor position="1435" topLine="18" />
+	</File>
 	<File name="Source\IoObjectExpr.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="606" topLine="0" />
 	</File>
-	<File name="Source\IoVM.cpp" open="0" top="0" tabpos="17">
-		<Cursor position="12685" topLine="325" />
+	<File name="Source\IoVM.cpp" open="1" top="0" tabpos="8">
+		<Cursor position="4134" topLine="94" />
 	</File>
-	<File name="Source\RuntimeTypeSystem.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="3915" topLine="68" />
+	<File name="Source\RuntimeTypeSystem.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="1869" topLine="50" />
 	</File>
-	<File name="Source\TypeConvGraph.cpp" open="0" top="0" tabpos="16">
-		<Cursor position="1572" topLine="54" />
+	<File name="Source\TypeConvGraph.cpp" open="1" top="0" tabpos="7">
+		<Cursor position="3412" topLine="112" />
 	</File>
-	<File name="Source\TypeInfoCache.cpp" open="0" top="0" tabpos="3">
-		<Cursor position="945" topLine="7" />
+	<File name="Source\TypeInfoCache.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="1285" topLine="25" />
 	</File>
 </CodeBlocks_layout_file>
