@@ -13,6 +13,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <map>
 
 #include "boost/intrusive_ptr.hpp"
 #include "boost/functional/hash.hpp"
@@ -61,7 +62,8 @@ class TypeInfoCache
 {
 private:
     static TypeInfoCache* instance;
-    boost::unordered_map<TypeInfoPtr, TypeIndex> info_to_index;
+    //boost::unordered_map<TypeInfoPtr, TypeIndex> info_to_index;
+    std::map<KeyWrapper<AbstractTypeInfo>, TypeIndex> info_to_index;
     std::vector<TypeInfoPtr> index_to_info;
 
     void add(TypeInfoPtr candidate);

@@ -39,16 +39,14 @@ TypeInfoCache* TypeInfoCache::get_instance()
     return instance;
 }
 
-
-
 TypeIndex TypeInfoCache::get_index(TypeInfoPtr candidate)
 {
-    auto iter = info_to_index.find(candidate);
+    auto iter = info_to_index.find(KeyWrapper<AbstractTypeInfo>(candidate));
 
     if (iter == info_to_index.end())
     {
         add(candidate);
-        iter = info_to_index.find(candidate);
+        iter = info_to_index.find(KeyWrapper<AbstractTypeInfo>(candidate));
     }
 
     return iter->second;

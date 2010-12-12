@@ -103,7 +103,11 @@ TypeInfoList AbstractTypeSystem::get_arg_types(
 
 bool AbstractTypeSystem::has_class(TypeIndex type) const
 {
-    return classes.find(type.get_info()->bare_type()->get_index()) != classes.end();
+    TypeInfoPtr info = type.get_info();
+    TypeInfoPtr bare = info->bare_type();
+    TypeIndex index = bare->get_index();
+    bool found = (classes.find(index) != classes.end());
+    return found;
 }
 
 AbstractClass const* AbstractTypeSystem::get_class(TypeIndex type) const
