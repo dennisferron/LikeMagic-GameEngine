@@ -105,7 +105,8 @@ bool AbstractTypeSystem::has_class(TypeIndex type) const
 {
     TypeInfoPtr info = type.get_info();
     TypeInfoPtr bare = info->bare_type();
-    TypeIndex index = bare->get_index();
+    TypeIndex old_index = bare->get_index();
+    TypeIndex index = type.class_type();
     bool found = (classes.find(index) != classes.end());
     return found;
 }
@@ -113,7 +114,7 @@ bool AbstractTypeSystem::has_class(TypeIndex type) const
 AbstractClass const* AbstractTypeSystem::get_class(TypeIndex type) const
 {
     if (has_class(type))
-        return classes.find(type.get_info()->bare_type()->get_index())->second;
+        return classes.find(type.class_type())->second;
     else
         return unknown_class;
 }

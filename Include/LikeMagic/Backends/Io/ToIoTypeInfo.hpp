@@ -67,15 +67,17 @@ public:
 
     static TypeIndex create_index()
     {
+        static TypeInfoPtr info = create();
         return TypeInfoCache::get_instance()->get_index(
-                create()
+                info, info
         );
     }
 
     static TypeIndex create_index(std::string type_name)
     {
+        TypeInfoPtr info = create(type_name);
         return TypeInfoCache::get_instance()->get_index(
-                create(type_name)
+                info, info
         );
     }
 

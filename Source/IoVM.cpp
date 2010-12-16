@@ -334,7 +334,7 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
     }
     else
     {
-        auto iter = cpp_protos.find(proxy->get_type().get_info()->bare_type()->get_index());
+        auto iter = cpp_protos.find(proxy->get_type().class_type());
 
         if (iter == cpp_protos.end())
             throw std::logic_error("No class proto for " + proxy->get_type().describe() );

@@ -34,18 +34,22 @@ private:
     friend class TypeInfoCache;
     friend std::size_t hash_value(TypeIndex info);
     std::size_t id;
+    std::size_t class_id;
 
-    explicit TypeIndex(std::size_t id_) : id(id_) {}
+    explicit TypeIndex(std::size_t id_, std::size_t class_id_) : id(id_), class_id(class_id_) {}
 
 public:
-    TypeIndex() : id(-1) {}
-    TypeIndex(TypeIndex const& that) : id(that.id) {}
+    TypeIndex() : id(-1), class_id(-1) {}
+    TypeIndex(TypeIndex const& that) : id(that.id), class_id(that.class_id) {}
 
     inline bool operator <(TypeIndex const& that) const
         { return this->id < that.id; }
 
     inline bool operator ==(TypeIndex const& that) const
         { return this->id == that.id; }
+
+    inline TypeIndex class_type() const
+        { return TypeIndex(class_id, class_id); }
 
     TypeInfoPtr get_info() const;
     std::string describe() const;
@@ -66,11 +70,9 @@ private:
     std::map<KeyWrapper<AbstractTypeInfo>, TypeIndex> info_to_index;
     std::vector<TypeInfoPtr> index_to_info;
 
-    void add(TypeInfoPtr candidate);
-
 public:
 
-    TypeIndex get_index(TypeInfoPtr candidate);
+    TypeIndex get_index(TypeInfoPtr candidate, TypeInfoPtr class_type);
     TypeInfoPtr get_info(TypeIndex id) const;
 
     // I'm not a fan of singletons but in this case it makes sense.

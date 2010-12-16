@@ -39,28 +39,43 @@ TypeInfoCache* TypeInfoCache::get_instance()
     return instance;
 }
 
-TypeIndex TypeInfoCache::get_index(TypeInfoPtr candidate)
+TypeIndex TypeInfoCache::get_index(TypeInfoPtr candidate, TypeInfoPtr class_type)
 {
+    TypeIndex index;
+    TypeIndex class_index;
     auto iter = info_to_index.find(KeyWrapper<AbstractTypeInfo>(candidate));
 
-    if (iter == info_to_index.end())
+    if (iter != info_to_index.end())
+        index = iter->second;
+    else
     {
-        add(candidate);
-        iter = info_to_index.find(KeyWrapper<AbstractTypeInfo>(candidate));
+        auto class_iter = info_to_index.find(KeyWrapper<AbstractTypeInfo>(class_type));
+
+        if (class_iter != info_to_index.end())
+            class_index = class_iter->second;
+        else
+        {
+            class_index = TypeIndex(index_to_info.size(), index_to_info.size());
+            info_to_index[class_type] = class_index;
+            index_to_info.push_back(class_type);
+        }
+
+        if (*candidate == *class_type)
+            index = class_index;
+        else
+        {
+            index = TypeIndex(index_to_info.size(), class_index.id);
+            info_to_index[candidate] = index;
+            index_to_info.push_back(candidate);
+        }
     }
 
-    return iter->second;
+    return index;
 }
 
 TypeInfoPtr TypeInfoCache::get_info(TypeIndex id) const
 {
     return index_to_info[id.id];
-}
-
-void TypeInfoCache::add(TypeInfoPtr candidate)
-{
-    info_to_index[candidate] = TypeIndex(index_to_info.size());
-    index_to_info.push_back(candidate);
 }
 
 

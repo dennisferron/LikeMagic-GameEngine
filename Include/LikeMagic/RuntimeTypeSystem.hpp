@@ -128,7 +128,7 @@ private:
             // Add enum-specific things if applicable.
             register_enum<T, is_copyable>(*result);
 
-            classes[type.get_info()->bare_type()->get_index()] = result;
+            classes[type.class_type()] = result;
 
             return *result;
         }

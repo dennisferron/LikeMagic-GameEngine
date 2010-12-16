@@ -65,17 +65,14 @@ public:
     {
         typedef typename StripModifiers<T>::strip stripped;
 
-        static TypeInfoPtr cached(
+        return
             new BetterTypeInfo(
                 &typeid(typename stripped::type),
                 stripped::is_const,
                 stripped::is_ref,
                 stripped::is_ptr,
                 stripped::is_const_ptr
-            )
-        );
-
-        return cached;
+            );
     }
 
     template <typename T>
@@ -83,7 +80,7 @@ public:
     {
         static TypeIndex cached(
             TypeInfoCache::get_instance()->get_index(
-                create<T>()
+                create<T>(), create<T>()->bare_type()
             )
         );
 
