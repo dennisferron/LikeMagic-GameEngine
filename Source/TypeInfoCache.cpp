@@ -25,7 +25,10 @@ std::string TypeIndex::describe() const
 
 void TypeInfoCache::set_instance(TypeInfoCache* instance_)
 {
-    if (instance != NULL)
+    bool is_null = (instance == NULL);
+    bool is_same = ((void*)instance == (void*)instance_);
+
+    if (!is_null && !is_same)
         throw std::logic_error("Error: TypeInfoCache already exists.");
 
     instance = instance_;
