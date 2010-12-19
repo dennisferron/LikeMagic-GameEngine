@@ -56,17 +56,28 @@ void TypeConvGraph::print_graph() const
 
 bool TypeConvGraph::has_type(TypeIndex type) const
 {
-    return vertex_map.find(type) != vertex_map.end();
+    std::size_t pos = type.get_id();
+    std::size_t sz = has_vertex.size();
+    return pos < sz && has_vertex[pos];
 }
 
 TypeConvGraph::vertex_t TypeConvGraph::add_type(TypeIndex type)
 {
+    std::size_t pos = type.get_id();
+
     if (!has_type(type))
     {
-        vertex_map[type] = add_vertex(graph);
+        if (pos >= has_vertex.size())
+        {
+            vertex_map.resize(pos+1);
+            has_vertex.resize(pos+1, false);
+        }
+
+        vertex_map[pos] = add_vertex(graph);
+        has_vertex[pos] = true;
     }
 
-    return vertex_map[type];
+    return vertex_map[pos];
 }
 
 void TypeConvGraph::add_conv(TypeIndex from, TypeIndex to, p_conv_t conv)
@@ -139,6 +150,10 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeIndex from, TypeInd
     // If not cached
     if (conv_cache.find(key) == conv_cache.end())
     {
+        int count=0;
+        for (std::size_t i=0; i<has_vertex.size();i++)
+            if (!has_vertex[i])
+                ++count;
 
         if (!has_type(from))
             throw std::logic_error("From type not found in TypeConvGraph in search_for_conv from " + from.describe() + " to " + to.describe());
@@ -146,8 +161,8 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeIndex from, TypeInd
         if (!has_type(to))
             throw std::logic_error("To type not found in TypeConvGraph in search_for_conv from " + from.describe() + " to " + to.describe());
 
-        vertex_t source = vertex_map.find(from)->second;
-        vertex_t dest = vertex_map.find(to)->second;
+        vertex_t source = vertex_map[from.get_id()];
+        vertex_t dest = vertex_map[to.get_id()];
 
         std::vector<vertex_t> pred(boost::num_vertices(graph));
 

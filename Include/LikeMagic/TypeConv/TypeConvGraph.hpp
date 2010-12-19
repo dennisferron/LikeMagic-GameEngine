@@ -11,6 +11,7 @@
 
 #include <utility> // std::pair
 #include <map>
+#include <bitset>
 
 #include "boost/graph/graph_traits.hpp"
 #include "boost/graph/adjacency_list.hpp"
@@ -54,10 +55,12 @@ private:
     typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, vertex_info, edge_info> graph_t;
     typedef boost::graph_traits<graph_t>::vertex_descriptor vertex_t;
     typedef boost::graph_traits<graph_t>::edge_descriptor edge_t;
-    typedef std::map<TypeIndex, vertex_t> vertex_map_t;
+    //typedef std::map<TypeIndex, vertex_t> vertex_map_t;
+    typedef std::vector<vertex_t> vertex_map_t;
 
     graph_t graph;
     vertex_map_t vertex_map;
+    std::vector<bool> has_vertex;
 
     // Mutable is for when the object is logically const, but technically a member needs
     // to sometimes change in a way that's not visible from outside the class.
