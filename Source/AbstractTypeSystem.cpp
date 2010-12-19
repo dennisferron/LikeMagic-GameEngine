@@ -22,13 +22,34 @@ using namespace std;
 
 using namespace LikeMagic;
 
+
+void AbstractTypeSystem::add_class(TypeIndex index, AbstractClass* class_ptr)
+{
+    if (!index.is_class_type())
+        throw std::logic_error("add_class index to be a class type!");
+
+    //classes[index] = class_ptr;
+
+    if (classes2.size() <= index.get_class_id())
+        classes2.resize(index.get_class_id()+1, NULL);
+
+    classes2[index.get_class_id()] = class_ptr;
+
+}
+
+
 AbstractTypeSystem::~AbstractTypeSystem()
 {
     //std::cout << "Typesystem destructed" << std::endl;
 
-    for (auto it=classes.begin(); it != classes.end(); it++)
+    //for (auto it=classes.begin(); it != classes.end(); it++)
+    //{
+    //    delete it->second;
+    //}
+
+    for (auto it=classes2.begin(); it != classes2.end(); it++)
     {
-        delete it->second;
+        delete *it;
     }
 }
 
@@ -103,18 +124,39 @@ TypeInfoList AbstractTypeSystem::get_arg_types(
 
 bool AbstractTypeSystem::has_class(TypeIndex type) const
 {
-    TypeInfoPtr info = type.get_info();
-    TypeInfoPtr bare = info->bare_type();
-    TypeIndex old_index = bare->get_index();
-    TypeIndex index = type.class_type();
-    bool found = (classes.find(index) != classes.end());
-    return found;
+    //char const* descr = type.describe().c_str();
+
+    //TypeInfoPtr info = type.get_info();
+    //TypeInfoPtr bare = info->bare_type();
+    //TypeIndex old_index = bare->get_index();
+    //TypeIndex index = type.class_type();
+    //bool found = (classes.find(index) != classes.end());
+    //return found;
+
+    std::size_t pos = type.get_class_id();
+    std::size_t sz = classes2.size();
+    bool found2 = (
+        (pos < sz) && (classes2[pos] != NULL)
+    );
+
+    //if (found != found2)
+    //    throw std::logic_error("has_class problem");
+
+    return found2;
 }
 
-AbstractClass const* AbstractTypeSystem::get_class(TypeIndex type) const
+AbstractClass* AbstractTypeSystem::get_class(TypeIndex type) const
 {
     if (has_class(type))
-        return classes.find(type.class_type())->second;
+    {
+        //AbstractClass* p1 = classes.find(type.class_type())->second;
+        AbstractClass* p2 = classes2[type.get_class_id()];
+
+        //if (p1 != p2)
+        //    throw std::logic_error("get_class problem");
+
+        return p2;
+    }
     else
         return unknown_class;
 }
@@ -123,8 +165,12 @@ TypeInfoList AbstractTypeSystem::get_registered_types() const
 {
     TypeInfoList list;
 
-    for (auto it=classes.begin(); it != classes.end(); it++)
-        list.push_back(it->first);
+    //for (auto it=classes.begin(); it != classes.end(); it++)
+    //    list.push_back(it->first);
+
+    for (std::size_t i=0; i < classes2.size(); i++)
+        if (classes2[i])
+            list.push_back(TypeIndex(i,i));
 
     return list;
 }
@@ -150,12 +196,6 @@ std::string AbstractTypeSystem::get_class_name(TypeIndex type) const
     }
 
     return name;
-}
-
-
-void AbstractTypeSystem::add_type(TypeIndex type)
-{
-    conv_graph.add_type(type);
 }
 
 void AbstractTypeSystem::add_converter_simple(TypeIndex from, TypeIndex to, p_conv_t conv)

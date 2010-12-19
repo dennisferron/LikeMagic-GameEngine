@@ -69,6 +69,9 @@ private:
     // This is used for debugging.
     bool leak_memory_flag;
 
+    boost::unordered_map<TypeIndex, AbstractClass*> classes;
+    std::vector<AbstractClass*> classes2;
+
     // Don't allow accidently making copies of this class
     AbstractTypeSystem(AbstractTypeSystem const&) = delete;
     AbstractTypeSystem & operator =(AbstractTypeSystem const&) = delete;
@@ -77,12 +80,13 @@ protected:
 
     AbstractTypeSystem();
 
-    boost::unordered_map<TypeIndex, AbstractClass*> classes;
-    AbstractClass const* unknown_class;
+    AbstractClass* unknown_class;
 
     TypeConvGraph conv_graph;
 
 public:
+
+    void report();
 
     virtual ~AbstractTypeSystem();
 
@@ -101,11 +105,11 @@ public:
     AbstractCppObjProxy* call(TypeIndex type, std::string method_name, AbstractCppObjProxy* proxy, std::vector<ExprPtr> args) const;
     TypeInfoList get_arg_types(TypeIndex type, std::string method_name, int num_args) const;
     bool has_class(TypeIndex type) const;
-    AbstractClass const* get_class(TypeIndex type) const;
+    AbstractClass* get_class(TypeIndex type) const;
+    void add_class(TypeIndex index, AbstractClass* class_ptr);
 
     void add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv);
     void add_converter_simple(TypeIndex from, TypeIndex to, p_conv_t conv);
-    void add_type(TypeIndex type);
 
     template <typename From, typename To, template <typename From, typename To> class Converter=ImplicitConv>
     void add_conv()

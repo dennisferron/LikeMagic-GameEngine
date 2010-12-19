@@ -92,10 +92,12 @@ private:
     template <typename T, bool is_copyable>
     Class<T, is_copyable>& register_class_impl(std::string name)
     {
+        static_assert(boost::is_same<T, typename LikeMagic::Utility::StripModifiers<T>::strip::type>::value, "Can only register bare types as classes.");
+
         static TypeIndex type(BetterTypeInfo::create_index<T>());
-        if (classes.find(type) != classes.end())
+        if (has_class(type))
         {
-            return *dynamic_cast<Class<T, is_copyable>*>(classes[type]);
+            return *dynamic_cast<Class<T, is_copyable>*>(get_class(type));
         }
         else
         {
@@ -128,7 +130,7 @@ private:
             // Add enum-specific things if applicable.
             register_enum<T, is_copyable>(*result);
 
-            classes[type.class_type()] = result;
+            add_class(type, result);
 
             return *result;
         }

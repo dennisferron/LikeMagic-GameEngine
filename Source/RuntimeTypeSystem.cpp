@@ -59,9 +59,9 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     LM_FUNC(AbstractTypeSystem, (set_leak_memory)(leak_memory))
 
     // Register the special classes
-    classes[BetterTypeInfo::create_index<StaticMethod>()] = functions;
-    classes[BetterTypeInfo::create_index<AbstractCppObjProxy>()] = proxy_methods;
-    classes[BetterTypeInfo::create_index<SFMOCollection>()] = collection_methods;
+    add_class(BetterTypeInfo::create_index<StaticMethod>(), functions);
+    add_class(BetterTypeInfo::create_index<AbstractCppObjProxy>(), proxy_methods);
+    add_class(BetterTypeInfo::create_index<SFMOCollection>(), collection_methods);
 
     // StaticMethods is by value but a Term returns by reference;
     // need to give type system ability to do the conversion.
@@ -84,13 +84,13 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
 
     // register void so functions returning void will work right.
     auto void_class = new DummyClass<void>("void", *this);
-    classes[BetterTypeInfo::create_index<void>()] = void_class;
+    add_class(BetterTypeInfo::create_index<void>(), void_class);
     void_class->add_base_abstr(proxy_methods);
 
     // register the Unknown_CppObj so functions returning unregistered classes
     // can still be called.
     auto unknown_class = new DummyClass<Unknown_CppObj>("Unknown_CppObj", *this);
-    classes[BetterTypeInfo::create_index<Unknown_CppObj>()] = unknown_class;
+    add_class(BetterTypeInfo::create_index<Unknown_CppObj>(), unknown_class);
     unknown_class->add_base_abstr(proxy_methods);
     this->unknown_class = unknown_class;
 
@@ -111,7 +111,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     // which is an expression   of type of void* that always returns NULL.
     // Some fancy magic happens in try_conv to intercept the void* NULL value
     // and replace it with a NullExpr of the appropriate pointer type for the function argument.
-    register_class<void*>("void_ptr");
+    add_conv<void*&, void*>();
 
     add_all_num_conv((signed char)(short)(int)(long)(unsigned char)(unsigned short)(unsigned int)(unsigned long)(float)(double))
 

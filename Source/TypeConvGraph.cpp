@@ -140,8 +140,11 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeIndex from, TypeInd
     if (conv_cache.find(key) == conv_cache.end())
     {
 
-        if (!has_type(from) || !has_type(to))
-            throw std::logic_error("From or to type not found in TypeConvGraph in search_for_conv from " + from.describe() + " to " + to.describe());
+        if (!has_type(from))
+            throw std::logic_error("From type not found in TypeConvGraph in search_for_conv from " + from.describe() + " to " + to.describe());
+
+        if (!has_type(to))
+            throw std::logic_error("To type not found in TypeConvGraph in search_for_conv from " + from.describe() + " to " + to.describe());
 
         vertex_t source = vertex_map.find(from)->second;
         vertex_t dest = vertex_map.find(to)->second;
