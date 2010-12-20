@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="Include/LikeMagic/RuntimeTypeSystem.hpp" open="1" top="0" tabpos="1">
+	<File name="Include/LikeMagic/RuntimeTypeSystem.hpp" open="0" top="0" tabpos="1">
 		<Cursor position="6822" topLine="139" />
 	</File>
 	<File name="Source/API_Io.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="1270" topLine="0" />
 	</File>
-	<File name="Source/TypeInfoCache.cpp" open="1" top="1" tabpos="2">
+	<File name="Source/TypeInfoCache.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="760" topLine="25" />
 	</File>
 </CodeBlocks_layout_file>
