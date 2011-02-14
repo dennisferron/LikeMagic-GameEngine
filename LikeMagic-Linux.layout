@@ -1,11 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
+	<File name="Include/LikeMagic/AbstractTypeSystem.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="4307" topLine="82" />
+	</File>
+	<File name="Include/LikeMagic/Backends/Io/IoBlock.hpp" open="1" top="0" tabpos="7">
+		<Cursor position="1898" topLine="41" />
+	</File>
+	<File name="Include/LikeMagic/Marshaling/ArrayFieldGetterTarget.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="32" topLine="0" />
+	</File>
+	<File name="Include/LikeMagic/Marshaling/ArrayFieldSetterTarget.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="1327" topLine="10" />
+	</File>
+	<File name="Include/LikeMagic/Marshaling/Class.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="6299" topLine="34" />
+	</File>
+	<File name="Include/LikeMagic/Marshaling/FieldSetterTarget.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="1374" topLine="8" />
+	</File>
 	<File name="Include/LikeMagic/RuntimeTypeSystem.hpp" open="0" top="0" tabpos="1">
 		<Cursor position="6822" topLine="139" />
 	</File>
-	<File name="Source/API_Io.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="1270" topLine="0" />
+	<File name="Include/LikeMagic/Utility/FieldPtrTraits.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="1237" topLine="20" />
+	</File>
+	<File name="Include/LikeMagic/Utility/SetField.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="3208" topLine="85" />
+	</File>
+	<File name="Include/LikeMagic/Utility/UserMacros.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="4689" topLine="54" />
+	</File>
+	<File name="Source/API_Io.cpp" open="1" top="0" tabpos="6">
+		<Cursor position="2834" topLine="87" />
+	</File>
+	<File name="Source/AbstractCppObjProxy.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="1224" topLine="0" />
+	</File>
+	<File name="Source/AbstractTypeSystem.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="1383" topLine="60" />
+	</File>
+	<File name="Source/RuntimeTypeSystem.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="6729" topLine="128" />
 	</File>
 	<File name="Source/TypeInfoCache.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="760" topLine="25" />

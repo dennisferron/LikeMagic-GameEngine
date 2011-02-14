@@ -45,6 +45,9 @@ public:
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
+        if (args.size() != 2)
+            throw std::logic_error("Setting an array field requires 2 arguments.");
+
         SetField<CallAs>::setAt(
             type_system.try_conv<size_t>(args[0])->eval(),
             type_system.try_conv<CallAs>(proxy->get_expr())->eval(),

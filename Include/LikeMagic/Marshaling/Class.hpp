@@ -156,10 +156,8 @@ public:
     template <typename F>
     void bind_field(std::string field_name, F f)
     {
-        //auto setter = new CallTargetSelector<FieldSetterTarget, T, F>(f, type_system);
         auto setter = new FieldSetterTarget<T, F>(f, type_system);
         add_method("set_" + field_name, setter);
-        //auto getter = new CallTargetSelector<FieldGetterTarget, T, F>(f, type_system);
         auto getter = new FieldGetterTarget<T, F>(f, type_system);
         add_method("get_" + field_name, getter);
     }
@@ -168,10 +166,8 @@ public:
     template <typename F>
     void bind_array_field(std::string field_name, F f)
     {
-        //auto setter = new CallTargetSelector<ArrayFieldSetterTarget, T, F>(f, type_system);
         auto setter = new ArrayFieldSetterTarget<T, F>(f, type_system);
         add_method("set_" + field_name, setter);
-        //auto getter = new CallTargetSelector<ArrayFieldGetterTarget, T, F>(f, type_system);
         auto getter = new ArrayFieldGetterTarget<T, F>(f, type_system);
         add_method("get_" + field_name, getter);
     }

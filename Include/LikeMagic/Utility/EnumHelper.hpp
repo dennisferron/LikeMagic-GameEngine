@@ -7,6 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include <iostream>
+#include "boost/lexical_cast.hpp"
 
 #pragma once
 
@@ -18,6 +19,7 @@ struct EnumHelper
     static bool equals(E a, E b) { return a == b; }
     static bool not_equals(E a, E b) { return a != b; }
     static int value(E e) { return static_cast<int>(e); }
+    static std::string asString(E e) { return boost::lexical_cast<std::string>(value(e)); }
 };
 
 }}

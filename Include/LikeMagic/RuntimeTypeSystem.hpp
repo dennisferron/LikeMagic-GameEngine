@@ -211,6 +211,8 @@ public:
         //result.bind_nonmember_op("!=",    &EnumHelper<T>::not_equals);
         //result.bind_nonmember_op("value", &EnumHelper<T>::value);
 
+        result.bind_nonmember_op("asString", &EnumHelper<T>::asString);
+
         return result;
     }
 

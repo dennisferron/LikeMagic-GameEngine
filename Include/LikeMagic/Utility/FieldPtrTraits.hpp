@@ -33,13 +33,17 @@ struct FieldPtrTraits
     typedef typename boost::remove_reference<typename boost::remove_pointer<CallAs>::type>::type* ObjPtr;
 
     // A helper type that wraps up all values of the variable's traits.
-    template <bool is_const_, typename R_, typename ClassT_>
+    // Size_ is for bounds checking for arrays.  If not an array or size is unknown, -1 disables bounds checking.
+    template <bool is_const_, typename R_, typename ClassT_, int Size_=-1>
     struct Sig
     {
         enum { is_const = is_const_ };
 
         typedef R_ R;
         typedef ClassT_ ClassT;
+
+        // For arrays, stores the number of elements in the array
+        enum { Size = Size_ };
     };
 
     // One of the following test() functions will correspond to the type F:
@@ -73,11 +77,11 @@ struct FieldPtrTraits
 
     // Static member variables and ordinary (namespace-level) variables.
     template <typename R, int N>
-    static Sig<false, R, StaticField> test(R (*f)[N], StaticField* o);
+    static Sig<false, R, StaticField, N> test(R (*f)[N], StaticField* o);
 
     // Const static member variables and const ordinary (namespace-level) variables.
     template <typename R, int N>
-    static Sig<true, R const, StaticField> test(const R (*f)[N], StaticField* o);
+    static Sig<true, R const, StaticField, N> test(const R (*f)[N], StaticField* o);
 
 
     /////////////////////////////////////////////////////////
@@ -96,11 +100,11 @@ struct FieldPtrTraits
 
     // Nonconst member variables.
     template <typename R, typename ClassT, int N>
-    static Sig<false, R const&, ClassT> test(R (ClassT::*f)[N], ClassT const* o);
+    static Sig<false, R const&, ClassT, N> test(R (ClassT::*f)[N], ClassT const* o);
 
     // Const member variables.
     template <typename R, typename ClassT, int N>
-    static Sig<true, R const&, ClassT> test(const R (ClassT::*f)[N], ClassT const* o);
+    static Sig<true, R const&, ClassT, N> test(const R (ClassT::*f)[N], ClassT const* o);
 
     // StaticFields cannot have const objects, because they do not really have an object at all!
 
@@ -118,6 +122,8 @@ struct FieldPtrTraits
     typedef typename Signature::ClassT ClassT;
 
     enum { is_const = Signature::is_const };
+
+    enum { Size = Signature::Size };
 };
 
 }}
