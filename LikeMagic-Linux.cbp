@@ -60,6 +60,7 @@
 		<Unit filename="Include/LikeMagic/Backends/Io/ToIoTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Common.hpp" />
 		<Unit filename="Include/LikeMagic/IMarkable.hpp" />
+		<Unit filename="Include/LikeMagic/MarkableObjGraph.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/AbstractCallTargetSelector.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/AbstractClass.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/ArrayFieldGetterTarget.hpp" />
@@ -145,6 +146,7 @@
 		<Unit filename="Source/IoBlock.cpp" />
 		<Unit filename="Source/IoObjectExpr.cpp" />
 		<Unit filename="Source/IoVM.cpp" />
+		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/RuntimeTypeSystem.cpp" />
 		<Unit filename="Source/TypeConvGraph.cpp" />
 		<Unit filename="Source/TypeDescr.cpp" />

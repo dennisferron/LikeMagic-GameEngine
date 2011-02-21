@@ -8,9 +8,6 @@
 
 #pragma once
 
-#include <stdexcept>
-#include <iostream>
-
 namespace LikeMagic
 {
 

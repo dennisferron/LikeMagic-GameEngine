@@ -9,7 +9,8 @@
 
 #pragma once
 
-#include "FieldPtrTraits.hpp"
+#include "LikeMagic/Utility/FieldPtrTraits.hpp"
+#include "LikeMagic/MarkableObjGraph.hpp"
 
 namespace LikeMagic { namespace Utility {
 
@@ -56,13 +57,17 @@ struct SetField<ObjT&>
     template <typename FieldPtr>
     static void set(ObjT& t, FieldPtr f, boost::intrusive_ptr<Expression<typename FieldPtrTraits<FieldPtr, ObjT&>::R const&>> arg)
     {
+        remove_mark_obj(t, get(t, f));
         t.*f = arg->eval();
+        add_mark_obj(t, get(t, f));
     }
 
     template <typename FieldPtr>
     static void setAt(size_t pos, ObjT& t, FieldPtr f, boost::intrusive_ptr<Expression<typename FieldPtrTraits<FieldPtr, ObjT&>::R const&>> arg)
     {
+        remove_mark_obj(t, getAt(pos, t, f));
         (t.*f)[pos] = arg->eval();
+        add_mark_obj(t, getAt(pos, t, f));
     }
 
     template <typename FieldPtr>
@@ -121,13 +126,17 @@ struct SetField<ObjT*>
     template <typename FieldPtr>
     static void set(ObjT* t, FieldPtr f, boost::intrusive_ptr<Expression<typename FieldPtrTraits<FieldPtr, ObjT*>::R const&>> arg)
     {
+        remove_mark_obj(*t, get(t, f));
         t->*f = arg->eval();
+        add_mark_obj(*t, get(t, f));
     }
 
     template <typename FieldPtr>
     static void setAt(size_t pos, ObjT* t, FieldPtr f, boost::intrusive_ptr<Expression<typename FieldPtrTraits<FieldPtr, ObjT*>::R const&>> arg)
     {
+        remove_mark_obj(*t, getAt(pos, t, f));
         (t->*f)[pos] = arg->eval();
+        add_mark_obj(*t, getAt(pos, t, f));
     }
 
     template <typename FieldPtr>

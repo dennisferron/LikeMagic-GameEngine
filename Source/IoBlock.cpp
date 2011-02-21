@@ -32,6 +32,19 @@ void IoBlock::add_arg(IoMessage* m, AbstractCppObjProxy* proxy) const
 
 IoObject* IoBlock::activate(IoMessage* m) const
 {
+    if (!io_block)
+        throw std::logic_error("io_block is null!");
+
+    if (!io_target)
+        throw std::logic_error("io_target is null!");
+
+    if (!m)
+        throw std::logic_error("message is null!");
+
+	IoBlockData* blockData = (IoBlockData *)IoObject_dataPointer(io_block);
+	if (!blockData)
+        throw std::logic_error("block data is null!");
+
     // Apparently Io doesn't export IoBlock_activate, but hopefully IoObject_activate works just as well.
     //IoObject* result = IoObject_activate(io_block, io_target, io_target, m, io_target);
     // Unfortunately IoObject_activate is NOT the same; need IoBlock_activate to be exported.
