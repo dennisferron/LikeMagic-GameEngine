@@ -119,6 +119,7 @@ public:
 
     // determines whether you have to use "eval" or "exec" at the end of the expression
     virtual bool is_lazy() const = 0;
+    virtual bool disable_to_script_conv() const = 0;
     virtual AbstractCppObjProxy* lazy() = 0;
     virtual bool is_terminal() const = 0;
     virtual std::string describe() const = 0;

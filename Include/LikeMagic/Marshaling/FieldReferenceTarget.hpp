@@ -19,13 +19,15 @@
 #include "../SFMO/MethodCall.hpp"
 #include "../SFMO/CppObjProxy.hpp"
 
+#include "LikeMagic/SFMO/Reference.hpp"
+
 namespace LikeMagic { namespace Marshaling {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::SFMO;
 
 template <typename T, typename FieldPtr>
-class ArrayFieldSetterTarget : public AbstractCallTargetSelector
+class FieldReferenceTarget : public AbstractCallTargetSelector
 {
 private:
     typedef T& CallAs;
@@ -35,30 +37,26 @@ private:
 
     typedef FieldPtrTraits<FieldPtr, CallAs> Traits;
 
-    typedef typename Traits::R const& ArgType;
+    typedef typename Traits::R& RType;
 
 public:
 
-    static bool const is_const_func = false;
+    //static bool const is_const_func = true;
 
-    ArrayFieldSetterTarget(FieldPtr f_ptr_, AbstractTypeSystem const& type_system_) : f_ptr(f_ptr_), type_system(type_system_) {}
+    FieldReferenceTarget(FieldPtr f_ptr_, AbstractTypeSystem const& type_system_) : f_ptr(f_ptr_), type_system(type_system_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
-        if (args.size() != 2)
-            throw std::logic_error("Setting an array field requires 2 arguments.");
-
-        SetField<CallAs>::setAt(
-            type_system.try_conv<size_t>(args[0])->eval(),
-            type_system.try_conv<CallAs>(proxy->get_expr())->eval(),
-            f_ptr,
-            type_system.try_conv<ArgType>(args[1]));
-        return 0;
+        return CppObjProxy<RType, true>::create(
+                Reference<RType>::create(
+                    SetField<CallAs>::get(type_system.try_conv<CallAs>(proxy->get_expr())->eval(), f_ptr)
+                ), type_system
+        );
     }
 
     virtual TypeInfoList get_arg_types() const
     {
-        return make_arg_list(TypePack<size_t, ArgType>());
+        return make_arg_list(TypePack<>());
     }
 
 };

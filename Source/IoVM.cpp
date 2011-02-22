@@ -322,9 +322,10 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
     ExprPtr from_expr = proxy->get_expr();
 
     bool is_terminal = proxy->is_terminal();
-    bool has_conv = type_sys.has_conv(from_expr->get_type(), to_io_type);
+    bool disable_to_script = proxy->disable_to_script_conv();
+    bool has_conv = is_terminal && !disable_to_script && type_sys.has_conv(from_expr->get_type(), to_io_type);
 
-    if (is_terminal && has_conv)
+    if (has_conv)
     {
         ExprPtr to_expr = type_sys.try_conv(from_expr, to_io_type);
         boost::intrusive_ptr<AbstractToIoObjectExpr> io_expr = static_cast<AbstractToIoObjectExpr*>(to_expr.get());

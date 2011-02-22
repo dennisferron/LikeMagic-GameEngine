@@ -20,8 +20,10 @@
 
 #include "FieldGetterTarget.hpp"
 #include "FieldSetterTarget.hpp"
+#include "FieldReferenceTarget.hpp"
 #include "ArrayFieldGetterTarget.hpp"
 #include "ArrayFieldSetterTarget.hpp"
+#include "ArrayFieldReferenceTarget.hpp"
 #include "CustomFieldGetterTarget.hpp"
 #include "CustomFieldSetterTarget.hpp"
 
@@ -160,6 +162,8 @@ public:
         add_method("set_" + field_name, setter);
         auto getter = new FieldGetterTarget<T, F>(f, type_system);
         add_method("get_" + field_name, getter);
+        auto reffer = new FieldReferenceTarget<T, F>(f, type_system);
+        add_method("ref_" + field_name, reffer);
     }
 
     // Use this to bind fields.
@@ -170,6 +174,8 @@ public:
         add_method("set_" + field_name, setter);
         auto getter = new ArrayFieldGetterTarget<T, F>(f, type_system);
         add_method("get_" + field_name, getter);
+        auto reffer = new ArrayFieldReferenceTarget<T, F>(f, type_system);
+        add_method("ref_" + field_name, reffer);
     }
 
     // Use this to bind fields.

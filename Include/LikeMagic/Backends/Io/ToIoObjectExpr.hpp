@@ -70,7 +70,7 @@ public:
 
     virtual std::string description() const
     {
-        return "testing";
+        return "ToIoObjectExpr";
         /*
         return
           "To-Io expression from C++ type "

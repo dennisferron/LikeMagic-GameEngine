@@ -112,6 +112,18 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     };
     type_sys.add_converter_simple(FromIoTypeInfo::create_index("Nil"), BetterTypeInfo::create_index<bool>(), new FromNilToFalse);
 
+    // Allow nil to convert to void (for IoBlock eval<void>)
+    struct FromNilToVoid : public AbstractTypeConverter
+    {
+        virtual ExprPtr wrap_expr(ExprPtr expr) const
+        {
+            return Term<void, true>::create();
+        }
+
+        virtual std::string describe() const { return "From Nil to void Conv"; }
+    };
+    type_sys.add_converter_simple(FromIoTypeInfo::create_index("Nil"), BetterTypeInfo::create_index<void>(), new FromNilToVoid);
+
 
     // IoBlock requires an extra argument (type_sys)
     struct FromIoBlock : public AbstractTypeConverter

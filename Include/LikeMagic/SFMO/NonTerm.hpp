@@ -9,15 +9,7 @@
 
 #pragma once
 
-#include "LikeMagic/SFMO/Expression.hpp"
-
-#include "LikeMagic/IMarkable.hpp"
-#include "LikeMagic/Utility/TypeDescr.hpp"
-#include "LikeMagic/Utility/StripModifiers.hpp"
-#include "LikeMagic/Utility/TypePack.hpp"
-
-#include "boost/utility/enable_if.hpp"
-#include "boost/type_traits/is_base_of.hpp"
+#include "LikeMagic/SFMO/Term.hpp"
 
 #include <iostream>
 
@@ -25,69 +17,24 @@ namespace LikeMagic { namespace SFMO {
 
 using namespace LikeMagic::Utility;
 
-
-// The compiler seems to treat numeric temporaries as "extra temporary",
-// too aggressively deciding the temporary isn't needed and dropping it off the stack.
-// So don't allow a const& to be made to any numeric; just store the value.
-template <typename T> struct TermStoreAs { typedef T type; };
-template <> struct TermStoreAs<float const&> { typedef float type; };
-template <> struct TermStoreAs<double const&> { typedef double type; };
-template <> struct TermStoreAs<signed char const&> { typedef signed char type; };
-template <> struct TermStoreAs<int const&> { typedef int type; };
-template <> struct TermStoreAs<long const&> { typedef long type; };
-template <> struct TermStoreAs<long long const&> { typedef long long type; };
-template <> struct TermStoreAs<unsigned char const&> { typedef unsigned char type; };
-template <> struct TermStoreAs<unsigned int const&> { typedef unsigned int type; };
-template <> struct TermStoreAs<unsigned long const&> { typedef unsigned long type; };
-template <> struct TermStoreAs<unsigned long long const&> { typedef unsigned long long type; };
-
-// For Debugging.
-template <> struct TermStoreAs<bool&> { typedef bool type; };
-
-
 template <typename T, bool IsCopyable>
-class Term :
-    public Expression<T&>
+class NonTerm :
+    public Term<T, IsCopyable>
 {
 private:
-    char debug_padding[13];
-
     typename TermStoreAs<T>::type value;
 
-    static void mark(IMarkable const* obj)
-    {
-        obj->mark();
-    }
-
-    static void mark(IMarkable const& obj)
-    {
-        obj.mark();
-    }
-
-    template <typename MarkType>
-    typename boost::enable_if<boost::is_base_of<IMarkable, MarkType>
-        >::type mark_if_possible(TypePack<MarkType>) const
-    {
-        mark(value);
-    }
-
-    template <typename MarkType>
-    typename boost::disable_if<boost::is_base_of<IMarkable, MarkType>
-        >::type mark_if_possible(TypePack<MarkType>) const
-    {
-    }
-
-    Term() : value()
+    NonTerm() : Term()
     {
     }
 
     template <typename... Args>
-    Term(Args && ... args) : value(std::forward<Args>(args)...)
+    NonTerm(Args && ... args) : Term(std::forward<Args>(args)...)
     {
     }
 
     template <typename... Args>
-    Term(Args const& ... args) : value(args...)
+    NonTerm(Args const& ... args) : Term(args...)
     {
     }
 
@@ -95,38 +42,30 @@ public:
 
     static boost::intrusive_ptr<Expression<T&>> create()
     {
-        boost::intrusive_ptr<Expression<T&>> result = new Term();
+        boost::intrusive_ptr<Expression<T&>> result = new NonTerm();
         return result;
     }
 
     template <typename... Args>
     static boost::intrusive_ptr<Expression<T&>> create(Args && ... args)
     {
-        boost::intrusive_ptr<Expression<T&>> result = new Term(std::forward<Args>(args)...);
+        boost::intrusive_ptr<Expression<T&>> result = new NonTerm(std::forward<Args>(args)...);
         return result;
     }
 
     template <typename... Args>
     static boost::intrusive_ptr<Expression<T&>> create(Args const& ... args)
     {
-        boost::intrusive_ptr<Expression<T&>> result = new Term(args...);
+        boost::intrusive_ptr<Expression<T&>> result = new NonTerm(args...);
         return result;
     }
 
-    inline virtual T& eval()
-    {
-        return value;
-    }
-
-    virtual boost::intrusive_ptr<Expression<T&>> clone() const { return new Term<T, IsCopyable>(value); }
-
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return std::set<AbstractObjectSet*>(); }
-    virtual bool is_terminal() const { return true; }
-    virtual bool is_lazy() const { return false; }
+    virtual bool is_terminal() const { return false; }
+    virtual bool is_lazy() const { return true; }
 
     virtual std::string description() const
     {
-        return std::string("Term<" + LikeMagic::Utility::TypeDescr<T>::text() + ">");
+        return std::string("Reference<" + LikeMagic::Utility::TypeDescr<T>::text() + ">");
     }
 
     virtual void mark() const
@@ -240,7 +179,7 @@ class Term<void, IsCopyable> : public Expression<void>
 private:
     Term()
     {
-        //std::cout << "warning:  void term exists." << std::endl;
+        std::cout << "warning:  void term exists." << std::endl;
     }
 
 public:

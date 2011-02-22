@@ -64,6 +64,7 @@
 		<Unit filename="Include/LikeMagic/Marshaling/AbstractCallTargetSelector.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/AbstractClass.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/ArrayFieldGetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/Marshaling/ArrayFieldReferenceTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/ArrayFieldSetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/CallTargetSelector.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/Class.hpp" />
@@ -73,6 +74,7 @@
 		<Unit filename="Include/LikeMagic/Marshaling/DestructorCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/DummyClass.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/FieldGetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/Marshaling/FieldReferenceTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/FieldSetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/ICustomField.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/MethodCallGenerator.hpp" />
@@ -93,6 +95,7 @@
 		<Unit filename="Include/LikeMagic/SFMO/MethodCall.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/NullExpr.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/NumberCachingTrampoline.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/Reference.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/StaticMethodCall.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/StringCachingTrampoline.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/Term.hpp" />

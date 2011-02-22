@@ -268,6 +268,11 @@ public:
         return expr->is_lazy();
     }
 
+    virtual bool disable_to_script_conv() const
+    {
+        return expr->disable_to_script_conv();
+    }
+
     virtual AbstractCppObjProxy* lazy()
     {
         return create(LazyExpr<T>::create(expr), type_system);

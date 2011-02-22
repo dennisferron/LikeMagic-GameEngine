@@ -75,6 +75,41 @@ DECL_CONV(String, std::string, IOSEQ(reinterpret_cast<const unsigned char*>(valu
 DECL_CONV(Vector_of_Int, std::vector<int> const&, to_seq<int>(value, IOSTATE))
 DECL_CONV(Vector_of_UInt, std::vector<unsigned int> const&, to_seq<unsigned int>(value, IOSTATE))
 
+
+struct ToIoNilExpr : public AbstractToIoObjectExpr
+{
+    ExprPtr expr;
+
+    ToIoNilExpr(ExprPtr expr_) : expr(expr_) {}
+
+    virtual IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m)
+    {
+        return IONIL(self);
+    }
+
+    virtual LikeMagic::Utility::TypeIndex get_type() const
+    {
+        return ToIoTypeInfo::create_index();
+    }
+
+    virtual std::string description() const
+    {
+        return "ToIoNilExpr";
+    }
+
+    virtual void mark() const { expr->mark(); }
+};
+
+struct ToIoNil : public AbstractTypeConverter
+{
+    virtual ExprPtr wrap_expr(ExprPtr expr) const
+    {
+        return new ToIoNilExpr(expr);
+    }
+
+    virtual std::string describe() const { return "To nil Conv"; } \
+};
+
 void add_convs_to_script(AbstractTypeSystem& type_sys, IoVM* iovm)
 {
     ADD_CONV(Number, double)
@@ -83,6 +118,8 @@ void add_convs_to_script(AbstractTypeSystem& type_sys, IoVM* iovm)
 
     ADD_CONV(Vector_of_Int, std::vector<int> const&)
     ADD_CONV(Vector_of_UInt, std::vector<unsigned int> const&)
+
+    type_sys.add_converter_simple(BetterTypeInfo::create_index<void>(), ToIoTypeInfo::create_index(), new ToIoNil);
 }
 
 }}}
