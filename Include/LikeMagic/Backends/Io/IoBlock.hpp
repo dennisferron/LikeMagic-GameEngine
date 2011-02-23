@@ -63,7 +63,7 @@ public:
     {
         if (type_sys && io_block && io_target)
         {
-            IoMessage* m = new_message(io_target, "foo");
+            IoMessage* m = new_message(io_target, "IoBlock");
             add_args(m, args...);
             activate(m);
         }
@@ -76,7 +76,7 @@ public:
         {
             try
             {
-                IoMessage* m = new_message(io_target, "foo");
+                IoMessage* m = new_message(io_target, "IoBlock");
                 add_args(m, args...);
                 IoObject* result = activate(m);
                 ExprPtr expr = from_script(io_target, result, *type_sys);

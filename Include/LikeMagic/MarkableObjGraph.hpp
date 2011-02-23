@@ -83,54 +83,6 @@ public:
     }
 };
 
-/*
-
-template <typename F,
-    bool IsIMarkable=boost::is_base_of<IMarkable, F>::value, bool Is>
-struct MarkField
-{
-    template <typename T>
-    inline static void add_mark_obj(T const&, F const&)
-    {
-        static_assert(!boost::is_base_of<IMarkable, F>::value,
-            "Default add_mark_obj should not be called on markable field");
-    }
-
-    template <typename T>
-    inline static void remove_mark_obj(T const&, F const&)
-    {
-    }
-};
-
-template <>
-struct MarkField<IMarkable>
-{
-    static void add_mark_obj(MarkableObjGraph const& obj, IMarkable const& field)
-    {
-        obj.add_mark_obj(field);
-    }
-
-    static void remove_mark_obj(MarkableObjGraph const& obj, IMarkable const& field)
-    {
-        obj.remove_mark_obj(field);
-    }
-};
-
-template <>
-struct MarkField<MarkableObjGraph>
-{
-    static void add_mark_obj(MarkableObjGraph const& obj, MarkableObjGraph const& field)
-    {
-        obj.add_mark_obj(field);
-    }
-
-    static void remove_mark_obj(MarkableObjGraph const& obj, MarkableObjGraph const& field)
-    {
-        obj.remove_mark_obj(field);
-    }
-};
-
-*/
 
 
 template <typename T, typename F>

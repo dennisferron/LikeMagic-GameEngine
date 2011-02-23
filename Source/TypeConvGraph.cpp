@@ -129,7 +129,14 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to
     auto result = search_for_conv(from, to);
 
     if (!result)
-        throw std::logic_error(std::string("No type conversion path from ") + from.describe() + " to " + to.describe());
+    {
+        std::string msg  = std::string("No type conversion path from ") + from.describe() + " to " + to.describe() + ".  ";
+
+        if (search_for_conv(from.get_info()->as_nonconst_type()->get_index(), to))
+            msg += "I notice the conversion would work if the from-type were not const.  Did you use get_fieldName (const version) when you meant to use ref_fieldName (nonconst version)?  Or call functionName_nc (nonconst version) when you meant to call functioname_c (const version)?  Don't forget that a member of a const object is also const.";
+
+        throw std::logic_error(msg);
+    }
 
     return build_conv_chain(from_expr, result);
 }

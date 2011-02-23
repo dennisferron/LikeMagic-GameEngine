@@ -81,6 +81,7 @@ template <typename T> struct LM_InsertConst<T&> { typedef T const& type; };
 #define LM_ARRAY_FIELD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ARRAY_FIELD_IMPL, class_name, SEQ)
 
 #define LM_STATIC_FUNC(type_sys, class_name, func_name) type_sys.register_functions().bind_method(#func_name, class_name::func_name);
+#define LM_STATIC_FUNC_NAME(type_sys, class_name, given_func_name, actual_func) type_sys.register_functions().bind_method(given_func_name, class_name::actual_func);
 #define LM_STATIC_FUNC_OVERLOAD(type_sys, class_name, given_func_name, actual_func, ret_type, ...) type_sys.register_functions().bind_method<ret_type (*)(__VA_ARGS__)>(given_func_name, &class_name::actual_func);
 
 #include "../Marshaling/ICustomField.hpp"
