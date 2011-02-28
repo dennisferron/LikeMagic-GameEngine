@@ -234,6 +234,164 @@ public:
 };
 
 
+
+template <typename T>
+class Term<T*, true> :
+    public Expression<T*&>
+{
+private:
+    char debug_padding[13];
+
+    T* value;
+
+    static void mark(IMarkable const* obj)
+    {
+        obj->mark();
+    }
+
+    static void mark(IMarkable const& obj)
+    {
+        obj.mark();
+    }
+
+    template <typename MarkType>
+    typename boost::enable_if<boost::is_base_of<IMarkable, MarkType>
+        >::type mark_if_possible(TypePack<MarkType>) const
+    {
+        mark(value);
+    }
+
+    template <typename MarkType>
+    typename boost::disable_if<boost::is_base_of<IMarkable, MarkType>
+        >::type mark_if_possible(TypePack<MarkType>) const
+    {
+    }
+
+    Term() : value(NULL)
+    {
+    }
+
+    Term(T* ptr) : value(ptr)
+    {
+    }
+
+public:
+
+    static boost::intrusive_ptr<Expression<T*&>> create()
+    {
+        boost::intrusive_ptr<Expression<T*&>> result = new Term();
+        return result;
+    }
+
+    static boost::intrusive_ptr<Expression<T*&>> create(T* ptr)
+    {
+        boost::intrusive_ptr<Expression<T*&>> result = new Term(ptr);
+        return result;
+    }
+
+    inline virtual T*& eval()
+    {
+        return value;
+    }
+
+    virtual boost::intrusive_ptr<Expression<T*&>> clone() const { return new Term<T*, true>(value); }
+
+    virtual std::set<AbstractObjectSet*> get_objsets() const { return std::set<AbstractObjectSet*>(); }
+    virtual bool is_terminal() const { return true; }
+    virtual bool is_lazy() const { return false; }
+
+    virtual std::string description() const
+    {
+        return std::string("Term<" + LikeMagic::Utility::TypeDescr<T*>::text() + ">");
+    }
+
+    virtual void mark() const
+    {
+        typedef typename StripModifiers<T>::strip::type MarkType;
+        mark_if_possible(TypePack<MarkType>());
+    }
+
+};
+
+template <typename T>
+class Term<T*, false> :
+    public Expression<T*&>
+{
+private:
+    char debug_padding[13];
+
+    T* value;
+
+    static void mark(IMarkable const* obj)
+    {
+        obj->mark();
+    }
+
+    static void mark(IMarkable const& obj)
+    {
+        obj.mark();
+    }
+
+    template <typename MarkType>
+    typename boost::enable_if<boost::is_base_of<IMarkable, MarkType>
+        >::type mark_if_possible(TypePack<MarkType>) const
+    {
+        mark(value);
+    }
+
+    template <typename MarkType>
+    typename boost::disable_if<boost::is_base_of<IMarkable, MarkType>
+        >::type mark_if_possible(TypePack<MarkType>) const
+    {
+    }
+
+    Term() : value(NULL)
+    {
+    }
+
+    Term(T* ptr) : value(ptr)
+    {
+    }
+
+public:
+
+    static boost::intrusive_ptr<Expression<T*&>> create()
+    {
+        boost::intrusive_ptr<Expression<T*&>> result = new Term();
+        return result;
+    }
+
+    static boost::intrusive_ptr<Expression<T*&>> create(T* ptr)
+    {
+        boost::intrusive_ptr<Expression<T*&>> result = new Term(ptr);
+        return result;
+    }
+
+    inline virtual T*& eval()
+    {
+        return value;
+    }
+
+    virtual boost::intrusive_ptr<Expression<T*&>> clone() const { return new Term<T*, false>(value); }
+
+    virtual std::set<AbstractObjectSet*> get_objsets() const { return std::set<AbstractObjectSet*>(); }
+    virtual bool is_terminal() const { return true; }
+    virtual bool is_lazy() const { return false; }
+
+    virtual std::string description() const
+    {
+        return std::string("Term<" + LikeMagic::Utility::TypeDescr<T*>::text() + ">");
+    }
+
+    virtual void mark() const
+    {
+        typedef typename StripModifiers<T>::strip::type MarkType;
+        mark_if_possible(TypePack<MarkType>());
+    }
+
+};
+
+
 template <bool IsCopyable>
 class Term<void, IsCopyable> : public Expression<void>
 {

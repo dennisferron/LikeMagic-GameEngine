@@ -24,7 +24,11 @@ private:
 
     T& value;
 
-    Reference(T& value_) : value(value_)
+    // This allows the reference expression to bump up the refcount
+    // on the storage location, if that is being tracked.  Otherwise this is null.
+    boost::intrusive_ptr<Expression<T&>> storage_location;
+
+    Reference(T& value_, boost::intrusive_ptr<Expression<T&>> storage_location_) : value(value_), storage_location(storage_location_)
     {
     }
 
@@ -53,9 +57,9 @@ private:
 
 public:
 
-    static boost::intrusive_ptr<Expression<T&>> create(T& value_)
+    static boost::intrusive_ptr<Expression<T&>> create(T& value_, boost::intrusive_ptr<Expression<T&>> storage_location_=0)
     {
-        boost::intrusive_ptr<Expression<T&>> result = new Reference(value_);
+        boost::intrusive_ptr<Expression<T&>> result = new Reference(value_, storage_location_);
         return result;
     }
 
@@ -79,7 +83,7 @@ public:
         return value;
     }
 
-    virtual boost::intrusive_ptr<Expression<T&>> clone() const { return new Reference<T>(value); }
+    virtual boost::intrusive_ptr<Expression<T&>> clone() const { return new Reference<T>(value, storage_location); }
 
     virtual std::set<AbstractObjectSet*> get_objsets() const { return std::set<AbstractObjectSet*>(); }
 

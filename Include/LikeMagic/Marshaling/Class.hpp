@@ -67,6 +67,23 @@ private:
         add_method("delete", deleter);
     }
 
+    // Utility function for generating alternate constructor names.
+    static std::string alt_name(std::string prefix, std::string method_name)
+    {
+        if (method_name.substr(0, 3) == "new")
+            return prefix + method_name.substr(3);
+        else
+            return prefix + "_" + method_name;
+    }
+
+    // Utility function for declaring various different types of constructor call targets.
+    template <typename ConstructedObjT, typename... Args>
+    void add_constructor(std::string prefix, std::string method_name)
+    {
+        auto target = new ConstructorCallTarget<ConstructedObjT, is_copyable, Args...>(type_system);
+        add_method(alt_name(prefix, method_name), target);
+    }
+
 public:
 
     virtual AbstractCppObjProxy* create_class_proxy() const
@@ -137,20 +154,26 @@ public:
     {
         // When the object is created under the name of "new", it is a resource
         // and must be deleted when you are finished with it.
-        auto resources = new ConstructorCallTarget<T*, is_copyable, Args...>(type_system);
-        add_method(method_name, resources);
+        add_constructor<T*, Args...>("new", method_name);
 
-        // Convert the "newXXXX" method name to "tmpXXXX" for temporary objects.
-        std::string temps_name;
-        if (method_name.substr(0, 3) == "new")
-            temps_name = "tmp" + method_name.substr(3);
-        else
-            temps_name = "tmp_" + method_name;
+        // Alternate constructors - tmp, ref, ptr
 
-        // Create the temp objects version of the constructor.
+        // Create the value type / temp objects version of the constructor.
         // This one stores the value directly in the term.
-        auto temps = new ConstructorCallTarget<T, is_copyable, Args...>(type_system);
-        add_method(temps_name, temps);
+        add_constructor<T, Args...>("tmp", method_name);
+
+        // This version creates the object by reference.  It actually also creates
+        // a value-type Term to hold the object, but wraps that in a Reference expression.
+        // This prevents to-script conversion from occuring, allowing you to e.g. get a true int&
+        // that doesn't get converted to a script Number type.
+        add_constructor<T&, Args...>("ref", method_name);
+
+        // This version creates an empty (NULL) pointer without new'ing an object.
+        // It can be used to create something suitable for passing to C++ functions that
+        // return a result by writing to a reference-to-pointer arg.
+        // Note: there's no args for this construction method.
+        if (!has_method(alt_name("ptr", method_name), 0))
+        add_constructor<T*&>("ptr", method_name);
     }
 
     // Use this to bind fields.
