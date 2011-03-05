@@ -311,6 +311,8 @@ public:
         mark_if_possible(TypePack<MarkType>());
     }
 
+    virtual bool is_null() const { return value == NULL; }
+
 };
 
 template <typename T>
@@ -389,6 +391,7 @@ public:
         mark_if_possible(TypePack<MarkType>());
     }
 
+    virtual bool is_null() const { return value == NULL; }
 };
 
 

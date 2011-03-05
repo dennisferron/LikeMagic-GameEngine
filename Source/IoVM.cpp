@@ -325,6 +325,10 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
     bool disable_to_script = proxy->disable_to_script_conv();
     bool has_conv = is_terminal && !disable_to_script && type_sys.has_conv(from_expr->get_type(), to_io_type);
 
+    if (!disable_to_script && proxy->get_expr()->is_null())
+    {
+        return IOSTATE->ioNil;
+    }
     if (has_conv)
     {
         ExprPtr to_expr = type_sys.try_conv(from_expr, to_io_type);

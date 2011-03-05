@@ -74,6 +74,7 @@ public:
     virtual LikeMagic::Utility::TypeIndex get_type() const = 0;
     virtual std::string description() const = 0;
     virtual bool disable_to_script_conv() const { return false; }
+    virtual bool is_null() const { return false; }
 };
 
 // Most of the time you will be using an expression via smart ptr.

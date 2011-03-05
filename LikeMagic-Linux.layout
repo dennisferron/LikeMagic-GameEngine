@@ -8,7 +8,7 @@
 		<Cursor position="1671" topLine="55" />
 	</File>
 	<File name="Include/LikeMagic/Backends/Io/IoVM.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="1006" topLine="12" />
+		<Cursor position="1009" topLine="16" />
 	</File>
 	<File name="Include/LikeMagic/Backends/Io/ToIoObjectExpr.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="1955" topLine="35" />
@@ -71,7 +71,7 @@
 		<Cursor position="4034" topLine="74" />
 	</File>
 	<File name="Include/LikeMagic/SFMO/AbstractExpression.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="1800" topLine="34" />
+		<Cursor position="1964" topLine="34" />
 	</File>
 	<File name="Include/LikeMagic/SFMO/CppObjProxy.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="8375" topLine="139" />
@@ -83,10 +83,10 @@
 		<Cursor position="3748" topLine="66" />
 	</File>
 	<File name="Include/LikeMagic/SFMO/Reference.hpp" open="0" top="0" tabpos="1">
-		<Cursor position="2262" topLine="41" />
+		<Cursor position="2262" topLine="8" />
 	</File>
-	<File name="Include/LikeMagic/SFMO/Term.hpp" open="0" top="0" tabpos="2">
-		<Cursor position="8208" topLine="279" />
+	<File name="Include/LikeMagic/SFMO/Term.hpp" open="1" top="1" tabpos="5">
+		<Cursor position="8312" topLine="285" />
 	</File>
 	<File name="Include/LikeMagic/TypeConv/TypeConvGraph.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="0" topLine="40" />
@@ -110,13 +110,13 @@
 		<Cursor position="4941" topLine="30" />
 	</File>
 	<File name="Source/API_Io.cpp" open="0" top="0" tabpos="6">
-		<Cursor position="5377" topLine="149" />
+		<Cursor position="1023" topLine="0" />
 	</File>
 	<File name="Source/API_Io_from_script.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="3838" topLine="95" />
 	</File>
 	<File name="Source/API_Io_to_script.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="3644" topLine="72" />
+		<Cursor position="4257" topLine="72" />
 	</File>
 	<File name="Source/AbstractClass.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="855" topLine="10" />
@@ -134,7 +134,7 @@
 		<Cursor position="512" topLine="8" />
 	</File>
 	<File name="Source/IoVM.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="12328" topLine="304" />
+		<Cursor position="11907" topLine="311" />
 	</File>
 	<File name="Source/MarkableObjGraph.cpp" open="0" top="0" tabpos="4">
 		<Cursor position="155" topLine="0" />
