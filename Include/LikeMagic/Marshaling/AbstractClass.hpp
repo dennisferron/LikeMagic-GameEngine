@@ -18,6 +18,7 @@
 #include "boost/unordered_map.hpp"
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
+#include "LikeMagic/ITypeSystemObserver.hpp"
 
 namespace LikeMagic {
     class AbstractTypeSystem;
@@ -80,10 +81,12 @@ public:
     AbstractCppObjProxy* call(AbstractCppObjProxy* target, std::string method_name, std::vector<boost::intrusive_ptr<AbstractExpression>> args) const;
     bool has_method(std::string method_name, int num_args) const;
     AbstractCallTargetSelector* get_method(std::string method_name, int num_args) const;
+    std::vector<AbstractCallTargetSelector*> get_methods() const;
 
     // support inheritance
     void add_base_abstr(AbstractClass const* base);
     std::vector<std::string> get_base_names() const;
+    std::vector<AbstractClass const*> get_base_classes() const;
 };
 
 }}

@@ -10,6 +10,8 @@
 
 #include "LikeMagic/Backends/Io/API_Io.hpp"
 #include "LikeMagic/SFMO/CppObjProxy.hpp"
+#include "LikeMagic/ITypeSystemObserver.hpp"
+#include "LikeMagic/RuntimeTypeSystem.hpp"
 
 #include "boost/unordered_map.hpp"
 #include "boost/unordered_set.hpp"
@@ -21,11 +23,12 @@ extern "C"
 
 namespace LikeMagic { namespace Backends { namespace Io {
 
-class IoVM
+class IoVM : public ITypeSystemObserver
 {
 private:
-    AbstractTypeSystem& type_system;
+    RuntimeTypeSystem& type_system;
     IoState* self;  // Has to be named "self" for a lot of the Io macros to work.
+    std::set<TypeIndex> registered_classes;
     boost::unordered_map<TypeIndex, IoObject*> cpp_protos;
     boost::unordered_map<IoObject*, std::string> watch_for_free;
     boost::unordered_set<IoObject*> freed_objects;
@@ -40,7 +43,7 @@ private:
     friend class IoBlock;
 
 public:
-    IoVM(AbstractTypeSystem& type_system_);
+    IoVM(RuntimeTypeSystem& type_system_);
     ~IoVM();
 
     void on_collector_free(IoObject* io_obj);
@@ -97,6 +100,10 @@ public:
     }
 
     IoObject* castToIoObjectPointer(void* object);
+
+    virtual void register_class(LikeMagic::Utility::TypeIndex type_index, LikeMagic::Marshaling::AbstractClass* class_);
+    virtual void register_base(LikeMagic::Marshaling::AbstractClass* class_, LikeMagic::Marshaling::AbstractClass const* base);
+    virtual void register_method(LikeMagic::Marshaling::AbstractClass* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method);
 };
 
 

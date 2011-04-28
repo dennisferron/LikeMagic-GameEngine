@@ -19,6 +19,7 @@
 #include "LikeMagic/Utility/TupleForEach.hpp"
 
 #include "LikeMagic/Utility/KeyWrapper.hpp"
+#include "LikeMagic/ITypeSystemObserver.hpp"
 
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits.hpp"
@@ -84,6 +85,8 @@ protected:
 
     TypeConvGraph conv_graph;
 
+    std::set<ITypeSystemObserver*> observers;
+
 public:
 
     void report();
@@ -135,6 +138,10 @@ public:
     {
         return static_cast<Expression<To>*>(try_conv(from, BetterTypeInfo::create_index<To>()).get());
     }
+
+    void add_type_system_observer(ITypeSystemObserver* observer);
+    void register_base(LikeMagic::Marshaling::AbstractClass* class_, LikeMagic::Marshaling::AbstractClass const* base);
+    void register_method(LikeMagic::Marshaling::AbstractClass* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method);
 
 };
 

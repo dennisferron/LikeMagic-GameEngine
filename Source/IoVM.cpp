@@ -79,19 +79,19 @@ struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter
 };
 
 
-IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_),
+IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     record_freed_flag(false), free_watch_flag(false)
 {
     // IoObjectExpr expression holds unconverted Io objects; it has type of struct IoObjectExprTag.
-    //type_system_.add_type(BetterTypeInfo::create_index<IoObjectExprTag>());
+    //type_sys.add_type(BetterTypeInfo::create_index<IoObjectExprTag>());
 
-    add_convs_from_script(type_system_, this);
-    add_convs_to_script(type_system_, this);
+    add_convs_from_script(type_sys, this);
+    add_convs_to_script(type_sys, this);
 
     // Register this vm
-    RuntimeTypeSystem& runtime_type_sys = dynamic_cast<RuntimeTypeSystem&>(type_system_);
-    LM_CLASS_NO_COPY(runtime_type_sys, IoVM)
-    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(record_freed_objects)(set_record_freed_objects)(watch_freed_objects)(set_watch_freed_objects)(add_watch_for_freed_object)(check_if_freed))
+    LM_CLASS_NO_COPY(type_sys, IoVM)
+    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(record_freed_objects)(set_record_freed_objects)
+            (watch_freed_objects)(set_watch_freed_objects)(add_watch_for_freed_object)(check_if_freed))
 
     /*
     LM_CLASS(runtime_type_sys, AbstractTypeInfo)
@@ -105,7 +105,7 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_),
     // Make the ToIoTypeInfo constructible from a string so that
     // the proxy as_script_type() can be called using a string and receive a ToIoTypeInfo.
     // Using Sequence instead of string for the from type so as not to conflict with other languages' type conversions.
-    //type_system.add_converter_simple(FromIoTypeInfo::create_index("Sequence"), BetterTypeInfo::create_index<ToIoTypeInfo>(), new SequenceToToIoTypeInfoConv(type_system));
+    //type_sys.add_converter_simple(FromIoTypeInfo::create_index("Sequence"), BetterTypeInfo::create_index<ToIoTypeInfo>(), new SequenceToToIoTypeInfoConv(type_sys));
 
 
     LM_CLASS(runtime_type_sys, FromIoTypeInfo)
@@ -114,22 +114,26 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_),
 
     */
 
-    LM_CLASS(runtime_type_sys, IoObject)
+    LM_CLASS_NO_COPY(type_sys, AbstractTypeSystem)
+    LM_CLASS_NO_COPY(type_sys, RuntimeTypeSystem)
+    LM_BASE(RuntimeTypeSystem, AbstractTypeSystem)
+
+    LM_CLASS(type_sys, IoObject)
 
     // To convert an Io object to a void*
-    type_system.add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<void*>(), new LikeMagic::TypeConv::ImplicitConv<IoObject*, void*>);
+    type_sys.add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<void*>(), new LikeMagic::TypeConv::ImplicitConv<IoObject*, void*>);
 
     // Make general Io objects convertible with IoObject*.
-    type_system.add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
-    type_system.add_converter_simple(BetterTypeInfo::create_index<IoObject*>(), ToIoTypeInfo::create_index("Object"), new PtrToIoObjectConv);
-    type_system.add_converter_simple(ToIoTypeInfo::create_index("Object"), ToIoTypeInfo::create_index(), new LikeMagic::TypeConv::NoChangeConv);
+    type_sys.add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
+    type_sys.add_converter_simple(BetterTypeInfo::create_index<IoObject*>(), ToIoTypeInfo::create_index("Object"), new PtrToIoObjectConv);
+    type_sys.add_converter_simple(ToIoTypeInfo::create_index("Object"), ToIoTypeInfo::create_index(), new LikeMagic::TypeConv::NoChangeConv);
 
     // Allow conversion of Io blocks to IoObject*
-    type_system.add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
+    type_sys.add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
 
     // Allow reference/value conversions for IoBlock.
-    type_system_.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock>();
-    type_system_.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock const&>();
+    type_sys.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock>();
+    type_sys.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock const&>();
 
     self = IoState_new();
     IoState_init(self);
@@ -145,44 +149,12 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_),
 
     if (!classes)
     {
-        throw std::logic_error("Cannot get LikeMagic classes object.");
+        throw std::logic_error("Cannot create LikeMagic classes object.");
     }
 
-    // Get the methods of all the classes
-    auto types = type_system.get_registered_types();
-    for (auto it=types.begin(); it != types.end(); it++)
-    {
-        std::string name = type_system.get_class_name(*it);
-        do_string("LikeMagic classes " + name + " := LikeMagic clone do(type = \"" + name + "\")");
+    type_system.add_type_system_observer(this);
 
-        std::string code = "LikeMagic classes " + name;
-        IoObject* mset_proto = do_string(code);
-
-        cpp_protos[TypeIndex(*it)] = mset_proto;
-
-        if (!mset_proto)
-        {
-            throw std::logic_error("Error getting proto for methodset, return value null:  " + code);
-        }
-
-        auto mtbl = make_io_method_table(type_system.get_method_names(*it));
-        IoObject_addMethodTable_(mset_proto, mtbl);
-        delete[] mtbl;
-
-        // Give the proto a C++ proxy object so constructors and proxy methods can be called on it.
-        AbstractCppObjProxy* proxy = type_system.create_class_proxy(*it);
-        IoObject_setDataPointer_(mset_proto, proxy);
-    }
-
-    // Then hook up all the bases as protos
-    for (auto it=types.begin(); it != types.end(); it++)
-    {
-        auto base_names = type_system.get_base_names(*it);
-        for (auto base=base_names.begin(); base != base_names.end(); base++)
-            do_string("LikeMagic classes " + type_system.get_class_name(*it) + " appendProto(LikeMagic classes " + *base + ")");
-    }
-
-    // You cannot add protos until after all the above code is finished.
+    // You have to have registered the types before you can add protos for them.
 
     // Add a proto to support all the static class members and namespace level C++ functions.
     add_proto<StaticMethod>("CppFunc");
@@ -191,7 +163,66 @@ IoVM::IoVM(AbstractTypeSystem& type_system_) : type_system(type_system_),
     add_proto<IoVM&>("IoVM", *this);
 
     // Also make the abstract type system available by pointer.
-    add_proto<AbstractTypeSystem&>("CppTypeSystem", type_system_);
+    add_proto<RuntimeTypeSystem&>("CppTypeSystem", type_sys);
+}
+
+void IoVM::register_base(LikeMagic::Marshaling::AbstractClass* class_, LikeMagic::Marshaling::AbstractClass const* base)
+{
+    //cout << "Register base " << class_->get_class_name() << " : " << base->get_class_name() << endl << flush;
+    do_string("LikeMagic classes " + class_->get_class_name() + " appendProto(LikeMagic classes " + base->get_class_name() + ")");
+}
+
+void IoVM::register_method(LikeMagic::Marshaling::AbstractClass* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method)
+{
+    //cout << "Register method " << class_->get_class_name() << "::" << method_name << endl << flush;
+    std::string class_name = class_->get_class_name();
+    std::string code = "LikeMagic classes " + class_name;
+    IoObject* mset_proto = do_string(code);
+    vector<string> method_names;
+    method_names.push_back(method_name);
+    auto mtbl = make_io_method_table(method_names);
+    IoObject_addMethodTable_(mset_proto, mtbl);
+    delete[] mtbl;
+}
+
+
+void IoVM::register_class(TypeIndex type_index, LikeMagic::Marshaling::AbstractClass* class_)
+{
+    //cout << "Register class " << class_->get_class_name() << endl << flush;
+
+    string io_code = "LikeMagic classes";
+    IoObject* classes = do_string(io_code);
+
+    if (!classes)
+    {
+        throw std::logic_error("Cannot get LikeMagic classes object.");
+    }
+
+    std::string name = class_->get_class_name();
+    do_string("LikeMagic classes " + name + " := LikeMagic clone do(type = \"" + name + "\")");
+
+    std::string code = "LikeMagic classes " + name;
+    IoObject* mset_proto = do_string(code);
+
+    cpp_protos[type_index] = mset_proto;
+
+    if (!mset_proto)
+    {
+        throw std::logic_error("Error getting proto for methodset, return value null:  " + code);
+    }
+
+    auto mtbl = make_io_method_table(type_system.get_method_names(type_index));
+    IoObject_addMethodTable_(mset_proto, mtbl);
+    delete[] mtbl;
+
+    // Give the proto a C++ proxy object so constructors and proxy methods can be called on it.
+    AbstractCppObjProxy* proxy = type_system.create_class_proxy(type_index);
+    IoObject_setDataPointer_(mset_proto, proxy);
+
+    // Then hook up all the bases as protos
+    auto base_names = class_->get_base_names();
+    for (auto base=base_names.begin(); base != base_names.end(); base++)
+        do_string("LikeMagic classes " + class_->get_class_name() + " appendProto(LikeMagic classes " + *base + ")");
 }
 
 IoVM::~IoVM()

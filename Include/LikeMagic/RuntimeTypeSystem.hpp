@@ -102,7 +102,10 @@ private:
         else
         {
             auto result = new LikeMagic::Marshaling::Class<T, is_copyable>(name, *this);
+            add_class(type, result);
+
             result->add_base_abstr(proxy_methods);
+            result->bind_delete();
 
             // If the user wants to give their class collection_methods, let them do it via an API function!
             //if (IsContainer<T>::value)
@@ -129,8 +132,6 @@ private:
 
             // Add enum-specific things if applicable.
             register_enum<T, is_copyable>(*result);
-
-            add_class(type, result);
 
             return *result;
         }
@@ -220,6 +221,7 @@ public:
     {
         return *functions;
     }
+
 };
 
 }

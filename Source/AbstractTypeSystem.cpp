@@ -22,6 +22,47 @@ using namespace std;
 
 using namespace LikeMagic;
 
+void AbstractTypeSystem::add_type_system_observer(ITypeSystemObserver* observer)
+{
+    // If this is the first time adding the observer, catch them up on what has been set up.
+    if (observers.find(observer) == observers.end())
+    {
+        auto types = get_registered_types();
+
+        // First register the classes by themselves.
+        for (auto it=types.begin(); it != types.end(); it++)
+        {
+            auto class_ = get_class(*it);
+            observer->register_class(*it, class_);
+            auto methods = class_->get_method_names();
+            for (auto method = methods.begin(); method != methods.end(); ++method)
+                observer->register_method(class_, *method, NULL);
+        }
+
+        // Then hook up all the bases.
+        for (auto it=types.begin(); it != types.end(); it++)
+        {
+            auto class_ = get_class(*it);
+            auto bases = class_->get_base_classes();
+            for (auto base=bases.begin(); base != bases.end(); base++)
+                observer->register_base(class_, *base);
+        }
+    }
+
+    observers.insert(observer);
+}
+
+void AbstractTypeSystem::register_base(LikeMagic::Marshaling::AbstractClass* class_, LikeMagic::Marshaling::AbstractClass const* base)
+{
+    for (auto it=observers.begin(); it!=observers.end(); ++it)
+        (*it)->register_base(class_, base);
+}
+
+void AbstractTypeSystem::register_method(LikeMagic::Marshaling::AbstractClass* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method)
+{
+    for (auto it=observers.begin(); it!=observers.end(); ++it)
+        (*it)->register_method(class_, method_name, method);
+}
 
 void AbstractTypeSystem::add_class(TypeIndex index, AbstractClass* class_ptr)
 {
@@ -35,6 +76,9 @@ void AbstractTypeSystem::add_class(TypeIndex index, AbstractClass* class_ptr)
 
     classes2[index.get_class_id()] = class_ptr;
 
+    // This needs to be done at the end so that observers that access the class through type system can get to it.
+    for (auto it=observers.begin(); it!=observers.end(); ++it)
+        (*it)->register_class(index, class_ptr);
 }
 
 

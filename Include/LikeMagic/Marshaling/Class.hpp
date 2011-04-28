@@ -62,9 +62,6 @@ private:
     friend class LikeMagic::RuntimeTypeSystem;
     Class(std::string name_, AbstractTypeSystem& type_system_) : AbstractClass(name_, type_system_)
     {
-        // In C++, any type can be deleted.
-        auto deleter = new DestructorCallTarget<T>(type_system);
-        add_method("delete", deleter);
     }
 
     // Utility function for generating alternate constructor names.
@@ -210,6 +207,13 @@ public:
         //auto getter = new CallTargetSelector<CustomFieldGetterTarget, T, FieldAccessor>(f, type_system);
         auto getter = new CustomFieldGetterTarget<T, FieldAccessor>(f, type_system);
         add_method("get_" + field_name, getter);
+    }
+
+    void bind_delete()
+    {
+        // In C++, any type can be deleted.
+        auto deleter = new DestructorCallTarget<T>(type_system);
+        add_method("delete", deleter);
     }
 
 };

@@ -9,6 +9,7 @@
 #include "LikeMagic/Marshaling/AbstractClass.hpp"
 #include "LikeMagic/Marshaling/AbstractCallTargetSelector.hpp"
 #include "LikeMagic/SFMO/AbstractExpression.hpp"
+#include "LikeMagic/AbstractTypeSystem.hpp"
 
 #include "boost/lexical_cast.hpp"
 
@@ -23,6 +24,28 @@ AbstractClass::~AbstractClass()
             delete it2->second;
     }
 }
+
+std::vector<AbstractClass const*> AbstractClass::get_base_classes() const
+{
+    std::vector<AbstractClass const*> result;
+
+    for (auto it = bases.begin(); it != bases.end(); ++it)
+        result.push_back(it->second);
+
+    return result;
+}
+
+std::vector<AbstractCallTargetSelector*> AbstractClass::get_methods() const
+{
+    std::vector<AbstractCallTargetSelector*> result;
+
+    for (auto overloads = methods.begin(); overloads != methods.end(); ++overloads)
+        for (auto it = overloads->second.begin(); it != overloads->second.end(); ++it)
+            result.push_back(it->second);
+
+    return result;
+}
+
 
 void AbstractClass::add_method(std::string method_name, AbstractCallTargetSelector* method)
 {
@@ -41,6 +64,7 @@ void AbstractClass::add_method(std::string method_name, AbstractCallTargetSelect
         // Don't add the same method name if it already has the method.
         method_names.push_back(method_name);
         methods[method_name][num_args] = method;
+        type_system.register_method(this, method_name, method);
     }
 }
 
@@ -140,6 +164,7 @@ bool AbstractClass::has_method(std::string method_name, int num_args) const
 void AbstractClass::add_base_abstr(AbstractClass const* base)
 {
     bases[base->get_class_name()] = base;
+    type_system.register_base(this, base);
 }
 
 std::vector<std::string> AbstractClass::get_base_names() const
