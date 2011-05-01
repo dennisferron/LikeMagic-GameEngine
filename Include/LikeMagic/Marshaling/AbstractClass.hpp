@@ -19,6 +19,7 @@
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 #include "LikeMagic/ITypeSystemObserver.hpp"
+#include "LikeMagic/NamespaceForward.hpp"
 
 namespace LikeMagic {
     class AbstractTypeSystem;
@@ -38,6 +39,7 @@ using LikeMagic::AbstractTypeSystem;
 using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeInfoList;
+using LikeMagic::Namespace;
 
 class AbstractClass
 {
@@ -61,13 +63,15 @@ private:
 
 protected:
     AbstractTypeSystem& type_system;
+    NamespacePtr ns;
 
     void add_method(std::string method_name, AbstractCallTargetSelector* method);
     AbstractCallTargetSelector* try_get_method(std::string method_name, int num_args, bool in_base_class=false) const;
 
-    AbstractClass(std::string name_, AbstractTypeSystem& type_system_) :
+    AbstractClass(std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) :
         class_name(name_),
-        type_system(type_system_)
+        type_system(type_system_),
+        ns(namespace_)
     {
         //std::cout << "Registering class " << typeid(T).name() << " as " << name_ << std::endl;
     }

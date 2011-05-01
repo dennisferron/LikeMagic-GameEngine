@@ -37,7 +37,7 @@ class DummyClass : public AbstractClass
 {
 protected:
     friend class LikeMagic::RuntimeTypeSystem;
-    DummyClass(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_) : AbstractClass(name_, type_system_), type(type_)
+    DummyClass(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : AbstractClass(name_, type_system_, namespace_), type(type_)
     {
     }
 

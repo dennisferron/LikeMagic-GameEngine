@@ -9,6 +9,7 @@
 // Defines a collection of macros to aid in binding or protos.
 
 #include "LikeMagic/RuntimeTypeSystem.hpp"
+#include "LikeMagic/Namespace.hpp"
 
 #include "boost/preprocessor/seq/for_each.hpp"
 #include "boost/preprocessor/stringize.hpp"

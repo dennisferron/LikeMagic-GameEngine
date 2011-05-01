@@ -31,7 +31,7 @@ private:
     StaticMethods& operator=(StaticMethods const&);
 
     friend class LikeMagic::RuntimeTypeSystem;
-    StaticMethods(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_) : DummyClass<StaticMethods>(type_, name_, type_system_)
+    StaticMethods(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : DummyClass<StaticMethods>(type_, name_, type_system_, namespace_)
     {
     }
 

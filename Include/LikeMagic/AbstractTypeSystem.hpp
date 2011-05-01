@@ -21,6 +21,8 @@
 #include "LikeMagic/Utility/KeyWrapper.hpp"
 #include "LikeMagic/ITypeSystemObserver.hpp"
 
+#include "LikeMagic/NamespaceForward.hpp"
+
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits.hpp"
 
@@ -50,7 +52,6 @@ using LikeMagic::Utility::TypeInfoList;
 using namespace LikeMagic::TypeConv;
 using namespace LikeMagic::SFMO;
 using namespace LikeMagic::Utility;
-
 
 
 // The reason why TypeSystem is split into AbstractTypeSystem and

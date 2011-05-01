@@ -60,7 +60,7 @@ private:
     Class& operator =(const Class&);
 
     friend class LikeMagic::RuntimeTypeSystem;
-    Class(std::string name_, AbstractTypeSystem& type_system_) : AbstractClass(name_, type_system_)
+    Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : AbstractClass(name_, type_system_, namespace_)
     {
     }
 

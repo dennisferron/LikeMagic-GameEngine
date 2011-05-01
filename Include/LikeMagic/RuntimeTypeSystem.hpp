@@ -28,6 +28,7 @@ using namespace LikeMagic::Marshaling;
 using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::EnumHelper;
 
+
 // The reason why TypeSystem is split into AbstractTypeSystem and
 // the concrete RuntimeTypeSystem is that things like class Class
 // need to access type system methods, but type system methods in
@@ -80,6 +81,7 @@ private:
         result.bind_nonmember_op("==",    &EnumHelper<T>::equals);
         result.bind_nonmember_op("!=",    &EnumHelper<T>::not_equals);
         result.bind_nonmember_op("value", &EnumHelper<T>::value);
+        result.bind_nonmember_op("asString", &EnumHelper<T>::asString);
     }
 
     template <typename T, bool is_copyable>
@@ -90,7 +92,7 @@ private:
 
 
     template <typename T, bool is_copyable>
-    Class<T, is_copyable>& register_class_impl(std::string name)
+    Class<T, is_copyable>& register_class_impl(std::string name, NamespacePtr ns)
     {
         static_assert(boost::is_same<T, typename LikeMagic::Utility::StripModifiers<T>::strip::type>::value, "Can only register bare types as classes.");
 
@@ -101,7 +103,7 @@ private:
         }
         else
         {
-            auto result = new LikeMagic::Marshaling::Class<T, is_copyable>(name, *this);
+            auto result = new LikeMagic::Marshaling::Class<T, is_copyable>(name, *this, ns);
             add_class(type, result);
 
             result->add_base_abstr(proxy_methods);
@@ -137,55 +139,6 @@ private:
         }
     }
 
-    /*
-     *
-     * These three functions were part of a feature that is not used at this moment.
-     * They were slowing down build times.
-     * When the feature is re-enabled, most likely I'll have the user manually
-     * register classes they want to use this with, rather than registering all classes this way.
-
-    template <typename T>
-    void register_collection(std::string name)
-    {
-        if (!has_class(BetterTypeInfo::create_index<std::vector<T>>()))
-        {
-            auto& collection = register_class_impl<std::vector<T>, true>("vector_of_" + name);
-            collection.template bind_constructor<>();
-            collection.add_base_abstr(&collection_methods);
-            collection.template bind_method<
-                void (std::vector<T>::*)(const T&)>("push_back", &std::vector<T>::push_back);
-            collection.bind_method("size", &std::vector<T>::size);
-
-            // make the collection convertible to a pointer.
-            add_conv<std::vector<T>&, T*, VectorConv>();
-            add_conv<std::vector<T>&, T const*, VectorConv>();
-            add_conv<std::vector<T> const&, T const*, VectorConv>();
-        }
-    }
-
-    template <typename T, bool is_copyable>
-    typename boost::enable_if_c<
-        is_copyable && !boost::is_same<T, bool>::value, Class<T, is_copyable>&
-    >::type
-    check_for_collection(std::string name)
-    {
-        // T is copyable so register a collection of it.  TODO:  default constructible???
-        register_collection<T>(name);
-
-        return register_class_impl<T, is_copyable>(name);
-    }
-
-    template <typename T, bool is_copyable>
-    typename boost::disable_if_c<
-        is_copyable && !boost::is_same<T, bool>::value, Class<T, is_copyable>&
-    >::type
-    check_for_collection(std::string name)
-    {
-        return register_class_impl<T, is_copyable>(name);
-    }
-
-    */
-
 public:
 
     RuntimeTypeSystem();
@@ -194,30 +147,21 @@ public:
     TypeInfoCache* get_typeinfo_cache() { return dll_shared_typeinfo; }
 
     template <typename T, bool is_copyable=!boost::is_abstract<T>::value>
-    Class<T, is_copyable>& register_class(std::string name)
+    Class<T, is_copyable>& register_class(std::string name, NamespacePtr ns=0)
     {
-        //return check_for_collection<T, is_copyable>(name);
-        auto& result = register_class_impl<T, is_copyable>(name);
-
+        auto& result = register_class_impl<T, is_copyable>(name, ns);
         return result;
     }
 
     // Currently register_class is capable of discerning enums.
     template <typename T>
-    Class<T, true>& register_enum(std::string name)
+    Class<T, true>& register_enum(std::string name, NamespacePtr ns=0)
     {
-        auto& result = register_class_impl<T, true>(name);
-
-        //result.bind_nonmember_op("==",    &EnumHelper<T>::equals);
-        //result.bind_nonmember_op("!=",    &EnumHelper<T>::not_equals);
-        //result.bind_nonmember_op("value", &EnumHelper<T>::value);
-
-        result.bind_nonmember_op("asString", &EnumHelper<T>::asString);
-
+        auto& result = register_class_impl<T, true>(name, ns);
         return result;
     }
 
-    StaticMethods& register_functions()
+    StaticMethods& register_functions(NamespacePtr ns=0)
     {
         return *functions;
     }

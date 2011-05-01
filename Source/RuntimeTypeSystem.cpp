@@ -8,6 +8,7 @@
 
 
 #include "LikeMagic/RuntimeTypeSystem.hpp"
+#include "LikeMagic/Namespace.hpp"
 
 #include "LikeMagic/TypeConv/StringConv.hpp"
 
@@ -53,9 +54,9 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     static TypeIndex proxy_methods_type = BetterTypeInfo::create_index<AbstractCppObjProxy>();
     static TypeIndex collection_methods_type = BetterTypeInfo::create_index<SFMOCollection>();
 
-    functions = new StaticMethods(functions_type, "CppFunc", *this);
-    proxy_methods = new ProxyMethods(proxy_methods_type, "ProxyMethods", *this);
-    collection_methods = new ProxyMethods(collection_methods_type, "CollectionMethods", *this);
+    functions = new StaticMethods(functions_type, "CppFunc", *this, Namespace::global(*this));
+    proxy_methods = new ProxyMethods(proxy_methods_type, "ProxyMethods", *this, Namespace::global(*this));
+    collection_methods = new ProxyMethods(collection_methods_type, "CollectionMethods", *this, Namespace::global(*this));
 
 
     // Allow conversions from nil to any pointer.
@@ -92,14 +93,14 @@ RuntimeTypeSystem::RuntimeTypeSystem()
 
     // register void so functions returning void will work right.
     static TypeIndex void_type = BetterTypeInfo::create_index<void>();
-    auto void_class = new DummyClass<void>(void_type, "void", *this);
+    auto void_class = new DummyClass<void>(void_type, "void", *this, Namespace::global(*this));
     add_class(void_type, void_class);
     void_class->add_base_abstr(proxy_methods);
 
     // register the Unknown_CppObj so functions returning unregistered classes
     // can still be called.
     static TypeIndex unknown_type = BetterTypeInfo::create_index<Unknown_CppObj>();
-    auto unknown_class = new DummyClass<Unknown_CppObj>(unknown_type, "Unknown_CppObj", *this);
+    auto unknown_class = new DummyClass<Unknown_CppObj>(unknown_type, "Unknown_CppObj", *this, Namespace::global(*this));
     add_class(unknown_type, unknown_class);
     unknown_class->add_base_abstr(proxy_methods);
     this->unknown_class = unknown_class;
