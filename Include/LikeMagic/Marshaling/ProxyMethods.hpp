@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -28,7 +28,7 @@ private:
     ProxyMethods& operator=(ProxyMethods const&);
 
     friend class LikeMagic::RuntimeTypeSystem;
-    ProxyMethods(std::string name_, AbstractTypeSystem& type_system_) : DummyClass<ProxyMethods>(name_, type_system_)
+    ProxyMethods(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_) : DummyClass<ProxyMethods>(type_, name_, type_system_)
     {
     }
 

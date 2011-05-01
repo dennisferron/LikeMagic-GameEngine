@@ -23,11 +23,11 @@ extern "C"
 
 namespace LikeMagic { namespace Backends { namespace Io {
 
-class IoVM : public ITypeSystemObserver
+class IoVM : public ITypeSystemObserver, public IMarkable
 {
 private:
     RuntimeTypeSystem& type_system;
-    IoState* self;  // Has to be named "self" for a lot of the Io macros to work.
+    IoState* state;  // Dangerousfor this to be named "self" - Io macros using self defined for IoObject, not IoState
     std::set<TypeIndex> registered_classes;
     boost::unordered_map<TypeIndex, IoObject*> cpp_protos;
     boost::unordered_map<IoObject*, std::string> watch_for_free;
@@ -35,6 +35,8 @@ private:
     bool record_freed_flag;
     bool free_watch_flag;
     CollectorFreeFunc* original_free_func;
+
+    mutable IoObject* last_exception;
 
     ExprPtr get_abs_expr(std::string io_code) const;
 
@@ -56,6 +58,7 @@ public:
     bool check_if_freed(IoObject* io_obj);
 
     static IoObject* io_userfunc(IoObject *self, IoObject *locals, IoMessage *m);
+    static void io_exception(void* context, IoObject* coroutine);
 
     void add_proto(std::string name, AbstractCppObjProxy* proxy, bool conv_to_script=false) const;
 
@@ -101,9 +104,11 @@ public:
 
     IoObject* castToIoObjectPointer(void* object);
 
-    virtual void register_class(LikeMagic::Utility::TypeIndex type_index, LikeMagic::Marshaling::AbstractClass* class_);
-    virtual void register_base(LikeMagic::Marshaling::AbstractClass* class_, LikeMagic::Marshaling::AbstractClass const* base);
-    virtual void register_method(LikeMagic::Marshaling::AbstractClass* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method);
+    virtual void register_class(LikeMagic::Utility::TypeIndex type_index, LikeMagic::Marshaling::AbstractClass const* class_);
+    virtual void register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base);
+    virtual void register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method);
+
+    virtual void mark() const;
 };
 
 

@@ -30,6 +30,7 @@
 #include "IoState.h"
 #include "IoObject.h"
 #include "IoTag.h"
+#include "IoError.h"
 
 using namespace std;
 using namespace LikeMagic::SFMO;

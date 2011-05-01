@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -31,7 +31,7 @@ private:
     StaticMethods& operator=(StaticMethods const&);
 
     friend class LikeMagic::RuntimeTypeSystem;
-    StaticMethods(std::string name_, AbstractTypeSystem& type_system_) : DummyClass<StaticMethods>(name_, type_system_)
+    StaticMethods(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_) : DummyClass<StaticMethods>(type_, name_, type_system_)
     {
     }
 

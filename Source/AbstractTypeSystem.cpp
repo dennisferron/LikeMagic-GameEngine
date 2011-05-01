@@ -22,30 +22,47 @@ using namespace std;
 
 using namespace LikeMagic;
 
+void add_class_to_observer(ITypeSystemObserver* observer, AbstractClass const* class_, set<TypeIndex>& already_registered)
+{
+    if (already_registered.find(class_->get_type()) == already_registered.end())
+    {
+        already_registered.insert(class_->get_type());
+
+        // Have to register the bases before you register the derived classes.
+        auto bases = class_->get_base_classes();
+        for (auto base=bases.begin(); base != bases.end(); base++)
+            add_class_to_observer(observer, *base, already_registered);
+
+        observer->register_class(class_->get_type(), class_);
+    }
+}
+
 void AbstractTypeSystem::add_type_system_observer(ITypeSystemObserver* observer)
 {
     // If this is the first time adding the observer, catch them up on what has been set up.
     if (observers.find(observer) == observers.end())
     {
         auto types = get_registered_types();
+        set<TypeIndex> already_registered;
 
-        // First register the classes by themselves.
+        // Register all the classes
         for (auto it=types.begin(); it != types.end(); it++)
         {
             auto class_ = get_class(*it);
-            observer->register_class(*it, class_);
-            auto methods = class_->get_method_names();
-            for (auto method = methods.begin(); method != methods.end(); ++method)
-                observer->register_method(class_, *method, NULL);
-        }
 
-        // Then hook up all the bases.
-        for (auto it=types.begin(); it != types.end(); it++)
-        {
-            auto class_ = get_class(*it);
-            auto bases = class_->get_base_classes();
-            for (auto base=bases.begin(); base != bases.end(); base++)
-                observer->register_base(class_, *base);
+            if (!(*it == class_->get_type()))
+                cout << "Error!  ts type " << it->get_id() << " != " << " class type " << class_->get_type().get_id() << endl;
+
+            cout << class_->get_class_name() << " ts iterator num methods is " << get_method_names(*it).size() << endl;
+            cout << "class " << class_->get_class_name() << " num methods is " << class_->get_method_names().size() << endl;
+            cout << class_->get_class_name() << " ts get type num methods is " << get_method_names(class_->get_type()).size() << endl;
+
+            add_class_to_observer(observer, class_, already_registered);
+
+            // Observer will register the methods itself -?
+            //auto methods = class_->get_method_names();
+            //for (auto method = methods.begin(); method != methods.end(); ++method)
+            //    observer->register_method(class_, *method, NULL);
         }
     }
 

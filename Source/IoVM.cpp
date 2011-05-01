@@ -80,8 +80,40 @@ struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter
 
 
 IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
-    record_freed_flag(false), free_watch_flag(false)
+    record_freed_flag(false), free_watch_flag(false), last_exception(0)
 {
+    state = IoState_new();
+    IoState_init(state);
+    state->callbackContext = reinterpret_cast<void*>(this);
+    original_free_func = state->collector->freeFunc;
+    Collector_setFreeFunc_(state->collector, &collector_free);
+
+    IoState_exceptionCallback_(state, &io_exception);
+
+    IoObject_setSlot_to_(state->lobby, IoState_symbolWithCString_(state, "LikeMagic"),
+        API_io_proto(state));
+
+    string io_code = "LikeMagic classes := Object clone do(type=\"C++Classes\")";
+    IoObject* classes = do_string(io_code);
+
+    if (last_exception)
+    {
+        last_exception = 0;
+        throw std::logic_error("Caught Io exception while creating LikeMagic classes object.");
+    }
+
+    if (ISERROR(classes))
+        throw std::logic_error("Cannot create LikeMagic classes object.");
+
+    if (!classes || classes == state->ioNil)
+    {
+        throw std::logic_error("Cannot create LikeMagic classes object.");
+    }
+
+    // Can only add type system observer after creating LikeMagic classes object.
+    type_system.add_type_system_observer(this);
+
+
     // IoObjectExpr expression holds unconverted Io objects; it has type of struct IoObjectExprTag.
     //type_sys.add_type(BetterTypeInfo::create_index<IoObjectExprTag>());
 
@@ -135,49 +167,42 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     type_sys.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock>();
     type_sys.add_conv<LikeMagic::Backends::Io::IoBlock&, LikeMagic::Backends::Io::IoBlock const&>();
 
-    self = IoState_new();
-    IoState_init(self);
-    self->callbackContext = reinterpret_cast<void*>(this);
-    original_free_func = self->collector->freeFunc;
-    Collector_setFreeFunc_(self->collector, &collector_free);
-
-    IoObject_setSlot_to_(self->lobby, SIOSYMBOL("LikeMagic"),
-        API_io_proto(self));
-
-    string io_code = "LikeMagic classes := Object clone do(type=\"C++Classes\")";
-    IoObject* classes = do_string(io_code);
-
-    if (!classes)
-    {
-        throw std::logic_error("Cannot create LikeMagic classes object.");
-    }
-
-    type_system.add_type_system_observer(this);
-
     // You have to have registered the types before you can add protos for them.
 
     // Add a proto to support all the static class members and namespace level C++ functions.
     add_proto<StaticMethod>("CppFunc");
 
-    // Make this vm itself accessible
+    // Make this vm itstate accessible
     add_proto<IoVM&>("IoVM", *this);
 
     // Also make the abstract type system available by pointer.
     add_proto<RuntimeTypeSystem&>("CppTypeSystem", type_sys);
 }
 
-void IoVM::register_base(LikeMagic::Marshaling::AbstractClass* class_, LikeMagic::Marshaling::AbstractClass const* base)
+void IoVM::register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base)
 {
     //cout << "Register base " << class_->get_class_name() << " : " << base->get_class_name() << endl << flush;
     do_string("LikeMagic classes " + class_->get_class_name() + " appendProto(LikeMagic classes " + base->get_class_name() + ")");
 }
 
-void IoVM::register_method(LikeMagic::Marshaling::AbstractClass* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method)
+void IoVM::register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method)
 {
-    //cout << "Register method " << class_->get_class_name() << "::" << method_name << endl << flush;
+    bool debug_test = (method_name == "add_bindings_irr");
+
+    cout << "Register method " << class_->get_class_name() << "::" << method_name << endl << flush;
     std::string class_name = class_->get_class_name();
     std::string code = "LikeMagic classes " + class_name;
     IoObject* mset_proto = do_string(code);
+
+    if (last_exception)
+    {
+        last_exception = 0;
+        throw std::logic_error("Caught Io exception while getting mset_proto object.");
+    }
+
+    if (ISERROR(mset_proto))
+        throw std::logic_error("Cannot get LikeMagic mset_proto object.");
+
     vector<string> method_names;
     method_names.push_back(method_name);
     auto mtbl = make_io_method_table(method_names);
@@ -186,14 +211,24 @@ void IoVM::register_method(LikeMagic::Marshaling::AbstractClass* class_, std::st
 }
 
 
-void IoVM::register_class(TypeIndex type_index, LikeMagic::Marshaling::AbstractClass* class_)
+void IoVM::register_class(TypeIndex type_index, LikeMagic::Marshaling::AbstractClass const* class_)
 {
-    //cout << "Register class " << class_->get_class_name() << endl << flush;
+    bool debug_test = (class_->get_class_name() == "CppFunc");
+    cout << "Register class " << class_->get_class_name() << endl << flush;
 
     string io_code = "LikeMagic classes";
     IoObject* classes = do_string(io_code);
 
-    if (!classes)
+    if (last_exception)
+    {
+        last_exception = 0;
+        throw std::logic_error("Caught Io exception while getting LikeMagic classes object.");
+    }
+
+    if (ISERROR(classes))
+        throw std::logic_error("Cannot get LikeMagic classes object.");
+
+    if (!classes || classes == state->ioNil)
     {
         throw std::logic_error("Cannot get LikeMagic classes object.");
     }
@@ -204,13 +239,28 @@ void IoVM::register_class(TypeIndex type_index, LikeMagic::Marshaling::AbstractC
     std::string code = "LikeMagic classes " + name;
     IoObject* mset_proto = do_string(code);
 
-    cpp_protos[type_index] = mset_proto;
+    if (last_exception)
+    {
+        last_exception = 0;
+        throw std::logic_error("Caught Io exception while getting mset_proto object.");
+    }
 
-    if (!mset_proto)
+    if (ISERROR(mset_proto))
+        throw std::logic_error("Cannot get LikeMagic mset_proto object.");
+
+    if (!mset_proto || mset_proto == state->ioNil)
     {
         throw std::logic_error("Error getting proto for methodset, return value null:  " + code);
     }
+    else
+    {
+        cpp_protos[type_index] = mset_proto;
+    }
 
+    size_t num_methods = type_system.get_method_names(type_index).size();
+    size_t num_methods2 = class_->get_method_names().size();
+
+    // TODO: Figure out why method table has no entries for CppFunc here.
     auto mtbl = make_io_method_table(type_system.get_method_names(type_index));
     IoObject_addMethodTable_(mset_proto, mtbl);
     delete[] mtbl;
@@ -227,7 +277,7 @@ void IoVM::register_class(TypeIndex type_index, LikeMagic::Marshaling::AbstractC
 
 IoVM::~IoVM()
 {
-    IoState_free(self);
+    IoState_free(state);
 }
 
 IoObject* IoVM::castToIoObjectPointer(void* p)
@@ -240,23 +290,39 @@ void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, bool conv_to_
     IoObject* clone;
     if (conv_to_script)
     {
-        clone = to_script(self->lobby, self->lobby, NULL, proxy);
+        clone = to_script(state->lobby, state->lobby, NULL, proxy);
     }
     else
     {
         string io_code = "LikeMagic classes " + proxy->get_class_name() + " clone";
         clone = do_string(io_code);
+
+        if (last_exception)
+        {
+            last_exception = 0;
+            throw std::logic_error("Caught Io exception while cloning mset_proto object for add proto.");
+        }
+
         IoObject_setDataPointer_(clone, proxy);
     }
 
-    IoObject_setSlot_to_(self->lobby, SIOSYMBOL(name.c_str()), clone);
+    IoObject_setSlot_to_(state->lobby, IoState_symbolWithCString_(state, name.c_str()), clone);
 }
 
 IoObject* IoVM::do_string(std::string io_code) const
 {
     //std::cout << "IoVM::do_string(" << io_code << ")" << std::endl;
 
-    IoObject* result = IoState_doCString_(self, io_code.c_str());
+    IoObject* result = IoState_doCString_(state, io_code.c_str());
+
+    // If we throw the exception here, can't check it in other IoVM code.
+    // If we do not throw the exception here, could miss it in user code.
+    // TODO:  Use try-catch instead of last_exception check in other IoVM functions.
+    //if (last_exception)
+    //{
+    //    last_exception = 0;
+    //    throw std::logic_error("Caught Io exception while running Io code.");
+    //}
 
     if (!result)
         throw std::logic_error("IoVM::do_string: IoState_doCString_ returned null when executing code this Io code: " + io_code);
@@ -266,15 +332,36 @@ IoObject* IoVM::do_string(std::string io_code) const
 
 void IoVM::run_cli() const
 {
-    IoState_runCLI(self);
+    IoState_runCLI(state);
 }
 
 ExprPtr IoVM::get_abs_expr(std::string io_code) const
 {
     auto io_obj = do_string(io_code);
-    return from_script(self->lobby, io_obj, type_system);
+    return from_script(state->lobby, io_obj, type_system);
 }
 
+void IoVM::io_exception(void* context, IoObject* coroutine)
+{
+    IoCoroutine_rawPrintBackTrace(coroutine);
+
+    IoVM* vm = reinterpret_cast<IoVM*>(context);
+	IoObject* e = IoCoroutine_rawException(coroutine);
+
+    cout << "Caught Io exception: ";
+
+    IoObject* self = coroutine;
+    IoSymbol* error = IoObject_rawGetSlot_(e, IOSYMBOL("error"));
+
+    cout << CSTRING(error) << endl;
+
+    vm->last_exception = e;
+}
+
+void IoVM::mark() const
+{
+    IoObject_shouldMarkIfNonNull(last_exception);
+}
 
 IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
 {
@@ -319,7 +406,7 @@ IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
 
         IoVM* iovm = reinterpret_cast<IoVM*>(IOSTATE->callbackContext);
 
-        if (iovm->self != IOSTATE)
+        if (iovm->state != IOSTATE)
             throw std::logic_error("Failed to retrieve IoVM object from IoState callback context.");
 
         auto result = proxy->call(method, args);
@@ -336,6 +423,11 @@ IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
         //std::cout << "Caught exception: " << e.what() << std::endl;
         IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(e).name()).c_str(), e.what());
         return IONIL(self);
+    }
+    catch (...)
+    {
+        cout << "LikeMagic:  Unknown C++ exception, aborting." << endl;
+        abort();
     }
 }
 

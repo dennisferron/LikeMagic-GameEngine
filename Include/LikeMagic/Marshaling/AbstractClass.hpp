@@ -87,6 +87,7 @@ public:
     void add_base_abstr(AbstractClass const* base);
     std::vector<std::string> get_base_names() const;
     std::vector<AbstractClass const*> get_base_classes() const;
+    virtual TypeIndex get_type() const = 0;
 };
 
 }}

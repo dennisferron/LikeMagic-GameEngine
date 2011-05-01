@@ -51,7 +51,14 @@ IoObject* IoBlock::activate(IoMessage* m) const
     IoObject* result = IoBlock_activate(io_block, io_target, io_target, m, io_target);
 
     {
-        IoCoroutine *self = iovm->self->currentCoroutine;
+
+        if (iovm->last_exception)
+        {
+            iovm->last_exception = 0;
+            throw std::logic_error("LikeMagic IoBlock activate: Caught Io exception while running an Io block.");
+        }
+
+        //IoCoroutine *self = iovm->state->currentCoroutine;
 
         /*   This isn't how to handle exceptions - Io would have already exited by now:
         if (!ISNIL(IoCoroutine_rawException(self)))

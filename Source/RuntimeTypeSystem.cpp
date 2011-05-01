@@ -41,27 +41,35 @@ using namespace LikeMagic::SFMO;
 using namespace LikeMagic::TypeConv;
 using namespace LikeMagic::Utility;
 
-RuntimeTypeSystem::RuntimeTypeSystem()  :
-    functions(new StaticMethods("CppFunc", *this)),
-    proxy_methods(new ProxyMethods("ProxyMethods", *this)),
-    collection_methods(new ProxyMethods("CollectionMethods", *this))
+RuntimeTypeSystem::RuntimeTypeSystem()
 {
     // The runtime type system creates the type info cache.
     // In order to get the DLLs using the same static TypeInfo instance we have to "smuggle" in a pointer to it via this object.
     dll_shared_typeinfo = new TypeInfoCache;
     TypeInfoCache::set_instance(dll_shared_typeinfo);
 
+    // Register the special classes
+    static TypeIndex functions_type = BetterTypeInfo::create_index<StaticMethod>();
+    static TypeIndex proxy_methods_type = BetterTypeInfo::create_index<AbstractCppObjProxy>();
+    static TypeIndex collection_methods_type = BetterTypeInfo::create_index<SFMOCollection>();
+
+    functions = new StaticMethods(functions_type, "CppFunc", *this);
+    proxy_methods = new ProxyMethods(proxy_methods_type, "ProxyMethods", *this);
+    collection_methods = new ProxyMethods(collection_methods_type, "CollectionMethods", *this);
+
+
     // Allow conversions from nil to any pointer.
-    conv_graph.add_type(BetterTypeInfo::create_index<NilExprTag*>());
+    static TypeIndex nil_expr_type = BetterTypeInfo::create_index<NilExprTag*>();
+    conv_graph.add_type(nil_expr_type);
 
     // Add the abstract type system itself as a class.
     LM_CLASS_NO_COPY((*this), AbstractTypeSystem)
     LM_FUNC(AbstractTypeSystem, (set_leak_memory)(leak_memory))
 
-    // Register the special classes
-    add_class(BetterTypeInfo::create_index<StaticMethod>(), functions);
-    add_class(BetterTypeInfo::create_index<AbstractCppObjProxy>(), proxy_methods);
-    add_class(BetterTypeInfo::create_index<SFMOCollection>(), collection_methods);
+
+    add_class(functions_type, functions);
+    add_class(proxy_methods_type, proxy_methods);
+    add_class(collection_methods_type, collection_methods);
 
     // StaticMethods is by value but a Term returns by reference;
     // need to give type system ability to do the conversion.
@@ -83,14 +91,16 @@ RuntimeTypeSystem::RuntimeTypeSystem()  :
     proxy_methods->bind_method("get_base_names", &AbstractCppObjProxy::get_base_names);
 
     // register void so functions returning void will work right.
-    auto void_class = new DummyClass<void>("void", *this);
-    add_class(BetterTypeInfo::create_index<void>(), void_class);
+    static TypeIndex void_type = BetterTypeInfo::create_index<void>();
+    auto void_class = new DummyClass<void>(void_type, "void", *this);
+    add_class(void_type, void_class);
     void_class->add_base_abstr(proxy_methods);
 
     // register the Unknown_CppObj so functions returning unregistered classes
     // can still be called.
-    auto unknown_class = new DummyClass<Unknown_CppObj>("Unknown_CppObj", *this);
-    add_class(BetterTypeInfo::create_index<Unknown_CppObj>(), unknown_class);
+    static TypeIndex unknown_type = BetterTypeInfo::create_index<Unknown_CppObj>();
+    auto unknown_class = new DummyClass<Unknown_CppObj>(unknown_type, "Unknown_CppObj", *this);
+    add_class(unknown_type, unknown_class);
     unknown_class->add_base_abstr(proxy_methods);
     this->unknown_class = unknown_class;
 

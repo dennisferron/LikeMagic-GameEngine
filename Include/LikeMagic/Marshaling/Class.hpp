@@ -83,6 +83,8 @@ private:
 
 public:
 
+    virtual TypeIndex get_type() const { return BetterTypeInfo::create_index<T>(); }
+
     virtual AbstractCppObjProxy* create_class_proxy() const
     {
         return

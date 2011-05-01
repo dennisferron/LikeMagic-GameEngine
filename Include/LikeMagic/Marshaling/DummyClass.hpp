@@ -2,7 +2,7 @@
 // Copyright 2008-2010 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
-// 
+//
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
@@ -37,11 +37,15 @@ class DummyClass : public AbstractClass
 {
 protected:
     friend class LikeMagic::RuntimeTypeSystem;
-    DummyClass(std::string name_, AbstractTypeSystem& type_system_) : AbstractClass(name_, type_system_)
+    DummyClass(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_) : AbstractClass(name_, type_system_), type(type_)
     {
     }
 
+    TypeIndex type;
+
 public:
+
+    virtual TypeIndex get_type() const { return type; }
 
     virtual AbstractCppObjProxy* create_class_proxy() const
     {
