@@ -51,11 +51,15 @@ void AbstractTypeSystem::add_type_system_observer(ITypeSystemObserver* observer)
             auto class_ = get_class(*it);
 
             if (!(*it == class_->get_type()))
+            {
+                cout << "Class name is " << class_->get_class_name() << " and ts class name is " << get_class_name(*it) << endl;
                 cout << "Error!  ts type " << it->get_id() << " != " << " class type " << class_->get_type().get_id() << endl;
+                cout << endl;
+            }
 
-            cout << class_->get_class_name() << " ts iterator num methods is " << get_method_names(*it).size() << endl;
-            cout << "class " << class_->get_class_name() << " num methods is " << class_->get_method_names().size() << endl;
-            cout << class_->get_class_name() << " ts get type num methods is " << get_method_names(class_->get_type()).size() << endl;
+            //cout << class_->get_class_name() << " ts iterator num methods is " << get_method_names(*it).size() << endl;
+            //cout << "class " << class_->get_class_name() << " num methods is " << class_->get_method_names().size() << endl;
+            //cout << class_->get_class_name() << " ts get type num methods is " << get_method_names(class_->get_type()).size() << endl;
 
             add_class_to_observer(observer, class_, already_registered);
 

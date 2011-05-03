@@ -93,6 +93,9 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     IoObject_setSlot_to_(state->lobby, IoState_symbolWithCString_(state, "LikeMagic"),
         API_io_proto(state));
 
+    string ns_code = "CppNamespace := LikeMagic clone do(type=\"C++Namespace\"); CppNamespace global := LikeMagic CppNamespace clone";
+    IoObject* ns_proto = do_string(ns_code);
+
     string io_code = "LikeMagic classes := Object clone do(type=\"C++Classes\")";
     IoObject* classes = do_string(io_code);
 
@@ -182,7 +185,9 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
 void IoVM::register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base)
 {
     //cout << "Register base " << class_->get_class_name() << " : " << base->get_class_name() << endl << flush;
-    do_string("LikeMagic classes " + class_->get_class_name() + " appendProto(LikeMagic classes " + base->get_class_name() + ")");
+    string proto_code = code_to_get_class_proto(class_);
+    do_string(proto_code + " appendProto(" + code_to_get_class_proto(base) + ")");
+
 }
 
 void IoVM::register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method)
@@ -210,34 +215,48 @@ void IoVM::register_method(LikeMagic::Marshaling::AbstractClass const* class_, s
     delete[] mtbl;
 }
 
+IoObject* IoVM::create_namespace(NamespacePtr ns)
+{
+    if (!ns->is_root())
+    {
+        create_namespace(ns->get_parent());
+
+        string test_code = "CppNamespace " + ns->get_parent()->to_string() + " hasSlot(\"" + ns->get_name() + "\")";
+        bool has_slot = get_expr<bool>(test_code);
+
+        if (!has_slot)
+        {
+            string create_ns_code = "CppNamespace " + ns->to_string() + " := LikeMagic clone";
+            do_string(create_ns_code);
+        }
+    }
+
+    return do_string("CppNamespace " + ns->to_string());
+}
+
+string IoVM::code_to_get_class_proto(LikeMagic::Marshaling::AbstractClass const* class_)
+{
+    std::string name = class_->get_class_name();
+    NamespacePtr ns = class_->get_namespace();
+
+    if (ns != NULL)
+        return "CppNamespace " + ns->to_string() + " " + name;
+    else
+        return "LikeMagic classes " + name;
+}
 
 void IoVM::register_class(TypeIndex type_index, LikeMagic::Marshaling::AbstractClass const* class_)
 {
-    bool debug_test = (class_->get_class_name() == "CppFunc");
-    cout << "Register class " << class_->get_class_name() << endl << flush;
-
-    string io_code = "LikeMagic classes";
-    IoObject* classes = do_string(io_code);
-
-    if (last_exception)
-    {
-        last_exception = 0;
-        throw std::logic_error("Caught Io exception while getting LikeMagic classes object.");
-    }
-
-    if (ISERROR(classes))
-        throw std::logic_error("Cannot get LikeMagic classes object.");
-
-    if (!classes || classes == state->ioNil)
-    {
-        throw std::logic_error("Cannot get LikeMagic classes object.");
-    }
-
+    IoObject* mset_proto;
     std::string name = class_->get_class_name();
-    do_string("LikeMagic classes " + name + " := LikeMagic clone do(type = \"" + name + "\")");
+    NamespacePtr ns = class_->get_namespace();
 
-    std::string code = "LikeMagic classes " + name;
-    IoObject* mset_proto = do_string(code);
+    if (ns != NULL)
+        create_namespace(ns);
+
+    string proto_code = code_to_get_class_proto(class_);
+    do_string(proto_code + " := LikeMagic clone do(type = \"" + name + "\")");
+    mset_proto = do_string(proto_code);
 
     if (last_exception)
     {
@@ -245,22 +264,8 @@ void IoVM::register_class(TypeIndex type_index, LikeMagic::Marshaling::AbstractC
         throw std::logic_error("Caught Io exception while getting mset_proto object.");
     }
 
-    if (ISERROR(mset_proto))
-        throw std::logic_error("Cannot get LikeMagic mset_proto object.");
+    cpp_protos[type_index] = mset_proto;
 
-    if (!mset_proto || mset_proto == state->ioNil)
-    {
-        throw std::logic_error("Error getting proto for methodset, return value null:  " + code);
-    }
-    else
-    {
-        cpp_protos[type_index] = mset_proto;
-    }
-
-    size_t num_methods = type_system.get_method_names(type_index).size();
-    size_t num_methods2 = class_->get_method_names().size();
-
-    // TODO: Figure out why method table has no entries for CppFunc here.
     auto mtbl = make_io_method_table(type_system.get_method_names(type_index));
     IoObject_addMethodTable_(mset_proto, mtbl);
     delete[] mtbl;
@@ -270,9 +275,9 @@ void IoVM::register_class(TypeIndex type_index, LikeMagic::Marshaling::AbstractC
     IoObject_setDataPointer_(mset_proto, proxy);
 
     // Then hook up all the bases as protos
-    auto base_names = class_->get_base_names();
-    for (auto base=base_names.begin(); base != base_names.end(); base++)
-        do_string("LikeMagic classes " + class_->get_class_name() + " appendProto(LikeMagic classes " + *base + ")");
+    auto bases = class_->get_base_classes();
+    for (auto base=bases.begin(); base != bases.end(); base++)
+        register_base(class_, *base);
 }
 
 IoVM::~IoVM()
@@ -312,6 +317,7 @@ void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, bool conv_to_
 IoObject* IoVM::do_string(std::string io_code) const
 {
     //std::cout << "IoVM::do_string(" << io_code << ")" << std::endl;
+    std::cout << io_code << std::endl;
 
     IoObject* result = IoState_doCString_(state, io_code.c_str());
 
@@ -323,9 +329,6 @@ IoObject* IoVM::do_string(std::string io_code) const
     //    last_exception = 0;
     //    throw std::logic_error("Caught Io exception while running Io code.");
     //}
-
-    if (!result)
-        throw std::logic_error("IoVM::do_string: IoState_doCString_ returned null when executing code this Io code: " + io_code);
 
     return result;
 }

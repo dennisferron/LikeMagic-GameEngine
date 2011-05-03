@@ -12,6 +12,7 @@
 #include "MethodCallGenerator.hpp"
 #include "LikeMagic/SFMO/ClassExpr.hpp"
 #include "LikeMagic/Marshaling/DummyClass.hpp"
+#include "NamespaceTypeInfo.hpp"
 
 namespace LikeMagic { namespace Utility { struct StaticMethod; }}
 
@@ -31,9 +32,7 @@ private:
     StaticMethods& operator=(StaticMethods const&);
 
     friend class LikeMagic::RuntimeTypeSystem;
-    StaticMethods(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : DummyClass<StaticMethods>(type_, name_, type_system_, namespace_)
-    {
-    }
+    StaticMethods(AbstractTypeSystem& type_system_, NamespacePtr namespace_);
 
 public:
 

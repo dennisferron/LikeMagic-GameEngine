@@ -42,6 +42,8 @@ using namespace LikeMagic::SFMO;
 using namespace LikeMagic::TypeConv;
 using namespace LikeMagic::Utility;
 
+using namespace std;
+
 RuntimeTypeSystem::RuntimeTypeSystem()
 {
     // The runtime type system creates the type info cache.
@@ -50,11 +52,10 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     TypeInfoCache::set_instance(dll_shared_typeinfo);
 
     // Register the special classes
-    static TypeIndex functions_type = BetterTypeInfo::create_index<StaticMethod>();
     static TypeIndex proxy_methods_type = BetterTypeInfo::create_index<AbstractCppObjProxy>();
     static TypeIndex collection_methods_type = BetterTypeInfo::create_index<SFMOCollection>();
 
-    functions = new StaticMethods(functions_type, "CppFunc", *this, Namespace::global(*this));
+    functions = new StaticMethods(*this, Namespace::global(*this));
     proxy_methods = new ProxyMethods(proxy_methods_type, "ProxyMethods", *this, Namespace::global(*this));
     collection_methods = new ProxyMethods(collection_methods_type, "CollectionMethods", *this, Namespace::global(*this));
 
@@ -68,7 +69,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     LM_FUNC(AbstractTypeSystem, (set_leak_memory)(leak_memory))
 
 
-    add_class(functions_type, functions);
+    add_class(functions->get_type(), functions);
     add_class(proxy_methods_type, proxy_methods);
     add_class(collection_methods_type, collection_methods);
 

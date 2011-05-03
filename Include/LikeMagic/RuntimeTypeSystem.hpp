@@ -15,6 +15,7 @@
 #include "LikeMagic/Marshaling/Class.hpp"
 #include "LikeMagic/Marshaling/StaticMethods.hpp"
 #include "LikeMagic/Marshaling/ProxyMethods.hpp"
+#include "LikeMagic/Marshaling/NamespaceTypeInfo.hpp"
 #include "LikeMagic/TypeConv/NumberConv.hpp"
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
 #include "LikeMagic/TypeConv/VectorConv.hpp"
@@ -163,7 +164,14 @@ public:
 
     StaticMethods& register_functions(NamespacePtr ns=0)
     {
-        return *functions;
+        if (ns)
+        {
+            StaticMethods* result = new StaticMethods(*this, ns);
+            add_class(result->get_type(), result);
+            return *result;
+        }
+        else
+            return *functions;
     }
 
 };

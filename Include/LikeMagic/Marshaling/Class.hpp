@@ -29,9 +29,6 @@
 
 #include "LikeMagic/SFMO/ClassExpr.hpp"
 
-// Used in friend declaration.
-namespace LikeMagic { class RuntimeTypeSystem; }
-
 namespace LikeMagic { namespace Marshaling {
 
 using LikeMagic::AbstractTypeSystem;
@@ -59,10 +56,10 @@ private:
     Class(const Class&);
     Class& operator =(const Class&);
 
-    friend class LikeMagic::RuntimeTypeSystem;
-    Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : AbstractClass(name_, type_system_, namespace_)
-    {
-    }
+    //friend class LikeMagic::RuntimeTypeSystem;
+    //Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : AbstractClass(name_, type_system_, namespace_)
+    //{
+    //}
 
     // Utility function for generating alternate constructor names.
     static std::string alt_name(std::string prefix, std::string method_name)
@@ -82,6 +79,10 @@ private:
     }
 
 public:
+
+    Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : AbstractClass(name_, type_system_, namespace_)
+    {
+    }
 
     virtual TypeIndex get_type() const { return BetterTypeInfo::create_index<T>(); }
 

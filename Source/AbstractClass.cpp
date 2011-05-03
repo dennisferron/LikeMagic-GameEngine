@@ -15,6 +15,16 @@
 
 using namespace LikeMagic::Marshaling;
 
+AbstractClass::AbstractClass(std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) :
+    class_name(name_),
+    type_system(type_system_),
+    ns(namespace_)
+{
+    if (name_ == "")
+        throw std::logic_error("Tried to register class with no name!");
+}
+
+
 AbstractClass::~AbstractClass()
 {
     for (auto it=methods.begin(); it != methods.end(); it++)

@@ -8,10 +8,11 @@
 
 #pragma once
 
+#include "LikeMagic/RuntimeTypeSystem.hpp"
+
 #include "LikeMagic/Backends/Io/API_Io.hpp"
 #include "LikeMagic/SFMO/CppObjProxy.hpp"
 #include "LikeMagic/ITypeSystemObserver.hpp"
-#include "LikeMagic/RuntimeTypeSystem.hpp"
 
 #include "boost/unordered_map.hpp"
 #include "boost/unordered_set.hpp"
@@ -26,7 +27,7 @@ namespace LikeMagic { namespace Backends { namespace Io {
 class IoVM : public ITypeSystemObserver, public IMarkable
 {
 private:
-    RuntimeTypeSystem& type_system;
+    LikeMagic::RuntimeTypeSystem& type_system;
     IoState* state;  // Dangerousfor this to be named "self" - Io macros using self defined for IoObject, not IoState
     std::set<TypeIndex> registered_classes;
     boost::unordered_map<TypeIndex, IoObject*> cpp_protos;
@@ -44,8 +45,11 @@ private:
 
     friend class IoBlock;
 
+    IoObject* create_namespace(LikeMagic::NamespacePtr ns);
+    std::string code_to_get_class_proto(LikeMagic::Marshaling::AbstractClass const* class_);
+
 public:
-    IoVM(RuntimeTypeSystem& type_system_);
+    IoVM(LikeMagic::RuntimeTypeSystem& type_system_);
     ~IoVM();
 
     void on_collector_free(IoObject* io_obj);
@@ -86,7 +90,7 @@ public:
     template <typename T>
     boost::intrusive_ptr<Expression<T>> get_expr(std::string io_code) const
     {
-        auto abs_expr = get_abs_expr(io_code, BetterTypeInfo::create_index<T>());
+        auto abs_expr = get_abs_expr(io_code);
         return type_system.try_conv<T>(abs_expr);
     }
 

@@ -25,9 +25,6 @@
 
 #include "LikeMagic/SFMO/ClassExpr.hpp"
 
-// Used in friend declaration.
-namespace LikeMagic { class RuntimeTypeSystem; }
-
 namespace LikeMagic { namespace Marshaling {
 
 using LikeMagic::AbstractTypeSystem;
@@ -36,14 +33,18 @@ template <typename T>
 class DummyClass : public AbstractClass
 {
 protected:
-    friend class LikeMagic::RuntimeTypeSystem;
-    DummyClass(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : AbstractClass(name_, type_system_, namespace_), type(type_)
-    {
-    }
+    //friend class LikeMagic::RuntimeTypeSystem;
+    //DummyClass(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : AbstractClass(name_, type_system_, namespace_), type(type_)
+    //{
+    //}
 
     TypeIndex type;
 
 public:
+
+    DummyClass(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : AbstractClass(name_, type_system_, namespace_), type(type_)
+    {
+    }
 
     virtual TypeIndex get_type() const { return type; }
 

@@ -79,6 +79,7 @@
 		<Unit filename="Include/LikeMagic/Marshaling/FieldSetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/ICustomField.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/MethodCallGenerator.hpp" />
+		<Unit filename="Include/LikeMagic/Marshaling/NamespaceTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/ProxyMethodSelector.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/ProxyMethods.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/StaticMethods.hpp" />
@@ -154,6 +155,7 @@
 		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/Namespace.cpp" />
 		<Unit filename="Source/RuntimeTypeSystem.cpp" />
+		<Unit filename="Source/StaticMethods.cpp" />
 		<Unit filename="Source/TypeConvGraph.cpp" />
 		<Unit filename="Source/TypeDescr.cpp" />
 		<Unit filename="Source/TypeInfoCache.cpp" />

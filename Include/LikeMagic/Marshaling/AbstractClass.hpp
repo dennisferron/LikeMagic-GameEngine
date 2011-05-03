@@ -68,13 +68,7 @@ protected:
     void add_method(std::string method_name, AbstractCallTargetSelector* method);
     AbstractCallTargetSelector* try_get_method(std::string method_name, int num_args, bool in_base_class=false) const;
 
-    AbstractClass(std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) :
-        class_name(name_),
-        type_system(type_system_),
-        ns(namespace_)
-    {
-        //std::cout << "Registering class " << typeid(T).name() << " as " << name_ << std::endl;
-    }
+    AbstractClass(std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_);
 
 public:
     virtual ~AbstractClass();
@@ -86,6 +80,7 @@ public:
     bool has_method(std::string method_name, int num_args) const;
     AbstractCallTargetSelector* get_method(std::string method_name, int num_args) const;
     std::vector<AbstractCallTargetSelector*> get_methods() const;
+    NamespacePtr get_namespace() const { return ns; }
 
     // support inheritance
     void add_base_abstr(AbstractClass const* base);
