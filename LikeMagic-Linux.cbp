@@ -138,6 +138,7 @@
 		<Unit filename="Include/LikeMagic/Utility/TypeInfoCache.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypePack.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/UserMacros.hpp" />
+		<Unit filename="Script/Io/bootstrap.io" />
 		<Unit filename="Source/API_Io.cpp" />
 		<Unit filename="Source/API_Io_from_script.cpp" />
 		<Unit filename="Source/API_Io_to_script.cpp" />

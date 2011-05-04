@@ -90,8 +90,14 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
 
     IoState_exceptionCallback_(state, &io_exception);
 
-    IoObject_setSlot_to_(state->lobby, IoState_symbolWithCString_(state, "LikeMagic"),
+    IoObject* bootstrap = IoObject_setSlot_to_(state->lobby,
+                                               IoState_symbolWithCString_(state, "bootstrap"),
+                                               API_io_proto(state));
+
+    IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "CxxProto"),
         API_io_proto(state));
+
+
 
     string ns_code = "CppNamespace := LikeMagic clone do(type=\"C++Namespace\"); CppNamespace global := LikeMagic CppNamespace clone";
     IoObject* ns_proto = do_string(ns_code);
