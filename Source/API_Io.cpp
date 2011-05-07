@@ -103,10 +103,10 @@ IoMessage* new_message(IoObject* self, std::string name)
 }
 
 // Gets the script object argument at a certain position.
-ExprPtr get_expr_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos, AbstractTypeSystem const& type_sys)
+ExprPtr get_expr_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos, AbstractTypeSystem const& type_sys, TypeIndex target_type)
 {
     //std::cout << "Arg " << pos << " = " << IoObject_tag(self)->name << std::endl;
-    return from_script(self, get_io_arg_at(self, locals, m, pos), type_sys);
+    return from_script(self, get_io_arg_at(self, locals, m, pos), type_sys, target_type);
 }
 
 
@@ -118,6 +118,9 @@ ExprPtr get_expr_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos,
 
 IoObject* API_io_rawClone(IoObject* proto)
 {
+    if (!proto)
+        throw std::logic_error("API_io_rawClone called with proto=NULL");
+
     IoObject* clone = reinterpret_cast<IoObject*>(IoObject_rawClonePrimitive(
             reinterpret_cast<IoObject*>(proto)));
 

@@ -61,7 +61,7 @@ boost::intrusive_ptr<AbstractExpression> from_script(IoObject* self, IoObject* i
 
 IoMethodTable* make_io_method_table(std::vector<std::string> const& method_names);
 IoObject* get_io_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos);
-ExprPtr get_expr_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos, AbstractTypeSystem const& type_sys);
+ExprPtr get_expr_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos, AbstractTypeSystem const& type_sys, TypeIndex target_type);
 
 //IoObject* to_script(IoObject *self, IoObject *locals, IoMessage *m, AbstractCppObjProxy* proxy);
 

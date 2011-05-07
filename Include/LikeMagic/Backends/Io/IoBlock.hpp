@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "LikeMagic/Backends/Io/IoVM.hpp"
 #include "LikeMagic/Backends/Io/API_Io.hpp"
 
 #include "LikeMagic/AbstractTypeSystem.hpp"
@@ -22,6 +21,8 @@ namespace LikeMagic { namespace Backends { namespace Io {
 
 using LikeMagic::AbstractTypeSystem;
 using namespace LikeMagic::SFMO;
+
+class IoVM;
 
 class IoBlock : public LikeMagic::IMarkable
 {
@@ -79,7 +80,8 @@ public:
                 IoMessage* m = new_message(io_target, "IoBlock");
                 add_args(m, args...);
                 IoObject* result = activate(m);
-                ExprPtr expr = from_script(io_target, result, *type_sys);
+                static TypeIndex r_type = LikeMagic::Utility::BetterTypeInfo::template create_index<R>();
+                ExprPtr expr = from_script(io_target, result, *type_sys, r_type);
                 return type_sys->try_conv<R>(expr)->eval();
             }
             catch (std::logic_error le)

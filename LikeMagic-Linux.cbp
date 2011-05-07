@@ -135,6 +135,7 @@
 		<Unit filename="Include/LikeMagic/Utility/StripModifiers.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TupleForEach.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeDescr.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/TypeIndex.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeInfoCache.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypePack.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/UserMacros.hpp" />

@@ -78,7 +78,6 @@ struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter
     virtual std::string describe() const { return "PtrToIoObjectConv"; }
 };
 
-
 IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     record_freed_flag(false), free_watch_flag(false), last_exception(0)
 {
@@ -90,15 +89,21 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
 
     IoState_exceptionCallback_(state, &io_exception);
 
-    IoObject* bootstrap = IoObject_setSlot_to_(state->lobby,
-                                               IoState_symbolWithCString_(state, "bootstrap"),
-                                               API_io_proto(state));
+    IoObject* bootstrap = IoObject_new(state);
 
-    IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "CxxProto"),
-        API_io_proto(state));
+    IoObject_setSlot_to_(state->lobby,
+        IoState_symbolWithCString_(state, "bootstrap"),
+        bootstrap);
 
+    LM_Proxy = API_io_proto(state);
+    IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "LM_Obj_Proxy"),
+        LM_Proxy);
 
+    LM_Protos = IoObject_new(state);
+    IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "LM_Protos"),
+        LM_Protos);
 
+    /*
     string ns_code = "CppNamespace := LikeMagic clone do(type=\"C++Namespace\"); CppNamespace global := LikeMagic CppNamespace clone";
     IoObject* ns_proto = do_string(ns_code);
 
@@ -118,9 +123,10 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     {
         throw std::logic_error("Cannot create LikeMagic classes object.");
     }
+    */
 
     // Can only add type system observer after creating LikeMagic classes object.
-    type_system.add_type_system_observer(this);
+    //type_system.add_type_system_observer(this);
 
 
     // IoObjectExpr expression holds unconverted Io objects; it has type of struct IoObjectExprTag.
@@ -129,10 +135,14 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     add_convs_from_script(type_sys, this);
     add_convs_to_script(type_sys, this);
 
+    LM_CLASS_NO_COPY(type_sys, ITypeSystemObserver)
+
     // Register this vm
     LM_CLASS_NO_COPY(type_sys, IoVM)
+    LM_BASE(IoVM, ITypeSystemObserver)
     LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(record_freed_objects)(set_record_freed_objects)
-            (watch_freed_objects)(set_watch_freed_objects)(add_watch_for_freed_object)(check_if_freed))
+            (watch_freed_objects)(set_watch_freed_objects)(add_watch_for_freed_object)(check_if_freed)(bind_method))
+    LM_FIELD(IoVM, (onRegisterMethod)(onRegisterClass)(onRegisterBase))
 
     /*
     LM_CLASS(runtime_type_sys, AbstractTypeInfo)
@@ -169,6 +179,9 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     type_sys.add_converter_simple(BetterTypeInfo::create_index<IoObject*>(), ToIoTypeInfo::create_index("Object"), new PtrToIoObjectConv);
     type_sys.add_converter_simple(ToIoTypeInfo::create_index("Object"), ToIoTypeInfo::create_index(), new LikeMagic::TypeConv::NoChangeConv);
 
+    // Allow LikeMagic proxy objects to be converted to the C/C++ type IoObject*
+    type_sys.add_converter_simple(FromIoTypeInfo::create_index("LikeMagic"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
+
     // Allow conversion of Io blocks to IoObject*
     type_sys.add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
 
@@ -179,25 +192,40 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     // You have to have registered the types before you can add protos for them.
 
     // Add a proto to support all the static class members and namespace level C++ functions.
-    add_proto<StaticMethod>("CppFunc");
+    //add_proto<StaticMethod>("CppFunc");
 
     // Make this vm itstate accessible
     add_proto<IoVM&>("IoVM", *this);
+    bind_method(do_string("bootstrap LM_Protos IoVM"), "bind_method");
 
     // Also make the abstract type system available by pointer.
-    add_proto<RuntimeTypeSystem&>("CppTypeSystem", type_sys);
+    add_proto<RuntimeTypeSystem&>("type_system", type_sys);
 }
+
+void IoVM::bind_method(IoObject* obj, std::string method_name)
+{
+    vector<string> method_names;
+    method_names.push_back(method_name);
+    auto mtbl = make_io_method_table(method_names);
+    IoObject_addMethodTable_(obj, mtbl);
+    delete[] mtbl;
+}
+
 
 void IoVM::register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base)
 {
     //cout << "Register base " << class_->get_class_name() << " : " << base->get_class_name() << endl << flush;
-    string proto_code = code_to_get_class_proto(class_);
-    do_string(proto_code + " appendProto(" + code_to_get_class_proto(base) + ")");
+    //string proto_code = code_to_get_class_proto(class_);
+    //do_string(proto_code + " appendProto(" + code_to_get_class_proto(base) + ")");
 
+    onRegisterBase(class_, base);
 }
 
 void IoVM::register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method)
 {
+    onRegisterMethod(class_, method_name, method);
+
+/*
     bool debug_test = (method_name == "add_bindings_irr");
 
     cout << "Register method " << class_->get_class_name() << "::" << method_name << endl << flush;
@@ -219,7 +247,11 @@ void IoVM::register_method(LikeMagic::Marshaling::AbstractClass const* class_, s
     auto mtbl = make_io_method_table(method_names);
     IoObject_addMethodTable_(mset_proto, mtbl);
     delete[] mtbl;
+*/
+
 }
+
+/*
 
 IoObject* IoVM::create_namespace(NamespacePtr ns)
 {
@@ -251,8 +283,14 @@ string IoVM::code_to_get_class_proto(LikeMagic::Marshaling::AbstractClass const*
         return "LikeMagic classes " + name;
 }
 
+*/
+
 void IoVM::register_class(TypeIndex type_index, LikeMagic::Marshaling::AbstractClass const* class_)
 {
+    onRegisterClass(class_);
+
+/*
+
     IoObject* mset_proto;
     std::string name = class_->get_class_name();
     NamespacePtr ns = class_->get_namespace();
@@ -284,6 +322,9 @@ void IoVM::register_class(TypeIndex type_index, LikeMagic::Marshaling::AbstractC
     auto bases = class_->get_base_classes();
     for (auto base=bases.begin(); base != bases.end(); base++)
         register_base(class_, *base);
+
+*/
+
 }
 
 IoVM::~IoVM()
@@ -305,19 +346,41 @@ void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, bool conv_to_
     }
     else
     {
-        string io_code = "LikeMagic classes " + proxy->get_class_name() + " clone";
-        clone = do_string(io_code);
+        //string io_code = "LikeMagic classes " + proxy->get_class_name() + " clone";
+        //clone = do_string(io_code);
 
+        //clone = API_io_rawClone(LM_Proxy);
+
+        IoObject* proto = 0;
+
+        TypeIndex type = proxy->get_type();
+
+        if (cpp_protos.find(type) == cpp_protos.end())
+        {
+            cout << "No proto for type " << type.describe() << " using default LikeMagic proto instead." << endl;
+            proto = LM_Proxy;
+        }
+        else
+        {
+            proto = cpp_protos.find(type)->second;
+        }
+
+        clone = API_io_rawClone(proto);
+
+        /*
         if (last_exception)
         {
             last_exception = 0;
             throw std::logic_error("Caught Io exception while cloning mset_proto object for add proto.");
         }
+        */
 
         IoObject_setDataPointer_(clone, proxy);
     }
 
-    IoObject_setSlot_to_(state->lobby, IoState_symbolWithCString_(state, name.c_str()), clone);
+    IoObject_setSlot_to_(LM_Protos, IoState_symbolWithCString_(state, name.c_str()), clone);
+
+
 }
 
 IoObject* IoVM::do_string(std::string io_code) const
@@ -347,7 +410,8 @@ void IoVM::run_cli() const
 ExprPtr IoVM::get_abs_expr(std::string io_code) const
 {
     auto io_obj = do_string(io_code);
-    return from_script(state->lobby, io_obj, type_system);
+    static TypeIndex unspec_type = TypeIndex();  // id = -1, type not specified
+    return from_script(state->lobby, io_obj, type_system, unspec_type);
 }
 
 void IoVM::io_exception(void* context, IoObject* coroutine)
@@ -370,6 +434,14 @@ void IoVM::io_exception(void* context, IoObject* coroutine)
 void IoVM::mark() const
 {
     IoObject_shouldMarkIfNonNull(last_exception);
+    IoObject_shouldMarkIfNonNull(LM_Proxy);
+
+    // Since we're using MarkableObjGraph and these are LM_FIELD's,
+    // the child objects will be automatically marked.  However,
+    // we do still need to mark the IoObjects above.
+    //onRegisterBase.mark();
+    //onRegisterClass.mark();
+    //onRegisterMethod.mark();
 }
 
 IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
@@ -396,7 +468,7 @@ IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
         {
             try
             {
-                ExprPtr expr = get_expr_arg_at(self, locals, m, i, type_sys);
+                ExprPtr expr = get_expr_arg_at(self, locals, m, i, type_sys, arg_types[i]);
                 //std::cout << "arg " << i << " expects " << arg_types[i].describe() << " got " << expr->get_type().describe() << std::endl;
                 args.push_back(expr);
             }

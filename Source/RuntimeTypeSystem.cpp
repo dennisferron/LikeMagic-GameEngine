@@ -66,8 +66,9 @@ RuntimeTypeSystem::RuntimeTypeSystem()
 
     // Add the abstract type system itself as a class.
     LM_CLASS_NO_COPY((*this), AbstractTypeSystem)
-    LM_FUNC(AbstractTypeSystem, (set_leak_memory)(leak_memory))
+    LM_FUNC(AbstractTypeSystem, (set_leak_memory)(leak_memory)(add_type_system_observer))
 
+    LM_CLASS_NO_COPY((*this), AbstractCppObjProxy)
 
     add_class(functions->get_type(), functions);
     add_class(proxy_methods_type, proxy_methods);

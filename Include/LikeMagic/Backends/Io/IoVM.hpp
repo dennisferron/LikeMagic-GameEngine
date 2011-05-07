@@ -9,10 +9,11 @@
 #pragma once
 
 #include "LikeMagic/RuntimeTypeSystem.hpp"
-
+#include "LikeMagic/Backends/Io/IoBlock.hpp"
 #include "LikeMagic/Backends/Io/API_Io.hpp"
 #include "LikeMagic/SFMO/CppObjProxy.hpp"
 #include "LikeMagic/ITypeSystemObserver.hpp"
+#include "LikeMagic/MarkableObjGraph.hpp"
 
 #include "boost/unordered_map.hpp"
 #include "boost/unordered_set.hpp"
@@ -24,7 +25,8 @@ extern "C"
 
 namespace LikeMagic { namespace Backends { namespace Io {
 
-class IoVM : public ITypeSystemObserver, public IMarkable
+
+class IoVM : public LikeMagic::ITypeSystemObserver, public LikeMagic::MarkableObjGraph
 {
 private:
     LikeMagic::RuntimeTypeSystem& type_system;
@@ -47,6 +49,16 @@ private:
 
     IoObject* create_namespace(LikeMagic::NamespacePtr ns);
     std::string code_to_get_class_proto(LikeMagic::Marshaling::AbstractClass const* class_);
+
+    IoBlock onRegisterMethod;
+    IoBlock onRegisterClass;
+    IoBlock onRegisterBase;
+
+    IoObject* LM_Proxy;
+    IoObject* LM_Protos;
+
+    void set_class_proto(TypeIndex type, IoObject* obj);
+    void bind_method(IoObject* obj, std::string method_name);
 
 public:
     IoVM(LikeMagic::RuntimeTypeSystem& type_system_);

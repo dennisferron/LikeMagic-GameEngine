@@ -194,9 +194,11 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     //MKCONV(type_sys, List, std::vector<unsigned char>, from_list<unsigned char>)
 }
 
-ExprPtr from_script(IoObject* self, IoObject* io_obj, AbstractTypeSystem const& type_sys)
+ExprPtr from_script(IoObject* self, IoObject* io_obj, AbstractTypeSystem const& type_sys, TypeIndex to_type)
 {
-    if (is_sfmo_obj(io_obj))
+    static TypeIndex wants_io_obj = BetterTypeInfo::create_index<IoObject*>();
+
+    if (is_sfmo_obj(io_obj) && !(to_type == wants_io_obj))
     {
         AbstractCppObjProxy* proxy(
                 reinterpret_cast<AbstractCppObjProxy*>

@@ -14,12 +14,15 @@ LikeMagic := Object clone
 
 bootstrap do(
 
-    // CxxProto is just a proto we use for all LikeMagic type sys objs.
-    // Move CxxProto object from bootstrap object to LikeMagic object.
-    LikeMagic CxxProto := CxxProto
+    // LM_Proxy is just a proto we use for all LikeMagic type sys objs.
+    // Move LM_Proxy object from bootstrap object to LikeMagic object.
+    LikeMagic LM_Proxy := LM_Proxy
 
     // IoVM bind_method(proto, name) is the only predefined function so far.
     // The only protos are IoVM and type_system.  (Maybe CxxProto.)
+
+    // Having bind_method() as our only method is a lot like having a genie grant
+    // you one wish, and your is for more wishes.
 
     // Just declare that the IoVM supports some methods and poof they will exist.
     // You don't even need to provide a call target for them.  It works because
@@ -39,10 +42,15 @@ bootstrap do(
 
     // What to do when a class is added.
     IoVM set_onRegisterClass(
-        block(abstract_class,
+        block(type_index, abstract_class,
             ns := abstract_class get_namespace
-            writeln("TODO:  IoVM previously looked up the class proto in a C++ data container by type id to clone it.")
-            writeln("TODO:  Add the class proto to the IoVM protos container.")
+
+            // The abstract_class object is a representation
+            class_proto := type_system create_class_proxy(abstract_class)
+
+            IoVM set_class_proto(class_proto)
+
+            ns setSlot(abstract_class get_class_name, class_proto)
         )
     )
 
