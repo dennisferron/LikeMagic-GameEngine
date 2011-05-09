@@ -28,13 +28,14 @@
 namespace LikeMagic { namespace Marshaling {
 
 using LikeMagic::AbstractTypeSystem;
+using LikeMagic::NamespacePath;
 
 template <typename T>
 class DummyClass : public AbstractClass
 {
 protected:
     //friend class LikeMagic::RuntimeTypeSystem;
-    //DummyClass(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : AbstractClass(name_, type_system_, namespace_), type(type_)
+    //DummyClass(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePath const namespace_) : AbstractClass(name_, type_system_, namespace_), type(type_)
     //{
     //}
 
@@ -42,7 +43,7 @@ protected:
 
 public:
 
-    DummyClass(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : AbstractClass(name_, type_system_, namespace_), type(type_)
+    DummyClass(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePath const namespace_) : AbstractClass(name_, type_system_, namespace_), type(type_)
     {
     }
 

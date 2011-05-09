@@ -30,9 +30,9 @@ class IoVM : public LikeMagic::ITypeSystemObserver, public LikeMagic::MarkableOb
 {
 private:
     LikeMagic::RuntimeTypeSystem& type_system;
-    IoState* state;  // Dangerousfor this to be named "self" - Io macros using self defined for IoObject, not IoState
+    IoState* state;  // It was dangerous when this was named "self" - Io macros referencing self are defined for an IoObject, not an IoState
     std::set<TypeIndex> registered_classes;
-    boost::unordered_map<TypeIndex, IoObject*> cpp_protos;
+    //boost::unordered_map<TypeIndex, IoObject*> cpp_protos;
     boost::unordered_map<IoObject*, std::string> watch_for_free;
     boost::unordered_set<IoObject*> freed_objects;
     bool record_freed_flag;
@@ -47,9 +47,6 @@ private:
 
     friend class IoBlock;
 
-    IoObject* create_namespace(LikeMagic::NamespacePtr ns);
-    std::string code_to_get_class_proto(LikeMagic::Marshaling::AbstractClass const* class_);
-
     IoBlock onRegisterMethod;
     IoBlock onRegisterClass;
     IoBlock onRegisterBase;
@@ -57,7 +54,6 @@ private:
     IoObject* LM_Proxy;
     IoObject* LM_Protos;
 
-    void set_class_proto(TypeIndex type, IoObject* obj);
     void bind_method(IoObject* obj, std::string method_name);
 
 public:
@@ -120,7 +116,7 @@ public:
 
     IoObject* castToIoObjectPointer(void* object);
 
-    virtual void register_class(LikeMagic::Utility::TypeIndex type_index, LikeMagic::Marshaling::AbstractClass const* class_);
+    virtual void register_class(LikeMagic::Marshaling::AbstractClass const* class_);
     virtual void register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base);
     virtual void register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method);
 

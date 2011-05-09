@@ -33,7 +33,7 @@ void add_class_to_observer(ITypeSystemObserver* observer, AbstractClass const* c
         for (auto base=bases.begin(); base != bases.end(); base++)
             add_class_to_observer(observer, *base, already_registered);
 
-        observer->register_class(class_->get_type(), class_);
+        observer->register_class(class_);
     }
 }
 
@@ -99,7 +99,7 @@ void AbstractTypeSystem::add_class(TypeIndex index, AbstractClass* class_ptr)
 
     // This needs to be done at the end so that observers that access the class through type system can get to it.
     for (auto it=observers.begin(); it!=observers.end(); ++it)
-        (*it)->register_class(index, class_ptr);
+        (*it)->register_class(class_ptr);
 }
 
 

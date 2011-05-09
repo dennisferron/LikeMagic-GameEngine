@@ -82,6 +82,7 @@ private:
         return 0;
     }
 
+/*
     static void reset(std::set<AbstractObjectSet*> total_objsets)
     {
         for (auto iter=total_objsets.begin(); iter != total_objsets.end(); iter++)
@@ -152,6 +153,8 @@ private:
         throw std::logic_error("can't collect result of set operation on function returning void");
     }
 
+    */
+
 private:
     CppObjProxy(boost::intrusive_ptr<Expression<T>> expr_, AbstractTypeSystem const& type_system) :
         AbstractCppObjProxy(type_system, type_system.get_class(BetterTypeInfo::create_index<T>())), expr(expr_)
@@ -161,6 +164,8 @@ private:
     virtual ~CppObjProxy()
     {
     }
+
+    /*
 
     template <typename ObjT_>
     typename boost::enable_if<LikeMagic::Utility::IsContainer<ObjT_>,
@@ -187,6 +192,8 @@ private:
         throw std::logic_error("each should not be callable on object not a container");
     }
 
+    */
+
 public:
 
     static AbstractCppObjProxy* create(boost::intrusive_ptr<Expression<T>> expr_, AbstractTypeSystem const& type_system)
@@ -204,14 +211,15 @@ public:
 
     virtual AbstractCppObjProxy* eval()
     {
-        auto objsets = expr->get_objsets();
+        //auto objsets = expr->get_objsets();
 
-        if (!objsets.empty())
-            return collect(expr, expr->get_objsets());
-        else
+        //if (!objsets.empty())
+        //    return collect(expr, expr->get_objsets());
+        //else
             return eval(expr);
     }
 
+    /*
     virtual AbstractCppObjProxy* elem()
     {
         return eval(expr);
@@ -231,11 +239,14 @@ public:
     {
         return at_end(expr->get_objsets());
     }
+    */
 
     virtual void exec()
     {
         expr->eval();
     }
+
+    /*
 
     virtual void iterate()
     {
@@ -246,6 +257,8 @@ public:
     {
         return each_impl<T>();
     }
+
+    */
 
     virtual AbstractCppObjProxy* clone() const
     {

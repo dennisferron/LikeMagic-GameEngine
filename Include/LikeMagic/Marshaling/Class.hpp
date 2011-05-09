@@ -57,7 +57,7 @@ private:
     Class& operator =(const Class&);
 
     //friend class LikeMagic::RuntimeTypeSystem;
-    //Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : AbstractClass(name_, type_system_, namespace_)
+    //Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePath const namespace_) : AbstractClass(name_, type_system_, namespace_)
     //{
     //}
 
@@ -80,7 +80,7 @@ private:
 
 public:
 
-    Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) : AbstractClass(name_, type_system_, namespace_)
+    Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePath namespace_) : AbstractClass(name_, type_system_, namespace_)
     {
     }
 

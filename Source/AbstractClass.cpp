@@ -15,7 +15,7 @@
 
 using namespace LikeMagic::Marshaling;
 
-AbstractClass::AbstractClass(std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_) :
+AbstractClass::AbstractClass(std::string name_, AbstractTypeSystem& type_system_, NamespacePath namespace_) :
     class_name(name_),
     type_system(type_system_),
     ns(namespace_)

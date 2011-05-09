@@ -17,52 +17,44 @@ using namespace LikeMagic::Marshaling;
 using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::EnumHelper;
 
-class Namespace;
-typedef boost::intrusive_ptr<Namespace> NamespacePtr;
-
-void intrusive_ptr_add_ref(Namespace* p);
-void intrusive_ptr_release(Namespace* p);
+// Namespace wraps RuntimeTypeSystem, but RuntimeTypeSystem needs to be passed a namespace path.
+// Both use templates, so to resolve the mutual dependency problem I created a separate class called
+// NamespacePath that holds just the path & doesn't call RuntimeTypesystem, so that Namespace can
+// use NamespacePath to communicate back to RuntimeTypeSystem what namespace to use for bound objects.
 
 class Namespace
 {
 private:
-    int ref_count;
-
-    friend void intrusive_ptr_add_ref(Namespace* p);
-    friend void intrusive_ptr_release(Namespace* p);
-
-private:
 
     RuntimeTypeSystem& type_system;
-    NamespacePtr parent;
-    std::string name;
+    NamespacePath const path;
 
     Namespace(RuntimeTypeSystem& type_system_);
-    Namespace(RuntimeTypeSystem& type_system_, Namespace* parent_, std::string name_);
+    Namespace(RuntimeTypeSystem& type_system_, NamespacePath const path_);
 
 public:
 
-    static NamespacePtr global(RuntimeTypeSystem& type_system_);
-    NamespacePtr subspace(std::string name);
+    static Namespace const global(RuntimeTypeSystem& type_system_);
+    Namespace const subspace(std::string name) const;
 
-    NamespacePtr get_parent() const;
+    Namespace const get_parent() const;
     bool is_root() const;
     std::string to_string() const;
     std::string get_name() const;
 
     template <typename T, bool is_copyable=!boost::is_abstract<T>::value>
-    Class<T, is_copyable>& register_class(std::string name)
+    Class<T, is_copyable>& register_class(std::string name) const
     {
-        return type_system.register_class<T, is_copyable>(name, this);
+        return type_system.register_class<T, is_copyable>(name, path);
     }
 
     template <typename T>
-    Class<T, true>& register_enum(std::string name)
+    Class<T, true>& register_enum(std::string name) const
     {
-        return type_system.register_enum<T>(name, this);
+        return type_system.register_enum<T>(name, path);
     }
 
-    StaticMethods& register_functions();
+    StaticMethods& register_functions() const;
 };
 
 }

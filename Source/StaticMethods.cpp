@@ -13,11 +13,13 @@ namespace LikeMagic { namespace Marshaling {
 
 std::string error() { throw "Namespace was null!"; }
 
-StaticMethods::StaticMethods(AbstractTypeSystem& type_system_, NamespacePtr ns)
+StaticMethods::StaticMethods(AbstractTypeSystem& type_system_, NamespacePath const ns)
     : DummyClass<StaticMethods>(
-        ns? NamespaceTypeInfo::create_index(ns->to_string()) : BetterTypeInfo::create_index<StaticMethod>(),
-        ns? ns->to_string() : error(),
-        type_system_, ns)
+        NamespaceTypeInfo::create_index(ns.to_string()),
+        ns.get_name(),
+        type_system_,
+        ns
+    )
 {
 }
 

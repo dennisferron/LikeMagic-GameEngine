@@ -96,8 +96,11 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
         bootstrap);
 
     LM_Proxy = API_io_proto(state);
-    IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "LM_Obj_Proxy"),
+    IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "LikeMagicProxy"),
         LM_Proxy);
+
+    // Bind the forward method so all methods will work on it.
+    bind_method(LM_Proxy, "forward");
 
     LM_Protos = IoObject_new(state);
     IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "LM_Protos"),
@@ -141,7 +144,7 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     LM_CLASS_NO_COPY(type_sys, IoVM)
     LM_BASE(IoVM, ITypeSystemObserver)
     LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(record_freed_objects)(set_record_freed_objects)
-            (watch_freed_objects)(set_watch_freed_objects)(add_watch_for_freed_object)(check_if_freed)(bind_method))
+            (watch_freed_objects)(set_watch_freed_objects)(add_watch_for_freed_object)(check_if_freed))
     LM_FIELD(IoVM, (onRegisterMethod)(onRegisterClass)(onRegisterBase))
 
     /*
@@ -194,9 +197,8 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     // Add a proto to support all the static class members and namespace level C++ functions.
     //add_proto<StaticMethod>("CppFunc");
 
-    // Make this vm itstate accessible
+    // Make this vm accessible in the bootstrap environment
     add_proto<IoVM&>("IoVM", *this);
-    bind_method(do_string("bootstrap LM_Protos IoVM"), "bind_method");
 
     // Also make the abstract type system available by pointer.
     add_proto<RuntimeTypeSystem&>("type_system", type_sys);
@@ -218,12 +220,14 @@ void IoVM::register_base(LikeMagic::Marshaling::AbstractClass const* class_, Lik
     //string proto_code = code_to_get_class_proto(class_);
     //do_string(proto_code + " appendProto(" + code_to_get_class_proto(base) + ")");
 
-    onRegisterBase(class_, base);
+    if (!onRegisterBase.empty())
+        onRegisterBase(class_, base);
 }
 
 void IoVM::register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method)
 {
-    onRegisterMethod(class_, method_name, method);
+    if (!onRegisterMethod.empty())
+        onRegisterMethod(class_, method_name, method);
 
 /*
     bool debug_test = (method_name == "add_bindings_irr");
@@ -253,7 +257,7 @@ void IoVM::register_method(LikeMagic::Marshaling::AbstractClass const* class_, s
 
 /*
 
-IoObject* IoVM::create_namespace(NamespacePtr ns)
+IoObject* IoVM::create_namespace(NamespacePath const ns)
 {
     if (!ns->is_root())
     {
@@ -275,7 +279,7 @@ IoObject* IoVM::create_namespace(NamespacePtr ns)
 string IoVM::code_to_get_class_proto(LikeMagic::Marshaling::AbstractClass const* class_)
 {
     std::string name = class_->get_class_name();
-    NamespacePtr ns = class_->get_namespace();
+    NamespacePath const ns = class_->get_namespace();
 
     if (ns != NULL)
         return "CppNamespace " + ns->to_string() + " " + name;
@@ -285,15 +289,16 @@ string IoVM::code_to_get_class_proto(LikeMagic::Marshaling::AbstractClass const*
 
 */
 
-void IoVM::register_class(TypeIndex type_index, LikeMagic::Marshaling::AbstractClass const* class_)
+void IoVM::register_class(LikeMagic::Marshaling::AbstractClass const* class_)
 {
-    onRegisterClass(class_);
+    if (!onRegisterClass.empty())
+        onRegisterClass(class_);
 
 /*
 
     IoObject* mset_proto;
     std::string name = class_->get_class_name();
-    NamespacePtr ns = class_->get_namespace();
+    NamespacePath const ns = class_->get_namespace();
 
     if (ns != NULL)
         create_namespace(ns);
@@ -355,15 +360,15 @@ void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, bool conv_to_
 
         TypeIndex type = proxy->get_type();
 
-        if (cpp_protos.find(type) == cpp_protos.end())
-        {
-            cout << "No proto for type " << type.describe() << " using default LikeMagic proto instead." << endl;
+        //if (cpp_protos.find(type) == cpp_protos.end())
+        //{
+        //    cout << "No proto for type " << type.describe() << " using default LikeMagic proto instead." << endl;
             proto = LM_Proxy;
-        }
-        else
-        {
-            proto = cpp_protos.find(type)->second;
-        }
+        //}
+        //else
+        //{
+        //    proto = cpp_protos.find(type)->second;
+        //}
 
         clone = API_io_rawClone(proto);
 
@@ -543,12 +548,14 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
     }
     else
     {
-        auto iter = cpp_protos.find(proxy->get_type().class_type());
+        //auto iter = cpp_protos.find(proxy->get_type().class_type());
 
-        if (iter == cpp_protos.end())
-            throw std::logic_error("No class proto for " + proxy->get_type().describe() );
+        //if (iter == cpp_protos.end())
+        //    throw std::logic_error("No class proto for " + proxy->get_type().describe() );
 
-        IoObject* proto = iter->second;
+        IoObject* proto;
+        //proto = iter->second;
+        proto = LM_Proxy;
         IoObject* clone = IOCLONE(proto);
         IoObject_setDataPointer_(clone, proxy);
 

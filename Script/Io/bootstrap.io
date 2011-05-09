@@ -12,54 +12,68 @@ LikeMagic := Object clone
 // IoVM C++ code to provide the minimum functionality necessary to bootstrap
 // the rest of the C++ namespace and classes system.
 
+appendProto(bootstrap)
+
+appendProto(bootstrap LM_Protos)
+
+IoVM := LM_Protos IoVM
+type_system := LM_Protos type_system
+
+LikeMagic := Object clone
+
+LikeMagic namespace := Object clone
+
+// What to do when a class is added.
+IoVM set_onRegisterClass(
+    block(abstract_class,
+        className := abstract_class get_class_name
+        cppNs := abstract_class get_namespace
+
+        writeln("register class ", className, " in namespace ", cppNs to_string)
+
+        // Look up the cpp namespace to get the Io object for it
+        nsObj := find_namespace(cppNs)
+
+        // The abstract_class object is the type system representation of the class,
+        // but we need to create a specialized proxy instance of the class that allows calling the "new" method.
+        class_proto := abstract_class create_class_proxy
+
+        // If the slot already exists, append it to the new object so name lookup will work.
+        if (nsObj hasSlot(className),
+            if (nsObj getSlot(className) type == "LikeMagic",
+                Exception raise("Cannot add LikeMagic class twice (or two different ones) for same class_name: " .. cppNs to_string .. "::" .. className)
+            ,
+                writeln("moving Io object namespace to proto for ", className)
+                class_proto appendProto(nsObj getSlot(className))
+            )
+        )
+
+        nsObj setSlot(className, class_proto)
+    )
+)
+
+// Convert LikeMagic::Namespace object to the Io object associated with it.
+find_namespace := method(ns,
+    if (ns is_root,
+        return Lobby LikeMagic namespace
+    ,
+        parentNs := find_namespace(ns get_parent)
+        if (parentNs hasSlot(ns get_name) not,
+            parentNs setSlot(ns get_name, Object clone)
+        )
+        return getSlot(ns get_name)
+    )
+)
+
+type_system add_type_system_observer(IoVM)
+
+/*
 bootstrap do(
 
     // LM_Proxy is just a proto we use for all LikeMagic type sys objs.
     // Move LM_Proxy object from bootstrap object to LikeMagic object.
     LikeMagic LM_Proxy := LM_Proxy
 
-    // IoVM bind_method(proto, name) is the only predefined function so far.
-    // The only protos are IoVM and type_system.  (Maybe CxxProto.)
-
-    // Having bind_method() as our only method is a lot like having a genie grant
-    // you one wish, and your is for more wishes.
-
-    // Just declare that the IoVM supports some methods and poof they will exist.
-    // You don't even need to provide a call target for them.  It works because
-    // in actuality all the LikeMagic IoVM methods all map to one C function,
-    // and LikeMagic decides what function actually invoke based on message name.
-    IoVM bind_method(IoVM, "set_onRegisterMethod")
-    IoVM bind_method(IoVM, "set_onRegisterClass")
-    IoVM bind_method(IoVM, "set_onRegisterBase")
-
-    // What to do when a method is added.
-    IoVM set_onRegisterMethod(
-        block(class, name, call_target,
-            class_proto := LikeMagic find_class(abstract_class)
-            IoVM bind_method(class_proto, name)
-        )
-    )
-
-    // What to do when a class is added.
-    IoVM set_onRegisterClass(
-        block(type_index, abstract_class,
-            ns := abstract_class get_namespace
-
-            // The abstract_class object is a representation
-            class_proto := type_system create_class_proxy(abstract_class)
-
-            IoVM set_class_proto(class_proto)
-
-            ns setSlot(abstract_class get_class_name, class_proto)
-        )
-    )
-
-    // What to do when a base is added.
-    IoVM set_onRegisterBase(
-        block(abstract_class, base,
-            LikeMagic find_class(abstract_class) appendProto(LikeMagic find_class(base))
-        )
-    )
 
     // A hack to allow the LikeMagic find_class method to work before
     // namespace support and AbstractClass bindings:  before namespaces,
@@ -96,3 +110,4 @@ bootstrap do(
 // Don't need the bootstrap object anymore, hide the evidence.
 removeSlot("bootstrap")
 
+*/

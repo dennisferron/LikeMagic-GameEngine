@@ -8,7 +8,7 @@
 
 
 #include "LikeMagic/RuntimeTypeSystem.hpp"
-#include "LikeMagic/Namespace.hpp"
+#include "LikeMagic/NamespacePath.hpp"
 
 #include "LikeMagic/TypeConv/StringConv.hpp"
 
@@ -55,9 +55,9 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     static TypeIndex proxy_methods_type = BetterTypeInfo::create_index<AbstractCppObjProxy>();
     static TypeIndex collection_methods_type = BetterTypeInfo::create_index<SFMOCollection>();
 
-    functions = new StaticMethods(*this, Namespace::global(*this));
-    proxy_methods = new ProxyMethods(proxy_methods_type, "ProxyMethods", *this, Namespace::global(*this));
-    collection_methods = new ProxyMethods(collection_methods_type, "CollectionMethods", *this, Namespace::global(*this));
+    functions = new StaticMethods(*this, NamespacePath::global());
+    proxy_methods = new ProxyMethods(proxy_methods_type, "ProxyMethods", *this, NamespacePath::global());
+    collection_methods = new ProxyMethods(collection_methods_type, "CollectionMethods", *this, NamespacePath::global());
 
 
     // Allow conversions from nil to any pointer.
@@ -70,6 +70,15 @@ RuntimeTypeSystem::RuntimeTypeSystem()
 
     LM_CLASS_NO_COPY((*this), AbstractCppObjProxy)
 
+    LM_CLASS_NO_COPY((*this), AbstractClass)
+    LM_FUNC(AbstractClass, (get_class_name)(get_type)(create_class_proxy)(get_namespace))
+
+    LM_CLASS((*this), TypeIndex)
+    LM_FUNC(TypeIndex, (describe))
+
+    LM_CLASS_NO_COPY((*this), NamespacePath)
+    LM_FUNC(NamespacePath, (is_root)(get_name)(get_parent)(to_string))
+
     add_class(functions->get_type(), functions);
     add_class(proxy_methods_type, proxy_methods);
     add_class(collection_methods_type, collection_methods);
@@ -78,31 +87,33 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     // need to give type system ability to do the conversion.
     add_conv<StaticMethod&, StaticMethod>();
 
-    collection_methods->bind_method("each", &AbstractCppObjProxy::each);
+    //collection_methods->bind_method("each", &AbstractCppObjProxy::each);
 
     proxy_methods->bind_method("eval", &AbstractCppObjProxy::eval);
     proxy_methods->bind_method("exec", &AbstractCppObjProxy::exec);
     proxy_methods->bind_method("lazy", &AbstractCppObjProxy::lazy);
 
+    /*
     proxy_methods->bind_method("elem", &AbstractCppObjProxy::elem);
     proxy_methods->bind_method("iterate", &AbstractCppObjProxy::iterate);
     proxy_methods->bind_method("adv_loop", &AbstractCppObjProxy::adv_loop);
     proxy_methods->bind_method("begin_loop", &AbstractCppObjProxy::begin_loop);
     proxy_methods->bind_method("loop_at_end", &AbstractCppObjProxy::loop_at_end);
+    */
 
     proxy_methods->bind_method("describe", &AbstractCppObjProxy::describe);
     proxy_methods->bind_method("get_base_names", &AbstractCppObjProxy::get_base_names);
 
     // register void so functions returning void will work right.
     static TypeIndex void_type = BetterTypeInfo::create_index<void>();
-    auto void_class = new DummyClass<void>(void_type, "void", *this, Namespace::global(*this));
+    auto void_class = new DummyClass<void>(void_type, "void", *this, NamespacePath::global());
     add_class(void_type, void_class);
     void_class->add_base_abstr(proxy_methods);
 
     // register the Unknown_CppObj so functions returning unregistered classes
     // can still be called.
     static TypeIndex unknown_type = BetterTypeInfo::create_index<Unknown_CppObj>();
-    auto unknown_class = new DummyClass<Unknown_CppObj>(unknown_type, "Unknown_CppObj", *this, Namespace::global(*this));
+    auto unknown_class = new DummyClass<Unknown_CppObj>(unknown_type, "Unknown_CppObj", *this, NamespacePath::global());
     add_class(unknown_type, unknown_class);
     unknown_class->add_base_abstr(proxy_methods);
     this->unknown_class = unknown_class;

@@ -82,6 +82,7 @@ public:
     // Same as eval but discards the result.
     virtual void exec() = 0;
 
+/*
     // For iterating objsets, evals only the current element.  Same as eval if there are no elements.
     virtual AbstractCppObjProxy* elem() = 0;
 
@@ -100,6 +101,7 @@ public:
     // If you have a container in a SingleObjectSet, turns it into
     // a ContainerSet with the methods associated with the contained object.
     virtual AbstractCppObjProxy* each() const = 0;
+*/
 
     // Returns a new proxy containing a  copy of this expression and copy of the object set.
     virtual AbstractCppObjProxy* clone() const = 0;

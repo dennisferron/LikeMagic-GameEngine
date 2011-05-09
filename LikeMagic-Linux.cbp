@@ -84,6 +84,7 @@
 		<Unit filename="Include/LikeMagic/Marshaling/ProxyMethods.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/StaticMethods.hpp" />
 		<Unit filename="Include/LikeMagic/Namespace.hpp" />
+		<Unit filename="Include/LikeMagic/NamespacePath.hpp" />
 		<Unit filename="Include/LikeMagic/RuntimeTypeSystem.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/AbstractCppObjProxy.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/AbstractExpression.hpp" />
@@ -156,6 +157,7 @@
 		<Unit filename="Source/IoVM.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/Namespace.cpp" />
+		<Unit filename="Source/NamespacePath.cpp" />
 		<Unit filename="Source/RuntimeTypeSystem.cpp" />
 		<Unit filename="Source/StaticMethods.cpp" />
 		<Unit filename="Source/TypeConvGraph.cpp" />

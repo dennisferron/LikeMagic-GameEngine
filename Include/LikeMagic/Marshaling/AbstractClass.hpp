@@ -19,7 +19,7 @@
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 #include "LikeMagic/ITypeSystemObserver.hpp"
-#include "LikeMagic/NamespaceForward.hpp"
+#include "LikeMagic/NamespacePath.hpp"
 
 namespace LikeMagic {
     class AbstractTypeSystem;
@@ -39,7 +39,7 @@ using LikeMagic::AbstractTypeSystem;
 using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeInfoList;
-using LikeMagic::Namespace;
+using LikeMagic::NamespacePath;
 
 class AbstractClass
 {
@@ -63,12 +63,12 @@ private:
 
 protected:
     AbstractTypeSystem& type_system;
-    NamespacePtr ns;
+    NamespacePath const ns;
 
     void add_method(std::string method_name, AbstractCallTargetSelector* method);
     AbstractCallTargetSelector* try_get_method(std::string method_name, int num_args, bool in_base_class=false) const;
 
-    AbstractClass(std::string name_, AbstractTypeSystem& type_system_, NamespacePtr namespace_);
+    AbstractClass(std::string name_, AbstractTypeSystem& type_system_, NamespacePath const namespace_);
 
 public:
     virtual ~AbstractClass();
@@ -80,7 +80,7 @@ public:
     bool has_method(std::string method_name, int num_args) const;
     AbstractCallTargetSelector* get_method(std::string method_name, int num_args) const;
     std::vector<AbstractCallTargetSelector*> get_methods() const;
-    NamespacePtr get_namespace() const { return ns; }
+    NamespacePath const get_namespace() const { return ns; }
 
     // support inheritance
     void add_base_abstr(AbstractClass const* base);

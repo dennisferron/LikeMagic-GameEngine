@@ -93,7 +93,7 @@ private:
 
 
     template <typename T, bool is_copyable>
-    Class<T, is_copyable>& register_class_impl(std::string name, NamespacePtr ns)
+    Class<T, is_copyable>& register_class_impl(std::string name, NamespacePath const ns)
     {
         static_assert(boost::is_same<T, typename LikeMagic::Utility::StripModifiers<T>::strip::type>::value, "Can only register bare types as classes.");
 
@@ -148,7 +148,7 @@ public:
     TypeInfoCache* get_typeinfo_cache() { return dll_shared_typeinfo; }
 
     template <typename T, bool is_copyable=!boost::is_abstract<T>::value>
-    Class<T, is_copyable>& register_class(std::string name, NamespacePtr ns=0)
+    Class<T, is_copyable>& register_class(std::string name, NamespacePath const ns=NamespacePath::global())
     {
         auto& result = register_class_impl<T, is_copyable>(name, ns);
         return result;
@@ -156,22 +156,17 @@ public:
 
     // Currently register_class is capable of discerning enums.
     template <typename T>
-    Class<T, true>& register_enum(std::string name, NamespacePtr ns=0)
+    Class<T, true>& register_enum(std::string name, NamespacePath const ns=NamespacePath::global())
     {
         auto& result = register_class_impl<T, true>(name, ns);
         return result;
     }
 
-    StaticMethods& register_functions(NamespacePtr ns=0)
+    StaticMethods& register_functions(NamespacePath const ns=NamespacePath::global())
     {
-        if (ns)
-        {
-            StaticMethods* result = new StaticMethods(*this, ns);
-            add_class(result->get_type(), result);
-            return *result;
-        }
-        else
-            return *functions;
+        StaticMethods* result = new StaticMethods(*this, ns);
+        add_class(result->get_type(), result);
+        return *result;
     }
 
 };

@@ -32,7 +32,7 @@ private:
     StaticMethods& operator=(StaticMethods const&);
 
     friend class LikeMagic::RuntimeTypeSystem;
-    StaticMethods(AbstractTypeSystem& type_system_, NamespacePtr namespace_);
+    StaticMethods(AbstractTypeSystem& type_system_, NamespacePath const namespace_);
 
 public:
 
