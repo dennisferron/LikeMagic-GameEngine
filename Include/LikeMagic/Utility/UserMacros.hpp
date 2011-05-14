@@ -49,6 +49,11 @@
 #define LM_FUNC_IMPL(r, data, elem) data##_LM.bind_method(BOOST_PP_STRINGIZE(elem), &data::elem);
 #define LM_FUNC(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_FUNC_IMPL, class_name, SEQ)
 
+#define LM_EXTENSION_METHOD_IMPL(r, data, elem) data##_LM.bind_nonmember_op(BOOST_PP_STRINGIZE(elem), &elem);
+// Extension methods allow you to bind a nonmember function so it will be called like a member in script.
+// The first parameter of the method is passed the self object from script.
+#define LM_EXTENSION_METHOD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_EXTENSION_METHOD_IMPL, class_name, SEQ)
+
 #define LM_FUNC_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) class_name##_LM.bind_method<ret_type (class_name::*)(__VA_ARGS__)>(given_func_name, &class_name::actual_func);
 
 // Use this for const member functions.
@@ -116,3 +121,4 @@ template <typename T> struct LM_InsertConst<T&> { typedef T const& type; };
 // This needs to be done once in every DLL to set the type info cache singleton to a shared value.
 #define LM_SET_TYPE_INFO(type_sys) \
 LikeMagic::Utility::TypeInfoCache::set_instance(type_sys.get_typeinfo_cache());
+

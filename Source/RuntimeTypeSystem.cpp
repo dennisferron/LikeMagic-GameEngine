@@ -92,15 +92,8 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     proxy_methods->bind_method("eval", &AbstractCppObjProxy::eval);
     proxy_methods->bind_method("exec", &AbstractCppObjProxy::exec);
     proxy_methods->bind_method("lazy", &AbstractCppObjProxy::lazy);
-
-    /*
-    proxy_methods->bind_method("elem", &AbstractCppObjProxy::elem);
-    proxy_methods->bind_method("iterate", &AbstractCppObjProxy::iterate);
-    proxy_methods->bind_method("adv_loop", &AbstractCppObjProxy::adv_loop);
-    proxy_methods->bind_method("begin_loop", &AbstractCppObjProxy::begin_loop);
-    proxy_methods->bind_method("loop_at_end", &AbstractCppObjProxy::loop_at_end);
-    */
-
+    proxy_methods->bind_method("get_class", &AbstractCppObjProxy::get_class);
+    proxy_methods->bind_method("get_type", &AbstractCppObjProxy::get_type);
     proxy_methods->bind_method("describe", &AbstractCppObjProxy::describe);
     proxy_methods->bind_method("get_base_names", &AbstractCppObjProxy::get_base_names);
 

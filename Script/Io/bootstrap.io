@@ -21,7 +21,7 @@ type_system := LM_Protos type_system
 
 LikeMagic := Object clone
 
-LikeMagic namespace := Object clone
+LikeMagic namespace := bootstrap LM_Protos namespace
 
 // What to do when a class is added.
 IoVM set_onRegisterClass(
@@ -29,19 +29,24 @@ IoVM set_onRegisterClass(
         className := abstract_class get_class_name
         cppNs := abstract_class get_namespace
 
-        writeln("register class ", className, " in namespace ", cppNs to_string)
+        writeln("register class ", className, " in ", cppNs to_string, " and LikeMagic type=", abstract_class get_type describe)
 
         // Look up the cpp namespace to get the Io object for it
         nsObj := find_namespace(cppNs)
 
         // The abstract_class object is the type system representation of the class,
         // but we need to create a specialized proxy instance of the class that allows calling the "new" method.
-        class_proto := abstract_class create_class_proxy
+        class_proto := abstract_class create_class_proxy proxy_to_io_obj
+
+        writeln("class_proxy LikeMagic type = ", class_proto get_type describe)
 
         // If the slot already exists, append it to the new object so name lookup will work.
         if (nsObj hasSlot(className),
-            if (nsObj getSlot(className) type == "LikeMagic",
-                Exception raise("Cannot add LikeMagic class twice (or two different ones) for same class_name: " .. cppNs to_string .. "::" .. className)
+            existingObj := nsObj getSlot(className)
+            if (existingObj type == "LikeMagic",
+                msg := "Cannot add LikeMagic class twice (or two different ones with the same class name).  Note:  namespace=" .. (cppNs to_string) .. " and className=" .. className
+                msg = msg .. "  Note: existing object LikeMagic type=" .. (existingObj get_type describe) .. " and new object LikeMagic type=" .. (class_proto get_type describe)
+                Exception raise(msg)
             ,
                 writeln("moving Io object namespace to proto for ", className)
                 class_proto appendProto(nsObj getSlot(className))

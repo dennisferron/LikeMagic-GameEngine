@@ -16,8 +16,8 @@
 	<File name="Include/LikeMagic/Backends/Io/IoObjectExpr.hpp" open="0" top="0" tabpos="11">
 		<Cursor position="578" topLine="0" />
 	</File>
-	<File name="Include/LikeMagic/Backends/Io/IoVM.hpp" open="1" top="0" tabpos="4">
-		<Cursor position="1587" topLine="49" />
+	<File name="Include/LikeMagic/Backends/Io/IoVM.hpp" open="1" top="0" tabpos="5">
+		<Cursor position="1782" topLine="29" />
 	</File>
 	<File name="Include/LikeMagic/Backends/Io/ToIoObjectExpr.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="750" topLine="5" />
@@ -34,7 +34,7 @@
 	<File name="Include/LikeMagic/Marshaling/AbstractCallTargetSelector.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="609" topLine="0" />
 	</File>
-	<File name="Include/LikeMagic/Marshaling/AbstractClass.hpp" open="1" top="0" tabpos="4">
+	<File name="Include/LikeMagic/Marshaling/AbstractClass.hpp" open="0" top="0" tabpos="4">
 		<Cursor position="1048" topLine="17" />
 	</File>
 	<File name="Include/LikeMagic/Marshaling/ArrayFieldGetterTarget.hpp" open="0" top="0" tabpos="0">
@@ -49,8 +49,8 @@
 	<File name="Include/LikeMagic/Marshaling/CallTargetSelector.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="3339" topLine="59" />
 	</File>
-	<File name="Include/LikeMagic/Marshaling/Class.hpp" open="1" top="0" tabpos="2">
-		<Cursor position="2043" topLine="58" />
+	<File name="Include/LikeMagic/Marshaling/Class.hpp" open="0" top="0" tabpos="2">
+		<Cursor position="5765" topLine="121" />
 	</File>
 	<File name="Include/LikeMagic/Marshaling/ConstructorCallTarget.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="5493" topLine="135" />
@@ -61,8 +61,8 @@
 	<File name="Include/LikeMagic/Marshaling/CustomFieldSetterTarget.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="536" topLine="15" />
 	</File>
-	<File name="Include/LikeMagic/Marshaling/DummyClass.hpp" open="1" top="0" tabpos="5">
-		<Cursor position="1317" topLine="19" />
+	<File name="Include/LikeMagic/Marshaling/DummyClass.hpp" open="0" top="0" tabpos="5">
+		<Cursor position="1317" topLine="16" />
 	</File>
 	<File name="Include/LikeMagic/Marshaling/FieldGetterTarget.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="928" topLine="6" />
@@ -80,25 +80,25 @@
 		<Cursor position="227" topLine="0" />
 	</File>
 	<File name="Include/LikeMagic/Marshaling/ProxyMethodSelector.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="2123" topLine="42" />
+		<Cursor position="2572" topLine="41" />
 	</File>
-	<File name="Include/LikeMagic/Marshaling/ProxyMethods.hpp" open="1" top="0" tabpos="8">
-		<Cursor position="895" topLine="0" />
+	<File name="Include/LikeMagic/Marshaling/ProxyMethods.hpp" open="0" top="0" tabpos="8">
+		<Cursor position="1161" topLine="0" />
 	</File>
 	<File name="Include/LikeMagic/Marshaling/StaticMethods.hpp" open="1" top="0" tabpos="2">
 		<Cursor position="1006" topLine="0" />
 	</File>
-	<File name="Include/LikeMagic/Namespace.hpp" open="1" top="0" tabpos="6">
+	<File name="Include/LikeMagic/Namespace.hpp" open="0" top="0" tabpos="6">
 		<Cursor position="1195" topLine="6" />
 	</File>
 	<File name="Include/LikeMagic/NamespacePath.hpp" open="1" top="0" tabpos="0">
 		<Cursor position="701" topLine="0" />
 	</File>
-	<File name="Include/LikeMagic/RuntimeTypeSystem.hpp" open="1" top="0" tabpos="11">
-		<Cursor position="5793" topLine="115" />
+	<File name="Include/LikeMagic/RuntimeTypeSystem.hpp" open="1" top="0" tabpos="3">
+		<Cursor position="2914" topLine="57" />
 	</File>
-	<File name="Include/LikeMagic/SFMO/AbstractCppObjProxy.hpp" open="1" top="0" tabpos="8">
-		<Cursor position="3686" topLine="75" />
+	<File name="Include/LikeMagic/SFMO/AbstractCppObjProxy.hpp" open="0" top="0" tabpos="8">
+		<Cursor position="1582" topLine="77" />
 	</File>
 	<File name="Include/LikeMagic/SFMO/AbstractExpression.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="862" topLine="38" />
@@ -109,7 +109,7 @@
 	<File name="Include/LikeMagic/SFMO/ContainerSet.hpp" open="0" top="0" tabpos="1">
 		<Cursor position="733" topLine="18" />
 	</File>
-	<File name="Include/LikeMagic/SFMO/CppObjProxy.hpp" open="1" top="0" tabpos="13">
+	<File name="Include/LikeMagic/SFMO/CppObjProxy.hpp" open="0" top="0" tabpos="13">
 		<Cursor position="7905" topLine="225" />
 	</File>
 	<File name="Include/LikeMagic/SFMO/Expression.hpp" open="0" top="0" tabpos="14">
@@ -169,11 +169,11 @@
 	<File name="Include/LikeMagic/Utility/TypeInfoCache.hpp" open="0" top="0" tabpos="10">
 		<Cursor position="373" topLine="0" />
 	</File>
-	<File name="Include/LikeMagic/Utility/UserMacros.hpp" open="0" top="0" tabpos="12">
-		<Cursor position="369" topLine="0" />
+	<File name="Include/LikeMagic/Utility/UserMacros.hpp" open="1" top="0" tabpos="4">
+		<Cursor position="2919" topLine="31" />
 	</File>
-	<File name="Script/Io/bootstrap.io" open="0" top="0" tabpos="1">
-		<Cursor position="2263" topLine="32" />
+	<File name="Script/Io/bootstrap.io" open="1" top="1" tabpos="6">
+		<Cursor position="1378" topLine="21" />
 	</File>
 	<File name="Source/API_Io.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="5955" topLine="155" />
@@ -194,7 +194,7 @@
 		<Cursor position="469" topLine="0" />
 	</File>
 	<File name="Source/AbstractTypeSystem.cpp" open="0" top="0" tabpos="5">
-		<Cursor position="3931" topLine="77" />
+		<Cursor position="3931" topLine="85" />
 	</File>
 	<File name="Source/IoBlock.cpp" open="0" top="0" tabpos="4">
 		<Cursor position="1997" topLine="23" />
@@ -202,22 +202,19 @@
 	<File name="Source/IoObjectExpr.cpp" open="0" top="0" tabpos="5">
 		<Cursor position="0" topLine="0" />
 	</File>
-	<File name="Source/IoVM.cpp" open="1" top="0" tabpos="2">
-		<Cursor position="10696" topLine="251" />
+	<File name="Source/IoVM.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="6070" topLine="153" />
 	</File>
 	<File name="Source/MarkableObjGraph.cpp" open="0" top="0" tabpos="4">
 		<Cursor position="155" topLine="0" />
 	</File>
-	<File name="Source/Namespace.cpp" open="1" top="0" tabpos="9">
-		<Cursor position="819" topLine="7" />
+	<File name="Source/Namespace.cpp" open="0" top="0" tabpos="9">
+		<Cursor position="819" topLine="6" />
 	</File>
-	<File name="Source/NamespacePath.cpp" open="1" top="0" tabpos="0">
-		<Cursor position="0" topLine="0" />
+	<File name="Source/RuntimeTypeSystem.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="2739" topLine="60" />
 	</File>
-	<File name="Source/RuntimeTypeSystem.cpp" open="1" top="1" tabpos="3">
-		<Cursor position="2738" topLine="43" />
-	</File>
-	<File name="Source/StaticMethods.cpp" open="1" top="0" tabpos="1">
+	<File name="Source/StaticMethods.cpp" open="0" top="0" tabpos="1">
 		<Cursor position="492" topLine="0" />
 	</File>
 	<File name="Source/TypeConvGraph.cpp" open="0" top="0" tabpos="4">

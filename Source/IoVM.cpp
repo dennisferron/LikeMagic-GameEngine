@@ -174,6 +174,9 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
 
     LM_CLASS(type_sys, IoObject)
 
+    LM_CLASS_NO_COPY(type_sys, AbstractCppObjProxy)
+    LM_EXTENSION_METHOD(AbstractCppObjProxy, (proxy_to_io_obj))
+
     // To convert an Io object to a void*
     type_sys.add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<void*>(), new LikeMagic::TypeConv::ImplicitConv<IoObject*, void*>);
 
@@ -202,6 +205,9 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
 
     // Also make the abstract type system available by pointer.
     add_proto<RuntimeTypeSystem&>("type_system", type_sys);
+
+    // The object that represents the global namespace.
+    add_proto("namespace", Namespace::global(type_sys).register_functions().create_class_proxy(), false);
 }
 
 void IoVM::bind_method(IoObject* obj, std::string method_name)
@@ -448,6 +454,21 @@ void IoVM::mark() const
     //onRegisterClass.mark();
     //onRegisterMethod.mark();
 }
+
+// Had to accept IoObject here instead of Proxy object because we need a pointer
+// to the IoVM which isn't part of Proxy object.
+IoObject* IoVM::proxy_to_io_obj(IoObject* self)
+{
+    auto iovm = reinterpret_cast<IoVM*>(IOSTATE->callbackContext);
+    IoObject* proto = iovm->LM_Proxy;
+    IoObject* clone = IOCLONE(proto);
+
+    auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
+    IoObject_setDataPointer_(clone, proxy);
+
+    return clone;
+}
+
 
 IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
 {

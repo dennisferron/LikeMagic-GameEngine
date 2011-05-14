@@ -56,6 +56,8 @@ private:
 
     void bind_method(IoObject* obj, std::string method_name);
 
+    static IoObject* proxy_to_io_obj(IoObject* self);
+
 public:
     IoVM(LikeMagic::RuntimeTypeSystem& type_system_);
     ~IoVM();
