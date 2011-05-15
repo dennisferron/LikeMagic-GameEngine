@@ -82,79 +82,6 @@ private:
         return 0;
     }
 
-/*
-    static void reset(std::set<AbstractObjectSet*> total_objsets)
-    {
-        for (auto iter=total_objsets.begin(); iter != total_objsets.end(); iter++)
-            (**iter).reset();
-    }
-
-    static void advance(std::set<AbstractObjectSet*> total_objsets)
-    {
-        for (auto iter=total_objsets.begin(); iter != total_objsets.end(); iter++)
-            (**iter).advance();
-    }
-
-    static bool at_end(std::set<AbstractObjectSet*> total_objsets)
-    {
-        bool at_end;
-        bool all_yes = true;
-        bool all_no = true;
-        bool first = true;
-
-        for (auto iter=total_objsets.begin(); iter != total_objsets.end(); iter++)
-        {
-            at_end = (**iter).at_end();
-
-            if (!first)
-            {
-                first = false;
-
-                if ( (all_yes && !at_end) || (all_no && at_end) )
-                    throw std::runtime_error("AbstractCppObjProxy::at_end: not all sets ended together!");
-            }
-            all_yes &= at_end;
-            all_no &= !at_end;
-        }
-
-        return all_yes;
-    }
-
-    static void iterate(boost::intrusive_ptr<Expression<T>> expr, std::set<AbstractObjectSet*> objsets)
-    {
-        for (reset(objsets); !at_end(objsets); advance(objsets))
-            expr->eval();
-    }
-
-    template <typename T_>
-    AbstractCppObjProxy* collect(boost::intrusive_ptr<Expression<T_>> expr, std::set<AbstractObjectSet*> objsets)
-    {
-        typedef typename std::remove_reference<T_>::type ElementType;
-
-        auto result = Term<std::vector<ElementType>, true>::create(std::vector<ElementType>());
-
-        for (reset(objsets); !at_end(objsets); advance(objsets))
-            result->eval().push_back(type_system.try_conv<ElementType>(expr)->eval());
-
-        std::cout << "Collected " << result->eval().size() << " results." << std::endl;
-
-        return
-                CppObjProxy<std::vector<ElementType>&, true>::create(result, type_system);
-    }
-
-    template <typename T_>
-    static AbstractCppObjProxy* collect(boost::intrusive_ptr<Expression<T_&>> expr, std::set<AbstractObjectSet*> objsets)
-    {
-        throw std::logic_error("sorry can't collect results of function returning reference; stl vector does not support collections of references");
-    }
-
-    static AbstractCppObjProxy* collect(boost::intrusive_ptr<Expression<void>> expr, std::set<AbstractObjectSet*> objsets)
-    {
-        throw std::logic_error("can't collect result of set operation on function returning void");
-    }
-
-    */
-
 private:
     CppObjProxy(boost::intrusive_ptr<Expression<T>> expr_, AbstractTypeSystem const& type_system) :
         AbstractCppObjProxy(type_system, type_system.get_class(BetterTypeInfo::create_index<T>())), expr(expr_)
@@ -164,35 +91,6 @@ private:
     virtual ~CppObjProxy()
     {
     }
-
-    /*
-
-    template <typename ObjT_>
-    typename boost::enable_if<LikeMagic::Utility::IsContainer<ObjT_>,
-        AbstractCppObjProxy*>::type
-    each_impl() const
-    {
-        //std::cout << LikeMagic::Utility::TypeDescr<ObjT_>::text() << " is a container, running the 'each' method." << std::endl;
-
-        typedef typename std::remove_reference<ObjT_>::type ContainerType;
-
-        // The return value of "each" is not the bound type per se; the bound type a collection
-        // and the return value of "each" is actually a proxy of Expression<T::reference>!
-        auto term = Term<ObjT_, true>::create(expr->eval());
-        return CppObjProxy<typename ContainerSet<ContainerType>::ReturnType, IsCopyable>::create(
-                ContainerSet<ContainerType>::create(term), type_system);
-    }
-
-    template <typename ObjT_>
-    typename boost::disable_if<LikeMagic::Utility::IsContainer<ObjT_>,
-        AbstractCppObjProxy*>::type
-    each_impl() const
-    {
-        std::cout << LikeMagic::Utility::TypeDescr<ObjT_>::text() << " is not a container; each has no meaning here." << std::endl;
-        throw std::logic_error("each should not be callable on object not a container");
-    }
-
-    */
 
 public:
 
@@ -219,46 +117,10 @@ public:
             return eval(expr);
     }
 
-    /*
-    virtual AbstractCppObjProxy* elem()
-    {
-        return eval(expr);
-    }
-
-    virtual void adv_loop()
-    {
-        advance(expr->get_objsets());
-    }
-
-    virtual void begin_loop()
-    {
-        reset(expr->get_objsets());
-    }
-
-    virtual bool loop_at_end() const
-    {
-        return at_end(expr->get_objsets());
-    }
-    */
-
     virtual void exec()
     {
         expr->eval();
     }
-
-    /*
-
-    virtual void iterate()
-    {
-        iterate(expr, expr->get_objsets());
-    }
-
-    virtual AbstractCppObjProxy* each() const
-    {
-        return each_impl<T>();
-    }
-
-    */
 
     virtual AbstractCppObjProxy* clone() const
     {

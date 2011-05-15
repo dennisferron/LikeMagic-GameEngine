@@ -87,6 +87,8 @@ public:
     std::vector<std::string> get_base_names() const;
     std::vector<AbstractClass const*> get_base_classes() const;
     virtual TypeIndex get_type() const = 0;
+
+    virtual bool class_is_copyable() const = 0;
 };
 
 }}

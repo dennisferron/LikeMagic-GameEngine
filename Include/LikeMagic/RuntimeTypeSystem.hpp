@@ -45,7 +45,11 @@ class RuntimeTypeSystem : public AbstractTypeSystem
 private:
     TypeInfoCache* dll_shared_typeinfo;
 
-    // Dummy type to represent SFMO collection methods
+    // Used for a type index for proxy methods.  Don't want to use AbstractCppObjProxy
+    // because we might actually want to bind methods to it later.
+    struct ProxyMethodsType {};
+
+    // Dummy type to represent SFMO collection methods.
     struct SFMOCollection {};
 
     // Dummy type to represent an unregistered C++ class
@@ -91,7 +95,6 @@ private:
     {
     }
 
-
     template <typename T, bool is_copyable>
     Class<T, is_copyable>& register_class_impl(std::string name, NamespacePath const ns)
     {
@@ -100,7 +103,23 @@ private:
         static TypeIndex type(BetterTypeInfo::create_index<T>());
         if (has_class(type))
         {
-            return *dynamic_cast<Class<T, is_copyable>*>(get_class(type));
+            auto src = get_class(type);
+
+            if (!src)
+                throw std::logic_error("When getting class " + type.describe() + " got null instead.");
+
+            if (src->class_is_copyable() != is_copyable)
+            {
+                throw std::logic_error("Class " + src->get_class_name() + " originally registered " +  (src->class_is_copyable()? "copyable" : "noncopyable")
+                 + " re-registered here as " + (is_copyable? "copyable" : "noncopyable") + ".  (Changing copyable/noncopyable attribute is not supported.)");
+            }
+
+            auto result = dynamic_cast<Class<T, is_copyable>*>(get_class(type));
+
+            if (!result)
+                throw std::logic_error("Error converting AbstractClass " + src->get_class_name() + " to Class<" + type.describe() + (is_copyable? "copyable" : "noncopyable") + ">");
+
+            return *result;
         }
         else
         {

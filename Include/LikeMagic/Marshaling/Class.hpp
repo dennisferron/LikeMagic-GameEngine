@@ -86,6 +86,8 @@ public:
 
     virtual TypeIndex get_type() const { return BetterTypeInfo::create_index<T>(); }
 
+    virtual bool class_is_copyable() const { return is_copyable; }
+
     virtual AbstractCppObjProxy* create_class_proxy() const
     {
         return

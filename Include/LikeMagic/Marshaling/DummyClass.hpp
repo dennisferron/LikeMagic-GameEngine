@@ -49,6 +49,8 @@ public:
 
     virtual TypeIndex get_type() const { return type; }
 
+    virtual bool class_is_copyable() const { return true; }
+
     virtual AbstractCppObjProxy* create_class_proxy() const
     {
         return

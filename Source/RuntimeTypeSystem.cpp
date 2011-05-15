@@ -52,7 +52,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     TypeInfoCache::set_instance(dll_shared_typeinfo);
 
     // Register the special classes
-    static TypeIndex proxy_methods_type = BetterTypeInfo::create_index<AbstractCppObjProxy>();
+    static TypeIndex proxy_methods_type = BetterTypeInfo::create_index<ProxyMethodsType>();
     static TypeIndex collection_methods_type = BetterTypeInfo::create_index<SFMOCollection>();
 
     functions = new StaticMethods(*this, NamespacePath::global());
@@ -94,6 +94,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     proxy_methods->bind_method("lazy", &AbstractCppObjProxy::lazy);
     proxy_methods->bind_method("get_class", &AbstractCppObjProxy::get_class);
     proxy_methods->bind_method("get_type", &AbstractCppObjProxy::get_type);
+    proxy_methods->bind_method("lm_get_type", &AbstractCppObjProxy::get_type);  // Added this because AbstractClass class_proxy also has a get_type we don't want to call
     proxy_methods->bind_method("describe", &AbstractCppObjProxy::describe);
     proxy_methods->bind_method("get_base_names", &AbstractCppObjProxy::get_base_names);
 
@@ -131,45 +132,6 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     add_conv<void*&, void*>();
 
     add_all_num_conv((signed char)(short)(int)(long)(unsigned char)(unsigned short)(unsigned int)(unsigned long)(float)(double))
-
-    /*
-    add_conv<  double&,         unsigned short,   NumberConv>();
-    add_conv<  double&,         unsigned short&,   NumberConv>();
-    add_conv<  double&,         unsigned int,   NumberConv>();
-    add_conv<  double&,         unsigned int&,   NumberConv>();
-    add_conv<  double&,         unsigned long,   NumberConv>();
-    add_conv<  double&,         unsigned long&,   NumberConv>();
-
-    add_conv<  double&,         short,   NumberConv>();
-    add_conv<  double&,         short&,   NumberConv>();
-    add_conv<  double&,         int,   NumberConv>();
-    add_conv<  double&,         int&,   NumberConv>();
-    add_conv<  double&,         long,   NumberConv>();
-    add_conv<  double&,         long&,   NumberConv>();
-
-    add_conv<  double&,         float,   NumberConv>();
-    add_conv<  double&,         float&,   NumberConv>();
-
-
-    add_conv<  unsigned short,   NumberConv>();
-    add_conv<  unsigned short&,   NumberConv>();
-    add_conv<  unsigned int,   NumberConv>();
-    add_conv<  unsigned int&,   NumberConv>();
-    add_conv<  unsigned long,   NumberConv>();
-    add_conv<  double&,         unsigned long&,   NumberConv>();
-
-    add_conv<  double&,         short,   NumberConv>();
-    add_conv<  double&,         short&,   NumberConv>();
-    add_conv<  double&,         int,   NumberConv>();
-    add_conv<  double&,         int&,   NumberConv>();
-    add_conv<  double&,         long,   NumberConv>();
-    add_conv<  double&,         long&,   NumberConv>();
-
-    add_conv<  double&,         float,   NumberConv>();
-    add_conv<  double&,         float&,   NumberConv>();
-
-    */
-
 
     // Allow string conversions
     add_conv<  std::string&,    std::wstring,   StringConv>();

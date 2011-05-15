@@ -21,7 +21,11 @@ type_system := LM_Protos type_system
 
 LikeMagic := Object clone
 
-LikeMagic namespace := bootstrap LM_Protos namespace
+// Set up the root aka global namespace.
+// Later this will be supplanted by the LikeMagic static methods object
+// for global functions, but until then we need a place to put other classes
+// and namespaces as they are registered.
+LikeMagic namespace := Object clone
 
 // What to do when a class is added.
 IoVM set_onRegisterClass(
@@ -34,22 +38,36 @@ IoVM set_onRegisterClass(
         // Look up the cpp namespace to get the Io object for it
         nsObj := find_namespace(cppNs)
 
+        // The root namespace object is not inside the root namespace but rather one level up
+        if (cppNs is_root and className == "namespace",
+            nsObj := LikeMagic
+        )
+
         // The abstract_class object is the type system representation of the class,
         // but we need to create a specialized proxy instance of the class that allows calling the "new" method.
-        class_proto := abstract_class create_class_proxy proxy_to_io_obj
+        class_proto := IoVM proxy_to_io_obj(abstract_class create_class_proxy)
 
-        writeln("class_proxy LikeMagic type = ", class_proto get_type describe)
+        // Note:  on class_proto can only call new or ProxyMethods.  AbstractClass defines a get_type that overrides the
+        // proxy method get_type, so we must use lm_get_type instead.
+
+        //writeln("class_proxy LikeMagic type = ", class_proto lm_get_type describe)
 
         // If the slot already exists, append it to the new object so name lookup will work.
         if (nsObj hasSlot(className),
             existingObj := nsObj getSlot(className)
             if (existingObj type == "LikeMagic",
                 msg := "Cannot add LikeMagic class twice (or two different ones with the same class name).  Note:  namespace=" .. (cppNs to_string) .. " and className=" .. className
-                msg = msg .. "  Note: existing object LikeMagic type=" .. (existingObj get_type describe) .. " and new object LikeMagic type=" .. (class_proto get_type describe)
+                msg = msg .. "  Note: existing object LikeMagic type=" .. (existingObj get_type describe) .. " and new object LikeMagic type=" .. (class_proto lm_get_type describe)
                 Exception raise(msg)
             ,
-                writeln("moving Io object namespace to proto for ", className)
-                class_proto appendProto(nsObj getSlot(className))
+                writeln("Consolidating namespace ", className)
+                old_proto := nsObj getSlot(className)
+                old_proto slotNames foreach(name,
+                    if (name != "type",
+                        writeln("Copying ", name)
+                        class_proto setSlot(name, old_proto getSlot(name))
+                    )
+                )
             )
         )
 
@@ -72,47 +90,13 @@ find_namespace := method(ns,
 
 type_system add_type_system_observer(IoVM)
 
-/*
-bootstrap do(
-
-    // LM_Proxy is just a proto we use for all LikeMagic type sys objs.
-    // Move LM_Proxy object from bootstrap object to LikeMagic object.
-    LikeMagic LM_Proxy := LM_Proxy
-
-
-    // A hack to allow the LikeMagic find_class method to work before
-    // namespace support and AbstractClass bindings:  before namespaces,
-    // make find look up the slot in the bootstrap object.
-    // After namespace support is in place, find_class will be replaced
-    // with a different version that uses namespaces.
-    LikeMagic find_class := method(abstract_class,
-        IoVM bind_method(abstract_class, "get_class_name")
-        getSlot(abstract_class get_class_name)
+print_namespace_tree := method(ns, name, depth,
+    depth repeat(write("    "))
+    writeln(name)
+    ns slotNames foreach(name,
+        print_namespace_tree(ns getSlot(name), name, depth+1)
     )
-
-    // Register the IoVM as a type system observer so that
-    // our register_class, register_method, etc. things will get input.
-    IoVM bind_method(type_system, "add_type_system_observer")
-    type_system add_type_system_observer(IoVM)
-
-    // Create the bindings for the minimum typesystem objects needed to make
-    // namespace support work.  This will add protos for AbstractClass
-    // and Namespace, and will attach methods to get the namespace info.
-    IoVM bind_method(type_system, "add_bindings")
-    type_system add_bindings
-
-    // Now replace the bootstrap find_class implementation with
-    // the version that knows about namespaces.
-    LikeMagic find_class := method(abstract_class,
-        create_namespace(abstract_class get_namespace, abstract_class get_class_name)
-        get_namespace getSlot(abstract_class get_class_name)
-    )
-
-    // And rebind everything, thus populating the namespaces.
-    type_system add_bindings
 )
 
-// Don't need the bootstrap object anymore, hide the evidence.
-removeSlot("bootstrap")
+print_namespace_tree(LikeMagic namespace, "global", 0)
 
-*/
