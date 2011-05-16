@@ -97,6 +97,7 @@
 		<Unit filename="Include/LikeMagic/SFMO/FalseExpr.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/LazyExpr.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/MethodCall.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/NamespaceProxy.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/NullExpr.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/NumberCachingTrampoline.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/Reference.hpp" />
@@ -158,6 +159,8 @@
 		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/Namespace.cpp" />
 		<Unit filename="Source/NamespacePath.cpp" />
+		<Unit filename="Source/NamespaceProxy.cpp" />
+		<Unit filename="Source/ProxyMethods.cpp" />
 		<Unit filename="Source/RuntimeTypeSystem.cpp" />
 		<Unit filename="Source/StaticMethods.cpp" />
 		<Unit filename="Source/TypeConvGraph.cpp" />

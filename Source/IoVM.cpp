@@ -249,8 +249,14 @@ void IoVM::io_exception(void* context, IoObject* coroutine)
 
 void IoVM::mark() const
 {
-    IoObject_shouldMarkIfNonNull(last_exception);
-    IoObject_shouldMarkIfNonNull(LM_Proxy);
+    // If you don't call base mark, child objects don't get marked!
+    MarkableObjGraph::mark();
+
+    if (!is_just_testing())
+    {
+        IoObject_shouldMarkIfNonNull(last_exception);
+        IoObject_shouldMarkIfNonNull(LM_Proxy);
+    }
 }
 
 IoObject* IoVM::proxy_to_io_obj(AbstractCppObjProxy* proxy)

@@ -44,6 +44,11 @@ using namespace LikeMagic::Utility;
 
 using namespace std;
 
+string test_func()
+{
+    return "it worked!";
+}
+
 RuntimeTypeSystem::RuntimeTypeSystem()
 {
     // The runtime type system creates the type info cache.
@@ -53,11 +58,11 @@ RuntimeTypeSystem::RuntimeTypeSystem()
 
     // Register the special classes
     static TypeIndex proxy_methods_type = BetterTypeInfo::create_index<ProxyMethodsType>();
-    static TypeIndex collection_methods_type = BetterTypeInfo::create_index<SFMOCollection>();
+    //static TypeIndex collection_methods_type = BetterTypeInfo::create_index<SFMOCollection>();
 
-    functions = new StaticMethods(*this, NamespacePath::global());
+    //functions = new StaticMethods(*this, NamespacePath::global());
     proxy_methods = new ProxyMethods(proxy_methods_type, "ProxyMethods", *this, NamespacePath::global());
-    collection_methods = new ProxyMethods(collection_methods_type, "CollectionMethods", *this, NamespacePath::global());
+    //collection_methods = new ProxyMethods(collection_methods_type, "CollectionMethods", *this, NamespacePath::global());
 
 
     // Allow conversions from nil to any pointer.
@@ -71,7 +76,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     LM_CLASS_NO_COPY((*this), AbstractCppObjProxy)
 
     LM_CLASS_NO_COPY((*this), AbstractClass)
-    LM_FUNC(AbstractClass, (get_class_name)(get_type)(create_class_proxy)(get_namespace))
+    LM_FUNC(AbstractClass, (get_class_name)(get_type)(create_class_proxy)(get_namespace)(get_method_names))
 
     LM_CLASS((*this), TypeIndex)
     LM_FUNC(TypeIndex, (describe))
@@ -79,13 +84,18 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     LM_CLASS_NO_COPY((*this), NamespacePath)
     LM_FUNC(NamespacePath, (is_root)(get_name)(get_parent)(to_string))
 
-    add_class(functions->get_type(), functions);
+    //add_class(functions->get_type(), functions);
     add_class(proxy_methods_type, proxy_methods);
-    add_class(collection_methods_type, collection_methods);
+    //add_class(collection_methods_type, collection_methods);
+
+    // If you think you need this binding, more likely you're doing something else wrong:
+    // (StaticMethods' type info is supposed to be a NamespaceTypeInfo, not a reference to StaticMethods).
+    //LM_CLASS_NO_COPY((*this), StaticMethods)
 
     // StaticMethods is by value but a Term returns by reference;
     // need to give type system ability to do the conversion.
-    add_conv<StaticMethod&, StaticMethod>();
+    //add_conv<StaticMethod&, StaticMethod>();
+    //add_conv<StaticMethod const&, StaticMethod>();
 
     //collection_methods->bind_method("each", &AbstractCppObjProxy::each);
 
@@ -155,5 +165,14 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     register_class<std::vector<short>>("vector_of_short");
     register_class<std::vector<unsigned short>>("vector_of_ushort");
 
+    typedef vector<string> vector_of_string;
+    LM_CLASS((*this), vector_of_string)
+    LM_FUNC(vector_of_string, (size))
+    LM_FUNC_OVERLOAD_BOTH(vector_of_string, at, string&, vector_of_string::size_type)
+    //LM_FUNC_OVERLOAD(vector_of_string, "at", at, vector_of_string::reference, size_type)
+    //LM_FUNC_OVERLOAD_CONST(vector_of_string, "at", at, vector_of_string::const_reference, vector_of_string::size_type)
+
+    auto& funcs_LM = register_functions();
+    funcs_LM.bind_method("test_func", test_func);
 }
 

@@ -48,7 +48,6 @@ IoObject* to_seq(std::vector<T> const& vect, IoState* self)
     return IoSeq_newWithUArray_copy_(self, uarray, 0);
 }
 
-
 #define DECL_CONV(name, type, code) \
 struct To##name : public AbstractTypeConverter \
 { \

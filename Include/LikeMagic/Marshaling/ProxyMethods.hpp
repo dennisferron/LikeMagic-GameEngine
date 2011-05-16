@@ -28,9 +28,7 @@ private:
     ProxyMethods& operator=(ProxyMethods const&);
 
     friend class LikeMagic::RuntimeTypeSystem;
-    ProxyMethods(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePath const namespace_) : DummyClass<ProxyMethods>(type_, name_, type_system_, namespace_)
-    {
-    }
+    ProxyMethods(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePath const namespace_);
 
 public:
 
@@ -41,6 +39,9 @@ public:
         auto calltarget = new ProxyMethodSelector<F>(f, type_system);
         add_method(method_name, calltarget);
     }
+
+    virtual AbstractCppObjProxy* create_class_proxy() const;
+
 };
 
 

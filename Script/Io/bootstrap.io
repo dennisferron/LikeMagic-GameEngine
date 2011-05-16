@@ -28,52 +28,51 @@ LikeMagic := Object clone
 LikeMagic namespace := Object clone
 
 // What to do when a class is added.
-IoVM set_onRegisterClass(
-    block(abstract_class,
-        className := abstract_class get_class_name
-        cppNs := abstract_class get_namespace
+IoVM set_onRegisterClass(block(abstract_class,
 
-        writeln("register class ", className, " in ", cppNs to_string, " and LikeMagic type=", abstract_class get_type describe)
+    className := abstract_class get_class_name
+    cppNs := abstract_class get_namespace
 
-        // Look up the cpp namespace to get the Io object for it
-        nsObj := find_namespace(cppNs)
+    writeln("register class ", className, " in ", cppNs to_string, " and LikeMagic type=", abstract_class get_type describe)
 
-        // The root namespace object is not inside the root namespace but rather one level up
-        if (cppNs is_root and className == "namespace",
-            nsObj := LikeMagic
-        )
+    // Look up the cpp namespace to get the Io object for it
+    nsObj := find_namespace(cppNs)
 
-        // The abstract_class object is the type system representation of the class,
-        // but we need to create a specialized proxy instance of the class that allows calling the "new" method.
-        class_proto := IoVM proxy_to_io_obj(abstract_class create_class_proxy)
+    // The root namespace object is not inside the root namespace but rather one level up
+    if (cppNs is_root and className == "namespace",
+        nsObj := LikeMagic
+    )
 
-        // Note:  on class_proto can only call new or ProxyMethods.  AbstractClass defines a get_type that overrides the
-        // proxy method get_type, so we must use lm_get_type instead.
+    // The abstract_class object is the type system representation of the class,
+    // but we need to create a specialized proxy instance of the class that allows calling the "new" method.
+    class_proto := IoVM proxy_to_io_obj(abstract_class create_class_proxy)
 
-        //writeln("class_proxy LikeMagic type = ", class_proto lm_get_type describe)
+    // Note:  on class_proto can only call new or ProxyMethods.  AbstractClass defines a get_type that overrides the
+    // proxy method get_type, so we must use lm_get_type instead.
 
-        // If the slot already exists, append it to the new object so name lookup will work.
-        if (nsObj hasSlot(className),
-            existingObj := nsObj getSlot(className)
-            if (existingObj type == "LikeMagic",
-                msg := "Cannot add LikeMagic class twice (or two different ones with the same class name).  Note:  namespace=" .. (cppNs to_string) .. " and className=" .. className
-                msg = msg .. "  Note: existing object LikeMagic type=" .. (existingObj get_type describe) .. " and new object LikeMagic type=" .. (class_proto lm_get_type describe)
-                Exception raise(msg)
-            ,
-                writeln("Consolidating namespace ", className)
-                old_proto := nsObj getSlot(className)
-                old_proto slotNames foreach(name,
-                    if (name != "type",
-                        writeln("Copying ", name)
-                        class_proto setSlot(name, old_proto getSlot(name))
-                    )
+    //writeln("class_proxy LikeMagic type = ", class_proto lm_get_type describe)
+
+    // If the slot already exists, append it to the new object so name lookup will work.
+    if (nsObj hasSlot(className),
+        existingObj := nsObj getSlot(className)
+        if (existingObj type == "LikeMagic",
+            msg := "Cannot add LikeMagic class twice (or two different ones with the same class name).  Note:  namespace=" .. (cppNs to_string) .. " and className=" .. className
+            msg = msg .. "  Note: existing object LikeMagic type=" .. (existingObj get_type describe) .. " and new object LikeMagic type=" .. (class_proto lm_get_type describe)
+            Exception raise(msg)
+        ,
+            writeln("Consolidating namespace ", className)
+            old_proto := nsObj getSlot(className)
+            old_proto slotNames foreach(name,
+                if (name != "type",
+                    writeln("Copying ", name)
+                    class_proto setSlot(name, old_proto getSlot(name))
                 )
             )
         )
-
-        nsObj setSlot(className, class_proto)
     )
-)
+
+    nsObj setSlot(className, class_proto)
+))
 
 // Convert LikeMagic::Namespace object to the Io object associated with it.
 find_namespace := method(ns,
@@ -98,5 +97,6 @@ print_namespace_tree := method(ns, name, depth,
     )
 )
 
-print_namespace_tree(LikeMagic namespace, "global", 0)
+//print_namespace_tree(LikeMagic namespace, "global", 0)
 
+Lobby appendProto(LikeMagic)

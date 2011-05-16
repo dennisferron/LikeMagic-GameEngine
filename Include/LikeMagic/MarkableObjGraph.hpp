@@ -37,7 +37,20 @@ private:
     // them to stop marking them when they are deleted.
     mutable std::set<MarkableObjGraph const*> parents;
 
+    // Used when the class is just testing to make sure the derived class is really implementing correctly;
+    mutable bool just_testing;
+    mutable bool has_marked;
+
+    // Used to ensure derived classes comply with the class contract (they have to call the base mark() function).
+    void test_compliance() const;
+
+protected:
+
+    bool is_just_testing() const;
+
 public:
+
+    MarkableObjGraph();
 
     template <typename T>
     void add_mark_obj(T const* obj) const
@@ -70,17 +83,8 @@ public:
 
 public:
 
-    ~MarkableObjGraph()
-    {
-        for (auto it=parents.begin(); it!=parents.end(); ++it)
-            (*it)->remove_mark_obj(this);
-    }
-
-    virtual void mark() const
-    {
-        for (auto it=children.begin(); it!=children.end(); ++it)
-            (*it)->mark();
-    }
+    ~MarkableObjGraph();
+    virtual void mark() const;
 };
 
 

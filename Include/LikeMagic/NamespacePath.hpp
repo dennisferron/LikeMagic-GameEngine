@@ -11,6 +11,8 @@
 #include <vector>
 #include <string>
 
+#include "LikeMagic/Utility/TypeIndex.hpp"
+
 namespace LikeMagic {
 
 // Namespace wraps RuntimeTypeSystem, but RuntimeTypeSystem needs to be passed a namespace path.
@@ -39,6 +41,7 @@ public:
     bool is_root() const;
     std::string to_string() const;
     std::string get_name() const;
+    LikeMagic::Utility::TypeIndex get_type() const;
 };
 
 }

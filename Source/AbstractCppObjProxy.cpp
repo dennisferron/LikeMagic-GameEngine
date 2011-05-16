@@ -34,6 +34,10 @@ AbstractCppObjProxy* AbstractCppObjProxy::call(std::string method_name, ArgList 
     return call(method, args);
 }
 
+AbstractClass const* AbstractCppObjProxy::get_class() const
+{
+    return class_;
+}
 
 AbstractCppObjProxy* AbstractCppObjProxy::call(AbstractCallTargetSelector* method, ArgList args)
 {

@@ -14,7 +14,8 @@
 #include "LikeMagic/Marshaling/DummyClass.hpp"
 #include "NamespaceTypeInfo.hpp"
 
-namespace LikeMagic { namespace Utility { struct StaticMethod; }}
+// We don't use this anymore, we use NamespaceTypeInfo instead.
+//namespace LikeMagic { namespace Utility { struct StaticMethod; }}
 
 // Used in friend declaration.
 namespace LikeMagic { class RuntimeTypeSystem; }
@@ -42,6 +43,9 @@ public:
         auto calltarget = new MethodCallGenerator<StaticMethod, F>(f, type_system);
         add_method(method_name, calltarget);
     }
+
+    virtual AbstractCppObjProxy* create_class_proxy() const;
+
 };
 
 

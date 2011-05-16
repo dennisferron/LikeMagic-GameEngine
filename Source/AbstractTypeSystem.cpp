@@ -88,7 +88,10 @@ void AbstractTypeSystem::register_method(LikeMagic::Marshaling::AbstractClass* c
 void AbstractTypeSystem::add_class(TypeIndex index, AbstractClass* class_ptr)
 {
     if (!index.is_class_type())
-        throw std::logic_error("add_class index to be a class type!");
+        throw std::logic_error("add_class type index has to be a class type!");
+
+    if (!(index == class_ptr->get_type()))
+        throw std::logic_error("add_class: Index=" + index.describe() + " not the same as class_ptr type=" + class_ptr->get_type().describe());
 
     //classes[index] = class_ptr;
 
@@ -223,7 +226,10 @@ AbstractClass* AbstractTypeSystem::get_class(TypeIndex type) const
         return p2;
     }
     else
-        return unknown_class;
+    {
+        //return unknown_class;
+        throw std::logic_error("No class registered for type " + type.describe());
+    }
 }
 
 TypeInfoList AbstractTypeSystem::get_registered_types() const
@@ -254,7 +260,7 @@ std::string AbstractTypeSystem::get_class_name(TypeIndex type) const
         name = get_class(type)->get_class_name();
     else
     {
-        name = std::string("Unknown_CppObj");
+        name = std::string("<unregistered type>");
         std::cout << "warning: nothing registered for type "
             << type.describe() << std::endl;
         //throw std::logic_error("Nothing registered for type " + type.describe());

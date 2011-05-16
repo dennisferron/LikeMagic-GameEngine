@@ -8,6 +8,11 @@
 
 
 #include "LikeMagic/NamespacePath.hpp"
+#include "LikeMagic/Marshaling/NamespaceTypeInfo.hpp"
+
+using namespace LikeMagic;
+using namespace LikeMagic::Utility;
+using namespace LikeMagic::Marshaling;
 
 namespace LikeMagic {
 
@@ -20,6 +25,12 @@ NamespacePath::NamespacePath(NamespacePath const& other)
 {
 }
 
+TypeIndex NamespacePath::get_type() const
+{
+    // TODO: maybe using a user-readable string is not the most reliable way to make a unique namespace string.
+    // Currently this should not be a problem, but might want to investigate having two versions of to_string.
+    return NamespaceTypeInfo::create_index(to_string());
+}
 
 NamespacePath::NamespacePath(std::vector<std::string> parent_path, std::string name)
     : path(parent_path)

@@ -89,7 +89,7 @@ public:
     AbstractCppObjProxy* call(std::string method_name, ArgList args);
     AbstractCppObjProxy* call(AbstractCallTargetSelector* method, ArgList args);
     TypeInfoList get_arg_types(std::string method_name, int num_args) const;
-    AbstractClass const* get_class() const { return 0; }
+    virtual AbstractClass const* get_class() const;
     AbstractCallTargetSelector* get_method(std::string method_name, int num_args) const;
 
     std::string get_base_names() const;

@@ -50,15 +50,19 @@ private:
     struct ProxyMethodsType {};
 
     // Dummy type to represent SFMO collection methods.
-    struct SFMOCollection {};
+    //struct SFMOCollection {};
 
     // Dummy type to represent an unregistered C++ class
     // (which may be the return value of a function)
     struct Unknown_CppObj {};
 
-    StaticMethods* functions;
+    // Don't use this anymore; use namespace static methods instead.
+    //StaticMethods* functions;
+
     ProxyMethods* proxy_methods;
-    ProxyMethods* collection_methods;
+
+    // Don't use this anymore - used to be used for SFMO.
+    //ProxyMethods* collection_methods;
 
     template <typename T, bool is_copyable>
     typename boost::enable_if_c<is_copyable>::type
@@ -95,6 +99,28 @@ private:
     {
     }
 
+    template <typename T>
+    T& cast_existing_class(TypeIndex type, bool is_copyable)
+    {
+        auto* src = get_class(type);
+
+        if (!src)
+            throw std::logic_error("When getting class " + type.describe() + " got null instead.");
+
+        if (src->class_is_copyable() != is_copyable)
+        {
+            throw std::logic_error("Class " + src->get_class_name() + " originally registered " +  (src->class_is_copyable()? "copyable" : "noncopyable")
+             + " re-registered here as " + (is_copyable? "copyable" : "noncopyable") + ".  (Changing copyable/noncopyable attribute is not supported.)");
+        }
+
+        auto* result = dynamic_cast<T*>(get_class(type));
+
+        if (!result)
+            throw std::logic_error("Error converting AbstractClass " + src->get_class_name() + " to Class of" + type.describe() + (is_copyable? ", copyable" : ", noncopyable"));
+
+        return *result;
+    }
+
     template <typename T, bool is_copyable>
     Class<T, is_copyable>& register_class_impl(std::string name, NamespacePath const ns)
     {
@@ -102,25 +128,7 @@ private:
 
         static TypeIndex type(BetterTypeInfo::create_index<T>());
         if (has_class(type))
-        {
-            auto src = get_class(type);
-
-            if (!src)
-                throw std::logic_error("When getting class " + type.describe() + " got null instead.");
-
-            if (src->class_is_copyable() != is_copyable)
-            {
-                throw std::logic_error("Class " + src->get_class_name() + " originally registered " +  (src->class_is_copyable()? "copyable" : "noncopyable")
-                 + " re-registered here as " + (is_copyable? "copyable" : "noncopyable") + ".  (Changing copyable/noncopyable attribute is not supported.)");
-            }
-
-            auto result = dynamic_cast<Class<T, is_copyable>*>(get_class(type));
-
-            if (!result)
-                throw std::logic_error("Error converting AbstractClass " + src->get_class_name() + " to Class<" + type.describe() + (is_copyable? "copyable" : "noncopyable") + ">");
-
-            return *result;
-        }
+            return cast_existing_class<Class<T, is_copyable>>(type, is_copyable);
         else
         {
             auto result = new LikeMagic::Marshaling::Class<T, is_copyable>(name, *this, ns);
@@ -183,9 +191,17 @@ public:
 
     StaticMethods& register_functions(NamespacePath const ns=NamespacePath::global())
     {
-        StaticMethods* result = new StaticMethods(*this, ns);
-        add_class(result->get_type(), result);
-        return *result;
+        TypeIndex type = ns.get_type();
+
+        if (has_class(type))
+            return cast_existing_class<StaticMethods>(type, true);
+        else
+        {
+            StaticMethods* result = new StaticMethods(*this, ns);
+            add_class(result->get_type(), result);
+            result->add_base_abstr(proxy_methods);
+            return *result;
+        }
     }
 
 };

@@ -13,8 +13,6 @@
 
 namespace LikeMagic { namespace Marshaling {
 
-using LikeMagic::AbstractTypeSystem;
-using namespace LikeMagic::SFMO;
 using namespace LikeMagic::Utility;
 
 class NamespaceTypeInfo : public AbstractTypeInfo
@@ -64,7 +62,7 @@ public:
 
     virtual std::string describe() const
     {
-        return "namespace " + namespace_name;
+        return "namespace-typeinfo '" + namespace_name + "'";
     }
 };
 
