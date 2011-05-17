@@ -51,6 +51,8 @@ private:
     IoBlock onRegisterClass;
     IoBlock onRegisterBase;
 
+    IoBlock onAddProto;
+
     IoObject* LM_Proxy;
     IoObject* LM_Protos;
 
@@ -74,10 +76,10 @@ public:
     static IoObject* io_userfunc(IoObject *self, IoObject *locals, IoMessage *m);
     static void io_exception(void* context, IoObject* coroutine);
 
-    void add_proto(std::string name, AbstractCppObjProxy* proxy, bool conv_to_script=false) const;
+    void add_proto(std::string name, AbstractCppObjProxy* proxy, LikeMagic::NamespacePath ns=LikeMagic::NamespacePath::global(), bool conv_to_script=false) const;
 
     template <typename T>
-    void add_proto(std::string name,  T obj=T(), bool to_script=false) const
+    void add_proto(std::string name,  T obj=T(), LikeMagic::NamespacePath ns=LikeMagic::NamespacePath::global(), bool to_script=false) const
     {
         add_proto
         (
@@ -90,6 +92,7 @@ public:
                 ),
                 type_system
             ),
+            ns,
             to_script
         );
     }

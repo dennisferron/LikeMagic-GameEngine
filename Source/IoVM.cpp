@@ -63,6 +63,15 @@ struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter
     virtual std::string describe() const { return "PtrToIoObjectConv"; }
 };
 
+void test_func(IoVM& iovm)
+{
+    auto ns = NamespacePath::global().subspace("test_ns");
+    cout << "Adding test_ns::str_proto_1 (no script conversion)" << endl;
+    iovm.add_proto("str_proto_1", string("testing 1..."), ns, false);
+    cout << "Adding test_ns::str_proto_2 (with script conversion)" << endl;
+    iovm.add_proto("str_proto_2", string("testing 2..."), ns, true);
+}
+
 IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     record_freed_flag(false), free_watch_flag(false), last_exception(0)
 {
@@ -102,7 +111,7 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     LM_BASE(IoVM, ITypeSystemObserver)
     LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(record_freed_objects)(set_record_freed_objects)
             (watch_freed_objects)(set_watch_freed_objects)(add_watch_for_freed_object)(check_if_freed)(proxy_to_io_obj))
-    LM_FIELD(IoVM, (onRegisterMethod)(onRegisterClass)(onRegisterBase))
+    LM_FIELD(IoVM, (onRegisterMethod)(onRegisterClass)(onRegisterBase)(onAddProto))
 
     LM_CLASS_NO_COPY(type_sys, AbstractTypeSystem)
     LM_CLASS_NO_COPY(type_sys, RuntimeTypeSystem)
@@ -138,6 +147,9 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
 
     // The object that represents the global namespace.
     //add_proto("namespace", Namespace::global(type_sys).register_functions().create_class_proxy(), false);
+
+    auto& funcs_LM = type_sys.register_functions();
+    funcs_LM.bind_method("test_func", test_func);
 }
 
 void IoVM::bind_method(IoObject* obj, std::string method_name)
@@ -182,7 +194,7 @@ IoObject* IoVM::castToIoObjectPointer(void* p)
     return reinterpret_cast<IoObject*>(p);
 }
 
-void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, bool conv_to_script) const
+void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, LikeMagic::NamespacePath ns, bool conv_to_script) const
 {
     IoObject* clone;
     if (conv_to_script)
@@ -196,7 +208,10 @@ void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, bool conv_to_
         IoObject_setDataPointer_(clone, proxy);
     }
 
-    IoObject_setSlot_to_(LM_Protos, IoState_symbolWithCString_(state, name.c_str()), clone);
+    if (onAddProto.empty())
+        IoObject_setSlot_to_(LM_Protos, IoState_symbolWithCString_(state, name.c_str()), clone);
+    else
+        onAddProto(ns, name, clone);
 }
 
 IoObject* IoVM::do_string(std::string io_code) const

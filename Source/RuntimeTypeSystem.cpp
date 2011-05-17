@@ -44,10 +44,6 @@ using namespace LikeMagic::Utility;
 
 using namespace std;
 
-string test_func()
-{
-    return "it worked!";
-}
 
 RuntimeTypeSystem::RuntimeTypeSystem()
 {
@@ -171,8 +167,5 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     LM_FUNC_OVERLOAD_BOTH(vector_of_string, at, string&, vector_of_string::size_type)
     //LM_FUNC_OVERLOAD(vector_of_string, "at", at, vector_of_string::reference, size_type)
     //LM_FUNC_OVERLOAD_CONST(vector_of_string, "at", at, vector_of_string::const_reference, vector_of_string::size_type)
-
-    auto& funcs_LM = register_functions();
-    funcs_LM.bind_method("test_func", test_func);
 }
 

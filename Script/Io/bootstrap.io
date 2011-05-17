@@ -33,7 +33,7 @@ IoVM set_onRegisterClass(block(abstract_class,
     className := abstract_class get_class_name
     cppNs := abstract_class get_namespace
 
-    writeln("register class ", className, " in ", cppNs to_string, " and LikeMagic type=", abstract_class get_type describe)
+    //writeln("register class ", className, " in ", cppNs to_string, " and LikeMagic type=", abstract_class get_type describe)
 
     // Look up the cpp namespace to get the Io object for it
     nsObj := find_namespace(cppNs)
@@ -81,11 +81,19 @@ find_namespace := method(ns,
     ,
         parentNs := find_namespace(ns get_parent)
         if (parentNs hasSlot(ns get_name) not,
+            writeln("creating namespace ", ns get_name, " in ", ns get_parent to_string)
             parentNs setSlot(ns get_name, Object clone)
         )
-        return getSlot(ns get_name)
+        return parentNs getSlot(ns get_name)
     )
 )
+
+IoVM set_onAddProto(block(ns, name, obj,
+    writeln("onAddProto, ns type=", ns type, " and name=", name, " and obj type=", obj type)
+    nsObj := find_namespace(ns)
+    //writeln("nsObj = ", nsObj)
+    nsObj setSlot(name, obj)
+))
 
 type_system add_type_system_observer(IoVM)
 
@@ -99,4 +107,6 @@ print_namespace_tree := method(ns, name, depth,
 
 //print_namespace_tree(LikeMagic namespace, "global", 0)
 
-Lobby appendProto(LikeMagic)
+//Lobby appendProto(LikeMagic)
+//Lobby appendProto(LikeMagic namespace)
+
