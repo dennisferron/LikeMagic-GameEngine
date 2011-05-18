@@ -18,7 +18,7 @@ StaticMethods::StaticMethods(AbstractTypeSystem& type_system_, NamespacePath con
         ns.get_type(),
         ns.get_name(),
         type_system_,
-        ns
+        ns.get_parent()
     )
 {
 }

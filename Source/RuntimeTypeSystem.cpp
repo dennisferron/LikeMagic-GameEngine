@@ -169,3 +169,20 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     //LM_FUNC_OVERLOAD_CONST(vector_of_string, "at", at, vector_of_string::const_reference, vector_of_string::size_type)
 }
 
+
+StaticMethods& RuntimeTypeSystem::register_functions(NamespacePath const ns)
+{
+    TypeIndex type = ns.get_type();
+    //cout << "Register functions type index = " << type.get_id() << " " << type.describe() << endl;
+
+    if (has_class(type))
+        return cast_existing_class<StaticMethods>(type, true);
+    else
+    {
+        StaticMethods* result = new StaticMethods(*this, ns);
+        add_class(result->get_type(), result);
+        result->add_base_abstr(proxy_methods);
+        return *result;
+    }
+}
+

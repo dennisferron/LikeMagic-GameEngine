@@ -60,11 +60,11 @@ IoVM set_onRegisterClass(block(abstract_class,
             msg = msg .. "  Note: existing object LikeMagic type=" .. (existingObj get_type describe) .. " and new object LikeMagic type=" .. (class_proto lm_get_type describe)
             Exception raise(msg)
         ,
-            writeln("Consolidating namespace ", className)
+            //writeln("Consolidating namespace ", className)
             old_proto := nsObj getSlot(className)
             old_proto slotNames foreach(name,
                 if (name != "type",
-                    writeln("Copying ", name)
+                    //writeln("Copying ", name)
                     class_proto setSlot(name, old_proto getSlot(name))
                 )
             )
@@ -89,10 +89,11 @@ find_namespace := method(ns,
 )
 
 IoVM set_onAddProto(block(ns, name, obj,
-    writeln("onAddProto, ns type=", ns type, " and name=", name, " and obj type=", obj type)
-    nsObj := find_namespace(ns)
+    writeln("onAddProto")
+    //writeln("onAddProto, ns type=", ns type, " and name=", name, " and obj type=", obj type)
+    //nsObj := find_namespace(ns)
     //writeln("nsObj = ", nsObj)
-    nsObj setSlot(name, obj)
+    //nsObj setSlot(name, obj)
 ))
 
 type_system add_type_system_observer(IoVM)

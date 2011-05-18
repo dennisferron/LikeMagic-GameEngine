@@ -174,6 +174,7 @@ void IoVM::register_base(LikeMagic::Marshaling::AbstractClass const* class_, Lik
 
 void IoVM::register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method)
 {
+    //cout << "Register method " << method_name << endl;
     if (!onRegisterMethod.empty())
         onRegisterMethod(class_, method_name, method);
 }
@@ -208,10 +209,10 @@ void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, LikeMagic::Na
         IoObject_setDataPointer_(clone, proxy);
     }
 
-    if (onAddProto.empty())
+    //if (onAddProto.empty())
         IoObject_setSlot_to_(LM_Protos, IoState_symbolWithCString_(state, name.c_str()), clone);
-    else
-        onAddProto(ns, name, clone);
+    //else
+    //    onAddProto(ns, name, clone);
 }
 
 IoObject* IoVM::do_string(std::string io_code) const

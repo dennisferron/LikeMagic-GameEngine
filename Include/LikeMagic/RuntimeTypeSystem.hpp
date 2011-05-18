@@ -189,21 +189,7 @@ public:
         return result;
     }
 
-    StaticMethods& register_functions(NamespacePath const ns=NamespacePath::global())
-    {
-        TypeIndex type = ns.get_type();
-
-        if (has_class(type))
-            return cast_existing_class<StaticMethods>(type, true);
-        else
-        {
-            StaticMethods* result = new StaticMethods(*this, ns);
-            add_class(result->get_type(), result);
-            result->add_base_abstr(proxy_methods);
-            return *result;
-        }
-    }
-
+    StaticMethods& register_functions(NamespacePath const ns=NamespacePath::global());
 };
 
 }

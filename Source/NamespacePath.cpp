@@ -41,7 +41,8 @@ NamespacePath::NamespacePath(std::vector<std::string> parent_path, std::string n
 NamespacePath::NamespacePath(std::vector<std::string> parent_path, int remove_amt)
     : path(parent_path)
 {
-    path.erase(path.end()+remove_amt, path.end());
+    if (!path.empty())
+        path.erase(path.end()+remove_amt, path.end());
 }
 
 NamespacePath NamespacePath::global()
