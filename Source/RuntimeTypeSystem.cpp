@@ -77,8 +77,12 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     LM_CLASS((*this), TypeIndex)
     LM_FUNC(TypeIndex, (describe))
 
-    LM_CLASS_NO_COPY((*this), NamespacePath)
+    LM_CLASS((*this), NamespacePath)
     LM_FUNC(NamespacePath, (is_root)(get_name)(get_parent)(to_string))
+
+    LM_CLASS((*this), Namespace)
+    LM_FUNC(Namespace, (subspace))
+    Namespace_LM.bind_static_method("global", Namespace::global);
 
     //add_class(functions->get_type(), functions);
     add_class(proxy_methods_type, proxy_methods);

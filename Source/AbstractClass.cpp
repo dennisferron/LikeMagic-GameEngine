@@ -97,7 +97,23 @@ void AbstractClass::suggest_method(std::string method_name, int num_args) const
     auto candidates = methods.find(method_name);
 
     if (candidates == methods.end())
-        throw std::logic_error("Class " + get_class_name() + " does not have any method named " + method_name);
+    {
+        bool has_c = methods.find(method_name + "_c") != methods.end();
+        bool has_nc = methods.find(method_name + "_nc") != methods.end();
+
+        if (has_c || has_nc)
+        {
+            std::string msg = "Class " + get_class_name() + " does not have a method named " + method_name
+                    + " but there is a method named "
+                    + (has_c? method_name + "_c which is the const version of this method" : "")
+                    + (has_c && has_nc? " and " : "")
+                    + (has_nc? method_name + "_nc which is the non-const version of this method" : "")
+                    + ".  (The _c and _nc notation is needed because C++ can overload methods by const-ness which has no direct equivalent in dynamic languages.)";
+            throw std::logic_error(msg);
+        }
+        else
+            throw std::logic_error("Class " + get_class_name() + " does not have any method named " + method_name);
+    }
     else
     {
         std::string arg_nums_list = "";

@@ -106,6 +106,10 @@ print_namespace_tree := method(ns, name, depth,
     )
 )
 
+print_class_info := method(obj,
+    methods := obj
+)
+
 //print_namespace_tree(LikeMagic namespace, "global", 0)
 
 //Lobby appendProto(LikeMagic)

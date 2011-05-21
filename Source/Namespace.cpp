@@ -13,6 +13,16 @@
 
 namespace LikeMagic {
 
+RuntimeTypeSystem& Namespace::get_type_system() const
+{
+    return type_system;
+}
+
+TypeInfoCache* Namespace::get_typeinfo_cache() const
+{
+    return type_system.get_typeinfo_cache();
+}
+
 Namespace::Namespace(RuntimeTypeSystem& type_system_)
     : type_system(type_system_), path(NamespacePath::global()) {}
 

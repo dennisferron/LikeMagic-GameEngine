@@ -34,6 +34,11 @@ private:
 
 public:
 
+    RuntimeTypeSystem& get_type_system() const;
+
+    // Important:  you must set the type info cache instances in all your DLLs to this pointer.
+    TypeInfoCache* get_typeinfo_cache() const;
+
     static Namespace const global(RuntimeTypeSystem& type_system_);
     Namespace const subspace(std::string name) const;
 
