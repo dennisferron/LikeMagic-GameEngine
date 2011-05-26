@@ -132,6 +132,7 @@
 		<Unit filename="Include/LikeMagic/Utility/IsIterator.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/KeyWrapper.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/MakeCall.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/ScriptFunc.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/SetField.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/StripConst.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/StripModifiers.hpp" />
