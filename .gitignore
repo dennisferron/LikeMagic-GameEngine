@@ -4,6 +4,10 @@ Interpreter/NetbeansLinux/Interpreter/dist/Debug/GNU-Linux-x86/*
 Projects/CodeBlocksLinux/Interpreter/bin/Debug/*
 Projects/CodeBlocksLinux/Interpreter/bin/Release/*
 
+# Ignore codeblocks files that don't matter
+*.layout
+*.cbTemp
+
 #Ignore profile/trace files
 gmon.out
 *.gcda
