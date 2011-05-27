@@ -80,8 +80,12 @@ template <typename T> struct LM_InsertConst<T&> { typedef T const& type; };
 #define LM_FIELD_IMPL(r, data, elem) data##_LM.bind_field(BOOST_PP_STRINGIZE(elem), &data::elem);
 #define LM_FIELD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_FIELD_IMPL, class_name, SEQ)
 
-#define LM_MARKABLE_FIELD_IMPL(r, data, elem) data##_LM.bind_markable_field(BOOST_PP_STRINGIZE(elem), &data::elem);
-#define LM_MAKRABLE_FIELD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_FIELD_IMPL, class_name, SEQ)
+// LM_FIELD auto-detects markable fields.
+//#define LM_MARKABLE_FIELD_IMPL(r, data, elem) data##_LM.bind_markable_field(BOOST_PP_STRINGIZE(elem), &data::elem);
+//#define LM_MAKRABLE_FIELD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_FIELD_IMPL, class_name, SEQ)
+
+#define LM_BLOCK_IMPL(r, data, elem) data##_LM.bind_field("On" BOOST_PP_STRINGIZE(elem), &data::BOOST_PP_CAT(On,elem));
+#define LM_BLOCK(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_BLOCK_IMPL, class_name, SEQ)
 
 #define LM_ARRAY_FIELD_IMPL(r, data, elem) data##_LM.bind_array_field(BOOST_PP_STRINGIZE(elem), &data::elem);
 #define LM_ARRAY_FIELD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ARRAY_FIELD_IMPL, class_name, SEQ)
