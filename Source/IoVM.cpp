@@ -94,7 +94,7 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
         LM_Proxy);
 
     // Bind the forward method so all methods will work on it.
-    bind_method(LM_Proxy, "forward");
+    bind_method(LM_Proxy, "forward", NULL);
 
     LM_Protos = IoObject_new(state);
     IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "LM_Protos"),
@@ -109,7 +109,7 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     // Register this vm
     LM_CLASS_NO_COPY(type_sys, IoVM)
     LM_BASE(IoVM, ITypeSystemObserver)
-    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(record_freed_objects)(set_record_freed_objects)
+    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(record_freed_objects)(set_record_freed_objects)(bind_method)
             (watch_freed_objects)(set_watch_freed_objects)(add_watch_for_freed_object)(check_if_freed)(proxy_to_io_obj))
     LM_FIELD(IoVM, (onRegisterMethod)(onRegisterClass)(onRegisterBase)(onAddProto))
 
@@ -140,18 +140,16 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     // You have to have registered the types before you can add protos for them.
 
     // Make this vm accessible in the bootstrap environment
-    add_proto<IoVM&>("IoVM", *this);
+    add_proto<IoVM&>("io_vm", *this);
 
     // Also make the abstract type system available by pointer.
     add_proto<RuntimeTypeSystem&>("type_system", type_sys);
 
     // The object that represents the global namespace.
     //add_proto("namespace", Namespace::global(type_sys).register_functions().create_class_proxy(), false);
-
-    auto& funcs_LM = type_sys.register_functions();
-    funcs_LM.bind_method("test_func", test_func);
 }
 
+/*
 void IoVM::bind_method(IoObject* obj, std::string method_name)
 {
     vector<string> method_names;
@@ -160,7 +158,13 @@ void IoVM::bind_method(IoObject* obj, std::string method_name)
     IoObject_addMethodTable_(obj, mtbl);
     delete[] mtbl;
 }
+*/
 
+void IoVM::bind_method(IoObject* target, std::string method_name, AbstractCallTargetSelector* call_target=NULL)
+{
+    IoSymbol* method_symbol = IoState_symbolWithCString_(state, method_name.c_str());
+    IoObject_addMethod_(target, method_symbol, &API_io_userfunc);
+}
 
 void IoVM::register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base)
 {
@@ -182,7 +186,7 @@ void IoVM::register_method(LikeMagic::Marshaling::AbstractClass const* class_, s
 void IoVM::register_class(LikeMagic::Marshaling::AbstractClass const* class_)
 {
     if (!onRegisterClass.empty())
-        onRegisterClass(class_);
+        class_protos[class_->get_type()] = onRegisterClass.eval<IoObject*>(class_);
 }
 
 IoVM::~IoVM()
@@ -209,10 +213,10 @@ void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, LikeMagic::Na
         IoObject_setDataPointer_(clone, proxy);
     }
 
-    //if (onAddProto.empty())
+    if (onAddProto.empty())
         IoObject_setSlot_to_(LM_Protos, IoState_symbolWithCString_(state, name.c_str()), clone);
-    //else
-    //    onAddProto(ns, name, clone);
+    else
+        onAddProto(ns, name, clone);
 }
 
 IoObject* IoVM::do_string(std::string io_code) const
@@ -384,7 +388,19 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
     else
     {
         IoObject* proto;
-        proto = LM_Proxy;
+
+        TypeIndex type = proxy->get_type().class_type();
+        auto iter = class_protos.find(type);
+        if (iter != class_protos.end())
+        {
+            proto = iter->second;
+        }
+        else
+        {
+            cout << "Warning: no class proto registered for type " << type.describe() << endl;
+            proto = LM_Proxy;
+        }
+
         IoObject* clone = IOCLONE(proto);
         IoObject_setDataPointer_(clone, proxy);
 

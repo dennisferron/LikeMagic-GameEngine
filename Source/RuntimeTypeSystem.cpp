@@ -71,6 +71,8 @@ RuntimeTypeSystem::RuntimeTypeSystem()
 
     LM_CLASS_NO_COPY((*this), AbstractCppObjProxy)
 
+    LM_CLASS_NO_COPY((*this), AbstractCallTargetSelector)
+
     LM_CLASS_NO_COPY((*this), AbstractClass)
     LM_FUNC(AbstractClass, (get_class_name)(get_type)(create_class_proxy)(get_namespace)(get_method_names))
 

@@ -32,7 +32,7 @@ private:
     LikeMagic::RuntimeTypeSystem& type_system;
     IoState* state;  // It was dangerous when this was named "self" - Io macros referencing self are defined for an IoObject, not an IoState
     std::set<TypeIndex> registered_classes;
-    //boost::unordered_map<TypeIndex, IoObject*> cpp_protos;
+    boost::unordered_map<TypeIndex, IoObject*> class_protos;
     boost::unordered_map<IoObject*, std::string> watch_for_free;
     boost::unordered_set<IoObject*> freed_objects;
     bool record_freed_flag;
@@ -56,7 +56,8 @@ private:
     IoObject* LM_Proxy;
     IoObject* LM_Protos;
 
-    void bind_method(IoObject* obj, std::string method_name);
+    //void bind_method(IoObject* obj, std::string method_name);
+    void bind_method(IoObject* target, std::string method_name, AbstractCallTargetSelector* call_target);
 
     IoObject* proxy_to_io_obj(AbstractCppObjProxy* proxy);
 

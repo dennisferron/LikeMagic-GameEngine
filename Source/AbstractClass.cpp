@@ -14,6 +14,7 @@
 #include "boost/lexical_cast.hpp"
 
 using namespace LikeMagic::Marshaling;
+using namespace std;
 
 AbstractClass::AbstractClass(std::string name_, AbstractTypeSystem& type_system_, NamespacePath namespace_) :
     class_name(name_),

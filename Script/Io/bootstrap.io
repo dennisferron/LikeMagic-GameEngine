@@ -9,14 +9,14 @@ LikeMagic := Object clone
 
 
 // The bootstrap object is a temporary object pre-provided by the LikeMagic
-// IoVM C++ code to provide the minimum functionality necessary to bootstrap
+// io_vm C++ code to provide the minimum functionality necessary to bootstrap
 // the rest of the C++ namespace and classes system.
 
 appendProto(bootstrap)
 
 appendProto(bootstrap LM_Protos)
 
-IoVM := LM_Protos IoVM
+io_vm := LM_Protos io_vm
 type_system := LM_Protos type_system
 
 LikeMagic := Object clone
@@ -28,7 +28,7 @@ LikeMagic := Object clone
 LikeMagic namespace := Object clone
 
 // What to do when a class is added.
-IoVM set_onRegisterClass(block(abstract_class,
+io_vm set_onRegisterClass(block(abstract_class,
 
     className := abstract_class get_class_name
     cppNs := abstract_class get_namespace
@@ -45,7 +45,7 @@ IoVM set_onRegisterClass(block(abstract_class,
 
     // The abstract_class object is the type system representation of the class,
     // but we need to create a specialized proxy instance of the class that allows calling the "new" method.
-    class_proto := IoVM proxy_to_io_obj(abstract_class create_class_proxy)
+    class_proto := io_vm proxy_to_io_obj(abstract_class create_class_proxy)
 
     // Note:  on class_proto can only call new or ProxyMethods.  AbstractClass defines a get_type that overrides the
     // proxy method get_type, so we must use lm_get_type instead.
@@ -72,6 +72,14 @@ IoVM set_onRegisterClass(block(abstract_class,
     )
 
     nsObj setSlot(className, class_proto)
+
+    return class_proto
+))
+
+io_vm set_onRegisterMethod(block(abstract_class, method_name, call_target,
+    ns := find_namespace(abstract_class get_namespace)
+    class_proto := ns getSlot(abstract_class get_class_name)
+    io_vm bind_method(class_proto, method_name, call_target)
 ))
 
 // Convert LikeMagic::Namespace object to the Io object associated with it.
@@ -88,7 +96,7 @@ find_namespace := method(ns,
     )
 )
 
-IoVM set_onAddProto(block(ns, name, obj,
+io_vm set_onAddProto(block(ns, name, obj,
     writeln("onAddProto")
     //writeln("onAddProto, ns type=", ns type, " and name=", name, " and obj type=", obj type)
     //nsObj := find_namespace(ns)
@@ -96,7 +104,7 @@ IoVM set_onAddProto(block(ns, name, obj,
     //nsObj setSlot(name, obj)
 ))
 
-type_system add_type_system_observer(IoVM)
+type_system add_type_system_observer(io_vm)
 
 print_namespace_tree := method(ns, name, depth,
     depth repeat(write("    "))
