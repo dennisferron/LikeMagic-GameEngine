@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -26,7 +26,6 @@ template <typename ObjT, bool IsCopyable, typename... Args>
 class ConstructorCallTarget : public AbstractCallTargetSelector
 {
 private:
-    AbstractTypeSystem const& type_system;
 
     // This calls the Term::create function that constructs the object based on args.
     template<int... Indices>
@@ -41,7 +40,7 @@ private:
 
 public:
 
-    ConstructorCallTarget(AbstractTypeSystem const& type_system_) : type_system(type_system_) {}
+    ConstructorCallTarget(AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
@@ -63,7 +62,6 @@ template <typename ObjT, bool IsCopyable, typename... Args>
 class ConstructorCallTarget<ObjT*, IsCopyable, Args...> : public AbstractCallTargetSelector
 {
 private:
-    AbstractTypeSystem const& type_system;
 
     // This calls the Term::create function that constructs the object based on args.
     template<int... Indices>
@@ -78,7 +76,7 @@ private:
 
 public:
 
-    ConstructorCallTarget(AbstractTypeSystem const& type_system_) : type_system(type_system_) {}
+    ConstructorCallTarget(AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
@@ -100,7 +98,6 @@ template <typename ObjT, bool IsCopyable, typename... Args>
 class ConstructorCallTarget<ObjT&, IsCopyable, Args...> : public AbstractCallTargetSelector
 {
 private:
-    AbstractTypeSystem const& type_system;
 
     // This calls the Term::create function that constructs the object based on args.
     template<int... Indices>
@@ -122,7 +119,7 @@ private:
 
 public:
 
-    ConstructorCallTarget(AbstractTypeSystem const& type_system_) : type_system(type_system_) {}
+    ConstructorCallTarget(AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
@@ -149,8 +146,6 @@ private:
     typedef Expression<RefPtrObjT> ExprT;
     typedef boost::intrusive_ptr<ExprT> StoreT;
 
-    AbstractTypeSystem const& type_system;
-
     // This calls the Term::create function that constructs the object based on args.
     template<int... Indices>
     AbstractCppObjProxy* construct_obj(AbstractCppObjProxy* proxy, ArgList args, IndexPack<Indices...>) const
@@ -170,7 +165,7 @@ private:
 
 public:
 
-    ConstructorCallTarget(AbstractTypeSystem const& type_system_) : type_system(type_system_) {}
+    ConstructorCallTarget(AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {

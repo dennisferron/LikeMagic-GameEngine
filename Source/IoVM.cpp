@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -63,15 +63,6 @@ struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter
     virtual std::string describe() const { return "PtrToIoObjectConv"; }
 };
 
-void test_func(IoVM& iovm)
-{
-    auto ns = NamespacePath::global().subspace("test_ns");
-    cout << "Adding test_ns::str_proto_1 (no script conversion)" << endl;
-    iovm.add_proto("str_proto_1", string("testing 1..."), ns, false);
-    cout << "Adding test_ns::str_proto_2 (with script conversion)" << endl;
-    iovm.add_proto("str_proto_2", string("testing 2..."), ns, true);
-}
-
 IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     record_freed_flag(false), free_watch_flag(false), last_exception(0)
 {
@@ -94,7 +85,10 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
         LM_Proxy);
 
     // Bind the forward method so all methods will work on it.
-    bind_method(LM_Proxy, "forward", NULL);
+    //bind_method(LM_Proxy, "forward", NULL);
+
+    //IoSymbol* method_symbol = IoState_symbolWithCString_(state, "forward");
+    //IoObject_addMethod_(LM_Proxy, method_symbol, &API_io_forward);
 
     LM_Protos = IoObject_new(state);
     IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "LM_Protos"),
@@ -130,6 +124,10 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     // Allow LikeMagic proxy objects to be converted to the C/C++ type IoObject*
     type_sys.add_converter_simple(FromIoTypeInfo::create_index("LikeMagic"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
 
+    LM_CLASS(type_sys, DebugInfo)
+    LM_CLASS(type_sys, IoBlock)
+    LM_BASE(IoBlock, DebugInfo)
+
     // Allow conversion of Io blocks to IoObject*
     type_sys.add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv);
 
@@ -163,7 +161,7 @@ void IoVM::bind_method(IoObject* obj, std::string method_name)
 void IoVM::bind_method(IoObject* target, std::string method_name, AbstractCallTargetSelector* call_target=NULL)
 {
     IoSymbol* method_symbol = IoState_symbolWithCString_(state, method_name.c_str());
-    IoObject_addMethod_(target, method_symbol, &API_io_userfunc);
+    IoObject_addMethod_(target, method_symbol, &API_io_perform);
 }
 
 void IoVM::register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base)
@@ -186,7 +184,8 @@ void IoVM::register_method(LikeMagic::Marshaling::AbstractClass const* class_, s
 void IoVM::register_class(LikeMagic::Marshaling::AbstractClass const* class_)
 {
     if (!onRegisterClass.empty())
-        class_protos[class_->get_type()] = onRegisterClass.eval<IoObject*>(class_);
+        onRegisterClass(class_);
+        //class_protos[class_->get_type()] = onRegisterClass.eval<IoObject*>(class_);
 }
 
 IoVM::~IoVM()
@@ -213,10 +212,10 @@ void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, LikeMagic::Na
         IoObject_setDataPointer_(clone, proxy);
     }
 
-    if (onAddProto.empty())
+    //if (onAddProto.empty())
         IoObject_setSlot_to_(LM_Protos, IoState_symbolWithCString_(state, name.c_str()), clone);
-    else
-        onAddProto(ns, name, clone);
+    //else
+    //    onAddProto(ns, name, clone);
 }
 
 IoObject* IoVM::do_string(std::string io_code) const
@@ -288,14 +287,19 @@ IoObject* IoVM::proxy_to_io_obj(AbstractCppObjProxy* proxy)
 }
 
 
-IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
+IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 {
-    IOASSERT(IoObject_dataPointer(self), "No C++ object");
+    std::string method_name = CSTRING(IoMessage_name(m));
+
+    //std::string error_msg = "No C++ object on IoVM::perform " + method_name;
+    //IOASSERT(IoObject_dataPointer(self), error_msg.c_str());
+
+    if (!IoObject_dataPointer(self))
+        return IoObject_perform(self, locals, m);
+
     try
     {
-        std::string method_name = CSTRING(IoMessage_name(m));
-
-        //std::cout << "Method called is: "  << method_name << std::endl;
+        //std::cout << "perform "  << method_name << std::endl;
 
         auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
         proxy->check_magic();
@@ -303,7 +307,12 @@ IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
         auto& type_sys = proxy->get_type_system();
 
         int arg_count = IoMessage_argCount(m);
-        auto* method = proxy->get_method(method_name, arg_count);
+        auto* method = proxy->try_get_method(method_name, arg_count);
+
+        // If it's not a C++ method, maybe it is an Io method.  If it is neither,
+        // it will end up coming back to us via IoVM::forward where we can throw the method not found exception.
+        if (!method)
+            return IoObject_perform(self, locals, m);
 
         std::vector<ExprPtr> args;
         TypeInfoList arg_types = method->get_arg_types();
@@ -357,6 +366,50 @@ IoObject* IoVM::io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
 }
 
 
+IoObject* IoVM::forward(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    std::string method_name = CSTRING(IoMessage_name(m));
+
+    //std::string error_msg = "No C++ object on IoVM::forward " + method_name;
+    //IOASSERT(IoObject_dataPointer(self), error_msg.c_str());
+
+    if (!IoObject_dataPointer(self))
+        return IoObject_forward(self, locals, m);
+
+    try
+    {
+        std::cout << "forward "  << method_name << std::endl;
+
+        auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
+        proxy->check_magic();
+
+        int arg_count = IoMessage_argCount(m);
+
+        proxy->suggest_method(method_name, arg_count);
+
+        // Never get here; suggest_method always throws.
+        return IONIL(self);
+    }
+    catch (std::logic_error le)
+    {
+        //std::cout << "Caught exception: " << le.what() << std::endl;
+        IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(le).name()).c_str(), le.what());
+        return IONIL(self);
+    }
+    catch (std::exception e)
+    {
+        //std::cout << "Caught exception: " << e.what() << std::endl;
+        IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(e).name()).c_str(), e.what());
+        return IONIL(self);
+    }
+    catch (...)
+    {
+        cout << "LikeMagic:  Unknown C++ exception, aborting." << endl;
+        abort();
+    }
+}
+
+
 IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, AbstractCppObjProxy* proxy) const
 {
     static TypeIndex to_io_type = ToIoTypeInfo::create_index();
@@ -389,6 +442,8 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
     {
         IoObject* proto;
 
+        proto = LM_Proxy;
+        /*
         TypeIndex type = proxy->get_type().class_type();
         auto iter = class_protos.find(type);
         if (iter != class_protos.end())
@@ -400,6 +455,7 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
             cout << "Warning: no class proto registered for type " << type.describe() << endl;
             proto = LM_Proxy;
         }
+        */
 
         IoObject* clone = IOCLONE(proto);
         IoObject_setDataPointer_(clone, proxy);

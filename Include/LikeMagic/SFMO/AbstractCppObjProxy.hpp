@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -91,6 +91,8 @@ public:
     TypeInfoList get_arg_types(std::string method_name, int num_args) const;
     virtual AbstractClass const* get_class() const;
     AbstractCallTargetSelector* get_method(std::string method_name, int num_args) const;
+    AbstractCallTargetSelector* try_get_method(std::string method_name, int num_args) const;
+    void suggest_method(std::string method_name, int num_args) const;
 
     std::string get_base_names() const;
 

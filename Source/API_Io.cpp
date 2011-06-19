@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -50,7 +50,7 @@ IoMethodTable* make_io_method_table(std::vector<std::string> const& method_names
         // Io will make a copy of the string's c_str() bytes for method name,
         // and the method names vector object lives inside AbstractClass,
         // so that we can be sure it survives long enough for Io to make the copy.
-        IoMethodTable entry = { it->c_str(), &API_io_userfunc };  // All point to same userfunc
+        IoMethodTable entry = { it->c_str(), &API_io_perform };  // All point to same userfunc
         table[i] = entry;
     }
 
@@ -190,6 +190,12 @@ IoObject *API_io_proto(IoState* state)
     IoTag_freeFunc_(tag, (IoTagFreeFunc*)API_io_free_proxy);
     IoTag_cloneFunc_(tag, (IoTagCloneFunc*)API_io_rawClone);
     IoTag_markFunc_(tag, (IoTagMarkFunc*)API_io_mark);
+
+    // Added this so that instead of forward, the user func will be called directly.
+    // This should be faster because we don't have to wait for proto lookup, and has the advantage that
+    // it will work even for methods defined in Object, such as "==", so operator overloads will work.
+    IoTag_performFunc_(tag, (IoTagPerformFunc*)API_io_perform);
+
     IoObject_tag_(self, tag);
 
     IoState_registerProtoWithFunc_(state, self, (IoStateProtoFunc*)&API_io_proto);
@@ -198,7 +204,12 @@ IoObject *API_io_proto(IoState* state)
 }
 
 
-IoObject* API_io_userfunc(IoObject *self, IoObject *locals, IoMessage *m)
+IoObject* API_io_perform(IoObject *self, IoObject *locals, IoMessage *m)
 {
-    return IoVM::io_userfunc(self, locals, m);
+    return IoVM::perform(self, locals, m);
+}
+
+IoObject* API_io_forward(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    return IoVM::forward(self, locals, m);
 }

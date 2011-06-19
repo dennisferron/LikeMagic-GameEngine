@@ -59,6 +59,7 @@
 		<Unit filename="Include/LikeMagic/Backends/Io/ToIoObjectExpr.hpp" />
 		<Unit filename="Include/LikeMagic/Backends/Io/ToIoTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Common.hpp" />
+		<Unit filename="Include/LikeMagic/DebugInfo.hpp" />
 		<Unit filename="Include/LikeMagic/IMarkable.hpp" />
 		<Unit filename="Include/LikeMagic/ITypeSystemObserver.hpp" />
 		<Unit filename="Include/LikeMagic/MarkableObjGraph.hpp" />
@@ -146,6 +147,7 @@
 		<Unit filename="Source/API_Io.cpp" />
 		<Unit filename="Source/API_Io_from_script.cpp" />
 		<Unit filename="Source/API_Io_to_script.cpp" />
+		<Unit filename="Source/AbstractCallTargetSelector.cpp" />
 		<Unit filename="Source/AbstractClass.cpp" />
 		<Unit filename="Source/AbstractCppObjProxy.cpp" />
 		<Unit filename="Source/AbstractExpression.cpp" />

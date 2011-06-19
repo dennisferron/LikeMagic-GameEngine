@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -23,11 +23,10 @@ template <typename ObjT>
 class DestructorCallTarget : public AbstractCallTargetSelector
 {
 private:
-    AbstractTypeSystem const& type_system;
 
 public:
 
-    DestructorCallTarget(AbstractTypeSystem const& type_system_) : type_system(type_system_) {}
+    DestructorCallTarget(AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_) {}
 
    virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {

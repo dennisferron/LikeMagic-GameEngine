@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -41,7 +41,6 @@ private:
     typedef typename boost::mpl::if_c<Traits::is_const, T const&, T&>::type CallAs;
 
     F func_ptr;
-    AbstractTypeSystem const& type_system;
 
     typedef typename Traits::TPack TPack;
     typedef typename Traits::IPack IPack;
@@ -67,7 +66,7 @@ public:
 
     //static bool const is_const_func = Traits::is_const;
 
-    MethodCallGenerator(F func_ptr_, AbstractTypeSystem const& type_system_) : func_ptr(func_ptr_), type_system(type_system_) {}
+    MethodCallGenerator(F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
@@ -90,7 +89,6 @@ private:
     typedef FuncPtrTraits<F> Traits;
 
     F func_ptr;
-    AbstractTypeSystem const& type_system;
 
     typedef typename Traits::TPack TPack;
     typedef typename Traits::IPack IPack;
@@ -115,7 +113,7 @@ public:
 
     //static bool const is_const_func = Traits::is_const;
 
-    MethodCallGenerator(F func_ptr_, AbstractTypeSystem const& type_system_) : func_ptr(func_ptr_), type_system(type_system_) {}
+    MethodCallGenerator(F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
@@ -140,7 +138,6 @@ private:
     typedef StaticMethod CallAs;
 
     F func_ptr;
-    AbstractTypeSystem const& type_system;
 
     typedef typename Traits::TPack TPack;
     typedef typename Traits::IPack IPack;
@@ -169,7 +166,7 @@ public:
 
     //static bool const is_const_func = Traits::is_const;
 
-    MethodCallGenerator(F func_ptr_, AbstractTypeSystem const& type_system_) : func_ptr(func_ptr_), type_system(type_system_) {}
+    MethodCallGenerator(F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {

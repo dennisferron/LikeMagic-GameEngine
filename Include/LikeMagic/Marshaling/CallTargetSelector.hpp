@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -66,6 +66,7 @@ private:
 public:
 
     CallTargetSelector(F f, AbstractTypeSystem const& type_sys) :
+        AbstractCallTargetSelector(type_sys),
         ref_target(f, type_sys)
         //ptr_target(f, type_sys)
     {

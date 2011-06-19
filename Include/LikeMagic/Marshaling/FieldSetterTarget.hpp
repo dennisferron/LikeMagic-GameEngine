@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -15,6 +15,7 @@
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_void.hpp"
+#include "boost/type_traits/is_base_of.hpp"
 
 #include "../SFMO/MethodCall.hpp"
 #include "../SFMO/CppObjProxy.hpp"
@@ -31,7 +32,6 @@ private:
     typedef T& CallAs;
 
     FieldPtr f_ptr;
-    AbstractTypeSystem const& type_system;
 
     typedef FieldPtrTraits<FieldPtr, CallAs> Traits;
 
@@ -41,10 +41,11 @@ public:
 
     static bool const is_const_func = false;
 
-    FieldSetterTarget(FieldPtr f_ptr_, AbstractTypeSystem const& type_system_) : f_ptr(f_ptr_), type_system(type_system_) {}
+    FieldSetterTarget(FieldPtr f_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), f_ptr(f_ptr_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
+        set_expr_debug_name(args[0]);
         SetField<CallAs>::set(type_system.try_conv<CallAs>(proxy->get_expr())->eval(), f_ptr,
             type_system.try_conv<ArgType>(args[0]));
         return 0;

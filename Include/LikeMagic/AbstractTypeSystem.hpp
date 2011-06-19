@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -131,6 +131,12 @@ public:
 
     ExprPtr try_conv(ExprPtr from_expr, TypeIndex to_type) const;
     bool has_conv(TypeIndex  from_type, TypeIndex to_type) const;
+
+    template <typename To>
+    bool has_conv(ExprPtr from) const
+    {
+        return has_conv(from->get_type(), BetterTypeInfo::create_index<To>());
+    }
 
     template <typename To>
     boost::intrusive_ptr<Expression<To>> try_conv(ExprPtr from) const

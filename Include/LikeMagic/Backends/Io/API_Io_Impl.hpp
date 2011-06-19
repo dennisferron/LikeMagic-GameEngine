@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -42,7 +42,8 @@ extern "C"
     void API_io_free_proxy(IoObject* self);
     void API_io_mark(IoObject* self);
     IoObject* API_io_proto(IoState* state);
-    IoObject* API_io_userfunc(IoObject *self, IoObject *locals, IoMessage *m);
+    IoObject* API_io_perform(IoObject *self, IoObject *locals, IoMessage *m);
+    IoObject* API_io_forward(IoObject *self, IoObject *locals, IoMessage *m);
 }
 
 // Using forward declarations here so that user of IoVM class doesn't

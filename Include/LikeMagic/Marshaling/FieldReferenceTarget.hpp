@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -33,7 +33,6 @@ private:
     typedef T& CallAs;
 
     FieldPtr f_ptr;
-    AbstractTypeSystem const& type_system;
 
     typedef FieldPtrTraits<FieldPtr, CallAs> Traits;
 
@@ -43,7 +42,7 @@ public:
 
     //static bool const is_const_func = true;
 
-    FieldReferenceTarget(FieldPtr f_ptr_, AbstractTypeSystem const& type_system_) : f_ptr(f_ptr_), type_system(type_system_) {}
+    FieldReferenceTarget(FieldPtr f_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), f_ptr(f_ptr_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {

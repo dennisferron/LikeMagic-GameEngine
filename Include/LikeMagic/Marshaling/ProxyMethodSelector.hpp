@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -30,7 +30,6 @@ class ProxyMethodSelector : public AbstractCallTargetSelector
 {
 private:
     F func_ptr;
-    AbstractTypeSystem const& type_system;
 
     typedef FuncPtrTraits<F> Traits;
 
@@ -77,7 +76,7 @@ private:
 
 public:
 
-    ProxyMethodSelector(F func_ptr_, AbstractTypeSystem const& type_system_) : func_ptr(func_ptr_), type_system(type_system_) {}
+    ProxyMethodSelector(F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {

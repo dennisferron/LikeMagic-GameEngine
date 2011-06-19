@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -36,13 +36,12 @@ private:
     typedef typename stripped::type ObjType;
     FieldAccessor f;
     typedef typename boost::remove_pointer<FieldAccessor>::type::FieldType FieldType;
-    AbstractTypeSystem const& type_system;
 
 public:
 
     static bool const is_const_func = false;
 
-    CustomFieldSetterTarget(FieldAccessor f_, AbstractTypeSystem const& type_system_) : f(f_), type_system(type_system_) {}
+    CustomFieldSetterTarget(FieldAccessor f_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), f(f_) {}
 
     // Both the set and get target have a pointer to the same field accessor object;
     // only one of them needs to delete the shared accessor.

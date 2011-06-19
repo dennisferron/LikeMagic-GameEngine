@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -32,6 +32,8 @@ void IoBlock::add_arg(IoMessage* m, AbstractCppObjProxy* proxy) const
 
 IoObject* IoBlock::activate(IoMessage* m) const
 {
+    //cout << "IoBlock::activate " << get_debug_name() << "   ";
+
     if (!io_block)
         throw std::logic_error("io_block is null!");
 

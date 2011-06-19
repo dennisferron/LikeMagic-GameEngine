@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -55,19 +55,17 @@ private:
     // for the Io code to make local copies of the method names.
     std::vector<std::string> method_names;
 
-    void suggest_method(std::string method_name, int num_args) const;
-
     // Don't allow the class to be accidently copied.
     AbstractClass(AbstractClass const&) = delete;
     AbstractClass& operator =(AbstractClass const&) = delete;
+
+    bool has_base(AbstractClass const* base) const;
 
 protected:
     AbstractTypeSystem& type_system;
     NamespacePath const ns;
 
     void add_method(std::string method_name, AbstractCallTargetSelector* method);
-    AbstractCallTargetSelector* try_get_method(std::string method_name, int num_args, bool in_base_class=false) const;
-
     AbstractClass(std::string name_, AbstractTypeSystem& type_system_, NamespacePath const namespace_);
 
 public:
@@ -79,6 +77,8 @@ public:
     AbstractCppObjProxy* call(AbstractCppObjProxy* target, std::string method_name, std::vector<boost::intrusive_ptr<AbstractExpression>> args) const;
     bool has_method(std::string method_name, int num_args) const;
     AbstractCallTargetSelector* get_method(std::string method_name, int num_args) const;
+    AbstractCallTargetSelector* try_get_method(std::string method_name, int num_args, bool in_base_class=false) const;
+    void suggest_method(std::string method_name, int num_args) const;
     std::vector<AbstractCallTargetSelector*> get_methods() const;
     NamespacePath const get_namespace() const { return ns; }
 

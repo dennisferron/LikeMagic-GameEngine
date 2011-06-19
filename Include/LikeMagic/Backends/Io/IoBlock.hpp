@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -14,6 +14,7 @@
 #include "LikeMagic/SFMO/CppObjProxy.hpp"
 
 #include "LikeMagic/IMarkable.hpp"
+#include "LikeMagic/DebugInfo.hpp"
 
 #include <tuple>
 
@@ -24,7 +25,7 @@ using namespace LikeMagic::SFMO;
 
 class IoVM;
 
-class IoBlock : public LikeMagic::IMarkable
+class IoBlock : public LikeMagic::IMarkable, public LikeMagic::DebugInfo
 {
 private:
     AbstractTypeSystem const* type_sys;

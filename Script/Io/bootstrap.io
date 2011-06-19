@@ -76,11 +76,13 @@ io_vm set_onRegisterClass(block(abstract_class,
     return class_proto
 ))
 
+/*
 io_vm set_onRegisterMethod(block(abstract_class, method_name, call_target,
     ns := find_namespace(abstract_class get_namespace)
     class_proto := ns getSlot(abstract_class get_class_name)
     io_vm bind_method(class_proto, method_name, call_target)
 ))
+*/
 
 // Convert LikeMagic::Namespace object to the Io object associated with it.
 find_namespace := method(ns,
@@ -97,11 +99,12 @@ find_namespace := method(ns,
 )
 
 io_vm set_onAddProto(block(ns, name, obj,
-    writeln("onAddProto")
+    //writeln("onAddProto")
     //writeln("onAddProto, ns type=", ns type, " and name=", name, " and obj type=", obj type)
     //nsObj := find_namespace(ns)
     //writeln("nsObj = ", nsObj)
     //nsObj setSlot(name, obj)
+    LM_Protos setSlot(name, obj)
 ))
 
 type_system add_type_system_observer(io_vm)

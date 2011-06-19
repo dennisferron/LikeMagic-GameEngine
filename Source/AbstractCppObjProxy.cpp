@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -76,6 +76,23 @@ AbstractCallTargetSelector* AbstractCppObjProxy::get_method(std::string method_n
         throw std::logic_error("This type of proxy has no associated C++ class.");
 
     return class_->get_method(method_name, num_args);
+}
+
+
+AbstractCallTargetSelector* AbstractCppObjProxy::try_get_method(std::string method_name, int num_args) const
+{
+    if (!class_)
+        throw std::logic_error("This type of proxy has no associated C++ class.");
+
+    return class_->try_get_method(method_name, num_args);
+}
+
+void AbstractCppObjProxy::suggest_method(std::string method_name, int num_args) const
+{
+    if (!class_)
+        throw std::logic_error("This type of proxy has no associated C++ class.");
+
+    class_->suggest_method(method_name, num_args);
 }
 
 

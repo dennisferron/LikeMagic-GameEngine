@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -74,7 +74,8 @@ public:
     void add_watch_for_freed_object(IoObject* io_obj, std::string message);
     bool check_if_freed(IoObject* io_obj);
 
-    static IoObject* io_userfunc(IoObject *self, IoObject *locals, IoMessage *m);
+    static IoObject* perform(IoObject *self, IoObject *locals, IoMessage *m);
+    static IoObject* forward(IoObject *self, IoObject *locals, IoMessage *m);
     static void io_exception(void* context, IoObject* coroutine);
 
     void add_proto(std::string name, AbstractCppObjProxy* proxy, LikeMagic::NamespacePath ns=LikeMagic::NamespacePath::global(), bool conv_to_script=false) const;

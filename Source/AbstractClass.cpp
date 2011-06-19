@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2010 Dennis Ferron
+// Copyright 2008-2011 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -60,6 +60,8 @@ std::vector<AbstractCallTargetSelector*> AbstractClass::get_methods() const
 
 void AbstractClass::add_method(std::string method_name, AbstractCallTargetSelector* method)
 {
+    method->set_debug_name(method_name);
+
     int num_args = method->get_arg_types().size();
 
     if (has_method(method_name, num_args))
@@ -122,6 +124,9 @@ void AbstractClass::suggest_method(std::string method_name, int num_args) const
         int count = 0;
         for (auto it=candidates->second.begin(); it!=candidates->second.end(); ++it, ++count)
         {
+            if (it->first == num_args)
+                throw std::logic_error("Should never get here - the method " + method_name + " with " + boost::lexical_cast<string>(num_args) + " arguments does exist, but for some reason LikeMagic acted as though it did not.");
+
             if (count > 0)
                 arg_nums_list += ", ";
 
@@ -131,13 +136,15 @@ void AbstractClass::suggest_method(std::string method_name, int num_args) const
         std::string msg = "Class " + get_class_name() + " does have a method called " + method_name
                 + " but that method does not have any overload that takes " + boost::lexical_cast<std::string>(num_args)
                 + " arguments.  There is/are " + boost::lexical_cast<std::string>(candidates->second.size())
-                + " version(s) of that method taking " + boost::lexical_cast<std::string>(arg_nums_list) + " argument(s).";
+                + " version(s) of that method taking " + arg_nums_list + " argument(s).";
         throw std::invalid_argument(msg);
     }
 }
 
 AbstractCallTargetSelector* AbstractClass::try_get_method(std::string method_name, int num_args, bool in_base_class) const
 {
+    //cout << "try_get_method " << method_name << " " << num_args << endl;
+
     // First try to find the name and arg number method in this class.
     auto name_iter = methods.find(method_name);
     if (name_iter != methods.end())
@@ -159,6 +166,9 @@ AbstractCallTargetSelector* AbstractClass::try_get_method(std::string method_nam
     // Second try to find it in the bases.
     for (auto it=bases.begin(); it != bases.end(); it++)
     {
+        if (it->second == this)
+            throw std::logic_error("The class " + get_class_name() + " is registered as a base of itself!");
+
         AbstractCallTargetSelector* method = it->second->try_get_method(method_name, num_args, true);
         if (method)
             return method;
@@ -188,8 +198,28 @@ bool AbstractClass::has_method(std::string method_name, int num_args) const
         candidates->second.find(num_args) != candidates->second.end();
 }
 
+
+bool AbstractClass::has_base(AbstractClass const* base) const
+{
+    for (auto it=bases.begin(); it != bases.end(); it++)
+        if (it->second == base || it->second->has_base(base))
+            return true;
+
+    return false;
+}
+
+
 void AbstractClass::add_base_abstr(AbstractClass const* base)
 {
+    if (base == this)
+        throw std::logic_error("You tried to add " + get_class_name() + " as a base of itself (not allowed).");
+
+    if (base->has_base(this))
+        throw std::logic_error("Inheritance loop:  you executed " + get_class_name() + "->add_base(" + base->get_class_name()
+            + ") but " + get_class_name() + " is already an ancestor of " + base->get_class_name() +
+            ".  If this add_base is really what you wanted to do then you need to find and remove " + get_class_name() +
+            " from the inheritance tree of " + base->get_class_name() );
+
     bases[base->get_class_name()] = base;
     type_system.register_base(this, base);
 }
