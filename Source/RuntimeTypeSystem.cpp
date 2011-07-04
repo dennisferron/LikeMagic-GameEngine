@@ -145,6 +145,8 @@ RuntimeTypeSystem::RuntimeTypeSystem()
 
     LM_CLASS((*this), wchar_t)
 
+    LM_CLASS((*this), AbstractDelegate)
+
     // When IoNil is encountered, it is marshaled as a NullExpr<void*> object,
     // which is an expression   of type of void* that always returns NULL.
     // Some fancy magic happens in try_conv to intercept the void* NULL value

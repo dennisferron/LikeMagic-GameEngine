@@ -55,6 +55,7 @@
 			<Add option="-Wno-unused-parameter" />
 			<Add option="-Wno-deprecated" />
 			<Add option="-Wno-ignored-qualifiers" />
+			<Add option="-DUSE_DELEGATES_HACK" />
 			<Add directory="../boost" />
 			<Add directory="../io/_build/headers" />
 			<Add directory="Include" />
@@ -85,6 +86,7 @@
 		<Unit filename="Include/LikeMagic/Marshaling/ConstructorCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/CustomFieldGetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/CustomFieldSetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/Marshaling/DelegateCallGenerator.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/DestructorCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/DummyClass.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/FieldGetterTarget.hpp" />
@@ -135,6 +137,7 @@
 		<Unit filename="Include/LikeMagic/Utility/AbstractTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/BetterTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/DLLHelper.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/DelegateFunc.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/EnumHelper.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/FieldPtrTraits.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/FuncPtrTraits.hpp" />

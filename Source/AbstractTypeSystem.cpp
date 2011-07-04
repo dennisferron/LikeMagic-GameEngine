@@ -283,8 +283,8 @@ void AbstractTypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, 
     conv_graph.add_conv(from.get_info()->as_const_type()->get_index(), to.get_info()->as_const_type()->get_index(), conv);
 
     // Also add converters to make either type const.
-    conv_graph.add_conv(from, from.get_info()->as_const_type()->get_index(), new NoChangeConv);
-    conv_graph.add_conv(to, to.get_info()->as_const_type()->get_index(), new NoChangeConv);
+    conv_graph.add_conv(from, from.get_info()->as_const_type()->get_index(), new NoChangeConv<>);
+    conv_graph.add_conv(to, to.get_info()->as_const_type()->get_index(), new NoChangeConv<>);
 
     // Allow this expression type to be converted to an expression.
     TypeIndex to_expr_type = BetterTypeInfo::create_index<ExprPtr>();

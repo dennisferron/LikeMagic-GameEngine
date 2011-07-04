@@ -21,6 +21,7 @@ using namespace LikeMagic::SFMO;
 // doesn't even do that much - there's no trampoline, it simply
 // asserts that the expression itself is a different expression.
 
+template <typename From=void, typename To=void>
 class NoChangeConv : public AbstractTypeConverter
 {
 public:

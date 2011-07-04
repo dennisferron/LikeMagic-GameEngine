@@ -9,14 +9,15 @@
 #pragma once
 
 #include "AbstractClass.hpp"
-//#include "CallTargetSelector.hpp"
 #include "LikeMagic/Marshaling/MethodCallGenerator.hpp"
+#include "LikeMagic/Marshaling/DelegateCallGenerator.hpp"
 #include "ConstructorCallTarget.hpp"
 #include "DestructorCallTarget.hpp"
 #include "LikeMagic/TypeConv/NumberConv.hpp"
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
 #include "LikeMagic/TypeConv/BaseConv.hpp"
 #include "LikeMagic/TypeConv/AddrOfConv.hpp"
+#include "LikeMagic/TypeConv/NoChangeConv.hpp"
 
 #include "FieldGetterTarget.hpp"
 #include "FieldSetterTarget.hpp"
@@ -51,6 +52,10 @@ class Class : public AbstractClass
 {
 private:
 
+    // Used for passing type indexes to DelegateCallGenerator in bind_method()
+    TypeIndex const ref_type;
+    TypeIndex const const_ref_type;
+
     // No unnamed Class, no passing Class copies around, no assignment.
     Class();
     Class(const Class&);
@@ -80,8 +85,11 @@ private:
 
 public:
 
-    Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePath namespace_) : AbstractClass(name_, type_system_, namespace_)
+    Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePath namespace_) : AbstractClass(name_, type_system_, namespace_),
+        ref_type(BetterTypeInfo::create_index<T&>()), const_ref_type(BetterTypeInfo::create_index<T const&>())
     {
+        // Allow the type to be reinterpreted as AbstractDelegate to work with DelegateCallGenerator.
+        type_system_.add_conv<T&, AbstractDelegate&, NoChangeConv>();
     }
 
     virtual TypeIndex get_type() const { return BetterTypeInfo::create_index<T>(); }
@@ -126,6 +134,20 @@ public:
 //        type_system.add_conv<T const*&, Base const*, Converter>();
     }
 
+
+#ifdef USE_DELEGATES_HACK
+
+    // This version should result in fewer unique template instantiations, resulting in smaller code output.
+    template <typename F>
+    void bind_method(std::string method_name, F f)
+    {
+        typedef typename FuncPtrTraits<F>::DelegateFuncPtr DelegateFuncPtr;
+        auto calltarget = new DelegateCallGenerator<DelegateFuncPtr>(ref_type, const_ref_type, reinterpret_cast<DelegateFuncPtr>(f), type_system);
+        add_method(method_name, calltarget);
+    }
+
+#else
+
     // Use this to declare methods of your C++ class callable from script.
     template <typename F>
     void bind_method(std::string method_name, F f)
@@ -134,6 +156,9 @@ public:
         auto calltarget = new MethodCallGenerator<T, F>(f, type_system);
         add_method(method_name, calltarget);
     }
+
+#endif
+
 
     // A "hack" to allow binding static class methods without using class StaticMethods::bind_method.
     template <typename F>
