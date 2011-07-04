@@ -77,6 +77,7 @@ public:
     static IoObject* perform(IoObject *self, IoObject *locals, IoMessage *m);
     static IoObject* forward(IoObject *self, IoObject *locals, IoMessage *m);
     static void io_exception(void* context, IoObject* coroutine);
+    static void willFree(IoObject *self);
 
     void add_proto(std::string name, AbstractCppObjProxy* proxy, LikeMagic::NamespacePath ns=LikeMagic::NamespacePath::global(), bool conv_to_script=false) const;
 

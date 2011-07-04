@@ -4,6 +4,8 @@
 #include <iostream>
 #include <stdexcept>
 
+using namespace std;
+
 namespace LikeMagic
 {
 
@@ -15,6 +17,9 @@ MarkableObjGraph::MarkableObjGraph()
 
 void MarkableObjGraph::mark() const
 {
+    if (get_debug_name() == "DebugBreak")
+        cout << "mark: DebugBreak" << endl;
+
     if (!is_just_testing())
         for (auto it=children.begin(); it!=children.end(); ++it)
             (*it)->mark();
@@ -26,6 +31,17 @@ MarkableObjGraph::~MarkableObjGraph()
     for (auto it=parents.begin(); it!=parents.end(); ++it)
         (*it)->remove_mark_obj(this);
 }
+
+std::size_t MarkableObjGraph::number_of_parents() const
+{
+    return parents.size();
+}
+
+std::size_t MarkableObjGraph::number_of_children() const
+{
+    return children.size();
+}
+
 
 bool MarkableObjGraph::is_just_testing() const
 {

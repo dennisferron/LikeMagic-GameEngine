@@ -79,6 +79,15 @@ IoObject* IoBlock::activate(IoMessage* m) const
 
 void IoBlock::mark() const
 {
+    if (iovm && iovm->watch_freed_objects())
+    {
+        if(io_block && iovm->check_if_freed(io_block))
+            throw std::logic_error("IoBlock object freed before it could be marked, IoBlock debug name = " + get_debug_name());
+
+        if (io_target && iovm->check_if_freed(io_target))
+            throw std::logic_error("IoBlock target freed before it could be marked, IoBlock debug name = " + get_debug_name());
+    }
+
     //std::cout << "Marking IoBlock, block = " << io_block << ", target = " << io_target << std::endl;
     IoObject_shouldMarkIfNonNull(io_block);
     IoObject_shouldMarkIfNonNull(io_target);

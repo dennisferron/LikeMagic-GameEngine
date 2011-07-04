@@ -39,6 +39,9 @@ inline TypeInfoList make_arg_list(TypePack<> args)
 // or a global C++ function that doesn't have an object associated with it.
 struct StaticMethod {};
 
+// A dummy type used to abstract away the type of the target object for a member function pointer.
+//struct AbstractDelegate {};
+
 template <typename F>
 struct FuncPtrTraits
 {
@@ -62,6 +65,8 @@ struct FuncPtrTraits
         typedef typename MakeIndexPack<sizeof...(Args_)>::type IPack;
 
         typedef TypePack<Args_...> TPack;
+
+        //typedef Sig<is_const_, is_static_, R_, AbstractDelegate, Args...> as_delegate;
     };
 
     // One of the following 3 test() functions will correspond to the type F:
@@ -86,6 +91,9 @@ struct FuncPtrTraits
 
     // Target object of the function.  "void" if not a nonstatic member function.
     typedef typename Signature::ObjT ObjT;
+
+    // Convert the signature to a delgate signature which abstracts away the type of the target object.
+    typedef typename Signature::as_delegate as_delegate;
 
     // Applies the template "Each" to each arg type & then rolls them up into the "All" template.
     // Default value of "All" is to turn the result into a tuple.

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "LikeMagic/IMarkable.hpp"
+#include "LikeMagic/DebugInfo.hpp"
 
 #include <set>
 
@@ -23,7 +24,7 @@ namespace LikeMagic
 // Note: Although it is OK for an object to have multiple parents, you must not make loops
 // (two objects connected directly to each other).  If
 // you do that then you'll get an infinite recursion when it tries to mark all the objects.
-class MarkableObjGraph : public IMarkable
+class MarkableObjGraph : public IMarkable, public DebugInfo
 {
 private:
     // Has to be mutable because sometimes we need to track objects created by const functions
@@ -80,6 +81,9 @@ public:
     void remove_mark_obj(IMarkable const& obj) const;
     void add_mark_obj(MarkableObjGraph const& obj) const;
     void remove_mark_obj(MarkableObjGraph const& obj) const;
+
+    std::size_t number_of_parents() const;
+    std::size_t number_of_children() const;
 
 public:
 

@@ -86,6 +86,13 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     LM_FUNC(Namespace, (subspace))
     Namespace_LM.bind_static_method("global", Namespace::global);
 
+    LM_CLASS((*this), DebugInfo)
+    LM_FUNC(DebugInfo, (set_debug_name)(get_debug_name))
+
+    LM_CLASS((*this), MarkableObjGraph)
+    LM_BASE(MarkableObjGraph, DebugInfo)
+    LM_FUNC(MarkableObjGraph, (number_of_parents)(number_of_children))
+
     //add_class(functions->get_type(), functions);
     add_class(proxy_methods_type, proxy_methods);
     //add_class(collection_methods_type, collection_methods);
@@ -136,6 +143,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     register_class<float>("float");
     register_class<bool>("bool");
 
+    LM_CLASS((*this), wchar_t)
 
     // When IoNil is encountered, it is marshaled as a NullExpr<void*> object,
     // which is an expression   of type of void* that always returns NULL.

@@ -289,6 +289,8 @@ IoObject* IoVM::proxy_to_io_obj(AbstractCppObjProxy* proxy)
 
 IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 {
+ 	IoState_pushCollectorPause(IOSTATE);
+
     std::string method_name = CSTRING(IoMessage_name(m));
 
     //std::string error_msg = "No C++ object on IoVM::perform " + method_name;
@@ -344,23 +346,28 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
             throw std::logic_error("Failed to retrieve IoVM object from IoState callback context.");
 
         auto result = proxy->call(method, args);
-        return iovm->to_script(self, locals, m, result);
+        IoObject* result_obj = iovm->to_script(self, locals, m, result);
+        IoState_popCollectorPause(IOSTATE);
+        return result_obj;
     }
     catch (std::logic_error le)
     {
         //std::cout << "Caught exception: " << le.what() << std::endl;
         IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(le).name()).c_str(), le.what());
+        IoState_popCollectorPause(IOSTATE);
         return IONIL(self);
     }
     catch (std::exception e)
     {
         //std::cout << "Caught exception: " << e.what() << std::endl;
         IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(e).name()).c_str(), e.what());
+        IoState_popCollectorPause(IOSTATE);
         return IONIL(self);
     }
     catch (...)
     {
         cout << "LikeMagic:  Unknown C++ exception, aborting." << endl;
+        IoState_popCollectorPause(IOSTATE);
         abort();
     }
 }
@@ -507,7 +514,10 @@ bool IoVM::check_if_freed(IoObject* io_obj)
     return freed_objects.find(io_obj) != freed_objects.end();
 }
 
-
+// Currently unused; using collector_free instead.
+void IoVM::willFree(IoObject *self)
+{
+}
 
 
 

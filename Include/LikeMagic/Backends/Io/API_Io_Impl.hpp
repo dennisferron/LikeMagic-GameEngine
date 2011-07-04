@@ -44,6 +44,7 @@ extern "C"
     IoObject* API_io_proto(IoState* state);
     IoObject* API_io_perform(IoObject *self, IoObject *locals, IoMessage *m);
     IoObject* API_io_forward(IoObject *self, IoObject *locals, IoMessage *m);
+    void API_io_willFree(IoObject *self);
 }
 
 // Using forward declarations here so that user of IoVM class doesn't

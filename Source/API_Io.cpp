@@ -213,3 +213,9 @@ IoObject* API_io_forward(IoObject *self, IoObject *locals, IoMessage *m)
 {
     return IoVM::forward(self, locals, m);
 }
+
+// Currently unused; see collector_free in IoVM.cpp instead.
+void API_io_willFree(IoObject *self)
+{
+    IoVM::willFree(self);
+}
