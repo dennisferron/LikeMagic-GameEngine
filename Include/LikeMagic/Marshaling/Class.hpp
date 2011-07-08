@@ -8,32 +8,33 @@
 
 #pragma once
 
-#include "AbstractClass.hpp"
-#include "LikeMagic/Marshaling/MethodCallGenerator.hpp"
-#include "LikeMagic/Marshaling/DelegateCallGenerator.hpp"
-#include "ConstructorCallTarget.hpp"
-#include "DestructorCallTarget.hpp"
+#include "LikeMagic/Marshaling/AbstractClass.hpp"
+#include "LikeMagic/Generators/GeneratorPolicy.hpp"
+#include "LikeMagic/CallTargets/ConstructorCallTarget.hpp"
+#include "LikeMagic/CallTargets/DestructorCallTarget.hpp"
 #include "LikeMagic/TypeConv/NumberConv.hpp"
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
 #include "LikeMagic/TypeConv/BaseConv.hpp"
 #include "LikeMagic/TypeConv/AddrOfConv.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 
-#include "FieldGetterTarget.hpp"
-#include "FieldSetterTarget.hpp"
-#include "FieldReferenceTarget.hpp"
-#include "ArrayFieldGetterTarget.hpp"
-#include "ArrayFieldSetterTarget.hpp"
-#include "ArrayFieldReferenceTarget.hpp"
-#include "CustomFieldGetterTarget.hpp"
-#include "CustomFieldSetterTarget.hpp"
+#include "LikeMagic/CallTargets/FieldGetterTarget.hpp"
+#include "LikeMagic/CallTargets/FieldSetterTarget.hpp"
+#include "LikeMagic/CallTargets/FieldReferenceTarget.hpp"
+#include "LikeMagic/CallTargets/ArrayFieldGetterTarget.hpp"
+#include "LikeMagic/CallTargets/ArrayFieldSetterTarget.hpp"
+#include "LikeMagic/CallTargets/ArrayFieldReferenceTarget.hpp"
+#include "LikeMagic/CallTargets/CustomFieldGetterTarget.hpp"
+#include "LikeMagic/CallTargets/CustomFieldSetterTarget.hpp"
 
 #include "LikeMagic/SFMO/ClassExpr.hpp"
 
 namespace LikeMagic { namespace Marshaling {
 
 using LikeMagic::AbstractTypeSystem;
-
+using LikeMagic::Utility::AbstractDelegate;
+using namespace LikeMagic::CallTargets;
+using namespace LikeMagic::Generators;
 
 /*
 "In the same way, when using the machine up in the attic in the early days,
@@ -55,6 +56,7 @@ private:
     // Used for passing type indexes to DelegateCallGenerator in bind_method()
     TypeIndex const ref_type;
     TypeIndex const const_ref_type;
+    TypeIndex const static_method_type;
 
     // No unnamed Class, no passing Class copies around, no assignment.
     Class();
@@ -86,7 +88,7 @@ private:
 public:
 
     Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePath namespace_) : AbstractClass(name_, type_system_, namespace_),
-        ref_type(BetterTypeInfo::create_index<T&>()), const_ref_type(BetterTypeInfo::create_index<T const&>())
+        ref_type(BetterTypeInfo::create_index<T&>()), const_ref_type(BetterTypeInfo::create_index<T const&>()), static_method_type(BetterTypeInfo::create_index<StaticMethod>())
     {
         // Allow the type to be reinterpreted as AbstractDelegate to work with DelegateCallGenerator.
         type_system_.add_conv<T&, AbstractDelegate&, NoChangeConv>();
@@ -138,11 +140,43 @@ public:
 #ifdef USE_DELEGATES_HACK
 
     // This version should result in fewer unique template instantiations, resulting in smaller code output.
+
+    /*
     template <typename F>
     void bind_method(std::string method_name, F f)
     {
         typedef typename FuncPtrTraits<F>::DelegateFuncPtr DelegateFuncPtr;
         auto calltarget = new DelegateCallGenerator<DelegateFuncPtr>(ref_type, const_ref_type, reinterpret_cast<DelegateFuncPtr>(f), type_system);
+        add_method(method_name, calltarget);
+    }
+    */
+
+    // Although Class<> has the T parameter, we still have to deduce it with ObjT here.  If we don't do this,
+    // we get a compile error when T is of a non class type such as int.  Even though this overload of bind_method
+    // should never get called when T is not a class type, it still causes an error to say T::*f in its signature.
+    template <typename R, typename ObjT, typename... Args>
+    void bind_method(std::string method_name, R (ObjT::*f)(Args...))
+    {
+        typedef R (AbstractDelegate::*DelgFuncPtr)(Args...);
+        auto calltarget = new typename GeneratorPolicy<MemberKind::member_nonconst, R, ObjT, Args...>::type(ref_type, const_ref_type, f, type_system);
+        add_method(method_name, calltarget);
+    }
+
+    // Although Class<> has the T parameter, we still have to deduce it with ObjT here.  If we don't do this,
+    // we get a compile error when T is of a non class type such as int.  Even though this overload of bind_method
+    // should never get called when T is not a class type, it still causes an error to say T::*f in its signature.
+    template <typename R, typename ObjT, typename... Args>
+    void bind_method(std::string method_name, R (ObjT::*f)(Args...) const)
+    {
+        typedef R (AbstractDelegate::*DelgFuncPtr)(Args...) const;
+        auto calltarget = new typename GeneratorPolicy<MemberKind::member_const, R, ObjT, Args...>::type(ref_type, const_ref_type, f, type_system);
+        add_method(method_name, calltarget);
+    }
+
+    template <typename R, typename... Args>
+    void bind_method(std::string method_name, R (*f)(Args...))
+    {
+        auto calltarget = new typename GeneratorPolicy<MemberKind::nonmember_op, R, StaticMethod, Args...>::type(ref_type, const_ref_type, f, type_system);
         add_method(method_name, calltarget);
     }
 
@@ -160,19 +194,20 @@ public:
 #endif
 
 
-    // A "hack" to allow binding static class methods without using class StaticMethods::bind_method.
-    template <typename F>
-    void bind_static_method(std::string method_name, F f)
+    // This is now the preferred way of binding static methods of classes.
+    template <typename R, typename... Args>
+    void bind_static_method(std::string method_name, R (*f)(Args...))
     {
-        auto calltarget = new MethodCallGenerator<T, F, true, false>(f, type_system);
+        auto calltarget = new typename GeneratorPolicy<MemberKind::static_method, R, StaticMethod, Args...>::type(static_method_type, static_method_type, f, type_system);
         add_method(method_name, calltarget);
     }
 
-    // A further "hack" to allow binding nonmember operators.  Target object gets converted to first function argument.
-    template <typename F>
-    void bind_nonmember_op(std::string method_name, F f)
+    // A "hack" to allow binding nonmember operators.  Target object gets converted to first function argument.
+    // Also useful for defining "extension methods".
+    template <typename R, typename... Args>
+    void bind_nonmember_op(std::string method_name, R (*f)(Args...))
     {
-        auto calltarget = new MethodCallGenerator<T, F, true, true>(f, type_system);
+        auto calltarget = new typename GeneratorPolicy<MemberKind::nonmember_op, R, StaticMethod, Args...>::type(static_method_type, static_method_type, f, type_system);
         add_method(method_name, calltarget);
     }
 

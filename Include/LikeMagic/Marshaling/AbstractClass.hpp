@@ -30,9 +30,12 @@ namespace LikeMagic { namespace SFMO {
     class AbstractExpression;
 }}
 
+namespace LikeMagic { namespace CallTargets {
+    class AbstractCallTargetSelector;
+}}
+
 namespace LikeMagic { namespace Marshaling {
 
-class AbstractCallTargetSelector;
 using LikeMagic::SFMO::AbstractCppObjProxy;
 using LikeMagic::SFMO::AbstractExpression;
 using LikeMagic::AbstractTypeSystem;
@@ -40,6 +43,7 @@ using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeInfoList;
 using LikeMagic::NamespacePath;
+using LikeMagic::CallTargets::AbstractCallTargetSelector;
 
 class AbstractClass
 {

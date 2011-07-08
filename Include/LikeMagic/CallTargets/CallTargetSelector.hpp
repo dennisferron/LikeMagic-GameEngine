@@ -7,8 +7,8 @@
 // (See the license file in LikeMagic/Licenses.)
 
 
-#include "LikeMagic/Marshaling/AbstractCallTargetSelector.hpp"
-#include "LikeMagic/Marshaling/MethodCallGenerator.hpp"
+#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
+#include "LikeMagic/Generators/MethodCallGenerator.hpp"
 #include "LikeMagic/SFMO/AbstractCppObjProxy.hpp"
 
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
@@ -18,7 +18,7 @@
 #pragma once
 
 
-namespace LikeMagic { namespace Marshaling {
+namespace LikeMagic { namespace CallTargets {
 
 using LikeMagic::AbstractTypeSystem;
 using LikeMagic::SFMO::AbstractCppObjProxy;

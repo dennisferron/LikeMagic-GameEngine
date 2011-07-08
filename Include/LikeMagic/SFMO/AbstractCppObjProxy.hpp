@@ -24,6 +24,8 @@
 // forward declarations
 namespace LikeMagic { namespace Marshaling {
     class AbstractMethodset;
+}}
+namespace LikeMagic { namespace CallTargets {
     class AbstractCallTargetSelector;
 }}
 
@@ -35,7 +37,7 @@ using LikeMagic::Utility::TypeInfoList;
 using LikeMagic::Utility::BetterTypeInfo;
 using LikeMagic::AbstractTypeSystem;
 using LikeMagic::Marshaling::AbstractMethodset;
-using LikeMagic::Marshaling::AbstractCallTargetSelector;
+using LikeMagic::CallTargets::AbstractCallTargetSelector;
 
 /*
 

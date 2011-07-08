@@ -21,7 +21,7 @@ namespace LikeMagic {
     class AbstractTypeSystem;
 }
 
-namespace LikeMagic { namespace Marshaling {
+namespace LikeMagic { namespace CallTargets {
 
 class AbstractCallTargetSelector : public LikeMagic::DebugInfo
 {

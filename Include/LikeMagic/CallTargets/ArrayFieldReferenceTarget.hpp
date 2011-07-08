@@ -8,26 +8,26 @@
 
 #pragma once
 
-#include "../Utility/SetField.hpp"
+#include "LikeMagic/Utility/SetField.hpp"
 
-#include "AbstractCallTargetSelector.hpp"
+#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
 
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_void.hpp"
 
-#include "../SFMO/MethodCall.hpp"
-#include "../SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/MethodCall.hpp"
+#include "LikeMagic/SFMO/CppObjProxy.hpp"
 
 #include "LikeMagic/SFMO/Reference.hpp"
 
-namespace LikeMagic { namespace Marshaling {
+namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::SFMO;
 
 template <typename T, typename FieldPtr>
-class FieldReferenceTarget : public AbstractCallTargetSelector
+class ArrayFieldReferenceTarget : public AbstractCallTargetSelector
 {
 private:
     typedef T& CallAs;
@@ -42,20 +42,24 @@ public:
 
     //static bool const is_const_func = true;
 
-    FieldReferenceTarget(FieldPtr f_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), f_ptr(f_ptr_) {}
+    ArrayFieldReferenceTarget(FieldPtr f_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), f_ptr(f_ptr_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
         return CppObjProxy<RType, true>::create(
                 Reference<RType>::create(
-                    SetField<CallAs>::get(type_system.try_conv<CallAs>(proxy->get_expr())->eval(), f_ptr)
+                    SetField<CallAs>::getAt(
+                        type_system.try_conv<size_t>(args[0])->eval(),
+                        type_system.try_conv<CallAs>(proxy->get_expr())->eval(),
+                        f_ptr
+                    )
                 ), type_system
         );
     }
 
     virtual TypeInfoList get_arg_types() const
     {
-        return make_arg_list(TypePack<>());
+        return make_arg_list(TypePack<size_t>());
     }
 
 };

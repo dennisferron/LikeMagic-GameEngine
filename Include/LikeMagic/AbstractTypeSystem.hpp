@@ -146,7 +146,7 @@ public:
 
     void add_type_system_observer(ITypeSystemObserver* observer);
     void register_base(LikeMagic::Marshaling::AbstractClass* class_, LikeMagic::Marshaling::AbstractClass const* base);
-    void register_method(LikeMagic::Marshaling::AbstractClass* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method);
+    void register_method(LikeMagic::Marshaling::AbstractClass* class_, std::string method_name, LikeMagic::CallTargets::AbstractCallTargetSelector* method);
 
 };
 

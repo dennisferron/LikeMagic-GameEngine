@@ -103,7 +103,7 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys),
     // Register this vm
     LM_CLASS_NO_COPY(type_sys, IoVM)
     LM_BASE(IoVM, ITypeSystemObserver)
-    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(record_freed_objects)(set_record_freed_objects)(bind_method)
+    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(record_freed_objects)(set_record_freed_objects)
             (watch_freed_objects)(set_watch_freed_objects)(add_watch_for_freed_object)(check_if_freed)(proxy_to_io_obj))
     LM_FIELD(IoVM, (onRegisterMethod)(onRegisterClass)(onRegisterBase)(onAddProto))
 
@@ -157,12 +157,13 @@ void IoVM::bind_method(IoObject* obj, std::string method_name)
     delete[] mtbl;
 }
 */
-
+/*
 void IoVM::bind_method(IoObject* target, std::string method_name, AbstractCallTargetSelector* call_target=NULL)
 {
     IoSymbol* method_symbol = IoState_symbolWithCString_(state, method_name.c_str());
     IoObject_addMethod_(target, method_symbol, &API_io_perform);
 }
+*/
 
 void IoVM::register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base)
 {

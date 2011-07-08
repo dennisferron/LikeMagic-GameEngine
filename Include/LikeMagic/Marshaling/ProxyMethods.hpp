@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "AbstractClass.hpp"
-#include "ProxyMethodSelector.hpp"
+#include "LikeMagic/Marshaling/AbstractClass.hpp"
+#include "LikeMagic/CallTargets/ProxyMethodSelector.hpp"
 #include "LikeMagic/SFMO/ClassExpr.hpp"
 #include "LikeMagic/Marshaling/DummyClass.hpp"
 
@@ -19,6 +19,7 @@ namespace LikeMagic { class RuntimeTypeSystem; }
 namespace LikeMagic { namespace Marshaling {
 
 using LikeMagic::AbstractTypeSystem;
+using LikeMagic::Generators::ProxyMethodSelector;
 
 class ProxyMethods : public DummyClass<ProxyMethods>
 {

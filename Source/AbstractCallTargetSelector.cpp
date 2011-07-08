@@ -7,12 +7,13 @@
 // (See the license file in LikeMagic/Licenses.)
 
 
-#include "LikeMagic/Marshaling/AbstractCallTargetSelector.hpp"
+#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
 #include "LikeMagic/AbstractTypeSystem.hpp"
 
 using namespace LikeMagic;
 using namespace LikeMagic::SFMO;
 using namespace LikeMagic::Marshaling;
+using namespace LikeMagic::CallTargets;
 
 #include <iostream>
 using namespace std;

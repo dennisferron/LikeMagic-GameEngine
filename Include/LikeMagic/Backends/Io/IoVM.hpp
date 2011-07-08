@@ -57,7 +57,7 @@ private:
     IoObject* LM_Protos;
 
     //void bind_method(IoObject* obj, std::string method_name);
-    void bind_method(IoObject* target, std::string method_name, AbstractCallTargetSelector* call_target);
+    //void bind_method(IoObject* target, std::string method_name, AbstractCallTargetSelector* call_target);
 
     IoObject* proxy_to_io_obj(AbstractCppObjProxy* proxy);
 
@@ -126,7 +126,7 @@ public:
 
     virtual void register_class(LikeMagic::Marshaling::AbstractClass const* class_);
     virtual void register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base);
-    virtual void register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method);
+    virtual void register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::CallTargets::AbstractCallTargetSelector* method);
 
     virtual void mark() const;
 };

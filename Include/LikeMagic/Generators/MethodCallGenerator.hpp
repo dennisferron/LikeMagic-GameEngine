@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../Utility/FuncPtrTraits.hpp"
+#include "LikeMagic/Utility/FuncPtrTraits.hpp"
 
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits/is_same.hpp"
@@ -18,45 +18,41 @@
 #include "LikeMagic/SFMO/StaticMethodCall.hpp"
 #include "LikeMagic/SFMO/CppObjProxy.hpp"
 
-#include "LikeMagic/Marshaling/AbstractCallTargetSelector.hpp"
+#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
+#include "LikeMagic/Generators/MemberKind.hpp"
 
-#include "boost/mpl/if.hpp"
-
-namespace LikeMagic { namespace Marshaling {
+namespace LikeMagic { namespace Generators {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::SFMO;
+using namespace LikeMagic::CallTargets;
 
-
-template <typename T, typename F, bool IsStatic = boost::is_same<T, StaticMethod>::value, bool ObjIsFirstArg = false>
+template <MemberKind K, typename R, typename T, typename... Args>
 class MethodCallGenerator : public AbstractCallTargetSelector
 {
 private:
-    typedef FuncPtrTraits<F> Traits;
 
     // Decide whether to generate the call by-ref or by-const-ref.
     // Const functions convert the target to const ref, while
     // nonconst functions convert target to nonconst ref, which
     // fails by design for calling nonconst functions on value types.
-    typedef typename boost::mpl::if_c<Traits::is_const, T const&, T&>::type CallAs;
+    typedef typename CallAs<K, T>::type CallAs;
 
+    typedef typename MemberPointer<K, R, T, Args...>::type F;
     F func_ptr;
 
-    typedef typename Traits::TPack TPack;
-    typedef typename Traits::IPack IPack;
+    typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
 
-    typedef typename Traits::R R;
-
-    template<typename... Args, int... Indices>
+    template<int... Indices>
     boost::intrusive_ptr<Expression<R>>
-    build_method_call(ExprPtr target, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
+    build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
         if (args.size() != sizeof...(Indices))
             throw std::logic_error("Wrong number of arguments.");
 
         auto args_tuple = std::make_tuple(type_system.try_conv<Args>(args[Indices])...);
 
-        boost::intrusive_ptr<Expression<R>> method_call = MethodCall<typename Traits::R, CallAs, F, Args...>::create(
+        boost::intrusive_ptr<Expression<R>> method_call = MethodCall<R, CallAs, F, Args...>::create(
             type_system.try_conv<CallAs>(target), func_ptr, args_tuple);
 
         return method_call;
@@ -66,45 +62,42 @@ public:
 
     //static bool const is_const_func = Traits::is_const;
 
-    MethodCallGenerator(F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
+    MethodCallGenerator(TypeIndex ref_type_, TypeIndex const_ref_type_, F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
-       auto result_proxy = CppObjProxy<typename Traits::R, true>::create(build_method_call(proxy->get_expr(), args, TPack(), IPack()), type_system);
+       auto result_proxy = CppObjProxy<R, true>::create(build_method_call(proxy->get_expr(), args, IPack()), type_system);
        result_proxy->check_magic();
        return result_proxy;
     }
 
     virtual TypeInfoList get_arg_types() const
     {
-        return Traits::get_arg_types();
+        return make_arg_list(TypePack<Args...>());
     }
 };
 
 // Static methods that do not pass the object as an argument.
-template <typename T, typename F>
-class MethodCallGenerator<T, F, true, false> : public AbstractCallTargetSelector
+template <typename R, typename... Args>
+class MethodCallGenerator<MemberKind::static_method, R, StaticMethod, Args...> : public AbstractCallTargetSelector
 {
 private:
-    typedef FuncPtrTraits<F> Traits;
 
+    typedef R (*F)(Args...);
     F func_ptr;
 
-    typedef typename Traits::TPack TPack;
-    typedef typename Traits::IPack IPack;
+    typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
 
-    typedef typename Traits::R R;
-
-    template<typename... Args, int... Indices>
+    template<int... Indices>
     boost::intrusive_ptr<Expression<R>>
-    build_method_call(ExprPtr target, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
+    build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
         if (args.size() != sizeof...(Indices))
             throw std::logic_error("Wrong number of arguments.");
 
         auto args_tuple = std::make_tuple(type_system.try_conv<Args>(args[Indices])...);
 
-        boost::intrusive_ptr<Expression<R>> method_call = StaticMethodCall<typename Traits::R, F, Args...>::create(func_ptr, args_tuple);
+        boost::intrusive_ptr<Expression<R>> method_call = StaticMethodCall<R, F, Args...>::create(func_ptr, args_tuple);
 
         return method_call;
     }
@@ -113,40 +106,37 @@ public:
 
     //static bool const is_const_func = Traits::is_const;
 
-    MethodCallGenerator(F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
+    MethodCallGenerator(TypeIndex ref_type_, TypeIndex const_ref_type_, F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
-       auto result_proxy = CppObjProxy<typename Traits::R, true>::create(build_method_call(proxy->get_expr(), args, TPack(), IPack()), type_system);
+       auto result_proxy = CppObjProxy<R, true>::create(build_method_call(proxy->get_expr(), args, IPack()), type_system);
        result_proxy->check_magic();
        return result_proxy;
     }
 
     virtual TypeInfoList get_arg_types() const
     {
-        return Traits::get_arg_types();
+        return make_arg_list(TypePack<Args...>());
     }
 };
 
 // Static methods that do pass the object as first argument (e.g., nonmember operators).
-template <typename T, typename F>
-class MethodCallGenerator<T, F, true, true> : public AbstractCallTargetSelector
+template <typename R, typename T, typename... Args>
+class MethodCallGenerator<MemberKind::nonmember_op, R, T, Args...> : public AbstractCallTargetSelector
 {
 private:
-    typedef FuncPtrTraits<F> Traits;
 
     typedef StaticMethod CallAs;
 
+    typedef R (*F)(Args...);
     F func_ptr;
 
-    typedef typename Traits::TPack TPack;
-    typedef typename Traits::IPack IPack;
+    typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
 
-    typedef typename Traits::R R;
-
-    template<typename... Args, int... Indices>
+    template<int... Indices>
     boost::intrusive_ptr<Expression<R>>
-    build_method_call(ExprPtr target, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
+    build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
         // Target object is the first function argument.
         args.insert(args.begin(), target);
@@ -157,7 +147,7 @@ private:
         auto args_tuple = std::make_tuple(type_system.try_conv<Args>(args[Indices])...);
 
         boost::intrusive_ptr<Expression<R>> method_call =
-            StaticMethodCall<typename Traits::R, F, Args...>::create(func_ptr, args_tuple);
+            StaticMethodCall<R, F, Args...>::create(func_ptr, args_tuple);
 
         return method_call;
     }
@@ -166,18 +156,18 @@ public:
 
     //static bool const is_const_func = Traits::is_const;
 
-    MethodCallGenerator(F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
+    MethodCallGenerator(TypeIndex ref_type_, TypeIndex const_ref_type_, F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
-       auto result_proxy = CppObjProxy<typename Traits::R, true>::create(build_method_call(proxy->get_expr(), args, TPack(), IPack()), type_system);
+       auto result_proxy = CppObjProxy<R, true>::create(build_method_call(proxy->get_expr(), args, IPack()), type_system);
        result_proxy->check_magic();
        return result_proxy;
     }
 
     virtual TypeInfoList get_arg_types() const
     {
-        TypeInfoList args = Traits::get_arg_types();
+        TypeInfoList args = make_arg_list(TypePack<Args...>());
 
         // Have to report that we take 1 less arg, because "this" object is the first arg.
         args.erase(args.begin());
@@ -187,10 +177,5 @@ public:
 };
 
 
-template <typename T, typename F>
-class MethodCallGenerator<T, F, false, true>
-{
-    static_assert(sizeof(T) && false, "MethodCallGenerator that is not static but passes object as first arg is not defined.");
-};
 
 }}

@@ -19,7 +19,8 @@ StaticMethods::StaticMethods(AbstractTypeSystem& type_system_, NamespacePath con
         ns.get_name(),
         type_system_,
         ns.get_parent()
-    )
+    ),
+    static_method_type(BetterTypeInfo::create_index<StaticMethod>())
 {
 }
 

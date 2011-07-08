@@ -8,22 +8,22 @@
 
 #pragma once
 
-#include "../Utility/StripModifiers.hpp"
+#include "LikeMagic/Utility/StripModifiers.hpp"
 
-#include "AbstractCallTargetSelector.hpp"
+#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
 
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_void.hpp"
 
-#include "../SFMO/MethodCall.hpp"
-#include "../SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/MethodCall.hpp"
+#include "LikeMagic/SFMO/CppObjProxy.hpp"
 
 #include "boost/shared_ptr.hpp"
 
-#include "ICustomField.hpp"
+#include "LikeMagic/CallTargets/ICustomField.hpp"
 
-namespace LikeMagic { namespace Marshaling {
+namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::SFMO;

@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include "AbstractClass.hpp"
-#include "MethodCallGenerator.hpp"
+#include "LikeMagic/Marshaling/AbstractClass.hpp"
+#include "LikeMagic/Generators/GeneratorPolicy.hpp"
 #include "LikeMagic/SFMO/ClassExpr.hpp"
 #include "LikeMagic/Marshaling/DummyClass.hpp"
-#include "NamespaceTypeInfo.hpp"
+#include "LikeMagic/Marshaling/NamespaceTypeInfo.hpp"
 
 // We don't use this anymore, we use NamespaceTypeInfo instead.
 //namespace LikeMagic { namespace Utility { struct StaticMethod; }}
@@ -24,10 +24,14 @@ namespace LikeMagic { namespace Marshaling {
 
 using LikeMagic::AbstractTypeSystem;
 using LikeMagic::Utility::StaticMethod;
+using LikeMagic::Generators::GeneratorPolicy;
+using LikeMagic::Generators::MemberKind;
 
 class StaticMethods : public DummyClass<StaticMethods>
 {
 private:
+    TypeIndex const static_method_type;
+
     // No copying or assignment.
     StaticMethods(StaticMethods const&);
     StaticMethods& operator=(StaticMethods const&);
@@ -37,10 +41,10 @@ private:
 
 public:
 
-    template <typename F>
-    void bind_method(std::string method_name, F f)
+    template <typename R, typename... Args>
+    void bind_method(std::string method_name, R (*f)(Args...))
     {
-        auto calltarget = new MethodCallGenerator<StaticMethod, F>(f, type_system);
+        auto calltarget = new typename GeneratorPolicy<MemberKind::static_method, R, StaticMethod, Args...>::type(static_method_type, static_method_type, f, type_system);
         add_method(method_name, calltarget);
     }
 

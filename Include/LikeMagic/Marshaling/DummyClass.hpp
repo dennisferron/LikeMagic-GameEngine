@@ -8,20 +8,20 @@
 
 #pragma once
 
-#include "AbstractClass.hpp"
-#include "CallTargetSelector.hpp"
-#include "ConstructorCallTarget.hpp"
+#include "LikeMagic/Marshaling/AbstractClass.hpp"
+#include "LikeMagic/CallTargets/CallTargetSelector.hpp"
+#include "LikeMagic/CallTargets/ConstructorCallTarget.hpp"
 #include "LikeMagic/TypeConv/NumberConv.hpp"
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
 #include "LikeMagic/TypeConv/BaseConv.hpp"
 #include "LikeMagic/TypeConv/AddrOfConv.hpp"
 
-#include "FieldGetterTarget.hpp"
-#include "FieldSetterTarget.hpp"
-#include "ArrayFieldGetterTarget.hpp"
-#include "ArrayFieldSetterTarget.hpp"
-#include "CustomFieldGetterTarget.hpp"
-#include "CustomFieldSetterTarget.hpp"
+#include "LikeMagic/CallTargets/FieldGetterTarget.hpp"
+#include "LikeMagic/CallTargets/FieldSetterTarget.hpp"
+#include "LikeMagic/CallTargets/ArrayFieldGetterTarget.hpp"
+#include "LikeMagic/CallTargets/ArrayFieldSetterTarget.hpp"
+#include "LikeMagic/CallTargets/CustomFieldGetterTarget.hpp"
+#include "LikeMagic/CallTargets/CustomFieldSetterTarget.hpp"
 
 #include "LikeMagic/SFMO/ClassExpr.hpp"
 

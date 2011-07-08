@@ -13,7 +13,6 @@
 
 namespace LikeMagic { namespace Utility {
 
-
 template <typename T, typename F, typename... ArgTypes, int... Indices>
 void call_void(T t, F f, std::tuple<boost::intrusive_ptr<LikeMagic::SFMO::Expression<ArgTypes>>...> args, IndexPack<Indices...>)
 {

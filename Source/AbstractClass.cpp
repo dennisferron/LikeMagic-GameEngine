@@ -7,7 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/Marshaling/AbstractClass.hpp"
-#include "LikeMagic/Marshaling/AbstractCallTargetSelector.hpp"
+#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
 #include "LikeMagic/SFMO/AbstractExpression.hpp"
 #include "LikeMagic/AbstractTypeSystem.hpp"
 

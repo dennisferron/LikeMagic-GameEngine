@@ -10,11 +10,11 @@
 
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
 
-#include "AbstractCallTargetSelector.hpp"
+#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
 
-#include "../SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/CppObjProxy.hpp"
 
-namespace LikeMagic { namespace Marshaling {
+namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::SFMO;

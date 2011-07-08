@@ -54,10 +54,9 @@
 // The first parameter of the method is passed the self object from script.
 #define LM_EXTENSION_METHOD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_EXTENSION_METHOD_IMPL, class_name, SEQ)
 
-#define LM_FUNC_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) class_name##_LM.bind_method<ret_type (class_name::*)(__VA_ARGS__)>(given_func_name, &class_name::actual_func);
-
-// Use this for const member functions.
-#define LM_FUNC_OVERLOAD_CONST(class_name, given_func_name, actual_func, ret_type, ...) class_name##_LM.bind_method<ret_type (class_name::*)(__VA_ARGS__) const>(given_func_name, &class_name::actual_func);
+#define LM_FUNC_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) class_name##_LM.bind_method(given_func_name, static_cast<ret_type (class_name::*)(__VA_ARGS__)>(&class_name::actual_func));
+#define LM_FUNC_OVERLOAD_CONST(class_name, given_func_name, actual_func, ret_type, ...) class_name##_LM.bind_method(given_func_name, static_cast<ret_type (class_name::*)(__VA_ARGS__) const>(&class_name::actual_func));
+#define LM_OP_OVERLOAD(class_name, CONST, op, ret_type, ...) class_name##_LM.bind_method(#op, static_cast<ret_type (class_name::*)(__VA_ARGS__) CONST>(&class_name::operator op));
 
 // For LM_FUNC_OVERLOAD_BOTH
 template <typename T> struct LM_InsertConst { typedef T const type; };
@@ -65,8 +64,6 @@ template <typename T> struct LM_InsertConst<T*> { typedef T const* type; };
 template <typename T> struct LM_InsertConst<T&> { typedef T const& type; };
 
 #define LM_FUNC_OVERLOAD_BOTH(class_name, actual_func, ret_type, ...) LM_FUNC_OVERLOAD_CONST(class_name, #actual_func "_c", actual_func, LM_InsertConst<ret_type>::type, __VA_ARGS__) LM_FUNC_OVERLOAD(class_name, #actual_func "_nc", actual_func, ret_type, __VA_ARGS__)
-
-#define LM_OP_OVERLOAD(class_name, CONST, op, ret_type, ...) class_name##_LM.bind_method<ret_type (class_name::*)(__VA_ARGS__) CONST>(#op, &class_name::operator op);
 
 #define LM_OP_IMPL(r, data, elem) data##_LM.bind_method(BOOST_PP_STRINGIZE(elem), &data::operator elem);
 #define LM_OP(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_OP_IMPL, class_name, SEQ)
@@ -92,9 +89,9 @@ template <typename T> struct LM_InsertConst<T&> { typedef T const& type; };
 
 #define LM_STATIC_FUNC(type_sys, class_name, func_name) type_sys.register_functions().bind_method(#func_name, class_name::func_name);
 #define LM_STATIC_FUNC_NAME(type_sys, class_name, given_func_name, actual_func) type_sys.register_functions().bind_method(given_func_name, class_name::actual_func);
-#define LM_STATIC_FUNC_OVERLOAD(type_sys, class_name, given_func_name, actual_func, ret_type, ...) type_sys.register_functions().bind_method<ret_type (*)(__VA_ARGS__)>(given_func_name, &class_name::actual_func);
+#define LM_STATIC_FUNC_OVERLOAD(type_sys, class_name, given_func_name, actual_func, ret_type, ...) type_sys.register_functions().bind_method(given_func_name, static_cast<ret_type (*)(__VA_ARGS__)>(&class_name::actual_func));
 
-#include "../Marshaling/ICustomField.hpp"
+#include "LikeMagic/CallTargets/ICustomField.hpp"
 
 #define LM_BIT_FIELD(class_name, field_name) \
 { \
