@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="LikeMagic" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="libLikeMagic-Linux" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="libLikeMagic-Linux" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="DropEcho-Wayup-Debug">
+				<Option output="libLikeMagic-Linux" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-fexceptions" />
+			<Add option="--std=c++0x" />
+			<Add option="-Werror=return-type" />
+			<Add option="-fdiagnostics-show-option" />
+			<Add option="-Wno-unused-variable" />
+			<Add option="-Wno-unused-parameter" />
+			<Add option="-Wno-deprecated" />
+			<Add option="-Wno-ignored-qualifiers" />
+			<Add option="-DUSE_DELEGATES_HACK" />
+			<Add directory="../boost" />
+			<Add directory="../io/_build/headers" />
+			<Add directory="Include" />
+		</Compiler>
+		<Unit filename="Include/LikeMagic/AbstractTypeSystem.hpp" />
+		<Unit filename="Include/LikeMagic/Backends/Io/API_Io.hpp" />
+		<Unit filename="Include/LikeMagic/Backends/Io/API_Io_Impl.hpp" />
+		<Unit filename="Include/LikeMagic/Backends/Io/FromIoTypeInfo.hpp" />
+		<Unit filename="Include/LikeMagic/Backends/Io/IoBlock.hpp" />
+		<Unit filename="Include/LikeMagic/Backends/Io/IoListSTL.hpp" />
+		<Unit filename="Include/LikeMagic/Backends/Io/IoObjectExpr.hpp" />
+		<Unit filename="Include/LikeMagic/Backends/Io/IoVM.hpp" />
+		<Unit filename="Include/LikeMagic/Backends/Io/IoVectorSTL.hpp" />
+		<Unit filename="Include/LikeMagic/Backends/Io/ToIoObjectExpr.hpp" />
+		<Unit filename="Include/LikeMagic/Backends/Io/ToIoTypeInfo.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/AbstractCallTargetSelector.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldGetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldReferenceTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldSetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/CallTargetSelector.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/ConstructorCallTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/CustomFieldGetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/CustomFieldSetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/DestructorCallTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/FieldGetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/FieldReferenceTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/FieldSetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/ICustomField.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/ProxyMethodSelector.hpp" />
+		<Unit filename="Include/LikeMagic/Common.hpp" />
+		<Unit filename="Include/LikeMagic/DebugInfo.hpp" />
+		<Unit filename="Include/LikeMagic/Generators/DeferredCallGenerator.hpp" />
+		<Unit filename="Include/LikeMagic/Generators/DelegateCallGenerator.hpp" />
+		<Unit filename="Include/LikeMagic/Generators/GeneratorPolicy.hpp" />
+		<Unit filename="Include/LikeMagic/Generators/MemberKind.hpp" />
+		<Unit filename="Include/LikeMagic/Generators/MethodCallGenerator.hpp" />
+		<Unit filename="Include/LikeMagic/IMarkable.hpp" />
+		<Unit filename="Include/LikeMagic/ITypeSystemObserver.hpp" />
+		<Unit filename="Include/LikeMagic/MarkableObjGraph.hpp" />
+		<Unit filename="Include/LikeMagic/Marshaling/AbstractClass.hpp" />
+		<Unit filename="Include/LikeMagic/Marshaling/Class.hpp" />
+		<Unit filename="Include/LikeMagic/Marshaling/DummyClass.hpp" />
+		<Unit filename="Include/LikeMagic/Marshaling/NamespaceTypeInfo.hpp" />
+		<Unit filename="Include/LikeMagic/Marshaling/ProxyMethods.hpp" />
+		<Unit filename="Include/LikeMagic/Marshaling/StaticMethods.hpp" />
+		<Unit filename="Include/LikeMagic/Namespace.hpp" />
+		<Unit filename="Include/LikeMagic/NamespacePath.hpp" />
+		<Unit filename="Include/LikeMagic/RuntimeTypeSystem.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/AbstractCppObjProxy.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/AbstractExpression.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/AbstractObjectSet.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/ClassExpr.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/ConstructedTerm.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/ContainerSet.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/CppObjProxy.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/DelegateMethodCall.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/Expression.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/FalseExpr.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/LazyExpr.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/MethodCall.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/NamespaceProxy.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/NullExpr.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/NumberCachingTrampoline.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/Reference.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/StaticMethodCall.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/StringCachingTrampoline.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/Term.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/Trampoline.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/methodcall_args.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/AbstractTypeConverter.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/AddrOfConv.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/BaseConv.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/ConvertibleTo.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/ImplicitConv.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/NilConv.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/NoChangeConv.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/NumberConv.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/PtrDerefConv.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/StringConv.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/ToAbstractExpressionConv.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/TypeConvGraph.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/VectorConv.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/AbstractTypeInfo.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/BetterTypeInfo.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/DLLHelper.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/DelegateFunc.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/EnumHelper.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/FieldPtrTraits.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/FuncPtrTraits.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/GetField.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/ICanHasMemberFunc.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/IndexPack.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/IsContainer.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/IsIterator.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/KeyWrapper.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/MakeCall.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/ScriptFunc.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/SetField.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/StripConst.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/StripModifiers.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/TupleForEach.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/TypeDescr.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/TypeIndex.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/TypeInfoCache.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/TypePack.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/UserMacros.hpp" />
+		<Unit filename="Script/Io/bootstrap.io" />
+		<Unit filename="Source/API_Io.cpp" />
+		<Unit filename="Source/API_Io_from_script.cpp" />
+		<Unit filename="Source/API_Io_to_script.cpp" />
+		<Unit filename="Source/AbstractCallTargetSelector.cpp" />
+		<Unit filename="Source/AbstractClass.cpp" />
+		<Unit filename="Source/AbstractCppObjProxy.cpp" />
+		<Unit filename="Source/AbstractExpression.cpp" />
+		<Unit filename="Source/AbstractTypeConverter.cpp" />
+		<Unit filename="Source/AbstractTypeInfo.cpp" />
+		<Unit filename="Source/AbstractTypeSystem.cpp" />
+		<Unit filename="Source/BetterTypeInfo.cpp" />
+		<Unit filename="Source/CodeTest.cpp" />
+		<Unit filename="Source/IoBlock.cpp" />
+		<Unit filename="Source/IoObjectExpr.cpp" />
+		<Unit filename="Source/IoVM.cpp" />
+		<Unit filename="Source/MarkableObjGraph.cpp" />
+		<Unit filename="Source/Namespace.cpp" />
+		<Unit filename="Source/NamespacePath.cpp" />
+		<Unit filename="Source/NamespaceProxy.cpp" />
+		<Unit filename="Source/ProxyMethods.cpp" />
+		<Unit filename="Source/RuntimeTypeSystem.cpp" />
+		<Unit filename="Source/StaticMethods.cpp" />
+		<Unit filename="Source/TypeConvGraph.cpp" />
+		<Unit filename="Source/TypeDescr.cpp" />
+		<Unit filename="Source/TypeInfoCache.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
