@@ -1,11 +1,12 @@
 # depslib dependency file v1.0
-1308513933 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/API_Io.cpp
+1311459695 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/API_Io.cpp
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/SFMO/Term.hpp"
 	"LikeMagic/SFMO/NullExpr.hpp"
 	"LikeMagic/Backends/Io/IoBlock.hpp"
 	"LikeMagic/Backends/Io/IoVM.hpp"
 	"boost/lexical_cast.hpp"
+	"dmalloc.h"
 
 1308513594 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Backends/Io/API_Io_Impl.hpp
 	"LikeMagic/Backends/Io/API_Io.hpp"
@@ -5496,7 +5497,7 @@
 	"LikeMagic/Utility/TypeInfoCache.hpp"
 	<string>
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoVM.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoVM.h
 	"IoBlock.h"
 	"IoSeq.h"
 	"IoCFunction.h"
@@ -5512,14 +5513,14 @@
 	"IoSeq.h"
 	"IoTag.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoBlock.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoBlock.h
 	"Common.h"
 	"List.h"
 	"IoObject.h"
 	"IoState.h"
 	"IoCall.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/Common.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/Common.h
 	<stdlib.h>
 	<string.h>
 	<stddef.h>
@@ -5532,8 +5533,9 @@
 	<memory.h>
 	<string.h>
 	<malloc.h>
+	"/home/dennis/code/LikeMagic-All/dmalloc/dmalloc.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/PortableStdint.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/PortableStdint.h
 	<stddef.h>
 	<limits.h>
 	<signal.h>
@@ -5543,7 +5545,7 @@
 	<stdio.h>
 	<string.h>
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/List.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/List.h
 	"Common.h"
 	"PortableSorting.h"
 	<stdlib.h>
@@ -5552,10 +5554,10 @@
 	"UArray.h"
 	"List_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/PortableSorting.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/PortableSorting.h
 	"Common.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray.h
 	"Common.h"
 	<stdarg.h>
 	<stdio.h>
@@ -5568,32 +5570,32 @@
 	"UArray_string.h"
 	"UArray_utf.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_character.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_character.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_format.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_format.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_math.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_math.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_path.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_path.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_stream.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_stream.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_string.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_string.h
 	<string.h>
 	<stdarg.h>
 	<stdio.h>
 	<stddef.h>
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_utf.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/UArray_utf.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/List_inline.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/List_inline.h
 	"Common_inline.h"
 	"PortableSorting.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/Common_inline.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/Common_inline.h
 	"TargetConditionals.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoObject.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoObject.h
 	"IoVMApi.h"
 	"Common.h"
 	"PHash.h"
@@ -5603,9 +5605,9 @@
 	"IoObject_flow.h"
 	"IoObject_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoVMApi.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoVMApi.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/PHash.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/PHash.h
 	"Common.h"
 	<stddef.h>
 	"IoVMApi.h"
@@ -5613,50 +5615,50 @@
 	"PHash_struct.h"
 	"PHash_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/PHash_struct.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/PHash_struct.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/PHash_inline.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/PHash_inline.h
 	"Common_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoObject_struct.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoObject_struct.h
 	"Common.h"
 	"PHash_struct.h"
 	"BStream.h"
 	"IoTag.h"
 	"Collector.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/BStream.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/BStream.h
 	"Common.h"
 	"UArray.h"
 	"BStreamTag.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/BStreamTag.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/BStreamTag.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoTag.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoTag.h
 	"Common.h"
 	"BStream.h"
 	"IoVMApi.h"
 	"IoTag_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoTag_inline.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoTag_inline.h
 	"Common_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/Collector.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/Collector.h
 	"CollectorMarker.h"
 	"Collector_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/CollectorMarker.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/CollectorMarker.h
 	"Common.h"
 	"List.h"
 	"CollectorMarker_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/CollectorMarker_inline.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/CollectorMarker_inline.h
 	"Common_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/Collector_inline.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/Collector_inline.h
 	"Common_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoMessage.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoMessage.h
 	"IoVMApi.h"
 	"Common.h"
 	"List.h"
@@ -5666,20 +5668,20 @@
 	"IoMessage_inline.h"
 	"IoMessage_parser.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoMessage_inline.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoMessage_inline.h
 	"Common_inline.h"
 	"IoObject.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoMessage_parser.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoMessage_parser.h
 	"IoMessage.h"
 	"IoLexer.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoLexer.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoLexer.h
 	"List.h"
 	"Stack.h"
 	"IoToken.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/Stack.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/Stack.h
 	"Common.h"
 	<stdlib.h>
 	<stdio.h>
@@ -5688,14 +5690,14 @@
 	"List.h"
 	"Stack_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/Stack_inline.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/Stack_inline.h
 	"Common_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoToken.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoToken.h
 	"List.h"
 	<string.h>
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoSeq.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoSeq.h
 	"IoVMApi.h"
 	"Common.h"
 	"UArray.h"
@@ -5706,26 +5708,26 @@
 	"IoSeq_vector.h"
 	"IoSeq_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoSeq_immutable.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoSeq_immutable.h
 	"IoSeq.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoSeq_mutable.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoSeq_mutable.h
 	"IoSeq.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoSeq_vector.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoSeq_vector.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoSeq_inline.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoSeq_inline.h
 	"Common_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoObject_flow.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoObject_flow.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoObject_inline.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoObject_inline.h
 	"Common_inline.h"
 	"IoVMApi.h"
 	"IoState.h"
 	"PHash.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState.h
 	"IoVMApi.h"
 	"Stack.h"
 	"PointerHash.h"
@@ -5744,46 +5746,46 @@
 	"IoState_exceptions.h"
 	"IoState_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/PointerHash.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/PointerHash.h
 	"Common.h"
 	<stddef.h>
 	"PortableStdint.h"
 	"PointerHash_struct.h"
 	"PointerHash_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/PointerHash_struct.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/PointerHash_struct.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/PointerHash_inline.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/PointerHash_inline.h
 	"Common_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/CHash.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/CHash.h
 	"Common.h"
 	<stddef.h>
 	"PortableStdint.h"
 	"CHash_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/CHash_inline.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/CHash_inline.h
 	"Common_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/MainArgs.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/MainArgs.h
 	"Common.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/RandomGen.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/RandomGen.h
 	"Common.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoCoroutine.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoCoroutine.h
 	"IoVMApi.h"
 	"IoState.h"
 	"Common.h"
 	"Coro.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/Coro.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/Coro.h
 	"Common.h"
 	"taskimpl.h"
 	<sys/ucontext.h>
 	<setjmp.h>
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/taskimpl.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/taskimpl.h
 	<stdarg.h>
 	<AvailabilityMacros.h>
 	<errno.h>
@@ -5807,55 +5809,55 @@
 	"power-ucontext.h"
 	"sparc-ucontext.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/386-ucontext.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/386-ucontext.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/amd64-ucontext.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/amd64-ucontext.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/power-ucontext.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/power-ucontext.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_callbacks.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_callbacks.h
 	"IoVMApi.h"
 	"UArray.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_coros.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_coros.h
 	"IoVMApi.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_debug.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_debug.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_eval.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_eval.h
 	"IoVMApi.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_symbols.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_symbols.h
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_exceptions.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_exceptions.h
 	"IoVMApi.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_inline.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoState_inline.h
 	"Common_inline.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoCall.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoCall.h
 	"Common.h"
 	"IoState.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoCFunction.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoCFunction.h
 	"IoVMApi.h"
 	"Common.h"
 	"IoObject.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoDate.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoDate.h
 	"Common.h"
 	"IoObject.h"
 	"IoSeq.h"
 	"Date.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/Date.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/Date.h
 	"Base.h"
 	"Common.h"
 	"Duration.h"
 	"PortableGettimeofday.h"
 	<time.h>
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/Base.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/Base.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -5865,44 +5867,44 @@
 	<stdarg.h>
 	<string.h>
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/Duration.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/Duration.h
 	"Common.h"
 	"UArray.h"
 	"PortableGettimeofday.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/PortableGettimeofday.h
+1311217457 /home/dennis/code/LikeMagic-All/io/_build/headers/PortableGettimeofday.h
 	<winsock2.h>
 	<sys/time.h>
 	"Common.h"
 	<sys/time.h>
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoFile.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoFile.h
 	"Common.h"
 	"IoObject.h"
 	"UArray.h"
 	"IoNumber.h"
 	"IoSeq.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoNumber.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoNumber.h
 	"IoVMApi.h"
 	"Common.h"
 	"IoState.h"
 	"IoObject.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoList.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoList.h
 	"IoVMApi.h"
 	"Common.h"
 	"IoState.h"
 	"IoObject.h"
 	"List.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoMap.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoMap.h
 	"Common.h"
 	"IoObject.h"
 	"IoList.h"
 	"PHash.h"
 
-1308524261 /home/dennis/code/LikeMagic-All/io/_build/headers/IoError.h
+1311217458 /home/dennis/code/LikeMagic-All/io/_build/headers/IoError.h
 	"IoObject.h"
 
 1308455827 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/SFMO/Term.hpp
@@ -5915,7 +5917,7 @@
 	"boost/type_traits/is_base_of.hpp"
 	<iostream>
 
-1308455767 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Backends/Io/IoBlock.hpp
+1311459695 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Backends/Io/IoBlock.hpp
 	"LikeMagic/Backends/Io/API_Io.hpp"
 	"LikeMagic/AbstractTypeSystem.hpp"
 	"LikeMagic/SFMO/CppObjProxy.hpp"
@@ -5970,7 +5972,7 @@
 1308455766 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/DebugInfo.hpp
 	<string>
 
-1310092759 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Backends/Io/IoVM.hpp
+1311459695 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Backends/Io/IoVM.hpp
 	"LikeMagic/RuntimeTypeSystem.hpp"
 	"LikeMagic/Backends/Io/IoBlock.hpp"
 	"LikeMagic/Backends/Io/API_Io.hpp"
@@ -6443,20 +6445,22 @@
 	<iostream>
 	"LikeMagic/Utility/TupleForEach.hpp"
 
-1308523074 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoBlock.cpp
+1311459695 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoBlock.cpp
 	"LikeMagic/Backends/Io/IoBlock.hpp"
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/Backends/Io/IoVM.hpp"
+	"dmalloc.h"
 
 1308455829 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoObjectExpr.cpp
 	"LikeMagic/Backends/Io/IoObjectExpr.hpp"
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/Backends/Io/FromIoTypeInfo.hpp"
 
-1309754069 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoVM.cpp
+1311459695 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoVM.cpp
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/Backends/Io/IoVM.hpp"
 	"LikeMagic/Backends/Io/IoBlock.hpp"
+	"LikeMagic/Backends/Io/MarkableIoObject.hpp"
 	"LikeMagic/Backends/Io/IoObjectExpr.hpp"
 	"LikeMagic/Backends/Io/ToIoObjectExpr.hpp"
 	"LikeMagic/Backends/Io/FromIoTypeInfo.hpp"
@@ -6472,14 +6476,15 @@
 	<algorithm>
 	<sstream>
 	<stdexcept>
+	"dmalloc.h"
 
-1309809109 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Utility/UserMacros.hpp
+1310098422 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Utility/UserMacros.hpp
 	"LikeMagic/RuntimeTypeSystem.hpp"
 	"LikeMagic/Namespace.hpp"
 	"boost/preprocessor/seq/for_each.hpp"
 	"boost/preprocessor/stringize.hpp"
 	<vector>
-	"../Marshaling/ICustomField.hpp"
+	"LikeMagic/CallTargets/ICustomField.hpp"
 
 1308455775 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Namespace.hpp
 	"LikeMagic/RuntimeTypeSystem.hpp"
@@ -7237,12 +7242,12 @@
 
 1309822212 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/FuncModifier.hpp
 
-1310097621 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Generators/GeneratorPolicy.hpp
+1310098757 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Generators/GeneratorPolicy.hpp
 	"LikeMagic/Generators/MethodCallGenerator.hpp"
 	"LikeMagic/Generators/DeferredCallGenerator.hpp"
 	"LikeMagic/Generators/DelegateCallGenerator.hpp"
 
-1310097281 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Generators/MethodCallGenerator.hpp
+1310098294 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Generators/MethodCallGenerator.hpp
 	"LikeMagic/Utility/FuncPtrTraits.hpp"
 	"boost/utility/enable_if.hpp"
 	"boost/type_traits/is_same.hpp"
@@ -7258,13 +7263,13 @@
 	"LikeMagic/DebugInfo.hpp"
 	"LikeMagic/SFMO/AbstractExpression.hpp"
 
-1310096380 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Generators/MemberKind.hpp
+1310098114 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Generators/MemberKind.hpp
 
 1310093209 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Generators/DeferredCallGenerator.hpp
 	"LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
 	"LikeMagic/Generators/MemberKind.hpp"
 
-1310097910 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Generators/DelegateCallGenerator.hpp
+1310099157 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Generators/DelegateCallGenerator.hpp
 	"../Utility/FuncPtrTraits.hpp"
 	"boost/utility/enable_if.hpp"
 	"boost/type_traits/is_same.hpp"
@@ -7385,4 +7390,15 @@
 	"boost/type_traits/is_void.hpp"
 	"LikeMagic/SFMO/MethodCall.hpp"
 	"LikeMagic/SFMO/CppObjProxy.hpp"
+
+1310273996 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/MarkableIoObject.cpp
+	"LikeMagic/Backends/Io/MarkableIoObject.hpp"
+	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
+
+1310273405 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Backends/Io/MarkableIoObject.hpp
+	"LikeMagic/IMarkable.hpp"
+
+1310336140 /home/dennis/code/LikeMagic-All/dmalloc/dmalloc.h
+	<sys/types.h>
+	<stdarg.h>
 

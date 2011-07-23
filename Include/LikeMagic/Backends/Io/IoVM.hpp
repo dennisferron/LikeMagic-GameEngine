@@ -61,6 +61,15 @@ private:
 
     IoObject* proxy_to_io_obj(AbstractCppObjProxy* proxy);
 
+    std::set<IoBlock*> check_blocks;
+    void check() const;
+    void check_gc(std::string name, CollectorMarker* io_obj) const;
+    void check_gc(std::string name, CollectorMarker* look_for, std::string color, CollectorMarker* list) const;
+    bool is_color(CollectorMarker* io_obj, CollectorMarker* list) const;
+    bool is_white(CollectorMarker* io_obj) const;
+    bool is_black(CollectorMarker* io_obj) const;
+    bool is_gray(CollectorMarker* io_obj) const;
+
 public:
     IoVM(LikeMagic::RuntimeTypeSystem& type_system_);
     ~IoVM();

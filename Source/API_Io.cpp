@@ -15,6 +15,10 @@
 
 #include "boost/lexical_cast.hpp"
 
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
+
 using namespace LikeMagic::Utility;
 
 namespace LikeMagic { namespace Backends { namespace Io {
@@ -92,6 +96,16 @@ IoState* get_io_state(IoObject* self)
 IoMessage* new_message(IoObject* self, std::string name)
 {
     //std::cout << "new_message, name: " << name << std::endl;
+
+/*
+#ifdef USE_DMALLOC
+    if (dmalloc_verify(self) == DMALLOC_VERIFY_ERROR)
+        throw std::logic_error("Error in new_message; IoObject* self is not allocated");
+
+    if (dmalloc_verify(self->object) == DMALLOC_VERIFY_ERROR)
+        throw std::logic_error("Error in new_message; IoObject* self->object is not allocated");
+#endif
+*/
 
     if (!self)
         throw std::logic_error("Cannot create message; self is null!");
@@ -219,3 +233,7 @@ void API_io_willFree(IoObject *self)
 {
     IoVM::willFree(self);
 }
+
+
+
+

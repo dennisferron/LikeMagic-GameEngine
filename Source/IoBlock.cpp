@@ -10,17 +10,124 @@
 #include "LikeMagic/Backends/Io/API_Io_Impl.hpp"
 #include "LikeMagic/Backends/Io/IoVM.hpp"
 
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
+
+extern "C" {
+    extern clock_t collection_began;
+    extern clock_t collection_ended;
+    extern int collection_cycle;
+}
+
 namespace LikeMagic { namespace Backends { namespace Io {
 
 IoBlock::IoBlock()
-    : type_sys(0), iovm(0), io_block(0), io_target(0) {}
+    : type_sys(0), iovm(0), io_block(0), io_target(0), mark_count(0) {}
 
 IoBlock::IoBlock(AbstractTypeSystem const* type_sys_, IoVM* iovm_, IoObject* io_block_, IoObject* io_target_)
-    : type_sys(type_sys_), iovm(iovm_), io_block(io_block_), io_target(io_target_)
+    : type_sys(type_sys_), iovm(iovm_), io_block(io_block_), io_target(io_target_), mark_count(0)
+{
+    //check();
+
+    if (io_target && !io_target_->object)
+        throw std::logic_error("Target has no object!");
+
+    if (iovm)
+        iovm->check_blocks.insert(this);
+
+    if (iovm && io_block_)
     {
-        if (!io_target_->object)
-            throw std::logic_error("Target has no object!");
+        //Collector_retain_(iovm->state->collector, io_block_);
     }
+}
+
+IoBlock::IoBlock(IoBlock const& other)
+    : type_sys(other.type_sys), iovm(other.iovm), io_block(other.io_block), io_target(other.io_target), mark_count(other.mark_count)
+{
+    //check();
+
+    //if (iovm)
+    //    iovm->check_blocks.insert(this);
+}
+
+IoBlock::~IoBlock()
+{
+    //if (iovm)
+    //    iovm->check_blocks.erase(this);
+}
+
+#define DATA(self) ((IoBlockData *)IoObject_dataPointer(self))
+
+void IoBlock::check() const
+{
+    return;
+
+    try
+    {
+        if (!this)
+            throw std::logic_error("IoBlock object 'this' is NULL!");
+
+#ifdef USE_DMALLOC
+
+        //if (iovm && io_block)
+        //    iovm->check_gc("block", io_block);
+
+        if (io_block)
+        {
+            if (io_block->next == (void*)0xdfdfdfdfdfdfdfdf)
+                throw std::logic_error("io_block is in freed memory!");
+
+            if (io_block->next == (void*)0xdadadadadadadada)
+                throw std::logic_error("io_block is in uninitialized memory!");
+
+            if (io_block->object == (void*)0xdfdfdfdfdfdfdfdf)
+                throw std::logic_error("io_block is in freed memory!");
+
+            if (io_block->object == (void*)0xdadadadadadadada)
+                throw std::logic_error("io_block is in uninitialized memory!");
+        }
+
+
+        if (io_block && dmalloc_verify(io_block) == DMALLOC_VERIFY_ERROR)
+        {
+            if (!iovm)
+                cout << "no io vm" << endl;
+            else
+            {
+                iovm->check_gc("deallocated block", io_block);
+                iovm->check_gc("deallocated block", io_block, "black", (iovm->state->collector->blacks));
+            }
+            throw std::logic_error("IoBlock block object at " + boost::lexical_cast<string>(io_block) + " points to invalid memory.");
+        }
+
+        if (io_target && dmalloc_verify(io_target) == DMALLOC_VERIFY_ERROR)
+            throw std::logic_error("IoBlock target points to invalid memory.");
+
+        if (io_target && dmalloc_verify(DATA(io_target)) == DMALLOC_VERIFY_ERROR)
+            throw std::logic_error("IoBlock target data points to invalid memory.");
+#endif
+
+    }
+    catch(...)
+    {
+        if (!iovm)
+            cout << "Block has no iovm!" << endl;
+        else
+        {
+            cout << "Checking color: " << endl;
+            iovm->check_gc("deallocated block", io_block);
+            iovm->check_gc("deallocated block", io_block, "black", (iovm->state->collector->blacks));
+            cout << "Done checking color." << endl;
+        }
+
+        cout << "Block was marked this many times: " << mark_count << endl;
+        cout << "Most recent collection cycle: " << collection_cycle << " Began: " << collection_began << "  Ended: " << collection_ended << " Block last marked: " << last_mark_time << " in cycle: " << last_collection_cycle << endl;
+
+        throw;
+    }
+
+}
 
 void IoBlock::add_arg(IoMessage* m, AbstractCppObjProxy* proxy) const
 {
@@ -32,6 +139,8 @@ void IoBlock::add_arg(IoMessage* m, AbstractCppObjProxy* proxy) const
 
 IoObject* IoBlock::activate(IoMessage* m) const
 {
+    //check();
+
     //cout << "IoBlock::activate " << get_debug_name() << "   ";
 
     if (!io_block)
@@ -79,6 +188,14 @@ IoObject* IoBlock::activate(IoMessage* m) const
 
 void IoBlock::mark() const
 {
+    if (io_block)
+        ++mark_count;
+
+    last_mark_time = clock();
+    last_collection_cycle = collection_cycle;
+
+    //check();
+/*
     if (iovm && iovm->watch_freed_objects())
     {
         if(io_block && iovm->check_if_freed(io_block))
@@ -87,9 +204,14 @@ void IoBlock::mark() const
         if (io_target && iovm->check_if_freed(io_target))
             throw std::logic_error("IoBlock target freed before it could be marked, IoBlock debug name = " + get_debug_name());
     }
+*/
 
     //std::cout << "Marking IoBlock, block = " << io_block << ", target = " << io_target << std::endl;
     IoObject_shouldMarkIfNonNull(io_block);
+
+    //if (io_block && iovm && iovm->is_white(io_block))
+    //    throw std::logic_error("Block is white after being marked!");
+
     IoObject_shouldMarkIfNonNull(io_target);
 }
 

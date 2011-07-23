@@ -30,12 +30,17 @@ class IoBlock : public LikeMagic::IMarkable, public LikeMagic::DebugInfo
 private:
     AbstractTypeSystem const* type_sys;
     IoVM* iovm;
+    friend class IoVM;
 
     // The block to activate
     IoObject* io_block;
 
     // The target on which to activate the block.
     IoObject* io_target;
+
+    mutable int mark_count;
+    mutable clock_t last_mark_time;
+    mutable int last_collection_cycle;
 
     template <typename T>
     AbstractCppObjProxy* make_proxy(T t) const
@@ -59,12 +64,17 @@ private:
 public:
     IoBlock();
     IoBlock(AbstractTypeSystem const* type_sys_, IoVM* iovm_, IoObject* io_block_, IoObject* io_target_);
+    IoBlock(IoBlock const& other);
+    ~IoBlock();
+
+    void check() const;
 
     template <typename... Args>
     void operator()(Args... args) const
     {
         if (type_sys && io_block && io_target)
         {
+            check();
             IoMessage* m = new_message(io_target, "IoBlock");
             add_args(m, args...);
             activate(m);
@@ -76,6 +86,7 @@ public:
     {
         if (!empty())
         {
+            check();
             try
             {
                 IoMessage* m = new_message(io_target, "IoBlock");

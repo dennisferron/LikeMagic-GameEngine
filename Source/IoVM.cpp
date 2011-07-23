@@ -9,6 +9,7 @@
 #include "LikeMagic/Backends/Io/API_Io_Impl.hpp"
 #include "LikeMagic/Backends/Io/IoVM.hpp"
 #include "LikeMagic/Backends/Io/IoBlock.hpp"
+#include "LikeMagic/Backends/Io/MarkableIoObject.hpp"
 #include "LikeMagic/Backends/Io/IoObjectExpr.hpp"
 #include "LikeMagic/Backends/Io/ToIoObjectExpr.hpp"
 #include "LikeMagic/Backends/Io/FromIoTypeInfo.hpp"
@@ -29,6 +30,10 @@
 #include <sstream>
 #include <stdexcept>
 
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
+
 using namespace std;
 using namespace LikeMagic::Marshaling;
 using namespace LikeMagic::SFMO;
@@ -43,6 +48,13 @@ extern "C"
         IoState* state = IoObject_state(io_obj);
         IoVM* iovm = reinterpret_cast<IoVM*>(state->callbackContext);
         iovm->on_collector_free(io_obj);
+    }
+
+    typedef void (*CollectionEndedFunc)(Collector* self);
+    extern CollectionEndedFunc on_collection_ended;
+    void iovm_on_collection_ended(Collector* self)
+    {
+
     }
 }
 
@@ -276,6 +288,9 @@ void IoVM::mark() const
     {
         IoObject_shouldMarkIfNonNull(last_exception);
         IoObject_shouldMarkIfNonNull(LM_Proxy);
+        //for (auto it=check_blocks.begin(); it != check_blocks.end(); ++it)
+        //    (*it)->mark();
+        //check();
     }
 }
 
@@ -290,19 +305,43 @@ IoObject* IoVM::proxy_to_io_obj(AbstractCppObjProxy* proxy)
 
 IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 {
- 	IoState_pushCollectorPause(IOSTATE);
+#ifdef USE_DMALLOC
+    if (dmalloc_verify(m) == DMALLOC_VERIFY_ERROR)
+    {
+        throw std::logic_error("dmalloc reports the message object was freed.");
+    }
+#endif
 
-    std::string method_name = CSTRING(IoMessage_name(m));
+ 	//IoState_pushCollectorPause(IOSTATE);
+ 	MarkableIoObject* message_marker = new MarkableIoObject(m);
+ 	IoVM* iovm = 0;
+
 
     //std::string error_msg = "No C++ object on IoVM::perform " + method_name;
     //IOASSERT(IoObject_dataPointer(self), error_msg.c_str());
 
     if (!IoObject_dataPointer(self))
+    {
+        //IoState_popCollectorPause(IOSTATE);
         return IoObject_perform(self, locals, m);
+    }
 
     try
     {
         //std::cout << "perform "  << method_name << std::endl;
+
+        if (!IOSTATE->callbackContext)
+            throw std::logic_error("The IoState does not have a callbackContext (supposed to contain pointer to IoVM object).");
+
+        iovm = reinterpret_cast<IoVM*>(IOSTATE->callbackContext);
+
+        if (iovm->state != IOSTATE)
+            throw std::logic_error("Failed to retrieve IoVM object from IoState callback context.");
+
+        // Necessary to prevent Io from collecting the message arguments before we finish evaluating them!
+        iovm->add_mark_obj(message_marker);
+
+        std::string method_name = CSTRING(IoMessage_name(m));
 
         auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
         proxy->check_magic();
@@ -338,37 +377,57 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
             }
         }
 
-        if (!IOSTATE->callbackContext)
-            throw std::logic_error("The IoState does not have a callbackContext (supposed to contain pointer to IoVM object).");
-
-        IoVM* iovm = reinterpret_cast<IoVM*>(IOSTATE->callbackContext);
-
-        if (iovm->state != IOSTATE)
-            throw std::logic_error("Failed to retrieve IoVM object from IoState callback context.");
+#ifdef USE_DMALLOC
+        for (size_t i=0; i<arg_types.size(); i++)
+            if (dmalloc_verify(IoMessage_locals_valueArgAt_(m, locals, i)) == DMALLOC_VERIFY_ERROR)
+                throw std::logic_error("dmalloc reports an Io arg was freed after get_expr, before proxy->call.");
+#endif
 
         auto result = proxy->call(method, args);
         IoObject* result_obj = iovm->to_script(self, locals, m, result);
-        IoState_popCollectorPause(IOSTATE);
+        //IoState_popCollectorPause(IOSTATE);
+
+#ifdef USE_DMALLOC
+        for (size_t i=0; i<arg_types.size(); i++)
+            if (dmalloc_verify(IoMessage_locals_valueArgAt_(m, locals, i)) == DMALLOC_VERIFY_ERROR)
+                throw std::logic_error("dmalloc reports an Io arg was freed after proxy->call, before remove_mark_obj.");
+#endif
+
+        iovm->remove_mark_obj(message_marker);
+        delete message_marker;
+
+#ifdef USE_DMALLOC
+        for (size_t i=0; i<arg_types.size(); i++)
+            if (dmalloc_verify(IoMessage_locals_valueArgAt_(m, locals, i)) == DMALLOC_VERIFY_ERROR)
+                throw std::logic_error("dmalloc reports an Io arg was freed after remove_mark_obj.");
+#endif
+
         return result_obj;
     }
     catch (std::logic_error le)
     {
         //std::cout << "Caught exception: " << le.what() << std::endl;
         IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(le).name()).c_str(), le.what());
-        IoState_popCollectorPause(IOSTATE);
+        //IoState_popCollectorPause(IOSTATE);
+        if (iovm)
+            iovm->remove_mark_obj(message_marker);
+        delete message_marker;
         return IONIL(self);
     }
     catch (std::exception e)
     {
         //std::cout << "Caught exception: " << e.what() << std::endl;
         IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(e).name()).c_str(), e.what());
-        IoState_popCollectorPause(IOSTATE);
+        //IoState_popCollectorPause(IOSTATE);
+        if (iovm)
+            iovm->remove_mark_obj(message_marker);
+        delete message_marker;
         return IONIL(self);
     }
     catch (...)
     {
         cout << "LikeMagic:  Unknown C++ exception, aborting." << endl;
-        IoState_popCollectorPause(IOSTATE);
+        //IoState_popCollectorPause(IOSTATE);
         abort();
     }
 }
@@ -474,15 +533,31 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
 
 void IoVM::on_collector_free(IoObject* io_obj)
 {
+    //check();
+
     if(record_freed_flag)
        freed_objects.insert(io_obj);
 
-    if(free_watch_flag && watch_for_free.find(io_obj) != watch_for_free.end())
-        throw std::runtime_error("Watch object freed: " + watch_for_free[io_obj]);
+    //if(free_watch_flag && watch_for_free.find(io_obj) != watch_for_free.end())
+    //    throw std::runtime_error("Watch object freed: " + watch_for_free[io_obj]);
+
+    if(free_watch_flag)
+        for (auto it=check_blocks.begin(); it != check_blocks.end(); ++it)
+            if ((*it)->io_block == io_obj)
+                throw std::runtime_error("IoBlock object freed");
+
 
     // BAD THINGS happen if you don't allow the original free function run.
     // I imagine it must be doing some necessary cleanup or fixing up collector marker pointers.
     (*original_free_func)(io_obj);
+
+    check();
+}
+
+void IoVM::check() const
+{
+    //for (auto it=check_blocks.begin(); it != check_blocks.end(); ++it)
+    //    (*it)->check();
 }
 
 bool IoVM::record_freed_objects() const
@@ -520,5 +595,119 @@ void IoVM::willFree(IoObject *self)
 {
 }
 
+void IoVM::check_gc(std::string name, CollectorMarker* look_for, std::string color, CollectorMarker* list) const
+{
+	CollectorMarker *v = list->next;
+	CollectorMarker *next;
+	unsigned int c = list->color;
+
+	while (v->color == c)
+	{
+		next = v->next;
+        if (v == look_for)
+            cout << name << " at " << look_for << " is " << color << endl;
+		v = next;
+	}
+}
+
+void IoVM::check_gc(std::string name, CollectorMarker* look_for) const
+{
+    //check_gc(name, look_for, "black", (state->collector->blacks));
+    check_gc(name, look_for, "gray", (state->collector->grays));
+    check_gc(name, look_for, "white", (state->collector->whites));
+}
+
+bool IoVM::is_color(CollectorMarker* look_for, CollectorMarker* list) const
+{
+	CollectorMarker *v = list->next;
+	CollectorMarker *next;
+	unsigned int c = list->color;
+
+	while (v->color == c)
+	{
+		next = v->next;
+        if (v == look_for)
+            return true;
+		v = next;
+	}
+
+	return false;
+}
+
+bool IoVM::is_white(CollectorMarker* look_for) const
+{
+    return is_color(look_for, state->collector->whites);
+}
+
+bool IoVM::is_black(CollectorMarker* look_for) const
+{
+    return is_color(look_for, state->collector->blacks);
+}
+
+bool IoVM::is_gray(CollectorMarker* look_for) const
+{
+    return is_color(look_for, state->collector->grays);
+}
 
 
+/*
+
+void IoVM::dump_tree(IoObject* self) const
+{
+    std::set<IoObject*> already_done;
+    dump_tree(self, already_done);
+}
+
+void IoVM::dump_tree(IoObject* self, std::set<IoObject*>& already_done) const
+{
+    if (already_done.find(self) == already_done.end())
+        return;
+    else
+        already_done.insert(self);
+
+	if (IoObject_isLocals(self))
+	{
+		printf("mark %p locals\n", (void *)self);
+	}
+	else
+	{
+		printf("mark %p %s\n", (void *)self, IoObject_name(self));
+	}
+
+	if (IoObject_ownsSlots(self))
+	{
+		PHASH_FOREACH(IoObject_slots(self), k, v,
+			char *s = CSTRING((IoSeq *)k);
+			printf("mark slot key: %s\n", s);
+
+            printf("s = %s\n", s);
+            printf("vp = %p\n", (void *)v);
+
+            if(ISSEQ((IoObject *)v))
+            {
+                printf("%s = '%s'\n", s, CSTRING((IoSeq *)v));
+            }
+            else
+            {
+                printf("%s type = %s\n", s, IoObject_name((IoObject *)v));
+            }
+
+			dump_tree((IoObject *)v, already_done);
+		);
+	}
+
+	// mark protos
+
+	IOOBJECT_FOREACHPROTO(self, proto, dump_tree(proto, already_done));
+
+//	{
+//		IoTagMarkFunc *func = IoTag_markFunc(IoObject_tag(self));
+//
+//		if (func)
+//		{
+//			(func)(self);
+//		}
+//	}
+}
+
+*/
