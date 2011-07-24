@@ -9,7 +9,7 @@
 #pragma once
 
 #include "LikeMagic/Marshaling/AbstractClass.hpp"
-#include "LikeMagic/Generators/GeneratorPolicy.hpp"
+#include "LikeMagic/Generators/GeneratorFactory.hpp"
 #include "LikeMagic/SFMO/ClassExpr.hpp"
 #include "LikeMagic/Marshaling/DummyClass.hpp"
 #include "LikeMagic/Marshaling/NamespaceTypeInfo.hpp"
@@ -24,7 +24,7 @@ namespace LikeMagic { namespace Marshaling {
 
 using LikeMagic::AbstractTypeSystem;
 using LikeMagic::Utility::StaticMethod;
-using LikeMagic::Generators::GeneratorPolicy;
+using LikeMagic::Generators::GeneratorFactory;
 using LikeMagic::Generators::MemberKind;
 
 class StaticMethods : public DummyClass<StaticMethods>
@@ -44,7 +44,7 @@ public:
     template <typename R, typename... Args>
     void bind_method(std::string method_name, R (*f)(Args...))
     {
-        auto calltarget = new typename GeneratorPolicy<MemberKind::static_method, R, StaticMethod, Args...>::type(static_method_type, static_method_type, f, type_system);
+        auto calltarget = GeneratorFactory<MemberKind::static_method, R, StaticMethod, Args...>::create(static_method_type, static_method_type, f, type_system);
         add_method(method_name, calltarget);
     }
 

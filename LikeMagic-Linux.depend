@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1311461713 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/API_Io.cpp
+1311471666 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/API_Io.cpp
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/SFMO/Term.hpp"
 	"LikeMagic/SFMO/NullExpr.hpp"
@@ -5916,7 +5916,7 @@
 	"boost/type_traits/is_base_of.hpp"
 	<iostream>
 
-1311463959 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Backends/Io/IoBlock.hpp
+1311471666 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Backends/Io/IoBlock.hpp
 	"LikeMagic/Backends/Io/API_Io.hpp"
 	"LikeMagic/AbstractTypeSystem.hpp"
 	"LikeMagic/SFMO/CppObjProxy.hpp"
@@ -5971,7 +5971,7 @@
 1308455766 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/DebugInfo.hpp
 	<string>
 
-1311461713 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Backends/Io/IoVM.hpp
+1311471666 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Backends/Io/IoVM.hpp
 	"LikeMagic/RuntimeTypeSystem.hpp"
 	"LikeMagic/Backends/Io/IoBlock.hpp"
 	"LikeMagic/Backends/Io/API_Io.hpp"
@@ -5981,7 +5981,7 @@
 	"boost/unordered_map.hpp"
 	"boost/unordered_set.hpp"
 
-1308455775 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/RuntimeTypeSystem.hpp
+1311473957 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/RuntimeTypeSystem.hpp
 	"boost/type_traits/is_enum.hpp"
 	"LikeMagic/Utility/EnumHelper.hpp"
 	"LikeMagic/AbstractTypeSystem.hpp"
@@ -5995,7 +5995,7 @@
 	"LikeMagic/TypeConv/AddrOfConv.hpp"
 	"LikeMagic/TypeConv/PtrDerefConv.hpp"
 
-1308455828 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Utility/EnumHelper.hpp
+1311474182 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Utility/EnumHelper.hpp
 	<iostream>
 	"boost/lexical_cast.hpp"
 
@@ -6031,9 +6031,9 @@
 	<boost/assert.hpp>
 	<boost/static_assert.hpp>
 
-1310097930 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/Class.hpp
+1311477671 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/Class.hpp
 	"LikeMagic/Marshaling/AbstractClass.hpp"
-	"LikeMagic/Generators/GeneratorPolicy.hpp"
+	"LikeMagic/Generators/GeneratorFactory.hpp"
 	"LikeMagic/CallTargets/ConstructorCallTarget.hpp"
 	"LikeMagic/CallTargets/DestructorCallTarget.hpp"
 	"LikeMagic/TypeConv/NumberConv.hpp"
@@ -6251,9 +6251,9 @@
 	<iostream>
 	<stdexcept>
 
-1310097572 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/StaticMethods.hpp
+1311477693 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/StaticMethods.hpp
 	"LikeMagic/Marshaling/AbstractClass.hpp"
-	"LikeMagic/Generators/GeneratorPolicy.hpp"
+	"LikeMagic/Generators/GeneratorFactory.hpp"
 	"LikeMagic/SFMO/ClassExpr.hpp"
 	"LikeMagic/Marshaling/DummyClass.hpp"
 	"LikeMagic/Marshaling/NamespaceTypeInfo.hpp"
@@ -6444,7 +6444,7 @@
 	<iostream>
 	"LikeMagic/Utility/TupleForEach.hpp"
 
-1311462739 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoBlock.cpp
+1311471666 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoBlock.cpp
 	"LikeMagic/Backends/Io/IoBlock.hpp"
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/Backends/Io/IoVM.hpp"
@@ -6455,7 +6455,7 @@
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/Backends/Io/FromIoTypeInfo.hpp"
 
-1311465779 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoVM.cpp
+1311471666 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoVM.cpp
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/Backends/Io/IoVM.hpp"
 	"LikeMagic/Backends/Io/IoBlock.hpp"
@@ -7202,7 +7202,7 @@
 1292730967 /home/dennis/code/LikeMagic-All/boost/boost/graph/iteration_macros.hpp
 	<utility>
 
-1308455830 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/TypeDescr.cpp
+1311472466 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/TypeDescr.cpp
 	<cxxabi.h>
 	<string>
 	<malloc.h>
@@ -7399,4 +7399,9 @@
 1310336140 /home/dennis/code/LikeMagic-All/dmalloc/dmalloc.h
 	<sys/types.h>
 	<stdarg.h>
+
+1311477774 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Generators/GeneratorFactory.hpp
+	"LikeMagic/Generators/MethodCallGenerator.hpp"
+	"LikeMagic/Generators/DeferredCallGenerator.hpp"
+	"LikeMagic/Generators/DelegateCallGenerator.hpp"
 

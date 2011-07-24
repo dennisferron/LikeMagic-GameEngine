@@ -90,7 +90,7 @@
 		<Unit filename="Include/LikeMagic/DebugInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Generators/DeferredCallGenerator.hpp" />
 		<Unit filename="Include/LikeMagic/Generators/DelegateCallGenerator.hpp" />
-		<Unit filename="Include/LikeMagic/Generators/GeneratorPolicy.hpp" />
+		<Unit filename="Include/LikeMagic/Generators/GeneratorFactory.hpp" />
 		<Unit filename="Include/LikeMagic/Generators/MemberKind.hpp" />
 		<Unit filename="Include/LikeMagic/Generators/MethodCallGenerator.hpp" />
 		<Unit filename="Include/LikeMagic/IMarkable.hpp" />

@@ -9,7 +9,7 @@
 #pragma once
 
 #include "LikeMagic/Marshaling/AbstractClass.hpp"
-#include "LikeMagic/Generators/GeneratorPolicy.hpp"
+#include "LikeMagic/Generators/GeneratorFactory.hpp"
 #include "LikeMagic/CallTargets/ConstructorCallTarget.hpp"
 #include "LikeMagic/CallTargets/DestructorCallTarget.hpp"
 #include "LikeMagic/TypeConv/NumberConv.hpp"
@@ -136,21 +136,6 @@ public:
 //        type_system.add_conv<T const*&, Base const*, Converter>();
     }
 
-
-#ifdef USE_DELEGATES_HACK
-
-    // This version should result in fewer unique template instantiations, resulting in smaller code output.
-
-    /*
-    template <typename F>
-    void bind_method(std::string method_name, F f)
-    {
-        typedef typename FuncPtrTraits<F>::DelegateFuncPtr DelegateFuncPtr;
-        auto calltarget = new DelegateCallGenerator<DelegateFuncPtr>(ref_type, const_ref_type, reinterpret_cast<DelegateFuncPtr>(f), type_system);
-        add_method(method_name, calltarget);
-    }
-    */
-
     // Although Class<> has the T parameter, we still have to deduce it with ObjT here.  If we don't do this,
     // we get a compile error when T is of a non class type such as int.  Even though this overload of bind_method
     // should never get called when T is not a class type, it still causes an error to say T::*f in its signature.
@@ -158,7 +143,7 @@ public:
     void bind_method(std::string method_name, R (ObjT::*f)(Args...))
     {
         typedef R (AbstractDelegate::*DelgFuncPtr)(Args...);
-        auto calltarget = new typename GeneratorPolicy<MemberKind::member_nonconst, R, ObjT, Args...>::type(ref_type, const_ref_type, f, type_system);
+        auto calltarget = GeneratorFactory<MemberKind::member_nonconst, R, ObjT, Args...>::create(ref_type, const_ref_type, f, type_system);
         add_method(method_name, calltarget);
     }
 
@@ -169,36 +154,23 @@ public:
     void bind_method(std::string method_name, R (ObjT::*f)(Args...) const)
     {
         typedef R (AbstractDelegate::*DelgFuncPtr)(Args...) const;
-        auto calltarget = new typename GeneratorPolicy<MemberKind::member_const, R, ObjT, Args...>::type(ref_type, const_ref_type, f, type_system);
+        auto calltarget = GeneratorFactory<MemberKind::member_const, R, ObjT, Args...>::create(ref_type, const_ref_type, f, type_system);
         add_method(method_name, calltarget);
     }
 
     template <typename R, typename... Args>
     void bind_method(std::string method_name, R (*f)(Args...))
     {
-        auto calltarget = new typename GeneratorPolicy<MemberKind::nonmember_op, R, StaticMethod, Args...>::type(ref_type, const_ref_type, f, type_system);
+        auto calltarget = GeneratorFactory<MemberKind::nonmember_op, R, StaticMethod, Args...>::create(ref_type, const_ref_type, f, type_system);
         add_method(method_name, calltarget);
     }
-
-#else
-
-    // Use this to declare methods of your C++ class callable from script.
-    template <typename F>
-    void bind_method(std::string method_name, F f)
-    {
-        //auto calltarget = new CallTargetSelector<MethodCallGenerator, T, F>(f, type_system);
-        auto calltarget = new MethodCallGenerator<T, F>(f, type_system);
-        add_method(method_name, calltarget);
-    }
-
-#endif
 
 
     // This is now the preferred way of binding static methods of classes.
     template <typename R, typename... Args>
     void bind_static_method(std::string method_name, R (*f)(Args...))
     {
-        auto calltarget = new typename GeneratorPolicy<MemberKind::static_method, R, StaticMethod, Args...>::type(static_method_type, static_method_type, f, type_system);
+        auto calltarget = GeneratorFactory<MemberKind::static_method, R, StaticMethod, Args...>::create(static_method_type, static_method_type, f, type_system);
         add_method(method_name, calltarget);
     }
 
@@ -207,7 +179,7 @@ public:
     template <typename R, typename... Args>
     void bind_nonmember_op(std::string method_name, R (*f)(Args...))
     {
-        auto calltarget = new typename GeneratorPolicy<MemberKind::nonmember_op, R, StaticMethod, Args...>::type(static_method_type, static_method_type, f, type_system);
+        auto calltarget = GeneratorFactory<MemberKind::nonmember_op, R, StaticMethod, Args...>::create(static_method_type, static_method_type, f, type_system);
         add_method(method_name, calltarget);
     }
 
