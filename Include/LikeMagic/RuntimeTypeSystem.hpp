@@ -71,7 +71,7 @@ private:
         // Allow pointers and references to be converted to value
         // only if the object is copyable.
         //add_conv<T*&, T, PtrDerefConv>();
-        add_conv<T&, T>();
+        //add_conv<T&, T>();
         add_conv<T const&, T>();
         //add_conv<T*&, T const, PtrDerefConv>();
     }
@@ -79,23 +79,6 @@ private:
     template <typename T, bool is_copyable>
     typename boost::disable_if_c<is_copyable>::type
     register_copyable_conv()
-    {
-    }
-
-
-    template <typename T, bool is_copyable>
-    typename boost::enable_if<boost::is_enum<T>>::type
-    register_enum(Class<T, is_copyable>& result)
-    {
-        result.bind_nonmember_op("==",    &EnumHelper<T>::equals);
-        result.bind_nonmember_op("!=",    &EnumHelper<T>::not_equals);
-        result.bind_nonmember_op("value", &EnumHelper<T>::value);
-        result.bind_nonmember_op("asString", &EnumHelper<T>::asString);
-    }
-
-    template <typename T, bool is_copyable>
-    typename boost::disable_if<boost::is_enum<T>>::type
-    register_enum(Class<T, is_copyable>& result)
     {
     }
 
@@ -121,11 +104,16 @@ private:
         return *result;
     }
 
-    template <typename T, bool is_copyable>
-    Class<T, is_copyable>& register_class_impl(std::string name, NamespacePath const ns)
-    {
-        static_assert(boost::is_same<T, typename LikeMagic::Utility::StripModifiers<T>::strip::type>::value, "Can only register bare types as classes.");
+public:
 
+    RuntimeTypeSystem();
+
+    // Important:  you must set the type info cache instances in all your DLLs to this pointer.
+    TypeInfoCache* get_typeinfo_cache() { return dll_shared_typeinfo; }
+
+    template <typename T, bool is_copyable=!boost::is_abstract<T>::value>
+    Class<T, is_copyable>& register_class(std::string name, NamespacePath const ns=NamespacePath::global())
+    {
         static TypeIndex type(BetterTypeInfo::create_index<T>());
         if (has_class(type))
             return cast_existing_class<Class<T, is_copyable>>(type, is_copyable);
@@ -137,55 +125,31 @@ private:
             result->add_base_abstr(proxy_methods);
             result->bind_delete();
 
-            // If the user wants to give their class collection_methods, let them do it via an API function!
-            //if (IsContainer<T>::value)
-            //    result->add_base_abstr(&collection_methods);
-
             // Allow passing the actual object to things that need the pointer to the object.
             add_conv<T&, T*, AddrOfConv>();
-            //add_conv<T&, T const*, AddrOfConv>();
-            //add_conv<T const&, T const*, AddrOfConv>();
 
             // Also allow converting pointers back to references.
             add_conv<T*, T&, PtrDerefConv>();
-            //add_conv<T*, T const&, PtrDerefConv>();
 
             // References to pointers can be converted to pointers.
             add_conv<T*&, T*>();
             add_conv<T* const&, T*>();
-            //add_conv<T*&, T&, PtrDerefConv>();
-
-            //add_conv<T*&, T const&, PtrDerefConv>();
 
             // enable pointer to value conversions only if class is copyable.
             register_copyable_conv<T, is_copyable>();
-
-            // Add enum-specific things if applicable.
-            register_enum<T, is_copyable>(*result);
 
             return *result;
         }
     }
 
-public:
-
-    RuntimeTypeSystem();
-
-    // Important:  you must set the type info cache instances in all your DLLs to this pointer.
-    TypeInfoCache* get_typeinfo_cache() { return dll_shared_typeinfo; }
-
-    template <typename T, bool is_copyable=!boost::is_abstract<T>::value>
-    Class<T, is_copyable>& register_class(std::string name, NamespacePath const ns=NamespacePath::global())
-    {
-        auto& result = register_class_impl<T, is_copyable>(name, ns);
-        return result;
-    }
-
-    // Currently register_class is capable of discerning enums.
     template <typename T>
     Class<T, true>& register_enum(std::string name, NamespacePath const ns=NamespacePath::global())
     {
-        auto& result = register_class_impl<T, true>(name, ns);
+        auto& result = register_class<T, true>(name, ns);
+        result.bind_nonmember_op("==",    &EnumHelper<T>::equals);
+        result.bind_nonmember_op("!=",    &EnumHelper<T>::not_equals);
+        result.bind_nonmember_op("value", &EnumHelper<T>::value);
+        result.bind_nonmember_op("asString", &EnumHelper<T>::asString);
         return result;
     }
 

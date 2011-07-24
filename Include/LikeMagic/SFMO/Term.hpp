@@ -131,8 +131,9 @@ public:
 
     virtual void mark() const
     {
-        typedef typename StripModifiers<T>::strip::type MarkType;
-        mark_if_possible(TypePack<MarkType>());
+        //typedef typename StripModifiers<T>::strip::type MarkType;
+        //mark_if_possible(TypePack<MarkType>());
+        mark_if_possible(TypePack<typename boost::remove_reference<T>::type>());
     }
 
 };
@@ -227,8 +228,9 @@ public:
 
     virtual void mark() const
     {
-        typedef typename StripModifiers<T>::strip::type MarkType;
-        mark_if_possible(TypePack<MarkType>());
+        //typedef typename StripModifiers<T>::strip::type MarkType;
+        //mark_if_possible(TypePack<MarkType>());
+        mark_if_possible(TypePack<typename boost::remove_reference<T>::type>());
     }
 
 };
@@ -307,8 +309,9 @@ public:
 
     virtual void mark() const
     {
-        typedef typename StripModifiers<T>::strip::type MarkType;
-        mark_if_possible(TypePack<MarkType>());
+        //typedef typename StripModifiers<T>::strip::type MarkType;
+        //mark_if_possible(TypePack<MarkType>());
+        mark_if_possible(TypePack<T>());
     }
 
     virtual bool is_null() const { return value == NULL; }
@@ -387,8 +390,9 @@ public:
 
     virtual void mark() const
     {
-        typedef typename StripModifiers<T>::strip::type MarkType;
-        mark_if_possible(TypePack<MarkType>());
+        //typedef typename StripModifiers<T>::strip::type MarkType;
+        //mark_if_possible(TypePack<MarkType>());
+        mark_if_possible(TypePack<T>());
     }
 
     virtual bool is_null() const { return value == NULL; }

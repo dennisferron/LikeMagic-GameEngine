@@ -91,16 +91,6 @@ public:
         throw std::logic_error("Type variation remove_reference undefined on " + describe());
     }
 
-    virtual TypeInfoPtr as_ptr_to_const_type() const
-    {
-        throw std::logic_error("Type variation as_ptr_to_const_type undefined on " + describe());
-    }
-
-    virtual TypeInfoPtr as_ptr_to_nonconst_type() const
-    {
-        throw std::logic_error("Type variation as_ptr_to_nonconst_type undefined on " + describe());
-    }
-
     virtual TypeInfoPtr remove_all_const() const
     {
         throw std::logic_error("Type variation remove_all_const undefined on " + describe());

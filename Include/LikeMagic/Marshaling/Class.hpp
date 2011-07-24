@@ -63,11 +63,6 @@ private:
     Class(const Class&);
     Class& operator =(const Class&);
 
-    //friend class LikeMagic::RuntimeTypeSystem;
-    //Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePath const namespace_) : AbstractClass(name_, type_system_, namespace_)
-    //{
-    //}
-
     // Utility function for generating alternate constructor names.
     static std::string alt_name(std::string prefix, std::string method_name)
     {
@@ -115,25 +110,7 @@ public:
     void add_base(Class<Base, base_is_copyable> const& base_class)
     {
         add_base_abstr(&base_class);
-
-        type_system.add_conv<T&, Base&, Converter>();
         type_system.add_conv<T*, Base*, Converter>();
-
-        //type_system.add_conv<T&, Base const&, Converter>();
-        //type_system.add_conv<T const&, Base const&, Converter>();
-
-        // Autoconvert references into base pointers (so we can pass Term objects by pointer)
-//        type_system.add_conv<T&, Base*, AddrOfConv>();
-//        type_system.add_conv<T&, Base const*, AddrOfConv>();
-//        type_system.add_conv<T const&, Base const*, AddrOfConv>();
-//
-//        type_system.add_conv<T*, Base*, Converter>();
-//        type_system.add_conv<T*, Base const*, Converter>();
-//        type_system.add_conv<T const*, Base const*, Converter>();
-//
-//        type_system.add_conv<T*&, Base*, Converter>();
-//        type_system.add_conv<T*&, Base const*, Converter>();
-//        type_system.add_conv<T const*&, Base const*, Converter>();
     }
 
     // Although Class<> has the T parameter, we still have to deduce it with ObjT here.  If we don't do this,

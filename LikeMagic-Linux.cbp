@@ -57,7 +57,7 @@
 			<Add option="-Wno-deprecated" />
 			<Add option="-Wno-ignored-qualifiers" />
 			<Add option="-DUSE_DELEGATES_HACK" />
-			<Add directory="../boost" />
+			<Add directory="../Common/boost" />
 			<Add directory="../io/_build/headers" />
 			<Add directory="Include" />
 		</Compiler>
