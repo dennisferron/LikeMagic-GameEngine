@@ -70,7 +70,6 @@
 		<Unit filename="Include/LikeMagic/Backends/Io/IoObjectExpr.hpp" />
 		<Unit filename="Include/LikeMagic/Backends/Io/IoVM.hpp" />
 		<Unit filename="Include/LikeMagic/Backends/Io/IoVectorSTL.hpp" />
-		<Unit filename="Include/LikeMagic/Backends/Io/MarkableIoObject.hpp" />
 		<Unit filename="Include/LikeMagic/Backends/Io/ToIoObjectExpr.hpp" />
 		<Unit filename="Include/LikeMagic/Backends/Io/ToIoTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/AbstractCallTargetSelector.hpp" />
@@ -180,7 +179,6 @@
 		<Unit filename="Source/IoBlock.cpp" />
 		<Unit filename="Source/IoObjectExpr.cpp" />
 		<Unit filename="Source/IoVM.cpp" />
-		<Unit filename="Source/MarkableIoObject.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/Namespace.cpp" />
 		<Unit filename="Source/NamespacePath.cpp" />
