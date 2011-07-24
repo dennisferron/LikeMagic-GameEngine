@@ -95,18 +95,6 @@ IoState* get_io_state(IoObject* self)
 
 IoMessage* new_message(IoObject* self, std::string name)
 {
-    //std::cout << "new_message, name: " << name << std::endl;
-
-/*
-#ifdef USE_DMALLOC
-    if (dmalloc_verify(self) == DMALLOC_VERIFY_ERROR)
-        throw std::logic_error("Error in new_message; IoObject* self is not allocated");
-
-    if (dmalloc_verify(self->object) == DMALLOC_VERIFY_ERROR)
-        throw std::logic_error("Error in new_message; IoObject* self->object is not allocated");
-#endif
-*/
-
     if (!self)
         throw std::logic_error("Cannot create message; self is null!");
 
@@ -227,13 +215,4 @@ IoObject* API_io_forward(IoObject *self, IoObject *locals, IoMessage *m)
 {
     return IoVM::forward(self, locals, m);
 }
-
-// Currently unused; see collector_free in IoVM.cpp instead.
-void API_io_willFree(IoObject *self)
-{
-    IoVM::willFree(self);
-}
-
-
-
 

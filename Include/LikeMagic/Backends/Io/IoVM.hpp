@@ -33,10 +33,6 @@ private:
     IoState* state;  // It was dangerous when this was named "self" - Io macros referencing self are defined for an IoObject, not an IoState
     std::set<TypeIndex> registered_classes;
     boost::unordered_map<TypeIndex, IoObject*> class_protos;
-    boost::unordered_map<IoObject*, std::string> watch_for_free;
-    boost::unordered_set<IoObject*> freed_objects;
-    bool record_freed_flag;
-    bool free_watch_flag;
     CollectorFreeFunc* original_free_func;
 
     mutable IoObject* last_exception;
@@ -56,32 +52,11 @@ private:
     IoObject* LM_Proxy;
     IoObject* LM_Protos;
 
-    //void bind_method(IoObject* obj, std::string method_name);
-    //void bind_method(IoObject* target, std::string method_name, AbstractCallTargetSelector* call_target);
-
     IoObject* proxy_to_io_obj(AbstractCppObjProxy* proxy);
-
-    std::set<IoBlock*> check_blocks;
-    void check() const;
-    void check_gc(std::string name, CollectorMarker* io_obj) const;
-    void check_gc(std::string name, CollectorMarker* look_for, std::string color, CollectorMarker* list) const;
-    bool is_color(CollectorMarker* io_obj, CollectorMarker* list) const;
-    bool is_white(CollectorMarker* io_obj) const;
-    bool is_black(CollectorMarker* io_obj) const;
-    bool is_gray(CollectorMarker* io_obj) const;
 
 public:
     IoVM(LikeMagic::RuntimeTypeSystem& type_system_);
     ~IoVM();
-
-    void on_collector_free(IoObject* io_obj);
-
-    bool record_freed_objects() const;
-    void set_record_freed_objects(bool value);
-    bool watch_freed_objects() const;
-    void set_watch_freed_objects(bool value);
-    void add_watch_for_freed_object(IoObject* io_obj, std::string message);
-    bool check_if_freed(IoObject* io_obj);
 
     static IoObject* perform(IoObject *self, IoObject *locals, IoMessage *m);
     static IoObject* forward(IoObject *self, IoObject *locals, IoMessage *m);

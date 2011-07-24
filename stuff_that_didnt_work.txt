@@ -22,3 +22,8 @@ feature, but provides building blocks that could be used to implement future fea
 entirely in script too.
 (Wasted 0.5 days writing preliminary C++ code for serialization only to realize
 it could be an Io script if the right metadata and API functions are exposed.)
+
+Wasted 5 weeks thinking a memory corruption bug was due to GC problem.  Turned out
+it was a simple scripting error.  Most of the diagnostic code I wrote to try to
+figure it out was a waste of time, except in that it eliminated what could not
+be the problem.
