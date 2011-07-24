@@ -9,7 +9,10 @@
 #include <cxxabi.h>
 
 #include <string>
+
+#if !defined(__APPLE__)
 #include <malloc.h>
+#endif
 
 namespace LikeMagic { namespace Utility {
 
