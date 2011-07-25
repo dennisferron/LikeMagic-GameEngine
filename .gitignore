@@ -6,6 +6,9 @@
 Deps/raknet/*
 Deps/irrklang/*
 
+# Ignore bullet build files
+Deps/bullet/build*
+
 # Ignore binaries
 Interpreter/bin/*
 Interpreter/NetbeansLinux/Interpreter/dist/Debug/GNU-Linux-x86/*

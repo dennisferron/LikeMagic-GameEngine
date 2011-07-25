@@ -125,11 +125,26 @@
 		<Unit filename="Source/Irrlicht/IrrlichtProtos.cpp" />
 		<Unit filename="Source/Irrlicht/ScriptedEventReceiver.cpp" />
 		<Unit filename="Source/Irrlicht/ScriptedSceneNode.cpp" />
-		<Unit filename="Source/RakNet/RakNet.cpp" />
-		<Unit filename="Source/RakNet/RakNetBindings.cpp" />
-		<Unit filename="Source/RakNet/RakNetProtos.cpp" />
-		<Unit filename="Source/RakNet/Replicas.cpp" />
-		<Unit filename="Source/RakNet/Serializers.cpp" />
+		<Unit filename="Source/RakNet/RakNet.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Source/RakNet/RakNetBindings.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Source/RakNet/RakNetProtos.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Source/RakNet/Replicas.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Source/RakNet/Serializers.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<debugger />
