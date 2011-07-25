@@ -6,10 +6,11 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
+			<Target title="Debug Unix">
+				<Option platforms="Unix;" />
 				<Option output="libLikeMagic-Linux" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/Debug/" />
+				<Option object_output="obj/Debug-Unix/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -18,10 +19,11 @@
 					<Add option="-g" />
 				</Compiler>
 			</Target>
-			<Target title="Release">
+			<Target title="Release Unix">
+				<Option platforms="Unix;" />
 				<Option output="libLikeMagic-Linux" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/Release/" />
+				<Option object_output="obj/Release-Unix/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -43,7 +45,66 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add option="-DNO_USE_DMALLOC" />
 				</Compiler>
+			</Target>
+			<Target title="Debug Mac">
+				<Option platforms="Mac;" />
+				<Option output="libLikeMagic-Mac" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug-Mac/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release Mac">
+				<Option platforms="Mac;" />
+				<Option output="libLikeMagic-Mac" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release-Mac/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="Debug Windows">
+				<Option platforms="Windows;" />
+				<Option output="libLikeMagic-Windows" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug-Windows/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release Windows">
+				<Option platforms="Windows;" />
+				<Option output="libLikeMagic-windows" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release-Windows/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
@@ -56,7 +117,7 @@
 			<Add option="-Wno-deprecated" />
 			<Add option="-Wno-ignored-qualifiers" />
 			<Add option="-DUSE_DELEGATES_HACK" />
-			<Add directory="../boost" />
+			<Add directory="../Common/boost" />
 			<Add directory="../io/_build/headers" />
 			<Add directory="Include" />
 		</Compiler>
@@ -79,17 +140,21 @@
 		<Unit filename="Include/LikeMagic/CallTargets/ConstructorCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/CustomFieldGetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/CustomFieldSetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/DelegateCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/DestructorCallTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/ExtensionMethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldGetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldReferenceTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldSetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ICustomField.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/MethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ProxyMethodSelector.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/StaticMethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Common.hpp" />
 		<Unit filename="Include/LikeMagic/DebugInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Generators/DeferredCallGenerator.hpp" />
 		<Unit filename="Include/LikeMagic/Generators/DelegateCallGenerator.hpp" />
-		<Unit filename="Include/LikeMagic/Generators/GeneratorPolicy.hpp" />
+		<Unit filename="Include/LikeMagic/Generators/GeneratorFactory.hpp" />
 		<Unit filename="Include/LikeMagic/Generators/MemberKind.hpp" />
 		<Unit filename="Include/LikeMagic/Generators/MethodCallGenerator.hpp" />
 		<Unit filename="Include/LikeMagic/IMarkable.hpp" />
@@ -191,6 +256,7 @@
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
