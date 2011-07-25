@@ -18,6 +18,8 @@ callgrind*
 callgrind.*
 callgrind.out.*.*
 
+#Ignore mac store
+.DS_Store
 
 # Ignore generated dll files
 *.dll
