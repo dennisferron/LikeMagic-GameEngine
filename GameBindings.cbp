@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="GameBindings" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="libGameBindings-Linux" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="libGameBindings-Linux" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="DropEcho-Wayup-Debug">
+				<Option output="libGameBindings-Linux" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-fexceptions" />
+			<Add option="--std=c++0x" />
+			<Add option="-Werror=return-type" />
+			<Add option="-fdiagnostics-show-option" />
+			<Add option="-Wno-unused-variable" />
+			<Add option="-Wno-unused-parameter" />
+			<Add option="-Wno-deprecated" />
+			<Add option="-Wno-ignored-qualifiers" />
+			<Add option="-DUSE_DELEGATES_HACK" />
+			<Add directory="../Common/boost" />
+			<Add directory="Deps/irrlicht/include" />
+			<Add directory="Deps/bullet/src" />
+			<Add directory="Deps/raknet/Source" />
+			<Add directory="Include" />
+			<Add directory="../LikeMagic/Include" />
+			<Add directory="../io/_build/headers" />
+		</Compiler>
+		<Unit filename="Include/Bindings/Bullet/Bindings.hpp" />
+		<Unit filename="Include/Bindings/Bullet/Protos.hpp" />
+		<Unit filename="Include/Bindings/Bullet/ScriptedClosestRayResultCallback.hpp" />
+		<Unit filename="Include/Bindings/Bullet/ScriptedContactResultCallback.hpp" />
+		<Unit filename="Include/Bindings/Bullet/ScriptedWorldManager.hpp" />
+		<Unit filename="Include/Bindings/Custom/Bindings.hpp" />
+		<Unit filename="Include/Bindings/Custom/GearConstraint.hpp" />
+		<Unit filename="Include/Bindings/Custom/IrrlichtBulletDebugDrawer.hpp" />
+		<Unit filename="Include/Bindings/Custom/KinematicAnimator.hpp" />
+		<Unit filename="Include/Bindings/Custom/LockAnimator.hpp" />
+		<Unit filename="Include/Bindings/Custom/PhysicsAnimator.hpp" />
+		<Unit filename="Include/Bindings/Custom/Protos.hpp" />
+		<Unit filename="Include/Bindings/Irrlicht/Bindings.hpp" />
+		<Unit filename="Include/Bindings/Irrlicht/Protos.hpp" />
+		<Unit filename="Include/Bindings/Irrlicht/ScriptedEventReceiver.hpp" />
+		<Unit filename="Include/Bindings/Irrlicht/ScriptedSceneNode.hpp" />
+		<Unit filename="Include/Bindings/RakNet/Bindings.hpp" />
+		<Unit filename="Include/Bindings/RakNet/Protos.hpp" />
+		<Unit filename="Script/BulletBindings.io" />
+		<Unit filename="Script/CustomBindings.io" />
+		<Unit filename="Script/IrrlichtBindings.io" />
+		<Unit filename="Script/RakNetBindings.io" />
+		<Unit filename="Source/Bullet/BulletBindings.cpp" />
+		<Unit filename="Source/Bullet/BulletProtos.cpp" />
+		<Unit filename="Source/Bullet/ScriptedClosestRayResultCallback.cpp" />
+		<Unit filename="Source/Bullet/ScriptedContactResultCallback.cpp" />
+		<Unit filename="Source/Bullet/ScriptedWorldManager.cpp" />
+		<Unit filename="Source/Bullet/btBroadphaseInterface.cpp" />
+		<Unit filename="Source/Bullet/btBroadphaseProxy.cpp" />
+		<Unit filename="Source/Bullet/btCollisionConfiguration.cpp" />
+		<Unit filename="Source/Bullet/btCollisionObject.cpp" />
+		<Unit filename="Source/Bullet/btCollisionShape.cpp" />
+		<Unit filename="Source/Bullet/btCollisionWorld.cpp" />
+		<Unit filename="Source/Bullet/btConstraintSolver.cpp" />
+		<Unit filename="Source/Bullet/btDispatcher.cpp" />
+		<Unit filename="Source/Bullet/btMatrix3x3.cpp" />
+		<Unit filename="Source/Bullet/btMotionState.cpp" />
+		<Unit filename="Source/Bullet/btOverlappingPairCallback.cpp" />
+		<Unit filename="Source/Bullet/btQuaternion.cpp" />
+		<Unit filename="Source/Bullet/btTransform.cpp" />
+		<Unit filename="Source/Bullet/btTypedConstraint.cpp" />
+		<Unit filename="Source/Bullet/btVector3.cpp" />
+		<Unit filename="Source/Custom/CustomBindings.cpp" />
+		<Unit filename="Source/Custom/GearConstraint.cpp" />
+		<Unit filename="Source/Custom/IrrlichtBulletDebugDrawer.cpp" />
+		<Unit filename="Source/Custom/KinematicAnimator.cpp" />
+		<Unit filename="Source/Custom/LockAnimator.cpp" />
+		<Unit filename="Source/Custom/PhysicsAnimator.cpp" />
+		<Unit filename="Source/Custom/Protos.cpp" />
+		<Unit filename="Source/IrrKlang/IrrKlangBindings.cpp" />
+		<Unit filename="Source/IrrKlang/IrrKlangProtos.cpp" />
+		<Unit filename="Source/Irrlicht/Bindings_core.cpp" />
+		<Unit filename="Source/Irrlicht/Bindings_custom.cpp" />
+		<Unit filename="Source/Irrlicht/Bindings_gui.cpp" />
+		<Unit filename="Source/Irrlicht/Bindings_irr.cpp" />
+		<Unit filename="Source/Irrlicht/Bindings_scene.cpp" />
+		<Unit filename="Source/Irrlicht/Bindings_video.cpp" />
+		<Unit filename="Source/Irrlicht/IrrlichtBindings.cpp" />
+		<Unit filename="Source/Irrlicht/IrrlichtProtos.cpp" />
+		<Unit filename="Source/Irrlicht/ScriptedEventReceiver.cpp" />
+		<Unit filename="Source/Irrlicht/ScriptedSceneNode.cpp" />
+		<Unit filename="Source/RakNet/RakNet.cpp" />
+		<Unit filename="Source/RakNet/RakNetBindings.cpp" />
+		<Unit filename="Source/RakNet/RakNetProtos.cpp" />
+		<Unit filename="Source/RakNet/Replicas.cpp" />
+		<Unit filename="Source/RakNet/Serializers.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
