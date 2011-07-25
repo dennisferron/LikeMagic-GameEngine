@@ -47,7 +47,6 @@ struct CallAs<MemberKind::static_method, ObjT>
 };
 
 
-
 template <MemberKind K, typename R, typename ObjT, typename... Args>
 struct MemberPointer
 {
@@ -60,5 +59,16 @@ struct MemberPointer<MemberKind::member_const, R, ObjT, Args...>
     typedef R (ObjT::*type)(Args...) const;
 };
 
+template <typename R>
+struct ReturnAs
+{
+    typedef R& type;
+};
+
+template <>
+struct ReturnAs<void>
+{
+    typedef void type;
+};
 
 }}

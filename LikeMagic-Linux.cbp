@@ -80,12 +80,16 @@
 		<Unit filename="Include/LikeMagic/CallTargets/ConstructorCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/CustomFieldGetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/CustomFieldSetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/DelegateCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/DestructorCallTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/ExtensionMethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldGetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldReferenceTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldSetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ICustomField.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/MethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ProxyMethodSelector.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/StaticMethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Common.hpp" />
 		<Unit filename="Include/LikeMagic/DebugInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Generators/DeferredCallGenerator.hpp" />
