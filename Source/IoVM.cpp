@@ -74,10 +74,13 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys), last_exception(
     IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "LikeMagicProxy"),
         LM_Proxy);
 
+    // We want forward to work so that we can suggest method fixes when a method lookup fails.
+    IoSymbol* method_symbol = IoState_symbolWithCString_(state, "forward");
+    IoObject_addMethod_(LM_Proxy, method_symbol, &API_io_forward);
+
     LM_Protos = IoObject_new(state);
     IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "LM_Protos"),
         LM_Protos);
-
 
     add_convs_from_script(type_sys, this);
     add_convs_to_script(type_sys, this);
@@ -275,6 +278,9 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
             throw std::logic_error("Failed to retrieve IoVM object from IoState callback context.");
 
         std::string method_name = CSTRING(IoMessage_name(m));
+
+        if (method_name == "addAnimatedMeshSceneNode")
+            cout << "debugbreak" << endl;
 
         auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
         proxy->check_magic();
