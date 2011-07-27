@@ -17,6 +17,7 @@ using namespace LikeMagic;
 using namespace irr;
 using namespace irr::scene;
 using namespace irr::core;
+using namespace irr::io;
 
 
 namespace Bindings { namespace Irrlicht {
@@ -37,9 +38,11 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
             (addCameraSceneNode)(addCameraSceneNodeFPS)(addCameraSceneNodeMaya)
             (addMeshSceneNode)(createRotationAnimator)(drawAll)(getGeometryCreator)
             (addLightSceneNode)(createFollowSplineAnimator)
-            (getSceneCollisionManager))
+            (getSceneCollisionManager)(addAnimatedMeshSceneNode))
     LM_FUNC_OVERLOAD(ISceneManager, "createTriangleSelector", createTriangleSelector, ITriangleSelector*, IAnimatedMeshSceneNode*)
     LM_FUNC_OVERLOAD(ISceneManager, "createTriangleSelector", createTriangleSelector, ITriangleSelector*, IMesh*, ISceneNode*)
+    LM_FUNC_OVERLOAD(ISceneManager, "getMeshFromIReadFile", getMesh, IAnimatedMesh*, IReadFile*);
+    LM_FUNC_OVERLOAD(ISceneManager, "getMeshFromPath", getMesh, IAnimatedMesh*, path const&);
 
     LM_CLASS(ns_irr_scene, IMeshBuffer)
     LM_BASE(IMeshBuffer, IReferenceCounted)
@@ -71,6 +74,9 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
     LM_CLASS(ns_irr_scene, SMesh)
     LM_BASE(SMesh, IMesh)
 
+    LM_CLASS(ns_irr_scene, IAnimatedMesh)
+    LM_BASE(IAnimatedMesh, IMesh)
+
     LM_CLASS(ns_irr_scene, IGeometryCreator)
     LM_FUNC(IGeometryCreator, (createArrowMesh)(createConeMesh)(createCubeMesh)(createCylinderMesh)
             (createHillPlaneMesh)(createPlaneMesh)(createSphereMesh)(createTerrainMesh)(createVolumeLightMesh))
@@ -94,6 +100,10 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_irr_scene, ILightSceneNode)
     LM_BASE(ILightSceneNode, ISceneNode)
+
+    LM_CLASS(ns_irr_scene, IAnimatedMeshSceneNode)
+    LM_BASE(IAnimatedMeshSceneNode, ISceneNode)
+    LM_FUNC(IAnimatedMeshSceneNode, (setAnimationSpeed))
 
     LM_CLASS(ns_irr_scene, ICameraSceneNode)
     LM_BASE(ICameraSceneNode, ISceneNode)
