@@ -97,12 +97,14 @@
 		<Unit filename="Source/Bullet/btCollisionObject.cpp" />
 		<Unit filename="Source/Bullet/btCollisionShape.cpp" />
 		<Unit filename="Source/Bullet/btCollisionWorld.cpp" />
+		<Unit filename="Source/Bullet/btConcaveShape.cpp" />
 		<Unit filename="Source/Bullet/btConstraintSolver.cpp" />
 		<Unit filename="Source/Bullet/btDispatcher.cpp" />
 		<Unit filename="Source/Bullet/btMatrix3x3.cpp" />
 		<Unit filename="Source/Bullet/btMotionState.cpp" />
 		<Unit filename="Source/Bullet/btOverlappingPairCallback.cpp" />
 		<Unit filename="Source/Bullet/btQuaternion.cpp" />
+		<Unit filename="Source/Bullet/btStridingMeshInterface.cpp" />
 		<Unit filename="Source/Bullet/btTransform.cpp" />
 		<Unit filename="Source/Bullet/btTypedConstraint.cpp" />
 		<Unit filename="Source/Bullet/btVector3.cpp" />
