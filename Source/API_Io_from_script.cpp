@@ -88,7 +88,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     {
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            return NullExpr<NilExprTag*>::create();
+            return NullExpr::create();
         }
 
         virtual std::string describe() const { return "From Nil Conv"; }

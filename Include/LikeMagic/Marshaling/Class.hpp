@@ -26,6 +26,7 @@
 #include "LikeMagic/CallTargets/ArrayFieldReferenceTarget.hpp"
 #include "LikeMagic/CallTargets/CustomFieldGetterTarget.hpp"
 #include "LikeMagic/CallTargets/CustomFieldSetterTarget.hpp"
+#include "LikeMagic/CallTargets/BottomPtrTarget.hpp"
 
 #include "LikeMagic/SFMO/ClassExpr.hpp"
 
@@ -80,6 +81,16 @@ private:
         add_method(alt_name(prefix, method_name), target);
     }
 
+    void bind_built_in_operations()
+    {
+        // In C++, any type can be deleted.
+        auto deleter = new DestructorCallTarget<T>(type_system);
+        add_method("delete", deleter);
+
+        auto ptr_caster = new BottomPtrTarget(type_system);
+        add_method("as_any_ptr_type", ptr_caster);
+    }
+
 public:
 
     Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePath namespace_) : AbstractClass(name_, type_system_, namespace_),
@@ -87,9 +98,13 @@ public:
     {
         // Allow the type to be reinterpreted as AbstractDelegate to work with DelegateCallGenerator.
         type_system_.add_conv<T&, AbstractDelegate&, NoChangeConv>();
+
+        bind_built_in_operations();
     }
 
     virtual TypeIndex get_type() const { return BetterTypeInfo::create_index<T>(); }
+
+    virtual size_t get_size() const { return sizeof(T); }
 
     virtual bool class_is_copyable() const { return is_copyable; }
 
@@ -221,13 +236,6 @@ public:
         //auto getter = new CallTargetSelector<CustomFieldGetterTarget, T, FieldAccessor>(f, type_system);
         auto getter = new CustomFieldGetterTarget<T, FieldAccessor>(f, type_system);
         add_method("get_" + field_name, getter);
-    }
-
-    void bind_delete()
-    {
-        // In C++, any type can be deleted.
-        auto deleter = new DestructorCallTarget<T>(type_system);
-        add_method("delete", deleter);
     }
 
 };

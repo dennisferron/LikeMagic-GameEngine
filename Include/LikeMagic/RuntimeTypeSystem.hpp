@@ -123,7 +123,6 @@ public:
             add_class(type, result);
 
             result->add_base_abstr(proxy_methods);
-            result->bind_delete();
 
             // Allow passing the actual object to things that need the pointer to the object.
             add_conv<T&, T*, AddrOfConv>();

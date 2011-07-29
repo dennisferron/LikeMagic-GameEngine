@@ -62,7 +62,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
 
 
     // Allow conversions from nil to any pointer.
-    static TypeIndex nil_expr_type = BetterTypeInfo::create_index<NilExprTag*>();
+    static TypeIndex nil_expr_type = BetterTypeInfo::create_index<BottomPtrType>();
     conv_graph.add_type(nil_expr_type);
 
     // Add the abstract type system itself as a class.
@@ -74,7 +74,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     LM_CLASS_NO_COPY((*this), AbstractCallTargetSelector)
 
     LM_CLASS_NO_COPY((*this), AbstractClass)
-    LM_FUNC(AbstractClass, (get_class_name)(get_type)(create_class_proxy)(get_namespace)(get_method_names))
+    LM_FUNC(AbstractClass, (get_class_name)(get_type)(create_class_proxy)(get_namespace)(get_method_names)(get_size))
 
     LM_CLASS((*this), TypeIndex)
     LM_FUNC(TypeIndex, (describe))

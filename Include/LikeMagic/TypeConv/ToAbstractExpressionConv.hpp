@@ -15,7 +15,7 @@ namespace LikeMagic { namespace TypeConv {
 
 using namespace LikeMagic::SFMO;
 
-// This type converter allows bound functions to get ahold of the out expression object,
+// This type converter allows bound functions to get ahold of the outer expression object,
 // rather than what is inside the expression object.  It allows you to write functions that
 // work with any expression.
 

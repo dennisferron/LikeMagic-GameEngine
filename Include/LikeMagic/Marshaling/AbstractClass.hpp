@@ -93,6 +93,8 @@ public:
     virtual TypeIndex get_type() const = 0;
 
     virtual bool class_is_copyable() const = 0;
+
+    virtual size_t get_size() const { return 0; }
 };
 
 }}

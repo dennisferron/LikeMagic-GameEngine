@@ -136,6 +136,7 @@
 		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldGetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldReferenceTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldSetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/BottomPtrTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/CallTargetSelector.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ConstructorCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/CustomFieldGetterTarget.hpp" />
@@ -172,6 +173,7 @@
 		<Unit filename="Include/LikeMagic/SFMO/AbstractCppObjProxy.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/AbstractExpression.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/AbstractObjectSet.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/BottomPtrExpr.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/ClassExpr.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/ConstructedTerm.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/ContainerSet.hpp" />
@@ -195,7 +197,6 @@
 		<Unit filename="Include/LikeMagic/TypeConv/BaseConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/ConvertibleTo.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/ImplicitConv.hpp" />
-		<Unit filename="Include/LikeMagic/TypeConv/NilConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/NoChangeConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/NumberConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/PtrDerefConv.hpp" />

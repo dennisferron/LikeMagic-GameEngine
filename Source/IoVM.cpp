@@ -279,9 +279,6 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 
         std::string method_name = CSTRING(IoMessage_name(m));
 
-        if (method_name == "addAnimatedMeshSceneNode")
-            cout << "debugbreak" << endl;
-
         auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
         proxy->check_magic();
 

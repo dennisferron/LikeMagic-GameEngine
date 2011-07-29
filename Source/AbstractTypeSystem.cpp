@@ -11,8 +11,6 @@
 #include "LikeMagic/Marshaling/AbstractClass.hpp"
 
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
-#include "LikeMagic/SFMO/NullExpr.hpp"
-#include "LikeMagic/TypeConv/NilConv.hpp"
 #include "LikeMagic/TypeConv/ToAbstractExpressionConv.hpp"
 
 #include <set>
@@ -291,14 +289,15 @@ void AbstractTypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, 
     conv_graph.add_conv(from, to_expr_type, new ToAbstractExpressionConv);
     conv_graph.add_conv(from.get_info()->as_const_type()->get_index(), to_expr_type, new ToAbstractExpressionConv);
 
-    // Allow NULL (aka nil) to be converted to pointers to these types.
-    auto nil_tag = BetterTypeInfo::create_index<NilExprTag*>();
+    // This allows NULL (aka nil) to be converted to pointers to these types,
+    // and it also enables the as_any_ptr_type cast.
+    auto bot_tag = BetterTypeInfo::create_index<BottomPtrType>();
 
     if (from.get_info()->get_is_ptr())
-        conv_graph.add_conv(nil_tag, from, new NilConv);
+        conv_graph.add_conv(bot_tag, from, new NoChangeConv<>);
 
     if (to.get_info()->get_is_ptr())
-        conv_graph.add_conv(nil_tag, to, new NilConv);
+        conv_graph.add_conv(bot_tag, to, new NoChangeConv<>);
 
 }
 
