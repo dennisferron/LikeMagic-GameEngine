@@ -66,7 +66,7 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_irr_scene, IMesh)
     LM_BASE(IMesh, IReferenceCounted)
-    LM_FUNC(IMesh, (getBoundingBox)(getMeshBufferCount)(setBoundingBox)(setDirty)(setHardwareMappingHint)(setMaterialFlag) )
+    LM_FUNC(IMesh, (getBoundingBox)(getMeshBufferCount)(setBoundingBox)(setDirty)(setHardwareMappingHint)(setMaterialFlag))
 
     LM_FUNC_OVERLOAD_CONST(IMesh, "getMeshBufferForMaterial", getMeshBuffer, IMeshBuffer*, const video::SMaterial&)
     LM_FUNC_OVERLOAD_CONST(IMesh, "getMeshBuffer", getMeshBuffer, IMeshBuffer*, u32)

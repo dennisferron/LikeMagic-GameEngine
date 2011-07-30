@@ -28,11 +28,12 @@ void add_bindings_video(RuntimeTypeSystem& type_sys)
     auto ns_irr_video = Namespace::global(type_sys).subspace("irr").subspace("video");
 
     // enums
-    LM_CLASS(ns_irr_video, E_DRIVER_TYPE)
-    LM_CLASS(ns_irr_video, E_MATERIAL_FLAG)
-    LM_CLASS(ns_irr_video, E_TRANSFORMATION_STATE)
-    LM_CLASS(ns_irr_video, E_ANTI_ALIASING_MODE)
-    LM_CLASS(ns_irr_video, E_MATERIAL_TYPE)
+    LM_ENUM(ns_irr_video, E_DRIVER_TYPE)
+    LM_ENUM(ns_irr_video, E_MATERIAL_FLAG)
+    LM_ENUM(ns_irr_video, E_TRANSFORMATION_STATE)
+    LM_ENUM(ns_irr_video, E_ANTI_ALIASING_MODE)
+    LM_ENUM(ns_irr_video, E_MATERIAL_TYPE)
+    LM_ENUM(ns_irr_video, E_VERTEX_TYPE)
 
     LM_CLASS(ns_irr_video, S3DVertex)
     LM_CONSTR(S3DVertex,,)
