@@ -38,7 +38,7 @@ namespace LikeMagic { namespace SFMO {
 // Interestingly, although C++ has no formal concept of a Bottom type,
 // the semantics of NULL act like a Bottom type in that you can
 // assign NULL to any pointer.  And indeed the correspondence is close enough
-// that I use the LikeMagic Bottom pointer type to map script Nils to C++ NULLs.
+// that I do use the LikeMagic Bottom pointer type to map script Nils to C++ NULLs.
 
 struct BottomPtrTag__ {};
 typedef BottomPtrTag__* BottomPtrType;
@@ -63,7 +63,11 @@ public:
         return std::string("any_ptr_type");
     }
 
-    virtual void mark() const {}
+    virtual void mark() const { inner->mark(); }
+
+    // Since char* is convertible to IoSeq (string in Io) and we are convertible to any pointer,
+    // we would be convertible to IoSeq.  Not good.  Disable to-script conversions to prevent this:
+    virtual bool disable_to_script_conv() const { return true; }
 };
 
 }}

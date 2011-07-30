@@ -294,10 +294,22 @@ void AbstractTypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, 
     auto bot_tag = BetterTypeInfo::create_index<BottomPtrType>();
 
     if (from.get_info()->get_is_ptr())
+    {
+        // allow any ptr to be converted to void*
+        conv_graph.add_conv(from, BetterTypeInfo::create_index<void*>(), new NoChangeConv<>);
+
+        // allow unsafe_ptr_cast to convert to any type
         conv_graph.add_conv(bot_tag, from, new NoChangeConv<>);
+    }
 
     if (to.get_info()->get_is_ptr())
+    {
+        // allow any ptr to be converted to void*
+        conv_graph.add_conv(to, BetterTypeInfo::create_index<void*>(), new NoChangeConv<>);
+
+        // allow unsafe_ptr_cast to convert to any type
         conv_graph.add_conv(bot_tag, to, new NoChangeConv<>);
+    }
 
 }
 

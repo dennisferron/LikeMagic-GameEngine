@@ -10,10 +10,12 @@
 #include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
 #include "LikeMagic/SFMO/AbstractExpression.hpp"
 #include "LikeMagic/AbstractTypeSystem.hpp"
+#include "LikeMagic/CallTargets/BottomPtrTarget.hpp"
 
 #include "boost/lexical_cast.hpp"
 
 using namespace LikeMagic::Marshaling;
+using namespace LikeMagic::CallTargets;
 using namespace std;
 
 AbstractClass::AbstractClass(std::string name_, AbstractTypeSystem& type_system_, NamespacePath namespace_) :
@@ -23,6 +25,9 @@ AbstractClass::AbstractClass(std::string name_, AbstractTypeSystem& type_system_
 {
     if (name_ == "")
         throw std::logic_error("Tried to register class with no name!");
+
+    auto ptr_caster = new BottomPtrTarget(type_system);
+    add_method("unsafe_ptr_cast", ptr_caster);
 }
 
 

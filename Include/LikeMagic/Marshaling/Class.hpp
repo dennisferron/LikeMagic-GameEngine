@@ -86,9 +86,6 @@ private:
         // In C++, any type can be deleted.
         auto deleter = new DestructorCallTarget<T>(type_system);
         add_method("delete", deleter);
-
-        auto ptr_caster = new BottomPtrTarget(type_system);
-        add_method("as_any_ptr_type", ptr_caster);
     }
 
 public:

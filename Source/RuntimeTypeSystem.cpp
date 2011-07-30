@@ -123,6 +123,13 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     add_class(void_type, void_class);
     void_class->add_base_abstr(proxy_methods);
 
+    // register the Bottom Pointer so unsafe_ptr_cast will work.
+    static TypeIndex bot_type = BetterTypeInfo::create_index<BottomPtrTag__>();
+    auto bot_class = new DummyClass<BottomPtrTag__>(bot_type, "unsafe_ptr_cast", *this, NamespacePath::global());
+    add_class(bot_type, bot_class);
+    add_conv<BottomPtrTag__*&, BottomPtrTag__*>();
+    add_conv<BottomPtrTag__* const&, BottomPtrTag__*>();
+
     // register the Unknown_CppObj so functions returning unregistered classes
     // can still be called.
     static TypeIndex unknown_type = BetterTypeInfo::create_index<Unknown_CppObj>();
@@ -133,15 +140,17 @@ RuntimeTypeSystem::RuntimeTypeSystem()
 
     register_class<std::string>("string");
     register_class<std::wstring>("wstring");
-    register_class<short>("short");
-    register_class<unsigned short>("ushort");
-    register_class<int>("int");
-    register_class<unsigned int>("uint");
-    register_class<long>("long");
-    register_class<unsigned long>("ulong");
-    register_class<double>("double");
-    register_class<float>("float");
-    register_class<bool>("bool");
+
+    // Register number types as copyable but do not auto-deref
+    register_class<short, true, false>("short");
+    register_class<unsigned short, true, false>("ushort");
+    register_class<int, true, false>("int");
+    register_class<unsigned int, true, false>("uint");
+    register_class<long, true, false>("long");
+    register_class<unsigned long, true, false>("ulong");
+    register_class<double, true, false>("double");
+    register_class<float, true, false>("float");
+    register_class<bool, true, false>("bool");
 
     LM_CLASS((*this), wchar_t)
 

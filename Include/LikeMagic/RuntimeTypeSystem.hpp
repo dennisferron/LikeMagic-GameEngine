@@ -111,7 +111,7 @@ public:
     // Important:  you must set the type info cache instances in all your DLLs to this pointer.
     TypeInfoCache* get_typeinfo_cache() { return dll_shared_typeinfo; }
 
-    template <typename T, bool is_copyable=!boost::is_abstract<T>::value>
+    template <typename T, bool is_copyable=!boost::is_abstract<T>::value, bool add_deref_ptr_conv=true>
     Class<T, is_copyable>& register_class(std::string name, NamespacePath const ns=NamespacePath::global())
     {
         static TypeIndex type(BetterTypeInfo::create_index<T>());
@@ -127,8 +127,13 @@ public:
             // Allow passing the actual object to things that need the pointer to the object.
             add_conv<T&, T*, AddrOfConv>();
 
-            // Also allow converting pointers back to references.
-            add_conv<T*, T&, PtrDerefConv>();
+            // Don't want to do this for types convertible to script types, e.g. int*,
+            // because then you couldn't return an array; instead the first array element converts to a script value.
+            if (add_deref_ptr_conv)
+            {
+                // Also allow converting pointers back to references.
+                add_conv<T*, T&, PtrDerefConv>();
+            }
 
             // References to pointers can be converted to pointers.
             add_conv<T*&, T*>();

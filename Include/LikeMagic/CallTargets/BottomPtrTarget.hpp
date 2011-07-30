@@ -11,6 +11,7 @@
 #include "LikeMagic/SFMO/BottomPtrExpr.hpp"
 #include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
 #include "LikeMagic/SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/BottomPtrExpr.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
@@ -26,14 +27,14 @@ public:
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
         return CppObjProxy<BottomPtrType, true>::create(
-            type_system.try_conv<BottomPtrType>(proxy->get_expr())
+            BottomPtrExpr::create(type_system.try_conv<void*>(proxy->get_expr().get()))
           , type_system
         );
     }
 
     virtual TypeInfoList get_arg_types() const
     {
-        return make_arg_list(TypePack<ExprPtr>());
+        return make_arg_list(TypePack<>());
     }
 
 };

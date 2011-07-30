@@ -69,7 +69,7 @@ private:
     // This is used for debugging.
     bool leak_memory_flag;
 
-    boost::unordered_map<TypeIndex, AbstractClass*> classes;
+    //boost::unordered_map<TypeIndex, AbstractClass*> classes;
     std::vector<AbstractClass*> classes2;
 
     // Don't allow accidently making copies of this class
