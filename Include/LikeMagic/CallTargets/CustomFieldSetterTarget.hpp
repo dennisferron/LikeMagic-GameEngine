@@ -32,7 +32,7 @@ template <typename CallAs, typename FieldAccessor>
 class CustomFieldSetterTarget : public AbstractCallTargetSelector
 {
 private:
-    typedef typename StripModifiers<CallAs>::strip stripped;
+    typedef StripModifiers<CallAs> stripped;
     typedef typename stripped::type ObjType;
     FieldAccessor f;
     typedef typename boost::remove_pointer<FieldAccessor>::type::FieldType FieldType;

@@ -11,6 +11,8 @@
 #include "LikeMagic/Marshaling/AbstractClass.hpp"
 
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
+#include "LikeMagic/TypeConv/ImplicitConv.hpp"
+#include "LikeMagic/TypeConv/GenericConv.hpp"
 #include "LikeMagic/TypeConv/ToAbstractExpressionConv.hpp"
 
 #include <set>
@@ -90,6 +92,8 @@ void AbstractTypeSystem::add_class(TypeIndex index, AbstractClass* class_ptr)
 
     if (!(index == class_ptr->get_type()))
         throw std::logic_error("add_class: Index=" + index.describe() + " not the same as class_ptr type=" + class_ptr->get_type().describe());
+
+    add_to_const_conv(index);
 
     //classes[index] = class_ptr;
 
@@ -272,28 +276,160 @@ void AbstractTypeSystem::add_converter_simple(TypeIndex from, TypeIndex to, p_co
     conv_graph.add_conv(from, to, conv);
 }
 
+void AbstractTypeSystem::add_conv(TypeInfoPtr from, TypeInfoPtr to, p_conv_t conv)
+{
+    conv_graph.add_conv(from->get_index(), to->get_index(), conv);
+}
+
+
+
+/*
+
+The rules for implicit pointer conversions in C++ get complex quickly.
+Just considering const objects, const pointers, and references to pointers,
+there are 8 kinds of pointers and 256 combinations, some legal some not.
+
+To sort it out I made a diagram.  I realized you could divide the diagram
+into two horizontal tracks - one for const objects and one for nonconst.
+You can go from the nonconst track to the const track, but you cannot
+go from const obj back to nonconst.
+
+You can also divide the diagram on a vertical line where reference types
+are freely convertible with a value type; T*const& <=> T*const and
+T const*const& <=> T const*const.  The halves are not entirely symmetrical
+because nonconst references cannot reference const references or values,
+whereas nonconst and const values can be freely assigned to eash other because
+the bits are copied when they are assigned.
+
+          Nonconst           Const          |          Const         Nonconst
+          Reference        Reference        |          Value          Value
+--------------------------------------------------------------------------------
+                                            |
+Nonconst    +---+          +--------+ ======|=====> +-------+ ------> +--+
+Object      |T*&| -------> |T*const&|       |       |T*const|         |T*|
+Track       +---+          +--------+ <=====|====== +-------+ <------ +--+
+              |                 |           |           |               |
+--------------|-----------------|-----------------------|---------------|-------
+              |                 |           |           |               |
+              v                 v           |           v               v
+Const    +---------+     +--------------+ ==|=> +-------------+ --> +--------+
+Object   |T const*&| --> |T const*const&|   |   |T const*const|     |T const*|
+Track    +---------+     +--------------+ <=|== +-------------+ <-- +--------+
+                                            |
+--------------------------------------------------------------------------------
+Key:  --> NoChangeConv                      |
+      ==> GenericConv                       |
+*/
+
+void do_track()
+
+
+
+
+
+
+
+
+
+void AbstractTypeSystem::add_to_const_conv(TypeIndex index)
+{
+    // T
+    auto bare = index.get_info()->bare_type();
+
+    // T -> T const
+    add_conv(bare, bare->as_const_obj_type(), new NoChangeConv<>);
+
+    // T&
+    auto as_ref = bare->as_ref();
+
+    // T& -> T const&
+    add_conv(as_ref, as_ref->as_const_obj_type(), new NoChangeConv<>);
+
+    // T*
+    auto as_ptr = bare->as_ptr();
+
+    // T* -> T * const
+    add_conv(as_ptr, as_ptr->as_const_ptr_type(), new NoChangeConv<>);
+
+    // T* -> T const *
+    add_conv(as_ptr, as_ptr->as_const_obj_type(), new NoChangeConv<>);
+
+    // T* -> T const * const
+    add_conv(as_ptr, as_ptr->as_const_obj_type()->as_const_obj_type(), new NoChangeConv<>);
+
+    // T* -> T* const &
+    add_generic_conv<void*, void* const&>(as_ptr, as_ptr->as_const_ptr_type()->as_ref());
+
+    // T* -> T const * const &
+    add_generic_conv<void*, void const * const&>(as_ptr, as_ptr->as_const_obj_type()->as_const_ptr_type()->as_ref());
+
+    // T* &
+    auto as_ptr_ref = as_ptr->as_ref();
+
+    // T*& -> T const * &
+    add_conv(as_ptr_ref, as_ptr_ref->as_const_obj_type(), new NoChangeConv<>);
+
+    // T*& -> T * const  &
+    add_conv(as_ptr_ref, as_ptr_ref->as_const_ptr_type(), new NoChangeConv<>);
+
+    // T*& -> T const * const  &
+    add_conv(as_ptr_ref, as_ptr_ref->as_const_obj_type()->as_const_ptr_type(), new NoChangeConv<>);
+
+    // T*& -> T*
+    add_generic_conv<void*&, void*>(as_ptr_ref, as_ptr->as_const_ptr_type());
+
+    // T*& -> T* const
+    add_generic_conv<void*&, void* const&>(as_ptr_ref, as_ptr->as_const_ptr_type());
+
+    // T*& -> T const *
+    add_generic_conv<void*&, void const * const&>(as_ptr, as_ptr->as_const_obj_type()->as_ref());
+
+    // T*& -> T const * const
+    add_generic_conv<FromType, void const * const&>(as_ptr, as_ptr->as_const_obj_type()->as_const_ptr_type()->as_ref());
+
+    // T * const &
+    auto as_ptr_const_ref = as_ptr_ref->as_const_ptr_type();
+
+    // Allow converting ptr ref to ptr const ref
+    add_conv(as_ptr_ref, as_ptr_const_ref, new NoChangeConv<>);
+
+    // Allow converting *const& to value *
+    add_conv(as_const_ref->get_index(), as_ptr->get_index(), )
+
+    // Allow converting
+    add_conv(as_const_ref->get_index(), as_ptr->get_index(), )
+}
+
 void AbstractTypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv)
 {
     conv_graph.add_conv(from, to, conv);
 
-    // Support the const forms of this conversion too
-    conv_graph.add_conv(from, to.get_info()->as_const_type()->get_index(), conv);
-    conv_graph.add_conv(from.get_info()->as_const_type()->get_index(), to.get_info()->as_const_type()->get_index(), conv);
+    // Add converters to make either type const.
+    add_to_const_conv(from);
+    add_to_const_conv(to);
 
-    // Also add converters to make either type const.
-    conv_graph.add_conv(from, from.get_info()->as_const_type()->get_index(), new NoChangeConv<>);
-    conv_graph.add_conv(to, to.get_info()->as_const_type()->get_index(), new NoChangeConv<>);
+    // Support the const forms of this conversion too
+
+    // Allow the conversion for both objs const
+    conv_graph.add_conv(from.get_info()->as_const_obj_type()->get_index(), to.get_info()->as_const_obj_type()->get_index(), conv);
+
+    // Add the const ptr variations if both types are pointers
+    if (to.get_info()->get_is_ptr() && from.get_info()->get_is_ptr())
+    {
+        conv_graph.add_conv(from.get_info()->as_const_ptr_type()->get_index(), to.get_info()->as_const_ptr_type()->get_index(), conv);
+        conv_graph.add_conv(from.get_info()->as_const_ptr_type()->as_const_obj_type()->get_index(), to.get_info()->as_const_ptr_type()->as_const_obj_type()->get_index(), conv);
+    }
 
     // Allow this expression type to be converted to an expression.
     TypeIndex to_expr_type = BetterTypeInfo::create_index<ExprPtr>();
     conv_graph.add_conv(from, to_expr_type, new ToAbstractExpressionConv);
-    conv_graph.add_conv(from.get_info()->as_const_type()->get_index(), to_expr_type, new ToAbstractExpressionConv);
+    conv_graph.add_conv(from.get_info()->as_const_obj_type()->get_index(), to_expr_type, new ToAbstractExpressionConv);
 
     // This allows NULL (aka nil) to be converted to pointers to these types,
     // and it also enables the as_any_ptr_type cast.
     auto bot_tag = BetterTypeInfo::create_index<BottomPtrType>();
 
-    if (from.get_info()->get_is_ptr())
+    if (from.get_info()->get_is_ptr() && !from.get_info()->get_is_ref())
     {
         // allow any ptr to be converted to void*
         conv_graph.add_conv(from, BetterTypeInfo::create_index<void*>(), new NoChangeConv<>);
@@ -302,7 +438,7 @@ void AbstractTypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, 
         conv_graph.add_conv(bot_tag, from, new NoChangeConv<>);
     }
 
-    if (to.get_info()->get_is_ptr())
+    if (to.get_info()->get_is_ptr() && !to.get_info()->get_is_ref())
     {
         // allow any ptr to be converted to void*
         conv_graph.add_conv(to, BetterTypeInfo::create_index<void*>(), new NoChangeConv<>);
@@ -313,5 +449,10 @@ void AbstractTypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, 
 
 }
 
+
+void AbstractTypeSystem::print_conv_chain(TypeIndex from, TypeIndex to) const
+{
+    conv_graph.print_conv_chain(from, to);
+}
 
 

@@ -58,7 +58,9 @@ struct SetField<ObjT&>
     static void set(ObjT& t, FieldPtr f, boost::intrusive_ptr<Expression<typename FieldPtrTraits<FieldPtr, ObjT&>::R const&>> arg)
     {
         remove_mark_obj(t, get(t, f));
-        t.*f = arg->eval();
+        auto oldValue = t.*f;
+        auto result = arg->eval();
+        t.*f = result;
         add_mark_obj(t, get(t, f));
     }
 

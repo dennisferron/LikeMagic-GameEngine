@@ -16,6 +16,10 @@
 
 #include "boost/preprocessor/seq/for_each.hpp"
 
+#include "LikeMagic/ScriptUtil.hpp"
+
+#include <sstream>
+
 #define add_num_conv(type) \
 add_conv<type, type const&, NumberConv>(); \
 add_conv<type&, type, NumberConv>(); \
@@ -36,7 +40,6 @@ add_conv<type const&, double const&, NumberConv>();
 #define add_all_num_conv_impl(r, data, elem) add_num_conv(elem);
 #define add_all_num_conv(SEQ) BOOST_PP_SEQ_FOR_EACH(add_all_num_conv_impl,, SEQ)
 
-
 using namespace LikeMagic;
 using namespace LikeMagic::SFMO;
 using namespace LikeMagic::TypeConv;
@@ -47,6 +50,8 @@ using namespace std;
 
 RuntimeTypeSystem::RuntimeTypeSystem()
 {
+    Namespace global_ns = Namespace::global(*this);
+
     // The runtime type system creates the type info cache.
     // In order to get the DLLs using the same static TypeInfo instance we have to "smuggle" in a pointer to it via this object.
     dll_shared_typeinfo = new TypeInfoCache;
@@ -66,30 +71,30 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     conv_graph.add_type(nil_expr_type);
 
     // Add the abstract type system itself as a class.
-    LM_CLASS_NO_COPY((*this), AbstractTypeSystem)
+    LM_CLASS_NO_COPY(global_ns, AbstractTypeSystem)
     LM_FUNC(AbstractTypeSystem, (set_leak_memory)(leak_memory)(add_type_system_observer))
 
-    LM_CLASS_NO_COPY((*this), AbstractCppObjProxy)
+    LM_CLASS_NO_COPY(global_ns, AbstractCppObjProxy)
 
-    LM_CLASS_NO_COPY((*this), AbstractCallTargetSelector)
+    LM_CLASS_NO_COPY(global_ns, AbstractCallTargetSelector)
 
-    LM_CLASS_NO_COPY((*this), AbstractClass)
+    LM_CLASS_NO_COPY(global_ns, AbstractClass)
     LM_FUNC(AbstractClass, (get_class_name)(get_type)(create_class_proxy)(get_namespace)(get_method_names)(get_size))
 
-    LM_CLASS((*this), TypeIndex)
+    LM_CLASS(global_ns, TypeIndex)
     LM_FUNC(TypeIndex, (describe))
 
-    LM_CLASS((*this), NamespacePath)
+    LM_CLASS(global_ns, NamespacePath)
     LM_FUNC(NamespacePath, (is_root)(get_name)(get_parent)(to_string))
 
-    LM_CLASS((*this), Namespace)
+    LM_CLASS(global_ns, Namespace)
     LM_FUNC(Namespace, (subspace))
     Namespace_LM.bind_static_method("global", Namespace::global);
 
-    LM_CLASS((*this), DebugInfo)
+    LM_CLASS(global_ns, DebugInfo)
     LM_FUNC(DebugInfo, (set_debug_name)(get_debug_name))
 
-    LM_CLASS((*this), MarkableObjGraph)
+    LM_CLASS(global_ns, MarkableObjGraph)
     LM_BASE(MarkableObjGraph, DebugInfo)
     LM_FUNC(MarkableObjGraph, (number_of_parents)(number_of_children))
 
@@ -99,7 +104,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
 
     // If you think you need this binding, more likely you're doing something else wrong:
     // (StaticMethods' type info is supposed to be a NamespaceTypeInfo, not a reference to StaticMethods).
-    //LM_CLASS_NO_COPY((*this), StaticMethods)
+    //LM_CLASS_NO_COPY(global_ns, StaticMethods)
 
     // StaticMethods is by value but a Term returns by reference;
     // need to give type system ability to do the conversion.
@@ -152,9 +157,11 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     register_class<float, true, false>("float");
     register_class<bool, true, false>("bool");
 
-    LM_CLASS((*this), wchar_t)
+    register_class<unsigned char, true, false>("uchar");
 
-    LM_CLASS((*this), AbstractDelegate)
+    LM_CLASS(global_ns, wchar_t)
+
+    LM_CLASS(global_ns, AbstractDelegate)
 
     // When IoNil is encountered, it is marshaled as a NullExpr<void*> object,
     // which is an expression   of type of void* that always returns NULL.
@@ -171,13 +178,20 @@ RuntimeTypeSystem::RuntimeTypeSystem()
 
     add_conv<  std::wstring,    std::string,    StringConv>();
     add_conv<  std::wstring&,   std::string,    StringConv>();
-    add_conv<  wchar_t const*,  std::string,    StringConv>();
-    add_conv<  wchar_t const*&, std::string,    StringConv>();
-    add_conv<  char const*,     std::string,    StringConv>();
-    add_conv<  char const*&,    std::string,    StringConv>();
+    //add_conv<  wchar_t const*,  std::string,    StringConv>();
+    //add_conv<  wchar_t const*&, std::string,    StringConv>();
+    //add_conv<  char const*,     std::string,    StringConv>();
+    //add_conv<  char const*&,    std::string,    StringConv>();
 
     // Allow char*& terms to be converted to char* values.
     add_conv<  char const*&,    char const*,    ImplicitConv>();
+    add_conv<  unsigned char const*&,    unsigned char const*,    ImplicitConv>();
+    add_conv<  char*&, char*,    ImplicitConv>();
+    add_conv<  unsigned char*&,    unsigned char*,    ImplicitConv>();
+    add_conv<  void*&,    void*,    ImplicitConv>();
+    add_conv<  void const*&,    void const*,    ImplicitConv>();
+
+    add_conv<void*, void* const&, NumberConv>();
 
     // enable std::vector conversions to pointers for primitives
     //register_collection<unsigned short>("ushort");
@@ -187,11 +201,16 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     register_class<std::vector<unsigned short>>("vector_of_ushort");
 
     typedef vector<string> vector_of_string;
-    LM_CLASS((*this), vector_of_string)
+    LM_CLASS(global_ns, vector_of_string)
     LM_FUNC(vector_of_string, (size))
     LM_FUNC_OVERLOAD_BOTH(vector_of_string, at, string&, vector_of_string::size_type)
     //LM_FUNC_OVERLOAD(vector_of_string, "at", at, vector_of_string::reference, size_type)
     //LM_FUNC_OVERLOAD_CONST(vector_of_string, "at", at, vector_of_string::const_reference, vector_of_string::size_type)
+
+    LM_CLASS(global_ns, ScriptUtil)
+    LM_CONSTR(ScriptUtil,,)
+    LM_FIELD(ScriptUtil, (voidp_field)(charp_field)(ucharp_field)(intp_field)(uintp_field))
+    LM_STATIC_MEMBER_FUNC(ScriptUtil, (ptr_addr_to_str)(get_null_ptr)(get_test_ptr))
 }
 
 

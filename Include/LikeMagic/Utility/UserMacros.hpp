@@ -49,6 +49,9 @@
 #define LM_FUNC_IMPL(r, data, elem) data##_LM.bind_method(BOOST_PP_STRINGIZE(elem), &data::elem);
 #define LM_FUNC(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_FUNC_IMPL, class_name, SEQ)
 
+#define LM_STATIC_MEMBER_FUNC_IMPL(r, data, elem) data##_LM.bind_static_method(BOOST_PP_STRINGIZE(elem), &data::elem);
+#define LM_STATIC_MEMBER_FUNC(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_STATIC_MEMBER_FUNC_IMPL, class_name, SEQ)
+
 #define LM_EXTENSION_METHOD_IMPL(r, data, elem) data##_LM.bind_nonmember_op(BOOST_PP_STRINGIZE(elem), &elem);
 // Extension methods allow you to bind a nonmember function so it will be called like a member in script.
 // The first parameter of the method is passed the self object from script.

@@ -99,6 +99,8 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     auto to_type = FromNil().wrap_expr(0)->get_type();
     auto conv = new FromNil;
     type_sys.add_converter_simple(from_type, to_type, conv);
+    type_sys.print_conv_chain(from_type, to_type);
+    type_sys.print_conv_chain(from_type, BetterTypeInfo::create_index<char*>());
 
     // Interpret nil as false in bool contexts.
     struct FromNilToFalse : public AbstractTypeConverter

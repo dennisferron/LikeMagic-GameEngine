@@ -56,6 +56,25 @@ struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter
     virtual std::string describe() const { return "PtrToIoObjectConv"; }
 };
 
+void print_conv(TypeIndex from, TypeIndex to, AbstractTypeSystem& type_sys)
+{
+    type_sys.print_conv_chain(from, to);
+}
+
+template <typename From>
+void print_conv(TypeIndex to, AbstractTypeSystem& type_sys)
+{
+    TypeIndex from = BetterTypeInfo::create_index<From>();
+    print_conv(from, to, type_sys);
+}
+
+template <typename From, typename To>
+void print_conv(AbstractTypeSystem& type_sys)
+{
+    TypeIndex to = BetterTypeInfo::create_index<To>();
+    print_conv<From>(to, type_sys);
+}
+
 IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys), last_exception(0)
 {
     state = IoState_new();
@@ -131,6 +150,7 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys), last_exception(
 
     // The object that represents the global namespace.
     //add_proto("namespace", Namespace::global(type_sys).register_functions().create_class_proxy(), false);
+
 }
 
 void IoVM::register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base)

@@ -33,7 +33,7 @@ public:
                 reinterpret_cast<Expression<From>*>(expr.get())));
     }
 
-    virtual std::string describe() const { return describe_converter<From, To>("AddrOfConv") + " (inherits from " + ConvertibleTo<To>::describe() + ")"; }
+    virtual std::string describe() const { return describe_converter<From, To>("AddrOfConv"); }
 };
 
 }}

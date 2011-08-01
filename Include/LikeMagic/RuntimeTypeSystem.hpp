@@ -21,6 +21,7 @@
 #include "LikeMagic/TypeConv/VectorConv.hpp"
 #include "LikeMagic/TypeConv/AddrOfConv.hpp"
 #include "LikeMagic/TypeConv/PtrDerefConv.hpp"
+#include "LikeMagic/TypeConv/PtrCastConv.hpp"
 
 namespace LikeMagic {
 
@@ -141,6 +142,9 @@ public:
 
             // enable pointer to value conversions only if class is copyable.
             register_copyable_conv<T, is_copyable>();
+
+            // Allow the bottom pointer to be converted to a pointer to this class
+            add_conv<BottomPtrType, T*, PtrCastConv>();
 
             return *result;
         }

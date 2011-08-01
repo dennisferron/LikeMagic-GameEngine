@@ -67,6 +67,11 @@ public:
             return this->equals(that);
     }
 
+
+    virtual bool get_ptr_is_const() const { return false; }
+
+    virtual bool get_obj_is_const() const { return false; }
+
     virtual bool get_is_ref() const { return false; }
 
     virtual bool get_is_ptr() const { return false; }
@@ -76,19 +81,39 @@ public:
         return this;
     }
 
-    virtual TypeInfoPtr as_const_type() const
+    virtual TypeInfoPtr as_const_obj_type() const
     {
-        throw std::logic_error("Type variation as_const_type undefined on " + describe());
+        throw std::logic_error("Type variation as_const_obj_type undefined on " + describe());
     }
 
-    virtual TypeInfoPtr as_nonconst_type() const
+    virtual TypeInfoPtr as_nonconst_obj_type() const
     {
-        throw std::logic_error("Type variation as_nonconst_type undefined on " + describe());
+        throw std::logic_error("Type variation as_nonconst_obj_type undefined on " + describe());
+    }
+
+    virtual TypeInfoPtr as_const_ptr_type() const
+    {
+        throw std::logic_error("Type variation as_const_ptr_type undefined on " + describe());
+    }
+
+    virtual TypeInfoPtr as_nonconst_ptr_type() const
+    {
+        throw std::logic_error("Type variation as_nonconst_ptr_type undefined on " + describe());
     }
 
     virtual TypeInfoPtr remove_reference() const
     {
         throw std::logic_error("Type variation remove_reference undefined on " + describe());
+    }
+
+    virtual TypeInfoPtr as_ptr() const
+    {
+        throw std::logic_error("Type variation as_ptr_type undefined on " + describe());
+    }
+
+    virtual TypeInfoPtr as_ref() const
+    {
+        throw std::logic_error("Type variation as_ref_type undefined on " + describe());
     }
 
     virtual TypeInfoPtr remove_all_const() const

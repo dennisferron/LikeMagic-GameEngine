@@ -78,6 +78,8 @@ private:
 
     vertex_t const no_vertex;
 
+    p_conv_t bot_conv;
+
 public:
     TypeConvGraph();
     ~TypeConvGraph();
@@ -86,6 +88,7 @@ public:
     ExprPtr wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to) const;
     bool has_conv(TypeIndex from_type, TypeIndex to_type) const;
     void print_graph() const;
+    void print_conv_chain(TypeIndex from, TypeIndex to) const;
 };
 
 }}

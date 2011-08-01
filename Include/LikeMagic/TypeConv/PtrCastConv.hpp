@@ -16,25 +16,23 @@ namespace LikeMagic { namespace TypeConv {
 using namespace LikeMagic::SFMO;
 
 template <typename From, typename To>
-class PtrDerefConv : public ConvertibleTo<To>
+class PtrCastConv : public ConvertibleTo<To>
 {
 public:
+
     inline static To do_conv(From obj)
     {
-        if (!&*obj)
-            throw std::logic_error("PtrDerefConv on null pointer! " + describe_converter<From, To>("PtrDerefConv"));
-
-        return *obj;
+        return reinterpret_cast<To>(obj);
     }
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, PtrDerefConv>::create(
+        return Trampoline<From, To, PtrCastConv>::create(
             boost::intrusive_ptr<Expression<From>>(
-                reinterpret_cast<Expression<From>*>(expr.get())));
+                static_cast<Expression<From>*>(expr.get())));
     }
 
-    virtual std::string describe() const { return describe_converter<From, To>("PtrDerefConv"); }
+    virtual std::string describe() const { return describe_converter<From, To>("PtrCastConv"); }
 };
 
 }}

@@ -10,103 +10,87 @@
 
 namespace LikeMagic { namespace Utility {
 
+namespace Private {
+
+// Have to strip off const twice because in e.g.
+// char * const & the pointer is const
+// but in
+// char const * & the object is const
+// and in
+// char const * const & both are const
+// and these need to be treated distinctly.
+
+template <typename T>
+struct StripSecondConst
+{
+    enum { second_const = false };
+    typedef T type;
+};
+
+template <typename T>
+struct StripSecondConst<T const>
+{
+    enum { second_const = true };
+    typedef T type;
+};
+
+template <typename T>
+struct StripPtr : public StripSecondConst<T>
+{
+    enum { is_ptr = false };
+};
+
+template <typename T>
+struct StripPtr<T*> : public StripSecondConst<T>
+{
+    enum { is_ptr = true };
+};
+
+template <typename T>
+struct StripFirstConst : public StripPtr<T>
+{
+    enum { first_const = false };
+};
+
+template <typename T>
+struct StripFirstConst<T const> : public StripPtr<T>
+{
+    enum { first_const = true };
+};
+
+
+template <typename T>
+struct StripRef : public StripFirstConst<T>
+{
+    enum { is_ref = false };
+};
+
+template <typename T>
+struct StripRef<T&> : public StripFirstConst<T>
+{
+    enum { is_ref = true };
+};
+
+}
+
 // Things like boost::remove_pointer get tripped up if it's something like a "reference to pointer".
 // And what if you want to convert a "value const &" to just value?  Nesting std::remove_x gets very wordy.
 // OTOH this utility recursively strips ALL the modifiers from a type to get down to the bare essentials.
 // In the process, it records what it stripped away so that the values can be used by BetterTypeInfo.
 // Example usages:
 //
-//  StripModifiers<some_type>::strip::type  // a typedef; returns the bare type
-//  StripModifiers<some_type>::strip::is_const // bool; Is the value, referenced object, or pointed at object const?
-//  StripModifiers<some_type>::strip::is_ref // bool; Is it a reference?
-//  StripModifiers<some_type>::strip::is_ptr // bool; Is it a pointer?
-//  StripModifiers<some_type>::strip::is_const_ptr // bool; Is it a pointer that can't point at anything else?
+//  StripModifiers<some_type>::type  // a typedef; returns the bare type
+//  StripModifiers<some_type>::is_const // bool; Is the value, referenced object, or pointed at object const?
+//  StripModifiers<some_type>::is_ref // bool; Is it a reference?
+//  StripModifiers<some_type>::is_ptr // bool; Is it a pointer?
 //
-template <typename T, bool is_const_=false, bool is_ref_=false, bool is_ptr_=false>
-struct StripModifiers
+template <typename T>
+struct StripModifiers : public Private::StripRef<T>
 {
-    typedef StripModifiers<T, is_const_, is_ref_, is_ptr_> strip;
-    typedef T type;
-    enum { is_const = is_const_ }; // when type is pointer, this means the pointed-at object is const; to find if the bits of the pointer are const see is_const_ptr
-    enum { is_ref=is_ref_ };
-    enum { is_ptr=is_ptr_ };
+    enum { obj_is_const = Private::StripRef<T>::second_const || (Private::StripRef<T>::first_const && !Private::StripRef<T>::is_ptr)  };
+    enum { ptr_is_const = Private::StripRef<T>::is_ptr && Private::StripRef<T>::first_const };
 };
 
-// First, remove the reference modifier.
-template <typename      T, bool is_const_, bool is_ref_, bool is_ptr_>
-struct StripModifiers<  T&,     is_const_,      is_ref_,      is_ptr_>
-{
-    static_assert(!is_const_, "should not have matched const yet");
-    static_assert(!is_ptr_, "should not have matched pointer yet");
-
-    typedef typename
-        StripModifiers< T,      is_const_,      true,         is_ptr_>
-            ::strip strip;
-};
-
-// Next, check if it is a pointer-that-is_const (which is different from pointer-to-const!)
-// We only want to strip off one level of pointer.  If this is a pointer to a pointer,
-// (is_ptr_ already true) then this specialization will not match it.
-template <typename      T, bool is_const_, bool is_ref_  /* bool is_ptr_, bool is_const_ptr_ */ >
-struct StripModifiers<  T*const,is_const_,      is_ref_,         false>
-{
-    typedef typename
-        StripModifiers< T,      is_const_,      is_ref_,         true>
-            ::strip strip;
-};
-
-// And check if it is just a plain pointer
-// We only want to strip off one level of pointer.  If this is a pointer to a pointer,
-// (is_ptr_ already true) then this specialization will not match it.
-template <typename      T, bool is_const_, bool is_ref_ /* bool is_ptr_, bool is_const_ptr_ */ >
-struct StripModifiers<  T*,     is_const_,      is_ref_,          false>
-{
-    typedef typename
-        StripModifiers< T,      is_const_,      is_ref_,           true>
-            ::strip strip;
-};
-
-// Finally, check if the value, referenced object, or pointed-to object is const.
-template <typename      T, bool is_const_, bool is_ref_, bool is_ptr_>
-struct StripModifiers<  const T,is_const_,      is_ref_,      is_ptr_>
-{
-    typedef typename
-        StripModifiers< T,      true,           is_ref_,      is_ptr_>
-            ::strip strip;
-};
-
-
-// Short-circuit the recursion for common cases:
-
-#define StripImpl(realType, baseType, is_const_, is_ref_, is_ptr_) \
-template <> \
-struct StripModifiers<realType, false, false, false> \
-{ \
-    typedef StripModifiers<realType, false, false, false> strip; \
-    typedef baseType type; \
-    enum { is_const = is_const_ }; \
-    enum { is_ref = is_ref_ }; \
-    enum { is_ptr = is_ptr_ }; \
-};
-
-#define StripConst(baseType) \
-StripPtr(baseType, baseType, false) \
-StripPtr(baseType const, baseType, true)
-
-#define StripPtr(realType, baseType, is_const) \
-StripRef(realType, baseType, is_const, false) \
-StripRef(realType*, baseType, is_const, true)
-
-#define StripRef(realType, baseType, is_const, is_ptr) \
-StripImpl(realType, baseType, is_const, false, is_ptr) \
-StripImpl(realType&, baseType, is_const, true, is_ptr)
-
-#define StripQuickly(type) StripConst(type)
-
-StripQuickly(char)
-StripQuickly(int)
-StripQuickly(float)
-StripQuickly(double)
 
 }}
 

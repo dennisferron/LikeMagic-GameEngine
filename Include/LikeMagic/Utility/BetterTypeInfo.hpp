@@ -28,11 +28,12 @@ class BetterTypeInfo : public AbstractTypeInfo
 {
 private:
     std::type_info const* info;
-    bool is_const;  // when type is pointer, this means the pointed-at object is const; to find if the bits of the pointer are const see is_const_ptr
+    bool obj_is_const;
+    bool ptr_is_const;
     bool is_ref;
     bool is_ptr;
 
-    BetterTypeInfo(std::type_info const* info_, bool is_const_, bool is_ref_, bool is_ptr_);
+    BetterTypeInfo(std::type_info const* info_, bool obj_is_const_, bool ptr_is_const_, bool is_ref_, bool is_ptr_);
     BetterTypeInfo();
     BetterTypeInfo(BetterTypeInfo const& that);
 
@@ -49,7 +50,8 @@ protected:
     virtual std::size_t calc_hash() const
     {
         std::size_t seed = 0;
-        boost::hash_combine(seed, is_const);
+        boost::hash_combine(seed, obj_is_const);
+        boost::hash_combine(seed, ptr_is_const);
         boost::hash_combine(seed, is_ref);
         boost::hash_combine(seed, is_ptr);
         boost::hash_combine(seed, std::string(info->name()));
@@ -61,12 +63,13 @@ public:
     template <typename T>
     static TypeInfoPtr create()
     {
-        typedef typename StripModifiers<T>::strip stripped;
+        typedef StripModifiers<T> stripped;
 
         return
             new BetterTypeInfo(
                 &typeid(typename stripped::type),
-                stripped::is_const,
+                stripped::obj_is_const,
+                stripped::ptr_is_const,
                 stripped::is_ref,
                 stripped::is_ptr
             );
@@ -84,13 +87,16 @@ public:
         return cached;
     }
 
-    bool get_is_const() const;
+    bool get_obj_is_const() const;
+    bool get_ptr_is_const() const;
     bool get_is_ptr() const;
     bool get_is_ref() const;
 
     TypeInfoPtr bare_type() const;
-    TypeInfoPtr as_const_type() const;
-    TypeInfoPtr as_nonconst_type() const;
+    TypeInfoPtr as_const_obj_type() const;
+    TypeInfoPtr as_nonconst_obj_type() const;
+    TypeInfoPtr as_const_ptr_type() const;
+    TypeInfoPtr as_nonconst_ptr_type() const;
     TypeInfoPtr remove_reference() const;
     TypeInfoPtr remove_all_const() const;
 

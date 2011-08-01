@@ -13,7 +13,6 @@
 #include "LikeMagic/SFMO/NullExpr.hpp"
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
 #include "LikeMagic/Utility/IsIterator.hpp"
-#include "LikeMagic/Utility/StripConst.hpp"
 #include "LikeMagic/SFMO/Trampoline.hpp"
 
 #include "LikeMagic/Utility/TupleForEach.hpp"
@@ -75,6 +74,14 @@ private:
     // Don't allow accidently making copies of this class
     AbstractTypeSystem(AbstractTypeSystem const&) = delete;
     AbstractTypeSystem & operator =(AbstractTypeSystem const&) = delete;
+
+    void add_to_const_conv(TypeIndex index);
+
+    template <typename From, typename To>
+    void AbstractTypeSystem::add_generic_conv(TypeInfoPtr from, TypeInfoPtr to)
+    {
+        conv_graph.add_conv(from->get_index(), to->get_index(), new GenericConv<From, To>(from, to));
+    }
 
 protected:
 
@@ -147,6 +154,7 @@ public:
     void add_type_system_observer(ITypeSystemObserver* observer);
     void register_base(LikeMagic::Marshaling::AbstractClass* class_, LikeMagic::Marshaling::AbstractClass const* base);
     void register_method(LikeMagic::Marshaling::AbstractClass* class_, std::string method_name, LikeMagic::CallTargets::AbstractCallTargetSelector* method);
+    void print_conv_chain(TypeIndex from, TypeIndex to) const;
 
 };
 

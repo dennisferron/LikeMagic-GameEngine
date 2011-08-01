@@ -71,6 +71,7 @@ public:
 
     virtual bool is_terminal() const { return false; }
     virtual bool is_lazy() const { return true; }
+    virtual bool disable_to_script_conv() const { return true; }
 
     inline virtual void eval()
     {

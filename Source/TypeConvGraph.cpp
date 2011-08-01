@@ -7,6 +7,8 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/TypeConv/TypeConvGraph.hpp"
+#include "LikeMagic/TypeConv/NoChangeConv.hpp"
+#include "LikeMagic/SFMO/BottomPtrExpr.hpp"
 
 #include "boost/graph/breadth_first_search.hpp"
 #include <iostream>
@@ -18,6 +20,7 @@
 #include <utility>
 #include <iostream>
 #include <limits>
+using namespace std;
 
 #include "boost/graph/visitors.hpp"
 #include "boost/graph/adjacency_list.hpp"
@@ -37,7 +40,7 @@ using namespace LikeMagic::Utility;
 namespace LikeMagic { namespace TypeConv {
 
 TypeConvGraph::TypeConvGraph()
-    : no_vertex(std::numeric_limits<vertex_t>::max())
+    : no_vertex(std::numeric_limits<vertex_t>::max()), bot_conv(new NoChangeConv<>())
 {
 }
 
@@ -120,7 +123,26 @@ ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, TypeConvGraph::p_chai
         expr = (*chain)[i]->wrap_expr(expr);
     }
 
+    std::cout << "Built conv chain: " << expr->description() << std::endl;
+
     return expr;
+}
+
+void TypeConvGraph::print_conv_chain(TypeIndex from, TypeIndex to) const
+{
+    auto chain = search_for_conv(from, to);
+
+    if (!chain)
+        cout << "No conversion chain from " << from.describe() << " to " << to.describe() << endl;
+    else
+    {
+        cout << "Conversion chain from " << from.describe() << " to " << to.describe() << " is ";
+        for (size_t i=0; i < chain->size(); i++)
+        {
+            cout  << " -> "<< (*chain)[i]->describe();
+        }
+        cout << endl;
+    }
 }
 
 
@@ -134,7 +156,7 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to
 
         try
         {
-            if (search_for_conv(from.get_info()->as_nonconst_type()->get_index(), to))
+            if (search_for_conv(from.get_info()->as_nonconst_obj_type()->get_index(), to))
                 msg += "I notice the conversion would work if the from-type were not const.  Did you use get_fieldName (const version) when you meant to use ref_fieldName (nonconst version)?  Or call functionName_nc (nonconst version) when you meant to call functioname_c (const version)?  Don't forget that a member of a const object is also const.";
         }
         catch (...)
@@ -158,6 +180,8 @@ bool TypeConvGraph::has_conv(TypeIndex from_type, TypeIndex to_type) const
 
 TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeIndex from, TypeIndex to) const
 {
+    static TypeIndex bot = BetterTypeInfo::create_index<BottomPtrType>();
+
     static int count = 0;
 
     auto key = std::make_pair(from, to);
@@ -225,7 +249,7 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeIndex from, TypeInd
         }
 
         if (!finder.found_conv || pred[dest] == no_vertex)
-            return conv_cache[key] = p_chain_t();
+            return conv_cache[key] = p_chain_t(); // NULL
         else
         {
             p_chain_t result(new std::vector<p_conv_t>);
@@ -237,11 +261,11 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeIndex from, TypeInd
 
             conv_cache[key] = result;
         }
-
     }
 
     return conv_cache[key];
 }
+
 
 
 

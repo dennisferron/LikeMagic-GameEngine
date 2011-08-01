@@ -33,8 +33,8 @@ private:
     TypeIndex const static_method_type;
 
     // No copying or assignment.
-    StaticMethods(StaticMethods const&);
-    StaticMethods& operator=(StaticMethods const&);
+    StaticMethods(StaticMethods const&) = delete;
+    StaticMethods& operator=(StaticMethods const&) = delete;
 
     friend class LikeMagic::RuntimeTypeSystem;
     StaticMethods(AbstractTypeSystem& type_system_, NamespacePath const namespace_);

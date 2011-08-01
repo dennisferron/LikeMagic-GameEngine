@@ -194,8 +194,7 @@ public:
                 reinterpret_cast<Expression<From>*>(expr.get())));
     }
 
-    virtual std::string describe() const { return describe_converter<From, To>("StringConv")
-            + " (inherits from " + ConvertibleTo<To>::describe() + ")"; }
+    virtual std::string describe() const { return describe_converter<From, To>("StringConv"); }
 };
 
 
@@ -213,8 +212,7 @@ public:
                         reinterpret_cast<Expression<std::string>*>(expr.get()))));
     }
 
-    virtual std::string describe() const { return describe_converter<std::string, wchar_t const*>("StringConv")
-            + " (inherits from " + ConvertibleTo<wchar_t const*>::describe() + ")"; }
+    virtual std::string describe() const { return describe_converter<std::string, wchar_t const*>("StringConv"); }
 };
 
 // Special case for when the string must be converted to wide character version.
@@ -231,8 +229,7 @@ public:
                         reinterpret_cast<Expression<std::string&>*>(expr.get()))));
     }
 
-    virtual std::string describe() const { return describe_converter<std::string&, wchar_t const*>("StringConv")
-            + " (inherits from " + ConvertibleTo<wchar_t const*>::describe() + ")"; }
+    virtual std::string describe() const { return describe_converter<std::string&, wchar_t const*>("StringConv"); }
 };
 
 
