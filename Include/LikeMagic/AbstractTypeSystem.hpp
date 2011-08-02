@@ -10,6 +10,8 @@
 
 #include "LikeMagic/TypeConv/TypeConvGraph.hpp"
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
+#include "LikeMagic/TypeConv/GenericConv.hpp"
+#include "LikeMagic/TypeConv/NoChangeConv.hpp"
 #include "LikeMagic/SFMO/NullExpr.hpp"
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
 #include "LikeMagic/Utility/IsIterator.hpp"
@@ -75,13 +77,17 @@ private:
     AbstractTypeSystem(AbstractTypeSystem const&) = delete;
     AbstractTypeSystem & operator =(AbstractTypeSystem const&) = delete;
 
-    void add_to_const_conv(TypeIndex index);
+    void add_ptr_convs(TypeIndex index);
 
     template <typename From, typename To>
-    void AbstractTypeSystem::add_generic_conv(TypeInfoPtr from, TypeInfoPtr to)
-    {
-        conv_graph.add_conv(from->get_index(), to->get_index(), new GenericConv<From, To>(from, to));
-    }
+    void add_nochange_conv(TypeInfoPtr from, TypeInfoPtr to);
+
+    template <typename From, typename To>
+    void add_generic_conv(TypeInfoPtr from, TypeInfoPtr to);
+
+    // handles const object or nonconst object.  T is either const void or just void.
+    template <typename T>
+    void add_conv_track(TypeInfoPtr type);
 
 protected:
 

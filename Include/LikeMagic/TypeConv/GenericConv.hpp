@@ -13,6 +13,7 @@
 namespace LikeMagic { namespace TypeConv {
 
 using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Utility;
 
 template <typename From, typename To>
 class GenericConv : public ImplicitConv<From, To>
@@ -23,14 +24,14 @@ private:
 
 public:
 
-    GenericPtrConv(TypeInfoPtr from, TypeInfoPtr to) : from_info(from), to_info(to)
+    GenericConv(TypeInfoPtr from, TypeInfoPtr to) : from_info(from), to_info(to)
     {
     }
 
     virtual std::string describe() const
     {
         return
-            "GenericConv " +
+            std::string("GenericConv ") +
             " from " + from_info->describe() +
             " to " + to_info->describe();
     }

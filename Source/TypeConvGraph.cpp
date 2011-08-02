@@ -123,6 +123,7 @@ ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, TypeConvGraph::p_chai
         expr = (*chain)[i]->wrap_expr(expr);
     }
 
+    // TODO:  make this a debug setting
     std::cout << "Built conv chain: " << expr->description() << std::endl;
 
     return expr;
@@ -133,7 +134,9 @@ void TypeConvGraph::print_conv_chain(TypeIndex from, TypeIndex to) const
     auto chain = search_for_conv(from, to);
 
     if (!chain)
+    {
         cout << "No conversion chain from " << from.describe() << " to " << to.describe() << endl;
+    }
     else
     {
         cout << "Conversion chain from " << from.describe() << " to " << to.describe() << " is ";

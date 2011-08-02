@@ -56,16 +56,16 @@
 	<set>
 	<vector>
 
-1308455827 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/ConvertibleTo.hpp
+1312253117 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/ConvertibleTo.hpp
 	"AbstractTypeConverter.hpp"
 	"boost/intrusive_ptr.hpp"
 
-1312140418 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/AbstractTypeConverter.hpp
+1312252727 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/AbstractTypeConverter.hpp
 	"LikeMagic/Utility/BetterTypeInfo.hpp"
 	"boost/intrusive_ptr.hpp"
 	<string>
 
-1312156027 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Utility/BetterTypeInfo.hpp
+1312252632 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Utility/BetterTypeInfo.hpp
 	"boost/type_traits.hpp"
 	<typeinfo>
 	<stdexcept>
@@ -2060,7 +2060,7 @@
 
 1312160976 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Utility/StripModifiers.hpp
 
-1312156781 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Utility/AbstractTypeInfo.hpp
+1312161792 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Utility/AbstractTypeInfo.hpp
 	<typeinfo>
 	<stdexcept>
 	<iostream>
@@ -2780,9 +2780,11 @@
 
 1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/memory_order.hpp
 
-1312160894 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/AbstractTypeSystem.hpp
+1312252264 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/AbstractTypeSystem.hpp
 	"LikeMagic/TypeConv/TypeConvGraph.hpp"
 	"LikeMagic/TypeConv/ImplicitConv.hpp"
+	"LikeMagic/TypeConv/GenericConv.hpp"
+	"LikeMagic/TypeConv/NoChangeConv.hpp"
 	"LikeMagic/SFMO/NullExpr.hpp"
 	"LikeMagic/Utility/FuncPtrTraits.hpp"
 	"LikeMagic/Utility/IsIterator.hpp"
@@ -6355,7 +6357,7 @@
 	"LikeMagic/TypeConv/ConvertibleTo.hpp"
 	"LikeMagic/SFMO/Trampoline.hpp"
 
-1312145672 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/API_Io_from_script.cpp
+1312253702 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/API_Io_from_script.cpp
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/SFMO/Term.hpp"
 	"LikeMagic/SFMO/NullExpr.hpp"
@@ -6462,10 +6464,12 @@
 1308455826 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeInfo.cpp
 	"LikeMagic/Utility/AbstractTypeInfo.hpp"
 
-1312161053 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeSystem.cpp
+1312253489 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeSystem.cpp
 	"LikeMagic/AbstractTypeSystem.hpp"
 	"LikeMagic/Marshaling/AbstractClass.hpp"
 	"LikeMagic/TypeConv/NoChangeConv.hpp"
+	"LikeMagic/TypeConv/ImplicitConv.hpp"
+	"LikeMagic/TypeConv/GenericConv.hpp"
 	"LikeMagic/TypeConv/ToAbstractExpressionConv.hpp"
 	<set>
 	<iostream>
@@ -6478,13 +6482,11 @@
 	"ConvertibleTo.hpp"
 	"../SFMO/Term.hpp"
 
-1312161018 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/BetterTypeInfo.cpp
+1312161910 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/BetterTypeInfo.cpp
 	"LikeMagic/Utility/BetterTypeInfo.hpp"
 	<cstring>
 
-1292730773 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/CodeTest.cpp
-	<iostream>
-	"LikeMagic/Utility/TupleForEach.hpp"
+1312251882 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/CodeTest.cpp
 
 1311471666 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoBlock.cpp
 	"LikeMagic/Backends/Io/IoBlock.hpp"
@@ -6563,7 +6565,7 @@
 1308455829 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/ProxyMethods.cpp
 	"LikeMagic/Marshaling/ProxyMethods.hpp"
 
-1312153362 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/RuntimeTypeSystem.cpp
+1312161505 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/RuntimeTypeSystem.cpp
 	"LikeMagic/RuntimeTypeSystem.hpp"
 	"LikeMagic/NamespacePath.hpp"
 	"LikeMagic/TypeConv/StringConv.hpp"
@@ -6576,7 +6578,7 @@
 	"LikeMagic/Marshaling/StaticMethods.hpp"
 	"LikeMagic/SFMO/NamespaceProxy.hpp"
 
-1312161086 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/TypeConvGraph.cpp
+1312253716 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/TypeConvGraph.cpp
 	"LikeMagic/TypeConv/TypeConvGraph.hpp"
 	"LikeMagic/TypeConv/NoChangeConv.hpp"
 	"LikeMagic/SFMO/BottomPtrExpr.hpp"
@@ -7272,7 +7274,7 @@
 	"LikeMagic/ScriptUtil.hpp"
 	<sstream>
 
-1312130191 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/ScriptUtil.hpp
+1312161622 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/ScriptUtil.hpp
 	<string>
 
 1312148252 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/BottomPtrConv.hpp
@@ -7282,4 +7284,7 @@
 1312148758 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/PtrCastConv.hpp
 	"LikeMagic/TypeConv/ConvertibleTo.hpp"
 	"LikeMagic/SFMO/Trampoline.hpp"
+
+1312252248 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/GenericConv.hpp
+	"LikeMagic/TypeConv/ImplicitConv.hpp"
 

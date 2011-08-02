@@ -32,7 +32,7 @@ template <typename To>
 class ConvertibleTo : public virtual AbstractTypeConverter
 {
 public:
-    virtual std::string describe() const { return BetterTypeInfo::create<decltype(this)>()->describe(); }
+    virtual std::string describe() const { return BetterTypeInfo::create_index<decltype(this)>().describe(); }
 };
 
 }}

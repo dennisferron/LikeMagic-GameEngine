@@ -58,8 +58,6 @@ protected:
         return seed;
     }
 
-public:
-
     template <typename T>
     static TypeInfoPtr create()
     {
@@ -74,6 +72,8 @@ public:
                 stripped::is_ptr
             );
     }
+
+public:
 
     template <typename T>
     static TypeIndex create_index()
@@ -93,6 +93,8 @@ public:
     bool get_is_ref() const;
 
     TypeInfoPtr bare_type() const;
+    TypeInfoPtr as_ref() const;
+    TypeInfoPtr as_ptr() const;
     TypeInfoPtr as_const_obj_type() const;
     TypeInfoPtr as_nonconst_obj_type() const;
     TypeInfoPtr as_const_ptr_type() const;

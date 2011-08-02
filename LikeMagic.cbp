@@ -231,7 +231,7 @@
 		<Unit filename="Include/LikeMagic/Utility/TypePack.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/UserMacros.hpp" />
 		<Unit filename="Script/Io/bootstrap.io" />
-		<Unit filename="Script/Io/debugtest.io" />
+		<Unit filename="Script/TestScripts/debugtest.io" />
 		<Unit filename="Source/API_Io.cpp" />
 		<Unit filename="Source/API_Io_from_script.cpp" />
 		<Unit filename="Source/API_Io_to_script.cpp" />
