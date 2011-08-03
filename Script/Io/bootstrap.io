@@ -33,7 +33,7 @@ io_vm set_onRegisterClass(block(abstract_class,
     className := abstract_class get_class_name
     cppNs := abstract_class get_namespace
 
-    //writeln("register class ", className, " in ", cppNs to_string, " and LikeMagic type=", abstract_class get_type describe)
+    writeln("register class ", className, " in ", cppNs to_string, " and LikeMagic type=", abstract_class get_type describe)
 
     // Look up the cpp namespace to get the Io object for it
     nsObj := find_namespace(cppNs)
@@ -50,7 +50,7 @@ io_vm set_onRegisterClass(block(abstract_class,
     // Note:  on class_proto can only call new or ProxyMethods.  AbstractClass defines a get_type that overrides the
     // proxy method get_type, so we must use lm_get_type instead.
 
-    //writeln("class_proxy LikeMagic type = ", class_proto lm_get_type describe)
+    writeln("class_proxy LikeMagic type = ", class_proto lm_get_type describe)
 
     // If the slot already exists, append it to the new object so name lookup will work.
     if (nsObj hasSlot(className),
@@ -60,11 +60,11 @@ io_vm set_onRegisterClass(block(abstract_class,
             msg = msg .. "  Note: existing object LikeMagic type=" .. (existingObj get_type describe) .. " and new object LikeMagic type=" .. (class_proto lm_get_type describe)
             Exception raise(msg)
         ,
-            //writeln("Consolidating namespace ", className)
+            writeln("Consolidating namespace ", className)
             old_proto := nsObj getSlot(className)
             old_proto slotNames foreach(name,
                 if (name != "type",
-                    //writeln("Copying ", name)
+                    writeln("Copying ", name)
                     class_proto setSlot(name, old_proto getSlot(name))
                 )
             )
@@ -118,10 +118,16 @@ print_namespace_tree := method(ns, name, depth,
 )
 
 print_class_info := method(obj,
-    methods := obj
+    methodNames := obj get_class get_method_names
+    for(i, 0, methodNames size - 1,
+        name := methodNames at_c(i)
+        writeln(name)
+    )
 )
 
-//print_namespace_tree(LikeMagic namespace, "global", 0)
+print_namespace_tree(LikeMagic namespace, "global", 0)
+
+print_class_info(LikeMagic namespace Irrlicht)
 
 //Lobby appendProto(LikeMagic)
 //Lobby appendProto(LikeMagic namespace)

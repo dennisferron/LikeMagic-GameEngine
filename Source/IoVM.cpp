@@ -299,6 +299,9 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 
         std::string method_name = CSTRING(IoMessage_name(m));
 
+        if (method_name == "unsafe_ptr_cast")
+            cout << "unsafe_ptr_cast used" << endl;
+
         auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
         proxy->check_magic();
 
@@ -417,6 +420,7 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
     bool is_terminal = proxy->is_terminal();
     bool disable_to_script = proxy->disable_to_script_conv();
     bool has_conv = is_terminal && !disable_to_script && type_sys.has_conv(from_expr->get_type(), to_io_type);
+    cout << "is_terminal=" << is_terminal << " disable_to_script=" << disable_to_script << endl;
 
     if (!disable_to_script && proxy->get_expr()->is_null())
     {

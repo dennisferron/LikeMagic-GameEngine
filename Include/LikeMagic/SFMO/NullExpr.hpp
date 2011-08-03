@@ -28,6 +28,8 @@ public:
     virtual bool is_terminal() const { return true; }
     virtual bool is_lazy() const { return false; }
 
+    virtual bool is_null() const { return true; }
+
     virtual std::string description() const
     {
         return std::string("NULL");

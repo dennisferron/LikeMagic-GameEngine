@@ -70,14 +70,7 @@ public:
 
     virtual std::string description() const
     {
-        return "ToIoObjectExpr";
-        /*
-        return
-          "To-Io expression from C++ type "
-        + BetterTypeInfo::create<T>().describe()
-        + " to Io type "
-        + get_type().describe();
-        */
+        return "ToIoObjectExpr from " + from_expr->description();
     }
 
     virtual void mark() const { from_expr->mark(); }

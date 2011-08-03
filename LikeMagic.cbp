@@ -194,6 +194,7 @@
 		<Unit filename="Include/LikeMagic/SFMO/methodcall_args.hpp" />
 		<Unit filename="Include/LikeMagic/ScriptUtil.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/AbstractTypeConverter.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/AddCostForConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/AddrOfConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/BaseConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/ConvertibleTo.hpp" />

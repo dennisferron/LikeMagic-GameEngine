@@ -67,7 +67,11 @@ public:
 
     // Since char* is convertible to IoSeq (string in Io) and we are convertible to any pointer,
     // we would be convertible to IoSeq.  Not good.  Disable to-script conversions to prevent this:
-    virtual bool disable_to_script_conv() const { return true; }
+    virtual bool disable_to_script_conv() const
+    {
+        return true;
+    }
+
 };
 
 }}
