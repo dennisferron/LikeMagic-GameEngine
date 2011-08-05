@@ -132,6 +132,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     static TypeIndex bot_type = BetterTypeInfo::create_index<BottomPtrTag__>();
     auto bot_class = new DummyClass<BottomPtrTag__>(bot_type, "unsafe_ptr_cast", *this, NamespacePath::global());
     add_class(bot_type, bot_class);
+    bot_class->add_base_abstr(proxy_methods);
     add_conv<BottomPtrTag__*&, BottomPtrTag__*>();
     add_conv<BottomPtrTag__* const&, BottomPtrTag__*>();
 
@@ -155,7 +156,9 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     register_class<unsigned long, true, false>("ulong");
     register_class<double, true, false>("double");
     register_class<float, true, false>("float");
-    register_class<bool, true, false>("bool");
+
+    // Do auto-deref bool though
+    register_class<bool, true, true>("bool");
 
     register_class<unsigned char, true, false>("uchar");
 
@@ -210,7 +213,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     LM_CLASS(global_ns, ScriptUtil)
     LM_CONSTR(ScriptUtil,,)
     LM_FIELD(ScriptUtil, (voidp_field)(charp_field)(ucharp_field)(intp_field)(uintp_field))
-    LM_STATIC_MEMBER_FUNC(ScriptUtil, (ptr_addr_to_str)(get_null_ptr)(get_test_ptr))
+    LM_STATIC_MEMBER_FUNC(ScriptUtil, (ptr_addr_to_str)(get_null_ptr)(get_test_ptr)(get_true)(get_false)(get_int)(get_double))
 }
 
 

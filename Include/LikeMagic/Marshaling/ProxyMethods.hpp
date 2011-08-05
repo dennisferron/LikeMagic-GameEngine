@@ -42,7 +42,6 @@ public:
     }
 
     virtual AbstractCppObjProxy* create_class_proxy() const;
-
 };
 
 

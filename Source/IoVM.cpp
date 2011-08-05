@@ -269,6 +269,9 @@ void IoVM::mark() const
 
 IoObject* IoVM::proxy_to_io_obj(AbstractCppObjProxy* proxy)
 {
+    if (!proxy)
+        throw logic_error("IoVM::proxy_to_io_obj: proxy argument was NULL.");
+
     IoObject* proto = LM_Proxy;
     IoObject* clone = API_io_rawClone(proto);
     IoObject_setDataPointer_(clone, proxy);
@@ -364,12 +367,21 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 IoObject* IoVM::forward(IoObject *self, IoObject *locals, IoMessage *m)
 {
     std::string method_name = CSTRING(IoMessage_name(m));
+    int arg_count = IoMessage_argCount(m);
 
     //std::string error_msg = "No C++ object on IoVM::forward " + method_name;
     //IOASSERT(IoObject_dataPointer(self), error_msg.c_str());
 
+    // This causes infinite recursion, so just assert instead
+    //if (!IoObject_dataPointer(self))
+        //return IoObject_forward(self, locals, m);
+
     if (!IoObject_dataPointer(self))
-        return IoObject_forward(self, locals, m);
+    {
+        string msg = "Lookup failed for method " + method_name + " with " + boost::lexical_cast<string>(arg_count) + " arguments and the object does not have a LikeMagic C++ Proxy attached.";
+        IOASSERT(IoObject_dataPointer(self), msg.c_str());
+        return IONIL(self);
+    }
 
     try
     {
@@ -377,8 +389,6 @@ IoObject* IoVM::forward(IoObject *self, IoObject *locals, IoMessage *m)
 
         auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
         proxy->check_magic();
-
-        int arg_count = IoMessage_argCount(m);
 
         proxy->suggest_method(method_name, arg_count);
 
@@ -420,7 +430,6 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
     bool is_terminal = proxy->is_terminal();
     bool disable_to_script = proxy->disable_to_script_conv();
     bool has_conv = is_terminal && !disable_to_script && type_sys.has_conv(from_expr->get_type(), to_io_type);
-    cout << "is_terminal=" << is_terminal << " disable_to_script=" << disable_to_script << endl;
 
     if (!disable_to_script && proxy->get_expr()->is_null())
     {

@@ -6333,7 +6333,7 @@
 1308455775 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/NamespaceTypeInfo.hpp
 	"LikeMagic/Utility/AbstractTypeInfo.hpp"
 
-1310094086 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/ProxyMethods.hpp
+1312508771 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/ProxyMethods.hpp
 	"LikeMagic/Marshaling/AbstractClass.hpp"
 	"LikeMagic/CallTargets/ProxyMethodSelector.hpp"
 	"LikeMagic/SFMO/ClassExpr.hpp"
@@ -6464,7 +6464,7 @@
 1308455826 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeInfo.cpp
 	"LikeMagic/Utility/AbstractTypeInfo.hpp"
 
-1312253489 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeSystem.cpp
+1312514000 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeSystem.cpp
 	"LikeMagic/AbstractTypeSystem.hpp"
 	"LikeMagic/Marshaling/AbstractClass.hpp"
 	"LikeMagic/TypeConv/NoChangeConv.hpp"
@@ -6499,7 +6499,7 @@
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/Backends/Io/FromIoTypeInfo.hpp"
 
-1312339227 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoVM.cpp
+1312511197 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoVM.cpp
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/Backends/Io/IoVM.hpp"
 	"LikeMagic/Backends/Io/IoBlock.hpp"
@@ -6549,23 +6549,25 @@
 	"LikeMagic/Namespace.hpp"
 	<stdexcept>
 
-1308455829 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/NamespacePath.cpp
+1312511957 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/NamespacePath.cpp
 	"LikeMagic/NamespacePath.hpp"
 	"LikeMagic/Marshaling/NamespaceTypeInfo.hpp"
+	<iostream>
 
-1308455829 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/NamespaceProxy.cpp
+1312509014 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/NamespaceProxy.cpp
 	"LikeMagic/SFMO/NamespaceProxy.hpp"
 	<iostream>
 	<stdexcept>
 
-1308455827 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/SFMO/NamespaceProxy.hpp
+1312509158 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/SFMO/NamespaceProxy.hpp
 	"LikeMagic/SFMO/AbstractCppObjProxy.hpp"
 	"LikeMagic/Marshaling/StaticMethods.hpp"
 
-1308455829 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/ProxyMethods.cpp
+1312509307 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/ProxyMethods.cpp
 	"LikeMagic/Marshaling/ProxyMethods.hpp"
+	"LikeMagic/SFMO/NamespaceProxy.hpp"
 
-1312161505 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/RuntimeTypeSystem.cpp
+1312513760 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/RuntimeTypeSystem.cpp
 	"LikeMagic/RuntimeTypeSystem.hpp"
 	"LikeMagic/NamespacePath.hpp"
 	"LikeMagic/TypeConv/StringConv.hpp"
@@ -6578,7 +6580,7 @@
 	"LikeMagic/Marshaling/StaticMethods.hpp"
 	"LikeMagic/SFMO/NamespaceProxy.hpp"
 
-1312254262 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/TypeConvGraph.cpp
+1312509273 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/TypeConvGraph.cpp
 	"LikeMagic/TypeConv/TypeConvGraph.hpp"
 	"LikeMagic/TypeConv/NoChangeConv.hpp"
 	"LikeMagic/SFMO/BottomPtrExpr.hpp"
@@ -7270,11 +7272,11 @@
 	"LikeMagic/SFMO/BottomPtrExpr.hpp"
 	"LikeMagic/SFMO/NullExpr.hpp"
 
-1312081528 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/ScriptUtil.cpp
+1312513319 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/ScriptUtil.cpp
 	"LikeMagic/ScriptUtil.hpp"
 	<sstream>
 
-1312161622 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/ScriptUtil.hpp
+1312513331 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/ScriptUtil.hpp
 	<string>
 
 1312148252 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/BottomPtrConv.hpp

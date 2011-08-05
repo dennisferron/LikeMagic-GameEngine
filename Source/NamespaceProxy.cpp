@@ -19,16 +19,13 @@ namespace LikeMagic { namespace SFMO {
 using namespace LikeMagic::Marshaling;
 using namespace LikeMagic::SFMO;
 
-
-// Note:  If someone were to refactor this class to be more general or use it as a model for making
-// another kind of derived proxy, you'd probably have this constructor accept AbstractClass* instead of StaticMethods*.
-NamespaceProxy::NamespaceProxy(StaticMethods const* methods_, AbstractTypeSystem const& type_system) :
+NamespaceProxy::NamespaceProxy(AbstractClass const* methods_, AbstractTypeSystem const& type_system) :
     AbstractCppObjProxy(type_system, methods_), methods(methods_)
 {
 }
 
 
-AbstractCppObjProxy* NamespaceProxy::create(StaticMethods const* methods_, AbstractTypeSystem const& type_system)
+AbstractCppObjProxy* NamespaceProxy::create(AbstractClass const* methods_, AbstractTypeSystem const& type_system)
     { return new NamespaceProxy(methods_, type_system); }
 
 void NamespaceProxy::dispose() const

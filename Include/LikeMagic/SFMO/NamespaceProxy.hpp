@@ -14,18 +14,18 @@
 
 namespace LikeMagic { namespace SFMO {
 
+// Mostly used for storing static methods that do not have a class object associated,
+// but also can be used when a proxy is needed for another DummyClass such as for the ProxyMethods.
 class NamespaceProxy : public AbstractCppObjProxy
 {
 private:
-    LikeMagic::Marshaling::StaticMethods const* methods;
+    LikeMagic::Marshaling::AbstractClass const* methods;
 
-    // Note:  If someone were to refactor this class to be more general or use it as a model for making
-    // another kind of derived proxy, you'd probably have this constructor accept AbstractClass* instead of StaticMethods*.
-    NamespaceProxy(LikeMagic::Marshaling::StaticMethods const* methods_, AbstractTypeSystem const& type_system);
+    NamespaceProxy(AbstractClass const* methods_, AbstractTypeSystem const& type_system);
 
 public:
 
-    static AbstractCppObjProxy* create(LikeMagic::Marshaling::StaticMethods const* methods_, AbstractTypeSystem const& type_system);
+    static AbstractCppObjProxy* create(LikeMagic::Marshaling::AbstractClass const* methods_, AbstractTypeSystem const& type_system);
 
     virtual void dispose() const;
     virtual boost::intrusive_ptr<AbstractExpression> get_expr();

@@ -19,6 +19,10 @@ public:
     static std::string ptr_addr_to_str(void* p);
     static void* get_null_ptr();
     static void* get_test_ptr(std::string hex_str);
+    static bool get_true();
+    static bool get_false();
+    static double get_double(double value);
+    static int get_int(int value);
 
     // Instance fields to test member field setting
     void* voidp_field;

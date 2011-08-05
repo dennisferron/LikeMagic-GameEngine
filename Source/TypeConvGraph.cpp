@@ -123,8 +123,7 @@ ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, TypeConvGraph::p_chai
         expr = (*chain)[i]->wrap_expr(expr);
     }
 
-    // TODO:  make this a debug setting
-    std::cout << "Built conv chain: " << expr->description() << std::endl;
+    //std::cout << "Built conv chain: " << expr->description() << std::endl;
 
     return expr;
 }

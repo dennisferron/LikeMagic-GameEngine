@@ -10,6 +10,9 @@
 #include "LikeMagic/NamespacePath.hpp"
 #include "LikeMagic/Marshaling/NamespaceTypeInfo.hpp"
 
+#include <iostream>
+using namespace std;
+
 using namespace LikeMagic;
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Marshaling;

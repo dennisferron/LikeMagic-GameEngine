@@ -378,7 +378,6 @@ void AbstractTypeSystem::add_ptr_convs(TypeIndex index)
     // allow any ptr to be converted to void* or void const*
     add_nochange_conv<void*, void*>(bare->as_ptr(), BetterTypeInfo::create_index<void*>().get_info());
     add_nochange_conv<void const*, void const*>(bare->as_ptr()->as_const_obj_type(), BetterTypeInfo::create_index<void const*>().get_info());
-
 }
 
 void AbstractTypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv)

@@ -7,6 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/Marshaling/ProxyMethods.hpp"
+#include "LikeMagic/SFMO/NamespaceProxy.hpp"
 
 namespace LikeMagic { namespace Marshaling {
 
@@ -17,13 +18,14 @@ ProxyMethods::ProxyMethods(TypeIndex type_, std::string name_, AbstractTypeSyste
 {
 }
 
+
 AbstractCppObjProxy* ProxyMethods::create_class_proxy() const
 {
-    // ProxyMethods is not a class to be instantiated/called directly,
-    // so do not return anything for its class proxy.  Script needs to
-    // check for null/nil.
-    return 0;
+    // LikeMagic requires a proxy of some sort to be attached to script objects
+    // if you want to call LikeMagic methods such as lm_get_type on them.
+    return NamespaceProxy::create(this, type_system);
 }
+
 
 
 }}

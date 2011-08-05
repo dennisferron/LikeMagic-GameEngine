@@ -34,3 +34,24 @@ void* ScriptUtil::get_test_ptr(string hex_str)
     ss >> result;
     return result;
 }
+
+bool ScriptUtil::get_true()
+{
+    return true;
+}
+
+bool ScriptUtil::get_false()
+{
+    return false;
+}
+
+double ScriptUtil::get_double(double value)
+{
+    return value;
+}
+
+int ScriptUtil::get_int(int value)
+{
+    return value;
+}
+

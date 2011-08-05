@@ -49,8 +49,8 @@ io_vm set_onRegisterClass(block(abstract_class,
 
     // Note:  on class_proto can only call new or ProxyMethods.  AbstractClass defines a get_type that overrides the
     // proxy method get_type, so we must use lm_get_type instead.
-
-    writeln("class_proxy LikeMagic type = ", class_proto lm_get_type describe)
+    //writeln("class_proto type = ", class_proto type, " className = ", className)
+    //writeln("class_proto LikeMagic type = ", class_proto lm_get_type describe)
 
     // If the slot already exists, append it to the new object so name lookup will work.
     if (nsObj hasSlot(className),
@@ -86,7 +86,9 @@ io_vm set_onRegisterMethod(block(abstract_class, method_name, call_target,
 
 // Convert LikeMagic::Namespace object to the Io object associated with it.
 find_namespace := method(ns,
+    writeln("find_namespace(", ns to_string, ")")
     if (ns is_root,
+        writeln("namespace ", ns to_string, " is root")
         return Lobby LikeMagic namespace
     ,
         parentNs := find_namespace(ns get_parent)
@@ -127,7 +129,7 @@ print_class_info := method(obj,
 
 print_namespace_tree(LikeMagic namespace, "global", 0)
 
-print_class_info(LikeMagic namespace Irrlicht)
+//print_class_info(LikeMagic namespace Irrlicht)
 
 //Lobby appendProto(LikeMagic)
 //Lobby appendProto(LikeMagic namespace)
