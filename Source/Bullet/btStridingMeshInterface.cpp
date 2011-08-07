@@ -42,6 +42,10 @@ void add_bindings_btStridingMeshInterface(Namespace const& ns_bullet)
     LM_CONSTR(btTriangleIndexVertexMaterialArray,, int, int *, int, int, btScalar *, int, int, unsigned char *, int, int *, int)
     LM_FUNC(btTriangleIndexVertexMaterialArray, (addMaterialProperties)(getLockedMaterialBase)(getLockedReadOnlyMaterialBase))
 */
+
+    LM_CLASS(ns_bullet, btIndexedMesh)
+    LM_CONSTR(btIndexedMesh,,)
+    LM_FIELD(btIndexedMesh, (m_numTriangles)(m_triangleIndexBase)(m_triangleIndexStride)(m_numVertices)(m_vertexBase)(m_vertexStride)(m_indexType)(m_vertexType))
 }
 
 }}

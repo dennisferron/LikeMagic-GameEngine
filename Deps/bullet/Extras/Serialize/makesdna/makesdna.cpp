@@ -130,6 +130,7 @@ typedef unsigned long uintptr_t;
 #include "BulletCollision/CollisionShapes/btConvexHullShape.h"
 #include "BulletCollision/CollisionShapes/btStridingMeshInterface.h"
 #include "BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h"
+#include "BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h"
 #include "BulletCollision/CollisionShapes/btCompoundShape.h"
 #include "BulletCollision/CollisionShapes/btCylinderShape.h"
 #include "BulletCollision/CollisionShapes/btCapsuleShape.h"
@@ -141,10 +142,11 @@ typedef unsigned long uintptr_t;
 #include "BulletDynamics/ConstraintSolver/btHingeConstraint.h"
 #include "BulletDynamics/ConstraintSolver/btConeTwistConstraint.h"
 #include "BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.h"
+#include "BulletDynamics/ConstraintSolver/btGeneric6DofSpringConstraint.h"
 #include "BulletDynamics/ConstraintSolver/btSliderConstraint.h"
 
 #include "BulletDynamics/Dynamics/btRigidBody.h"
-
+#include "BulletSoftBody/btSoftBodyData.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -169,6 +171,7 @@ char *includefiles[] = {
 	"../../../src/BulletCollision/CollisionShapes/btMultiSphereShape.h",
 	"../../../src/BulletCollision/CollisionShapes/btStridingMeshInterface.h",
 	"../../../src/BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h",
+	"../../../src/BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h",
 	"../../../src/BulletCollision/CollisionShapes/btCompoundShape.h",
 	"../../../src/BulletCollision/CollisionShapes/btCylinderShape.h",
 	"../../../src/BulletCollision/CollisionShapes/btCapsuleShape.h",
@@ -182,8 +185,9 @@ char *includefiles[] = {
 	"../../../src/BulletDynamics/ConstraintSolver/btHingeConstraint.h",
 	"../../../src/BulletDynamics/ConstraintSolver/btConeTwistConstraint.h",
 	"../../../src/BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.h",
+	"../../../src/BulletDynamics/ConstraintSolver/btGeneric6DofSpringConstraint.h",
 	"../../../src/BulletDynamics/ConstraintSolver/btSliderConstraint.h",
-	
+	"../../../src/BulletSoftBody/btSoftBodyData.h",	
 	// empty string to indicate end of includefiles
 	""
 };

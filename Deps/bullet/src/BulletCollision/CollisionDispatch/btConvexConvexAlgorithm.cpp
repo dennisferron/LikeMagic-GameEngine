@@ -26,6 +26,8 @@ subject to the following restrictions:
 #include "BulletCollision/CollisionDispatch/btCollisionObject.h"
 #include "BulletCollision/CollisionShapes/btConvexShape.h"
 #include "BulletCollision/CollisionShapes/btCapsuleShape.h"
+#include "BulletCollision/CollisionShapes/btTriangleShape.h"
+
 
 
 #include "BulletCollision/NarrowPhaseCollision/btGjkPairDetector.h"
@@ -48,7 +50,7 @@ subject to the following restrictions:
 
 #include "BulletCollision/NarrowPhaseCollision/btGjkEpa2.h"
 #include "BulletCollision/NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.h"
-
+#include "BulletCollision/NarrowPhaseCollision/btPolyhedralContactClipping.h"
 
 
 ///////////
@@ -331,6 +333,8 @@ void btConvexConvexAlgorithm ::processCollision (btCollisionObject* body0,btColl
 #endif //BT_DISABLE_CAPSULE_CAPSULE_COLLIDER
 
 
+
+
 #ifdef USE_SEPDISTANCE_UTIL2
 	if (dispatchInfo.m_useConvexConservativeDistanceUtil)
 	{
@@ -357,13 +361,14 @@ void btConvexConvexAlgorithm ::processCollision (btCollisionObject* body0,btColl
 	} else
 #endif //USE_SEPDISTANCE_UTIL2
 	{
-		if (dispatchInfo.m_convexMaxDistanceUseCPT)
-		{
-			input.m_maximumDistanceSquared = min0->getMargin() + min1->getMargin() + m_manifoldPtr->getContactProcessingThreshold();
-		} else
-		{
-			input.m_maximumDistanceSquared = min0->getMargin() + min1->getMargin() + m_manifoldPtr->getContactBreakingThreshold();
-		}
+		//if (dispatchInfo.m_convexMaxDistanceUseCPT)
+		//{
+		//	input.m_maximumDistanceSquared = min0->getMargin() + min1->getMargin() + m_manifoldPtr->getContactProcessingThreshold();
+		//} else
+		//{
+		input.m_maximumDistanceSquared = min0->getMargin() + min1->getMargin() + m_manifoldPtr->getContactBreakingThreshold();
+//		}
+
 		input.m_maximumDistanceSquared*= input.m_maximumDistanceSquared;
 	}
 
@@ -371,7 +376,7 @@ void btConvexConvexAlgorithm ::processCollision (btCollisionObject* body0,btColl
 	input.m_transformA = body0->getWorldTransform();
 	input.m_transformB = body1->getWorldTransform();
 
-	gjkPairDetector.getClosestPoints(input,*resultOut,dispatchInfo.m_debugDraw);
+
 
 	
 
@@ -388,6 +393,100 @@ void btConvexConvexAlgorithm ::processCollision (btCollisionObject* body0,btColl
 		}
 	}
 #endif //USE_SEPDISTANCE_UTIL2
+
+	if (min0->isPolyhedral() && min1->isPolyhedral())
+	{
+
+
+		struct btDummyResult : public btDiscreteCollisionDetectorInterface::Result
+		{
+			virtual void setShapeIdentifiersA(int partId0,int index0){}
+			virtual void setShapeIdentifiersB(int partId1,int index1){}
+			virtual void addContactPoint(const btVector3& normalOnBInWorld,const btVector3& pointInWorld,btScalar depth) 
+			{
+			}
+		};
+		
+		btDummyResult dummy;
+
+
+		btPolyhedralConvexShape* polyhedronA = (btPolyhedralConvexShape*) min0;
+		btPolyhedralConvexShape* polyhedronB = (btPolyhedralConvexShape*) min1;
+		if (polyhedronA->getConvexPolyhedron() && polyhedronB->getConvexPolyhedron())
+		{
+
+
+			gjkPairDetector.getClosestPoints(input,dummy,dispatchInfo.m_debugDraw);
+			
+
+			btScalar threshold = m_manifoldPtr->getContactBreakingThreshold();
+
+			btScalar minDist = 0.f;
+			btVector3 sepNormalWorldSpace;
+			bool foundSepAxis  = true;
+
+			if (dispatchInfo.m_enableSatConvex)
+			{
+				foundSepAxis = btPolyhedralContactClipping::findSeparatingAxis(
+					*polyhedronA->getConvexPolyhedron(), *polyhedronB->getConvexPolyhedron(),
+					body0->getWorldTransform(), 
+					body1->getWorldTransform(),
+					sepNormalWorldSpace);
+			} else
+			{
+				sepNormalWorldSpace = gjkPairDetector.getCachedSeparatingAxis().normalized();
+				minDist = gjkPairDetector.getCachedSeparatingDistance();
+			}
+			if (foundSepAxis)
+			{
+//				printf("sepNormalWorldSpace=%f,%f,%f\n",sepNormalWorldSpace.getX(),sepNormalWorldSpace.getY(),sepNormalWorldSpace.getZ());
+
+				btPolyhedralContactClipping::clipHullAgainstHull(sepNormalWorldSpace, *polyhedronA->getConvexPolyhedron(), *polyhedronB->getConvexPolyhedron(),
+					body0->getWorldTransform(), 
+					body1->getWorldTransform(), minDist-threshold, threshold, *resultOut);
+ 				
+			}
+			if (m_ownManifold)
+			{
+				resultOut->refreshContactPoints();
+			}
+			return;
+
+		} else
+		{
+			//we can also deal with convex versus triangle (without connectivity data)
+			if (polyhedronA->getConvexPolyhedron() && polyhedronB->getShapeType()==TRIANGLE_SHAPE_PROXYTYPE)
+			{
+				gjkPairDetector.getClosestPoints(input,dummy,dispatchInfo.m_debugDraw);
+		
+				btVector3 sepNormalWorldSpace = gjkPairDetector.getCachedSeparatingAxis().normalized();
+
+				btVertexArray vertices;
+				btTriangleShape* tri = (btTriangleShape*)polyhedronB;
+				vertices.push_back(	body1->getWorldTransform()*tri->m_vertices1[0]);
+				vertices.push_back(	body1->getWorldTransform()*tri->m_vertices1[1]);
+				vertices.push_back(	body1->getWorldTransform()*tri->m_vertices1[2]);
+
+				btScalar threshold = m_manifoldPtr->getContactBreakingThreshold();
+				btScalar minDist = gjkPairDetector.getCachedSeparatingDistance();
+				btPolyhedralContactClipping::clipFaceAgainstHull(sepNormalWorldSpace, *polyhedronA->getConvexPolyhedron(), 
+					body0->getWorldTransform(), vertices, minDist-threshold, threshold, *resultOut);
+				
+				
+				if (m_ownManifold)
+				{
+					resultOut->refreshContactPoints();
+				}
+				
+				return;
+			}
+			
+		}
+
+
+	}
+	
+	gjkPairDetector.getClosestPoints(input,*resultOut,dispatchInfo.m_debugDraw);
 
 	//now perform 'm_numPerturbationIterations' collision queries with the perturbated collision objects
 	

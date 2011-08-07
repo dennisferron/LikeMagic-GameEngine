@@ -22,7 +22,7 @@ subject to the following restrictions:
 #include "btSoftBodyHelpers.h"
 #include "btSoftBodySolvers.h"
 #include "btDefaultSoftBodySolver.h"
-
+#include "LinearMath/btSerializer.h"
 
 
 btSoftRigidDynamicsWorld::btSoftRigidDynamicsWorld(
@@ -51,6 +51,15 @@ btSoftRigidDynamicsWorld::btSoftRigidDynamicsWorld(
 	m_sbi.m_sparsesdf.Initialize();
 	m_sbi.m_sparsesdf.Reset();
 
+	m_sbi.air_density		=	(btScalar)1.2;
+	m_sbi.water_density	=	0;
+	m_sbi.water_offset		=	0;
+	m_sbi.water_normal		=	btVector3(0,0,0);
+	m_sbi.m_gravity.setValue(0,-10,0);
+
+	m_sbi.m_sparsesdf.Initialize();
+
+
 }
 
 btSoftRigidDynamicsWorld::~btSoftRigidDynamicsWorld()
@@ -73,13 +82,14 @@ void	btSoftRigidDynamicsWorld::predictUnconstraintMotion(btScalar timeStep)
 
 void	btSoftRigidDynamicsWorld::internalSingleStepSimulation( btScalar timeStep )
 {
+
+	// Let the solver grab the soft bodies and if necessary optimize for it
+	m_softBodySolver->optimize( getSoftBodyArray() );
+
 	if( !m_softBodySolver->checkInitialized() )
 	{
 		btAssert( "Solver initialization failed\n" );
 	}
-
-	// Let the solver grab the soft bodies and if necessary optimize for it
-	m_softBodySolver->optimize( getSoftBodyArray() );
 
 	btDiscreteDynamicsWorld::internalSingleStepSimulation( timeStep );
 
@@ -119,6 +129,10 @@ void	btSoftRigidDynamicsWorld::addSoftBody(btSoftBody* body,short int collisionF
 {
 	m_softBodies.push_back(body);
 
+	// Set the soft body solver that will deal with this body
+	// to be the world's solver
+	body->setSoftBodySolver( m_softBodySolver );
+
 	btCollisionWorld::addCollisionObject(body,
 		collisionFilterGroup,
 		collisionFilterMask);
@@ -151,8 +165,12 @@ void	btSoftRigidDynamicsWorld::debugDrawWorld()
 		for (  i=0;i<this->m_softBodies.size();i++)
 		{
 			btSoftBody*	psb=(btSoftBody*)this->m_softBodies[i];
-			btSoftBodyHelpers::DrawFrame(psb,m_debugDrawer);
-			btSoftBodyHelpers::Draw(psb,m_debugDrawer,m_drawFlags);
+			if (getDebugDrawer() && getDebugDrawer()->getDebugMode() & (btIDebugDraw::DBG_DrawWireframe))
+			{
+				btSoftBodyHelpers::DrawFrame(psb,m_debugDrawer);
+				btSoftBodyHelpers::Draw(psb,m_debugDrawer,m_drawFlags);
+			}
+			
 			if (m_debugDrawer && (m_debugDrawer->getDebugMode() & btIDebugDraw::DBG_DrawAabb))
 			{
 				if(m_drawNodeTree)		btSoftBodyHelpers::DrawNodeTree(psb,m_debugDrawer);
@@ -303,3 +321,38 @@ void	btSoftRigidDynamicsWorld::rayTestSingle(const btTransform& rayFromTrans,con
 		btCollisionWorld::rayTestSingle(rayFromTrans,rayToTrans,collisionObject,collisionShape,colObjWorldTransform,resultCallback);
 	}
 }
+
+
+void	btSoftRigidDynamicsWorld::serializeSoftBodies(btSerializer* serializer)
+{
+	int i;
+	//serialize all collision objects
+	for (i=0;i<m_collisionObjects.size();i++)
+	{
+		btCollisionObject* colObj = m_collisionObjects[i];
+		if (colObj->getInternalType() & btCollisionObject::CO_SOFT_BODY)
+		{
+			int len = colObj->calculateSerializeBufferSize();
+			btChunk* chunk = serializer->allocate(len,1);
+			const char* structType = colObj->serialize(chunk->m_oldPtr, serializer);
+			serializer->finalizeChunk(chunk,structType,BT_SOFTBODY_CODE,colObj);
+		}
+	}
+
+}
+
+void	btSoftRigidDynamicsWorld::serialize(btSerializer* serializer)
+{
+
+	serializer->startSerialization();
+
+	serializeSoftBodies(serializer);
+
+	serializeRigidBodies(serializer);
+
+	serializeCollisionObjects(serializer);
+
+	serializer->finishSerialization();
+}
+
+

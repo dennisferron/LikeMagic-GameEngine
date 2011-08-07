@@ -540,7 +540,9 @@ void	DemoApplication::setShootBoxShape ()
 {
 	if (!m_shootBoxShape)
 	{
-		m_shootBoxShape = new btBoxShape(btVector3(.5f,.5f,.5f));
+		btBoxShape* box = new btBoxShape(btVector3(.5f,.5f,.5f));
+		box->initializePolyhedralFeatures();
+		m_shootBoxShape = box;
 	}
 }
 
@@ -569,8 +571,11 @@ void	DemoApplication::shootBox(const btVector3& destination)
 		body->getWorldTransform().setRotation(btQuaternion(0,0,0,1));
 		body->setLinearVelocity(linVel);
 		body->setAngularVelocity(btVector3(0,0,0));
-		body->setCcdMotionThreshold(1.);
-		body->setCcdSweptSphereRadius(0.2f);
+		body->setCcdMotionThreshold(0.5);
+		body->setCcdSweptSphereRadius(0.9f);
+//		printf("shootBox uid=%d\n", body->getBroadphaseHandle()->getUid());
+//		printf("camPos=%f,%f,%f\n",camPos.getX(),camPos.getY(),camPos.getZ());
+//		printf("destination=%f,%f,%f\n",destination.getX(),destination.getY(),destination.getZ());
 		
 	}
 }
@@ -851,19 +856,7 @@ void DemoApplication::mouseFunc(int button, int state, int x, int y)
 
 			} else
 			{
-
-				if (m_pickConstraint && m_dynamicsWorld)
-				{
-					m_dynamicsWorld->removeConstraint(m_pickConstraint);
-					delete m_pickConstraint;
-					//printf("removed constraint %i",gPickingConstraintId);
-					m_pickConstraint = 0;
-					pickedBody->forceActivationState(ACTIVE_TAG);
-					pickedBody->setDeactivationTime( 0.f );
-					pickedBody = 0;
-				}
-
-
+				removePickingConstraint();
 			}
 
 			break;
@@ -874,6 +867,20 @@ void DemoApplication::mouseFunc(int button, int state, int x, int y)
 		}
 	}
 
+}
+
+void DemoApplication::removePickingConstraint()
+{
+	if (m_pickConstraint && m_dynamicsWorld)
+	{
+		m_dynamicsWorld->removeConstraint(m_pickConstraint);
+		delete m_pickConstraint;
+		//printf("removed constraint %i",gPickingConstraintId);
+		m_pickConstraint = 0;
+		pickedBody->forceActivationState(ACTIVE_TAG);
+		pickedBody->setDeactivationTime( 0.f );
+		pickedBody = 0;
+	}
 }
 
 void	DemoApplication::mouseMotionFunc(int x,int y)
@@ -1103,7 +1110,7 @@ void DemoApplication::showProfileInfo(int& xOffset,int& yStart, int yIncr)
 			sprintf(blockTime,"--- Profiling: %s (total running time: %.3f ms) ---",	m_profileIterator->Get_Current_Parent_Name(), parent_time );
 			displayProfileString(xOffset,yStart,blockTime);
 			yStart += yIncr;
-			sprintf(blockTime,"press number (1,2...) to display child timings, or 0 to go up to parent" );
+			sprintf(blockTime,"press (1,2...) to display child timings, or 0 for parent" );
 			displayProfileString(xOffset,yStart,blockTime);
 			yStart += yIncr;
 
@@ -1316,7 +1323,7 @@ void DemoApplication::renderme()
 			resetPerspectiveProjection();
 		}
 
-		glEnable(GL_LIGHTING);
+		glDisable(GL_LIGHTING);
 
 
 	}
@@ -1330,6 +1337,8 @@ void DemoApplication::renderme()
 
 void	DemoApplication::clientResetScene()
 {
+	removePickingConstraint();
+
 #ifdef SHOW_NUM_DEEP_PENETRATIONS
 	gNumDeepPenetrationChecks = 0;
 	gNumGjkChecks = 0;
@@ -1341,6 +1350,11 @@ void	DemoApplication::clientResetScene()
 
 	if (m_dynamicsWorld)
 	{
+		int numConstraints = m_dynamicsWorld->getNumConstraints();
+		for (i=0;i<numConstraints;i++)
+		{
+			m_dynamicsWorld->getConstraint(0)->setEnabled(true);
+		}
 		numObjects = m_dynamicsWorld->getNumCollisionObjects();
 	
 		///create a copy of the array, not a reference!

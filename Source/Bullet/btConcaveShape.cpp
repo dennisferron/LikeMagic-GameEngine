@@ -7,6 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "btBulletDynamicsCommon.h"
+#include "BulletCollision/CollisionShapes/btMultimaterialTriangleMeshShape.h"
 
 #include "LikeMagic/Utility/UserMacros.hpp"
 
@@ -30,19 +31,17 @@ void add_bindings_btConcaveShape(Namespace const& ns_bullet)
 
     LM_CLASS(ns_bullet, btBvhTriangleMeshShape)
     LM_BASE(btBvhTriangleMeshShape, btCollisionShape)
-    LM_CONSTR(btBvhTriangleMeshShape,, )
     LM_CONSTR(btBvhTriangleMeshShape,, btStridingMeshInterface *, bool, bool)
     LM_CONSTR(btBvhTriangleMeshShape,, btStridingMeshInterface *, bool, const btVector3 &, const btVector3 &, bool)
     LM_FUNC(btBvhTriangleMeshShape, (getOwnsBvh)(performRaycast)(performConvexcast)(processAllTriangles)(refitTree)(partialRefitTree)(getOptimizedBvh)(setOptimizedBvh)(buildOptimizedBvh)(usesQuantizedAabbCompression))
 
-/*  Not in this version of bullet ?
     LM_CLASS(ns_bullet, btMultimaterialTriangleMeshShape)
     LM_BASE(btMultimaterialTriangleMeshShape, btBvhTriangleMeshShape)
-    LM_CONSTR(btMultimaterialTriangleMeshShape,, )
     LM_CONSTR(btMultimaterialTriangleMeshShape,, btStridingMeshInterface*, bool, bool)
     LM_CONSTR(btMultimaterialTriangleMeshShape,, btStridingMeshInterface*, bool, const btVector3 &, const btVector3 &, bool)
     LM_FUNC(btMultimaterialTriangleMeshShape, (getMaterialProperties))
-*/
+
+    LM_ENUM(ns_bullet, PHY_ScalarType)
 }
 
 }}

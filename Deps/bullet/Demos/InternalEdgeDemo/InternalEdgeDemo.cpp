@@ -12,7 +12,7 @@ subject to the following restrictions:
 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-
+#include "GLDebugFont.h"
 
 
 //#define SHIFT_INDICES 1
@@ -25,9 +25,10 @@ bool enable=true;
 #endif
 
 
+
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/CollisionDispatch/btInternalEdgeUtility.h"
-
+#include "Taru.mdl"
 
 #include "LinearMath/btIDebugDraw.h"
 #include "GLDebugDrawer.h"
@@ -342,23 +343,23 @@ void	InternalEdgeDemo::initPhysics()
 #endif //USE_TRIMESH_SHAPE
 
 	m_collisionConfiguration = new btDefaultCollisionConfiguration();
-	m_collisionConfiguration->setConvexConvexMultipointIterations(10,5);
-
+	
 
 	m_dispatcher = new	btCollisionDispatcher(m_collisionConfiguration);
 
 
-	btVector3 worldMin(-1000,-1000,-1000);
-	btVector3 worldMax(1000,1000,1000);
-	m_broadphase = new btAxisSweep3(worldMin,worldMax);
+	
+	m_broadphase = new btDbvtBroadphase();
 	m_solver = new btSequentialImpulseConstraintSolver();
 	m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher,m_broadphase,m_solver,m_collisionConfiguration);
-	m_dynamicsWorld->getSolverInfo().m_splitImpulse = true;
+/*
+m_dynamicsWorld->getSolverInfo().m_splitImpulse = true;
 	m_dynamicsWorld->getSolverInfo().m_splitImpulsePenetrationThreshold = 1e30f;
 	m_dynamicsWorld->getSolverInfo().m_maxErrorReduction = 1e30f;
 	m_dynamicsWorld->getSolverInfo().m_erp  =1.f;
 	m_dynamicsWorld->getSolverInfo().m_erp2 = 1.f;
-	
+*/
+
 	m_dynamicsWorld->setGravity(btVector3(0,-10,0));
 
 	
@@ -367,21 +368,39 @@ void	InternalEdgeDemo::initPhysics()
 	startTransform.setIdentity();
 	startTransform.setOrigin(btVector3(0,-2,0));
 
-	btCollisionShape* colShape = new btBoxShape(btVector3(1,1,1));
-	//colShape->setMargin(0.f);
-	colShape->setMargin(0.1f);
 
+	btConvexHullShape* colShape = new btConvexHullShape();
+	for (int i=0;i<TaruVtxCount;i++)
+	{
+		btVector3 vtx(TaruVtx[i*3],TaruVtx[i*3+1],TaruVtx[i*3+2]);
+		colShape->addPoint(vtx);
+	}
+	//this will enable polyhedral contact clipping, better quality, slightly slower
+	colShape->initializePolyhedralFeatures();
+
+	//the polyhedral contact clipping can use either GJK or SAT test to find the separating axis
+	m_dynamicsWorld->getDispatchInfo().m_enableSatConvex=false;
 
 	m_collisionShapes.push_back(colShape);
 
 	{
 		for (int i=0;i<1;i++)
 		{
-			startTransform.setOrigin(btVector3(-10.f+i*3.f,1.f+btScalar(i)*0.1f,-1.3f));
-			btRigidBody* body = localCreateRigidBody(100, startTransform,colShape);
+			startTransform.setOrigin(btVector3(-10.f+i*3.f,2.2f+btScalar(i)*0.1f,-1.3f));
+			btRigidBody* body = localCreateRigidBody(10, startTransform,colShape);
 			body->setActivationState(DISABLE_DEACTIVATION);
 			body->setLinearVelocity(btVector3(0,0,-1));
+			//body->setContactProcessingThreshold(0.f);
 		}
+	}
+	{
+		btBoxShape* colShape = new btBoxShape(btVector3(1,1,1));
+		colShape->initializePolyhedralFeatures();
+		m_collisionShapes.push_back(colShape);
+		startTransform.setOrigin(btVector3(-16.f+i*3.f,1.f+btScalar(i)*0.1f,-1.3f));
+		btRigidBody* body = localCreateRigidBody(10, startTransform,colShape);
+		body->setActivationState(DISABLE_DEACTIVATION);
+		body->setLinearVelocity(btVector3(0,0,-1));
 	}
 
 	startTransform.setIdentity();
@@ -399,6 +418,8 @@ void	InternalEdgeDemo::initPhysics()
 	staticBody->setCollisionFlags(staticBody->getCollisionFlags()  | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
 	getDynamicsWorld()->setDebugDrawer(&gDebugDrawer);
+	setDebugMode(btIDebugDraw::DBG_DrawText|btIDebugDraw::DBG_NoHelpText+btIDebugDraw::DBG_DrawWireframe+btIDebugDraw::DBG_DrawContactPoints);
+
 
 #ifdef BT_INTERNAL_EDGE_DEBUG_DRAW
 	btSetDebugDrawer(&gDebugDrawer);
@@ -468,8 +489,9 @@ void InternalEdgeDemo::clientMoveAndDisplay()
 	
 #endif
 
-		//clear all contact points involving mesh proxy. Note: this is a slow/unoptimized operation.
-		m_dynamicsWorld->getBroadphase()->getOverlappingPairCache()->cleanProxyFromPairs(staticBody->getBroadphaseHandle(),getDynamicsWorld()->getDispatcher());
+		
+		//for debugging: clear all contact points involving mesh proxy. Note: this is a slow/unoptimized operation.
+		//m_dynamicsWorld->getBroadphase()->getOverlappingPairCache()->cleanProxyFromPairs(staticBody->getBroadphaseHandle(),getDynamicsWorld()->getDispatcher());
 	}
 
 
@@ -480,11 +502,44 @@ void InternalEdgeDemo::clientMoveAndDisplay()
 	//m_dynamicsWorld->stepSimulation(1./60.,100,1./800.);
 	//m_dynamicsWorld->stepSimulation(1./60.,0);
 
-	//optional but useful: debug drawing
-	m_dynamicsWorld->debugDrawWorld();
+	
+	int lineWidth=450;
+	int xStart = m_glutScreenWidth - lineWidth;
+	int yStart = 20;
+
+	if((getDebugMode() & btIDebugDraw::DBG_DrawText)!=0)
+	{
+		setOrthographicProjection();
+		glDisable(GL_LIGHTING);
+		glColor3f(0, 0, 0);
+		char buf[124];
+		
+		glRasterPos3f(xStart, yStart, 0);
+		if (enable)
+		{
+			sprintf(buf,"InternalEdgeUtility enabled");
+		} else
+		{
+			sprintf(buf,"InternalEdgeUtility disabled");
+		}
+		GLDebugDrawString(xStart,20,buf);
+		yStart+=20;
+		glRasterPos3f(xStart, yStart, 0);
+		sprintf(buf,"Press 'n' to toggle InternalEdgeUtility");
+		yStart+=20;
+		GLDebugDrawString(xStart,yStart,buf);
+		glRasterPos3f(xStart, yStart, 0);
+		
+		resetPerspectiveProjection();
+		glEnable(GL_LIGHTING);
+	}
 
 	
 	renderme();
+
+	//optional but useful: debug drawing
+	m_dynamicsWorld->debugDrawWorld();
+
 
     glFlush();
     swapBuffers();

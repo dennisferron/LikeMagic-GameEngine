@@ -1,11 +1,20 @@
-#ifndef TYPE_DEFINITIONS_H
-#define TYPE_DEFINITIONS_H
+#ifndef BT_TYPE_DEFINITIONS_H
+#define BT_TYPE_DEFINITIONS_H
 
 ///This file provides some platform/compiler checks for common definitions
 #include "LinearMath/btScalar.h"
 #include "LinearMath/btMinMax.h"
 
+#ifdef PFX_USE_FREE_VECTORMATH
+#include "physics_effects/base_level/base/pfx_vectormath_include.win32.h"
+typedef Vectormath::Aos::Vector3    vmVector3;
+typedef Vectormath::Aos::Quat       vmQuat;
+typedef Vectormath::Aos::Matrix3    vmMatrix3;
+typedef Vectormath::Aos::Transform3 vmTransform3;
+typedef Vectormath::Aos::Point3     vmPoint3;
+#else
 #include "vectormath/vmInclude.h"
+#endif//PFX_USE_FREE_VECTORMATH
 
 
 
@@ -27,11 +36,11 @@ typedef union
 
 		typedef unsigned char     uint8_t;
 #ifndef __PHYSICS_COMMON_H__
-#ifndef __PFX_COMMON_H__
+#ifndef PFX_USE_FREE_VECTORMATH
 #ifndef __BT_SKIP_UINT64_H
 		typedef unsigned long int uint64_t;
 #endif //__BT_SKIP_UINT64_H
-#endif //__PFX_COMMON_H__
+#endif //PFX_USE_FREE_VECTORMATH
 		typedef unsigned int      uint32_t;
 #endif //__PHYSICS_COMMON_H__
 		typedef unsigned short    uint16_t;
@@ -84,7 +93,7 @@ typedef union
 /* Included here because we need uint*_t typedefs */
 #include "PpuAddressSpace.h"
 
-#endif //TYPE_DEFINITIONS_H
+#endif //BT_TYPE_DEFINITIONS_H
 
 
 

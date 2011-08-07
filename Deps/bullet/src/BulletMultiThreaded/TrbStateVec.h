@@ -14,11 +14,15 @@ subject to the following restrictions:
 
 */
 
-#ifndef __TRBSTATEVEC_H__
-#define __TRBSTATEVEC_H__
+#ifndef BT_TRBSTATEVEC_H__
+#define BT_TRBSTATEVEC_H__
 
 #include <stdlib.h>
+#ifdef PFX_USE_FREE_VECTORMATH
+#include "vecmath/vmInclude.h"
+#else
 #include "vectormath/vmInclude.h"
+#endif //PFX_USE_FREE_VECTORMATH
 
 
 #include "PlatformDefinitions.h"
@@ -330,5 +334,6 @@ void TrbState::reset()
 	angularDamping = 0.99f;
 }
 
-#endif /* __TRBSTATEVEC_H__ */
+#endif //BT_TRBSTATEVEC_H__
+
 

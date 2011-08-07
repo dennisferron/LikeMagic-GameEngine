@@ -65,6 +65,7 @@ class BasicDemo : public PlatformDemoApplication
 	virtual void clientMoveAndDisplay();
 
 	virtual void displayCallback();
+	virtual void	clientResetScene();
 	
 	static DemoApplication* Create()
 	{

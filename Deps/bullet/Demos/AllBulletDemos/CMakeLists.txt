@@ -41,7 +41,7 @@ SET(AllBulletDemos_SRCS
   ../ConcaveConvexcastDemo/ConcaveConvexcastDemo.cpp
   ../ConvexDecompositionDemo/ConvexDecompositionDemo.cpp
   ../SliderConstraintDemo/SliderConstraintDemo.cpp
-	../RagdollDemo/RagdollDemo.cpp
+  ../RagdollDemo/RagdollDemo.cpp
   ../GimpactTestDemo/GimpactTestDemo.cpp
   ../Raytracer/Raytracer.cpp
   ../GjkConvexCastDemo/LinearConvexCastDemo.cpp

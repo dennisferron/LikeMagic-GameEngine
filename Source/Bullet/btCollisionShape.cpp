@@ -67,9 +67,14 @@ void add_bindings_btCollisionShape(Namespace const& ns_bullet)
     LM_CLASS(ns_bullet, btCompoundShape)
     LM_BASE(btCompoundShape, btCollisionShape)
     LM_CONSTR(btCompoundShape,, bool)
-    LM_FUNC(btCompoundShape, (addChildShape)(calculateLocalInertia)(calculatePrincipalAxisTransform)(calculateSerializeBufferSize)
-            (getAabb)(getChildList)(getDynamicAabbTree)(getLocalScaling)(getMargin)(getName)(getNumChildShapes)(getUpdateRevision)
-            (recalculateLocalAabb)(removeChildShape)(removeChildShapeByIndex)(serialize)(setLocalScaling)(setMargin)(updateChildTransform))
+    LM_FUNC(btCompoundShape, (addChildShape)(calculateLocalInertia)(calculatePrincipalAxisTransform)(calculateSerializeBufferSize))
+    LM_FUNC(btCompoundShape, (getAabb)(getChildList))
+
+    LM_FUNC_OVERLOAD_BOTH(btCompoundShape, getDynamicAabbTree, btDbvt*)
+
+    LM_FUNC(btCompoundShape, (getLocalScaling)(getMargin))
+    LM_FUNC(btCompoundShape, (getName)(getNumChildShapes)(getUpdateRevision))
+    LM_FUNC(btCompoundShape, (recalculateLocalAabb)(removeChildShape)(removeChildShapeByIndex)(serialize)(setLocalScaling)(setMargin)(updateChildTransform))
 
     LM_FUNC_OVERLOAD_BOTH(btCompoundShape, getChildShape, btCollisionShape*, int)
     LM_FUNC_OVERLOAD_BOTH(btCompoundShape, getChildTransform, btTransform&, int)

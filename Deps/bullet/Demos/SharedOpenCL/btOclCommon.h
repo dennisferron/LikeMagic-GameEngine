@@ -20,7 +20,7 @@ subject to the following restrictions:
 #ifdef USE_MINICL
 	#include <MiniCL/cl.h>
 #else
-	#include <MiniCL/cl.h>
+	#include <OpenCL/cl.h>
 #endif
 #else
 	#ifdef USE_MINICL
@@ -34,7 +34,10 @@ subject to the following restrictions:
 class btOclCommon
 {
 public:
-	static cl_context createContextFromType(cl_device_type deviceType, cl_int* pErrNum);
+	// CL Context optionally takes a GL context. This is a generic type because we don't really want this code
+	// to have to understand GL types.
+	// It is a HGLRC in _WIN32 or a GLXContext otherwise.
+	static cl_context createContextFromType(cl_device_type deviceType, cl_int* pErrNum, void* pGLCtx = 0, void* pGLDC = 0);
 };
 
 

@@ -13,7 +13,7 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <stdio.h>
+
 
 #include "clstuff.h"
 #include "gl_win.h"
@@ -22,24 +22,50 @@ subject to the following restrictions:
 #include "btOclCommon.h"
 #include "btOclUtils.h"
 #include "LinearMath/btScalar.h"
+#include <stdio.h>
 
 cl_context			g_cxMainContext;
 cl_device_id		g_cdDevice;
 cl_command_queue	g_cqCommandQue;
 
-void initCL(void)
+void initCL( void* glCtx, void* glDC )
 {
 	int ciErrNum = 0;
-    //g_cxMainContext = btOclCommon::createContextFromType(CL_DEVICE_TYPE_ALL, &ciErrNum);
-	//g_cxMainContext = btOclCommon::createContextFromType(CL_DEVICE_TYPE_GPU, &ciErrNum);
-	//g_cxMainContext = btOclCommon::createContextFromType(CL_DEVICE_TYPE_CPU, &ciErrNum);
-	//try CL_DEVICE_TYPE_DEBUG for sequential, non-threaded execution, when using MiniCL on CPU, it gives a full callstack at the crash in the kernel
-//#ifdef USE_MINICL
-//	g_cxMainContext = btOclCommon::createContextFromType(CL_DEVICE_TYPE_DEBUG, &ciErrNum);
-//#else
-	g_cxMainContext = btOclCommon::createContextFromType(CL_DEVICE_TYPE_ALL, &ciErrNum);
-//#endif
+
+#if defined(CL_PLATFORM_MINI_CL)
+	cl_device_type deviceType = CL_DEVICE_TYPE_CPU;//or use CL_DEVICE_TYPE_DEBUG to debug MiniCL
+#elif defined(CL_PLATFORM_AMD)
+	cl_device_type deviceType = CL_DEVICE_TYPE_GPU;
+#elif defined(CL_PLATFORM_NVIDIA)
+	cl_device_type deviceType = CL_DEVICE_TYPE_GPU;
+#else
+#ifdef __APPLE__
+	cl_device_type deviceType = CL_DEVICE_TYPE_GPU;
+#else
+	cl_device_type deviceType = CL_DEVICE_TYPE_CPU;//CL_DEVICE_TYPE_ALL
+#endif//__APPLE__
+#endif
 	
+	g_cxMainContext = btOclCommon::createContextFromType(deviceType, &ciErrNum, glCtx, glDC);
+	
+	switch (deviceType)
+	{
+		case CL_DEVICE_TYPE_GPU:
+			printf("createContextFromType(CL_DEVICE_TYPE_GPU)\n");
+			break;
+		case CL_DEVICE_TYPE_CPU:
+			printf("createContextFromType(CL_DEVICE_TYPE_CPU)\n");
+			break;
+		case CL_DEVICE_TYPE_ALL:
+			printf("createContextFromType(CL_DEVICE_TYPE_ALL)\n");
+			break;
+			
+		default:
+			printf("createContextFromType(unknown device type %d\n",deviceType);
+	};	
+
+	//#endif
+
 
 	
 	oclCHECKERROR(ciErrNum, CL_SUCCESS);

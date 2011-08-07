@@ -20,22 +20,7 @@ subject to the following restrictions:
 #include "GL_ShapeDrawer.h"
 #include "GlutStuff.h"
 
-//#define BATCH_RAYCASTER
-
-#ifdef BATCH_RAYCASTER
-#include "BulletMultiThreaded/SpuBatchRaycaster.h"
-static SpuBatchRaycaster* gBatchRaycaster = NULL;
-
-
-#ifdef USE_LIBSPE2
-#include "BulletMultiThreaded/SpuLibspe2Support.h"
-#elif defined (_WIN32)
-#include "BulletMultiThreaded/Win32ThreadSupport.h"
-#else
-//other platforms run the parallel code sequentially (until pthread support or other parallel implementation is added)
-#include "BulletMultiThreaded/SequentialThreadSupport.h"
-#endif //USE_LIBSPE2
-#endif //BATCH_RAYCASTER
+static GLDebugDrawer sDebugDraw;
 
 static btVector3*	gVertices=0;
 static int*	gIndices=0;
@@ -290,6 +275,7 @@ void ConcaveRaycastDemo::keyboardCallback(unsigned char key, int x, int y)
 
 void	ConcaveRaycastDemo::initPhysics()
 {
+	
 	#define TRISIZE 10.f
 
 
@@ -346,7 +332,8 @@ void	ConcaveRaycastDemo::initPhysics()
 	m_broadphase = new btAxisSweep3(worldMin,worldMax);
 	m_solver = new btSequentialImpulseConstraintSolver();
 	m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher,m_broadphase,m_solver,m_collisionConfiguration);
-
+	m_dynamicsWorld->getSolverInfo().m_splitImpulse=true;
+	m_dynamicsWorld->setDebugDrawer(&sDebugDraw);
 	
 	float mass = 0.f;
 	btTransform	startTransform;
@@ -387,6 +374,11 @@ int maxNumOutstandingTasks = 4;
 
 	raycastBar = btRaycastBar (4000.0, 0.0);
 	//raycastBar = btRaycastBar (true, 40.0, -50.0, 50.0);
+
+
+
+
+	
 }
 
 void ConcaveRaycastDemo::clientMoveAndDisplay()
@@ -411,7 +403,7 @@ void ConcaveRaycastDemo::clientMoveAndDisplay()
 		m_dynamicsWorld->getBroadphase()->getOverlappingPairCache()->cleanProxyFromPairs(staticBody->getBroadphaseHandle(),getDynamicsWorld()->getDispatcher());
 	}
 
-	m_dynamicsWorld->stepSimulation(dt);
+	m_dynamicsWorld->stepSimulation(1./60.,0);
 	
 	//optional but useful: debug drawing
 	m_dynamicsWorld->debugDrawWorld();
@@ -432,6 +424,10 @@ void ConcaveRaycastDemo::displayCallback(void) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 
+	//optional but useful: debug drawing
+	if (m_dynamicsWorld)
+		m_dynamicsWorld->debugDrawWorld();
+	
 	renderme();
 	raycastBar.draw ();
     glFlush();

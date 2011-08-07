@@ -13,7 +13,6 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-//#define TEST_SERIALIZATION 1
 
 ///create 125 (5x5x5) dynamic object
 #define ARRAY_SIZE_X 5
@@ -33,9 +32,6 @@ subject to the following restrictions:
 #include "GlutStuff.h"
 ///btBulletDynamicsCommon.h is the main Bullet include file, contains most common include files.
 #include "btBulletDynamicsCommon.h"
-#ifdef TEST_SERIALIZATION
-#include "LinearMath/btSerializer.h"
-#endif //TEST_SERIALIZATION
 
 #include <stdio.h> //printf debugging
 
@@ -104,7 +100,7 @@ void	BasicDemo::initPhysics()
 	m_solver = sol;
 
 	m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher,m_broadphase,m_solver,m_collisionConfiguration);
-
+	
 	m_dynamicsWorld->setGravity(btVector3(0,-10,0));
 
 	///create a few basic rigid bodies
@@ -180,45 +176,19 @@ void	BasicDemo::initPhysics()
 					btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,colShape,localInertia);
 					btRigidBody* body = new btRigidBody(rbInfo);
 					
-					body->setActivationState(ISLAND_SLEEPING);
 
 					m_dynamicsWorld->addRigidBody(body);
-					body->setActivationState(ISLAND_SLEEPING);
 				}
 			}
 		}
 	}
 
 
-	clientResetScene();
-
-
-#ifdef TEST_SERIALIZATION
-	//test serializing this 
-
-	int maxSerializeBufferSize = 1024*1024*5;
-
-	btDefaultSerializer*	serializer = new btDefaultSerializer(maxSerializeBufferSize);
-	m_dynamicsWorld->serialize(serializer);
-	
-	FILE* f2 = fopen("testFile.bullet","wb");
-	fwrite(serializer->m_buffer,serializer->m_currentSize,1,f2);
-	fclose(f2);
-#endif
-
-#if 0
-	bParse::btBulletFile* bulletFile2 = new bParse::btBulletFile("testFile.bullet");
-	bool ok = (bulletFile2->getFlags()& bParse::FD_OK)!=0;
-	bool verboseDumpAllTypes = true;
-	if (ok)
-		bulletFile2->parse(verboseDumpAllTypes);
-	
-	if (verboseDumpAllTypes)
-	{
-		bulletFile2->dumpChunks(bulletFile2->getFileDNA());
-	}
-#endif //TEST_SERIALIZATION
-
+}
+void	BasicDemo::clientResetScene()
+{
+	exitPhysics();
+	initPhysics();
 }
 	
 
@@ -247,6 +217,7 @@ void	BasicDemo::exitPhysics()
 		btCollisionShape* shape = m_collisionShapes[j];
 		delete shape;
 	}
+	m_collisionShapes.clear();
 
 	delete m_dynamicsWorld;
 	

@@ -25,10 +25,16 @@ void add_bindings_btCollisionWorld(Namespace const& ns_bullet)
 
     LM_CLASS(ns_bullet, btDynamicsWorld)
     LM_BASE(btDynamicsWorld, btCollisionWorld)
-    LM_FUNC(btDynamicsWorld, (addRigidBody)(debugDrawWorld)(addConstraint)(removeConstraint)(addAction)(removeAction)
-            (setGravity)(getGravity)(addCharacter)(addVehicle)(clearForces)(getConstraintSolver)(getNumConstraints)
-            (getSolverInfo)(getWorldType)(removeCharacter)(removeRigidBody)(removeVehicle)(setConstraintSolver)
-            (setInternalTickCallback)(setWorldUserInfo)(stepSimulation)(synchronizeMotionStates))
+
+    LM_FUNC_OVERLOAD(btDynamicsWorld, "addRigidBody", addRigidBody, void, btRigidBody*)
+    LM_FUNC_OVERLOAD(btDynamicsWorld, "addRigidBody", addRigidBody, void, btRigidBody*, short, short)
+
+    LM_FUNC(btDynamicsWorld, (debugDrawWorld))
+    LM_FUNC(btDynamicsWorld, (addConstraint))
+    LM_FUNC(btDynamicsWorld, (removeConstraint)(addAction)(removeAction))
+    LM_FUNC(btDynamicsWorld, (setGravity)(getGravity)(addCharacter)(addVehicle)(clearForces)(getConstraintSolver)(getNumConstraints))
+    LM_FUNC(btDynamicsWorld, (getSolverInfo)(getWorldType)(removeCharacter)(removeRigidBody)(removeVehicle)(setConstraintSolver))
+    LM_FUNC(btDynamicsWorld, (setInternalTickCallback)(setWorldUserInfo)(stepSimulation)(synchronizeMotionStates))
 
     LM_CLASS(ns_bullet, btDiscreteDynamicsWorld)
     LM_BASE(btDiscreteDynamicsWorld, btDynamicsWorld)

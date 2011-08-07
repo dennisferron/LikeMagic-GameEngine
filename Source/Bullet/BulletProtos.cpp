@@ -53,6 +53,15 @@ DLL_PUBLIC void add_protos(IoVM& vm)
     vm.add_proto("DBG_FastWireframe",  btIDebugDraw::DBG_FastWireframe);
     vm.add_proto("DBG_MAX_DEBUG_DRAW_MODE",  btIDebugDraw::DBG_MAX_DEBUG_DRAW_MODE);
 
+    LM_ENUM_PROTOS(vm,
+        (PHY_FLOAT)
+        (PHY_DOUBLE)
+        (PHY_INTEGER)
+        (PHY_SHORT)
+        (PHY_FIXEDPOINT88)
+        (PHY_UCHAR)
+    )
+
 }
 
 }}

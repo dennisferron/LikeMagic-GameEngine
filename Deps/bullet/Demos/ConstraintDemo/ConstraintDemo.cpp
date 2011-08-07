@@ -13,7 +13,6 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-//#define TEST_SERIALIZATION 1
 
 
 
@@ -28,12 +27,6 @@ subject to the following restrictions:
 #include "ConstraintDemo.h"
 #include "GL_ShapeDrawer.h"
 #include "GlutStuff.h"
-
-#ifdef TEST_SERIALIZATION
-#include "LinearMath/btSerializer.h"
-#include "btBulletFile.h"
-#include "btBulletWorldImporter.h"
-#endif //TEST_SERIALIZATION
 
 
 const int numObjects = 3;
@@ -121,6 +114,30 @@ void	ConstraintDemo::initPhysics()
 	trans.setOrigin(btVector3(0,20,0));
 
 	float mass = 1.f;
+
+
+#if ENABLE_ALL_DEMOS
+	//point to point constraint with a breaking threshold
+	{
+		trans.setIdentity();
+		trans.setOrigin(btVector3(1,30,-5));
+		localCreateRigidBody( mass,trans,shape);
+		trans.setOrigin(btVector3(0,0,-5));
+
+		btRigidBody* body0 = localCreateRigidBody( mass,trans,shape);
+		trans.setOrigin(btVector3(2*CUBE_HALF_EXTENTS,20,0));
+		mass = 1.f;
+		btRigidBody* body1 = 0;//localCreateRigidBody( mass,trans,shape);
+		btVector3 pivotInA(CUBE_HALF_EXTENTS,CUBE_HALF_EXTENTS,0);
+		btTypedConstraint* p2p = new btPoint2PointConstraint(*body0,pivotInA);
+		m_dynamicsWorld->addConstraint(p2p);
+		p2p ->setBreakingImpulseThreshold(10.2);
+		p2p->setDbgDrawSize(btScalar(5.f));
+	}
+#endif
+
+
+
 #if ENABLE_ALL_DEMOS
 	//point to point constraint (ball socket)
 	{
@@ -141,7 +158,7 @@ void	ConstraintDemo::initPhysics()
 			(body1->getCenterOfMassTransform().getBasis().inverse()*(body1->getCenterOfMassTransform().getBasis() * axisInA)) : 
 		body0->getCenterOfMassTransform().getBasis() * axisInA;
 
-//#define P2P
+#define P2P
 #ifdef P2P
 		btTypedConstraint* p2p = new btPoint2PointConstraint(*body0,pivotInA);
 		//btTypedConstraint* p2p = new btPoint2PointConstraint(*body0,*body1,pivotInA,pivotInB);
@@ -493,27 +510,31 @@ void	ConstraintDemo::initPhysics()
 	}
 #endif
 
-#ifdef TEST_SERIALIZATION
+#if ENABLE_ALL_DEMOS
+	{ // 6DOF connected to the world, with motor
+		btTransform tr;
+		tr.setIdentity();
+		tr.setOrigin(btVector3(btScalar(10.), btScalar(-15.), btScalar(0.)));
+		btRigidBody* pBody = localCreateRigidBody( 1.0, tr, shape);
+		pBody->setActivationState(DISABLE_DEACTIVATION);
+		btTransform frameB;
+		frameB.setIdentity();
+		btGeneric6DofConstraint* pGen6Dof = new btGeneric6DofConstraint( *pBody, frameB, false );
+		m_dynamicsWorld->addConstraint(pGen6Dof);
+		pGen6Dof->setDbgDrawSize(btScalar(5.f));
 
-	int maxSerializeBufferSize = 1024*1024*5;
+		pGen6Dof->setAngularLowerLimit(btVector3(0,0,0));
+		pGen6Dof->setAngularUpperLimit(btVector3(0,0,0));
+		pGen6Dof->setLinearLowerLimit(btVector3(-10., 0, 0));
+		pGen6Dof->setLinearUpperLimit(btVector3(10., 0, 0));
 
-	btDefaultSerializer*	serializer = new btDefaultSerializer(maxSerializeBufferSize);
-	m_dynamicsWorld->serialize(serializer);
-	
-	FILE* f2 = fopen("testFile.bullet","wb");
-	fwrite(serializer->getBufferPointer(),serializer->getCurrentBufferSize(),1,f2);
-	fclose(f2);
+		pGen6Dof->getTranslationalLimitMotor()->m_enableMotor[0] = true;
+		pGen6Dof->getTranslationalLimitMotor()->m_targetVelocity[0] = 5.0f;
+		pGen6Dof->getTranslationalLimitMotor()->m_maxMotorForce[0] = 0.1f;
+	}
+#endif
 
 
-	exitPhysics();
-	
-	setupEmptyDynamicsWorld();
-
-	btBulletWorldImporter* fileLoader = new btBulletWorldImporter(m_dynamicsWorld);
-
-	fileLoader->loadFile("testFile.bullet");
-
-#endif //TEST_SERIALIZATION
 
 }
 
