@@ -14,7 +14,7 @@
 using namespace std;
 using namespace LikeMagic;
 
-string ScriptUtil::ptr_addr_to_str(void* p)
+string ScriptUtil::ptr_addr_to_str(void const* p)
 {
     stringstream ss;
     ss << p;

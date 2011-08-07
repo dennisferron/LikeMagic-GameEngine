@@ -16,7 +16,7 @@ namespace LikeMagic
 class ScriptUtil
 {
 public:
-    static std::string ptr_addr_to_str(void* p);
+    static std::string ptr_addr_to_str(void const* p);
     static void* get_null_ptr();
     static void* get_test_ptr(std::string hex_str);
     static bool get_true();

@@ -81,11 +81,18 @@ private:
         add_method(alt_name(prefix, method_name), target);
     }
 
+    static T* operator_remove_const(T const * ptr)
+    {
+        return const_cast<T*>(ptr);
+    }
+
     void bind_built_in_operations()
     {
         // In C++, any type can be deleted.
         auto deleter = new DestructorCallTarget<T>(type_system);
         add_method("delete", deleter);
+
+        bind_nonmember_op("remove_const", &operator_remove_const);
     }
 
 public:

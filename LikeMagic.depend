@@ -6032,7 +6032,7 @@
 	<boost/assert.hpp>
 	<boost/static_assert.hpp>
 
-1311992697 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/Class.hpp
+1312730301 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/Class.hpp
 	"LikeMagic/Marshaling/AbstractClass.hpp"
 	"LikeMagic/Generators/GeneratorFactory.hpp"
 	"LikeMagic/CallTargets/ConstructorCallTarget.hpp"
@@ -6464,7 +6464,7 @@
 1308455826 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeInfo.cpp
 	"LikeMagic/Utility/AbstractTypeInfo.hpp"
 
-1312514000 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeSystem.cpp
+1312514153 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeSystem.cpp
 	"LikeMagic/AbstractTypeSystem.hpp"
 	"LikeMagic/Marshaling/AbstractClass.hpp"
 	"LikeMagic/TypeConv/NoChangeConv.hpp"
@@ -7272,11 +7272,11 @@
 	"LikeMagic/SFMO/BottomPtrExpr.hpp"
 	"LikeMagic/SFMO/NullExpr.hpp"
 
-1312513319 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/ScriptUtil.cpp
+1312730554 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/ScriptUtil.cpp
 	"LikeMagic/ScriptUtil.hpp"
 	<sstream>
 
-1312513331 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/ScriptUtil.hpp
+1312730541 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/ScriptUtil.hpp
 	<string>
 
 1312148252 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/BottomPtrConv.hpp
