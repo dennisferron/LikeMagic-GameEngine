@@ -24,6 +24,8 @@ public:
     static double get_double(double value);
     static int get_int(int value);
 
+    static std::string get_string(std::string const& value);
+
     // Instance fields to test member field setting
     void* voidp_field;
     char* charp_field;

@@ -144,8 +144,10 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     unknown_class->add_base_abstr(proxy_methods);
     this->unknown_class = unknown_class;
 
-    register_class<std::string>("string");
-    register_class<std::wstring>("wstring");
+    //register_class<std::string>("string");
+    //register_class<std::wstring>("wstring");
+    LM_CLASS(global_ns, string)
+    LM_CLASS(global_ns, wstring)
 
     // Register number types as copyable but do not auto-deref
     register_class<short, true, false>("short");
@@ -181,7 +183,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
 
     add_conv<  std::wstring,    std::string,    StringConv>();
     add_conv<  std::wstring&,   std::string,    StringConv>();
-    //add_conv<  wchar_t const*,  std::string,    StringConv>();
+    add_conv<  wchar_t const*,  std::string,    StringConv>();
     //add_conv<  wchar_t const*&, std::string,    StringConv>();
     //add_conv<  char const*,     std::string,    StringConv>();
     //add_conv<  char const*&,    std::string,    StringConv>();
@@ -213,7 +215,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     LM_CLASS(global_ns, ScriptUtil)
     LM_CONSTR(ScriptUtil,,)
     LM_FIELD(ScriptUtil, (voidp_field)(charp_field)(ucharp_field)(intp_field)(uintp_field))
-    LM_STATIC_MEMBER_FUNC(ScriptUtil, (ptr_addr_to_str)(get_null_ptr)(get_test_ptr)(get_true)(get_false)(get_int)(get_double))
+    LM_STATIC_MEMBER_FUNC(ScriptUtil, (ptr_addr_to_str)(get_null_ptr)(get_test_ptr)(get_true)(get_false)(get_int)(get_double)(get_string))
 }
 
 

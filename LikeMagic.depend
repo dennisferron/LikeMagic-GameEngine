@@ -60,7 +60,7 @@
 	"AbstractTypeConverter.hpp"
 	"boost/intrusive_ptr.hpp"
 
-1312252727 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/AbstractTypeConverter.hpp
+1312770539 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/AbstractTypeConverter.hpp
 	"LikeMagic/Utility/BetterTypeInfo.hpp"
 	"boost/intrusive_ptr.hpp"
 	<string>
@@ -2799,7 +2799,7 @@
 	<stdexcept>
 	<string>
 
-1312142676 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/TypeConvGraph.hpp
+1312766475 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/TypeConvGraph.hpp
 	<utility>
 	<map>
 	<bitset>
@@ -5950,7 +5950,7 @@
 1308455828 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Utility/IsContainer.hpp
 	<type_traits>
 
-1312139882 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/StringConv.hpp
+1312770673 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/StringConv.hpp
 	"ConvertibleTo.hpp"
 	"LikeMagic/SFMO/Trampoline.hpp"
 	"LikeMagic/SFMO/StringCachingTrampoline.hpp"
@@ -6032,7 +6032,7 @@
 	<boost/assert.hpp>
 	<boost/static_assert.hpp>
 
-1312730301 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/Class.hpp
+1312771665 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/Class.hpp
 	"LikeMagic/Marshaling/AbstractClass.hpp"
 	"LikeMagic/Generators/GeneratorFactory.hpp"
 	"LikeMagic/CallTargets/ConstructorCallTarget.hpp"
@@ -6164,7 +6164,7 @@
 	"../SFMO/Trampoline.hpp"
 	"boost/type_traits/is_reference.hpp"
 
-1312338387 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/NoChangeConv.hpp
+1312770755 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/NoChangeConv.hpp
 	"LikeMagic/TypeConv/ConvertibleTo.hpp"
 	"LikeMagic/SFMO/Trampoline.hpp"
 
@@ -6458,7 +6458,7 @@
 	"LikeMagic/SFMO/AbstractExpression.hpp"
 	<stdexcept>
 
-1308455829 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeConverter.cpp
+1312762745 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeConverter.cpp
 	"LikeMagic/TypeConv/AbstractTypeConverter.hpp"
 
 1308455826 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeInfo.cpp
@@ -6567,7 +6567,7 @@
 	"LikeMagic/Marshaling/ProxyMethods.hpp"
 	"LikeMagic/SFMO/NamespaceProxy.hpp"
 
-1312513760 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/RuntimeTypeSystem.cpp
+1312772558 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/RuntimeTypeSystem.cpp
 	"LikeMagic/RuntimeTypeSystem.hpp"
 	"LikeMagic/NamespacePath.hpp"
 	"LikeMagic/TypeConv/StringConv.hpp"
@@ -6580,11 +6580,11 @@
 	"LikeMagic/Marshaling/StaticMethods.hpp"
 	"LikeMagic/SFMO/NamespaceProxy.hpp"
 
-1312509273 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/TypeConvGraph.cpp
+1312769623 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/TypeConvGraph.cpp
 	"LikeMagic/TypeConv/TypeConvGraph.hpp"
 	"LikeMagic/TypeConv/NoChangeConv.hpp"
 	"LikeMagic/SFMO/BottomPtrExpr.hpp"
-	"boost/graph/breadth_first_search.hpp"
+	"boost/graph/dijkstra_shortest_paths.hpp"
 	<iostream>
 	"boost/config.hpp"
 	<algorithm>
@@ -6594,9 +6594,7 @@
 	<limits>
 	"boost/graph/visitors.hpp"
 	"boost/graph/adjacency_list.hpp"
-	"boost/graph/breadth_first_search.hpp"
 	"boost/graph/graph_utility.hpp"
-	"boost/graph/breadth_first_search.hpp"
 	"boost/lexical_cast.hpp"
 	<assert.h>
 
@@ -7272,21 +7270,200 @@
 	"LikeMagic/SFMO/BottomPtrExpr.hpp"
 	"LikeMagic/SFMO/NullExpr.hpp"
 
-1312730554 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/ScriptUtil.cpp
+1312771770 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/ScriptUtil.cpp
 	"LikeMagic/ScriptUtil.hpp"
 	<sstream>
 
-1312730541 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/ScriptUtil.hpp
+1312771755 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/ScriptUtil.hpp
 	<string>
 
 1312148252 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/BottomPtrConv.hpp
 	"LikeMagic/TypeConv/ConvertibleTo.hpp"
 	"LikeMagic/SFMO/Trampoline.hpp"
 
-1312148758 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/PtrCastConv.hpp
+1312770729 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/PtrCastConv.hpp
 	"LikeMagic/TypeConv/ConvertibleTo.hpp"
 	"LikeMagic/SFMO/Trampoline.hpp"
 
 1312252248 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/GenericConv.hpp
 	"LikeMagic/TypeConv/ImplicitConv.hpp"
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/graph/dijkstra_shortest_paths.hpp
+	<functional>
+	<boost/limits.hpp>
+	<boost/graph/named_function_params.hpp>
+	<boost/graph/breadth_first_search.hpp>
+	<boost/graph/relax.hpp>
+	<boost/pending/indirect_cmp.hpp>
+	<boost/graph/exception.hpp>
+	<boost/pending/relaxed_heap.hpp>
+	<boost/graph/overloading.hpp>
+	<boost/smart_ptr.hpp>
+	<boost/graph/detail/d_ary_heap.hpp>
+	<boost/graph/two_bit_color_map.hpp>
+	<boost/property_map/property_map.hpp>
+	<boost/property_map/vector_property_map.hpp>
+	<boost/type_traits.hpp>
+	<boost/pending/mutable_queue.hpp>
+	<boost/graph/distributed/dijkstra_shortest_paths.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/graph/relax.hpp
+	<functional>
+	<boost/limits.hpp>
+	<boost/graph/graph_traits.hpp>
+	<boost/property_map/property_map.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/pending/indirect_cmp.hpp
+	<functional>
+	<boost/config.hpp>
+	<boost/property_map/property_map.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/graph/exception.hpp
+	<stdexcept>
+	<string>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/pending/relaxed_heap.hpp
+	<functional>
+	<boost/property_map/property_map.hpp>
+	<boost/optional.hpp>
+	<vector>
+	<climits>
+	<boost/none.hpp>
+	<iostream>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/smart_ptr.hpp
+	<boost/config.hpp>
+	<boost/scoped_ptr.hpp>
+	<boost/scoped_array.hpp>
+	<boost/shared_ptr.hpp>
+	<boost/shared_array.hpp>
+	<boost/weak_ptr.hpp>
+	<boost/intrusive_ptr.hpp>
+	<boost/enable_shared_from_this.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/scoped_ptr.hpp
+	<boost/smart_ptr/scoped_ptr.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/smart_ptr/scoped_ptr.hpp
+	<boost/assert.hpp>
+	<boost/checked_delete.hpp>
+	<boost/detail/workaround.hpp>
+	<memory>
+	<boost/smart_ptr/detail/operator_bool.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/scoped_array.hpp
+	<boost/smart_ptr/scoped_array.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/smart_ptr/scoped_array.hpp
+	<boost/assert.hpp>
+	<boost/checked_delete.hpp>
+	<boost/config.hpp>
+	<boost/detail/workaround.hpp>
+	<cstddef>
+	<boost/smart_ptr/detail/operator_bool.hpp>
+
+1311558266 /home/dennis/code/LikeMagic-All/Common/boost/boost/enable_shared_from_this.hpp
+	<boost/smart_ptr/enable_shared_from_this.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/smart_ptr/enable_shared_from_this.hpp
+	<boost/smart_ptr/weak_ptr.hpp>
+	<boost/smart_ptr/shared_ptr.hpp>
+	<boost/assert.hpp>
+	<boost/config.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/graph/detail/d_ary_heap.hpp
+	<vector>
+	<cstddef>
+	<algorithm>
+	<utility>
+	<cassert>
+	<boost/static_assert.hpp>
+	<boost/shared_array.hpp>
+	<boost/property_map/property_map.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/pending/mutable_queue.hpp
+	<vector>
+	<algorithm>
+	<functional>
+	<boost/property_map/property_map.hpp>
+	<boost/pending/mutable_heap.hpp>
+	<boost/pending/is_heap.hpp>
+	<boost/graph/detail/array_binary_tree.hpp>
+	<iterator>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/pending/mutable_heap.hpp
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/pending/is_heap.hpp
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/graph/detail/array_binary_tree.hpp
+	<iterator>
+	<functional>
+	<boost/config.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/graph/distributed/dijkstra_shortest_paths.hpp
+	<boost/graph/dijkstra_shortest_paths.hpp>
+	<boost/graph/overloading.hpp>
+	<boost/graph/distributed/concepts.hpp>
+	<boost/graph/parallel/properties.hpp>
+	<boost/graph/distributed/crauser_et_al_shortest_paths.hpp>
+	<boost/graph/distributed/eager_dijkstra_shortest_paths.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/graph/distributed/crauser_et_al_shortest_paths.hpp
+	<boost/graph/distributed/detail/dijkstra_shortest_paths.hpp>
+	<boost/graph/parallel/algorithm.hpp>
+	<functional>
+	<boost/graph/iteration_macros.hpp>
+	<boost/property_map/property_map_iterator.hpp>
+	<boost/type_traits/is_same.hpp>
+	<algorithm>
+	<boost/property_map/parallel/caching_property_map.hpp>
+	<boost/pending/indirect_cmp.hpp>
+	<boost/graph/distributed/detail/remote_update_set.hpp>
+	<vector>
+	<boost/graph/breadth_first_search.hpp>
+	<boost/graph/dijkstra_shortest_paths.hpp>
+	<boost/graph/parallel/container_traits.hpp>
+	<boost/graph/accounting.hpp>
+	<numeric>
+	<boost/pending/mutable_queue.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/graph/distributed/detail/dijkstra_shortest_paths.hpp
+	<boost/property_map/property_map.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/property_map/property_map_iterator.hpp
+	<boost/property_map/property_map.hpp>
+	<boost/iterator/iterator_adaptor.hpp>
+	<boost/mpl/if.hpp>
+	<boost/type_traits/is_same.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/property_map/parallel/caching_property_map.hpp
+	<boost/property_map/property_map.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/graph/distributed/detail/remote_update_set.hpp
+	<boost/graph/parallel/process_group.hpp>
+	<boost/type_traits/is_convertible.hpp>
+	<vector>
+	<cassert>
+	<boost/optional.hpp>
+	<queue>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/graph/accounting.hpp
+	<iomanip>
+	<iostream>
+	<string>
+	<sstream>
+	<boost/mpi/config.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/graph/distributed/eager_dijkstra_shortest_paths.hpp
+	<boost/graph/distributed/detail/dijkstra_shortest_paths.hpp>
+	<boost/property_map/parallel/caching_property_map.hpp>
+	<boost/pending/indirect_cmp.hpp>
+	<boost/graph/distributed/detail/remote_update_set.hpp>
+	<vector>
+	<boost/graph/breadth_first_search.hpp>
+	<boost/graph/dijkstra_shortest_paths.hpp>
+	<boost/graph/parallel/container_traits.hpp>
+	<boost/graph/accounting.hpp>
+	<numeric>
+	<boost/pending/mutable_queue.hpp>
 

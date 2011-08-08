@@ -40,9 +40,14 @@ private:
 
 public:
     AbstractTypeConverter();
-    virtual ~AbstractTypeConverter() {}
+    virtual ~AbstractTypeConverter();
     virtual std::string describe() const = 0;
     virtual ExprPtr wrap_expr(ExprPtr expr) const = 0;
+
+    // Since the conversions are cached once figured out, there would be little benefit
+    // to trying to optimize by using an integer cost, and using a float allows us
+    // more flexibility in defining fractional costs for special cases.
+    virtual float cost() const;
 };
 
 // Handy helper function

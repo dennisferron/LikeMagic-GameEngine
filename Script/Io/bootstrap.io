@@ -33,7 +33,7 @@ io_vm set_onRegisterClass(block(abstract_class,
     className := abstract_class get_class_name
     cppNs := abstract_class get_namespace
 
-    writeln("register class ", className, " in ", cppNs to_string, " and LikeMagic type=", abstract_class get_type describe)
+    //writeln("register class ", className, " in ", cppNs to_string, " and LikeMagic type=", abstract_class get_type describe)
 
     // Look up the cpp namespace to get the Io object for it
     nsObj := find_namespace(cppNs)
@@ -60,11 +60,11 @@ io_vm set_onRegisterClass(block(abstract_class,
             msg = msg .. "  Note: existing object LikeMagic type=" .. (existingObj get_type describe) .. " and new object LikeMagic type=" .. (class_proto lm_get_type describe)
             Exception raise(msg)
         ,
-            writeln("Consolidating namespace ", className)
+            //writeln("Consolidating namespace ", className)
             old_proto := nsObj getSlot(className)
             old_proto slotNames foreach(name,
                 if (name != "type",
-                    writeln("Copying ", name)
+                    //writeln("Copying ", name)
                     class_proto setSlot(name, old_proto getSlot(name))
                 )
             )
@@ -86,14 +86,14 @@ io_vm set_onRegisterMethod(block(abstract_class, method_name, call_target,
 
 // Convert LikeMagic::Namespace object to the Io object associated with it.
 find_namespace := method(ns,
-    writeln("find_namespace(", ns to_string, ")")
+    //writeln("find_namespace(", ns to_string, ")")
     if (ns is_root,
-        writeln("namespace ", ns to_string, " is root")
+        //writeln("namespace ", ns to_string, " is root")
         return Lobby LikeMagic namespace
     ,
         parentNs := find_namespace(ns get_parent)
         if (parentNs hasSlot(ns get_name) not,
-            writeln("creating namespace ", ns get_name, " in ", ns get_parent to_string)
+            //writeln("creating namespace ", ns get_name, " in ", ns get_parent to_string)
             parentNs setSlot(ns get_name, Object clone)
         )
         return parentNs getSlot(ns get_name)
@@ -127,7 +127,7 @@ print_class_info := method(obj,
     )
 )
 
-print_namespace_tree(LikeMagic namespace, "global", 0)
+//print_namespace_tree(LikeMagic namespace, "global", 0)
 
 //print_class_info(LikeMagic namespace Irrlicht)
 

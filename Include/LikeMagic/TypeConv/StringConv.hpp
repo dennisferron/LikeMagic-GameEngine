@@ -50,6 +50,9 @@ template <typename F, typename T> struct StringConvImpl
                 + " to type "
                 + BetterTypeInfo::create_index<T>().describe());
     }
+
+    // Conversion should never be used anyway.
+    static float cost() { return 100000.0; }
 };
 
 // This is OK - returns a copy of the string.
@@ -59,6 +62,9 @@ template <> struct StringConvImpl<std::string&, std::string>
     {
         return str;
     }
+
+    // Copying a string is expensive.
+    static float cost() { return 1000.0; }
 };
 
 // This conversion is OK - the strings passed by value are copied.
@@ -68,6 +74,9 @@ template <> struct StringConvImpl<std::string, std::wstring>
     {
         return std::wstring(str.begin(), str.end());
     }
+
+    // Copying a string is expensive.
+    static float cost() { return 1000.0; }
 };
 
 // This conversion is OK - the strings passed by value are copied.
@@ -77,6 +86,9 @@ template <> struct StringConvImpl<std::string&, std::wstring>
     {
         return std::wstring(str.begin(), str.end());
     }
+
+    // Copying a string is expensive.
+    static float cost() { return 1000.0; }
 };
 
 // It is not OK to use this conversion.  You can't do a double conversion
@@ -115,6 +127,11 @@ template <> struct StringConvImpl<std::string&, char const*>
     {
         return str.c_str();
     }
+
+    // Getting a pointer to the string is inexpensive in CPU terms,
+    // but we don't want to accidently use .c_str() when we don't have to.
+    // Maybe another conversion can be used instead, so make it cost 10.
+    static float cost() { return 100.0; }
 };
 
 // This is OK because the wchar_t const* refers directly to the string's
@@ -125,6 +142,11 @@ template <> struct StringConvImpl<std::wstring&, wchar_t const*>
     {
         return str.c_str();
     }
+
+    // Getting a pointer to the string is inexpensive in CPU terms,
+    // but we don't want to accidently use .c_str() when we don't have to.
+    // Maybe another conversion can be used instead, so make it cost 10.
+    static float cost() { return 100.0; }
 };
 
 // This is OK because the output is passed by copying.
@@ -134,6 +156,9 @@ template <> struct StringConvImpl<std::wstring, std::string>
     {
         return std::string(str.begin(), str.end());
     }
+
+    // Copying a string is expensive.
+    static float cost() { return 1000.0; }
 };
 
 // This is OK because the output is passed as a copy.
@@ -143,6 +168,9 @@ template <> struct StringConvImpl<std::wstring&, std::string>
     {
         return StringConvImpl<std::wstring, std::string>::do_conv(str);
     }
+
+    // Copying a string is expensive.
+    static float cost() { return 1000.0; }
 };
 
 // This is ok because the bytes are copied into the string which is passed by value.
@@ -152,6 +180,9 @@ template <> struct StringConvImpl<wchar_t const*, std::string>
     {
         return StringConvImpl<std::wstring, std::string>::do_conv(std::wstring(str));
     }
+
+    // Copying a string is expensive.
+    static float cost() { return 1000.0; }
 };
 
 // This is OK
@@ -161,6 +192,9 @@ template <> struct StringConvImpl<wchar_t const*&, std::string>
     {
         return StringConvImpl<std::wstring, std::string>::do_conv(std::wstring(str));
     }
+
+    // Copying a string is expensive.
+    static float cost() { return 1000.0; }
 };
 
 
@@ -171,6 +205,9 @@ template <> struct StringConvImpl<char const*, std::string>
     {
         return std::string(str);
     }
+
+    // Copying a string is expensive.
+    static float cost() { return 1000.0; }
 };
 
 // This is OK
@@ -180,6 +217,9 @@ template <> struct StringConvImpl<char const*&, std::string>
     {
         return std::string(str);
     }
+
+    // Copying a string is expensive.
+    static float cost() { return 1000.0; }
 };
 
 
@@ -195,6 +235,8 @@ public:
     }
 
     virtual std::string describe() const { return describe_converter<From, To>("StringConv"); }
+
+    virtual float cost() const { return StringConvImpl<From, To>::cost(); }
 };
 
 
@@ -213,6 +255,8 @@ public:
     }
 
     virtual std::string describe() const { return describe_converter<std::string, wchar_t const*>("StringConv"); }
+
+    virtual float cost() const { return 2000.0; }
 };
 
 // Special case for when the string must be converted to wide character version.
@@ -230,6 +274,8 @@ public:
     }
 
     virtual std::string describe() const { return describe_converter<std::string&, wchar_t const*>("StringConv"); }
+
+    virtual float cost() const { return 2000.0; }
 };
 
 

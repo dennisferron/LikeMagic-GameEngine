@@ -33,6 +33,10 @@ public:
     }
 
     virtual std::string describe() const { return describe_converter<From, To>("PtrCastConv"); }
+
+    // Pointer cast is not expensive in terms of CPU cycles, but
+    // we don't want to use ptr cast when something else will do.
+    virtual float cost() const { return 10.0; }
 };
 
 }}

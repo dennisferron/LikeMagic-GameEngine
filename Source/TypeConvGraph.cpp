@@ -10,7 +10,8 @@
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 #include "LikeMagic/SFMO/BottomPtrExpr.hpp"
 
-#include "boost/graph/breadth_first_search.hpp"
+//#include "boost/graph/breadth_first_search.hpp"
+#include "boost/graph/dijkstra_shortest_paths.hpp"
 #include <iostream>
 
 #include "boost/config.hpp"
@@ -24,15 +25,13 @@ using namespace std;
 
 #include "boost/graph/visitors.hpp"
 #include "boost/graph/adjacency_list.hpp"
-#include "boost/graph/breadth_first_search.hpp"
-//#include <boost/property_map/property_map.hpp>
 #include "boost/graph/graph_utility.hpp"
-
-#include "boost/graph/breadth_first_search.hpp"
 
 #include "boost/lexical_cast.hpp"
 
 #include <assert.h>
+
+using namespace boost;
 
 using namespace LikeMagic::SFMO;
 using namespace LikeMagic::Utility;
@@ -46,10 +45,10 @@ TypeConvGraph::TypeConvGraph()
 
 TypeConvGraph::~TypeConvGraph()
 {
-    // Causes a seg fault in Term for some reason.
-//    auto edge_range = edges(graph);
-//    for (auto it=edge_range.first; it!=edge_range.second; it++)
-//        delete graph[*it].conv;
+    // You don't delete these because they're held by smart pointers which delete them for you!
+    //xx  auto edge_range = edges(graph);
+    //xx  for (auto it=edge_range.first; it!=edge_range.second; it++)
+    //xx     delete graph[*it].conv;
 }
 
 void TypeConvGraph::print_graph() const
@@ -89,7 +88,11 @@ void TypeConvGraph::add_conv(TypeIndex from, TypeIndex to, p_conv_t conv)
     auto to_vert = add_type(to);
 
     if (!edge(from_vert, to_vert, graph).second)
-        graph[add_edge(from_vert, to_vert, graph).first].conv = conv;
+    {
+        auto new_edge = add_edge(from_vert, to_vert, graph).first;
+        graph[new_edge].conv = conv;
+        graph[new_edge].cost = conv->cost();
+    }
 }
 
 struct FindType
@@ -219,7 +222,68 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeIndex from, TypeInd
 
         try
         {
+            // Marker for the (beginning) end of the chain
             pred[source] = source;
+
+            // Will it default to something sensible if I don't pass a distance map?
+            vector<float> distances(num_vertices(graph));
+
+            dijkstra_shortest_paths
+            (
+                graph,
+                source,
+                predecessor_map
+                (
+                    &pred[0]
+                )
+                .
+                weight_map
+                (
+                    get
+                    (
+                        &edge_info::cost,
+                        graph
+                    )
+                )
+                .
+                distance_map
+                (
+                    make_iterator_property_map
+                    (
+                        distances.begin(),
+                        get
+                        (
+                            vertex_index,
+                            graph
+                        )
+                    )
+                )
+                .
+                visitor
+                (
+                    make_dijkstra_visitor(finder)
+                )
+                /*
+                .
+                visitor
+                (
+                    make_dijkstra_visitor
+                    (
+                        std::make_pair
+                        (
+                            finder,
+                            boost::record_predecessors
+                            (
+                                &pred[0],
+                                boost::on_tree_edge()
+                            )
+                        )
+                    )
+                )
+                */
+            );
+
+            /*
             boost::breadth_first_search
             (
                 graph,
@@ -240,6 +304,8 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeIndex from, TypeInd
                     )
                 )
             );
+
+            */
         }
         catch (FindType::TypeFoundException const& tfe)
         {

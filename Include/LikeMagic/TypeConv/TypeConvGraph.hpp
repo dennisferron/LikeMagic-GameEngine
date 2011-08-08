@@ -45,6 +45,7 @@ private:
     struct edge_info
     {
         p_conv_t conv;
+        float cost;
     };
 
     struct vertex_info
@@ -55,7 +56,6 @@ private:
     typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, vertex_info, edge_info> graph_t;
     typedef boost::graph_traits<graph_t>::vertex_descriptor vertex_t;
     typedef boost::graph_traits<graph_t>::edge_descriptor edge_t;
-    //typedef std::map<TypeIndex, vertex_t> vertex_map_t;
     typedef std::vector<vertex_t> vertex_map_t;
 
     graph_t graph;

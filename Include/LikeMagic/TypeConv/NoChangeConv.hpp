@@ -32,6 +32,9 @@ public:
     }
 
     virtual std::string describe() const { return "NoChangeConv"; }
+
+    // A no-change conversion is virtually free.
+    virtual float cost() const { return 0.01; }
 };
 
 }}

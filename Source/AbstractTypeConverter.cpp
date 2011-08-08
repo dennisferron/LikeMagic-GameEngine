@@ -16,6 +16,15 @@ AbstractTypeConverter::AbstractTypeConverter()
 
 }
 
+AbstractTypeConverter::~AbstractTypeConverter()
+{
+}
+
+float AbstractTypeConverter::cost() const
+{
+    return 1.0;
+}
+
 void intrusive_ptr_add_ref(AbstractTypeConverter const* p)
 {
     ++(p->ref_count);

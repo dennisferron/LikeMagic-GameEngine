@@ -55,3 +55,7 @@ int ScriptUtil::get_int(int value)
     return value;
 }
 
+string ScriptUtil::get_string(string const& value)
+{
+    return value;
+}
