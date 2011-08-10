@@ -27,6 +27,7 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_STATIC_FUNC(ns_irrlicht, Bindings::Irrlicht, add_bindings_scene)
     LM_STATIC_FUNC(ns_irrlicht, Bindings::Irrlicht, add_bindings_core)
     LM_STATIC_FUNC(ns_irrlicht, Bindings::Irrlicht, add_bindings_custom)
+    LM_STATIC_FUNC(ns_irrlicht, Bindings::Irrlicht, add_bindings_irr_io)
 
     LM_STATIC_FUNC(ns_irrlicht, Bindings::Irrlicht, add_protos_irr)
 }

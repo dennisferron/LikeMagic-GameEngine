@@ -78,6 +78,7 @@
 		<Unit filename="Include/Bindings/Custom/Protos.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/Bindings.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/Protos.hpp" />
+		<Unit filename="Include/Bindings/Irrlicht/ScriptedDataSerializer.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/ScriptedEventReceiver.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/ScriptedSceneNode.hpp" />
 		<Unit filename="Include/Bindings/RakNet/Bindings.hpp" />
@@ -125,6 +126,7 @@
 		<Unit filename="Source/Irrlicht/Bindings_video.cpp" />
 		<Unit filename="Source/Irrlicht/IrrlichtBindings.cpp" />
 		<Unit filename="Source/Irrlicht/IrrlichtProtos.cpp" />
+		<Unit filename="Source/Irrlicht/ScriptedDataSerializer.cpp" />
 		<Unit filename="Source/Irrlicht/ScriptedEventReceiver.cpp" />
 		<Unit filename="Source/Irrlicht/ScriptedSceneNode.cpp" />
 		<Unit filename="Source/RakNet/RakNet.cpp">

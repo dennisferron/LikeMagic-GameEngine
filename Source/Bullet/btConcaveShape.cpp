@@ -8,6 +8,7 @@
 
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/CollisionShapes/btMultimaterialTriangleMeshShape.h"
+#include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 
 #include "LikeMagic/Utility/UserMacros.hpp"
 
@@ -30,7 +31,7 @@ void add_bindings_btConcaveShape(Namespace const& ns_bullet)
     LM_FUNC_OVERLOAD_BOTH(btTriangleMeshShape, getMeshInterface, btStridingMeshInterface*)
 
     LM_CLASS(ns_bullet, btBvhTriangleMeshShape)
-    LM_BASE(btBvhTriangleMeshShape, btCollisionShape)
+    LM_BASE(btBvhTriangleMeshShape, btTriangleMeshShape)
     LM_CONSTR(btBvhTriangleMeshShape,, btStridingMeshInterface *, bool, bool)
     LM_CONSTR(btBvhTriangleMeshShape,, btStridingMeshInterface *, bool, const btVector3 &, const btVector3 &, bool)
     LM_FUNC(btBvhTriangleMeshShape, (getOwnsBvh)(performRaycast)(performConvexcast)(processAllTriangles)(refitTree)(partialRefitTree)(getOptimizedBvh)(setOptimizedBvh)(buildOptimizedBvh)(usesQuantizedAabbCompression))
@@ -40,6 +41,13 @@ void add_bindings_btConcaveShape(Namespace const& ns_bullet)
     LM_CONSTR(btMultimaterialTriangleMeshShape,, btStridingMeshInterface*, bool, bool)
     LM_CONSTR(btMultimaterialTriangleMeshShape,, btStridingMeshInterface*, bool, const btVector3 &, const btVector3 &, bool)
     LM_FUNC(btMultimaterialTriangleMeshShape, (getMaterialProperties))
+
+    LM_CLASS(ns_bullet, btHeightfieldTerrainShape)
+    LM_BASE(btHeightfieldTerrainShape, btConcaveShape)
+    LM_CONSTR(btHeightfieldTerrainShape,,
+        int, int, void *, btScalar, btScalar, btScalar, int, PHY_ScalarType, bool)
+
+    LM_FUNC(btHeightfieldTerrainShape, (setUseDiamondSubdivision))
 
     LM_ENUM(ns_bullet, PHY_ScalarType)
 }

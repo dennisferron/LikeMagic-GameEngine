@@ -8,6 +8,7 @@ LikeMagic namespace Bindings Irrlicht do(
     add_bindings_video(type_system)
     add_bindings_scene(type_system)
     add_bindings_custom(type_system)
+    add_bindings_irr_io(type_system)
     add_protos_irr(io_vm)
 )
 

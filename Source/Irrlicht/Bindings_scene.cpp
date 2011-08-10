@@ -44,6 +44,12 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
     LM_FUNC_OVERLOAD(ISceneManager, "getMeshFromIReadFile", getMesh, IAnimatedMesh*, IReadFile*);
     LM_FUNC_OVERLOAD(ISceneManager, "getMeshFromPath", getMesh, IAnimatedMesh*, path const&);
 
+    LM_FUNC_OVERLOAD(ISceneManager, "loadSceneFromIReadFile", loadScene, bool, IReadFile*, ISceneUserDataSerializer*);
+    LM_FUNC_OVERLOAD(ISceneManager, "loadSceneFromPath", loadScene, bool, path const&, ISceneUserDataSerializer*);
+
+    LM_FUNC_OVERLOAD(ISceneManager, "saveSceneToIReadFile", saveScene, bool, IWriteFile*, ISceneUserDataSerializer*);
+    LM_FUNC_OVERLOAD(ISceneManager, "saveSceneToPath", saveScene, bool, path const&, ISceneUserDataSerializer*);
+
     LM_CLASS(ns_irr_scene, IMeshBuffer)
     LM_BASE(IMeshBuffer, IReferenceCounted)
     LM_FUNC(IMeshBuffer, (getBoundingBox)(getHardwareMappingHint_Index)(getHardwareMappingHint_Vertex)

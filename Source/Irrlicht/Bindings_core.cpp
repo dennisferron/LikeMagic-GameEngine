@@ -39,6 +39,12 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
     LM_FUNC(dimension2du, (set)(getArea))
     LM_FIELD(dimension2du, (Width)(Height))
 
+    LM_CLASS(ns_irr_core, dimension2df)
+    LM_CONSTR(dimension2df,,)
+    LM_CONSTR(dimension2df,, int, int)
+    LM_FUNC(dimension2df, (set)(getArea))
+    LM_FIELD(dimension2df, (Width)(Height))
+
     LM_CLASS(ns_irr_core, recti)
     LM_CONSTR(recti,, int, int, int, int)
     LM_CONSTR(recti, "newWithXYXY", int, int, int, int)
