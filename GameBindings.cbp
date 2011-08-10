@@ -122,6 +122,7 @@
 		<Unit filename="Source/Irrlicht/Bindings_custom.cpp" />
 		<Unit filename="Source/Irrlicht/Bindings_gui.cpp" />
 		<Unit filename="Source/Irrlicht/Bindings_irr.cpp" />
+		<Unit filename="Source/Irrlicht/Bindings_irr_io.cpp" />
 		<Unit filename="Source/Irrlicht/Bindings_scene.cpp" />
 		<Unit filename="Source/Irrlicht/Bindings_video.cpp" />
 		<Unit filename="Source/Irrlicht/IrrlichtBindings.cpp" />
