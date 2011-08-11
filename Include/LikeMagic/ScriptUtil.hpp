@@ -26,6 +26,11 @@ public:
 
     static std::string get_string(std::string const& value);
 
+    static float get_random_float(float min, float max);
+    static float* get_random_float_array(int width, int height, float min, float max);
+
+    static void print_float_array(float const* array, int width, int height);
+
     // Instance fields to test member field setting
     void* voidp_field;
     char* charp_field;

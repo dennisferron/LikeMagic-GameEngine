@@ -11,6 +11,7 @@
 #include "LikeMagic/NamespacePath.hpp"
 
 #include "LikeMagic/TypeConv/StringConv.hpp"
+#include "LikeMagic/TypeConv/IteratorConv.hpp"
 
 #include "LikeMagic/Utility/UserMacros.hpp"
 
@@ -212,10 +213,29 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     //LM_FUNC_OVERLOAD(vector_of_string, "at", at, vector_of_string::reference, size_type)
     //LM_FUNC_OVERLOAD_CONST(vector_of_string, "at", at, vector_of_string::const_reference, vector_of_string::size_type)
 
+    typedef vector<float> vector_of_float;
+    LM_CLASS(global_ns, vector_of_float)
+    LM_CONSTR(vector_of_float,,)
+
+    // Although default parameters won't work for functions with LikeMagic,
+    // it is possible to specify constructors that leave some parameters at their defaults.
+    LM_CONSTR(vector_of_float,, size_t)
+
+    LM_FUNC(vector_of_float, (size))
+    LM_FUNC_OVERLOAD_BOTH(vector_of_float, at, float&, vector_of_float::size_type)
+    LM_FUNC_OVERLOAD(vector_of_float, "begin_nc", begin, vector_of_float::iterator)
+    LM_FUNC_OVERLOAD_CONST(vector_of_float, "begin_c", begin, vector_of_float::const_iterator)
+    LM_FUNC_OVERLOAD(vector_of_float, "push_back", push_back, void, vector_of_float::value_type const&)
+
+    // These three lines allow converting a vector iterator to a pointer into the array.
+    typedef vector_of_float::iterator vector_of_float_iterator;
+    LM_CLASS(global_ns, vector_of_float_iterator)
+    add_conv<vector_of_float_iterator, float*, IteratorConv>();
+
     LM_CLASS(global_ns, ScriptUtil)
     LM_CONSTR(ScriptUtil,,)
     LM_FIELD(ScriptUtil, (voidp_field)(charp_field)(ucharp_field)(intp_field)(uintp_field))
-    LM_STATIC_MEMBER_FUNC(ScriptUtil, (ptr_addr_to_str)(get_null_ptr)(get_test_ptr)(get_true)(get_false)(get_int)(get_double)(get_string))
+    LM_STATIC_MEMBER_FUNC(ScriptUtil, (ptr_addr_to_str)(get_null_ptr)(get_test_ptr)(get_true)(get_false)(get_int)(get_double)(get_string)(get_random_float)(get_random_float_array)(print_float_array))
 }
 
 

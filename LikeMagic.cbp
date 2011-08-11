@@ -200,6 +200,7 @@
 		<Unit filename="Include/LikeMagic/TypeConv/ConvertibleTo.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/GenericConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/ImplicitConv.hpp" />
+		<Unit filename="Include/LikeMagic/TypeConv/IteratorConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/NoChangeConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/NumberConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/PtrCastConv.hpp" />
