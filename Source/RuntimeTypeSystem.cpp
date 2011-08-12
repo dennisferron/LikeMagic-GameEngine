@@ -48,6 +48,13 @@ using namespace LikeMagic::Utility;
 
 using namespace std;
 
+// Vector helper.  Assignment in Io cannot (?) be overloaded; it creates new
+// slots rather than copying values.  This allows us to assign values to vector elements.
+template <typename T>
+void at_put(vector<T>& target, size_t pos, T const& value)
+{
+    target.at(pos) = value;
+}
 
 RuntimeTypeSystem::RuntimeTypeSystem()
 {
@@ -226,6 +233,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     LM_FUNC_OVERLOAD(vector_of_float, "begin_nc", begin, vector_of_float::iterator)
     LM_FUNC_OVERLOAD_CONST(vector_of_float, "begin_c", begin, vector_of_float::const_iterator)
     LM_FUNC_OVERLOAD(vector_of_float, "push_back", push_back, void, vector_of_float::value_type const&)
+    LM_EXTENSION_METHOD_OVERLOAD(vector_of_float, "at_put", at_put, void, vector_of_float&, size_t, float const&)
 
     // These three lines allow converting a vector iterator to a pointer into the array.
     typedef vector_of_float::iterator vector_of_float_iterator;

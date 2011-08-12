@@ -57,6 +57,8 @@
 // The first parameter of the method is passed the self object from script.
 #define LM_EXTENSION_METHOD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_EXTENSION_METHOD_IMPL, class_name, SEQ)
 
+#define LM_EXTENSION_METHOD_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) class_name##_LM.bind_nonmember_op(given_func_name, static_cast<ret_type (*)(__VA_ARGS__)>(&actual_func));
+
 #define LM_FUNC_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) class_name##_LM.bind_method(given_func_name, static_cast<ret_type (class_name::*)(__VA_ARGS__)>(&class_name::actual_func));
 #define LM_FUNC_OVERLOAD_CONST(class_name, given_func_name, actual_func, ret_type, ...) class_name##_LM.bind_method(given_func_name, static_cast<ret_type (class_name::*)(__VA_ARGS__) const>(&class_name::actual_func));
 #define LM_OP_OVERLOAD(class_name, CONST, op, ret_type, ...) class_name##_LM.bind_method(#op, static_cast<ret_type (class_name::*)(__VA_ARGS__) CONST>(&class_name::operator op));

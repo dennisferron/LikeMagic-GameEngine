@@ -6520,7 +6520,7 @@
 	<stdexcept>
 	"dmalloc.h"
 
-1312074158 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Utility/UserMacros.hpp
+1313117939 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Utility/UserMacros.hpp
 	"LikeMagic/RuntimeTypeSystem.hpp"
 	"LikeMagic/Namespace.hpp"
 	"boost/preprocessor/seq/for_each.hpp"
@@ -6567,7 +6567,7 @@
 	"LikeMagic/Marshaling/ProxyMethods.hpp"
 	"LikeMagic/SFMO/NamespaceProxy.hpp"
 
-1313033921 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/RuntimeTypeSystem.cpp
+1313117990 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/RuntimeTypeSystem.cpp
 	"LikeMagic/RuntimeTypeSystem.hpp"
 	"LikeMagic/NamespacePath.hpp"
 	"LikeMagic/TypeConv/StringConv.hpp"
