@@ -41,7 +41,7 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_irr_core, dimension2df)
     LM_CONSTR(dimension2df,,)
-    LM_CONSTR(dimension2df,, int, int)
+    LM_CONSTR(dimension2df,, float, float)
     LM_FUNC(dimension2df, (set)(getArea))
     LM_FIELD(dimension2df, (Width)(Height))
 
@@ -56,7 +56,7 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
     LM_FIELD(vector2di, (X)(Y))
 
     LM_CLASS(ns_irr_core, vector2df)
-    LM_CONSTR(vector2df, "newWithXY", int, int)
+    LM_CONSTR(vector2df, "newWithXY", f32, f32)
     LM_FIELD(vector2df, (X)(Y))
 
     LM_CLASS(ns_irr_core, matrix4)

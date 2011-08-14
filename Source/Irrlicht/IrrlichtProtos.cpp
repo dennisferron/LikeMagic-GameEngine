@@ -69,6 +69,15 @@ void add_protos_irr(IoVM& vm)
 
     LM_ENUM_PROTOS(vm, (EBT_NONE)(EBT_VERTEX)(EBT_INDEX)(EBT_VERTEX_AND_INDEX) )
 
+    LM_ENUM_PROTOS(vm,
+        (ECM_NONE)
+        (ECM_DIFFUSE)
+        (ECM_AMBIENT)
+        (ECM_EMISSIVE)
+        (ECM_SPECULAR)
+        (ECM_DIFFUSE_AND_AMBIENT)
+    )
+
     LM_ENUM_PROTOS(vm, (EAAM_FULL_BASIC))
 
     LM_ENUM_PROTOS(vm,
