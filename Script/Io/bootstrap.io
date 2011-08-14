@@ -191,3 +191,18 @@ ExpressionBuilder build := method(
 )
 
 */
+
+UnitTest := Object clone do(
+
+    float_equal := method(left, right,
+        (left - right) abs < 0.01
+    )
+
+    test_equal := method(expected, actual,
+        if( float_equal(expected, actual),
+            writeln("PASSED - ", call message argAt(1) code)
+        ,
+            writeln("FAILED - ", call message argAt(1) code, " Expected: ", expected, " Actual: ", actual)
+        )
+    )
+)

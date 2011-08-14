@@ -55,6 +55,7 @@ public:
 
     virtual std::string describe() const { return describe_converter<From, To>("NumberConv"); }
 
+    virtual float cost() const { return 10.0; }
 };
 
 // When the destination type is a reference, we must cache the intermediate
@@ -77,6 +78,7 @@ public:
 
     virtual std::string describe() const { return describe_converter<From, To&>("NumberConv"); }
 
+    virtual float cost() const { return 10.0; }
 };
 
 }}

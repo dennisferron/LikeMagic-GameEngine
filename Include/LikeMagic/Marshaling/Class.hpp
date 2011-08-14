@@ -235,10 +235,10 @@ public:
     void bind_custom_field(std::string field_name, FieldAccessor f)
     {
         //auto setter = new CallTargetSelector<CustomFieldSetterTarget, T, FieldAccessor>(f, type_system);
-        auto setter = new CustomFieldSetterTarget<T, FieldAccessor>(f, type_system);
+        auto setter = new CustomFieldSetterTarget<T&, FieldAccessor>(f, type_system);
         add_method("set_" + field_name, setter);
         //auto getter = new CallTargetSelector<CustomFieldGetterTarget, T, FieldAccessor>(f, type_system);
-        auto getter = new CustomFieldGetterTarget<T, FieldAccessor>(f, type_system);
+        auto getter = new CustomFieldGetterTarget<T const&, FieldAccessor>(f, type_system);
         add_method("get_" + field_name, getter);
     }
 

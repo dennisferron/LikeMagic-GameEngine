@@ -13,11 +13,17 @@
 #include "boost/random/uniform_int.hpp"
 #include "boost/random/uniform_real.hpp"
 #include "boost/random/variate_generator.hpp"
+#include "boost/math/special_functions/fpclassify.hpp"
 
 #include <sstream>
 
 using namespace std;
 using namespace LikeMagic;
+
+bool ScriptUtil::is_nan(float f)
+{
+    return (boost::math::isnan)(f);
+}
 
 void ScriptUtil::print_float_array(float const* array, int width, int height)
 {
@@ -34,6 +40,13 @@ void ScriptUtil::print_float_array(float const* array, int width, int height)
             cout << "\t" << array[h*width+w];
         }
     }
+    cout << endl;
+}
+
+float ScriptUtil::get_float(float value)
+{
+    //cout << "get_float value = " << value << endl;
+    return value;
 }
 
 float ScriptUtil::get_random_float(float min, float max)

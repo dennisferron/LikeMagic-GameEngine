@@ -33,6 +33,10 @@
 #include "dmalloc.h"
 #endif
 
+// Debugging (to raise breakpoint signal for gdb)
+//#include <signal.h>
+
+
 using namespace std;
 using namespace LikeMagic::Marshaling;
 using namespace LikeMagic::SFMO;
@@ -151,6 +155,12 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys), last_exception(
     // The object that represents the global namespace.
     //add_proto("namespace", Namespace::global(type_sys).register_functions().create_class_proxy(), false);
 
+    type_sys.print_conv_chain(BetterTypeInfo::create_index<float&>(), ToIoTypeInfo::create_index());
+    auto term = Term<float, true>::create(1.99);
+    cout << "Term value is " << term->eval() << endl;
+    auto converted = type_sys.try_conv<double>(term);
+    cout << "Convert to double is " << converted->description() << " " << converted->eval() << endl;
+    return;
 }
 
 void IoVM::register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base)
@@ -338,6 +348,10 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
                 throw std::logic_error(std::string() + "Error converting argument " + boost::lexical_cast<std::string>(i) + ": " + e.what());
             }
         }
+
+        // Debugging
+        //if (method_name == "createHillPlaneMesh")
+        //    raise(SIGINT);
 
         auto result = proxy->call(method, args);
         IoObject* result_obj = iovm->to_script(self, locals, m, result);

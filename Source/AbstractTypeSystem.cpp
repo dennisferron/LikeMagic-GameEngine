@@ -388,10 +388,15 @@ void AbstractTypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, 
     add_ptr_convs(from);
     add_ptr_convs(to);
 
-    // Support the const form of this conversion too
+    auto from_info = from.get_info();
+    auto to_info = to.get_info();
+
+    // Allow converting the object directly to its const form
+    conv_graph.add_conv(from, from_info->as_const_obj_type()->get_index(), new NoChangeConv<>);
+    conv_graph.add_conv(to, to_info->as_const_obj_type()->get_index(), new NoChangeConv<>);
 
     // Reuse this converter for just the "to" obj const
-    conv_graph.add_conv(from.get_info()->get_index(), to.get_info()->as_const_obj_type()->get_index(), conv);
+    conv_graph.add_conv(from, to.get_info()->as_const_obj_type()->get_index(), conv);
 
     // Reuse this converter for both from and to as const
     conv_graph.add_conv(from.get_info()->as_const_obj_type()->get_index(), to.get_info()->as_const_obj_type()->get_index(), conv);

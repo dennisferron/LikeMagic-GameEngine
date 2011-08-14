@@ -13,6 +13,34 @@
 namespace LikeMagic
 {
 
+// Supports the same script functions as a vector, but this
+// differs from std::vector in that it doesn't manage its own memory.
+template <typename T>
+class NativeArray
+{
+private:
+    T* array;
+    size_t arr_size;
+
+public:
+    NativeArray(size_t size_)
+        : array(new T[size_]), arr_size(size_)
+    {
+    }
+
+    NativeArray(size_t size_, T* array_)
+        : array(array_), arr_size(size_)
+    {
+    }
+
+    T* begin_nc() { return array; }
+    T const* begin_c() { return array; }
+    size_t size() { return arr_size; }
+    T& at_nc(size_t pos) { return array[pos]; }
+    T const& at_c(size_t pos) { return array[pos]; }
+    void at_put(size_t pos, T const& value) { array[pos] = value; }
+};
+
 class ScriptUtil
 {
 public:
@@ -23,6 +51,7 @@ public:
     static bool get_false();
     static double get_double(double value);
     static int get_int(int value);
+    static float get_float(float value);
 
     static std::string get_string(std::string const& value);
 
@@ -30,6 +59,8 @@ public:
     static float* get_random_float_array(int width, int height, float min, float max);
 
     static void print_float_array(float const* array, int width, int height);
+
+    static bool is_nan(float f);
 
     // Instance fields to test member field setting
     void* voidp_field;

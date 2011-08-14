@@ -35,6 +35,9 @@ public:
     }
 
     virtual std::string describe() const { return describe_converter<From, To>("PtrDerefConv"); }
+
+    // Don't want to use a detour via addr of / ptr deref where other conversion will do.
+    virtual float cost() const { return 3.0f; }
 };
 
 }}

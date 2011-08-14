@@ -142,12 +142,18 @@ void TypeConvGraph::print_conv_chain(TypeIndex from, TypeIndex to) const
     else
     {
         cout << "Conversion chain from " << from.describe() << " to " << to.describe() << " is ";
-        for (size_t i=0; i < chain->size(); i++)
-        {
-            cout  << " -> "<< (*chain)[i]->describe();
-        }
-        cout << endl;
+        print_conv_chain(chain);
     }
+
+}
+
+void TypeConvGraph::print_conv_chain(p_chain_t chain) const
+{
+    for (size_t i=0; i < chain->size(); i++)
+    {
+        cout  << " -> "<< (*chain)[i]->describe();
+    }
+    cout << endl;
 }
 
 
@@ -172,6 +178,9 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to
 
         throw std::logic_error(msg);
     }
+
+    // Debugging
+    //print_conv_chain(result);
 
     return build_conv_chain(from_expr, result);
 }

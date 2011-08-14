@@ -2799,7 +2799,7 @@
 	<stdexcept>
 	<string>
 
-1312773204 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/TypeConvGraph.hpp
+1313286654 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/TypeConvGraph.hpp
 	<utility>
 	<map>
 	<bitset>
@@ -5981,7 +5981,7 @@
 	"boost/unordered_map.hpp"
 	"boost/unordered_set.hpp"
 
-1312148687 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/RuntimeTypeSystem.hpp
+1313288238 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/RuntimeTypeSystem.hpp
 	"boost/type_traits/is_enum.hpp"
 	"LikeMagic/Utility/EnumHelper.hpp"
 	"LikeMagic/AbstractTypeSystem.hpp"
@@ -6032,7 +6032,7 @@
 	<boost/assert.hpp>
 	<boost/static_assert.hpp>
 
-1312773204 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/Class.hpp
+1313289473 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Marshaling/Class.hpp
 	"LikeMagic/Marshaling/AbstractClass.hpp"
 	"LikeMagic/Generators/GeneratorFactory.hpp"
 	"LikeMagic/CallTargets/ConstructorCallTarget.hpp"
@@ -6144,7 +6144,7 @@
 	"LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
 	"LikeMagic/SFMO/CppObjProxy.hpp"
 
-1308455828 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/NumberConv.hpp
+1313261967 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/NumberConv.hpp
 	"LikeMagic/TypeConv/ConvertibleTo.hpp"
 	"LikeMagic/SFMO/Trampoline.hpp"
 	"LikeMagic/SFMO/NumberCachingTrampoline.hpp"
@@ -6159,7 +6159,7 @@
 	"ConvertibleTo.hpp"
 	"../SFMO/Trampoline.hpp"
 
-1312139882 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/AddrOfConv.hpp
+1313287463 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/AddrOfConv.hpp
 	"ConvertibleTo.hpp"
 	"../SFMO/Trampoline.hpp"
 	"boost/type_traits/is_reference.hpp"
@@ -6353,7 +6353,7 @@
 	"LikeMagic/SFMO/Trampoline.hpp"
 	"boost/type_traits.hpp"
 
-1312147839 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/PtrDerefConv.hpp
+1313287479 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/PtrDerefConv.hpp
 	"LikeMagic/TypeConv/ConvertibleTo.hpp"
 	"LikeMagic/SFMO/Trampoline.hpp"
 
@@ -6410,7 +6410,7 @@
 	"LikeMagic/Backends/Io/IoBlock.hpp"
 	<iterator>
 
-1308455829 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/API_Io_to_script.cpp
+1313275664 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/API_Io_to_script.cpp
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/SFMO/Term.hpp"
 	"LikeMagic/SFMO/NullExpr.hpp"
@@ -6464,7 +6464,7 @@
 1308455826 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeInfo.cpp
 	"LikeMagic/Utility/AbstractTypeInfo.hpp"
 
-1312773204 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeSystem.cpp
+1313288272 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/AbstractTypeSystem.cpp
 	"LikeMagic/AbstractTypeSystem.hpp"
 	"LikeMagic/Marshaling/AbstractClass.hpp"
 	"LikeMagic/TypeConv/NoChangeConv.hpp"
@@ -6499,7 +6499,7 @@
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/Backends/Io/FromIoTypeInfo.hpp"
 
-1312773204 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoVM.cpp
+1313279094 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/IoVM.cpp
 	"LikeMagic/Backends/Io/API_Io_Impl.hpp"
 	"LikeMagic/Backends/Io/IoVM.hpp"
 	"LikeMagic/Backends/Io/IoBlock.hpp"
@@ -6567,7 +6567,7 @@
 	"LikeMagic/Marshaling/ProxyMethods.hpp"
 	"LikeMagic/SFMO/NamespaceProxy.hpp"
 
-1313117990 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/RuntimeTypeSystem.cpp
+1313263359 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/RuntimeTypeSystem.cpp
 	"LikeMagic/RuntimeTypeSystem.hpp"
 	"LikeMagic/NamespacePath.hpp"
 	"LikeMagic/TypeConv/StringConv.hpp"
@@ -6581,7 +6581,7 @@
 	"LikeMagic/Marshaling/StaticMethods.hpp"
 	"LikeMagic/SFMO/NamespaceProxy.hpp"
 
-1312773204 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/TypeConvGraph.cpp
+1313289706 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/TypeConvGraph.cpp
 	"LikeMagic/TypeConv/TypeConvGraph.hpp"
 	"LikeMagic/TypeConv/NoChangeConv.hpp"
 	"LikeMagic/SFMO/BottomPtrExpr.hpp"
@@ -7271,15 +7271,16 @@
 	"LikeMagic/SFMO/BottomPtrExpr.hpp"
 	"LikeMagic/SFMO/NullExpr.hpp"
 
-1313034276 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/ScriptUtil.cpp
+1313275704 source:/home/dennis/code/LikeMagic-All/LikeMagic/Source/ScriptUtil.cpp
 	"LikeMagic/ScriptUtil.hpp"
 	"boost/random/linear_congruential.hpp"
 	"boost/random/uniform_int.hpp"
 	"boost/random/uniform_real.hpp"
 	"boost/random/variate_generator.hpp"
+	"boost/math/special_functions/fpclassify.hpp"
 	<sstream>
 
-1313033654 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/ScriptUtil.hpp
+1313263394 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/ScriptUtil.hpp
 	<string>
 
 1312148252 /home/dennis/code/LikeMagic-All/LikeMagic/Include/LikeMagic/TypeConv/BottomPtrConv.hpp
@@ -7564,4 +7565,111 @@
 	<boost/config.hpp>
 	<boost/random/detail/config.hpp>
 	<boost/random/uniform_01.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/math/special_functions/fpclassify.hpp
+	<math.h>
+	<boost/config/no_tr1/cmath.hpp>
+	<boost/limits.hpp>
+	<boost/math/tools/real_cast.hpp>
+	<boost/type_traits/is_floating_point.hpp>
+	<boost/math/special_functions/math_fwd.hpp>
+	<boost/math/special_functions/detail/fp_traits.hpp>
+	<float.h>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/math/tools/real_cast.hpp
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/math/special_functions/math_fwd.hpp
+	<boost/math/special_functions/detail/round_fwd.hpp>
+	<boost/math/tools/promotion.hpp>
+	<boost/math/policies/policy.hpp>
+	<boost/mpl/comparison.hpp>
+	<boost/config/no_tr1/complex.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/math/special_functions/detail/round_fwd.hpp
+	<boost/config.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/math/tools/promotion.hpp
+	<boost/math/tools/config.hpp>
+	<boost/type_traits/is_floating_point.hpp>
+	<boost/type_traits/is_integral.hpp>
+	<boost/type_traits/is_convertible.hpp>
+	<boost/type_traits/is_same.hpp>
+	<boost/type_traits/remove_cv.hpp>
+	<boost/mpl/if.hpp>
+	<boost/mpl/and.hpp>
+	<boost/mpl/or.hpp>
+	<boost/static_assert.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/math/tools/config.hpp
+	<boost/cstdint.hpp>
+	<boost/config.hpp>
+	<boost/detail/workaround.hpp>
+	<algorithm>
+	<boost/config/no_tr1/cmath.hpp>
+	<climits>
+	<math.h>
+	<boost/math/tools/user.hpp>
+	<boost/math/special_functions/detail/round_fwd.hpp>
+	<float.h>
+	"boost/type.hpp"
+	"boost/non_type.hpp"
+	<fenv.h>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/math/tools/user.hpp
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/math/policies/policy.hpp
+	<boost/mpl/list.hpp>
+	<boost/mpl/contains.hpp>
+	<boost/mpl/if.hpp>
+	<boost/mpl/find_if.hpp>
+	<boost/mpl/remove_if.hpp>
+	<boost/mpl/vector.hpp>
+	<boost/mpl/push_back.hpp>
+	<boost/mpl/at.hpp>
+	<boost/mpl/size.hpp>
+	<boost/mpl/comparison.hpp>
+	<boost/type_traits/is_same.hpp>
+	<boost/static_assert.hpp>
+	<boost/assert.hpp>
+	<boost/math/tools/config.hpp>
+	<limits>
+	<limits.h>
+	<stdlib.h>
+	<stddef.h>
+	<math.h>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/mpl/list.hpp
+	<boost/mpl/limits/list.hpp>
+	<boost/mpl/aux_/na.hpp>
+	<boost/mpl/aux_/config/preprocessor.hpp>
+	<boost/preprocessor/inc.hpp>
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/stringize.hpp>
+	<boost/mpl/aux_/config/use_preprocessed.hpp>
+	<boost/mpl/aux_/include_preprocessed.hpp>
+	<boost/mpl/limits/list.hpp>
+	<boost/mpl/aux_/sequence_wrapper.hpp>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/mpl/limits/list.hpp
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/mpl/remove_if.hpp
+	<boost/mpl/fold.hpp>
+	<boost/mpl/reverse_fold.hpp>
+	<boost/mpl/eval_if.hpp>
+	<boost/mpl/identity.hpp>
+	<boost/mpl/protect.hpp>
+	<boost/mpl/lambda.hpp>
+	<boost/mpl/apply.hpp>
+	<boost/mpl/aux_/inserter_algorithm.hpp>
+
+1311558266 /home/dennis/code/LikeMagic-All/Common/boost/boost/config/no_tr1/complex.hpp
+	<complex>
+
+1311558267 /home/dennis/code/LikeMagic-All/Common/boost/boost/math/special_functions/detail/fp_traits.hpp
+	<cstring>
+	<boost/assert.hpp>
+	<boost/cstdint.hpp>
+	<boost/detail/endian.hpp>
+	<boost/static_assert.hpp>
+	<boost/type_traits/is_floating_point.hpp>
 

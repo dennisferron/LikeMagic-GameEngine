@@ -89,6 +89,7 @@ public:
     bool has_conv(TypeIndex from_type, TypeIndex to_type) const;
     void print_graph() const;
     void print_conv_chain(TypeIndex from, TypeIndex to) const;
+    void print_conv_chain(p_chain_t chain) const;
 };
 
 }}

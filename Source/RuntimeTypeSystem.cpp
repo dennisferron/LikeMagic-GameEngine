@@ -240,10 +240,16 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     LM_CLASS(global_ns, vector_of_float_iterator)
     add_conv<vector_of_float_iterator, float*, IteratorConv>();
 
+    typedef NativeArray<float> NativeArray_of_float;
+    LM_CLASS(global_ns, NativeArray_of_float)
+    LM_CONSTR(NativeArray_of_float,, size_t)
+    LM_CONSTR(NativeArray_of_float,, size_t, float*)
+    LM_FUNC(NativeArray_of_float, (begin_c)(begin_nc)(at_c)(at_nc)(at_put)(size))
+
     LM_CLASS(global_ns, ScriptUtil)
     LM_CONSTR(ScriptUtil,,)
     LM_FIELD(ScriptUtil, (voidp_field)(charp_field)(ucharp_field)(intp_field)(uintp_field))
-    LM_STATIC_MEMBER_FUNC(ScriptUtil, (ptr_addr_to_str)(get_null_ptr)(get_test_ptr)(get_true)(get_false)(get_int)(get_double)(get_string)(get_random_float)(get_random_float_array)(print_float_array))
+    LM_STATIC_MEMBER_FUNC(ScriptUtil, (ptr_addr_to_str)(get_null_ptr)(get_test_ptr)(get_true)(get_false)(get_int)(get_double)(get_string)(get_float)(get_random_float)(get_random_float_array)(print_float_array)(is_nan))
 }
 
 

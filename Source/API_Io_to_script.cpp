@@ -74,6 +74,30 @@ DECL_CONV(String, std::string, IOSEQ(reinterpret_cast<const unsigned char*>(valu
 DECL_CONV(Vector_of_Int, std::vector<int> const&, to_seq<int>(value, IOSTATE))
 DECL_CONV(Vector_of_UInt, std::vector<unsigned int> const&, to_seq<unsigned int>(value, IOSTATE))
 
+template <typename T>
+struct ToNumberFromT : public AbstractTypeConverter
+{
+    static IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m, T value)
+    {
+        IoObject* io_obj = IONUMBER(value);
+        //cout <<
+        //    "To Number from " + BetterTypeInfo::create_index<T>().describe() + " Conv"
+        //    << " from value = " << value << " and to io_obj = " << IoNumber_asDouble(io_obj) << endl;
+        return io_obj;
+    }
+
+    virtual ExprPtr wrap_expr(ExprPtr expr) const
+    {
+        return ToIoObjectExpr<T, ToNumberFromT>::create(expr);
+    }
+
+    virtual std::string describe() const { return "To Number from " + BetterTypeInfo::create_index<T>().describe() + " Conv"; }
+
+    static void add_conv(AbstractTypeSystem& type_sys)
+    {
+        type_sys.add_converter_simple(BetterTypeInfo::create_index<T>(), ToIoTypeInfo::create_index(), new ToNumberFromT<T>());
+    }
+};
 
 struct ToIoNilExpr : public AbstractToIoObjectExpr
 {
@@ -111,7 +135,8 @@ struct ToIoNil : public AbstractTypeConverter
 
 void add_convs_to_script(AbstractTypeSystem& type_sys, IoVM* iovm)
 {
-    ADD_CONV(Number, double)
+    //ADD_CONV(Number, double)
+    //ADD_CONV(Number, float)
     ADD_CONV(Bool, bool)
     ADD_CONV(String, std::string)
 
@@ -119,6 +144,9 @@ void add_convs_to_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     ADD_CONV(Vector_of_UInt, std::vector<unsigned int> const&)
 
     type_sys.add_converter_simple(BetterTypeInfo::create_index<void>(), ToIoTypeInfo::create_index(), new ToIoNil);
+
+    ToNumberFromT<double>::add_conv(type_sys);
+    ToNumberFromT<float>::add_conv(type_sys);
 }
 
 }}}

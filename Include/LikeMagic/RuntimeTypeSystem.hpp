@@ -129,16 +129,23 @@ public:
             add_conv<T&, T*, AddrOfConv>();
 
             // Don't want to do this for types convertible to script types, e.g. int*,
-            // because then you couldn't return an array; instead the first array element converts to a script value.
+            // because then you couldn't return an array; instead the first array element
+            // could get converted to a script value if you had this enabled.
             if (add_deref_ptr_conv)
             {
                 // Also allow converting pointers back to references.
                 add_conv<T*, T&, PtrDerefConv>();
             }
 
+            // These conversions should be unnecessary now that I've improved the pointer conversions in AbstractTypeSystem.
             // References to pointers can be converted to pointers.
-            add_conv<T*&, T*>();
-            add_conv<T* const&, T*>();
+            //add_conv<T*&, T*>();
+            //add_conv<T* const&, T*>();
+
+            // This should not be needed now that I've fixed add_conv in AbstractTypeSystem.
+            // Apparently this is highly important; without it the type conv graph
+            // will do strange detours via pointer address / dereference.
+            //add_conv<T&, T const&>();
 
             // enable pointer to value conversions only if class is copyable.
             register_copyable_conv<T, is_copyable>();
