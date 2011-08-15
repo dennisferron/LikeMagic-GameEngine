@@ -55,6 +55,8 @@ void add_bindings_video(RuntimeTypeSystem& type_sys)
     LM_CONSTR(SExposedVideoData,,)
 
     LM_CLASS(ns_irr_video, SMaterial)
+    LM_CONSTR(SMaterial,,)
+    LM_CONSTR(SMaterial,, SMaterial const&)
     LM_FUNC(SMaterial, (setFlag)(getFlag)(getTexture)(setTexture)(setTextureMatrix)(isTransparent))
     LM_FIELD(SMaterial, (AntiAliasing)(AmbientColor)(DiffuseColor)(EmissiveColor)(MaterialType)(MaterialTypeParam)(MaterialTypeParam2)(Shininess)(SpecularColor)(Thickness)(ZBuffer))
     LM_BIT_FIELD(SMaterial, BackfaceCulling)

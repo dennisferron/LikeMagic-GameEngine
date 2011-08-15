@@ -43,6 +43,7 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
     LM_FUNC_OVERLOAD(ISceneManager, "createTriangleSelector", createTriangleSelector, ITriangleSelector*, IMesh*, ISceneNode*)
     LM_FUNC_OVERLOAD(ISceneManager, "getMeshFromIReadFile", getMesh, IAnimatedMesh*, IReadFile*);
     LM_FUNC_OVERLOAD(ISceneManager, "getMeshFromPath", getMesh, IAnimatedMesh*, path const&);
+    LM_FUNC_OVERLOAD(ISceneManager, "createOctreeTriangleSelector", createOctreeTriangleSelector, ITriangleSelector*, IMesh*, ISceneNode*, s32)
 
     LM_FUNC_OVERLOAD(ISceneManager, "loadSceneFromIReadFile", loadScene, bool, IReadFile*, ISceneUserDataSerializer*);
     LM_FUNC_OVERLOAD(ISceneManager, "loadSceneFromPath", loadScene, bool, path const&, ISceneUserDataSerializer*);
@@ -98,11 +99,12 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
                         (getAbsoluteTransformation)(getRelativeTransformation)(setParent)
                         (setPosition)(getPosition)(setRotation)(getRotation)(getAbsolutePosition)(getAnimators)
                         (setScale)(getScale)(removeAnimator)(removeAnimators)(remove)(setMaterialTexture)(setMaterialType)
-                        (updateAbsolutePosition)(OnAnimate)(setTriangleSelector)(getName)(getID)
+                        (updateAbsolutePosition)(OnAnimate)(setTriangleSelector)(getName)(getID)(setID)
            )
 
     LM_CLASS(ns_irr_scene, IMeshSceneNode)
     LM_BASE(IMeshSceneNode, ISceneNode)
+    LM_FUNC(IMeshSceneNode, (getMesh)(isReadOnlyMaterials)(setMesh)(setReadOnlyMaterials))
 
     LM_CLASS(ns_irr_scene, ILightSceneNode)
     LM_BASE(ILightSceneNode, ISceneNode)

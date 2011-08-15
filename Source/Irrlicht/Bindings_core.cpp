@@ -60,6 +60,9 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
     LM_FIELD(vector2df, (X)(Y))
 
     LM_CLASS(ns_irr_core, matrix4)
+    LM_CONSTR(matrix4,,)
+    LM_CONSTR(matrix4,, matrix4::eConstructor)
+    LM_CONSTR(matrix4,, matrix4 const&, matrix4::eConstructor)
     LM_FUNC(matrix4, (getRotationDegrees))
     LM_FUNC_OVERLOAD_CONST(matrix4, "transformVect", transformVect, void, vector3df&)
     LM_FUNC_OVERLOAD_CONST(matrix4, "transformVect", transformVect, void, vector3df&, vector3df const&)
@@ -70,6 +73,13 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_irr_core, triangle3df)
     LM_CONSTR(triangle3df,,)
+    LM_CONSTR(triangle3df,, vector3df, vector3df, vector3df)
+    LM_FIELD(triangle3df, (pointA)(pointB)(pointC))
+    LM_FUNC(triangle3df,
+            (closestPointOnTriangle)(getArea)(getIntersectionOfPlaneWithLine)(getIntersectionWithLimitedLine)(getIntersectionWithLine)
+            (getNormal)(getPlane)(isFrontFacing)(isPointInside)(isPointInsideFast)(isTotalInsideBox)(isTotalOutsideBox)(set)
+    )
+    LM_OP(triangle3df, (==)(!=))
 
     LM_CLASS(ns_irr_core, vector3df)
     LM_CONSTR(vector3df,,)
@@ -78,12 +88,20 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
     LM_CONSTR(vector3df, "newWithXYZ", float, float, float)
     LM_CONSTR(vector3df, "newFromVector3df", vector3df const&)
     LM_FIELD(vector3df, (X)(Y)(Z))
-    LM_FUNC(vector3df, (getHorizontalAngle)(rotationToDirection)(dotProduct)(crossProduct))
+    LM_FUNC(vector3df, (getHorizontalAngle)(rotationToDirection)(dotProduct)(crossProduct)(equals)(getAs4Values)(getDistanceFrom)
+            (getDistanceFromSQ)(getHorizontalAngle)(getInterpolated)(getInterpolated_quadratic)(getLength)(getLengthSQ)(getSphericalCoordinateAngles)
+            (interpolate)(invert)(isBetweenPoints)(normalize)(rotateXYBy)(rotateXZBy)(rotateYZBy)(rotationToDirection)(setLength))
+    LM_OP(vector3df, (==)(!=)(<)(>)(<=)(>=))
 
     LM_OP_OVERLOAD(vector3df, const, +, vector3df, vector3df const&)
     LM_OP_OVERLOAD(vector3df, const, -, vector3df, vector3df const&)
     LM_OP_OVERLOAD(vector3df, const, *, vector3df, vector3df const&)
     LM_OP_OVERLOAD(vector3df, const, /, vector3df, vector3df const&)
+
+    LM_OP_OVERLOAD(vector3df, , +=, vector3df&, vector3df const&)
+    LM_OP_OVERLOAD(vector3df, , -=, vector3df&, vector3df const&)
+    LM_OP_OVERLOAD(vector3df, , *=, vector3df&, vector3df const&)
+    LM_OP_OVERLOAD(vector3df, , /=, vector3df&, vector3df const&)
 
     // Select which overload of "set" to bind by passing template parameter to bind_method.
     // Note how you must use "(core::vector3df::*)" to ensure it is a member function pointer;
