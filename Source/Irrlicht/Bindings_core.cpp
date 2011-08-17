@@ -163,6 +163,23 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
 
     LM_OP(ArrayOfVector3df, (!=)(==))
     LM_FUNC_OVERLOAD(ArrayOfVector3df, "squareBrackets", operator [], vector3df&, u32)
+
+    LM_CLASS(ns_irr_core, plane3df)
+    LM_CONSTR(plane3df,,)
+    LM_CONSTR(plane3df,"newFromNormalAndDistance", vector3df const&, f32 const)
+    LM_CONSTR(plane3df,"newFromPoints", vector3df const&, vector3df const&, vector3df const&)
+    LM_CONSTR(plane3df,"newFromPxPyPzNxNyNz", f32, f32, f32, f32, f32, f32)
+    LM_CONSTR(plane3df,"newFromPointAndNormal", vector3df const&, vector3df const&)
+    LM_FIELD(plane3df, (D)(Normal))
+    LM_FUNC(plane3df, (classifyPointRelation)(existsIntersection)(getDistanceTo)(getIntersectionWithLimitedLine)(getIntersectionWithLine)
+            (getIntersectionWithPlane)(getIntersectionWithPlanes)(getKnownIntersectionWithLine)(getMemberPoint)(isFrontFacing)(recalculateD))
+    LM_OP(plane3df, (!=)(==))
+    LM_FUNC_OVERLOAD(plane3df, "setPlaneFromPoints", setPlane, void, vector3df const&, vector3df const&, vector3df const&)
+    LM_FUNC_OVERLOAD(plane3df, "setPlaneFromNormalAndDistance", setPlane, void, vector3df const&, f32)
+    LM_FUNC_OVERLOAD(plane3df, "setPlaneFromPointAndNormal", setPlane, void, vector3df const&, vector3df const&)
+
+    // Used by classifyPointRelation in plane3df
+    LM_CLASS(ns_irr_core, EIntersectionRelation3D)
 }
 
 }}

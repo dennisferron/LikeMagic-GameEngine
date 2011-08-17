@@ -78,6 +78,14 @@ void add_protos_irr(IoVM& vm)
         (ECM_DIFFUSE_AND_AMBIENT)
     )
 
+    LM_ENUM_PROTOS(vm,
+        (ISREL3D_FRONT)
+        (ISREL3D_BACK)
+        (ISREL3D_PLANAR)
+        (ISREL3D_SPANNING)
+        (ISREL3D_CLIPPED)
+    )
+
     LM_ENUM_PROTOS(vm, (EAAM_FULL_BASIC))
 
     LM_ENUM_PROTOS(vm,

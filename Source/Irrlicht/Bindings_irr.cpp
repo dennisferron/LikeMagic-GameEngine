@@ -30,9 +30,14 @@ void add_bindings_irr(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_irr, IrrlichtDevice)
     LM_BASE(IrrlichtDevice, IReferenceCounted)
-    LM_FUNC(IrrlichtDevice, (setWindowCaption)(getVideoDriver)(getSceneManager)(run)
-            (isWindowActive)(getTimer)(getGUIEnvironment)
+    LM_FUNC(IrrlichtDevice,
+            (activateJoysticks)(clearSystemMessages)(closeDevice)(getColorFormat)(getCursorControl)(getEventReceiver)
+            (getFileSystem)(getGammaRamp)(getGUIEnvironment)(getLogger)(getOSOperator)(getSceneManager)(getTimer)
+            (getType)(getVersion)(getVideoDriver)(getVideoModeList)(isFullscreen)(isWindowActive)(isWindowFocused)
+            (isWindowMinimized)(maximizeWindow)(minimizeWindow)(postEventFromUser)(restoreWindow)(run)(setEventReceiver)
+            (setGammaRamp)(setInputReceivingSceneManager)(setResizable)(setWindowCaption)(sleep)(yield)
     )
+    LM_STATIC_MEMBER_FUNC(IrrlichtDevice, (isDriverSupported))
 
     LM_CLASS(ns_irr, ITimer)
     LM_FUNC(ITimer, (getRealTime)(getTime)(setTime)(stop)(start)(setSpeed)(getSpeed)(isStopped)(tick))

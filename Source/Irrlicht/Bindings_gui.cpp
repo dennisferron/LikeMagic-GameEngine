@@ -8,40 +8,15 @@
 
 #include "Bindings/Irrlicht/Bindings.hpp"
 
-#include <irrlicht.h>
+#include "irrlicht.h"
+#include "vector2d.h"
+
 
 #include "LikeMagic/Utility/UserMacros.hpp"
 
 using namespace LikeMagic;
 using namespace irr;
 using namespace irr::gui;
-
-/*
-// For some reason Io is not converting EEVENT_TYPE to integer codes, so the objects weren't comparing equal.
-// I've created a non-member operator == overload to take care of that (the operator will be called in Io).
-bool op_equals(EEVENT_TYPE const& a, EEVENT_TYPE const& b)
-{
-    std::cout << "op_equals: " << (a == b) << std::endl;
-    return a == b;
-}
-bool op_notequals(EEVENT_TYPE const& a, EEVENT_TYPE const& b)
-{
-    std::cout << "op_notequals: " << (a != b) << std::endl;
-    return a != b;
-}
-*/
-
-bool enum_equals(int a, int b)
-{
-    std::cout << "op_equals: " << (a == b) << std::endl;
-    return a == b;
-}
-bool enum_notequals(int a, int b)
-{
-    std::cout << "op_notequals: " << (a != b) << std::endl;
-    return a != b;
-}
-
 
 namespace Bindings { namespace Irrlicht {
 
@@ -60,6 +35,14 @@ void add_bindings_gui(RuntimeTypeSystem& type_sys)
     LM_BASE(IGUIFont, IReferenceCounted)
     LM_FUNC(IGUIFont, (draw)(getDimension)(getKerningHeight)(getKerningWidth)(setKerningHeight)(setKerningWidth)
     )
+
+    LM_CLASS(ns_irr_gui, ICursorControl)
+    LM_BASE(ICursorControl, IReferenceCounted)
+    LM_FUNC(ICursorControl, (getPosition)(getRelativePosition)(isVisible)(setReferenceRect)(setVisible))
+    LM_FUNC_OVERLOAD(ICursorControl, "setPosition", setPosition, void, s32, s32)
+    LM_FUNC_OVERLOAD(ICursorControl, "setRelativePosition", setPosition, void, f32, f32)
+    LM_FUNC_OVERLOAD(ICursorControl, "setPosition", setPosition, void, irr::core::vector2di const&)
+    LM_FUNC_OVERLOAD(ICursorControl, "setRelativePosition", setPosition, void, irr::core::vector2df const&)
 
     LM_ENUM(ns_irr_gui, EKEY_CODE)
     LM_ENUM(ns_irr_gui, EEVENT_TYPE)
