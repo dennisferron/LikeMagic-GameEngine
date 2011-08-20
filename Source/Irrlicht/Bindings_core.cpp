@@ -70,6 +70,8 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_irr_core, line3df)
     LM_FIELD(line3df, (start)(end))
+    LM_FUNC(line3df, (getClosestPoint)(getIntersectionWithSphere)(getLength)(getLengthSQ)(getMiddle)(getVector)(isPointBetweenStartAndEnd))
+    LM_OP(line3df, (!=)(+)(+=)(-)(-=)(==))
 
     LM_CLASS(ns_irr_core, triangle3df)
     LM_CONSTR(triangle3df,,)

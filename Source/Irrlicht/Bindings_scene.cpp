@@ -99,7 +99,7 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
                         (getAbsoluteTransformation)(getRelativeTransformation)(setParent)
                         (setPosition)(getPosition)(setRotation)(getRotation)(getAbsolutePosition)(getAnimators)
                         (setScale)(getScale)(removeAnimator)(removeAnimators)(remove)(setMaterialTexture)(setMaterialType)
-                        (updateAbsolutePosition)(OnAnimate)(setTriangleSelector)(getName)(getID)(setID)
+                        (updateAbsolutePosition)(OnAnimate)(setTriangleSelector)(getName)(getID)(setID)(isDebugDataVisible)(setDebugDataVisible)
            )
 
     LM_CLASS(ns_irr_scene, IMeshSceneNode)
