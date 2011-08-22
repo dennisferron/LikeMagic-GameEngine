@@ -28,7 +28,7 @@ void add_bindings_gui(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_irr_gui, IGUIEnvironment)
     LM_BASE(IGUIEnvironment, IReferenceCounted)
-    LM_FUNC(IGUIEnvironment, (getBuiltInFont)
+    LM_FUNC(IGUIEnvironment, (getBuiltInFont)(addToolBar)(addMenu)(addStaticText)(getRootGUIElement)(drawAll)
     )
 
     LM_CLASS(ns_irr_gui, IGUIFont)
@@ -78,6 +78,42 @@ void add_bindings_gui(RuntimeTypeSystem& type_sys)
 
     typedef SEvent::SUserEvent SUserEvent;
     LM_CLASS(ns_irr_gui, SUserEvent)
+
+    LM_CLASS(ns_irr_gui, IGUIElement)
+    LM_FUNC(IGUIElement, (setMaxSize)(setMinSize))
+
+    LM_CLASS(ns_irr_gui, IGUIToolBar)
+    LM_BASE(IGUIToolBar, IGUIElement)
+    LM_FUNC(IGUIToolBar, (addButton))
+
+    LM_CLASS(ns_irr_gui, IGUIButton)
+    LM_BASE(IGUIButton, IGUIElement)
+    LM_FUNC(IGUIButton,
+        (isAlphaChannelUsed)
+        (isDrawingBorder)
+        (isPressed)
+        (isPushButton)
+        (isScalingImage)
+        (setDrawBorder)
+        (setIsPushButton)
+        (setOverrideFont)
+        (setPressed)
+        (setScaleImage)
+        (setSprite)
+        (setSpriteBank)
+        (setUseAlphaChannel)
+    )
+    LM_FUNC_OVERLOAD(IGUIButton, "setImage", setImage, void, video::ITexture *, const core::rect< s32 > &)
+    LM_FUNC_OVERLOAD(IGUIButton, "setImage", setImage, void, video::ITexture *)
+    LM_FUNC_OVERLOAD(IGUIButton, "setPressedImage", setPressedImage, void, video::ITexture *, const core::rect< s32 > &)
+    LM_FUNC_OVERLOAD(IGUIButton, "setPressedImage", setPressedImage, void, video::ITexture *)
+
+    LM_CLASS(ns_irr_gui, IGUIContextMenu)
+    LM_BASE(IGUIContextMenu, IGUIElement)
+    LM_FUNC(IGUIContextMenu, (addItem)(setItemText))
+
+    LM_CLASS(ns_irr_gui, IGUIStaticText)
+    LM_BASE(IGUIStaticText, IGUIElement)
 }
 
 
