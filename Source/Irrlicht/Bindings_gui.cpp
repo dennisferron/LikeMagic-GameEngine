@@ -28,7 +28,7 @@ void add_bindings_gui(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_irr_gui, IGUIEnvironment)
     LM_BASE(IGUIEnvironment, IReferenceCounted)
-    LM_FUNC(IGUIEnvironment, (getBuiltInFont)(addToolBar)(addMenu)(addStaticText)(getRootGUIElement)(drawAll)
+    LM_FUNC(IGUIEnvironment, (getBuiltInFont)(addEditBox)(addToolBar)(addMenu)(addSpinBox)(addStaticText)(getRootGUIElement)(drawAll)
     )
 
     LM_CLASS(ns_irr_gui, IGUIFont)
@@ -80,7 +80,7 @@ void add_bindings_gui(RuntimeTypeSystem& type_sys)
     LM_CLASS(ns_irr_gui, SUserEvent)
 
     LM_CLASS(ns_irr_gui, IGUIElement)
-    LM_FUNC(IGUIElement, (setMaxSize)(setMinSize))
+    LM_FUNC(IGUIElement, (getText)(setMaxSize)(setMinSize)(setText))
 
     LM_CLASS(ns_irr_gui, IGUIToolBar)
     LM_BASE(IGUIToolBar, IGUIElement)
@@ -114,6 +114,21 @@ void add_bindings_gui(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_irr_gui, IGUIStaticText)
     LM_BASE(IGUIStaticText, IGUIElement)
+
+    LM_CLASS(ns_irr_gui, IGUIEditBox)
+    LM_BASE(IGUIEditBox, IGUIElement)
+    LM_FUNC(IGUIEditBox,
+        (enableOverrideColor)(getMax)(getTextDimension)(isAutoScrollEnabled)(isMultiLineEnabled)
+        (isPasswordBox)(isWordWrapEnabled)(setAutoScroll)(setDrawBorder)(setMax)(setMultiLine)
+        (setOverrideColor)(setOverrideFont)(setPasswordBox)(setTextAlignment)(setWordWrap)
+    )
+
+    LM_CLASS(ns_irr_gui, IGUISpinBox)
+    LM_BASE(IGUISpinBox, IGUIElement)
+    LM_FUNC(IGUISpinBox,
+        (getEditBox)(getMax)(getMin)(getStepSize)(getValue)
+        (setDecimalPlaces)(setRange)(setStepSize)(setValue)
+    )
 }
 
 
