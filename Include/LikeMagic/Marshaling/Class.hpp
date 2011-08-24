@@ -182,6 +182,8 @@ public:
     template <typename... Args>
     void bind_constructor(std::string method_name="new")
     {
+        static_assert(!boost::is_abstract<T>::value, "Cannot declare LikeMagic constructor on abstract class. To construct objects of this type, register a derived, concrete class and register its constructor.");
+
         // When the object is created under the name of "new", it is a resource
         // and must be deleted when you are finished with it.
         add_constructor<T*, Args...>("new", method_name);
