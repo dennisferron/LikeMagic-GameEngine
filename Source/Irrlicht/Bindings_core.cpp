@@ -105,17 +105,48 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
     LM_OP_OVERLOAD(vector3df, , *=, vector3df&, vector3df const&)
     LM_OP_OVERLOAD(vector3df, , /=, vector3df&, vector3df const&)
 
-    // Select which overload of "set" to bind by passing template parameter to bind_method.
-    // Note how you must use "(core::vector3df::*)" to ensure it is a member function pointer;
-    // that part is easy to forget and hard to debug if you forget it.
-    vector3df_LM.bind_method("set", static_cast<core::vector3df& (core::vector3df::*)(float, float, float)>(&core::vector3df::set));
+    LM_FUNC_OVERLOAD(vector3df, "set", set, vector3df&, vector3df const&)
+    LM_FUNC_OVERLOAD(vector3df, "set", set, vector3df&, float, float, float)
 
     typedef std::vector<vector3df> vector_of_vector3df;
     LM_CLASS(ns_irr_core, vector_of_vector3df)
 
     LM_CLASS(ns_irr_core, aabbox3df)
     LM_CONSTR(aabbox3df,,)
+    LM_CONSTR(aabbox3df,,vector3df)
+    LM_CONSTR(aabbox3df, "newWithOnePoint", vector3df)
+    LM_CONSTR(aabbox3df,,vector3df, vector3df)
+    LM_CONSTR(aabbox3df, "newWithMinMax",vector3df, vector3df)
+    LM_CONSTR(aabbox3df,, f32, f32, f32, f32, f32, f32)
     LM_CONSTR(aabbox3df, "newWithMinMaxXYZ", f32, f32, f32, f32, f32, f32)
+    LM_FIELD(aabbox3df, (MaxEdge)(MinEdge))
+    LM_OP(aabox3df, (!= )(==))
+    LM_CLASS(aabbox3df,
+        (addInternalBox)
+        (addInternalPoint)
+        (addInternalPoint)
+        (classifyPlaneRelation)
+        (getArea)
+        (getCenter)
+        (getEdges)
+        (getExtent)
+        (getInterpolated)
+        (getVolume)
+        (intersectsWithBox)
+        (isEmpty)
+        (isFullInside)
+        (isPointInside)
+        (isPointTotalInside)
+        (repair)
+    )
+
+/* todo: bind aabbox3df overloads:
+void 	reset (const vector3d< T > &initValue)
+void 	reset (const aabbox3d< T > &initValue)
+void 	reset (T x, T y, T z)
+bool 	intersectsWithLine (const vector3d< T > &linemiddle, const vector3d< T > &linevect, T halflength) const
+bool 	intersectsWithLine (const line3d< T > &line) const
+*/
 
     typedef irr::core::list<irr::scene::ISceneNodeAnimator*> ListOfAnim;
     LM_CLASS(ns_irr_core, ListOfAnim)
