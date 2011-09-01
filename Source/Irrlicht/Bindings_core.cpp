@@ -120,11 +120,9 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
     LM_CONSTR(aabbox3df,, f32, f32, f32, f32, f32, f32)
     LM_CONSTR(aabbox3df, "newWithMinMaxXYZ", f32, f32, f32, f32, f32, f32)
     LM_FIELD(aabbox3df, (MaxEdge)(MinEdge))
-    LM_OP(aabox3df, (!= )(==))
-    LM_CLASS(aabbox3df,
+    LM_OP(aabbox3df, (!= )(==))
+    LM_FUNC(aabbox3df,
         (addInternalBox)
-        (addInternalPoint)
-        (addInternalPoint)
         (classifyPlaneRelation)
         (getArea)
         (getCenter)
@@ -141,6 +139,8 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
     )
 
 /* todo: bind aabbox3df overloads:
+void addInternalPoint(const vector3d<T>& p)
+void addInternalPoint(T x, T y, T z)
 void 	reset (const vector3d< T > &initValue)
 void 	reset (const aabbox3d< T > &initValue)
 void 	reset (T x, T y, T z)
