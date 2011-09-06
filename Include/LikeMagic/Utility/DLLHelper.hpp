@@ -1,5 +1,5 @@
 
-#if defined _WIN32 || defined __CYGWIN__ || defined __MINGW32__
+#if defined(USE_DLL_BUILD) && (defined _WIN32 || defined __CYGWIN__ || defined __MINGW32__)
   #ifdef BUILDING_DLL
     #ifdef __GNUC__
       #define DLL_PUBLIC __attribute__((dllexport))
