@@ -70,6 +70,10 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
     LM_FUNC_OVERLOAD_BOTH(IMeshBuffer, getTCoords, core::vector2df&, u32)
     LM_FUNC_OVERLOAD_BOTH(IMeshBuffer, getVertices, void*)
 
+    LM_CLASS(ns_irr_scene, SMeshBuffer)
+    LM_BASE(SMeshBuffer, IMeshBuffer)
+    LM_CONSTR(SMeshBuffer,,)
+    LM_FIELD(SMeshBuffer, (MappingHint_Vertex)(MappingHint_Index)(Material)(Vertices)(Indices)(BoundingBox))
 
     LM_CLASS(ns_irr_scene, IMesh)
     LM_BASE(IMesh, IReferenceCounted)

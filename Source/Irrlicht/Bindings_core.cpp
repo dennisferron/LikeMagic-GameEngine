@@ -23,6 +23,8 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
 {
     auto ns_irr_core = Namespace::global(type_sys).subspace("irr").subspace("core");
 
+    LM_STATIC_FUNC(type_sys, core, isnotzero)
+
     typedef irr::core::string<fschar_t> irrFsStr;
     LM_CLASS(ns_irr_core, irrFsStr)
     LM_CONSTR(irrFsStr,,)
