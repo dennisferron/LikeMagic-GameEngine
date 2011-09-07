@@ -7,6 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "btBulletDynamicsCommon.h"
+#include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
 
 #include "LikeMagic/Utility/UserMacros.hpp"
 #include "Bindings/Bullet/ScriptedClosestRayResultCallback.hpp"
@@ -42,6 +43,15 @@ void add_bindings_btCollisionWorld(Namespace const& ns_bullet)
     LM_FUNC(btDiscreteDynamicsWorld, (setGravity)(setDebugDrawer)(getDebugDrawer)(debugDrawWorld))
 
     LM_FUNC_OVERLOAD(btDiscreteDynamicsWorld, "addRigidBody", addRigidBody, void, btRigidBody*, short, short)
+
+    LM_CLASS(ns_bullet, btSoftRigidDynamicsWorld)
+    LM_BASE(btSoftRigidDynamicsWorld, btDiscreteDynamicsWorld)
+    LM_CONSTR(btSoftRigidDynamicsWorld,, btDispatcher*, btBroadphaseInterface*, btConstraintSolver*, btCollisionConfiguration*)
+    LM_FUNC(btSoftRigidDynamicsWorld, (addSoftBody)(removeSoftBody)(getDrawFlags)(setDrawFlags))
+    LM_STATIC_MEMBER_FUNC(btSoftRigidDynamicsWorld, (rayTestSingle))
+
+    LM_FUNC_OVERLOAD_BOTH(btSoftRigidDynamicsWorld, getWorldInfo, btSoftBodyWorldInfo&)
+    LM_FUNC_OVERLOAD_BOTH(btSoftRigidDynamicsWorld, getSoftBodyArray, btSoftBodyArray&)
 
     LM_CLASS(ns_bullet, btIDebugDraw)
     LM_FUNC(btIDebugDraw, (setDebugMode)(getDebugMode))

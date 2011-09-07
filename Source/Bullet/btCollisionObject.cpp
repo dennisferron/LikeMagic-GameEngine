@@ -8,6 +8,9 @@
 
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
+#include "BulletSoftBody/btSoftBody.h"
+#include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
+#include "BulletSoftBody/btSoftBodyHelpers.h"
 
 #include "LikeMagic/Utility/UserMacros.hpp"
 
@@ -72,13 +75,35 @@ void add_bindings_btCollisionObject(Namespace const& ns_bullet)
 
     LM_FUNC_OVERLOAD_BOTH(btGhostObject, getOverlappingObject, btCollisionObject*, int)
 
-    //LM_FUNC_OVERLOAD_CONST(btGhostObject, "getOverlappingPairs_c", getOverlappingPairs, const btAlignedObjectArray<btCollisionObject*>)
-    //LM_FUNC_OVERLOAD(btGhostObject, "getOverlappingPairs_nc", getOverlappingPairs, btAlignedObjectArray<btCollisionObject*>&)
-
     LM_CLASS(ns_bullet, btPairCachingGhostObject)
     LM_BASE(btPairCachingGhostObject, btGhostObject)
     LM_CONSTR(btPairCachingGhostObject,,)
     LM_FUNC(btPairCachingGhostObject, (getOverlappingPairCache))
+
+    LM_CLASS_NO_COPY(ns_bullet, btSoftBody)
+    LM_BASE(btSoftBody, btCollisionObject)
+    LM_CONSTR(btSoftBody,, btSoftBodyWorldInfo*, int, const btVector3*, const btScalar*)
+
+    // btSoftBody class has lots of functions; most of them overloaded.  I'll add them later.
+    // Also has lots of fields.
+
+    LM_CLASS(ns_bullet, btSoftBodyHelpers)
+    LM_STATIC_MEMBER_FUNC(btSoftBodyHelpers,
+        (Draw)
+        (DrawInfos)
+        (DrawNodeTree)
+        (DrawFaceTree)
+        (DrawClusterTree)
+        (DrawFrame)
+        (CreateRope)
+        (CreatePatch)
+        (CreatePatchUV)
+        (CalculateUV)
+        (CreateEllipsoid)
+        (CreateFromTriMesh)
+        (CreateFromConvexHull)
+        (CreateFromTetGenData)
+    )
 
 }
 
