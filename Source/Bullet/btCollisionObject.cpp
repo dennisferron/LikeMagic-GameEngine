@@ -105,6 +105,16 @@ void add_bindings_btCollisionObject(Namespace const& ns_bullet)
         (CreateFromTetGenData)
     )
 
+    LM_CLASS(ns_bullet,	btSoftBodyWorldInfo)
+    LM_CONSTR(btSoftBodyWorldInfo,,)
+    LM_FIELD(btSoftBodyWorldInfo, (air_density)(water_density)(water_offset)(water_normal)(m_broadphase)(m_dispatcher)(m_gravity)(m_sparsesdf))
+
+    typedef btSparseSdf<3> btSparseSdf_3;
+    LM_CLASS(ns_bullet, btSparseSdf_3)
+    LM_CONSTR(btSparseSdf_3,,)
+    LM_FIELD(btSparseSdf_3,(cells)(voxelsz)(puid)(ncells)(nprobes)(nqueries))
+    LM_FUNC(btSparseSdf_3, (Initialize)(Reset)(GarbageCollect)(RemoveReferences)(Evaluate)(BuildCell))
+    LM_STATIC_MEMBER_FUNC(btSparseSdf_3, (DistanceToShape)(Decompose)(Lerp)(Hash))
 }
 
 }}

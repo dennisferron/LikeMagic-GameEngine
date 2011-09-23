@@ -23,7 +23,7 @@ void add_bindings_btVector3(Namespace const& ns_bullet)
     LM_FUNC(btVector3, (absolute)(angle)(closestAxis)(cross)(deSerialize)(deSerializeDouble)(deSerializeFloat)(distance)
             (distance2)(dot)(furthestAxis)(fuzzyZero)(getSkewSymmetricMatrix)(getX)(getY)(getZ)(isZero)(length)(length2)
             (lerp)(maxAxis)(minAxis)(normalize)(normalized)(rotate)(serializeDouble)(serializeFloat)(setInterpolate3)
-            (setMax)(setMin)(setW)(setX)(setY)(setZ)(setZero)(triple)(w)(x)(y)(z))
+            (setMax)(setMin)(setW)(setValue)(setX)(setY)(setZ)(setZero)(triple)(w)(x)(y)(z))
 
     LM_OP(btVector3, (+=)(-=))
 }
