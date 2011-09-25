@@ -29,6 +29,7 @@ void add_bindings_btDispatcher(Namespace const& ns_bullet);
 void add_bindings_btMatrix3x3(Namespace const& ns_bullet);
 void add_bindings_btMotionState(Namespace const& ns_bullet);
 void add_bindings_btQuaternion(Namespace const& ns_bullet);
+void add_bindings_btSoftBody(Namespace const& ns_bullet);
 void add_bindings_btStridingMeshInterface(Namespace const& ns_bullet);
 void add_bindings_btTransform(Namespace const& ns_bullet);
 void add_bindings_btTypedConstraint(Namespace const& ns_bullet);
@@ -53,6 +54,7 @@ DLL_PUBLIC void add_bindings(Namespace const& ns_bullet_bindings)
     LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btMatrix3x3)
     LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btMotionState)
     LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btQuaternion)
+    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btSoftBody)
     LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btStridingMeshInterface)
     LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btTransform)
     LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btTypedConstraint)

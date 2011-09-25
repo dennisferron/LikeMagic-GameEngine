@@ -13,6 +13,9 @@
 #include "Bindings/Custom/LockAnimator.hpp"
 #include "Bindings/Custom/IrrlichtBulletDebugDrawer.hpp"
 #include "Bindings/Custom/GearConstraint.hpp"
+#include "Bindings/Custom/SoftBodyMeshSynchronizer.hpp"
+
+#include "BulletSoftBody/btSoftBodyHelpers.h"
 
 #include "LikeMagic/Utility/UserMacros.hpp"
 
@@ -68,6 +71,10 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_STATIC_FUNC(ns_custom, PhysicsAnimator, set_watch_node2)
 
     LM_STATIC_FUNC(ns_custom, Bindings::Custom, add_protos)
+
+    LM_CLASS(ns_custom, SoftBodyMeshSynchronizer)
+    LM_CONSTR(SoftBodyMeshSynchronizer,, btSoftBody*, irr::scene::IMeshBuffer*)
+    LM_FUNC(SoftBodyMeshSynchronizer, (sync))
 }
 
 }}

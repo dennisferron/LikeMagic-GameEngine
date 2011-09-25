@@ -17,6 +17,7 @@ LikeMagic namespace Bindings Bullet do(
     add_bindings_btMatrix3x3(ns_bullet)
     add_bindings_btMotionState(ns_bullet)
     add_bindings_btQuaternion(ns_bullet)
+    add_bindings_btSoftBody(ns_bullet)
     add_bindings_btStridingMeshInterface(ns_bullet)
     add_bindings_btTransform(ns_bullet)
     add_bindings_btTypedConstraint(ns_bullet)

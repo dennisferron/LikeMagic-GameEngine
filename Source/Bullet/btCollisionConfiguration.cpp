@@ -22,10 +22,26 @@ void add_bindings_btCollisionConfiguration(Namespace const& ns_bullet)
     LM_CLASS(ns_bullet, btDefaultCollisionConfiguration)
     LM_BASE(btDefaultCollisionConfiguration, btCollisionConfiguration)
     LM_CONSTR(btDefaultCollisionConfiguration,,)
+    LM_CONSTR(btDefaultCollisionConfiguration,,btDefaultCollisionConstructionInfo const&)
 
     LM_CLASS(ns_bullet, btSoftBodyRigidBodyCollisionConfiguration)
     LM_BASE(btSoftBodyRigidBodyCollisionConfiguration, btDefaultCollisionConfiguration)
     LM_CONSTR(btSoftBodyRigidBodyCollisionConfiguration,,)
+    LM_CONSTR(btSoftBodyRigidBodyCollisionConfiguration,, btDefaultCollisionConstructionInfo const&)
+
+    LM_CLASS(ns_bullet, btDefaultCollisionConstructionInfo)
+    LM_CONSTR(btDefaultCollisionConstructionInfo,,)
+    LM_FIELD(btDefaultCollisionConstructionInfo,
+        (m_stackAlloc)
+        // These cause a compile error due to the pool allocator class only being forward declared.
+        //(m_persistentManifoldPool)
+        //(m_collisionAlgorithmPool)
+        (m_defaultMaxPersistentManifoldPoolSize)
+        (m_defaultMaxCollisionAlgorithmPoolSize)
+        (m_customCollisionAlgorithmMaxElementSize)
+        (m_defaultStackAllocatorSize)
+        (m_useEpaPenetrationAlgorithm)
+    )
 
 }
 

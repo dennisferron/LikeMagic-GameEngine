@@ -118,6 +118,7 @@
 		<Unit filename="Source/Bullet/btMotionState.cpp" />
 		<Unit filename="Source/Bullet/btOverlappingPairCallback.cpp" />
 		<Unit filename="Source/Bullet/btQuaternion.cpp" />
+		<Unit filename="Source/Bullet/btSoftBody.cpp" />
 		<Unit filename="Source/Bullet/btStridingMeshInterface.cpp" />
 		<Unit filename="Source/Bullet/btTransform.cpp" />
 		<Unit filename="Source/Bullet/btTypedConstraint.cpp" />

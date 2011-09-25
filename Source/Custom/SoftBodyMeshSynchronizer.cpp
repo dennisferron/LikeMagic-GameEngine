@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 
 using namespace Bindings::Custom;
 using namespace irr;
@@ -23,6 +24,12 @@ SoftBodyMeshSynchronizer::SoftBodyMeshSynchronizer(btSoftBody* softBody_, IMeshB
     : softBody(softBody_), meshBuf(meshBuf_)
 {
     meshBuf->grab();
+
+    // The vertices end up in a different order when you sync, which puts the
+    // winding order backwards making the mesh invisible from the top.
+    // This is a quick hack to fix the winding order until I make the irrlicht
+    // vertex layout match the bullet softbody node layout.
+    std::reverse(meshBuf->getIndices(), meshBuf->getIndices()+meshBuf->getIndexCount());
 }
 
 SoftBodyMeshSynchronizer::~SoftBodyMeshSynchronizer()
@@ -75,6 +82,8 @@ void SoftBodyMeshSynchronizer::sync()
         vert.Normal.Y  = physNorm.getY();
         vert.Normal.Z  = physNorm.getZ();
     }
+
+    meshBuf->setDirty(EBT_VERTEX);
 
     // Code for drawing other shapes.  May be useful later:
 
