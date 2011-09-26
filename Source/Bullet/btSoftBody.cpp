@@ -21,13 +21,33 @@ void add_bindings_btSoftBody(Namespace const& ns_bullet)
 {
     LM_CLASS(ns_bullet, btCollisionObject)
 
-
     LM_CLASS_NO_COPY(ns_bullet, btSoftBody)
     LM_BASE(btSoftBody, btCollisionObject)
     LM_CONSTR(btSoftBody,, btSoftBodyWorldInfo*, int, const btVector3*, const btScalar*)
 
     // btSoftBody class has lots of functions; most of them overloaded.  I'll add them later.
     // Also has lots of fields.
+
+    LM_FIELD(btSoftBody,
+        (m_collisionDisabledObjects)(m_cfg)(m_sst)(m_pose)(m_tag)(m_worldInfo)(m_notes)
+        (m_nodes)(m_links)(m_faces)(m_tetras)(m_anchors)(m_rcontacts)(m_scontacts)(m_joints)
+        (m_materials)(m_timeacc)(m_bUpdateRtCst)(m_clusters)
+        (m_clusterConnectivity)(m_initialWorldTransform)(m_userIndexMapping)
+
+        // Can't set these because they are noncopyable classes
+        //(m_ndbvt)(m_fdbvt)(m_cdbvt)
+    )
+
+    LM_ARRAY_FIELD(btSoftBody, (m_bounds))
+
+    typedef btSoftBody::Config btSoftBody_Config;
+    LM_CLASS(ns_bullet, btSoftBody_Config)
+    LM_FIELD(btSoftBody_Config,
+        (aeromodel)(kVCF)(kDP)(kDG)(kLF)(kPR)(kVC)(kDF)(kMT)(kCHR)(kKHR)(kSHR)(kAHR)
+        (kSRHR_CL)(kSKHR_CL)(kSSHR_CL)(kSR_SPLT_CL)(kSK_SPLT_CL)(kSS_SPLT_CL)(maxvolume)
+        (timescale)(viterations)(piterations)(diterations)(citerations)(collisions)
+        (m_vsequence)(m_psequence)(m_dsequence)
+    )
 
     LM_CLASS(ns_bullet, btSoftBodyHelpers)
     LM_STATIC_MEMBER_FUNC(btSoftBodyHelpers,
@@ -57,8 +77,6 @@ void add_bindings_btSoftBody(Namespace const& ns_bullet)
     LM_FIELD(btSparseSdf_3,(cells)(voxelsz)(puid)(ncells)(nprobes)(nqueries))
     LM_FUNC(btSparseSdf_3, (Initialize)(Reset)(GarbageCollect)(RemoveReferences)(Evaluate)(BuildCell))
     LM_STATIC_MEMBER_FUNC(btSparseSdf_3, (DistanceToShape)(Decompose)(Lerp)(Hash))
-
-
 }
 
 }}
