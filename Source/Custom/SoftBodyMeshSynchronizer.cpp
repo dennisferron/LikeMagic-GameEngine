@@ -87,6 +87,18 @@ void SoftBodyMeshSynchronizer::sync()
 
     // Code for drawing other shapes.  May be useful later:
 
+    /* And edges (links/distances constraints)                        */
+    btSoftBody::tLinkArray&   links(softBody->m_links);
+
+    /* testing changing link length */
+    /* Link::m_n[2] => pointers to nodes   */
+    //for(int j=0;j<links.size();++j)
+    //{
+        //links[j].m_rl = 0.01;
+    //}
+    // This actually causes all lengths and areas to be reset to current distances
+    softBody->m_bUpdateRtCst = true;
+
 //    /* And edges (links/distances constraints)                        */
 //    btSoftBody::tLinkArray&   links(softbody->m_links);
 //
