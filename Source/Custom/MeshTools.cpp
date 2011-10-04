@@ -163,75 +163,44 @@ void SoftBodyMeshSynchronizer::animateNode(irr::scene::ISceneNode* sceneNode, ir
 
 IMesh* SoftBodyMeshSynchronizer::sliceMesh(IMesh* mesh, aabbox3df bounds)
 {
-    // Steps:
-    //
-    // For each vertex, if it lies in the box copy it to the output
-    // and remember what its new index is.
-    //
-    // For each triangle, count the number of corners in the box:
-    //
-    //  case all 3 corners:  copy the triangle over with new indices
-    //
-    //  case 2 corners:
-    //      generate two new vertices where the links cross the bounds
-    //          remember the pair of source-vertex-indexes we sliced like this
-    //      now we have four points (trapezoid)
-    //      pick the old point closest to one of the new points
-    //      generate a triangle between it and the two new points
-    //      generate a triangle between the closest new point and the two old points
-    //
-    //  case 1 corner:
-    //      generate two new vertices where the links cross the bounds
-    //          (check if you can reuse any previously sliced link though)
-    //      generate a triangle between the old point and the two new points
-
     IMeshBuffer* oldMeshBuf = mesh->getMeshBuffer(0);
-    int numOldVertices = oldMeshBuf->getVertexCount();
-
-    // Process vertices
-    // Copy over the vertices which are in the bounding box, recording their
-    // new indices.  Vertices which are not copied over will have a new index of -1.
-    vector<int> newIndices(numOldVertices, -1);
-
+    int oldInd[] = oldMeshBuf->getIndices();
 	SMeshBuffer* newMeshBuf = new SMeshBuffer();
-
-	for (int oldIndex=0; oldIndex < numOldVertices; ++oldIndex)
-    {
-	    newMeshBuf->Vertices.push_back(getBaseVertex(oldMeshBuf, oldIndex));
-	    newIndices[i] = newMeshBuf->Vertices.size();
-    }
-
-    // Now process triangles.
-
-    // Need to keep track of split links and reuse the vertex
-    LinkSplitter linkSplitter()
+    LinkSplitter linkSplitter(oldMeshBuf, newMeshBuf, bounds);
 
     for (int i=0; i < oldMeshBuf->getIndexCount(); i += 3)
     {
-        vector<int> keptCorners;
-        vector<int> cutCorners;
-        for (int j=i; j < i+3; ++j)
-        {
-            if (newIndices[j] != -1)
-                keptCorners.push_back(newIndices[j]);
-            else
-                cutCorners.push_back(j);
-        }
+        vector<int> newInd;
+        for (int j=0; j<3; ++j)
+            linkSplitter.processCorner(
+                newInd,
+                oldInd[i+(j+0)%3],
+                oldInd[i+(j+1)%3],
+                oldInd[i+(j+2)%3]);
 
-        vector<int> newCorners;
-
-        switch (keptCorners.size())
+        switch (newInd.size())
         {
-            case 3:
+            case 3:  // link split left triangle
+                for (int j=0; j<3; ++j)
+                    newMeshBuf->Indices.push_back(newInd[j]);
                 break;
-            case 2:
-                newCorners.push_back splitLink(splitLinks, )
-            case 1:
-            case 0:
-                continue;
+            case 4:  // link split left quad, make two triangles
+                int A=newInd[0], B=newInd[1], C=newInd[2], D=newInd[3];
+                int twoTris[2][3] = linkSplitter.distSQ(A,C) < linkSplitter.distSQ(B,D) ?
+                    { {A,B,C}, {A,C,D} } : { {B,C,D}, {B,D,A} };
+                for (int j=0; j<2; ++j)
+                    for (int k=0; k<2; ++k)
+                        newMeshBuf->Indices.push_back(twoTris[j][k]);
         }
     }
 
+	SMesh* mesh = new SMesh();
+	newMeshBuf->recalculateBoundingBox();
+	newMeshBuf->setHardwareMappingHint(EHM_STATIC);
+	mesh->addMeshBuffer(newMeshBuf);
+	mesh->recalculateBoundingBox();
+	newMeshBuf->drop();
+	return mesh;
 }
 
 

@@ -22,6 +22,7 @@ PhysicsAnimator::PhysicsAnimator(btTransform const& trans_, btTransform const& c
 {
     // bug fix:  motion states are never updated by bullet for nonmoving objects
     // so need to synchronize the irrlicht object to the start transform.
+    // WAIT!  How can this work?  There is no cached node yet to sync!
     sync();
 }
 

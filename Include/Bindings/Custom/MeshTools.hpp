@@ -10,28 +10,27 @@
 
 #include "irrlicht.h"
 
+#include "boost/units/quantity.h"
+
 class btSoftBody;
 
 namespace Bindings { namespace Custom {
 
-class SoftBodyMeshSynchronizer : public irr::scene::ISceneNodeAnimator
+class MeshTools
 {
-private:
-    btSoftBody* softBody;
-    irr::scene::ISceneNode* cached_node;
-
 public:
-    SoftBodyMeshSynchronizer(btSoftBody* softBody_);
-    ~SoftBodyMeshSynchronizer();
 
-    void sync();
+    class LinkSplitter
+    {
+    private:
+        IMeshBuffer* oldMeshBuf;
+        IMeshBuffer* newMeshBuf;
+        map<pair<int, int>, int> oldLinksToNewIndices;  // Key is 2 old indices, Value is index in new meshbuf
 
-    // Irrlicht stuff
-    virtual void animateNode(irr::scene::ISceneNode* node, irr::u32 timeMs);
-    virtual irr::scene::ISceneNodeAnimator* createClone(irr::scene::ISceneNode* node,
-                    irr::scene::ISceneManager* newManager=0);
+    public:
+        vector<int> splitB(int a, int b, int c);
+    };
 
-    // Helper methods
     static irr::scene::IMesh* createMeshFromSoftBody(btSoftBody* softBody);
     static btSoftBody* createSoftBodyFromMesh(btSoftBodyWorldInfo& worldInfo, irr::scene::IMesh* mesh);
     static irr::video::S3DVertex& getBaseVertex(irr::scene::IMeshBuffer* meshBuf, int n);

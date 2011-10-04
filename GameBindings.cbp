@@ -86,6 +86,7 @@
 		<Unit filename="Include/Bindings/Custom/IrrlichtBulletDebugDrawer.hpp" />
 		<Unit filename="Include/Bindings/Custom/KinematicAnimator.hpp" />
 		<Unit filename="Include/Bindings/Custom/LockAnimator.hpp" />
+		<Unit filename="Include/Bindings/Custom/MeshTools.hpp" />
 		<Unit filename="Include/Bindings/Custom/PhysicsAnimator.hpp" />
 		<Unit filename="Include/Bindings/Custom/Protos.hpp" />
 		<Unit filename="Include/Bindings/Custom/SoftBodyMeshSynchronizer.hpp" />
@@ -128,6 +129,7 @@
 		<Unit filename="Source/Custom/IrrlichtBulletDebugDrawer.cpp" />
 		<Unit filename="Source/Custom/KinematicAnimator.cpp" />
 		<Unit filename="Source/Custom/LockAnimator.cpp" />
+		<Unit filename="Source/Custom/MeshTools.cpp" />
 		<Unit filename="Source/Custom/PhysicsAnimator.cpp" />
 		<Unit filename="Source/Custom/Protos.cpp" />
 		<Unit filename="Source/Custom/SoftBodyMeshSynchronizer.cpp" />
