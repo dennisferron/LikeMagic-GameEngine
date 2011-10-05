@@ -23,6 +23,7 @@ public:
     class LinkSplitter
     {
     private:
+        aabbox3df box;
         IMeshBuffer* oldMeshBuf;
         IMeshBuffer* newMeshBuf;
         map<pair<int, int>, int> oldLinksToNewIndices;  // Key is 2 old indices, Value is index in new meshbuf

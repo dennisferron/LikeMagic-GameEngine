@@ -6,7 +6,7 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-#include "Bindings/Custom/SoftBodyMeshSynchronizer.hpp"
+#include "Bindings/Custom/MeshTools.hpp"
 #include "irrlicht.h"
 #include "BulletSoftBody/btSoftBodyHelpers.h"
 
@@ -22,16 +22,16 @@ using namespace irr::core;
 using namespace irr::video;
 using namespace irr::scene;
 
-SoftBodyMeshSynchronizer::SoftBodyMeshSynchronizer(btSoftBody* softBody_)
+MeshTools::MeshTools(btSoftBody* softBody_)
     : softBody(softBody_)
 {
 }
 
-SoftBodyMeshSynchronizer::~SoftBodyMeshSynchronizer()
+MeshTools::~MeshTools()
 {
 }
 
-IMesh* SoftBodyMeshSynchronizer::createMeshFromSoftBody(btSoftBody* softBody) const
+IMesh* MeshTools::createMeshFromSoftBody(btSoftBody* softBody) const
 {
 	SMeshBuffer* buffer = new SMeshBuffer();
 	video::S3DVertex vtx;
@@ -92,7 +92,7 @@ IMesh* SoftBodyMeshSynchronizer::createMeshFromSoftBody(btSoftBody* softBody) co
 	return mesh;
 }
 
-btSoftBody* SoftBodyMeshSynchronizer::createSoftBodyFromMesh(btSoftBodyWorldInfo& worldInfo, IMesh* mesh) const
+btSoftBody* MeshTools::createSoftBodyFromMesh(btSoftBodyWorldInfo& worldInfo, IMesh* mesh) const
 {
 	IMeshBuffer* buffer = mesh->getMeshBuffer(0);
 
@@ -107,7 +107,7 @@ btSoftBody* SoftBodyMeshSynchronizer::createSoftBodyFromMesh(btSoftBodyWorldInfo
     return btSoftBodyHelpers::CreateFromTriMesh(worldInfo, &vertices[0], &triangles[0], buffer->getIndexCount()/3, false);
 }
 
-S3DVertex* SoftBodyMeshSynchronizer::getBaseVertex(IMeshBuffer* meshBuf, int n)
+S3DVertex& MeshTools::getBaseVertex(IMeshBuffer* meshBuf, int n)
 {
     size_t vertexSize = 0;
 
@@ -126,42 +126,106 @@ S3DVertex* SoftBodyMeshSynchronizer::getBaseVertex(IMeshBuffer* meshBuf, int n)
 
     void* vertPtr = (char*)meshBuf->getVertices() + j * vertexSize;
 
-    // They all inherit from S3DVertex but have different sizes.
-    return reinterpret_cast<irr::video::S3DVertex*>(vertPtr);
+    // They all inherit from S3DVertex
+    return *reinterpret_cast<irr::video::S3DVertex*>(vertPtr);
 }
 
-void SoftBodyMeshSynchronizer::animateNode(irr::scene::ISceneNode* sceneNode, irr::u32 timeMs);
+
+// Adds point b based on links to adjacent points a and c
+void MeshTools::LinkSplitter::processCorner(vector<int>& newInd, int a, int b, int c)
 {
-    irr::scene::IMeshBuffer* meshBuf = sceneNode->getMesh();
-    btSoftBody::tNodeArray&   nodes(softBody->m_nodes);
-
-    if ((size_t)nodes.size() != meshBuf->getVertexCount())
-        throw std::runtime_error("Number of nodes in physics softbody must exactly match number of vertices in graphics mesh.  Use SoftBodyMeshSynchronizer::createMeshFromSoftBody or btSoftBodyHelpers::CreateFromTriMesh.");
-
-    for(int j=0;j<nodes.size();++j)
+    // Add b itself if it's in the box
+    if (inBox(b))
+        newInd.push_back(addLink(b, b));
+    else
     {
-        btVector3 const& physPos = nodes[j].m_x;
-        btVector3 const& physNorm = nodes[j].m_n;
+        // If a is in the box interpolate to a
+        if (inBox(a))
+            newInd.push_back(addLink(b, a));
 
-        S3DVertex& vert = getBaseVertex(meshBuf, j);
-
-        vert.Pos.set(pos.getX(), pos.getY(), pos.getZ());
-		vert.Normal.set(normal.getX(), normal.getY(), normal.getZ());
+        // If c is in the box interpolate to c
+        if (inBox(c))
+            newInd.push_back(addLink(b, c));
     }
-
-    meshBuf->setDirty(EBT_VERTEX);
-
-    // TODO:  Get the code for update / reset and make it into a separate function
-    // to use for resetting softbody link stresses and face areas.
-    // Calling this every frame makes the mesh act like taffy, but rounding errors grow too.
-    // We could avoid accumulating rounding errors making the mesh grow in weird ways by
-    // reducing down the link len and areas slightly so that the mesh would tend to pull back
-    // together over a long period of time.
-    //softBody->m_bUpdateRtCst = true;
 }
 
+int MeshTools::LinkSplitter::addLink(int index, int other)
+{
+    auto iter = existingLinks.find(make_pair(index, other));
+    if (iter != existingLinks.end())
+        return *iter;
+    else
+        return existingLinks[make_pair(index, other)]
+            = splitLink(index, other);
+}
 
-IMesh* SoftBodyMeshSynchronizer::sliceMesh(IMesh* mesh, aabbox3df bounds)
+int MeshTools::splitLink(int index, int other)
+{
+    // The vertex outside the box - the one being generated new.
+    S3DVertex& vOut = getBaseVertex(oldMeshBuf, index);
+
+    // The vertex inside the box - not being changed.
+    S3DVertex& vIn = getBaseVertex(oldMeshBuf, other);
+
+    /*
+        If you think of the bounding box as the intersection of 6 axis-aligned planes that slice 3d space,
+        it is quite simple to ask where does each plane cut the line on just one axis.
+        However as the picture below shows, there might be a difference between where the plane cuts
+        and the side of the bare box that would cut it.
+
+                |   |
+                |   |
+        --------+---+------
+                |  /|
+        --------+---+------
+                |/  |
+                |   |
+               /|   |
+              / |   |
+
+        To get the correct plane intersection, we need to find the contact points for all
+        and choose the one that is actually on the surface of the box.
+    */
+
+    vector3df oldPos = vOut.Pos;
+    vector3df xCut = vIn.Pos;
+    vector3df yCut = vIn.Pos;
+    vector3df zCut = vIn.Pos;
+
+    if (oldPos.X < box.MinEdge.X)
+        cutLine(xCut, box.MinEdge.X);
+    else if (oldPos.X > box.MaxEdge.X)
+        xCut.X = box.MaxEdge.X;
+
+    if (oldPos.Y < box.MinEdge.Y)
+        yCut.Y = box.MinEdge.Y;
+    else if (oldPos.Y > box.MaxEdge.Y)
+        yCut.Y = box.MaxEdge.Y;
+
+    if (oldPos.Z < box.MinEdge.Z)
+        zCut.Z = box.MinEdge.Z;
+    else if (oldPos.Z > box.MaxEdge.Z)
+        zCut.Z = box.MaxEdge.Z;
+}
+
+vector3df cutLine(line3df line, float x)
+{
+    vector3df vect = line.getVector();
+
+    float yPerX = vect.Y / vect.X;
+    float zPerX = vect.Z / vect.X;
+
+    if ()
+
+    float xDist = (x - line.start.X);
+
+    float newY = vect.start.Y + xDist * yPerX;
+    float newZ = vect.start.Z + yDist * yPerZ
+
+    return vector3df(x, newY, newZ);
+}
+
+IMesh* MeshTools::sliceMesh(IMesh* mesh, aabbox3df bounds)
 {
     IMeshBuffer* oldMeshBuf = mesh->getMeshBuffer(0);
     int oldInd[] = oldMeshBuf->getIndices();
