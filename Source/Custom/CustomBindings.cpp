@@ -14,6 +14,7 @@
 #include "Bindings/Custom/IrrlichtBulletDebugDrawer.hpp"
 #include "Bindings/Custom/GearConstraint.hpp"
 #include "Bindings/Custom/SoftBodyMeshSynchronizer.hpp"
+#include "Bindings/Custom/MeshTools.hpp"
 
 #include "BulletSoftBody/btSoftBodyHelpers.h"
 
@@ -75,7 +76,9 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_CLASS(ns_custom, SoftBodyMeshSynchronizer)
     LM_CONSTR(SoftBodyMeshSynchronizer,, btSoftBody*, irr::scene::IMeshBuffer*)
     LM_FUNC(SoftBodyMeshSynchronizer, (animateNode))
-    LM_STATIC_MEMBER_FUNC(SoftBodyMeshSynchronizer, (getBaseVertex)(createMeshFromSoftBody)(createSoftBodyFromMesh))
+
+    LM_CLASS(ns_custom, MeshTools)
+    LM_STATIC_MEMBER_FUNC(MeshTools, (getBaseVertex)(createMeshFromSoftBody)(createSoftBodyFromMesh)(splitMesh))
 }
 
 }}

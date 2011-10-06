@@ -159,7 +159,7 @@ int MeshTools::LinkSplitter::addLink(int index, int other)
             = splitLink(index, other);
 }
 
-int MeshTools::splitLink(int index, int other)
+int MeshTools::LinkSplitter::splitLink(int index, int other)
 {
     // The vertex outside the box - the one being generated new.
     S3DVertex& vOut = getBaseVertex(oldMeshBuf, index);
@@ -167,63 +167,118 @@ int MeshTools::splitLink(int index, int other)
     // The vertex inside the box - not being changed.
     S3DVertex& vIn = getBaseVertex(oldMeshBuf, other);
 
+    line3df originalLine = line(vOut.Pos, vIn.Pos);
+    line3df lineAfterCut = cutLine(originalLine, box);
+
+    float scale = lineAfterCut.getLength() / originalLine.getLength();
+
+    S3DVertex vNew;
+
+    vNew.TCoords = scaledAverage(scale, vOut.TCoords, vIn.TCoords);
+    vNew.Normal = scaledAverage(scale, vOut.Normal, vIn.Normal);
+    u32 a = scaledAverage(scale, vOut.Color.getAlpha(), vIn.Color.getAlpha());
+    u32 r = scaledAverage(scale, vOut.Color.getRed(),   vIn.Color.getRed());
+    u32 g = scaledAverage(scale, vOut.Color.getGreen(), vIn.Color.getGreen());
+    u32 b = scaledAverage(scale, vOut.Color.getBlue(),  vIn.Color.getBlue());
+    vNew.Color.set(a, r, g, b);
+
+    newMeshBuf.Vertices.push_back(vNew);
+    return newMeshBuf.Vertices.
+}
+
+// Given a line in which the endpoint is in the box and the start point is outside it,
+// returns the point on the line where the box cuts it.
+line3df MeshTools::cutLine(line3df line, aabbox3df box)
+{
     /*
         If you think of the bounding box as the intersection of 6 axis-aligned planes that slice 3d space,
         it is quite simple to ask where does each plane cut the line on just one axis.
         However as the picture below shows, there might be a difference between where the plane cuts
-        and the side of the bare box that would cut it.
+        and the side of the bare box that would cut it.  To get the correct plane intersection,
+        we choose the cut is farthest along the line.
 
-                |   |
-                |   |
-        --------+---+------
-                |  /|
-        --------+---+------
-                |/  |
-                |   |
-               /|   |
-              / |   |
+              xmin  xmax
+                |    |
+        ymax    |    |
+        --------+----+------
+                |   o|
+                |  / |
+        --------+----+------
+        ymin    |/   |
+                |    |
+               /|    |
+              x |    |
 
-        To get the correct plane intersection, we need to find the contact points for all
-        and choose the one that is actually on the surface of the box.
     */
 
-    vector3df oldPos = vOut.Pos;
-    vector3df xCut = vIn.Pos;
-    vector3df yCut = vIn.Pos;
-    vector3df zCut = vIn.Pos;
+    vector3df xCut = cutLineX(line, box.MinEdge.X, box.MaxEdge.X);
+    vector3df yCut = cutLineY(line, box.MinEdge.Y, box.MaxEdge.Y);
+    vector3df zCut = cutLineZ(line, box.MinEdge.Z, box.MaxEdge.Z);
 
-    if (oldPos.X < box.MinEdge.X)
-        cutLine(xCut, box.MinEdge.X);
-    else if (oldPos.X > box.MaxEdge.X)
-        xCut.X = box.MaxEdge.X;
+    vector3df bestCut = xCut;
 
-    if (oldPos.Y < box.MinEdge.Y)
-        yCut.Y = box.MinEdge.Y;
-    else if (oldPos.Y > box.MaxEdge.Y)
-        yCut.Y = box.MaxEdge.Y;
+    if (line(line.start, bestCut).getLengthSQ() < line(line.start, yCut).getLengthSQ())
+        bestCut = yCut;
 
-    if (oldPos.Z < box.MinEdge.Z)
-        zCut.Z = box.MinEdge.Z;
-    else if (oldPos.Z > box.MaxEdge.Z)
-        zCut.Z = box.MaxEdge.Z;
+    if (line(line.start, bestCut).getLengthSQ() < line(line.start, zCut).getLengthSQ())
+        bestCut = zCut;
+
+    return line3df(bestCut, line.end);
 }
 
-vector3df cutLine(line3df line, float x)
+vector3df MeshTools::cutLineX(line3df const& line, float xMin, float xMax)
 {
     vector3df vect = line.getVector();
 
-    float yPerX = vect.Y / vect.X;
-    float zPerX = vect.Z / vect.X;
+    if (vect.X > 0)
+    {
+        float yPerX = vect.Y / vect.X;
+        float zPerX = vect.Z / vect.X;
 
-    if ()
+        float xDist = 0;
 
-    float xDist = (x - line.start.X);
+        if (line.start.X < xMin)
+            xDist = (xMin - line.start.X);
+        else if (line.start.X > xMax)
+            xDist = (line.start.X - xMax);
+        else
+            return line.start;
 
-    float newY = vect.start.Y + xDist * yPerX;
-    float newZ = vect.start.Z + yDist * yPerZ
+        float newY = vect.start.Y + xDist * yPerX;
+        float newZ = vect.start.Z + yDist * yPerZ;
 
-    return vector3df(x, newY, newZ);
+        return vector3df(x, newY, newZ);
+    }
+    else
+        return line.start;
 }
+
+vector3df MeshTools::cutLineY(line3df const& line, float yMin, float yMax)
+{
+    return rotateVector(rotateVector(
+        cutLineX(
+            line3df(
+                rotateVector(line.start),
+                rotateVector(line.end)
+            ),
+            yMin, yMax
+        )
+    ));
+}
+
+vector3df MeshTools::cutLineZ(line3df const& line, float zMin, float zMax)
+{
+    return rotateVector(
+        cutLineX(
+            line3df(
+                rotateVector(rotateVector(line.start)),
+                rotateVector(rotateVector(line.end))
+            ),
+            zMin, zMax
+        )
+    );
+}
+
 
 IMesh* MeshTools::sliceMesh(IMesh* mesh, aabbox3df bounds)
 {

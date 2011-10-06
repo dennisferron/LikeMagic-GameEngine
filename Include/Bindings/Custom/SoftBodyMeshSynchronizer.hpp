@@ -24,18 +24,10 @@ public:
     SoftBodyMeshSynchronizer(btSoftBody* softBody_);
     ~SoftBodyMeshSynchronizer();
 
-    void sync();
-
     // Irrlicht stuff
     virtual void animateNode(irr::scene::ISceneNode* node, irr::u32 timeMs);
     virtual irr::scene::ISceneNodeAnimator* createClone(irr::scene::ISceneNode* node,
                     irr::scene::ISceneManager* newManager=0);
-
-    // Helper methods
-    static irr::scene::IMesh* createMeshFromSoftBody(btSoftBody* softBody);
-    static btSoftBody* createSoftBodyFromMesh(btSoftBodyWorldInfo& worldInfo, irr::scene::IMesh* mesh);
-    static irr::video::S3DVertex& getBaseVertex(irr::scene::IMeshBuffer* meshBuf, int n);
-    static IMesh* sliceMesh(IMesh* mesh, irr::core::aabbox3df bounds);
 };
 
 }}
