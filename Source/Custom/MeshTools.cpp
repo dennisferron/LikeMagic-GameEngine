@@ -22,16 +22,8 @@ using namespace irr::core;
 using namespace irr::video;
 using namespace irr::scene;
 
-MeshTools::MeshTools(btSoftBody* softBody_)
-    : softBody(softBody_)
-{
-}
 
-MeshTools::~MeshTools()
-{
-}
-
-IMesh* MeshTools::createMeshFromSoftBody(btSoftBody* softBody) const
+IMesh* MeshTools::createMeshFromSoftBody(btSoftBody* softBody)
 {
 	SMeshBuffer* buffer = new SMeshBuffer();
 	video::S3DVertex vtx;
@@ -59,11 +51,11 @@ IMesh* MeshTools::createMeshFromSoftBody(btSoftBody* softBody) const
     // Convert triangles of the softbody to an index list
     for(int i=0;i<softBody->m_faces.size();++i)
     {
-        const btSoftBody::Face&	f=psb->m_faces[i];
+        auto	faces = softBody->m_faces;
 
-        btSoftBody::Node*   node_0=faces[j].m_n[0];
-        btSoftBody::Node*   node_1=faces[j].m_n[1];
-        btSoftBody::Node*   node_2=faces[j].m_n[2];
+        btSoftBody::Node*   node_0=faces[i].m_n[0];
+        btSoftBody::Node*   node_1=faces[i].m_n[1];
+        btSoftBody::Node*   node_2=faces[i].m_n[2];
 
         const int indices[] =
         {
@@ -75,9 +67,6 @@ IMesh* MeshTools::createMeshFromSoftBody(btSoftBody* softBody) const
         for(int j=0;j<3;++j)
             buffer->Indices.push_back(indices[j]);
     }
-
-	if (material)
-		buffer->Material = *material;
 
 	buffer->recalculateBoundingBox();
 
@@ -92,13 +81,18 @@ IMesh* MeshTools::createMeshFromSoftBody(btSoftBody* softBody) const
 	return mesh;
 }
 
-btSoftBody* MeshTools::createSoftBodyFromMesh(btSoftBodyWorldInfo& worldInfo, IMesh* mesh) const
+btSoftBody* MeshTools::createSoftBodyFromMesh(btSoftBodyWorldInfo& worldInfo, IMesh* mesh)
 {
 	IMeshBuffer* buffer = mesh->getMeshBuffer(0);
 
 	vector<btScalar> vertices;
 	for (int i=0; i < buffer->getVertexCount(); ++i)
-	    vertices.push_back(getBaseVertex(buffer, i));
+	{
+	    vector3df p = getBaseVertex(buffer, i).Pos;
+	    vertices.push_back(p.X);
+	    vertices.push_back(p.Y);
+	    vertices.push_back(p.Z);
+	}
 
     vector<int> triangles;
     for (int i=0; i < buffer->getIndexCount(); ++i)
@@ -124,7 +118,7 @@ S3DVertex& MeshTools::getBaseVertex(IMeshBuffer* meshBuf, int n)
             vertexSize = sizeof(S3DVertex);
     }
 
-    void* vertPtr = (char*)meshBuf->getVertices() + j * vertexSize;
+    void* vertPtr = (char*)meshBuf->getVertices() + n * vertexSize;
 
     // They all inherit from S3DVertex
     return *reinterpret_cast<irr::video::S3DVertex*>(vertPtr);
@@ -149,13 +143,19 @@ void MeshTools::LinkSplitter::processCorner(vector<int>& newInd, int a, int b, i
     }
 }
 
+bool MeshTools::LinkSplitter::inBox(int index)
+{
+    S3DVertex& vert = getBaseVertex(oldMeshBuf, index);
+    return box.isPointInside(vert.Pos);
+}
+
 int MeshTools::LinkSplitter::addLink(int index, int other)
 {
-    auto iter = existingLinks.find(make_pair(index, other));
-    if (iter != existingLinks.end())
-        return *iter;
+    auto iter = oldLinksToNewIndices.find(make_pair(index, other));
+    if (iter != oldLinksToNewIndices.end())
+        return iter->second;
     else
-        return existingLinks[make_pair(index, other)]
+        return oldLinksToNewIndices[make_pair(index, other)]
             = splitLink(index, other);
 }
 
@@ -167,7 +167,7 @@ int MeshTools::LinkSplitter::splitLink(int index, int other)
     // The vertex inside the box - not being changed.
     S3DVertex& vIn = getBaseVertex(oldMeshBuf, other);
 
-    line3df originalLine = line(vOut.Pos, vIn.Pos);
+    line3df originalLine(vOut.Pos, vIn.Pos);
     line3df lineAfterCut = cutLine(originalLine, box);
 
     float scale = lineAfterCut.getLength() / originalLine.getLength();
@@ -175,15 +175,18 @@ int MeshTools::LinkSplitter::splitLink(int index, int other)
     S3DVertex vNew;
 
     vNew.TCoords = scaledAverage(scale, vOut.TCoords, vIn.TCoords);
+
+    // I don't think this keeps the normal normalized nor is necessarily a good way to combine them.
     vNew.Normal = scaledAverage(scale, vOut.Normal, vIn.Normal);
+
     u32 a = scaledAverage(scale, vOut.Color.getAlpha(), vIn.Color.getAlpha());
     u32 r = scaledAverage(scale, vOut.Color.getRed(),   vIn.Color.getRed());
     u32 g = scaledAverage(scale, vOut.Color.getGreen(), vIn.Color.getGreen());
     u32 b = scaledAverage(scale, vOut.Color.getBlue(),  vIn.Color.getBlue());
     vNew.Color.set(a, r, g, b);
 
-    newMeshBuf.Vertices.push_back(vNew);
-    return newMeshBuf.Vertices.
+    newMeshBuf->Vertices.push_back(vNew);
+    return newMeshBuf->Vertices.size();
 }
 
 // Given a line in which the endpoint is in the box and the start point is outside it,

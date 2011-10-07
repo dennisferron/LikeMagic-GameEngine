@@ -7,6 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "Bindings/Custom/SoftBodyMeshSynchronizer.hpp"
+#include "Bindings/Custom/MeshTools.hpp"
 #include "irrlicht.h"
 #include "BulletSoftBody/btSoftBodyHelpers.h"
 
@@ -31,20 +32,30 @@ SoftBodyMeshSynchronizer::~SoftBodyMeshSynchronizer()
 {
 }
 
-void SoftBodyMeshSynchronizer::animateNode(irr::scene::ISceneNode* sceneNode, irr::u32 timeMs);
+void SoftBodyMeshSynchronizer::animateNode(irr::scene::ISceneNode* sceneNode, irr::u32 timeMs)
 {
-    irr::scene::IMeshBuffer* meshBuf = sceneNode->getMesh();
+    irr::scene::IMeshBuffer* meshBuf = 0;
+
+    if (dynamic_cast<IMeshSceneNode*>(sceneNode))
+        meshBuf = dynamic_cast<IMeshSceneNode*>(sceneNode)->getMesh()->getMeshBuffer(0);
+    else if (dynamic_cast<IAnimatedMeshSceneNode*>(sceneNode))
+        meshBuf = dynamic_cast<IMeshSceneNode*>(sceneNode)->getMeshBuffer(0);
+    else if (dynamic_cast<ITerrainSceneNode*>(sceneNode))
+        meshBuf = dynamic_cast<ITerrainSceneNode*>(sceneNode)->getMeshBuffer(0);
+    else
+        throw std::logic_error("Can't use softbody mesh synchronizer with irrlicht scene node that is not one of IMeshSceneNode, IAnimatedMeshSceneNode or ITerrainSceneNode.");
+
     btSoftBody::tNodeArray&   nodes(softBody->m_nodes);
 
     if ((size_t)nodes.size() != meshBuf->getVertexCount())
-        throw std::runtime_error("Number of nodes in physics softbody must exactly match number of vertices in graphics mesh.  Use SoftBodyMeshSynchronizer::createMeshFromSoftBody or btSoftBodyHelpers::CreateFromTriMesh.");
+        throw std::runtime_error("Number of nodes in physics softbody must exactly match number of vertices in graphics mesh.  Use MeshTools::createMeshFromSoftBody or MeshTools::createSoftBodyFromMesh.");
 
     for(int j=0;j<nodes.size();++j)
     {
         btVector3 const& physPos = nodes[j].m_x;
         btVector3 const& physNorm = nodes[j].m_n;
 
-        S3DVertex& vert = getBaseVertex(meshBuf, j);
+        S3DVertex& vert = MeshTools::getBaseVertex(meshBuf, j);
 
         vert.Pos.set(pos.getX(), pos.getY(), pos.getZ());
 		vert.Normal.set(normal.getX(), normal.getY(), normal.getZ());
@@ -62,5 +73,10 @@ void SoftBodyMeshSynchronizer::animateNode(irr::scene::ISceneNode* sceneNode, ir
 }
 
 
+virtual irr::scene::ISceneNodeAnimator* createClone(irr::scene::ISceneNode* node,
+                irr::scene::ISceneManager* newManager)
+{
+    throw std::logic_error("clone not implemented on softbody mesh synchronizer.");
+}
 
 

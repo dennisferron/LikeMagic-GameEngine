@@ -18,7 +18,6 @@ class SoftBodyMeshSynchronizer : public irr::scene::ISceneNodeAnimator
 {
 private:
     btSoftBody* softBody;
-    irr::scene::ISceneNode* cached_node;
 
 public:
     SoftBodyMeshSynchronizer(btSoftBody* softBody_);
