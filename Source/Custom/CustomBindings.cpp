@@ -74,8 +74,8 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_STATIC_FUNC(ns_custom, Bindings::Custom, add_protos)
 
     LM_CLASS(ns_custom, SoftBodyMeshSynchronizer)
-    LM_CONSTR(SoftBodyMeshSynchronizer,, btSoftBody*)
-    LM_FUNC(SoftBodyMeshSynchronizer, (animateNode))
+    LM_CONSTR(SoftBodyMeshSynchronizer,, btSoftBody*, irr::scene::IMeshBuffer*)
+    LM_FUNC(SoftBodyMeshSynchronizer, (sync))
 
     LM_CLASS(ns_custom, MeshTools)
     LM_STATIC_MEMBER_FUNC(MeshTools, (getBaseVertex)(createMeshFromSoftBody)(createSoftBodyFromMesh)(sliceMesh))

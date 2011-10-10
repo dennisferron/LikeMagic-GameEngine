@@ -14,6 +14,8 @@
 #include <stdexcept>
 #include <algorithm>
 #include <vector>
+#include <cassert>
+#include <tuple>
 using namespace std;
 
 using namespace Bindings::Custom;
@@ -86,7 +88,7 @@ btSoftBody* MeshTools::createSoftBodyFromMesh(btSoftBodyWorldInfo& worldInfo, IM
 	IMeshBuffer* buffer = mesh->getMeshBuffer(0);
 
 	vector<btScalar> vertices;
-	for (int i=0; i < buffer->getVertexCount(); ++i)
+	for (unsigned int i=0; i < buffer->getVertexCount(); ++i)
 	{
 	    vector3df p = getBaseVertex(buffer, i).Pos;
 	    vertices.push_back(p.X);
@@ -95,7 +97,7 @@ btSoftBody* MeshTools::createSoftBodyFromMesh(btSoftBodyWorldInfo& worldInfo, IM
 	}
 
     vector<int> triangles;
-    for (int i=0; i < buffer->getIndexCount(); ++i)
+    for (unsigned int i=0; i < buffer->getIndexCount(); ++i)
         triangles.push_back(buffer->getIndices()[i]);
 
     return btSoftBodyHelpers::CreateFromTriMesh(worldInfo, &vertices[0], &triangles[0], buffer->getIndexCount()/3, false);
@@ -124,6 +126,11 @@ S3DVertex& MeshTools::getBaseVertex(IMeshBuffer* meshBuf, int n)
     return *reinterpret_cast<irr::video::S3DVertex*>(vertPtr);
 }
 
+MeshTools::LinkSplitter::LinkSplitter(IMeshBuffer* oldMeshBuf_, SMeshBuffer* newMeshBuf_, aabbox3df box_)
+    : oldMeshBuf(oldMeshBuf_), newMeshBuf(newMeshBuf_), box(box_)
+{
+
+}
 
 // Adds point b based on links to adjacent points a and c
 void MeshTools::LinkSplitter::processCorner(vector<int>& newInd, int a, int b, int c)
@@ -161,6 +168,13 @@ int MeshTools::LinkSplitter::addLink(int index, int other)
 
 int MeshTools::LinkSplitter::splitLink(int index, int other)
 {
+    // A link from itself to itself means don't split it.
+    if (index == other)
+    {
+        newMeshBuf->Vertices.push_back(getBaseVertex(oldMeshBuf, index));
+        return newMeshBuf->Vertices.size()-1;
+    }
+
     // The vertex outside the box - the one being generated new.
     S3DVertex& vOut = getBaseVertex(oldMeshBuf, index);
 
@@ -170,14 +184,24 @@ int MeshTools::LinkSplitter::splitLink(int index, int other)
     line3df originalLine(vOut.Pos, vIn.Pos);
     line3df lineAfterCut = cutLine(originalLine, box);
 
-    float scale = lineAfterCut.getLength() / originalLine.getLength();
+    float originalLen = originalLine.getLength();
+    float afterCutLen = lineAfterCut.getLength();
+    float scale = afterCutLen / originalLen;
 
     S3DVertex vNew;
 
-    vNew.TCoords = scaledAverage(scale, vOut.TCoords, vIn.TCoords);
+    // TODO: Scale texture coords
+    vNew.TCoords = vOut.TCoords;
+    //vNew.TCoords = scaledAverage(scale, vOut.TCoords, vIn.TCoords);
 
-    // I don't think this keeps the normal normalized nor is necessarily a good way to combine them.
-    vNew.Normal = scaledAverage(scale, vOut.Normal, vIn.Normal);
+    // I want to create a sharp dividing line between meshes, so using the normal of the
+    // internal vertex so that the lighting won't smooth over the crease.
+    // TODO: Might want to make this a parameter, maybe a functor to calculate the normal.
+    vNew.Normal = vIn.Normal;
+
+    // TODO:  scale
+    vNew.Pos = scaledAverage(scale, vOut.Pos, vIn.Pos);
+    //vNew.Pos = 0.5f * (vOut.Pos + vIn.Pos);
 
     u32 a = scaledAverage(scale, vOut.Color.getAlpha(), vIn.Color.getAlpha());
     u32 r = scaledAverage(scale, vOut.Color.getRed(),   vIn.Color.getRed());
@@ -186,7 +210,15 @@ int MeshTools::LinkSplitter::splitLink(int index, int other)
     vNew.Color.set(a, r, g, b);
 
     newMeshBuf->Vertices.push_back(vNew);
-    return newMeshBuf->Vertices.size();
+    return newMeshBuf->Vertices.size()-1;
+}
+
+// Note: the ints are new meshbuf indicies
+float MeshTools::LinkSplitter::distSQ(int a, int b) const
+{
+    S3DVertex& va = getBaseVertex(newMeshBuf, a);
+    S3DVertex& vb = getBaseVertex(newMeshBuf, b);
+    return line3df(va.Pos, vb.Pos).getLengthSQ();
 }
 
 // Given a line in which the endpoint is in the box and the start point is outside it,
@@ -220,10 +252,10 @@ line3df MeshTools::cutLine(line3df line, aabbox3df box)
 
     vector3df bestCut = xCut;
 
-    if (line(line.start, bestCut).getLengthSQ() < line(line.start, yCut).getLengthSQ())
+    if (line3df(line.start, bestCut).getLengthSQ() < line3df(line.start, yCut).getLengthSQ())
         bestCut = yCut;
 
-    if (line(line.start, bestCut).getLengthSQ() < line(line.start, zCut).getLengthSQ())
+    if (line3df(line.start, bestCut).getLengthSQ() < line3df(line.start, zCut).getLengthSQ())
         bestCut = zCut;
 
     return line3df(bestCut, line.end);
@@ -247,10 +279,11 @@ vector3df MeshTools::cutLineX(line3df const& line, float xMin, float xMax)
         else
             return line.start;
 
-        float newY = vect.start.Y + xDist * yPerX;
-        float newZ = vect.start.Z + yDist * yPerZ;
+        float newX = line.start.X + xDist;
+        float newY = line.start.Y + vect.X * yPerX;
+        float newZ = line.start.Z + vect.X * zPerX;
 
-        return vector3df(x, newY, newZ);
+        return vector3df(newX, newY, newZ);
     }
     else
         return line.start;
@@ -282,23 +315,145 @@ vector3df MeshTools::cutLineZ(line3df const& line, float zMin, float zMax)
     );
 }
 
-
-IMesh* MeshTools::sliceMesh(IMesh* mesh, aabbox3df bounds)
+bool MeshTools::compareMeshBuffers(IMeshBuffer* oldMesh, IMeshBuffer* newMesh)
 {
-    IMeshBuffer* oldMeshBuf = mesh->getMeshBuffer(0);
-    int oldInd[] = oldMeshBuf->getIndices();
+    if (oldMesh->getVertexCount() != newMesh->getVertexCount())
+    {
+        cout << "unequal vertex counts" << std::endl;
+        return false;
+    }
+
+    if (oldMesh->getIndexCount() != newMesh->getIndexCount())
+    {
+        cout << "unequal index counts" << endl;
+        return false;
+    }
+
+    cout << "Checking for duplicate vertexes in " << oldMesh->getVertexCount() << " vertices." << endl;
+
+    // To handle duplicates we'll map instances of duplicates onto their first occurrence
+
+    vector<int> newToNew(newMesh->getVertexCount());
+    for (int i=0; i < newToNew.size(); ++i)
+        newToNew[i] = i;
+
+    vector<int> oldToOld(oldMesh->getVertexCount());
+    for (int i=0; i < oldToOld.size(); ++i)
+        oldToOld[i] = i;
+
+    for (int o=0; o < oldMesh->getVertexCount(); ++o)
+    {
+        cout << "\t" << o;
+        auto const& oldVertex = MeshTools::getBaseVertex(oldMesh, o);
+        auto const& newVertex = MeshTools::getBaseVertex(newMesh, o);
+        for (int n=0; n < newMesh->getVertexCount(); ++n)
+        {
+            if (o==n)
+                continue;
+
+            auto const& otherOldVertex = MeshTools::getBaseVertex(oldMesh, n);
+            auto const& otherNewVertex = MeshTools::getBaseVertex(newMesh, n);
+            if (oldVertex.Pos == otherOldVertex.Pos && oldVertex.TCoords == otherOldVertex.TCoords)
+            {
+                oldToOld[n] = o;
+            }
+            if (newVertex.Pos == otherNewVertex.Pos && newVertex.TCoords == otherNewVertex.TCoords)
+            {
+                newToNew[n] = o;
+            }
+        }
+    }
+
+    // The reason this loop can handle duplicates is because there is no downside to mapping multiple
+    // old vertices onto the same new vertex.  Since we find the first match and exit the loop early
+    // with the break, we always get the first n of a duplicate never the others.
+
+    vector<int> oldToNew(oldMesh->getVertexCount(), -1);
+
+    cout << "Building vertex equivalence table for " << oldToNew.size() << " vertices." << endl;
+    for (int o=0; o < oldMesh->getVertexCount(); ++o)
+    {
+        cout << "\t" << o;
+        auto const& oldVertex = MeshTools::getBaseVertex(oldMesh, o);
+        for (int n=0; n < newMesh->getVertexCount(); ++n)
+        {
+            auto const& newVertex = MeshTools::getBaseVertex(newMesh, n);
+            if (oldVertex.Pos == newVertex.Pos && oldVertex.TCoords == newVertex.TCoords)
+            {
+                oldToNew[o] = n;
+                break;
+            }
+        }
+    }
+
+    cout << "Checking vertex equivalence table" << endl;
+
+    for (int o=0; o<oldMesh->getVertexCount(); ++o)
+    {
+        if (oldToNew[o] == -1)
+        {
+            cout << "old vertex " << o << " has no equivalent in new mesh." << endl;
+            return false;
+        }
+    }
+
+    cout << "Building triangle lists" << endl;
+
+    auto mktuple = [](int a, int b, int c) { if (c<b) std::swap(c,b); if (b<a) std::swap(b,a); if (b>c) std::swap(b,c); return make_tuple(a, b, c); };
+    int triangleCount = oldMesh->getIndexCount() / 3;
+    vector<tuple<int, int, int>> oldToNewTris(triangleCount);
+    vector<tuple<int, int, int>> newToNewTris(triangleCount);
+
+    u16 const* oldInd = oldMesh->getIndices();
+    for (int o=0; o < triangleCount; ++o)
+        oldToNewTris[o] = mktuple(oldToNew[oldToOld[oldInd[3*o]]], oldToNew[oldToOld[oldInd[3*o+1]]], oldToNew[oldToOld[oldInd[3*o+2]]] );
+
+    u16 const* newInd = newMesh->getIndices();
+    for (int n=0; n < triangleCount; ++n)
+        newToNewTris[n] = mktuple(newToNew[newInd[3*n]], newToNew[newInd[3*n+1]], newToNew[newInd[3*n+2]] );
+
+    cout << "Sorting triangle lists" << endl;
+
+    sort(oldToNewTris.begin(), oldToNewTris.end());
+    sort(newToNewTris.begin(), newToNewTris.end());
+
+    cout << "Comparing triangle lists" << endl;
+
+    for (int i=0; i<triangleCount; ++i)
+    {
+        if (oldToNewTris[i] != newToNewTris[i])
+        {
+            cout << "unequal triangles:" << endl;
+            auto oldT = oldToNewTris[i];
+            cout << "old: " << get<0>(oldT) << "," << get<1>(oldT) << "," << get<2>(oldT) << endl;
+            auto newT = newToNewTris[i];
+            cout << "new: " << get<0>(newT) << "," << get<1>(newT) << "," << get<2>(newT) << endl;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+IMesh* MeshTools::sliceMesh(IMesh* oldMesh, aabbox3df bounds)
+{
+    IMeshBuffer* oldMeshBuf = oldMesh->getMeshBuffer(0);
+    u16* oldInd = oldMeshBuf->getIndices();
 	SMeshBuffer* newMeshBuf = new SMeshBuffer();
     LinkSplitter linkSplitter(oldMeshBuf, newMeshBuf, bounds);
 
-    for (int i=0; i < oldMeshBuf->getIndexCount(); i += 3)
+    for (u32 i=0; i < oldMeshBuf->getIndexCount(); i += 3)
     {
         vector<int> newInd;
-        for (int j=0; j<3; ++j)
+
+        for (u32 j=0; j<3; ++j)
+        {
             linkSplitter.processCorner(
                 newInd,
+                oldInd[i+(j+2)%3],
                 oldInd[i+(j+0)%3],
-                oldInd[i+(j+1)%3],
-                oldInd[i+(j+2)%3]);
+                oldInd[i+(j+1)%3]);
+        }
 
         switch (newInd.size())
         {
@@ -308,18 +463,20 @@ IMesh* MeshTools::sliceMesh(IMesh* mesh, aabbox3df bounds)
                 break;
             case 4:  // link split left quad, make two triangles
                 int A=newInd[0], B=newInd[1], C=newInd[2], D=newInd[3];
-                int twoTris[2][3] = linkSplitter.distSQ(A,C) < linkSplitter.distSQ(B,D) ?
-                    { {A,B,C}, {A,C,D} } : { {B,C,D}, {B,D,A} };
-                for (int j=0; j<2; ++j)
-                    for (int k=0; k<2; ++k)
-                        newMeshBuf->Indices.push_back(twoTris[j][k]);
+                int const acTris[] = { A,B,C , A,C,D };
+                int const bdTris[] = { B,C,D , B,D,A };
+                int const* twoTris = linkSplitter.distSQ(A,C) < linkSplitter.distSQ(B,D) ? acTris : bdTris;
+                for (int j=0; j<6; ++j)
+                    newMeshBuf->Indices.push_back(twoTris[j]);
         }
     }
+
+    //compareMeshBuffers(oldMeshBuf, newMeshBuf);
 
 	SMesh* mesh = new SMesh();
 	newMeshBuf->recalculateBoundingBox();
 	newMeshBuf->setHardwareMappingHint(EHM_STATIC);
-	mesh->addMeshBuffer(newMeshBuf);
+    mesh->addMeshBuffer(newMeshBuf);
 	mesh->recalculateBoundingBox();
 	newMeshBuf->drop();
 	return mesh;

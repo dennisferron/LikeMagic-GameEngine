@@ -24,10 +24,7 @@ void add_bindings_btSoftBody(Namespace const& ns_bullet)
     LM_CLASS_NO_COPY(ns_bullet, btSoftBody)
     LM_BASE(btSoftBody, btCollisionObject)
     LM_CONSTR(btSoftBody,, btSoftBodyWorldInfo*, int, const btVector3*, const btScalar*)
-
-    // btSoftBody class has lots of functions; most of them overloaded.  I'll add them later.
-    // Also has lots of fields.
-
+    LM_FUNC(btSoftBody, (transform)(translate)(rotate))
     LM_FIELD(btSoftBody,
         (m_collisionDisabledObjects)(m_cfg)(m_sst)(m_pose)(m_tag)(m_worldInfo)(m_notes)
         (m_nodes)(m_links)(m_faces)(m_tetras)(m_anchors)(m_rcontacts)(m_scontacts)(m_joints)

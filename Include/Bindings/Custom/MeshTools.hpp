@@ -31,9 +31,9 @@ public:
     class LinkSplitter
     {
     private:
-        irr::core::aabbox3df box;
         irr::scene::IMeshBuffer* oldMeshBuf;
         irr::scene::SMeshBuffer* newMeshBuf;
+        irr::core::aabbox3df box;
         std::map<std::pair<int, int>, int> oldLinksToNewIndices;  // Key is 2 old indices, Value is index in new meshbuf
 
         int addLink(int index, int other);
@@ -41,7 +41,9 @@ public:
         bool inBox(int index);
 
     public:
+        LinkSplitter(irr::scene::IMeshBuffer* oldMeshBuf_, irr::scene::SMeshBuffer* newMeshBuf_, irr::core::aabbox3df box_);
         void processCorner(std::vector<int>& newInd, int a, int b, int c);
+        float distSQ(int a, int b) const;
     };
 
     static irr::scene::IMesh* createMeshFromSoftBody(btSoftBody* softBody);
@@ -65,6 +67,8 @@ public:
     {
         return static_cast<T>((scale*a + (1.0f-scale)*b) / 2.0f);
     }
+
+    static bool compareMeshBuffers(irr::scene::IMeshBuffer* oldMesh, irr::scene::IMeshBuffer* newMesh);
 };
 
 }}

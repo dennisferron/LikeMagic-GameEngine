@@ -23,8 +23,8 @@ using namespace irr::core;
 using namespace irr::video;
 using namespace irr::scene;
 
-SoftBodyMeshSynchronizer::SoftBodyMeshSynchronizer(btSoftBody* softBody_)
-    : softBody(softBody_)
+SoftBodyMeshSynchronizer::SoftBodyMeshSynchronizer(btSoftBody* softBody_, irr::scene::IMeshBuffer* meshBuf_)
+    : softBody(softBody_), meshBuf(meshBuf_)
 {
 }
 
@@ -32,19 +32,8 @@ SoftBodyMeshSynchronizer::~SoftBodyMeshSynchronizer()
 {
 }
 
-void SoftBodyMeshSynchronizer::animateNode(irr::scene::ISceneNode* sceneNode, irr::u32 timeMs)
+void SoftBodyMeshSynchronizer::sync()
 {
-    irr::scene::IMeshBuffer* meshBuf = 0;
-
-    if (dynamic_cast<IMeshSceneNode*>(sceneNode))
-        meshBuf = dynamic_cast<IMeshSceneNode*>(sceneNode)->getMesh()->getMeshBuffer(0);
-    else if (dynamic_cast<IAnimatedMeshSceneNode*>(sceneNode))
-        meshBuf = dynamic_cast<IMeshSceneNode*>(sceneNode)->getMeshBuffer(0);
-    else if (dynamic_cast<ITerrainSceneNode*>(sceneNode))
-        meshBuf = dynamic_cast<ITerrainSceneNode*>(sceneNode)->getMeshBuffer(0);
-    else
-        throw std::logic_error("Can't use softbody mesh synchronizer with irrlicht scene node that is not one of IMeshSceneNode, IAnimatedMeshSceneNode or ITerrainSceneNode.");
-
     btSoftBody::tNodeArray&   nodes(softBody->m_nodes);
 
     if ((size_t)nodes.size() != meshBuf->getVertexCount())
@@ -57,8 +46,8 @@ void SoftBodyMeshSynchronizer::animateNode(irr::scene::ISceneNode* sceneNode, ir
 
         S3DVertex& vert = MeshTools::getBaseVertex(meshBuf, j);
 
-        vert.Pos.set(pos.getX(), pos.getY(), pos.getZ());
-		vert.Normal.set(normal.getX(), normal.getY(), normal.getZ());
+        vert.Pos.set(physPos.getX(), physPos.getY(), physPos.getZ());
+		vert.Normal.set(physNorm.getX(), physNorm.getY(), physNorm.getZ());
     }
 
     meshBuf->setDirty(EBT_VERTEX);
@@ -71,12 +60,4 @@ void SoftBodyMeshSynchronizer::animateNode(irr::scene::ISceneNode* sceneNode, ir
     // together over a long period of time.
     //softBody->m_bUpdateRtCst = true;
 }
-
-
-virtual irr::scene::ISceneNodeAnimator* createClone(irr::scene::ISceneNode* node,
-                irr::scene::ISceneManager* newManager)
-{
-    throw std::logic_error("clone not implemented on softbody mesh synchronizer.");
-}
-
 

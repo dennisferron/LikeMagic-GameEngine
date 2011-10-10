@@ -8,25 +8,23 @@
 
 #pragma once
 
-#include "irrlicht.h"
+namespace irr { namespace scene { class IMeshBuffer; } }
 
 class btSoftBody;
 
 namespace Bindings { namespace Custom {
 
-class SoftBodyMeshSynchronizer : public irr::scene::ISceneNodeAnimator
+class SoftBodyMeshSynchronizer
 {
 private:
     btSoftBody* softBody;
+    irr::scene::IMeshBuffer* meshBuf;
 
 public:
-    SoftBodyMeshSynchronizer(btSoftBody* softBody_);
+    SoftBodyMeshSynchronizer(btSoftBody* softBody_, irr::scene::IMeshBuffer* meshBuf_);
     ~SoftBodyMeshSynchronizer();
 
-    // Irrlicht stuff
-    virtual void animateNode(irr::scene::ISceneNode* node, irr::u32 timeMs);
-    virtual irr::scene::ISceneNodeAnimator* createClone(irr::scene::ISceneNode* node,
-                    irr::scene::ISceneManager* newManager=0);
+    void sync();
 };
 
 }}
