@@ -16,16 +16,14 @@
 class btSoftBody;
 class btSoftBodyWorldInfo;
 
+namespace irr { namespace video {
+    class SColor;
+}}
+
 namespace Bindings { namespace Custom {
 
 class MeshTools
 {
-private:
-
-    static irr::core::vector3df cutLineX(irr::core::line3df const& line, float xMin, float xMax);
-    static irr::core::vector3df cutLineY(irr::core::line3df const& line, float yMin, float yMax);
-    static irr::core::vector3df cutLineZ(irr::core::line3df const& line, float zMin, float zMax);
-
 public:
 
     class LinkSplitter
@@ -53,19 +51,12 @@ public:
 
     // Given a line in which the endpoint is in the box and the start point is outside it,
     // returns the point on the line where the box cuts it.
-    // If the start point was actually inside the box, returns the start point.
-    static irr::core::line3df cutLine(irr::core::line3df line, irr::core::aabbox3df box);
+    static irr::core::vector3df cutLine(irr::core::line3df line, irr::core::aabbox3df box);
 
     // Allows you to define a function on X and then re-use it to do Y and Z.
     static inline irr::core::vector3df rotateVector(irr::core::vector3df const& vect)
     {
         return irr::core::vector3df(vect.Y, vect.Z, vect.X);
-    }
-
-    template <typename T>
-    static inline T scaledAverage(float scale, T a, T b)
-    {
-        return static_cast<T>((scale*a + (1.0f-scale)*b) / 2.0f);
     }
 
     static bool compareMeshBuffers(irr::scene::IMeshBuffer* oldMesh, irr::scene::IMeshBuffer* newMesh);

@@ -182,36 +182,40 @@ int MeshTools::LinkSplitter::splitLink(int index, int other)
     S3DVertex& vIn = getBaseVertex(oldMeshBuf, other);
 
     line3df originalLine(vOut.Pos, vIn.Pos);
-    line3df lineAfterCut = cutLine(originalLine, box);
+    vector3df newPos = cutLine(originalLine, box);
+    line3df lineAfterCut = line3df(newPos, vIn.Pos);
 
     float originalLen = originalLine.getLength();
     float afterCutLen = lineAfterCut.getLength();
+
+    // scale of the change; 1.0 means no change (use vOut)
+    // while 0 means complete change (use vIn)
     float scale = afterCutLen / originalLen;
 
     S3DVertex vNew;
 
-    // TODO: Scale texture coords
-    vNew.TCoords = vOut.TCoords;
-    //vNew.TCoords = scaledAverage(scale, vOut.TCoords, vIn.TCoords);
+    vNew.TCoords = lerp(vIn.TCoords, vOut.TCoords, scale);
 
     // I want to create a sharp dividing line between meshes, so using the normal of the
     // internal vertex so that the lighting won't smooth over the crease.
     // TODO: Might want to make this a parameter, maybe a functor to calculate the normal.
     vNew.Normal = vIn.Normal;
 
-    // TODO:  scale
-    vNew.Pos = scaledAverage(scale, vOut.Pos, vIn.Pos);
-    //vNew.Pos = 0.5f * (vOut.Pos + vIn.Pos);
+    vNew.Pos = newPos;
 
-    u32 a = scaledAverage(scale, vOut.Color.getAlpha(), vIn.Color.getAlpha());
-    u32 r = scaledAverage(scale, vOut.Color.getRed(),   vIn.Color.getRed());
-    u32 g = scaledAverage(scale, vOut.Color.getGreen(), vIn.Color.getGreen());
-    u32 b = scaledAverage(scale, vOut.Color.getBlue(),  vIn.Color.getBlue());
+    // SColor doesn't define multiplication by a float, bummer.
+    u32 a = lerp(vIn.Color.getAlpha(), vOut.Color.getAlpha(), scale);
+    u32 r = lerp(vIn.Color.getRed(),   vOut.Color.getRed(), scale);
+    u32 g = lerp(vIn.Color.getGreen(), vOut.Color.getGreen(), scale);
+    u32 b = lerp(vIn.Color.getBlue(),  vOut.Color.getBlue(), scale);
     vNew.Color.set(a, r, g, b);
 
     newMeshBuf->Vertices.push_back(vNew);
+
+    // You would not BELIEVE how much grief forgetting the "-1" here caused me.
     return newMeshBuf->Vertices.size()-1;
 }
+
 
 // Note: the ints are new meshbuf indicies
 float MeshTools::LinkSplitter::distSQ(int a, int b) const
@@ -221,98 +225,23 @@ float MeshTools::LinkSplitter::distSQ(int a, int b) const
     return line3df(va.Pos, vb.Pos).getLengthSQ();
 }
 
-// Given a line in which the endpoint is in the box and the start point is outside it,
-// returns the point on the line where the box cuts it.
-line3df MeshTools::cutLine(line3df line, aabbox3df box)
+// start is outside the box, end is inside the box
+vector3df MeshTools::cutLine(line3df line, aabbox3df box)
 {
-    /*
-        If you think of the bounding box as the intersection of 6 axis-aligned planes that slice 3d space,
-        it is quite simple to ask where does each plane cut the line on just one axis.
-        However as the picture below shows, there might be a difference between where the plane cuts
-        and the side of the bare box that would cut it.  To get the correct plane intersection,
-        we choose the cut is farthest along the line.
+    // Couldn't get algebraic cutLine to work right because apparently I suck at math,
+    // so using the dumb but effective "cut it in half until it fits in the box" algorithm.
+    //
+    // I may not understand teh aljebraz but at least I understand recursion.
 
-              xmin  xmax
-                |    |
-        ymax    |    |
-        --------+----+------
-                |   o|
-                |  / |
-        --------+----+------
-        ymin    |/   |
-                |    |
-               /|    |
-              x |    |
-
-    */
-
-    vector3df xCut = cutLineX(line, box.MinEdge.X, box.MaxEdge.X);
-    vector3df yCut = cutLineY(line, box.MinEdge.Y, box.MaxEdge.Y);
-    vector3df zCut = cutLineZ(line, box.MinEdge.Z, box.MaxEdge.Z);
-
-    vector3df bestCut = xCut;
-
-    if (line3df(line.start, bestCut).getLengthSQ() < line3df(line.start, yCut).getLengthSQ())
-        bestCut = yCut;
-
-    if (line3df(line.start, bestCut).getLengthSQ() < line3df(line.start, zCut).getLengthSQ())
-        bestCut = zCut;
-
-    return line3df(bestCut, line.end);
-}
-
-vector3df MeshTools::cutLineX(line3df const& line, float xMin, float xMax)
-{
-    vector3df vect = line.getVector();
-
-    if (vect.X > 0)
-    {
-        float yPerX = vect.Y / vect.X;
-        float zPerX = vect.Z / vect.X;
-
-        float xDist = 0;
-
-        if (line.start.X < xMin)
-            xDist = (xMin - line.start.X);
-        else if (line.start.X > xMax)
-            xDist = (line.start.X - xMax);
-        else
-            return line.start;
-
-        float newX = line.start.X + xDist;
-        float newY = line.start.Y + vect.X * yPerX;
-        float newZ = line.start.Z + vect.X * zPerX;
-
-        return vector3df(newX, newY, newZ);
-    }
-    else
+    if (line.getLengthSQ() < 0.001)
         return line.start;
-}
 
-vector3df MeshTools::cutLineY(line3df const& line, float yMin, float yMax)
-{
-    return rotateVector(rotateVector(
-        cutLineX(
-            line3df(
-                rotateVector(line.start),
-                rotateVector(line.end)
-            ),
-            yMin, yMax
-        )
-    ));
-}
+    vector3df mid = line.getMiddle();
 
-vector3df MeshTools::cutLineZ(line3df const& line, float zMin, float zMax)
-{
-    return rotateVector(
-        cutLineX(
-            line3df(
-                rotateVector(rotateVector(line.start)),
-                rotateVector(rotateVector(line.end))
-            ),
-            zMin, zMax
-        )
-    );
+    if (box.isPointInside(mid))
+        return cutLine(line3df(line.start, mid), box);
+    else
+        return cutLine(line3df(mid, line.end), box);
 }
 
 bool MeshTools::compareMeshBuffers(IMeshBuffer* oldMesh, IMeshBuffer* newMesh)
