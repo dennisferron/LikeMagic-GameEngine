@@ -212,13 +212,8 @@ void MeshTools::LinkSplitter::processLink(std::vector<PossibleVertex*>& leftInd,
         rightInd.push_back(mid);
     }
 
-    // Add b to left side if it is left or in both
-    if (whichSideB < 0 || whichSideB == 0)
-        leftInd.push_back(getVert(b));
-
-    // Add b to right side if it is right or in both
-    if (whichSideB > 0 || whichSideB == 0)
-        rightInd.push_back(getVert(b));
+    // Don't add vertex B here.  Since all 3 sides of the triangle
+    // will be processed, eventually B will be passed as A.
 }
 
 int MeshTools::LinkSplitter::compareZ(int index)
@@ -265,7 +260,8 @@ MeshTools::PossibleVertex* MeshTools::LinkSplitter::splitLink(int oldIndexLeft, 
 
 void MeshTools::LinkSplitter::addQuadOrTriangle(vector<PossibleVertex*> const& newShape, irr::scene::SMeshBuffer* newMeshBuf)
 {
-    switch (newShape.size())
+    u32 numCorners = newShape.size();
+    switch (numCorners)
     {
         case 0:
             // Nothing touches

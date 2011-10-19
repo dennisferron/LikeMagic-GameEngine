@@ -20,13 +20,15 @@
 
 #include "LikeMagic/Utility/UserMacros.hpp"
 
+#include <boost/preprocessor/repetition/repeat.hpp>
+
 using namespace LikeMagic;
 
 using namespace irr::scene;
 
 namespace Bindings { namespace Custom {
 
-class OneClassTooMany {};
+template <int N> class TooManyTypes {};
 
 DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
 {
@@ -62,16 +64,19 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_FUNC(IrrlichtBulletDebugDrawer, (drawLine))
 
     LM_CLASS(ns_custom, btTypedConstraint)
+
+    /*
     LM_CLASS(ns_custom, GearConstraint)
     LM_BASE(GearConstraint, btTypedConstraint)
     LM_CONSTR(GearConstraint,, btRigidBody&, btRigidBody&, btScalar)
     GearConstraint_LM.bind_static_method("getRotZ", GearConstraint::getRotZ);
+    */
 
-    LM_STATIC_FUNC(ns_custom, KinematicAnimator, get_watch_node)
-    LM_STATIC_FUNC(ns_custom, KinematicAnimator, set_watch_node)
+    //LM_STATIC_FUNC(ns_custom, KinematicAnimator, get_watch_node)
+    //LM_STATIC_FUNC(ns_custom, KinematicAnimator, set_watch_node)
 
-    LM_STATIC_FUNC(ns_custom, PhysicsAnimator, get_watch_node2)
-    LM_STATIC_FUNC(ns_custom, PhysicsAnimator, set_watch_node2)
+    //LM_STATIC_FUNC(ns_custom, PhysicsAnimator, get_watch_node2)
+    //LM_STATIC_FUNC(ns_custom, PhysicsAnimator, set_watch_node2)
 
     LM_STATIC_FUNC(ns_custom, Bindings::Custom, add_protos)
 
@@ -83,11 +88,16 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_STATIC_MEMBER_FUNC(MeshTools, (getBaseVertex)(createMeshFromSoftBody)(createSoftBodyFromMesh)(splitMeshZ))
 
     // Needed to be able to access members from the return value of splitMeshZ
-    //typedef std::pair<IMesh*, IMesh*> pair_of_IMesh;
-    //LM_CLASS(ns_custom, pair_of_IMesh)
-    //LM_FIELD(pair_of_IMesh, (first)(second))
+    typedef std::pair<IMesh*, IMesh*> pair_of_IMesh;
+    LM_CLASS(ns_custom, pair_of_IMesh)
+    LM_FIELD(pair_of_IMesh, (first)(second))
 
-    LM_CLASS(ns_custom, OneClassTooMany)
+//    typedef TooManyTypes<1> TooMany1;
+//    LM_CLASS(ns_custom, TooMany1)
+//
+//    typedef TooManyTypes<1> TooMany2;
+//    LM_CLASS(ns_custom, TooMany2)
+
 }
 
 }}
