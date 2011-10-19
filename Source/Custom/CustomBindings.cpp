@@ -26,6 +26,8 @@ using namespace irr::scene;
 
 namespace Bindings { namespace Custom {
 
+class OneClassTooMany {};
+
 DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
 {
     // This needs to be done once in every DLL.
@@ -78,7 +80,14 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_FUNC(SoftBodyMeshSynchronizer, (sync))
 
     LM_CLASS(ns_custom, MeshTools)
-    LM_STATIC_MEMBER_FUNC(MeshTools, (getBaseVertex)(createMeshFromSoftBody)(createSoftBodyFromMesh)(sliceMesh))
+    LM_STATIC_MEMBER_FUNC(MeshTools, (getBaseVertex)(createMeshFromSoftBody)(createSoftBodyFromMesh)(splitMeshZ))
+
+    // Needed to be able to access members from the return value of splitMeshZ
+    //typedef std::pair<IMesh*, IMesh*> pair_of_IMesh;
+    //LM_CLASS(ns_custom, pair_of_IMesh)
+    //LM_FIELD(pair_of_IMesh, (first)(second))
+
+    LM_CLASS(ns_custom, OneClassTooMany)
 }
 
 }}

@@ -10,6 +10,7 @@
 
 #include "irrlicht.h"
 
+#include "boost/shared_ptr.hpp"
 #include <map>
 #include <vector>
 
@@ -25,39 +26,51 @@ namespace Bindings { namespace Custom {
 class MeshTools
 {
 public:
+    class PossibleVertex
+    {
+    private:
+        irr::video::S3DVertex vert;
+        std::map<irr::scene::SMeshBuffer*, int> assignedIndices;
+
+    public:
+        PossibleVertex(irr::video::S3DVertex const& vert_);
+
+        // lerps the vertex between two others
+        PossibleVertex(irr::video::S3DVertex const& vLeft, irr::video::S3DVertex const& vRight, float scale);
+
+        // Adds the vertex at most once per meshbuffer.
+        // Adds an index on each call; 3 calls to add a triangle.
+        int addToMeshBuf(irr::scene::SMeshBuffer* meshBuf);
+
+        float distSQ(PossibleVertex* other) const;
+    };
 
     class LinkSplitter
     {
     private:
         irr::scene::IMeshBuffer* oldMeshBuf;
-        irr::scene::SMeshBuffer* newMeshBuf;
-        irr::core::aabbox3df box;
-        std::map<std::pair<int, int>, int> oldLinksToNewIndices;  // Key is 2 old indices, Value is index in new meshbuf
+        float zCut;
 
-        int addLink(int index, int other);
-        int splitLink(int index, int other);
-        bool inBox(int index);
+        std::map<std::pair<int, int>, boost::shared_ptr<PossibleVertex>> splitLinksMidpoints;
+        std::vector<boost::shared_ptr<PossibleVertex>> existingVertices;
 
+        PossibleVertex* getVert(int oldIndex);
+        PossibleVertex* splitLink(int oldIndexLeft, int oldIndexRight);
+        int compareZ(int oldIndex);
     public:
-        LinkSplitter(irr::scene::IMeshBuffer* oldMeshBuf_, irr::scene::SMeshBuffer* newMeshBuf_, irr::core::aabbox3df box_);
-        void processCorner(std::vector<int>& newInd, int a, int b, int c);
-        float distSQ(int a, int b) const;
+        LinkSplitter(irr::scene::IMeshBuffer* oldMeshBuf_, float zCut_);
+        void processLink(std::vector<PossibleVertex*>& left, std::vector<PossibleVertex*>& right, int a, int b);
+        void addQuadOrTriangle(std::vector<PossibleVertex*> const& newShape, irr::scene::SMeshBuffer* newMeshBuf);
     };
 
     static irr::scene::IMesh* createMeshFromSoftBody(btSoftBody* softBody);
     static btSoftBody* createSoftBodyFromMesh(btSoftBodyWorldInfo& worldInfo, irr::scene::IMesh* mesh);
     static irr::video::S3DVertex& getBaseVertex(irr::scene::IMeshBuffer* meshBuf, int n);
-    static irr::scene::IMesh* sliceMesh(irr::scene::IMesh* mesh, irr::core::aabbox3df bounds);
+    static std::pair<irr::scene::IMesh*, irr::scene::IMesh*> splitMeshZ(irr::scene::IMesh* mesh, float zCut);
 
+    static irr::core::vector3df cutLineZ(irr::core::line3df line, float zCut);
     // Given a line in which the endpoint is in the box and the start point is outside it,
     // returns the point on the line where the box cuts it.
-    static irr::core::vector3df cutLine(irr::core::line3df line, irr::core::aabbox3df box);
-
-    // Allows you to define a function on X and then re-use it to do Y and Z.
-    static inline irr::core::vector3df rotateVector(irr::core::vector3df const& vect)
-    {
-        return irr::core::vector3df(vect.Y, vect.Z, vect.X);
-    }
 
     static bool compareMeshBuffers(irr::scene::IMeshBuffer* oldMesh, irr::scene::IMeshBuffer* newMesh);
 };

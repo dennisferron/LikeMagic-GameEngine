@@ -17,6 +17,7 @@
 #include <cassert>
 #include <tuple>
 using namespace std;
+using namespace boost;
 
 using namespace Bindings::Custom;
 using namespace irr;
@@ -24,6 +25,54 @@ using namespace irr::core;
 using namespace irr::video;
 using namespace irr::scene;
 
+
+MeshTools::PossibleVertex::PossibleVertex(irr::video::S3DVertex const& vert_)
+    : vert(vert_)
+{
+}
+
+MeshTools::PossibleVertex::PossibleVertex(irr::video::S3DVertex const& vLeft, irr::video::S3DVertex const& vRight, float scale)
+{
+    vert.TCoords = lerp(vLeft.TCoords, vRight.TCoords, scale);
+
+    // This isn't really
+    vert.Normal = lerp(vLeft.Normal, vRight.Normal, scale);
+    vert.Normal.normalize();
+
+    vert.Pos = lerp(vLeft.Pos, vRight.Pos, scale);
+
+    // SColor doesn't define multiplication by a float, bummer.
+    u32 a = lerp(vLeft.Color.getAlpha(), vRight.Color.getAlpha(), scale);
+    u32 r = lerp(vLeft.Color.getRed(),   vRight.Color.getRed(), scale);
+    u32 g = lerp(vLeft.Color.getGreen(), vRight.Color.getGreen(), scale);
+    u32 b = lerp(vLeft.Color.getBlue(),  vRight.Color.getBlue(), scale);
+    vert.Color.set(a, r, g, b);
+}
+
+int MeshTools::PossibleVertex::addToMeshBuf(irr::scene::SMeshBuffer* meshBuf)
+{
+    int index;
+    auto existing = assignedIndices.find(meshBuf);
+
+    // Get existing vertex or add a new vertex.
+    if (existing != assignedIndices.end())
+        index = existing->second;
+    else
+    {
+        meshBuf->Vertices.push_back(vert);
+        index = meshBuf->Vertices.size()-1;
+        assignedIndices[meshBuf] = index;
+    }
+
+    meshBuf->Indices.push_back(index);
+
+    return index;
+}
+
+float MeshTools::PossibleVertex::distSQ(PossibleVertex* other) const
+{
+    return vert.Pos.getDistanceFromSQ(other->vert.Pos);
+}
 
 IMesh* MeshTools::createMeshFromSoftBody(btSoftBody* softBody)
 {
@@ -126,123 +175,174 @@ S3DVertex& MeshTools::getBaseVertex(IMeshBuffer* meshBuf, int n)
     return *reinterpret_cast<irr::video::S3DVertex*>(vertPtr);
 }
 
-MeshTools::LinkSplitter::LinkSplitter(IMeshBuffer* oldMeshBuf_, SMeshBuffer* newMeshBuf_, aabbox3df box_)
-    : oldMeshBuf(oldMeshBuf_), newMeshBuf(newMeshBuf_), box(box_)
+MeshTools::LinkSplitter::LinkSplitter(IMeshBuffer* oldMeshBuf_, float zCut_)
+    : oldMeshBuf(oldMeshBuf_), zCut(zCut_), existingVertices(oldMeshBuf_->getVertexCount())
 {
-
+    // All of the old mesh buffers vertex will go in at least one of the result meshes.
+    for (u32 i=0; i<oldMeshBuf->getVertexCount(); ++i)
+        existingVertices[i] = boost::shared_ptr<PossibleVertex>(new PossibleVertex(getBaseVertex(oldMeshBuf, i)));
 }
 
-// Adds point b based on links to adjacent points a and c
-void MeshTools::LinkSplitter::processCorner(vector<int>& newInd, int a, int b, int c)
+// Adds point a, point b, and/or the midpoint between a and b
+void MeshTools::LinkSplitter::processLink(std::vector<PossibleVertex*>& leftInd, std::vector<PossibleVertex*>& rightInd, int a, int b)
 {
-    // Add b itself if it's in the box
-    if (inBox(b))
-        newInd.push_back(addLink(b, b));
-    else
+    int whichSideA = compareZ(a);
+    int whichSideB = compareZ(b);
+
+    // Add a to left side if it is left or in both
+    if (whichSideA < 0 || whichSideA == 0)
+        leftInd.push_back(getVert(a));
+
+    // Add a to right side if it is right or in both
+    if (whichSideA > 0 || whichSideA == 0)
+        rightInd.push_back(getVert(a));
+
+    // Link crosses like this:  a --|--> b
+    if (whichSideA < 0 && whichSideB > 0)
     {
-        // If a is in the box interpolate to a
-        if (inBox(a))
-            newInd.push_back(addLink(b, a));
-
-        // If c is in the box interpolate to c
-        if (inBox(c))
-            newInd.push_back(addLink(b, c));
+        auto mid = splitLink(a, b);
+        leftInd.push_back(mid);
+        rightInd.push_back(mid);
     }
+    // Link crosses like this: b --|--> a
+    else if (whichSideB < 0 && whichSideA > 0)
+    {
+        auto mid = splitLink(b, a);
+        leftInd.push_back(mid);
+        rightInd.push_back(mid);
+    }
+
+    // Add b to left side if it is left or in both
+    if (whichSideB < 0 || whichSideB == 0)
+        leftInd.push_back(getVert(b));
+
+    // Add b to right side if it is right or in both
+    if (whichSideB > 0 || whichSideB == 0)
+        rightInd.push_back(getVert(b));
 }
 
-bool MeshTools::LinkSplitter::inBox(int index)
+int MeshTools::LinkSplitter::compareZ(int index)
 {
     S3DVertex& vert = getBaseVertex(oldMeshBuf, index);
-    return box.isPointInside(vert.Pos);
-}
-
-int MeshTools::LinkSplitter::addLink(int index, int other)
-{
-    auto iter = oldLinksToNewIndices.find(make_pair(index, other));
-    if (iter != oldLinksToNewIndices.end())
-        return iter->second;
+    float z = vert.Pos.Z;
+    if (irr::core::equals(z, zCut))
+        return 0;
+    else if (z < zCut)
+        return -1;
     else
-        return oldLinksToNewIndices[make_pair(index, other)]
-            = splitLink(index, other);
+        return 1;
 }
 
-int MeshTools::LinkSplitter::splitLink(int index, int other)
+
+MeshTools::PossibleVertex* MeshTools::LinkSplitter::getVert(int oldIndex)
 {
-    // A link from itself to itself means don't split it.
-    if (index == other)
+    return existingVertices[oldIndex].get();
+}
+
+MeshTools::PossibleVertex* MeshTools::LinkSplitter::splitLink(int oldIndexLeft, int oldIndexRight)
+{
+    auto iter = splitLinksMidpoints.find(make_pair(oldIndexLeft, oldIndexRight));
+    if (iter != splitLinksMidpoints.end())
+        return iter->second.get();
+    else
     {
-        newMeshBuf->Vertices.push_back(getBaseVertex(oldMeshBuf, index));
-        return newMeshBuf->Vertices.size()-1;
+        S3DVertex& vLeft = getBaseVertex(oldMeshBuf, oldIndexLeft);
+        S3DVertex& vRight = getBaseVertex(oldMeshBuf, oldIndexRight);
+
+        float scale = (zCut - vLeft.Pos.Z) / (vRight.Pos.Z - vLeft.Pos.Z);
+
+        // Test if scale is going all screwy due to a bad division result.
+        if (! (scale >= 0-ROUNDING_ERROR_f32 && scale <= 1.0f+ROUNDING_ERROR_f32) )
+        {
+            throw std::runtime_error("Hit a bad division result while slicing a mesh.");
+        }
+
+        std::map<std::pair<int, int>, boost::shared_ptr<PossibleVertex>>::mapped_type result = boost::shared_ptr<PossibleVertex>(new PossibleVertex(vLeft, vRight, scale));
+        splitLinksMidpoints.insert(make_pair(make_pair(oldIndexLeft, oldIndexRight), result));
+        return result.get();
+    }
+}
+
+void MeshTools::LinkSplitter::addQuadOrTriangle(vector<PossibleVertex*> const& newShape, irr::scene::SMeshBuffer* newMeshBuf)
+{
+    switch (newShape.size())
+    {
+        case 0:
+            // Nothing touches
+            break; // no triangle
+        case 1:
+            // Only a corner touches
+            break; // incomplete triangle
+        case 2:
+            // Only a side touches
+            break; // incomplete triangle
+        case 3:  // add 1 triangle
+            for (int j=0; j<3; ++j)
+                newShape[j]->addToMeshBuf(newMeshBuf);
+            break;
+        case 4:  // add quad, need to make two triangles
+        {
+            // If you don't have the braces around the variable declarations here, gcc gives the cryptic error "jump to case label".
+            // The GCC maintainers closed someone's bug report about this problem saying that's expected behavior, you should just know
+            // that the problem is the variables escape scope to the next label (even though I'm not actually using any of them there).
+            // Really GCC guys?  Really?  "jump to case label" - you think that's an acceptable error message?  F*** you.
+            PossibleVertex *A=newShape[0], *B=newShape[1], *C=newShape[2], *D=newShape[3];
+            PossibleVertex* acTris[] = { A,B,C , A,C,D };
+            PossibleVertex* bdTris[] = { B,C,D , B,D,A };
+            PossibleVertex** twoTris = A->distSQ(C) < B->distSQ(D) ? acTris : bdTris;
+            for (int j=0; j<6; ++j)
+                newShape[j]->addToMeshBuf(newMeshBuf);
+            break;
+        }
+        default:
+            throw std::logic_error("Something went wrong in splitMeshZ; LinkSplitter::addQuadOrTriangle was passed more than 4 points.");
+    }
+}
+
+std::pair<irr::scene::IMesh*, irr::scene::IMesh*> MeshTools::splitMeshZ(IMesh* oldMesh, float zCut)
+{
+    IMeshBuffer* oldMeshBuf = oldMesh->getMeshBuffer(0);
+    u16* oldInd = oldMeshBuf->getIndices();
+	SMeshBuffer* leftMeshBuf = new SMeshBuffer();
+	SMeshBuffer* rightMeshBuf = new SMeshBuffer();
+    LinkSplitter linkSplitter(oldMeshBuf, zCut);
+
+    for (u32 i=0; i < oldMeshBuf->getIndexCount(); i += 3)
+    {
+        // Calling these shapes instead of triangles because they could be triangle or a quad after slice,
+        // (it could also be a degenerate case of a line or a point - those will be discarded by addQuadOrTriangle)
+        vector<PossibleVertex*> leftShape;
+        vector<PossibleVertex*> rightShape;
+
+        for (u32 j=0; j<3; ++j)
+        {
+            linkSplitter.processLink(
+                leftShape, rightShape,
+                oldInd[i+(j+0)%3],
+                oldInd[i+(j+1)%3]);
+        }
+
+        linkSplitter.addQuadOrTriangle(leftShape, leftMeshBuf);
+        linkSplitter.addQuadOrTriangle(rightShape, rightMeshBuf);
     }
 
-    // The vertex outside the box - the one being generated new.
-    S3DVertex& vOut = getBaseVertex(oldMeshBuf, index);
+	SMesh* leftMesh = new SMesh();
+	leftMeshBuf->recalculateBoundingBox();
+	leftMeshBuf->setHardwareMappingHint(EHM_STATIC);
+    leftMesh->addMeshBuffer(leftMeshBuf);
+	leftMesh->recalculateBoundingBox();
+	leftMeshBuf->drop();  // we drop the buf, mesh obj has it now
 
-    // The vertex inside the box - not being changed.
-    S3DVertex& vIn = getBaseVertex(oldMeshBuf, other);
+	SMesh* rightMesh = new SMesh();
+	rightMeshBuf->recalculateBoundingBox();
+	rightMeshBuf->setHardwareMappingHint(EHM_STATIC);
+    rightMesh->addMeshBuffer(rightMeshBuf);
+	rightMesh->recalculateBoundingBox();
+	rightMeshBuf->drop();  // we drop the buf, mesh obj has it now
 
-    line3df originalLine(vOut.Pos, vIn.Pos);
-    vector3df newPos = cutLine(originalLine, box);
-    line3df lineAfterCut = line3df(newPos, vIn.Pos);
-
-    float originalLen = originalLine.getLength();
-    float afterCutLen = lineAfterCut.getLength();
-
-    // scale of the change; 1.0 means no change (use vOut)
-    // while 0 means complete change (use vIn)
-    float scale = afterCutLen / originalLen;
-
-    S3DVertex vNew;
-
-    vNew.TCoords = lerp(vIn.TCoords, vOut.TCoords, scale);
-
-    // I want to create a sharp dividing line between meshes, so using the normal of the
-    // internal vertex so that the lighting won't smooth over the crease.
-    // TODO: Might want to make this a parameter, maybe a functor to calculate the normal.
-    vNew.Normal = vIn.Normal;
-
-    vNew.Pos = newPos;
-
-    // SColor doesn't define multiplication by a float, bummer.
-    u32 a = lerp(vIn.Color.getAlpha(), vOut.Color.getAlpha(), scale);
-    u32 r = lerp(vIn.Color.getRed(),   vOut.Color.getRed(), scale);
-    u32 g = lerp(vIn.Color.getGreen(), vOut.Color.getGreen(), scale);
-    u32 b = lerp(vIn.Color.getBlue(),  vOut.Color.getBlue(), scale);
-    vNew.Color.set(a, r, g, b);
-
-    newMeshBuf->Vertices.push_back(vNew);
-
-    // You would not BELIEVE how much grief forgetting the "-1" here caused me.
-    return newMeshBuf->Vertices.size()-1;
+	return make_pair(leftMesh, rightMesh);
 }
 
-
-// Note: the ints are new meshbuf indicies
-float MeshTools::LinkSplitter::distSQ(int a, int b) const
-{
-    S3DVertex& va = getBaseVertex(newMeshBuf, a);
-    S3DVertex& vb = getBaseVertex(newMeshBuf, b);
-    return line3df(va.Pos, vb.Pos).getLengthSQ();
-}
-
-// start is outside the box, end is inside the box
-vector3df MeshTools::cutLine(line3df line, aabbox3df box)
-{
-    // Couldn't get algebraic cutLine to work right because apparently I suck at math,
-    // so using the dumb but effective "cut it in half until it fits in the box" algorithm.
-    //
-    // I may not understand teh aljebraz but at least I understand recursion.
-
-    if (line.getLengthSQ() < 0.001)
-        return line.start;
-
-    vector3df mid = line.getMiddle();
-
-    if (box.isPointInside(mid))
-        return cutLine(line3df(line.start, mid), box);
-    else
-        return cutLine(line3df(mid, line.end), box);
-}
 
 bool MeshTools::compareMeshBuffers(IMeshBuffer* oldMesh, IMeshBuffer* newMesh)
 {
@@ -263,19 +363,19 @@ bool MeshTools::compareMeshBuffers(IMeshBuffer* oldMesh, IMeshBuffer* newMesh)
     // To handle duplicates we'll map instances of duplicates onto their first occurrence
 
     vector<int> newToNew(newMesh->getVertexCount());
-    for (int i=0; i < newToNew.size(); ++i)
+    for (u32 i=0; i < newToNew.size(); ++i)
         newToNew[i] = i;
 
     vector<int> oldToOld(oldMesh->getVertexCount());
-    for (int i=0; i < oldToOld.size(); ++i)
+    for (u32 i=0; i < oldToOld.size(); ++i)
         oldToOld[i] = i;
 
-    for (int o=0; o < oldMesh->getVertexCount(); ++o)
+    for (u32 o=0; o < oldMesh->getVertexCount(); ++o)
     {
         cout << "\t" << o;
         auto const& oldVertex = MeshTools::getBaseVertex(oldMesh, o);
         auto const& newVertex = MeshTools::getBaseVertex(newMesh, o);
-        for (int n=0; n < newMesh->getVertexCount(); ++n)
+        for (u32 n=0; n < newMesh->getVertexCount(); ++n)
         {
             if (o==n)
                 continue;
@@ -300,11 +400,11 @@ bool MeshTools::compareMeshBuffers(IMeshBuffer* oldMesh, IMeshBuffer* newMesh)
     vector<int> oldToNew(oldMesh->getVertexCount(), -1);
 
     cout << "Building vertex equivalence table for " << oldToNew.size() << " vertices." << endl;
-    for (int o=0; o < oldMesh->getVertexCount(); ++o)
+    for (u32 o=0; o < oldMesh->getVertexCount(); ++o)
     {
         cout << "\t" << o;
         auto const& oldVertex = MeshTools::getBaseVertex(oldMesh, o);
-        for (int n=0; n < newMesh->getVertexCount(); ++n)
+        for (u32 n=0; n < newMesh->getVertexCount(); ++n)
         {
             auto const& newVertex = MeshTools::getBaseVertex(newMesh, n);
             if (oldVertex.Pos == newVertex.Pos && oldVertex.TCoords == newVertex.TCoords)
@@ -317,7 +417,7 @@ bool MeshTools::compareMeshBuffers(IMeshBuffer* oldMesh, IMeshBuffer* newMesh)
 
     cout << "Checking vertex equivalence table" << endl;
 
-    for (int o=0; o<oldMesh->getVertexCount(); ++o)
+    for (u32 o=0; o<oldMesh->getVertexCount(); ++o)
     {
         if (oldToNew[o] == -1)
         {
@@ -363,52 +463,3 @@ bool MeshTools::compareMeshBuffers(IMeshBuffer* oldMesh, IMeshBuffer* newMesh)
 
     return true;
 }
-
-IMesh* MeshTools::sliceMesh(IMesh* oldMesh, aabbox3df bounds)
-{
-    IMeshBuffer* oldMeshBuf = oldMesh->getMeshBuffer(0);
-    u16* oldInd = oldMeshBuf->getIndices();
-	SMeshBuffer* newMeshBuf = new SMeshBuffer();
-    LinkSplitter linkSplitter(oldMeshBuf, newMeshBuf, bounds);
-
-    for (u32 i=0; i < oldMeshBuf->getIndexCount(); i += 3)
-    {
-        vector<int> newInd;
-
-        for (u32 j=0; j<3; ++j)
-        {
-            linkSplitter.processCorner(
-                newInd,
-                oldInd[i+(j+2)%3],
-                oldInd[i+(j+0)%3],
-                oldInd[i+(j+1)%3]);
-        }
-
-        switch (newInd.size())
-        {
-            case 3:  // link split left triangle
-                for (int j=0; j<3; ++j)
-                    newMeshBuf->Indices.push_back(newInd[j]);
-                break;
-            case 4:  // link split left quad, make two triangles
-                int A=newInd[0], B=newInd[1], C=newInd[2], D=newInd[3];
-                int const acTris[] = { A,B,C , A,C,D };
-                int const bdTris[] = { B,C,D , B,D,A };
-                int const* twoTris = linkSplitter.distSQ(A,C) < linkSplitter.distSQ(B,D) ? acTris : bdTris;
-                for (int j=0; j<6; ++j)
-                    newMeshBuf->Indices.push_back(twoTris[j]);
-        }
-    }
-
-    //compareMeshBuffers(oldMeshBuf, newMeshBuf);
-
-	SMesh* mesh = new SMesh();
-	newMeshBuf->recalculateBoundingBox();
-	newMeshBuf->setHardwareMappingHint(EHM_STATIC);
-    mesh->addMeshBuffer(newMeshBuf);
-	mesh->recalculateBoundingBox();
-	newMeshBuf->drop();
-	return mesh;
-}
-
-
