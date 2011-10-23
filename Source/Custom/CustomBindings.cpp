@@ -63,7 +63,7 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_CONSTR(IrrlichtBulletDebugDrawer,, irr::video::IVideoDriver*)
     LM_FUNC(IrrlichtBulletDebugDrawer, (drawLine))
 
-    LM_CLASS(ns_custom, btTypedConstraint)
+    //LM_CLASS(ns_custom, btTypedConstraint)
 
     /*
     LM_CLASS(ns_custom, GearConstraint)
@@ -92,11 +92,18 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_CLASS(ns_custom, pair_of_IMesh)
     LM_FIELD(pair_of_IMesh, (first)(second))
 
-//    typedef TooManyTypes<1> TooMany1;
-//    LM_CLASS(ns_custom, TooMany1)
-//
-//    typedef TooManyTypes<1> TooMany2;
-//    LM_CLASS(ns_custom, TooMany2)
+/*
+    auto& testclass_LM = type_sys.register_class<TooManyTypes<1>>("foobar");
+
+    typedef TooManyTypes<2> TooMany2;
+    LM_CLASS(ns_custom, TooMany2)
+    typedef TooManyTypes<3> TooMany3;
+    LM_CLASS(ns_custom, TooMany3)
+    typedef TooManyTypes<4> TooMany4;
+    LM_CLASS(ns_custom, TooMany4)
+    typedef TooManyTypes<5> TooMany5;
+    LM_CLASS(ns_custom, TooMany5)
+*/
 
 }
 
