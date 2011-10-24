@@ -69,7 +69,7 @@ int MeshTools::PossibleVertex::addToMeshBuf(irr::scene::SMeshBuffer* meshBuf)
     return index;
 }
 
-float MeshTools::PossibleVertex::distSQ(PossibleVertex* other) const
+float MeshTools::PossibleVertex::distSQ(boost::shared_ptr<PossibleVertex> other) const
 {
     return vert.Pos.getDistanceFromSQ(other->vert.Pos);
 }
@@ -149,7 +149,9 @@ btSoftBody* MeshTools::createSoftBodyFromMesh(btSoftBodyWorldInfo& worldInfo, IM
     for (unsigned int i=0; i < buffer->getIndexCount(); ++i)
         triangles.push_back(buffer->getIndices()[i]);
 
-    return btSoftBodyHelpers::CreateFromTriMesh(worldInfo, &vertices[0], &triangles[0], buffer->getIndexCount()/3, false);
+    auto result = btSoftBodyHelpers::CreateFromTriMesh(worldInfo, &vertices[0], &triangles[0], buffer->getIndexCount()/3, false);
+    result->m_bUpdateRtCst = true;
+    return result;
 }
 
 S3DVertex& MeshTools::getBaseVertex(IMeshBuffer* meshBuf, int n)
@@ -184,7 +186,7 @@ MeshTools::LinkSplitter::LinkSplitter(IMeshBuffer* oldMeshBuf_, float zCut_)
 }
 
 // Adds point a, point b, and/or the midpoint between a and b
-void MeshTools::LinkSplitter::processLink(std::vector<PossibleVertex*>& leftInd, std::vector<PossibleVertex*>& rightInd, int a, int b)
+void MeshTools::LinkSplitter::processLink(std::vector<boost::shared_ptr<PossibleVertex>>& leftInd, std::vector<boost::shared_ptr<PossibleVertex>>& rightInd, int a, int b)
 {
     int whichSideA = compareZ(a);
     int whichSideB = compareZ(b);
@@ -229,16 +231,16 @@ int MeshTools::LinkSplitter::compareZ(int index)
 }
 
 
-MeshTools::PossibleVertex* MeshTools::LinkSplitter::getVert(int oldIndex)
+boost::shared_ptr<MeshTools::PossibleVertex> MeshTools::LinkSplitter::getVert(int oldIndex)
 {
-    return existingVertices[oldIndex].get();
+    return existingVertices[oldIndex];
 }
 
-MeshTools::PossibleVertex* MeshTools::LinkSplitter::splitLink(int oldIndexLeft, int oldIndexRight)
+boost::shared_ptr<MeshTools::PossibleVertex> MeshTools::LinkSplitter::splitLink(int oldIndexLeft, int oldIndexRight)
 {
     auto iter = splitLinksMidpoints.find(make_pair(oldIndexLeft, oldIndexRight));
     if (iter != splitLinksMidpoints.end())
-        return iter->second.get();
+        return iter->second;
     else
     {
         S3DVertex& vLeft = getBaseVertex(oldMeshBuf, oldIndexLeft);
@@ -254,11 +256,11 @@ MeshTools::PossibleVertex* MeshTools::LinkSplitter::splitLink(int oldIndexLeft, 
 
         std::map<std::pair<int, int>, boost::shared_ptr<PossibleVertex>>::mapped_type result = boost::shared_ptr<PossibleVertex>(new PossibleVertex(vLeft, vRight, scale));
         splitLinksMidpoints.insert(make_pair(make_pair(oldIndexLeft, oldIndexRight), result));
-        return result.get();
+        return result;
     }
 }
 
-void MeshTools::LinkSplitter::addQuadOrTriangle(vector<PossibleVertex*> const& newShape, irr::scene::SMeshBuffer* newMeshBuf)
+void MeshTools::LinkSplitter::addQuadOrTriangle(vector<boost::shared_ptr<PossibleVertex>> const& newShape, irr::scene::SMeshBuffer* newMeshBuf)
 {
     u32 numCorners = newShape.size();
     switch (numCorners)
@@ -282,12 +284,15 @@ void MeshTools::LinkSplitter::addQuadOrTriangle(vector<PossibleVertex*> const& n
             // The GCC maintainers closed someone's bug report about this problem saying that's expected behavior, you should just know
             // that the problem is the variables escape scope to the next label (even though I'm not actually using any of them there).
             // Really GCC guys?  Really?  "jump to case label" - you think that's an acceptable error message?  F*** you.
-            PossibleVertex *A=newShape[0], *B=newShape[1], *C=newShape[2], *D=newShape[3];
-            PossibleVertex* acTris[] = { A,B,C , A,C,D };
-            PossibleVertex* bdTris[] = { B,C,D , B,D,A };
-            PossibleVertex** twoTris = A->distSQ(C) < B->distSQ(D) ? acTris : bdTris;
+            boost::shared_ptr<PossibleVertex> A=newShape[0], B=newShape[1], C=newShape[2], D=newShape[3];
+            boost::shared_ptr<PossibleVertex> acTris[] = { A,B,C , A,C,D };
+            boost::shared_ptr<PossibleVertex> bdTris[] = { B,C,D , B,D,A };
+            boost::shared_ptr<PossibleVertex>* twoTris = A->distSQ(C) < B->distSQ(D) ? acTris : bdTris;
             for (int j=0; j<6; ++j)
-                newShape[j]->addToMeshBuf(newMeshBuf);
+            {
+                twoTris[j]->addToMeshBuf(newMeshBuf);
+            }
+
             break;
         }
         default:
@@ -307,8 +312,8 @@ std::pair<irr::scene::IMesh*, irr::scene::IMesh*> MeshTools::splitMeshZ(IMesh* o
     {
         // Calling these shapes instead of triangles because they could be triangle or a quad after slice,
         // (it could also be a degenerate case of a line or a point - those will be discarded by addQuadOrTriangle)
-        vector<PossibleVertex*> leftShape;
-        vector<PossibleVertex*> rightShape;
+        vector<boost::shared_ptr<PossibleVertex>> leftShape;
+        vector<boost::shared_ptr<PossibleVertex>> rightShape;
 
         for (u32 j=0; j<3; ++j)
         {

@@ -63,14 +63,12 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_CONSTR(IrrlichtBulletDebugDrawer,, irr::video::IVideoDriver*)
     LM_FUNC(IrrlichtBulletDebugDrawer, (drawLine))
 
-    //LM_CLASS(ns_custom, btTypedConstraint)
+    LM_CLASS(ns_custom, btTypedConstraint)
 
-    /*
     LM_CLASS(ns_custom, GearConstraint)
     LM_BASE(GearConstraint, btTypedConstraint)
     LM_CONSTR(GearConstraint,, btRigidBody&, btRigidBody&, btScalar)
     GearConstraint_LM.bind_static_method("getRotZ", GearConstraint::getRotZ);
-    */
 
     //LM_STATIC_FUNC(ns_custom, KinematicAnimator, get_watch_node)
     //LM_STATIC_FUNC(ns_custom, KinematicAnimator, set_watch_node)

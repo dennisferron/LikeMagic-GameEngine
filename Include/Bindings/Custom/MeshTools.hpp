@@ -42,7 +42,7 @@ public:
         // Adds an index on each call; 3 calls to add a triangle.
         int addToMeshBuf(irr::scene::SMeshBuffer* meshBuf);
 
-        float distSQ(PossibleVertex* other) const;
+        float distSQ(boost::shared_ptr<PossibleVertex> other) const;
     };
 
     class LinkSplitter
@@ -54,13 +54,13 @@ public:
         std::map<std::pair<int, int>, boost::shared_ptr<PossibleVertex>> splitLinksMidpoints;
         std::vector<boost::shared_ptr<PossibleVertex>> existingVertices;
 
-        PossibleVertex* getVert(int oldIndex);
-        PossibleVertex* splitLink(int oldIndexLeft, int oldIndexRight);
+        boost::shared_ptr<PossibleVertex> getVert(int oldIndex);
+        boost::shared_ptr<PossibleVertex> splitLink(int oldIndexLeft, int oldIndexRight);
         int compareZ(int oldIndex);
     public:
         LinkSplitter(irr::scene::IMeshBuffer* oldMeshBuf_, float zCut_);
-        void processLink(std::vector<PossibleVertex*>& left, std::vector<PossibleVertex*>& right, int a, int b);
-        void addQuadOrTriangle(std::vector<PossibleVertex*> const& newShape, irr::scene::SMeshBuffer* newMeshBuf);
+        void processLink(std::vector<boost::shared_ptr<PossibleVertex>>& left, std::vector<boost::shared_ptr<PossibleVertex>>& right, int a, int b);
+        void addQuadOrTriangle(std::vector<boost::shared_ptr<PossibleVertex>> const& newShape, irr::scene::SMeshBuffer* newMeshBuf);
     };
 
     static irr::scene::IMesh* createMeshFromSoftBody(btSoftBody* softBody);

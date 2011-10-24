@@ -38,7 +38,7 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
             (addCameraSceneNode)(addCameraSceneNodeFPS)(addCameraSceneNodeMaya)
             (addMeshSceneNode)(createRotationAnimator)(drawAll)(getGeometryCreator)
             (addLightSceneNode)(createFollowSplineAnimator)(setAmbientLight)
-            (getSceneCollisionManager)(addAnimatedMeshSceneNode))
+            (getSceneCollisionManager)(addAnimatedMeshSceneNode)(addSkyBoxSceneNode)(addSkyDomeSceneNode))
     LM_FUNC_OVERLOAD(ISceneManager, "createTriangleSelector", createTriangleSelector, ITriangleSelector*, IAnimatedMeshSceneNode*)
     LM_FUNC_OVERLOAD(ISceneManager, "createTriangleSelector", createTriangleSelector, ITriangleSelector*, IMesh*, ISceneNode*)
     LM_FUNC_OVERLOAD(ISceneManager, "getMeshFromIReadFile", getMesh, IAnimatedMesh*, IReadFile*);
