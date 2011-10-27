@@ -28,6 +28,7 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_irr_scene, E_BUFFER_TYPE)
     LM_CLASS(ns_irr_scene, E_HARDWARE_MAPPING)
+    LM_CLASS(ns_irr_scene, E_TERRAIN_PATCH_SIZE)
 
     // LM_FUNC for this already defined in "irr" bindings.
     LM_CLASS(ns_irr_scene, IReferenceCounted)
@@ -50,6 +51,36 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
 
     LM_FUNC_OVERLOAD(ISceneManager, "saveSceneToIReadFile", saveScene, bool, IWriteFile*, ISceneUserDataSerializer*);
     LM_FUNC_OVERLOAD(ISceneManager, "saveSceneToPath", saveScene, bool, path const&, ISceneUserDataSerializer*);
+
+    LM_FUNC_OVERLOAD(ISceneManager, "addTerrainSceneNodeFromIReadFile", addTerrainSceneNode,
+		ITerrainSceneNode*, // return type
+        io::IReadFile*, // heightMapFile
+        ISceneNode*, // parent=0
+        s32, // id=-1
+        const core::vector3df&, // position = core::vector3df(0.0f,0.0f,0.0f)
+        const core::vector3df&, // rotation = core::vector3df(0.0f,0.0f,0.0f)
+        const core::vector3df&, // scale = core::vector3df(1.0f,1.0f,1.0f)
+        video::SColor, // vertexColor = video::SColor(255,255,255,255)
+        s32, //maxLOD=5
+        E_TERRAIN_PATCH_SIZE, // patchSize=ETPS_17
+        s32, // smoothFactor=0,
+        bool //addAlsoIfHeightmapEmpty = false
+    )
+
+    LM_FUNC_OVERLOAD(ISceneManager, "addTerrainSceneNodeFromPath", addTerrainSceneNode,
+		ITerrainSceneNode*, // return type
+		const io::path&, // heightMapFileName
+        ISceneNode*, // parent=0
+        s32, // id=-1
+        const core::vector3df&, // position = core::vector3df(0.0f,0.0f,0.0f)
+        const core::vector3df&, // rotation = core::vector3df(0.0f,0.0f,0.0f)
+        const core::vector3df&, // scale = core::vector3df(1.0f,1.0f,1.0f)
+        video::SColor, // vertexColor = video::SColor(255,255,255,255)
+        s32, //maxLOD=5
+        E_TERRAIN_PATCH_SIZE, // patchSize=ETPS_17
+        s32, // smoothFactor=0,
+        bool //addAlsoIfHeightmapEmpty = false
+    )
 
     LM_CLASS(ns_irr_scene, IMeshBuffer)
     LM_BASE(IMeshBuffer, IReferenceCounted)
@@ -124,6 +155,10 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
             (getTarget)(getTargetAndRotationBinding)(getUpVector)(getViewFrustum)(getViewMatrix)(getViewMatrixAffector)(isInputReceiverEnabled)
             (isOrthogonal)(OnEvent)(setAspectRatio)(setFarValue)(setFOV)(setInputReceiverEnabled)(setNearValue)(setProjectionMatrix)(setRotation)
             (setTarget)(setUpVector)(setViewMatrixAffector))
+
+    LM_CLASS(ns_irr_scene, ITerrainSceneNode)
+    LM_BASE(ITerrainSceneNode, ISceneNode)
+    LM_FUNC(ITerrainSceneNode, (scaleTexture))
 
     LM_CLASS(ns_irr_scene, ITriangleSelector)
     LM_BASE(ITriangleSelector, IReferenceCounted)
