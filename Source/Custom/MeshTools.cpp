@@ -464,3 +464,77 @@ bool MeshTools::compareMeshBuffers(IMeshBuffer* oldMesh, IMeshBuffer* newMesh)
 
     return true;
 }
+
+static IMesh* MeshTools::createMeshFromHeightmap(IImage* image, dimension2du tileSizeInPixels, vector2du tilePosInTiles, bool extraStripsOnEdges)
+{
+    // Easier to think of script working in whole tile units, so handle conversion to pixel pos in this method:
+    vector2du startAtPixel = tilePosInTiles * tileSizeInPixels;
+
+    dimension2du imageDimension = image->getDimension();
+
+    // Return nothing if the tile is outside the image, or if the resulting mesh would have only 0 or 1 rows or columns.
+    // Doing this check early prevents getting underflow when we clip the tile size to the image dimensions a few statements down.
+    if (startAtPixel.X >= (imageDimension.Width-1) || startAtPixel.Y >= (imageDimension.Height-1))
+        return NULL;
+
+    // Calculate whether to use tile size or tile size + 1 (for generating overlap)
+    // Adding the extra strip amount before clipping to image dimensions prevents overflowing the image edges after clipping.
+    dimension2du useTileSize = tileSizeInPixels + (extraStripsOnEdges? dimension2du(1,1) : dimension2du(0,0));
+
+    // Clip the tile size if we're dealing with a "leftover" amount at the edge that's not a whole tile's width or height.
+    // Most heightmap implementations require exactly a power of 2 + 1 square dimensions like 257x257, but supporting
+    // image sizes that are not whole multiples of tile size is as simple as this one line of code and supporting
+    // image sizes that are not square is a nice feature for a platformer game so you can have levels that are longer
+    // than they are tall.
+    useTileSize.set(min(useTileSize.Width, imageDimension.Width-startAtPixel.X), min(useTileSize.Height, imageDimension.Height-startAtPixel.Y));
+
+    // TODO:  Pre-allocate vertex data to Width*Height
+
+    // I put y in the outer loop so that the mesh will "read" left to right before moving in the X axis.
+    // This does have to agreee with getIndex, which assumes this orientation to determine index values.
+    for (u32 y=0; y < useTileSize.Height; ++y)
+    {
+        // I am looping variables from 0 to size instead of from pixel pos to pixel pos so that x,y will be
+        // simultaneously index positions in the tile pixes and world positions in units.
+        for (u32 x=0; x < useTileSize.Width; ++x)
+        {
+            // TODO:  Access the vertex object directly in the mesh buffer because its presized.
+            addVertex(x,y);
+
+            // TODO:  Use green or something for exact height value ?
+
+            // TODO:  calculate normal; maybe do something to make the normal efficient.
+        }
+    }
+
+    // TODO:  Pre-allocate index data to 2*3*Width*Height for triangles.
+
+    // Start with 1 and generate all the triangles from their top right corners.
+    // Like this (A is top right corner at x,y):
+    //
+    //              y=1  B---A
+    //                   | / |
+    //              y=0  C---D
+    //                  x=0 x=1
+    for (u32 y=1; y < useTileSize.Height; ++y)
+    {
+        for (u32 x=1; x < useTileSize.Width; ++x)
+        {
+            u32 A = getIndex(useTileSize, x,   y   );
+            u32 B = getIndex(useTileSize, x-1, y   );
+            u32 C = getIndex(useTileSize, x-1, y-1 );
+            u32 D = getIndex(useTileSize, x,   y-1 );
+
+            addIndices(A, B, C);
+            addIndices(A, C, D);
+        }
+    }
+}
+
+u32 MeshTools::getIndex(dimension2du tileSize, u32 x, u32 y)
+{
+    // We know what order we generate the vertices in, therefore we
+    // know exactly how to
+    return y * tileSize.Height + x;
+}
+

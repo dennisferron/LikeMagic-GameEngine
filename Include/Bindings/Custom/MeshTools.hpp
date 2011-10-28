@@ -25,6 +25,10 @@ namespace Bindings { namespace Custom {
 
 class MeshTools
 {
+private:
+    // Implementation detail of createMeshFromHeightmap
+    irr::core::u32 getIndex(irr::core::dimension2du tileSize, irr::core::u32 x, irr::core::u32 y);
+
 public:
     class PossibleVertex
     {
@@ -73,6 +77,13 @@ public:
     // returns the point on the line where the box cuts it.
 
     static bool compareMeshBuffers(irr::scene::IMeshBuffer* oldMesh, irr::scene::IMeshBuffer* newMesh);
+
+    // Will create a mesh from a section of a heightmap.
+    // Creates the mesh at in XY plane starting at 0,0 in world space, 1 pixel = 1 unit, and height along Z axis.
+    // To move or scale the mesh differently, just follow up with irrlicht's irr::scene::IMeshManipulator class.
+    // For edge tiles where the image size is not an exact match for the tile size, generates as much of the mesh on the last tile as it can.
+    // Returns NULL if the requested tile is outside the image or if the image dimensions leave 0 or 1 rows or columns for the requested tile.
+    static irr::scene::IMesh* createMeshFromHeightmap(irr::video::IImage* image, irr::core::dimension2du tileSizeInPixels, irr::core::vector2di tilePosInTiles, bool extraStripsOnEdges);
 };
 
 }}
