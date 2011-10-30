@@ -465,10 +465,10 @@ bool MeshTools::compareMeshBuffers(IMeshBuffer* oldMesh, IMeshBuffer* newMesh)
     return true;
 }
 
-static IMesh* MeshTools::createMeshFromHeightmap(IImage* image, dimension2du tileSizeInPixels, vector2du tilePosInTiles, bool extraStripsOnEdges)
+IMesh* MeshTools::createMeshFromHeightmap(IImage* image, dimension2du tileSizeInPixels, vector2di tilePosInTiles, bool extraStripsOnEdges)
 {
     // Easier to think of script working in whole tile units, so handle conversion to pixel pos in this method:
-    vector2du startAtPixel = tilePosInTiles * tileSizeInPixels;
+    vector2di startAtPixel = tilePosInTiles * vector2di(tileSizeInPixels.Width, tileSizeInPixels.Height);
 
     dimension2du imageDimension = image->getDimension();
 
@@ -488,26 +488,102 @@ static IMesh* MeshTools::createMeshFromHeightmap(IImage* image, dimension2du til
     // than they are tall.
     useTileSize.set(min(useTileSize.Width, imageDimension.Width-startAtPixel.X), min(useTileSize.Height, imageDimension.Height-startAtPixel.Y));
 
-    // TODO:  Pre-allocate vertex data to Width*Height
+	SMeshBuffer* buffer = new SMeshBuffer();
 
-    // I put y in the outer loop so that the mesh will "read" left to right before moving in the X axis.
-    // This does have to agreee with getIndex, which assumes this orientation to determine index values.
+	// Preallocate vertex buffer to the size we know we'll need.
+	buffer->Vertices.set_used(useTileSize.Width*useTileSize.Height);
+
+	// Amount of TCoord per unit of x,y in image.
+    vector2df tCoordsScale(1.0f / useTileSize.Width, 1.0f / useTileSize.Height);
+
+    // Whether we put y on the outside or x on the outside, doesn't matter, because we are
+    // using getIndex() to find where x and y map too.  However, I happen to know I made getIndex
+    // put x's together, y in rows, and looping in the same rank order might have better cache performance
+    // because it should access the vertices in the same order they are in the array.
     for (u32 y=0; y < useTileSize.Height; ++y)
     {
-        // I am looping variables from 0 to size instead of from pixel pos to pixel pos so that x,y will be
-        // simultaneously index positions in the tile pixes and world positions in units.
         for (u32 x=0; x < useTileSize.Width; ++x)
         {
-            // TODO:  Access the vertex object directly in the mesh buffer because its presized.
-            addVertex(x,y);
+            u32 index = getIndex(useTileSize, x, y);
+            S3DVertex& vert = buffer->Vertices[index];
 
-            // TODO:  Use green or something for exact height value ?
+            // No special coloration
+            vert.Color = SColor(255,255,255,255);
 
-            // TODO:  calculate normal; maybe do something to make the normal efficient.
+            // Scale texture to tile.
+            vert.TCoords = vector2df(x,y) * tCoordsScale;
+
+            // y axis starts with 0 at image bottom and goes up.
+            vector2di pixelPos(
+                startAtPixel.X+x,
+                startAtPixel.Y+y //useTileSize.Height-1 - (startAtPixel.Y+y)
+            );
+
+            SColor heightColor = image->getPixel(pixelPos.X, pixelPos.Y);
+            float thisHeight = 255 - heightColor.getAverage();
+
+            vert.Pos.set(x, y, thisHeight);
+
+            // I'm only averaging normals along the 4 compass directions.  It's
+            // arguable whether diagonals should count; I chose to ignore diagonals.
+            // Ignoring diagonals allows me to assume the "run" in rise/run is always
+            // just one unit; if you add diagonals here you'll also need to change
+            // the slope calculation to use the actual distance instead of assuming 1.
+            vector2di offsetsArray[] = {
+                vector2di( 1, 0),  //  3 o'clock
+                vector2di( 0, 1),  // 12 o'clock
+                vector2di(-1, 0),  //  9 o'clock
+                vector2di( 0,-1)   //  6 o'clock
+            };
+
+            // Calculate the normals of the surrounding slopes.
+            // Uses the image, not just the tile patch size, so it will
+            // calculate correct normals for vertices on tile edges.
+            if (false)
+            for (size_t i=-0; i < sizeof(offsetsArray) / sizeof(s32); ++i)
+            {
+                vector2di offset = vector2di(x,y) + offsetsArray[i];
+
+                // Skip this offset if it's outside the image
+                if (offset.X < 0 || offset.Y < 0 || offset.X >= (s32)imageDimension.Width || offset.Y >= (s32)imageDimension.Height)
+                    continue;
+
+                vector2di otherPixelPos(
+                    startAtPixel.X+x+offset.X,
+                    useTileSize.Height-1 - (startAtPixel.Y+y+offset.Y)
+                );
+                float otherHeight = 255 - image->getPixel((u32)otherPixelPos.X, (u32)otherPixelPos.Y).getAverage();
+
+                // The code Irrlicht's in terrain scene node does all kinds of complicated
+                // business with cross products and such - waaay over complicated.  You don't need
+                // all that stuff.  Dude it' s a heightmap: all you need to worray about is
+                // rise over run on unit intervals!  Algebra 1 type stuff, y = mx + c
+
+                // Calculate the rise of the line over the run, taking into account the fact
+                // that the offset could be in either direction.
+                float rise = (offset.X < 0 || offset.Y < 0)? thisHeight - otherHeight : otherHeight - thisHeight;
+
+                // Assuming that run = 1, m = rise / run is just m = rise.
+                float m = rise;
+
+                // The the slope of the normal is just the negative of the reciprocal of the line slope.
+                float n = -1.0f / rise;
+
+                // The X,Y of the normal vector is just going to be the X and Y of the offset
+                // (think about it - obviously the normal of the slope must tilt in the direction of the run)
+                // and the Z of the normal vector is just the slope of the normal over that run.
+                vector3df normVect(offset.X, offset.Y, n);
+
+                //vert.Normal += normVect;
+            }
+
+            //vert.Normal.normalize();
+            vert.Normal.set(0,0,-1.0f);
         }
     }
 
-    // TODO:  Pre-allocate index data to 2*3*Width*Height for triangles.
+    // Pre-allocate index data to 2*3*Width*Height for triangles.
+    buffer->Indices.set_used(2*3*useTileSize.Width*useTileSize.Height);
 
     // Start with 1 and generate all the triangles from their top right corners.
     // Like this (A is top right corner at x,y):
@@ -516,25 +592,39 @@ static IMesh* MeshTools::createMeshFromHeightmap(IImage* image, dimension2du til
     //                   | / |
     //              y=0  C---D
     //                  x=0 x=1
-    for (u32 y=1; y < useTileSize.Height; ++y)
+    for (u32 dst=0, x=1; x < useTileSize.Width; ++x)
     {
-        for (u32 x=1; x < useTileSize.Width; ++x)
+        for (u32 y=1; y < useTileSize.Height; ++y)
         {
             u32 A = getIndex(useTileSize, x,   y   );
             u32 B = getIndex(useTileSize, x-1, y   );
             u32 C = getIndex(useTileSize, x-1, y-1 );
             u32 D = getIndex(useTileSize, x,   y-1 );
 
-            addIndices(A, B, C);
-            addIndices(A, C, D);
+            buffer->Indices[dst++] = C;
+            buffer->Indices[dst++] = B;
+            buffer->Indices[dst++] = A;
+
+            buffer->Indices[dst++] = D;
+            buffer->Indices[dst++] = C;
+            buffer->Indices[dst++] = A;
         }
     }
+
+	buffer->recalculateBoundingBox();
+	buffer->setHardwareMappingHint(EHM_STATIC);
+
+	SMesh* mesh = new SMesh();
+	mesh->addMeshBuffer(buffer);
+	mesh->recalculateBoundingBox();
+	buffer->drop();
+	return mesh;
 }
 
 u32 MeshTools::getIndex(dimension2du tileSize, u32 x, u32 y)
 {
     // We know what order we generate the vertices in, therefore we
     // know exactly how to
-    return y * tileSize.Height + x;
+    return y * tileSize.Width + x;
 }
 

@@ -108,10 +108,10 @@ void add_bindings_video(RuntimeTypeSystem& type_sys)
     LM_FUNC_OVERLOAD(IVideoDriver, "createImageFromImage", createImage, IImage*, ECOLOR_FORMAT, IImage*)
     LM_FUNC_OVERLOAD(IVideoDriver, "createImageWithSize", createImage, IImage*, ECOLOR_FORMAT, const core::dimension2d<u32>&)
     LM_FUNC_OVERLOAD(IVideoDriver, "createImageFromData", createImageFromData, IImage*, ECOLOR_FORMAT, const core::dimension2d<u32>&, void*, bool, bool)
-    LM_FUNC_OVERLOAD(IVideoDriver, "createImageFromFileIReadFile", createImageFromFile, IImage*, io::IReadFile*)
-    LM_FUNC_OVERLOAD(IVideoDriver, "createImageFromFile", createImageFromFile, IImage*, const io::path&)
-    LM_FUNC_OVERLOAD(IVideoDriver, "writeImageToFile", writeImageToFile, bool, IImage*, const io::path&, u32)
-    LM_FUNC_OVERLOAD(IVideoDriver, "writeImageToFileIWriteFile", writeImageToFile, bool, IImage*, io::IWriteFile*, u32)
+    LM_FUNC_OVERLOAD(IVideoDriver, "createImageFromFileWithIReadFile", createImageFromFile, IImage*, io::IReadFile*)
+    LM_FUNC_OVERLOAD(IVideoDriver, "createImageFromFileWithPath", createImageFromFile, IImage*, const io::path&)
+    LM_FUNC_OVERLOAD(IVideoDriver, "writeImageToFileWithPath", writeImageToFile, bool, IImage*, const io::path&, u32)
+    LM_FUNC_OVERLOAD(IVideoDriver, "writeImageToFileWithIWriteFile", writeImageToFile, bool, IImage*, io::IWriteFile*, u32)
 
     LM_FUNC_OVERLOAD(IVideoDriver, "draw2DImage", draw2DImage,
             void,
@@ -246,6 +246,7 @@ void add_bindings_video(RuntimeTypeSystem& type_sys)
 
 
     LM_CLASS(ns_irr_video, ITexture)
+    LM_CLASS(ns_irr_video, IImage)
 }
 
 }}

@@ -27,7 +27,8 @@ class MeshTools
 {
 private:
     // Implementation detail of createMeshFromHeightmap
-    irr::core::u32 getIndex(irr::core::dimension2du tileSize, irr::core::u32 x, irr::core::u32 y);
+    // Error: 'u32 in irr::core does not name a type' WTF?  I have include irrlicht.h in this same header.
+    static unsigned int getIndex(irr::core::dimension2du tileSize, unsigned int x, unsigned int y);
 
 public:
     class PossibleVertex

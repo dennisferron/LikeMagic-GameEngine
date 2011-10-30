@@ -83,7 +83,8 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_FUNC(SoftBodyMeshSynchronizer, (sync))
 
     LM_CLASS(ns_custom, MeshTools)
-    LM_STATIC_MEMBER_FUNC(MeshTools, (getBaseVertex)(createMeshFromSoftBody)(createSoftBodyFromMesh)(splitMeshZ))
+    LM_STATIC_MEMBER_FUNC(MeshTools, (getBaseVertex)(createMeshFromSoftBody)(createSoftBodyFromMesh)(splitMeshZ)
+        (createMeshFromHeightmap))
 
     // Needed to be able to access members from the return value of splitMeshZ
     typedef std::pair<IMesh*, IMesh*> pair_of_IMesh;
