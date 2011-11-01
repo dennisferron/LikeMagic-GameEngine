@@ -49,6 +49,24 @@ MeshTools::PossibleVertex::PossibleVertex(irr::video::S3DVertex const& vLeft, ir
     vert.Color.set(a, r, g, b);
 }
 
+std::pair<
+    boost::shared_ptr<MeshTools::PossibleVertex>,
+    boost::shared_ptr<MeshTools::PossibleVertex>
+> MeshTools::PossibleVertex::split(vector3df moveLeft, vector3df moveRight) const
+{
+    std::pair<boost::shared_ptr<PossibleVertex>, boost::shared_ptr<PossibleVertex>>
+        result(
+            boost::shared_ptr<PossibleVertex>(new PossibleVertex(this->vert)),
+            boost::shared_ptr<PossibleVertex>(new PossibleVertex(this->vert))
+        );
+
+    result.first->vert.Pos += moveLeft;
+    result.second->vert.Pos += moveRight;
+
+    return result;
+}
+
+
 int MeshTools::PossibleVertex::addToMeshBuf(irr::scene::SMeshBuffer* meshBuf)
 {
     int index;
@@ -177,8 +195,8 @@ S3DVertex& MeshTools::getBaseVertex(IMeshBuffer* meshBuf, int n)
     return *reinterpret_cast<irr::video::S3DVertex*>(vertPtr);
 }
 
-MeshTools::LinkSplitter::LinkSplitter(IMeshBuffer* oldMeshBuf_, float zCut_)
-    : oldMeshBuf(oldMeshBuf_), zCut(zCut_), existingVertices(oldMeshBuf_->getVertexCount())
+MeshTools::LinkSplitter::LinkSplitter(IMeshBuffer* oldMeshBuf_, float zCut_, float zInsert_)
+    : oldMeshBuf(oldMeshBuf_), zCut(zCut_), zInsert(zInsert_), existingVertices(oldMeshBuf_->getVertexCount())
 {
     // All of the old mesh buffers vertex will go in at least one of the result meshes.
     for (u32 i=0; i<oldMeshBuf->getVertexCount(); ++i)
@@ -186,36 +204,66 @@ MeshTools::LinkSplitter::LinkSplitter(IMeshBuffer* oldMeshBuf_, float zCut_)
 }
 
 // Adds point a, point b, and/or the midpoint between a and b
-void MeshTools::LinkSplitter::processLink(std::vector<boost::shared_ptr<PossibleVertex>>& leftInd, std::vector<boost::shared_ptr<PossibleVertex>>& rightInd, int a, int b)
+void MeshTools::LinkSplitter::processLink(std::vector<boost::shared_ptr<PossibleVertex>>& left, std::vector<boost::shared_ptr<PossibleVertex>>& middle, std::vector<boost::shared_ptr<PossibleVertex>>& right, int a, int b)
 {
     int whichSideA = compareZ(a);
     int whichSideB = compareZ(b);
 
     // Add a to left side if it is left or in both
     if (whichSideA < 0 || whichSideA == 0)
-        leftInd.push_back(getVert(a));
+    {
+        auto vert = getVert(a);
+        auto splitVert = splitVertex(vert);
+        left.push_back(splitVert.first);
+    }
 
     // Add a to right side if it is right or in both
     if (whichSideA > 0 || whichSideA == 0)
-        rightInd.push_back(getVert(a));
+    {
+        auto vert = getVert(a);
+        auto splitVert = splitVertex(vert);
+        right.push_back(splitVert.second);
+    }
 
     // Link crosses like this:  a --|--> b
     if (whichSideA < 0 && whichSideB > 0)
     {
-        auto mid = splitLink(a, b);
-        leftInd.push_back(mid);
-        rightInd.push_back(mid);
+        auto sharedVert = splitLink(a, b);
+        auto splitVert = splitVertex(sharedVert);
+
+        left.push_back(splitVert.first);
+        right.push_back(splitVert.second);
+
+        // Link goes from left to right, so add in that order.  This ensures correct winding order on the quad.
+        middle.push_back(splitVert.first);
+        middle.push_back(splitVert.second);
     }
-    // Link crosses like this: b --|--> a
+    // Link crosses like this: b <--|-- a
     else if (whichSideB < 0 && whichSideA > 0)
     {
-        auto mid = splitLink(b, a);
-        leftInd.push_back(mid);
-        rightInd.push_back(mid);
+        auto sharedVert = splitLink(b, a);
+        auto splitVert = splitVertex(sharedVert);
+
+        left.push_back(splitVert.first);
+        right.push_back(splitVert.second);
+
+        // Link goes from right to left, so add in reverse order.  This ensures correct winding order on the quad.
+        middle.push_back(splitVert.second);
+        middle.push_back(splitVert.first);
+    }
+    // Links that lie exactly on the border need special handling for middle mesh.
+    else if (whichSideA == 0 && whichSideB == 0)
+    {
+        // TODO:  Handle links with correct winding order here, but also don't double count links shared by separate triangles (how?).
     }
 
     // Don't add vertex B here.  Since all 3 sides of the triangle
     // will be processed, eventually B will be passed as A.
+}
+
+std::pair<boost::shared_ptr<MeshTools::PossibleVertex>, boost::shared_ptr<MeshTools::PossibleVertex>> MeshTools::LinkSplitter::splitVertex(boost::shared_ptr<PossibleVertex> vert)
+{
+    return vert->split(vector3df(0,0,-zInsert/2.0), vector3df(0,0,zInsert/2.0));
 }
 
 int MeshTools::LinkSplitter::compareZ(int index)
@@ -300,30 +348,33 @@ void MeshTools::LinkSplitter::addQuadOrTriangle(vector<boost::shared_ptr<Possibl
     }
 }
 
-std::pair<irr::scene::IMesh*, irr::scene::IMesh*> MeshTools::splitMeshZ(IMesh* oldMesh, float zCut)
+MeshTools::SplitMeshResult MeshTools::splitMeshZ(IMesh* oldMesh, float zCut, float zInsert)
 {
     IMeshBuffer* oldMeshBuf = oldMesh->getMeshBuffer(0);
     u16* oldInd = oldMeshBuf->getIndices();
 	SMeshBuffer* leftMeshBuf = new SMeshBuffer();
+	SMeshBuffer* middleMeshBuf = new SMeshBuffer();
 	SMeshBuffer* rightMeshBuf = new SMeshBuffer();
-    LinkSplitter linkSplitter(oldMeshBuf, zCut);
+    LinkSplitter linkSplitter(oldMeshBuf, zCut, zInsert);
 
     for (u32 i=0; i < oldMeshBuf->getIndexCount(); i += 3)
     {
         // Calling these shapes instead of triangles because they could be triangle or a quad after slice,
         // (it could also be a degenerate case of a line or a point - those will be discarded by addQuadOrTriangle)
         vector<boost::shared_ptr<PossibleVertex>> leftShape;
+        vector<boost::shared_ptr<PossibleVertex>> middleShape;
         vector<boost::shared_ptr<PossibleVertex>> rightShape;
 
         for (u32 j=0; j<3; ++j)
         {
             linkSplitter.processLink(
-                leftShape, rightShape,
+                leftShape, middleShape, rightShape,
                 oldInd[i+(j+0)%3],
                 oldInd[i+(j+1)%3]);
         }
 
         linkSplitter.addQuadOrTriangle(leftShape, leftMeshBuf);
+        linkSplitter.addQuadOrTriangle(middleShape, middleMeshBuf);
         linkSplitter.addQuadOrTriangle(rightShape, rightMeshBuf);
     }
 
@@ -334,6 +385,13 @@ std::pair<irr::scene::IMesh*, irr::scene::IMesh*> MeshTools::splitMeshZ(IMesh* o
 	leftMesh->recalculateBoundingBox();
 	leftMeshBuf->drop();  // we drop the buf, mesh obj has it now
 
+	SMesh* middleMesh = new SMesh();
+	middleMeshBuf->recalculateBoundingBox();
+	middleMeshBuf->setHardwareMappingHint(EHM_STATIC);
+    middleMesh->addMeshBuffer(middleMeshBuf);
+	middleMesh->recalculateBoundingBox();
+	middleMeshBuf->drop();  // we drop the buf, mesh obj has it now
+
 	SMesh* rightMesh = new SMesh();
 	rightMeshBuf->recalculateBoundingBox();
 	rightMeshBuf->setHardwareMappingHint(EHM_STATIC);
@@ -341,7 +399,7 @@ std::pair<irr::scene::IMesh*, irr::scene::IMesh*> MeshTools::splitMeshZ(IMesh* o
 	rightMesh->recalculateBoundingBox();
 	rightMeshBuf->drop();  // we drop the buf, mesh obj has it now
 
-	return make_pair(leftMesh, rightMesh);
+	return SplitMeshResult {leftMesh, middleMesh, rightMesh};
 }
 
 
@@ -467,14 +525,21 @@ bool MeshTools::compareMeshBuffers(IMeshBuffer* oldMesh, IMeshBuffer* newMesh)
 
 IMesh* MeshTools::createMeshFromHeightmap(IImage* image, dimension2du tileSizeInPixels, vector2di tilePosInTiles, bool extraStripsOnEdges)
 {
-    // Easier to think of script working in whole tile units, so handle conversion to pixel pos in this method:
-    vector2di startAtPixel = tilePosInTiles * vector2di(tileSizeInPixels.Width, tileSizeInPixels.Height);
+    // Use top corner of image to get bias for centering the Z axis.
+    float imageZeroBias = image->getPixel(0,0).getAverage();
 
     dimension2du imageDimension = image->getDimension();
 
+    // Easier to think of script working in whole tile units, so handle conversion to pixel pos in this method:
+    vector2di startAtPixel = tilePosInTiles * vector2di(tileSizeInPixels.Width, tileSizeInPixels.Height);
+
+    // However we're going to invert the image Y axis so that the bottom of the picture will be at 0,0 in world space,
+    // and the top of the picture will be at +Y in world space.
+    startAtPixel.Y = (imageDimension.Height-1) - startAtPixel.Y;
+
     // Return nothing if the tile is outside the image, or if the resulting mesh would have only 0 or 1 rows or columns.
     // Doing this check early prevents getting underflow when we clip the tile size to the image dimensions a few statements down.
-    if (startAtPixel.X >= (imageDimension.Width-1) || startAtPixel.Y >= (imageDimension.Height-1))
+    if (startAtPixel.X < 0 || startAtPixel.X >= (imageDimension.Width-1) || startAtPixel.Y <= 0 || startAtPixel.Y > (imageDimension.Height-1))
         return NULL;
 
     // Calculate whether to use tile size or tile size + 1 (for generating overlap)
@@ -486,7 +551,7 @@ IMesh* MeshTools::createMeshFromHeightmap(IImage* image, dimension2du tileSizeIn
     // image sizes that are not whole multiples of tile size is as simple as this one line of code and supporting
     // image sizes that are not square is a nice feature for a platformer game so you can have levels that are longer
     // than they are tall.
-    useTileSize.set(min(useTileSize.Width, imageDimension.Width-startAtPixel.X), min(useTileSize.Height, imageDimension.Height-startAtPixel.Y));
+    useTileSize.set(min(useTileSize.Width, imageDimension.Width-startAtPixel.X), min(useTileSize.Height, (u32)startAtPixel.Y+1));
 
 	SMeshBuffer* buffer = new SMeshBuffer();
 
@@ -516,11 +581,11 @@ IMesh* MeshTools::createMeshFromHeightmap(IImage* image, dimension2du tileSizeIn
             // y axis starts with 0 at image bottom and goes up.
             vector2di pixelPos(
                 startAtPixel.X+x,
-                startAtPixel.Y+y //useTileSize.Height-1 - (startAtPixel.Y+y)
+                startAtPixel.Y-y
             );
 
             SColor heightColor = image->getPixel(pixelPos.X, pixelPos.Y);
-            float thisHeight = 255 - heightColor.getAverage();
+            float thisHeight = imageZeroBias - heightColor.getAverage();
 
             vert.Pos.set(x, y, thisHeight);
 
@@ -550,7 +615,7 @@ IMesh* MeshTools::createMeshFromHeightmap(IImage* image, dimension2du tileSizeIn
 
                 vector2di otherPixelPos(
                     startAtPixel.X+x+offset.X,
-                    useTileSize.Height-1 - (startAtPixel.Y+y+offset.Y)
+                    startAtPixel.Y-y-offset.Y
                 );
                 float otherHeight = 255 - image->getPixel((u32)otherPixelPos.X, (u32)otherPixelPos.Y).getAverage();
 
@@ -583,7 +648,9 @@ IMesh* MeshTools::createMeshFromHeightmap(IImage* image, dimension2du tileSizeIn
     }
 
     // Pre-allocate index data to 2*3*Width*Height for triangles.
-    buffer->Indices.set_used(2*3*useTileSize.Width*useTileSize.Height);
+    // There is actually 1 less square per count of vertices though,
+    // for instance if you had 2x2 vertices, you only have 1 square.
+    buffer->Indices.set_used(2*3*(useTileSize.Width-1)*(useTileSize.Height-1));
 
     // Start with 1 and generate all the triangles from their top right corners.
     // Like this (A is top right corner at x,y):
@@ -627,4 +694,105 @@ u32 MeshTools::getIndex(dimension2du tileSize, u32 x, u32 y)
     // know exactly how to
     return y * tileSize.Width + x;
 }
+
+bool MeshTools::checkMeshBuffer(IMeshBuffer* meshBuffer, dimension2du tileSize)
+{
+    bool ok = true;
+
+    if (getIndex(tileSize, tileSize.Width-1, tileSize.Height-1) != meshBuffer->getVertexCount()-1)
+    {
+        cout << "Wrong number of vertices" << endl;
+        return ok = false;
+    }
+
+    // Check vertex positions
+    for (u32 y=0; y<tileSize.Height; ++y)
+    {
+        for (u32 x=0; x<tileSize.Width; ++x)
+        {
+            u32 index = getIndex(tileSize, x, y);
+
+            if (index >= 32768)
+            {
+                cout << "getIndex " << index << " at pos "<< x << "," << y << " too large for signed int." << endl;
+                ok = false;
+            }
+
+            if (index >= meshBuffer->getVertexCount())
+            {
+                cout << "getIndex " << index << " at pos "<< x << "," << y << " larger than vertex buffer count of " << meshBuffer->getVertexCount() << endl;
+                return ok=false;
+            }
+
+            S3DVertex const& vert = getBaseVertex(meshBuffer, (int)index);
+
+            if (!irr::core::equals(vert.Pos.X, (f32)x))
+            {
+                cout << "Expected x " << x << " found " << vert.Pos.X << endl;
+                ok = false;
+            }
+
+            if (!irr::core::equals(vert.Pos.Y, (f32)y))
+            {
+                cout << "Expected y " << y << " found " << vert.Pos.Y << endl;
+                ok = false;
+            }
+        }
+    }
+
+    // Check indices
+    if (meshBuffer->getIndexCount() % 3 != 0)
+    {
+        cout << "Index buffer size not divisible by 3" << endl;
+        return ok = false;
+    }
+
+    if (meshBuffer->getIndexCount() % 6 != 0)
+    {
+        cout << "Index buffer size not evenly divisible by 6 (implies it doesn't contain just triangulated squares)" << endl;
+        return ok = false;
+    }
+
+    for (u32 i=0; i<meshBuffer->getIndexCount(); ++i)
+    {
+        if (meshBuffer->getIndices()[i] > meshBuffer->getVertexCount())
+        {
+            cout << "Bad index in index buffer" << endl;
+            ok = false;
+        }
+    }
+
+    for (u32 i=0; i<meshBuffer->getIndexCount()/6; ++i)
+    {
+        for (u32 j=0; j<2; ++j)
+        {
+            u16 A = meshBuffer->getIndices()[6*i + 3*j + 0];
+            u16 B = meshBuffer->getIndices()[6*i + 3*j + 1];
+            u16 C = meshBuffer->getIndices()[6*i + 3*j + 2];
+
+            if (A==B || B==C || C==A)
+            {
+                cout << "degenerate triangle; one or more vertices the same" << endl;
+                ok = false;
+            }
+
+            auto& vA = getBaseVertex(meshBuffer, A);
+            auto& vB = getBaseVertex(meshBuffer, B);
+            auto& vC = getBaseVertex(meshBuffer, C);
+
+            if (abs(vA.Pos.X-vB.Pos.X) > 1.01 || abs(vB.Pos.X-vC.Pos.X) > 1.01 || abs(vC.Pos.X-vA.Pos.X) > 1.01)
+            {
+                cout << "distance between vertices > 1 in x axis" << endl;
+            }
+
+            if (abs(vA.Pos.Y-vB.Pos.Y) > 1.01 || abs(vB.Pos.Y-vC.Pos.Y) > 1.01 || abs(vC.Pos.Y-vA.Pos.Y) > 1.01)
+            {
+                cout << "distance between vertices > 1 in y axis" << endl;
+            }
+        }
+    }
+
+    return ok;
+}
+
 

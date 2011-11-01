@@ -36,9 +36,10 @@ public:
     private:
         irr::video::S3DVertex vert;
         std::map<irr::scene::SMeshBuffer*, int> assignedIndices;
+        bool onEdge;
 
     public:
-        PossibleVertex(irr::video::S3DVertex const& vert_);
+        PossibleVertex(irr::video::S3DVertex const& vert_, bool onEdge_);
 
         // lerps the vertex between two others
         PossibleVertex(irr::video::S3DVertex const& vLeft, irr::video::S3DVertex const& vRight, float scale);
@@ -48,6 +49,8 @@ public:
         int addToMeshBuf(irr::scene::SMeshBuffer* meshBuf);
 
         float distSQ(boost::shared_ptr<PossibleVertex> other) const;
+
+        //std::pair<boost::shared_ptr<PossibleVertex>, boost::shared_ptr<PossibleVertex>> split(irr::core::vector3df moveLeft, irr::core::vector3df moveRight) const;
     };
 
     class LinkSplitter
@@ -55,29 +58,40 @@ public:
     private:
         irr::scene::IMeshBuffer* oldMeshBuf;
         float zCut;
+        float zInsert;
 
         std::map<std::pair<int, int>, boost::shared_ptr<PossibleVertex>> splitLinksMidpoints;
         std::vector<boost::shared_ptr<PossibleVertex>> existingVertices;
 
         boost::shared_ptr<PossibleVertex> getVert(int oldIndex);
         boost::shared_ptr<PossibleVertex> splitLink(int oldIndexLeft, int oldIndexRight);
+        std::pair<boost::shared_ptr<PossibleVertex>, boost::shared_ptr<PossibleVertex>> splitVertex(boost::shared_ptr<PossibleVertex> vert);
         int compareZ(int oldIndex);
     public:
-        LinkSplitter(irr::scene::IMeshBuffer* oldMeshBuf_, float zCut_);
-        void processLink(std::vector<boost::shared_ptr<PossibleVertex>>& left, std::vector<boost::shared_ptr<PossibleVertex>>& right, int a, int b);
+        LinkSplitter(irr::scene::IMeshBuffer* oldMeshBuf_, float zCut_, float zInsert_);
+        void processLink(std::vector<boost::shared_ptr<PossibleVertex>>& left, std::vector<boost::shared_ptr<PossibleVertex>>& middle, std::vector<boost::shared_ptr<PossibleVertex>>& right, int a, int b);
         void addQuadOrTriangle(std::vector<boost::shared_ptr<PossibleVertex>> const& newShape, irr::scene::SMeshBuffer* newMeshBuf);
     };
 
     static irr::scene::IMesh* createMeshFromSoftBody(btSoftBody* softBody);
     static btSoftBody* createSoftBodyFromMesh(btSoftBodyWorldInfo& worldInfo, irr::scene::IMesh* mesh);
     static irr::video::S3DVertex& getBaseVertex(irr::scene::IMeshBuffer* meshBuf, int n);
-    static std::pair<irr::scene::IMesh*, irr::scene::IMesh*> splitMeshZ(irr::scene::IMesh* mesh, float zCut);
+
+    struct SplitMeshResult
+    {
+        irr::scene::IMesh* left;
+        irr::scene::IMesh* middle;
+        irr::scene::IMesh* right;
+    };
+
+    static SplitMeshResult splitMeshZ(irr::scene::IMesh* oldMesh, float zCut, float zInsert);
 
     static irr::core::vector3df cutLineZ(irr::core::line3df line, float zCut);
     // Given a line in which the endpoint is in the box and the start point is outside it,
     // returns the point on the line where the box cuts it.
 
     static bool compareMeshBuffers(irr::scene::IMeshBuffer* oldMesh, irr::scene::IMeshBuffer* newMesh);
+    static bool checkMeshBuffer(irr::scene::IMeshBuffer* meshBuffer, irr::core::dimension2du tileSize);
 
     // Will create a mesh from a section of a heightmap.
     // Creates the mesh at in XY plane starting at 0,0 in world space, 1 pixel = 1 unit, and height along Z axis.

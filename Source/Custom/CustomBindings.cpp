@@ -87,9 +87,9 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
         (createMeshFromHeightmap))
 
     // Needed to be able to access members from the return value of splitMeshZ
-    typedef std::pair<IMesh*, IMesh*> pair_of_IMesh;
-    LM_CLASS(ns_custom, pair_of_IMesh)
-    LM_FIELD(pair_of_IMesh, (first)(second))
+    typedef MeshTools::SplitMeshResult SplitMeshResult;
+    LM_CLASS(ns_custom, SplitMeshResult)
+    LM_FIELD(SplitMeshResult, (left)(middle)(right))
 
 /*
     auto& testclass_LM = type_sys.register_class<TooManyTypes<1>>("foobar");

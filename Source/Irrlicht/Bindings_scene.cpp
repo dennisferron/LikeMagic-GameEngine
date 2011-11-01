@@ -35,7 +35,7 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
     LM_FUNC(IReferenceCounted, (drop)(grab)(getDebugName)(getReferenceCount))
 
     LM_CLASS(ns_irr_scene, ISceneManager)
-    LM_FUNC(ISceneManager, (getRootSceneNode)
+    LM_FUNC(ISceneManager, (getRootSceneNode)(getMeshManipulator)
             (addCameraSceneNode)(addCameraSceneNodeFPS)(addCameraSceneNodeMaya)
             (addMeshSceneNode)(createRotationAnimator)(drawAll)(getGeometryCreator)
             (addLightSceneNode)(createFollowSplineAnimator)(setAmbientLight)
@@ -171,6 +171,9 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
     LM_BASE(ISceneCollisionManager, IReferenceCounted)
     LM_FUNC(ISceneCollisionManager, (getRayFromScreenCoordinates)(getSceneNodeAndCollisionPointFromRay)(getCollisionPoint)(getCollisionResultPosition)
             (getSceneNodeFromCameraBB)(getSceneNodeFromRayBB)(getSceneNodeFromScreenCoordinatesBB))
+
+    LM_CLASS(ns_irr_scene, IMeshManipulator)
+    LM_FUNC_OVERLOAD_CONST(IMeshManipulator, "makePlanarTextureMapping", makePlanarTextureMapping, void,  IMeshBuffer*, f32, f32, u8, core::vector3df const& )
 }
 
 }}
