@@ -25,6 +25,18 @@ using namespace irr::core;
 using namespace irr::video;
 using namespace irr::scene;
 
+typedef MeshTools::PsblVertPtr PsblVertPtr;
+
+void intrusive_ptr_add_ref(PossibleVertex const* p)
+{
+    ++(p->ref_count);
+}
+
+void intrusive_ptr_release(PossibleVertex const* p)
+{
+    if (!--(p->ref_count))
+        delete p;
+}
 
 MeshTools::PossibleVertex::PossibleVertex(irr::video::S3DVertex const& vert_)
     : vert(vert_)
@@ -49,22 +61,6 @@ MeshTools::PossibleVertex::PossibleVertex(irr::video::S3DVertex const& vLeft, ir
     vert.Color.set(a, r, g, b);
 }
 
-std::pair<
-    boost::shared_ptr<MeshTools::PossibleVertex>,
-    boost::shared_ptr<MeshTools::PossibleVertex>
-> MeshTools::PossibleVertex::split(vector3df moveLeft, vector3df moveRight) const
-{
-    std::pair<boost::shared_ptr<PossibleVertex>, boost::shared_ptr<PossibleVertex>>
-        result(
-            boost::shared_ptr<PossibleVertex>(new PossibleVertex(this->vert)),
-            boost::shared_ptr<PossibleVertex>(new PossibleVertex(this->vert))
-        );
-
-    result.first->vert.Pos += moveLeft;
-    result.second->vert.Pos += moveRight;
-
-    return result;
-}
 
 
 int MeshTools::PossibleVertex::addToMeshBuf(irr::scene::SMeshBuffer* meshBuf)
@@ -87,7 +83,7 @@ int MeshTools::PossibleVertex::addToMeshBuf(irr::scene::SMeshBuffer* meshBuf)
     return index;
 }
 
-float MeshTools::PossibleVertex::distSQ(boost::shared_ptr<PossibleVertex> other) const
+float MeshTools::PossibleVertex::distSQ(PsblVertPtr other) const
 {
     return vert.Pos.getDistanceFromSQ(other->vert.Pos);
 }
@@ -195,73 +191,48 @@ S3DVertex& MeshTools::getBaseVertex(IMeshBuffer* meshBuf, int n)
     return *reinterpret_cast<irr::video::S3DVertex*>(vertPtr);
 }
 
-MeshTools::LinkSplitter::LinkSplitter(IMeshBuffer* oldMeshBuf_, float zCut_, float zInsert_)
-    : oldMeshBuf(oldMeshBuf_), zCut(zCut_), zInsert(zInsert_), existingVertices(oldMeshBuf_->getVertexCount())
+MeshTools::LinkSplitter::LinkSplitter(IMeshBuffer* oldMeshBuf_, float zCut_)
+    : oldMeshBuf(oldMeshBuf_), zCut(zCut_), existingVertices(oldMeshBuf_->getVertexCount())
 {
     // All of the old mesh buffers vertex will go in at least one of the result meshes.
     for (u32 i=0; i<oldMeshBuf->getVertexCount(); ++i)
-        existingVertices[i] = boost::shared_ptr<PossibleVertex>(new PossibleVertex(getBaseVertex(oldMeshBuf, i)));
+        existingVertices[i] = PsblVertPtr(new PossibleVertex(getBaseVertex(oldMeshBuf, i)));
 }
 
 // Adds point a, point b, and/or the midpoint between a and b
-void MeshTools::LinkSplitter::processLink(std::vector<boost::shared_ptr<PossibleVertex>>& left, std::vector<boost::shared_ptr<PossibleVertex>>& middle, std::vector<boost::shared_ptr<PossibleVertex>>& right, int a, int b)
+void MeshTools::LinkSplitter::processLink(std::vector<PsblVertPtr>& leftInd, std::vector<PsblVertPtr>& rightInd, int a, int b)
 {
     int whichSideA = compareZ(a);
     int whichSideB = compareZ(b);
 
     // Add a to left side if it is left or in both
     if (whichSideA < 0 || whichSideA == 0)
-    {
-        auto vert = getVert(a);
-        auto splitVert = splitVertex(vert);
-        left.push_back(splitVert.first);
-    }
+        leftInd.push_back(getVert(a));
 
     // Add a to right side if it is right or in both
     if (whichSideA > 0 || whichSideA == 0)
-    {
-        auto vert = getVert(a);
-        auto splitVert = splitVertex(vert);
-        right.push_back(splitVert.second);
-    }
+        rightInd.push_back(getVert(a));
 
     // Link crosses like this:  a --|--> b
     if (whichSideA < 0 && whichSideB > 0)
     {
-        auto sharedVert = splitLink(a, b);
-        auto splitVert = splitVertex(sharedVert);
-
-        left.push_back(splitVert.first);
-        right.push_back(splitVert.second);
-
-        // Link goes from left to right, so add in that order.  This ensures correct winding order on the quad.
-        middle.push_back(splitVert.first);
-        middle.push_back(splitVert.second);
+        auto mid = splitLink(a, b);
+        leftInd.push_back(mid);
+        rightInd.push_back(mid);
     }
     // Link crosses like this: b <--|-- a
     else if (whichSideB < 0 && whichSideA > 0)
     {
-        auto sharedVert = splitLink(b, a);
-        auto splitVert = splitVertex(sharedVert);
-
-        left.push_back(splitVert.first);
-        right.push_back(splitVert.second);
-
-        // Link goes from right to left, so add in reverse order.  This ensures correct winding order on the quad.
-        middle.push_back(splitVert.second);
-        middle.push_back(splitVert.first);
-    }
-    // Links that lie exactly on the border need special handling for middle mesh.
-    else if (whichSideA == 0 && whichSideB == 0)
-    {
-        // TODO:  Handle links with correct winding order here, but also don't double count links shared by separate triangles (how?).
+        auto mid = splitLink(b, a);
+        leftInd.push_back(mid);
+        rightInd.push_back(mid);
     }
 
     // Don't add vertex B here.  Since all 3 sides of the triangle
-    // will be processed, eventually B will be passed as A.
+    // will be processed, eventually B will be passed to the function as A.
 }
 
-std::pair<boost::shared_ptr<MeshTools::PossibleVertex>, boost::shared_ptr<MeshTools::PossibleVertex>> MeshTools::LinkSplitter::splitVertex(boost::shared_ptr<PossibleVertex> vert)
+std::pair<boost::shared_ptr<MeshTools::PossibleVertex>, boost::shared_ptr<MeshTools::PossibleVertex>> MeshTools::LinkSplitter::splitVertex(PsblVertPtr vert)
 {
     return vert->split(vector3df(0,0,-zInsert/2.0), vector3df(0,0,zInsert/2.0));
 }
@@ -291,7 +262,7 @@ boost::shared_ptr<MeshTools::PossibleVertex> MeshTools::LinkSplitter::splitLink(
         return iter->second;
     else
     {
-        S3DVertex& vLeft = getBaseVertex(oldMeshBuf, oldIndexLeft);
+        S3DVertex& vLeft  = getBaseVertex(oldMeshBuf, oldIndexLeft);
         S3DVertex& vRight = getBaseVertex(oldMeshBuf, oldIndexRight);
 
         float scale = (zCut - vLeft.Pos.Z) / (vRight.Pos.Z - vLeft.Pos.Z);
@@ -302,13 +273,13 @@ boost::shared_ptr<MeshTools::PossibleVertex> MeshTools::LinkSplitter::splitLink(
             throw std::runtime_error("Hit a bad division result while slicing a mesh.");
         }
 
-        std::map<std::pair<int, int>, boost::shared_ptr<PossibleVertex>>::mapped_type result = boost::shared_ptr<PossibleVertex>(new PossibleVertex(vLeft, vRight, scale));
+        std::map<std::pair<int, int>, PsblVertPtr>::mapped_type result = PsblVertPtr(new PossibleVertex(vLeft, vRight, scale));
         splitLinksMidpoints.insert(make_pair(make_pair(oldIndexLeft, oldIndexRight), result));
         return result;
     }
 }
 
-void MeshTools::LinkSplitter::addQuadOrTriangle(vector<boost::shared_ptr<PossibleVertex>> const& newShape, irr::scene::SMeshBuffer* newMeshBuf)
+void MeshTools::LinkSplitter::addQuadOrTriangle(vector<PsblVertPtr> const& newShape, irr::scene::SMeshBuffer* newMeshBuf)
 {
     u32 numCorners = newShape.size();
     switch (numCorners)
@@ -332,10 +303,10 @@ void MeshTools::LinkSplitter::addQuadOrTriangle(vector<boost::shared_ptr<Possibl
             // The GCC maintainers closed someone's bug report about this problem saying that's expected behavior, you should just know
             // that the problem is the variables escape scope to the next label (even though I'm not actually using any of them there).
             // Really GCC guys?  Really?  "jump to case label" - you think that's an acceptable error message?  F*** you.
-            boost::shared_ptr<PossibleVertex> A=newShape[0], B=newShape[1], C=newShape[2], D=newShape[3];
-            boost::shared_ptr<PossibleVertex> acTris[] = { A,B,C , A,C,D };
-            boost::shared_ptr<PossibleVertex> bdTris[] = { B,C,D , B,D,A };
-            boost::shared_ptr<PossibleVertex>* twoTris = A->distSQ(C) < B->distSQ(D) ? acTris : bdTris;
+            PsblVertPtr A=newShape[0], B=newShape[1], C=newShape[2], D=newShape[3];
+            PsblVertPtr acTris[] = { A,B,C , A,C,D };
+            PsblVertPtr bdTris[] = { B,C,D , B,D,A };
+            PsblVertPtr* twoTris = A->distSQ(C) < B->distSQ(D) ? acTris : bdTris;
             for (int j=0; j<6; ++j)
             {
                 twoTris[j]->addToMeshBuf(newMeshBuf);
@@ -353,29 +324,38 @@ MeshTools::SplitMeshResult MeshTools::splitMeshZ(IMesh* oldMesh, float zCut, flo
     IMeshBuffer* oldMeshBuf = oldMesh->getMeshBuffer(0);
     u16* oldInd = oldMeshBuf->getIndices();
 	SMeshBuffer* leftMeshBuf = new SMeshBuffer();
-	SMeshBuffer* middleMeshBuf = new SMeshBuffer();
 	SMeshBuffer* rightMeshBuf = new SMeshBuffer();
-    LinkSplitter linkSplitter(oldMeshBuf, zCut, zInsert);
+    LinkSplitter linkSplitter(oldMeshBuf, zCut);
+
+    std::set<std::pair<PsblVertPtr, PsblVertPtr>> leftEdgeLinks;
+    std::set<std::pair<PsblVertPtr, PsblVertPtr>> rightEdgeLinks;
 
     for (u32 i=0; i < oldMeshBuf->getIndexCount(); i += 3)
     {
         // Calling these shapes instead of triangles because they could be triangle or a quad after slice,
         // (it could also be a degenerate case of a line or a point - those will be discarded by addQuadOrTriangle)
-        vector<boost::shared_ptr<PossibleVertex>> leftShape;
-        vector<boost::shared_ptr<PossibleVertex>> middleShape;
-        vector<boost::shared_ptr<PossibleVertex>> rightShape;
+        vector<PsblVertPtr> leftShape;
+        vector<PsblVertPtr> rightShape;
 
         for (u32 j=0; j<3; ++j)
         {
             linkSplitter.processLink(
-                leftShape, middleShape, rightShape,
+                leftShape, rightShape,
                 oldInd[i+(j+0)%3],
                 oldInd[i+(j+1)%3]);
         }
 
         linkSplitter.addQuadOrTriangle(leftShape, leftMeshBuf);
-        linkSplitter.addQuadOrTriangle(middleShape, middleMeshBuf);
         linkSplitter.addQuadOrTriangle(rightShape, rightMeshBuf);
+
+        // Add any edges of the left shape that lie along the border.
+        linkSplitter.addEdgeLinks(leftShape, leftEdgeLinks);
+
+        // Connected right side polys will have opposite winding order than
+        // the left side poly.  In order for set_intersection to consider them
+        // as matches, we'll store the right side links in reversed order.
+        std::reverse(rightShape.begin(), rightShape.end());
+        linkSplitter.addEdgeLinks(rightShape, rightEdgeLinks);
     }
 
 	SMesh* leftMesh = new SMesh();
@@ -385,19 +365,26 @@ MeshTools::SplitMeshResult MeshTools::splitMeshZ(IMesh* oldMesh, float zCut, flo
 	leftMesh->recalculateBoundingBox();
 	leftMeshBuf->drop();  // we drop the buf, mesh obj has it now
 
-	SMesh* middleMesh = new SMesh();
-	middleMeshBuf->recalculateBoundingBox();
-	middleMeshBuf->setHardwareMappingHint(EHM_STATIC);
-    middleMesh->addMeshBuffer(middleMeshBuf);
-	middleMesh->recalculateBoundingBox();
-	middleMeshBuf->drop();  // we drop the buf, mesh obj has it now
-
 	SMesh* rightMesh = new SMesh();
 	rightMeshBuf->recalculateBoundingBox();
 	rightMeshBuf->setHardwareMappingHint(EHM_STATIC);
     rightMesh->addMeshBuffer(rightMeshBuf);
 	rightMesh->recalculateBoundingBox();
 	rightMeshBuf->drop();  // we drop the buf, mesh obj has it now
+
+    if (zInsert > 0)
+    {
+        set<PsblVertPtr> result;
+        set_intersection(leftEdgeLinks.begin(), leftEdgeLinks.end(), rightEdgeLinks.begin(), rightEdgeLinks.end(), result.begin());
+
+        SMeshBuffer* middleMeshBuf = new SMeshBuffer();
+        SMesh* middleMesh = new SMesh();
+        middleMeshBuf->recalculateBoundingBox();
+        middleMeshBuf->setHardwareMappingHint(EHM_STATIC);
+        middleMesh->addMeshBuffer(middleMeshBuf);
+        middleMesh->recalculateBoundingBox();
+        middleMeshBuf->drop();  // we drop the buf, mesh obj has it now
+    }
 
 	return SplitMeshResult {leftMesh, middleMesh, rightMesh};
 }

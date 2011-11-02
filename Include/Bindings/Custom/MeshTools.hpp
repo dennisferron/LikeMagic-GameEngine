@@ -31,15 +31,20 @@ private:
     static unsigned int getIndex(irr::core::dimension2du tileSize, unsigned int x, unsigned int y);
 
 public:
+    class PossibleVertex;
+    typedef boost::intrusive_ptr<PossibleVertex> PsblVertPtr;
+    void intrusive_ptr_add_ref(PossibleVertex const* p);
+    void intrusive_ptr_release(PossibleVertex const* p);
+
     class PossibleVertex
     {
     private:
+        std::size_t ref_count;
         irr::video::S3DVertex vert;
         std::map<irr::scene::SMeshBuffer*, int> assignedIndices;
-        bool onEdge;
 
     public:
-        PossibleVertex(irr::video::S3DVertex const& vert_, bool onEdge_);
+        PossibleVertex(irr::video::S3DVertex const& vert_);
 
         // lerps the vertex between two others
         PossibleVertex(irr::video::S3DVertex const& vLeft, irr::video::S3DVertex const& vRight, float scale);
@@ -48,9 +53,7 @@ public:
         // Adds an index on each call; 3 calls to add a triangle.
         int addToMeshBuf(irr::scene::SMeshBuffer* meshBuf);
 
-        float distSQ(boost::shared_ptr<PossibleVertex> other) const;
-
-        //std::pair<boost::shared_ptr<PossibleVertex>, boost::shared_ptr<PossibleVertex>> split(irr::core::vector3df moveLeft, irr::core::vector3df moveRight) const;
+        float distSQ(PsblVertPtr other) const;
     };
 
     class LinkSplitter
@@ -58,19 +61,19 @@ public:
     private:
         irr::scene::IMeshBuffer* oldMeshBuf;
         float zCut;
-        float zInsert;
 
-        std::map<std::pair<int, int>, boost::shared_ptr<PossibleVertex>> splitLinksMidpoints;
-        std::vector<boost::shared_ptr<PossibleVertex>> existingVertices;
+        std::map<std::pair<int, int>, PsblVertPtr> splitLinksMidpoints;
+        std::vector<PsblVertPtr> existingVertices;
 
-        boost::shared_ptr<PossibleVertex> getVert(int oldIndex);
-        boost::shared_ptr<PossibleVertex> splitLink(int oldIndexLeft, int oldIndexRight);
-        std::pair<boost::shared_ptr<PossibleVertex>, boost::shared_ptr<PossibleVertex>> splitVertex(boost::shared_ptr<PossibleVertex> vert);
+        PsblVertPtr getVert(int oldIndex);
+        PsblVertPtr splitLink(int oldIndexLeft, int oldIndexRight);
+        std::pair<PsblVertPtr, PsblVertPtr> splitVertex(PsblVertPtr vert);
         int compareZ(int oldIndex);
     public:
-        LinkSplitter(irr::scene::IMeshBuffer* oldMeshBuf_, float zCut_, float zInsert_);
-        void processLink(std::vector<boost::shared_ptr<PossibleVertex>>& left, std::vector<boost::shared_ptr<PossibleVertex>>& middle, std::vector<boost::shared_ptr<PossibleVertex>>& right, int a, int b);
-        void addQuadOrTriangle(std::vector<boost::shared_ptr<PossibleVertex>> const& newShape, irr::scene::SMeshBuffer* newMeshBuf);
+        LinkSplitter(irr::scene::IMeshBuffer* oldMeshBuf_, float zCut_);
+        void processLink(std::vector<PsblVertPtr>& left, std::vector<PsblVertPtr>& right, int a, int b);
+        void addQuadOrTriangle(std::vector<PsblVertPtr> const& newShape, irr::scene::SMeshBuffer* newMeshBuf);
+        void addEdgeLinks(std::vector<PsblVertPtr> const& shape);
     };
 
     static irr::scene::IMesh* createMeshFromSoftBody(btSoftBody* softBody);
