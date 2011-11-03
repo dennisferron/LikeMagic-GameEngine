@@ -10,9 +10,10 @@
 
 #include "irrlicht.h"
 
-#include "boost/shared_ptr.hpp"
+#include "boost/intrusive_ptr.hpp"
 #include <map>
 #include <vector>
+#include <set>
 
 class btSoftBody;
 class btSoftBodyWorldInfo;
@@ -33,17 +34,31 @@ private:
 public:
     class PossibleVertex;
     typedef boost::intrusive_ptr<PossibleVertex> PsblVertPtr;
-    void intrusive_ptr_add_ref(PossibleVertex const* p);
-    void intrusive_ptr_release(PossibleVertex const* p);
 
     class PossibleVertex
     {
     private:
-        std::size_t ref_count;
+        friend void ::Bindings::Custom::intrusive_ptr_add_ref(PossibleVertex const* p);
+        friend void ::Bindings::Custom::intrusive_ptr_release(PossibleVertex const* p);
+
+        mutable std::size_t ref_count;
+
         irr::video::S3DVertex vert;
         std::map<irr::scene::SMeshBuffer*, int> assignedIndices;
+        std::map<irr::core::vector3df, PsblVertPtr> duplicates;
+
+        // Private constructor so only friend function intrusive_ptr_release can delete us.
+        ~PossibleVertex();
+
+        // This class contains a lot of members (ref_count, duplicates list, etc.)
+        // that you actually wouldn't want copied.  I could define a copy constructor
+        // that handles that, but I think it's better to force everyone to use the constructor
+        // that takes an S3DVertex, to make it clear that that is the only part being copied.
+        PossibleVertex(PossibleVertex const&) = delete;
+        PossibleVertex& operator =(PossibleVertex const&) = delete;
 
     public:
+
         PossibleVertex(irr::video::S3DVertex const& vert_);
 
         // lerps the vertex between two others
@@ -51,9 +66,17 @@ public:
 
         // Adds the vertex at most once per meshbuffer.
         // Adds an index on each call; 3 calls to add a triangle.
-        int addToMeshBuf(irr::scene::SMeshBuffer* meshBuf);
+        int addToMeshBuf(irr::scene::SMeshBuffer* meshBuf, irr::core::vector3df offset);
 
         float distSQ(PsblVertPtr other) const;
+
+        // creates a duplicate of this vertex displaced in space by offset
+        // the vertex tracks its duplicates and will always return the same copy
+        // for the same offset.  This ensures vertex sharing in meshbuffer instead
+        // of creating extra copies of the same vertex data in a buffer.
+        PsblVertPtr duplicate(irr::core::vector3df offset);
+
+        irr::core::vector3df const& getPos() const;
     };
 
     class LinkSplitter
@@ -65,15 +88,17 @@ public:
         std::map<std::pair<int, int>, PsblVertPtr> splitLinksMidpoints;
         std::vector<PsblVertPtr> existingVertices;
 
-        PsblVertPtr getVert(int oldIndex);
         PsblVertPtr splitLink(int oldIndexLeft, int oldIndexRight);
-        std::pair<PsblVertPtr, PsblVertPtr> splitVertex(PsblVertPtr vert);
-        int compareZ(int oldIndex);
+
     public:
+
         LinkSplitter(irr::scene::IMeshBuffer* oldMeshBuf_, float zCut_);
         void processLink(std::vector<PsblVertPtr>& left, std::vector<PsblVertPtr>& right, int a, int b);
-        void addQuadOrTriangle(std::vector<PsblVertPtr> const& newShape, irr::scene::SMeshBuffer* newMeshBuf);
-        void addEdgeLinks(std::vector<PsblVertPtr> const& shape);
+        void addQuadOrTriangle(std::vector<PsblVertPtr> const& newShape, irr::scene::SMeshBuffer* newMeshBuf, irr::core::vector3df offset);
+        void addEdgeLinks(std::vector<PsblVertPtr> const& shape, std::set<std::pair<PsblVertPtr,PsblVertPtr>>& links);
+        PsblVertPtr getVert(int oldIndex);
+        int compareZ(int oldIndex);
+        int compareZ(PsblVertPtr vert);
     };
 
     static irr::scene::IMesh* createMeshFromSoftBody(btSoftBody* softBody);
@@ -87,7 +112,7 @@ public:
         irr::scene::IMesh* right;
     };
 
-    static SplitMeshResult splitMeshZ(irr::scene::IMesh* oldMesh, float zCut, float zInsert);
+    static SplitMeshResult splitMeshZ(irr::scene::IMesh* oldMesh, float zCut, float zInsert, bool marginalTrisInLeft, bool marginalTrisInRight);
 
     static irr::core::vector3df cutLineZ(irr::core::line3df line, float zCut);
     // Given a line in which the endpoint is in the box and the start point is outside it,
@@ -103,5 +128,8 @@ public:
     // Returns NULL if the requested tile is outside the image or if the image dimensions leave 0 or 1 rows or columns for the requested tile.
     static irr::scene::IMesh* createMeshFromHeightmap(irr::video::IImage* image, irr::core::dimension2du tileSizeInPixels, irr::core::vector2di tilePosInTiles, bool extraStripsOnEdges);
 };
+
+void intrusive_ptr_add_ref(MeshTools::PossibleVertex const* p);
+void intrusive_ptr_release(MeshTools::PossibleVertex const* p);
 
 }}

@@ -27,27 +27,31 @@ using namespace irr::scene;
 
 typedef MeshTools::PsblVertPtr PsblVertPtr;
 
-void intrusive_ptr_add_ref(PossibleVertex const* p)
+void ::Bindings::Custom::intrusive_ptr_add_ref(MeshTools::PossibleVertex const* p)
 {
     ++(p->ref_count);
 }
 
-void intrusive_ptr_release(PossibleVertex const* p)
+void ::Bindings::Custom::intrusive_ptr_release(MeshTools::PossibleVertex const* p)
 {
     if (!--(p->ref_count))
         delete p;
 }
 
+MeshTools::PossibleVertex::~PossibleVertex() {}
+
 MeshTools::PossibleVertex::PossibleVertex(irr::video::S3DVertex const& vert_)
-    : vert(vert_)
+    : ref_count(0), vert(vert_)
 {
 }
 
 MeshTools::PossibleVertex::PossibleVertex(irr::video::S3DVertex const& vLeft, irr::video::S3DVertex const& vRight, float scale)
+    : ref_count(0)
 {
     vert.TCoords = lerp(vLeft.TCoords, vRight.TCoords, scale);
 
-    // This isn't really
+    // This isn't really going to produce correct results unless
+    // the normals are close to each other already (although, they should be).
     vert.Normal = lerp(vLeft.Normal, vRight.Normal, scale);
     vert.Normal.normalize();
 
@@ -61,9 +65,19 @@ MeshTools::PossibleVertex::PossibleVertex(irr::video::S3DVertex const& vLeft, ir
     vert.Color.set(a, r, g, b);
 }
 
+PsblVertPtr MeshTools::PossibleVertex::duplicate(irr::core::vector3df offset)
+{
+    if (duplicates.find(offset) == duplicates.end())
+    {
+        PsblVertPtr p(new PossibleVertex(this->vert));
+        p->vert.Pos += offset;
+        duplicates[offset] = p;
+    }
 
+    return duplicates[offset];
+}
 
-int MeshTools::PossibleVertex::addToMeshBuf(irr::scene::SMeshBuffer* meshBuf)
+int MeshTools::PossibleVertex::addToMeshBuf(SMeshBuffer* meshBuf, vector3df offset)
 {
     int index;
     auto existing = assignedIndices.find(meshBuf);
@@ -73,7 +87,9 @@ int MeshTools::PossibleVertex::addToMeshBuf(irr::scene::SMeshBuffer* meshBuf)
         index = existing->second;
     else
     {
-        meshBuf->Vertices.push_back(vert);
+        S3DVertex offsetVert(vert);
+        offsetVert.Pos += offset;
+        meshBuf->Vertices.push_back(offsetVert);
         index = meshBuf->Vertices.size()-1;
         assignedIndices[meshBuf] = index;
     }
@@ -87,6 +103,12 @@ float MeshTools::PossibleVertex::distSQ(PsblVertPtr other) const
 {
     return vert.Pos.getDistanceFromSQ(other->vert.Pos);
 }
+
+vector3df const& MeshTools::PossibleVertex::getPos() const
+{
+    return vert.Pos;
+}
+
 
 IMesh* MeshTools::createMeshFromSoftBody(btSoftBody* softBody)
 {
@@ -232,11 +254,6 @@ void MeshTools::LinkSplitter::processLink(std::vector<PsblVertPtr>& leftInd, std
     // will be processed, eventually B will be passed to the function as A.
 }
 
-std::pair<boost::shared_ptr<MeshTools::PossibleVertex>, boost::shared_ptr<MeshTools::PossibleVertex>> MeshTools::LinkSplitter::splitVertex(PsblVertPtr vert)
-{
-    return vert->split(vector3df(0,0,-zInsert/2.0), vector3df(0,0,zInsert/2.0));
-}
-
 int MeshTools::LinkSplitter::compareZ(int index)
 {
     S3DVertex& vert = getBaseVertex(oldMeshBuf, index);
@@ -249,13 +266,26 @@ int MeshTools::LinkSplitter::compareZ(int index)
         return 1;
 }
 
+int MeshTools::LinkSplitter::compareZ(PsblVertPtr vert)
+{
+    // TODO:  Does this function ever fail to see a match if lerp doesn't scale the Z perfectly?
 
-boost::shared_ptr<MeshTools::PossibleVertex> MeshTools::LinkSplitter::getVert(int oldIndex)
+    float z = vert->getPos().Z;
+    if (irr::core::equals(z, zCut))
+        return 0;
+    else if (z < zCut)
+        return -1;
+    else
+        return 1;
+}
+
+
+PsblVertPtr MeshTools::LinkSplitter::getVert(int oldIndex)
 {
     return existingVertices[oldIndex];
 }
 
-boost::shared_ptr<MeshTools::PossibleVertex> MeshTools::LinkSplitter::splitLink(int oldIndexLeft, int oldIndexRight)
+PsblVertPtr MeshTools::LinkSplitter::splitLink(int oldIndexLeft, int oldIndexRight)
 {
     auto iter = splitLinksMidpoints.find(make_pair(oldIndexLeft, oldIndexRight));
     if (iter != splitLinksMidpoints.end())
@@ -279,7 +309,7 @@ boost::shared_ptr<MeshTools::PossibleVertex> MeshTools::LinkSplitter::splitLink(
     }
 }
 
-void MeshTools::LinkSplitter::addQuadOrTriangle(vector<PsblVertPtr> const& newShape, irr::scene::SMeshBuffer* newMeshBuf)
+void MeshTools::LinkSplitter::addQuadOrTriangle(vector<PsblVertPtr> const& newShape, SMeshBuffer* newMeshBuf, vector3df offset)
 {
     u32 numCorners = newShape.size();
     switch (numCorners)
@@ -295,7 +325,7 @@ void MeshTools::LinkSplitter::addQuadOrTriangle(vector<PsblVertPtr> const& newSh
             break; // incomplete triangle
         case 3:  // add 1 triangle
             for (int j=0; j<3; ++j)
-                newShape[j]->addToMeshBuf(newMeshBuf);
+                newShape[j]->addToMeshBuf(newMeshBuf, offset);
             break;
         case 4:  // add quad, need to make two triangles
         {
@@ -309,7 +339,7 @@ void MeshTools::LinkSplitter::addQuadOrTriangle(vector<PsblVertPtr> const& newSh
             PsblVertPtr* twoTris = A->distSQ(C) < B->distSQ(D) ? acTris : bdTris;
             for (int j=0; j<6; ++j)
             {
-                twoTris[j]->addToMeshBuf(newMeshBuf);
+                twoTris[j]->addToMeshBuf(newMeshBuf, offset);
             }
 
             break;
@@ -319,7 +349,22 @@ void MeshTools::LinkSplitter::addQuadOrTriangle(vector<PsblVertPtr> const& newSh
     }
 }
 
-MeshTools::SplitMeshResult MeshTools::splitMeshZ(IMesh* oldMesh, float zCut, float zInsert)
+void MeshTools::LinkSplitter::addEdgeLinks(vector<PsblVertPtr> const& shape, set<pair<PsblVertPtr,PsblVertPtr>>& links)
+{
+    if (shape.size() >= 3)
+    {
+        for (size_t i=0; i<shape.size(); ++i)
+        {
+            PsblVertPtr a = shape[i];
+            PsblVertPtr b = shape[(i+1)%shape.size()];
+            if (compareZ(a)==0 && compareZ(b)==0)
+                links.insert(make_pair(a,b));
+        }
+    }
+}
+
+
+MeshTools::SplitMeshResult MeshTools::splitMeshZ(IMesh* oldMesh, float zCut, float zInsert, bool marginalTrisInLeft, bool marginalTrisInRight)
 {
     IMeshBuffer* oldMeshBuf = oldMesh->getMeshBuffer(0);
     u16* oldInd = oldMeshBuf->getIndices();
@@ -327,8 +372,10 @@ MeshTools::SplitMeshResult MeshTools::splitMeshZ(IMesh* oldMesh, float zCut, flo
 	SMeshBuffer* rightMeshBuf = new SMeshBuffer();
     LinkSplitter linkSplitter(oldMeshBuf, zCut);
 
-    std::set<std::pair<PsblVertPtr, PsblVertPtr>> leftEdgeLinks;
-    std::set<std::pair<PsblVertPtr, PsblVertPtr>> rightEdgeLinks;
+    vector3df const offset(0,0, zInsert);
+
+    set<pair<PsblVertPtr, PsblVertPtr>> leftEdgeLinks;
+    set<pair<PsblVertPtr, PsblVertPtr>> rightEdgeLinks;
 
     for (u32 i=0; i < oldMeshBuf->getIndexCount(); i += 3)
     {
@@ -337,22 +384,42 @@ MeshTools::SplitMeshResult MeshTools::splitMeshZ(IMesh* oldMesh, float zCut, flo
         vector<PsblVertPtr> leftShape;
         vector<PsblVertPtr> rightShape;
 
-        for (u32 j=0; j<3; ++j)
+        int a = oldInd[i];
+        int b = oldInd[i+1];
+        int c = oldInd[i+2];
+
+        // Don't create a copy just for a triangle that is just kissing the edge.  Leave it in the background.
+        if (linkSplitter.compareZ(a)==0 && linkSplitter.compareZ(b)==0 && linkSplitter.compareZ(c)==0)
         {
-            linkSplitter.processLink(
-                leftShape, rightShape,
-                oldInd[i+(j+0)%3],
-                oldInd[i+(j+1)%3]);
+            if (marginalTrisInLeft)
+            {
+                leftShape.push_back(linkSplitter.getVert(a));
+                leftShape.push_back(linkSplitter.getVert(b));
+                leftShape.push_back(linkSplitter.getVert(c));
+            }
+
+            if (marginalTrisInRight)
+            {
+                rightShape.push_back(linkSplitter.getVert(a));
+                rightShape.push_back(linkSplitter.getVert(b));
+                rightShape.push_back(linkSplitter.getVert(c));
+            }
+        }
+        else
+        {
+            linkSplitter.processLink(leftShape, rightShape, a, b);
+            linkSplitter.processLink(leftShape, rightShape, b, c);
+            linkSplitter.processLink(leftShape, rightShape, c, a);
         }
 
-        linkSplitter.addQuadOrTriangle(leftShape, leftMeshBuf);
-        linkSplitter.addQuadOrTriangle(rightShape, rightMeshBuf);
+        linkSplitter.addQuadOrTriangle(leftShape, leftMeshBuf,   -offset/2);
+        linkSplitter.addQuadOrTriangle(rightShape, rightMeshBuf,  offset/2);
 
         // Add any edges of the left shape that lie along the border.
         linkSplitter.addEdgeLinks(leftShape, leftEdgeLinks);
 
-        // Connected right side polys will have opposite winding order than
-        // the left side poly.  In order for set_intersection to consider them
+        // Right side polys that share a border with left side ones will have
+        // opposite winding order.  In order for set_intersection to consider them
         // as matches, we'll store the right side links in reversed order.
         std::reverse(rightShape.begin(), rightShape.end());
         linkSplitter.addEdgeLinks(rightShape, rightEdgeLinks);
@@ -372,13 +439,29 @@ MeshTools::SplitMeshResult MeshTools::splitMeshZ(IMesh* oldMesh, float zCut, flo
 	rightMesh->recalculateBoundingBox();
 	rightMeshBuf->drop();  // we drop the buf, mesh obj has it now
 
+    SMesh* middleMesh = NULL;
     if (zInsert > 0)
     {
-        set<PsblVertPtr> result;
-        set_intersection(leftEdgeLinks.begin(), leftEdgeLinks.end(), rightEdgeLinks.begin(), rightEdgeLinks.end(), result.begin());
-
         SMeshBuffer* middleMeshBuf = new SMeshBuffer();
-        SMesh* middleMesh = new SMesh();
+
+        set<pair<PsblVertPtr,PsblVertPtr>> result;
+        std::set_intersection(
+            leftEdgeLinks.begin(), leftEdgeLinks.end(),
+            rightEdgeLinks.begin(), rightEdgeLinks.end(),
+            std::inserter(result, result.begin())
+        );
+
+        vector<PsblVertPtr> shape(4);
+        for (auto it=result.begin(); it!=result.end(); ++it)
+        {
+            shape[0] = it->second;
+            shape[1] = it->first;
+            shape[2] = it->first->duplicate(offset);
+            shape[3] = it->second->duplicate(offset);
+            linkSplitter.addQuadOrTriangle(shape, middleMeshBuf, -offset/2);
+        }
+
+        middleMesh = new SMesh();
         middleMeshBuf->recalculateBoundingBox();
         middleMeshBuf->setHardwareMappingHint(EHM_STATIC);
         middleMesh->addMeshBuffer(middleMeshBuf);
@@ -592,7 +675,7 @@ IMesh* MeshTools::createMeshFromHeightmap(IImage* image, dimension2du tileSizeIn
             // Uses the image, not just the tile patch size, so it will
             // calculate correct normals for vertices on tile edges.
             if (false)
-            for (size_t i=-0; i < sizeof(offsetsArray) / sizeof(s32); ++i)
+            for (size_t i=-0; i < 4; ++i)
             {
                 vector2di offset = vector2di(x,y) + offsetsArray[i];
 
