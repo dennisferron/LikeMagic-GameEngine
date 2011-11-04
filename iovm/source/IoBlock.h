@@ -18,6 +18,8 @@ extern "C" {
 
 typedef IoObject IoBlock;
 
+#include <time.h>
+
 typedef struct
 {
 	IoMessage *message;

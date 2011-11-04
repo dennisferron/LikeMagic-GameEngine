@@ -1,7 +1,7 @@
 //metadoc Block copyright Steve Dekorte 2002
 //metadoc Block license BSD revised
 /*metadoc Block description
-Blocks are anonymous functions (messages with their own locals object). 
+Blocks are anonymous functions (messages with their own locals object).
 They are typically used to represent object methods.
 */
 //metadoc Block category Core
@@ -190,19 +190,19 @@ IO_METHOD(IoBlock, setProfilerOn)
 	/*doc Block setProfilerOn(aBool)
 	If aBool is true, the global block profiler is enabled, if false it is disabled. Returns self.
 	*/
-	
+
 	IoObject *aBool = IoMessage_locals_valueArgAt_(m, locals, 0);
 	IoTag *tag = IoObject_tag(self);
-	
+
 	if(ISTRUE(aBool))
 	{
 		IoTag_activateFunc_(tag, (IoTagActivateFunc *)IoBlock_activateWithProfiler);
 	}
-	else 
+	else
 	{
 		IoTag_activateFunc_(tag, (IoTagActivateFunc *)IoBlock_activate);
 	}
-	
+
 	return self;
 }
 
@@ -250,23 +250,23 @@ IoObject *IoBlock_activate(IoBlock *self, IoObject *target, IoObject *locals, Io
 		IoObject_setSlot_to_(blockLocals, name, arg);
 	);
 
-	if (Coro_stackSpaceAlmostGone(IoCoroutine_cid(state->currentCoroutine)))
-	{
-		/*
-		IoCoroutine *currentCoroutine = state->currentCoroutine;
-		Coro *coro = IoCoroutine_cid(currentCoroutine);
-
-		printf("%p-%p block overflow %i/%i\n",
-			  (void *)currentCoroutine, (void *)coro, Coro_bytesLeftOnStack(coro), Coro_stackSize(coro));
-		printf("message = %s\n", CSTRING(IoMessage_name(selfData->message)));
-		*/
-		{
-			IoCoroutine *newCoro = IoCoroutine_new(state);
-			IoCoroutine_try(newCoro, blockLocals, blockLocals, selfData->message);
-			result = IoCoroutine_rawResult(newCoro);
-		}
-	}
-	else
+//	if (Coro_stackSpaceAlmostGone(IoCoroutine_cid(state->currentCoroutine)))
+//	{
+//		/*
+//		IoCoroutine *currentCoroutine = state->currentCoroutine;
+//		Coro *coro = IoCoroutine_cid(currentCoroutine);
+//
+//		printf("%p-%p block overflow %i/%i\n",
+//			  (void *)currentCoroutine, (void *)coro, Coro_bytesLeftOnStack(coro), Coro_stackSize(coro));
+//		printf("message = %s\n", CSTRING(IoMessage_name(selfData->message)));
+//		*/
+//		{
+//			IoCoroutine *newCoro = IoCoroutine_new(state);
+//			IoCoroutine_try(newCoro, blockLocals, blockLocals, selfData->message);
+//			result = IoCoroutine_rawResult(newCoro);
+//		}
+//	}
+//	else
 	{
 		result = IoMessage_locals_performOn_(selfData->message, blockLocals, blockLocals);
 	}
@@ -276,7 +276,7 @@ IoObject *IoBlock_activate(IoBlock *self, IoObject *target, IoObject *locals, Io
 		state->returnValue = result;
 		state->stopStatus = IoCall_rawStopStatus(callObject);
 	}
-	
+
 	IoState_stackRetain_(state, result);
 
 #ifdef IO_BLOCK_LOCALS_RECYCLING
@@ -310,17 +310,17 @@ IoObject *IoBlock_activate(IoBlock *self, IoObject *target, IoObject *locals, Io
 IoObject *IoBlock_method(IoObject *target, IoObject *locals, IoMessage *m)
 {
   /*doc Object method(args..., body)
-	Creates a method. 
+	Creates a method.
 	<tt>args</tt> is a list of formal arguments (can be empty). <br/>
 	<tt>body</tt> is evaluated in the context of Locals object.<br/>
 	Locals' proto is a message receiver (i.e. self).
 	<br/>
-	Slot with a method is <em>activatable</em>. Use getSlot(name) to retrieve 
+	Slot with a method is <em>activatable</em>. Use getSlot(name) to retrieve
 	method object without activating it (i.e. calling).
 	<br/>
 	See also <tt>Object block</tt>.
 	*/
-  
+
 	IoBlock *const self = IoBlock_new(IoObject_state(target));
 	const int nargs = IoMessage_argCount(m);
 	IoMessage *const message = (nargs > 0) ? IoMessage_rawArgAt_(m, nargs - 1) : IOSTATE->nilMessage;
@@ -353,7 +353,7 @@ IoObject *IoObject_block(IoObject *target, IoObject *locals, IoMessage *m)
   ==> true
 	</pre>
 	*/
-	
+
 	IoBlock *self = (IoBlock *)IoBlock_method(target, locals, m);
 	DATA(self)->scope = IOREF(locals);
 	IoObject_isActivatable_(self, 0);
@@ -402,7 +402,7 @@ UArray *IoBlock_justCode(IoBlock *self)
 IO_METHOD(IoBlock, code)
 {
 	/*doc Block code
-	Returns a string containing the decompiled code of the receiver. 
+	Returns a string containing the decompiled code of the receiver.
 	*/
 
 	return IoState_symbolWithUArray_copy_(IOSTATE, IoBlock_justCode(self), 0);
@@ -433,7 +433,7 @@ IO_METHOD(IoBlock, code_)
 IO_METHOD(IoBlock, message)
 {
 	/*doc Block message
-	Returns the root message of the receiver. 
+	Returns the root message of the receiver.
 	*/
 
 	return DATA(self)->message ? (IoObject *)DATA(self)->message : IONIL(self);
@@ -442,7 +442,7 @@ IO_METHOD(IoBlock, message)
 IO_METHOD(IoBlock, setMessage)
 {
 	/*doc Block setMessage(aMessage)
-	Sets the root message of the receiver to aMessage. 
+	Sets the root message of the receiver to aMessage.
 	*/
 
 	IoMessage *message = IoMessage_locals_messageArgAt_(m, locals, 0);
@@ -453,7 +453,7 @@ IO_METHOD(IoBlock, setMessage)
 IO_METHOD(IoBlock, argumentNames)
 {
 	/*doc Block argumentNames
-	Returns a List of strings containing the argument names of the receiver. 
+	Returns a List of strings containing the argument names of the receiver.
 	*/
 
 	IoList *argsList = IoList_new(IOSTATE);
@@ -467,7 +467,7 @@ IO_METHOD(IoBlock, argumentNames_)
 {
 	/*doc Block setArgumentNames(aListOfStrings)
 	Sets the receiver's argument names to those specified in
-	aListOfStrings. Returns self.  
+	aListOfStrings. Returns self.
 	*/
 
 	IoList *newArgNames = IoMessage_locals_listArgAt_(m, locals, 0);
@@ -485,7 +485,7 @@ IO_METHOD(IoBlock, scope)
 {
 	/*doc Block scope
 	Returns the scope used when the block is activated or
-	Nil if the target of the message is the scope.   
+	Nil if the target of the message is the scope.
 	*/
 
 	IoObject *scope = DATA(self)->scope;
@@ -497,7 +497,7 @@ IO_METHOD(IoBlock, setScope_)
 	/*doc Block setScope(anObjectOrNil)
 	If argument is an object, when the block is activated,
 	it will set the proto and self slots of its locals to the specified
-	object. If Nil, it will set them to the target of the message. 
+	object. If Nil, it will set them to the target of the message.
 	*/
 
 	IoObject *scope = IoMessage_locals_valueArgAt_(m, locals, 0);
@@ -508,7 +508,7 @@ IO_METHOD(IoBlock, setScope_)
 IO_METHOD(IoBlock, passStops)
 {
 	/*doc Block passStops
-	Returns whether or not the receiver passes return/continue/break to caller. 
+	Returns whether or not the receiver passes return/continue/break to caller.
 	*/
 
 	return IOBOOL(self, DATA(self)->passStops);
@@ -517,7 +517,7 @@ IO_METHOD(IoBlock, passStops)
 IO_METHOD(IoBlock, setPassStops_)
 {
 	/*doc Block setPassStops(aBool)
-	Sets whether the receiver passes return/continue/break to caller. 
+	Sets whether the receiver passes return/continue/break to caller.
 	*/
 
 	DATA(self)->passStops = ISTRUE(IoMessage_locals_valueArgAt_(m, locals, 0));

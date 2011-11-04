@@ -49,11 +49,13 @@ IoCoroutine *IoCoroutine_proto(void *state)
 	IoState_registerProtoWithFunc_((IoState *)state, self, IoCoroutine_proto);
 
 	/* init Coroutine proto's coro as the main one */
+/*
 	{
 	Coro *coro = Coro_new();
 	DATA(self)->cid = coro;
 	Coro_initializeMainCoro(coro);
 	}
+*/
 
 	return self;
 }
@@ -84,7 +86,7 @@ IoCoroutine *IoCoroutine_rawClone(IoCoroutine *proto)
 #ifdef STACK_POP_CALLBACK
 	Stack_popCallback_(DATA(self)->ioStack, IoObject_freeIfUnreferenced);
 #endif
-	DATA(self)->cid = (Coro *)NULL;
+	//DATA(self)->cid = (Coro *)NULL;
 	return self;
 }
 
@@ -97,8 +99,8 @@ IoCoroutine *IoCoroutine_new(void *state)
 
 void IoCoroutine_free(IoCoroutine *self)
 {
-	Coro *coro = DATA(self)->cid;
-	if (coro) Coro_free(coro);
+	//Coro *coro = DATA(self)->cid;
+	//if (coro) Coro_free(coro);
 	Stack_free(DATA(self)->ioStack);
 	io_free(DATA(self));
 }
@@ -123,7 +125,8 @@ void IoCoroutine_rawShow(IoCoroutine *self)
 
 void *IoCoroutine_cid(IoCoroutine *self)
 {
-	return DATA(self)->cid;
+	//return DATA(self)->cid;
+	return 0;
 }
 
 // runTarget
@@ -274,15 +277,15 @@ IO_METHOD(IoCoroutine, freeStack)
 	/*doc Coroutine freeStack
 	Frees all the internal data from the receiver's stack. Returns self.
 	*/
-	
-	IoCoroutine *current = IoState_currentCoroutine(IOSTATE);
 
+	IoCoroutine *current = IoState_currentCoroutine(IOSTATE);
+/*
 	if (current != self && DATA(self)->cid)
 	{
 		Coro_free(DATA(self)->cid);
 		DATA(self)->cid = NULL;
 	}
-
+*/
 	return self;
 }
 
@@ -306,7 +309,8 @@ IO_METHOD(IoCoroutine, main)
 
 Coro *IoCoroutine_rawCoro(IoCoroutine *self)
 {
-	return DATA(self)->cid;
+    return 0;
+	//return DATA(self)->cid;
 }
 
 void IoCoroutine_clearStack(IoCoroutine *self)
@@ -316,6 +320,7 @@ void IoCoroutine_clearStack(IoCoroutine *self)
 
 void IoCoroutine_rawRun(IoCoroutine *self)
 {
+    /*
 	Coro *coro = DATA(self)->cid;
 
 	if (!coro)
@@ -340,6 +345,7 @@ void IoCoroutine_rawRun(IoCoroutine *self)
 		Coro_startCoro_(currentCoro, coro, self, (CoroStartCallback *)IoCoroutine_coroStart);
 		//IoState_setCurrentCoroutine_(IOSTATE, current);
 	}
+	*/
 }
 
 IO_METHOD(IoCoroutine, run)
@@ -347,7 +353,7 @@ IO_METHOD(IoCoroutine, run)
 	/*doc Coroutine run
 	Runs receiver and returns self.
 	*/
-	
+
 	IoCoroutine_rawRun(self);
 	return IoCoroutine_rawResult(self);
 }
@@ -392,6 +398,7 @@ void IoCoroutine_raiseError(IoCoroutine *self, IoSymbol *description, IoMessage 
 
 IoObject *IoCoroutine_rawResume(IoCoroutine *self)
 {
+    /*
 	if(DATA(self)->cid)
 	{
 		IoCoroutine *current = IoState_currentCoroutine(IOSTATE);
@@ -406,14 +413,14 @@ IoObject *IoCoroutine_rawResume(IoCoroutine *self)
 		//printf("IoCoroutine_rawResume: can't resume coro that hasn't been run - so running it\n");
 		IoCoroutine_rawRun(self);
 	}
-
+    */
 	return self;
 }
 
 IO_METHOD(IoCoroutine, resume)
 {
 	/*doc Coroutine resume
-	Yields to the receiver. Runs the receiver if it is not running yet. 
+	Yields to the receiver. Runs the receiver if it is not running yet.
 	Returns self.
 	*/
 
@@ -425,16 +432,18 @@ IO_METHOD(IoCoroutine, implementation)
 	/*doc Coroutine implementation
 	Returns coroutine implementation type: "fibers", "ucontext" or "setjmp"
 	*/
-	
-	return IOSYMBOL(CORO_IMPLEMENTATION);
+
+	//return IOSYMBOL(CORO_IMPLEMENTATION);
+
+	return IOSYMBOL("nothing");
 }
 
 IO_METHOD(IoCoroutine, isCurrent)
 {
-	/*doc Coroutine isCurrent 
+	/*doc Coroutine isCurrent
 	Returns true if the receiver is currently running coroutine.
 	*/
-	
+
 	IoObject *v = IOBOOL(self, self == IoState_currentCoroutine(IOSTATE));
 	return v;
 }
@@ -444,7 +453,7 @@ IO_METHOD(IoCoroutine, currentCoroutine)
 	/*doc Coroutine currentCoroutine
 	Returns currently running coroutine in Io state.
 	*/
-	
+
 	return IoState_currentCoroutine(IOSTATE);
 }
 
@@ -457,6 +466,7 @@ int IoCoroutine_rawIoStackSize(IoCoroutine *self)
 
 void IoCoroutine_rawPrint(IoCoroutine *self)
 {
+    /*
 	Coro *coro = DATA(self)->cid;
 
 	if (coro)
@@ -466,6 +476,7 @@ void IoCoroutine_rawPrint(IoCoroutine *self)
 				(void *)coro,
 				(int)Stack_count(DATA(self)->ioStack));
 	}
+	*/
 }
 
 // debugging
@@ -481,9 +492,9 @@ IO_METHOD(IoCoroutine, setMessageDebugging)
 	Turns on message level debugging for this coro. When on, this
 	coro will send a vmWillSendMessage message to the Debugger object before
 	each message send and pause itself. See the Debugger object documentation
-	for more information. 
+	for more information.
 	*/
-	
+
 	IoObject *v = IoMessage_locals_valueArgAt_(m, locals, 0);
 
 	DATA(self)->debuggingOn = ISTRUE(v);

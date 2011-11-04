@@ -436,12 +436,14 @@ IOINLINE IO_METHOD(IoObject, forward)
 
 
     // DLF:  This was commented out; I wonder if it still works?
+    /*
 	if (Coro_stackSpaceAlmostGone((Coro*)IoCoroutine_cid(state->currentCoroutine)))
 	{
 
 		IoState_error_(IOSTATE, m, "stack overflow in forward while sending '%s' message to a '%s' object",
 					CSTRING(IoMessage_name(m)), IoObject_name(self));
 	}
+	*/
 
 
 	if (forwardSlot)

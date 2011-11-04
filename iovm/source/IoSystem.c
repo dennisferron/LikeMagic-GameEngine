@@ -35,7 +35,7 @@ Contains methods related to the IoVM.
 #ifdef WIN32
 #include <windows.h>
 #define _fullpath(res,path,size) \
-  (GetFullPathName ((path), (size), (res), NULL) ? (res) : NULL)    
+  (GetFullPathName ((path), (size), (res), NULL) ? (res) : NULL)
 
 #ifndef __CYGWIN__
 static void setenv(const char *varName, const char* value, int force)
@@ -141,7 +141,7 @@ IoObject *IoSystem_proto(void *state)
 	/*doc System installPrefix
 	Returns the root path where io was installed. The default is /usr/local.
 	*/
-	
+
 #ifndef WIN32
 	IoObject_setSlot_to_(self, IOSYMBOL("installPrefix"), IOSYMBOL(INSTALL_PREFIX));
 #endif
@@ -152,7 +152,7 @@ IoObject *IoSystem_proto(void *state)
 /*doc System args
 	Returns the list of command line argument strings the program was run with.")
 */
-	
+
 /*
 IO_METHOD(IoObject, errorNumber)
 {
@@ -174,15 +174,15 @@ IO_METHOD(IoObject, shellExecute)
 	LPCTSTR directory;
 	int displayFlag;
 	int result;
-	
+
 	operation = CSTRING(IoMessage_locals_symbolArgAt_(m, locals, 0));
 	file = CSTRING(IoMessage_locals_symbolArgAt_(m, locals, 1));
 	parameters = IoMessage_argCount(m) > 2 ? CSTRING(IoMessage_locals_symbolArgAt_(m, locals, 2)) : NULL;
 	directory = IoMessage_argCount(m) > 3 ? CSTRING(IoMessage_locals_symbolArgAt_(m, locals, 3)) : NULL;
 	displayFlag = IoMessage_argCount(m) > 4 ? IoMessage_locals_intArgAt_(m, locals, 4) : SW_SHOWNORMAL;
-	
+
 	result = (int)ShellExecute(NULL, operation, file, parameters, directory, displayFlag);
-	
+
 	if(result > 32)
 	{
 		return self;
@@ -203,7 +203,7 @@ IO_METHOD(IoObject, daemon)
 	{
 		IoState_error_(IOSTATE, self, "Daemonize failed. See System errorNumberDescription.");
 	}
-	
+
 	return self;
 }
 #else
@@ -227,7 +227,7 @@ IO_METHOD(IoObject, exit)
 {
 	/*doc System exit(optionalReturnCodeNumber)
 	Shutdown the IoState (io_free all objects) and return
-control to the calling program (if any). 
+control to the calling program (if any).
 */
 
 	int returnCode = 0;
@@ -244,7 +244,7 @@ control to the calling program (if any).
 IO_METHOD(IoObject, getEnvironmentVariable)
 {
 	/*doc System getEnvironmentVariable(nameString)
-	Returns a string with the value of the environment 
+	Returns a string with the value of the environment
 	variable whose name is specified by nameString.
 	*/
 
@@ -259,6 +259,9 @@ IO_METHOD(IoObject, getEnvironmentVariable)
 	return IoState_symbolWithCString_(IOSTATE, s);
 }
 
+// getcwd was undefined on OSX after removing Coro.h
+char	*getcwd(char *, size_t);
+
 IO_METHOD(IoObject, system)
 {
 	/*doc System system(aString)
@@ -266,7 +269,7 @@ IO_METHOD(IoObject, system)
 	*/
 
 	IoSymbol *s = IoMessage_locals_symbolArgAt_(m, locals, 0);
-	
+
 	char *buf = NULL;
 	int result = 0;
 	buf = (char *)getcwd(buf, 1024);
@@ -275,7 +278,7 @@ IO_METHOD(IoObject, system)
 	//printf("SYSTEM: [%s]\n", CSTRING(s));
 	result = system(CSTRING(s));
 	//printf("system result = %i\n", result);
-#if !defined(_WIN32) || defined(__CYGWIN__)	
+#if !defined(_WIN32) || defined(__CYGWIN__)
 	result /= 256;
 #endif
 
@@ -440,7 +443,7 @@ IO_METHOD(IoObject, activeCpus)
 	/*doc System activeCpus
 	Returns the number of active CPUs.
 	*/
-	
+
 	int cpus = 1;
 #if defined(CTL_HW)
 	int mib[2];
@@ -518,7 +521,7 @@ IO_METHOD(IoObject, symbols)
 	/*doc System symbols
 	Returns a List containing all Symbols currently in the system.
 	*/
-	
+
 	IoList *list = IoList_new(IOSTATE);
 	CHASH_FOREACH(IOSTATE->symbols, i, v, IoList_rawAppend_(list, v));
 	return list;
@@ -540,7 +543,7 @@ IO_METHOD(IoObject, thisProcessPid)
 	/*doc System thisProcessPid()
 	Return the process id (pid) for this Io process.
 	*/
-	
+
 	return IONUMBER(getpid());
 }
 

@@ -22,6 +22,8 @@ extern "C" {
 typedef IoObject *(IoUserFunction)(IoObject *, IoObject *, IoMessage *);
 typedef IoObject IoCFunction;
 
+#include <time.h>
+
 typedef struct
 {
 	IoTag *typeTag; // pointer to tag of type excepted for self value to have as data

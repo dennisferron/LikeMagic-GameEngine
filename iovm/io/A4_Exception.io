@@ -71,7 +71,7 @@ Coroutine do(
 		"Coroutine init" p[rintln
 	)
 	*/
-	
+
 	//doc Coroutine stackSize Stack size allocated for each new coroutine. Coroutines will automatically chain themselves as need if more stack space is required.
 	//doc Coroutine setStackSize(aNumber) Sets the stack size in bytes to allocate for new Coros. Returns self.
 	//stackSize ::= 131072 // PPC needs 128k for current parser
@@ -330,6 +330,9 @@ Message do(
 
 Object do(
 	try := method(
+
+        writeln("trying to execute a try")
+
 		/*doc Object try(code)
 		Executes particular code in a new coroutine.
 		Returns exception or nil if no exception is caught.

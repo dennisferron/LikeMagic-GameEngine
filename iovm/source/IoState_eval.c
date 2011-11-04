@@ -12,6 +12,8 @@ IoObject *IoState_tryToPerform(IoState *self,
 							  IoObject *locals,
 							  IoMessage *m)
 {
+    return IoMessage_locals_performOn_(m, locals, target);
+/*
 	IoCoroutine *tryCoro = IoCoroutine_newWithTry(self, target, locals, m);
 
 	if (IoCoroutine_rawException(tryCoro) != self->ioNil)
@@ -20,6 +22,7 @@ IoObject *IoState_tryToPerform(IoState *self,
 	}
 
 	return IoCoroutine_rawResult(tryCoro);
+*/
 }
 
 void IoState_zeroSandboxCounts(IoState *self)

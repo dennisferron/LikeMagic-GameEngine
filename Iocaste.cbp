@@ -190,21 +190,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/utf_convert.h" />
-		<Unit filename="coroutine/samples/twoCoroTest.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="coroutine/source/386-ucontext.h" />
-		<Unit filename="coroutine/source/Coro.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="coroutine/source/Coro.h" />
-		<Unit filename="coroutine/source/amd64-ucontext.h" />
-		<Unit filename="coroutine/source/asm.S" />
-		<Unit filename="coroutine/source/context.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="coroutine/source/power-ucontext.h" />
-		<Unit filename="coroutine/source/taskimpl.h" />
 		<Unit filename="garbagecollector/source/Collector.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -215,6 +200,35 @@
 		<Unit filename="garbagecollector/source/CollectorMarker.h" />
 		<Unit filename="garbagecollector/source/CollectorMarker_inline.h" />
 		<Unit filename="garbagecollector/source/Collector_inline.h" />
+		<Unit filename="iovm/io/A0_List.io" />
+		<Unit filename="iovm/io/A1_OperatorTable.io" />
+		<Unit filename="iovm/io/A2_Object.io" />
+		<Unit filename="iovm/io/A3_List.io" />
+		<Unit filename="iovm/io/A4_Exception.io" />
+		<Unit filename="iovm/io/Actor.io" />
+		<Unit filename="iovm/io/AddonLoader.io" />
+		<Unit filename="iovm/io/B_Sequence.io" />
+		<Unit filename="iovm/io/Block.io" />
+		<Unit filename="iovm/io/CFunction.io" />
+		<Unit filename="iovm/io/Date.io" />
+		<Unit filename="iovm/io/Debugger.io" />
+		<Unit filename="iovm/io/Directory.io" />
+		<Unit filename="iovm/io/DynLib.io" />
+		<Unit filename="iovm/io/Error.io" />
+		<Unit filename="iovm/io/File.io" />
+		<Unit filename="iovm/io/List_schwartzian.io" />
+		<Unit filename="iovm/io/Map.io" />
+		<Unit filename="iovm/io/Message.io" />
+		<Unit filename="iovm/io/Number.io" />
+		<Unit filename="iovm/io/Profiler.io" />
+		<Unit filename="iovm/io/Sandbox.io" />
+		<Unit filename="iovm/io/Serialize.io" />
+		<Unit filename="iovm/io/System.io" />
+		<Unit filename="iovm/io/UnitTest.io" />
+		<Unit filename="iovm/io/Vector.io" />
+		<Unit filename="iovm/io/Y_Path.io" />
+		<Unit filename="iovm/io/Z_CLI.io" />
+		<Unit filename="iovm/io/Z_Importer.io" />
 		<Unit filename="iovm/source/IoBlock.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -227,7 +227,7 @@
 
 1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoObject_flow.h
 
-1317694277 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoObject_inline.h
+1320165397 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoObject_inline.h
 	"Common_inline.h"
 	"IoVMApi.h"
 	"IoState.h"
@@ -257,11 +257,10 @@
 1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoSeq_inline.h
 	"Common_inline.h"
 
-1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoCoroutine.h
+1320337395 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoCoroutine.h
 	"IoVMApi.h"
 	"IoState.h"
 	"Common.h"
-	"Coro.h"
 
 1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/coroutine/source/Coro.h
 	"Common.h"

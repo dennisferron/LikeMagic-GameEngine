@@ -9,7 +9,7 @@
 #include "IoState.h"
 
 #include "Common.h"
-#include "Coro.h"
+//#include "Coro.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,11 +17,13 @@ extern "C" {
 
 #define ISCOROUTINE(self) IoObject_hasCloneFunc_(self, (IoTagCloneFunc *)IoCoroutine_rawClone)
 
+typedef void Coro;
+
 typedef IoObject IoCoroutine;
 
 typedef struct
 {
-	Coro *cid;
+	//Coro *cid;
 	Stack *ioStack;
 	int debuggingOn;
 } IoCoroutineData;

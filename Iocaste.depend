@@ -207,7 +207,7 @@
 
 1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoObject_flow.h
 
-1317694277 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoObject_inline.h
+1320165397 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoObject_inline.h
 	"Common_inline.h"
 	"IoVMApi.h"
 	"IoState.h"
@@ -259,11 +259,10 @@
 1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/basekit/source/RandomGen.h
 	"Common.h"
 
-1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoCoroutine.h
+1320337395 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoCoroutine.h
 	"IoVMApi.h"
 	"IoState.h"
 	"Common.h"
-	"Coro.h"
 
 1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/coroutine/source/Coro.h
 	"Common.h"
@@ -618,7 +617,7 @@
 	"Coro.h"
 	<stdio.h>
 
-1317693787 source:/Users/dennisferron/code/LikeMagic-All/Iocaste/coroutine/source/Coro.c
+1318870066 source:/Users/dennisferron/code/LikeMagic-All/Iocaste/coroutine/source/Coro.c
 	"Base.h"
 	"Coro.h"
 	<stdio.h>
@@ -652,21 +651,23 @@
 	"IoList.h"
 	"UArray.h"
 
-1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoBlock.h
+1320165622 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoBlock.h
 	"Common.h"
 	"List.h"
 	"IoObject.h"
 	"IoState.h"
 	"IoCall.h"
+	<time.h>
 
 1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoCall.h
 	"Common.h"
 	"IoState.h"
 
-1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoCFunction.h
+1320165666 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoCFunction.h
 	"IoVMApi.h"
 	"Common.h"
 	"IoObject.h"
+	<time.h>
 
 1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoNumber.h
 	"IoVMApi.h"
@@ -712,7 +713,7 @@
 1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoCompiler.h
 	"IoObject.h"
 
-1317693787 source:/Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoCoroutine.c
+1320337689 source:/Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoCoroutine.c
 	"IoCoroutine.h"
 	"IoObject.h"
 	"IoState.h"
@@ -1083,7 +1084,7 @@
 	"IoSystem.h"
 	<signal.h>
 
-1317693787 source:/Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c
+1320079306 source:/Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c
 	"IoState.h"
 	"IoObject.h"
 	<time.h>
@@ -1101,7 +1102,7 @@
 	"IoSeq.h"
 	"IoNumber.h"
 
-1317693787 source:/Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoSystem.c
+1320337896 source:/Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoSystem.c
 	"IoSystem.h"
 	"IoNumber.h"
 	"IoMessage_parser.h"
@@ -1159,4 +1160,8 @@
 1317693787 source:/Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/tools/io2c.c
 	<stdio.h>
 	<stdlib.h>
+
+1311738873 source:/Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoVMInit.c
+	"IoState.h"
+	"IoObject.h"
 
