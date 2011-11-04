@@ -442,8 +442,6 @@ MeshTools::SplitMeshResult MeshTools::splitMeshZ(IMesh* oldMesh, float zCut, flo
     SMesh* middleMesh = NULL;
     if (zInsert > 0)
     {
-        SMeshBuffer* middleMeshBuf = new SMeshBuffer();
-
         set<pair<PsblVertPtr,PsblVertPtr>> result;
         std::set_intersection(
             leftEdgeLinks.begin(), leftEdgeLinks.end(),
@@ -451,22 +449,29 @@ MeshTools::SplitMeshResult MeshTools::splitMeshZ(IMesh* oldMesh, float zCut, flo
             std::inserter(result, result.begin())
         );
 
-        vector<PsblVertPtr> shape(4);
-        for (auto it=result.begin(); it!=result.end(); ++it)
-        {
-            shape[0] = it->second;
-            shape[1] = it->first;
-            shape[2] = it->first->duplicate(offset);
-            shape[3] = it->second->duplicate(offset);
-            linkSplitter.addQuadOrTriangle(shape, middleMeshBuf, -offset/2);
-        }
+        size_t debugsize = result.size();
 
-        middleMesh = new SMesh();
-        middleMeshBuf->recalculateBoundingBox();
-        middleMeshBuf->setHardwareMappingHint(EHM_STATIC);
-        middleMesh->addMeshBuffer(middleMeshBuf);
-        middleMesh->recalculateBoundingBox();
-        middleMeshBuf->drop();  // we drop the buf, mesh obj has it now
+        if (result.size() > 0)
+        {
+            SMeshBuffer* middleMeshBuf = new SMeshBuffer();
+
+            vector<PsblVertPtr> shape(4);
+            for (auto it=result.begin(); it!=result.end(); ++it)
+            {
+                shape[0] = it->second;
+                shape[1] = it->first;
+                shape[2] = it->first->duplicate(offset);
+                shape[3] = it->second->duplicate(offset);
+                linkSplitter.addQuadOrTriangle(shape, middleMeshBuf, -offset/2);
+            }
+
+            middleMesh = new SMesh();
+            middleMeshBuf->recalculateBoundingBox();
+            middleMeshBuf->setHardwareMappingHint(EHM_STATIC);
+            middleMesh->addMeshBuffer(middleMeshBuf);
+            middleMesh->recalculateBoundingBox();
+            middleMeshBuf->drop();  // we drop the buf, mesh obj has it now
+        }
     }
 
 	return SplitMeshResult {leftMesh, middleMesh, rightMesh};
@@ -674,7 +679,6 @@ IMesh* MeshTools::createMeshFromHeightmap(IImage* image, dimension2du tileSizeIn
             // Calculate the normals of the surrounding slopes.
             // Uses the image, not just the tile patch size, so it will
             // calculate correct normals for vertices on tile edges.
-            if (false)
             for (size_t i=-0; i < 4; ++i)
             {
                 vector2di offset = vector2di(x,y) + offsetsArray[i];
