@@ -3,15 +3,15 @@
 //metadoc File license BSD revised
 //metadoc File category Core
 /*metadoc File description
-Encapsulates file i/o. Here's an example of opening a file, 
+Encapsulates file i/o. Here's an example of opening a file,
 and reversing its lines:
-<pre>	
+<pre>
 file = File clone openForUpdating("/tmp/test")
 lines = file readLines reverse
 file rewind
 lines foreach(i, line, file write(line, "\n"))
 file close
-</pre>	
+</pre>
 */
 
 #include "IoDate.h"
@@ -400,7 +400,7 @@ IO_METHOD(IoFile, temporaryFile)
 {
 	/*doc File temporaryFile
 	Returns a new File object with an open temporary file. The file is
-	automatically deleted when the returned File object is closed or garbage collected. 
+	automatically deleted when the returned File object is closed or garbage collected.
 	*/
 
 	IoFile *newFile = IoFile_new(IOSTATE);
@@ -411,9 +411,9 @@ IO_METHOD(IoFile, temporaryFile)
 IO_METHOD(IoFile, openForReading)
 {
 	/*doc File openForReading(optionalPathString)
-	Sets the file mode to read (reading only) and calls open(optionalPathString). 
+	Sets the file mode to read (reading only) and calls open(optionalPathString).
 	*/
-	
+
 	DATA(self)->mode = IOREF(IOSYMBOL("r"));
 	return IoFile_open(self, locals, m);
 }
@@ -495,10 +495,10 @@ IO_METHOD(IoFile, reopen)
 	DATA(self)->flags = IOFILE_FLAGS_NONE;
 
 	IoMessage_assertArgCount_receiver_(m, 1, self);
-	
+
 	otherFile = IoMessage_locals_valueArgAt_(m, locals, 0);
 	IOASSERT(ISFILE(otherFile), "arg must be a File");
-	
+
 	mode = IoMessage_locals_valueArgAt_(m, locals, 1);
 	if(ISSEQ(mode))
 	{
@@ -637,7 +637,8 @@ IO_METHOD(IoFile, contents)
 	else
 	{
 		UArray_free(ba);
-		IoState_error_(IOSTATE, m, "unable to read file '%s'", CSTRING(DATA(self)->path));
+		char const* filename = CSTRING(DATA(self)->path);
+		IoState_error_(IOSTATE, m, "unable to read file '%s'", filename);
 	}
 
 	return IONIL(self);
@@ -670,7 +671,7 @@ IO_METHOD(IoFile, exists)
 {
 	/*doc File exists(optionalPath)
 	Returns true if the file path exists, and false otherwise.
-	If optionalPath string is provided, it tests the existance of that path instead. 
+	If optionalPath string is provided, it tests the existance of that path instead.
 	*/
 
 	IoSymbol *path;
@@ -830,7 +831,7 @@ IO_METHOD(IoFile, readLine)
 {
 	/*doc File readLine
 	Reads the next line of the file and returns it as a
-	string without the return character. Returns Nil if the 
+	string without the return character. Returns Nil if the
 	end of the file has been reached.
 	*/
 
@@ -947,7 +948,7 @@ IO_METHOD(IoFile, rewind)
 	/*doc File rewind
 	Sets the file position pointer to the beginning of the file.
 	*/
-	
+
 	IoFile_assertOpen(self, locals, m);
 
 	if (DATA(self)->stream)
@@ -991,7 +992,7 @@ IO_METHOD(IoFile, positionAtEnd)
 	/*doc File positionAtEnd
 	Sets the file position pointer to the end of the file.
 	*/
-	
+
 	IoFile_assertOpen(self, locals, m);
 
 	if (DATA(self)->stream)
@@ -1116,10 +1117,10 @@ IO_METHOD(IoFile, foreach)
 and value to the number containing the byte value and execute aMessage.
 Example usage:
 <p>
-<pre>	
+<pre>
 aFile foreach(i, v, writeln("byte at ", i, " is ", v))
 aFile foreach(v, writeln("byte ", v))
-</pre>	
+</pre>
 */
 	IoObject *result;
 
@@ -1167,10 +1168,10 @@ IO_METHOD(IoFile, foreachLine)
 	For each line, set index to the line number of the line
 and line and execute aMessage.
 Example usage:
-<pre>	
+<pre>
 aFile foreachLine(i, v, writeln("Line ", i, ": ", v))
 aFile foreach(v, writeln("Line: ", v))
-</pre>	
+</pre>
 */
 
 	IoObject *result;

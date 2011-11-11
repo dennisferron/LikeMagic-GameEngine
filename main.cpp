@@ -22,8 +22,12 @@ double System_UserTime(void)
 
 #endif
 
+#include <iostream>
+
 int main(int argc, const char *argv[])
 {
+    std::cout << "Hello C++" << std::endl;
+
 	int exitResult;
 	IoState *self;
 #ifdef IO_SHOW_STATS

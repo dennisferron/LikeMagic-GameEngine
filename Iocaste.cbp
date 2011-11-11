@@ -33,6 +33,7 @@
 			<Add directory="garbagecollector/source" />
 			<Add directory="iovm/source" />
 		</Compiler>
+		<Unit filename="Source/IoVMInit.cpp" />
 		<Unit filename="basekit/source/BStream.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -396,9 +397,6 @@
 		<Unit filename="iovm/source/IoToken.h" />
 		<Unit filename="iovm/source/IoVM.h" />
 		<Unit filename="iovm/source/IoVMApi.h" />
-		<Unit filename="iovm/source/IoVMInit.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="iovm/source/IoVersion.h" />
 		<Unit filename="iovm/source/IoWeakLink.c">
 			<Option compilerVar="CC" />

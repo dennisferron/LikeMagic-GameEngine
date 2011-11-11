@@ -37,17 +37,19 @@ CLI := Object clone do(
 
         # Trying to use GNU ReadLine as the default line reader, falling
         # back to EditLine, if the attempt failed.
-        try(reader := ReadLine) catch(Exception,
-            try(reader := EditLine)
-        )
+        #try(reader := ReadLine) catch(Exception,
+        #    try(reader := EditLine)
+        #)
         reader
     )
 
     # A list of error messages for the errors we understand.
     knownErrors := lazySlot(
-        list("(", "[", "{", "\"\"\"", "(x,") map(error,
-            self errorMessage(try(error asMessage) error)
-        )
+        # DLF: removed try
+        list()
+        #list("(", "[", "{", "\"\"\"", "(x,") map(error,
+        #    self errorMessage(try(error asMessage) error)
+        #)
     )
 
     errorMessage := method(error, error beforeSeq(" on line"))
