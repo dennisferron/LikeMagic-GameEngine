@@ -18,10 +18,19 @@ using namespace irr::video;
 
 using irr::core::vector3df;
 using irr::core::vector2df;
-
+using irr::core::dimension2du;
 
 
 namespace Bindings { namespace Irrlicht {
+
+class IImage2
+{
+public:
+    dimension2du getDimension() const
+    {
+        return dimension2du(123, 456);
+    }
+};
 
 void add_bindings_video(RuntimeTypeSystem& type_sys)
 {
@@ -244,9 +253,10 @@ void add_bindings_video(RuntimeTypeSystem& type_sys)
         SColor
     )
 
-
     LM_CLASS(ns_irr_video, ITexture)
+
     LM_CLASS(ns_irr_video, IImage)
+    LM_FUNC(IImage, (getDimension)(getBytesPerPixel))
 }
 
 }}
