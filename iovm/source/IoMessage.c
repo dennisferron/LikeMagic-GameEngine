@@ -3,7 +3,7 @@
 //metadoc Message copyright Steve Dekorte 2002
 //metadoc Message license BSD revised
 /*metadoc Message description
-A Message object encapsulates the action of a message send. 
+A Message object encapsulates the action of a message send.
 Blocks are composed of a Message and its children.
 <p>
 Terminology
@@ -11,7 +11,7 @@ Terminology
 Example:
   Io> msg := message(A B(C D); E F)
   ==> A B(C D); E F
-  
+
 In the above example:
   msg name            =>  A
   msg next            =>  B(C D); E F
@@ -130,7 +130,7 @@ IoMessage *IoMessage_proto(void *state)
 
 	{"opShuffle", IoMessage_opShuffle},
 	{"opShuffleC", IoMessage_opShuffle},
-	
+
 	#ifdef IOMESSAGE_HASPREV
 	{"previous", IoMessage_previous},
 	#endif
@@ -276,7 +276,7 @@ void IoMessage_mark(IoMessage *self)
 void IoMessage_free(IoMessage *self)
 {
 	IoMessageData *d = (IoMessageData *)IoObject_dataPointer(self);
-	
+
 	if (DATA(self)->args)
 	{
 		List_free(DATA(self)->args);
@@ -401,7 +401,7 @@ IO_METHOD(IoMessage, lineNumber)
 {
 	/*doc Message lineNumber
 	Returns the line number of the message. The charcter number
-	is typically the line number in the source text from with the message was read. 
+	is typically the line number in the source text from with the message was read.
 	*/
 
 	return IONUMBER(DATA(self)->lineNumber);
@@ -421,7 +421,7 @@ IO_METHOD(IoMessage, characterNumber)
 {
 	/*doc Message characterNumber
 	Returns the message character number. The charcter number is typically
-	the beginning character index in the source text from with the message was read. 
+	the beginning character index in the source text from with the message was read.
 	*/
 
 	return IONUMBER(0);
@@ -463,7 +463,7 @@ IO_METHOD(IoMessage, setLabel)
 IO_METHOD(IoMessage, doInContext)
 {
 	/*doc Message doInContext(anObject, locals)
-	Evaluates the receiver in the context of anObject. Optional <tt>locals</tt> 
+	Evaluates the receiver in the context of anObject. Optional <tt>locals</tt>
 	object is used as message sender. <tt>anObject</tt> is used as sender otherwise.
 	*/
 
@@ -493,18 +493,18 @@ IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObjec
 	//IoMessageData *md;
 	IoMessageData *md;
 
-	if (state->receivedSignal) 
+	if (state->receivedSignal)
 	{
 		IoState_callUserInterruptHandler(IOSTATE);
 	}
-			
+
 	do
 	{
 		//md = DATA(m);
 		//printf("%s %i\n", CSTRING(IoMessage_name(m)), state->stopStatus);
-		//if(state->showAllMessages) 
+		//if(state->showAllMessages)
 		//printf("M:%s:%s:%i\n", CSTRING(IoMessage_name(m)), CSTRING(IoMessage_rawLabel(m)), IoMessage_rawLineNumber(m));
-		
+
 		md = DATA(m);
 
 		if(md->name == state->semicolonSymbol)
@@ -546,7 +546,7 @@ IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObjec
 
 			//IoObject_freeIfUnreferenced(target);
 			target = result;
-			
+
 			if (state->stopStatus != MESSAGE_STOP_STATUS_NORMAL)
 			{
 					return state->returnValue;
@@ -564,7 +564,7 @@ IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObjec
 			}
 		}
 	} while ((m = md->next));
-			
+
 	return result;
 }
 
@@ -811,7 +811,7 @@ void IoMessage_appendDescriptionTo_follow_(IoMessage *self, UArray *ba, int foll
 IO_METHOD(IoMessage, clone)
 {
 	/*doc Message clone
-	Returns a Message that is a deep copy of the receiver. 
+	Returns a Message that is a deep copy of the receiver.
 	*/
 
 	return IoMessage_deepCopyOf_(self);
@@ -820,7 +820,7 @@ IO_METHOD(IoMessage, clone)
 IO_METHOD(IoMessage, protoName)
 {
 	/*doc Message name
-	Returns the name of the receiver. 
+	Returns the name of the receiver.
 	*/
 
 	IoObject *s = DATA(self)->name;
@@ -830,7 +830,7 @@ IO_METHOD(IoMessage, protoName)
 IO_METHOD(IoMessage, protoSetName)
 {
 	/*doc Message setName(aString)
-	Sets the name of the receiver. Returns self. 
+	Sets the name of the receiver. Returns self.
 	*/
 	IoMessage_rawSetName_(self, IoMessage_locals_symbolArgAt_(m, locals, 0));
 	//IoMessage_cacheIfPossible(self);
@@ -853,7 +853,7 @@ IO_METHOD(IoMessage, descriptionString)
 IO_METHOD(IoMessage, next)
 {
 	/*doc Message next
-	Returns the next message in the message chain or nil if there is no next message. 
+	Returns the next message in the message chain or nil if there is no next message.
 	*/
 
 	return DATA(self)->next ? (IoObject *)DATA(self)->next : IONIL(self);
@@ -868,7 +868,7 @@ IO_METHOD(IoMessage, setNext)
 {
 	/*doc Message setNext(aMessageOrNil)
 	Sets the next message in the message chain to a deep copy of
-	aMessage or it removes the next message if aMessage is nil. 
+	aMessage or it removes the next message if aMessage is nil.
 	*/
 
 	IoObject *v = IoMessage_locals_valueArgAt_(m , locals, 0);
@@ -924,8 +924,8 @@ IoMessage *IoMessage_rawNextIgnoreEOLs(IoMessage *self)
 IO_METHOD(IoMessage, nextIgnoreEOLs)
 {
 	/*doc Message nextIgnoreEndOfLines
-	Returns the next message in the message chain which is not an 
-	EndOfLine or nil if there is no next message. 
+	Returns the next message in the message chain which is not an
+	EndOfLine or nil if there is no next message.
 	*/
 
 	IoMessage *next = IoMessage_rawNextIgnoreEOLs(self);
@@ -985,9 +985,9 @@ IO_METHOD(IoMessage, last)
 IO_METHOD(IoMessage, previous)
 {
 	/*doc Message previous
-	Returns the previous message in the message chain or Nil if there is no previous message. 
+	Returns the previous message in the message chain or Nil if there is no previous message.
 	*/
-	
+
 #ifdef IOMESSAGE_HASPREV
 	return DATA(self)->previous ? (IoObject *)DATA(self)->previous : IONIL(self);
 #else
@@ -1008,7 +1008,7 @@ IO_METHOD(IoMessage, setPrevious)
 {
 	/*doc Message setPrevious(aMessageOrNil)
 	Sets the previous message in the message chain to a deep copy of
-	aMessage or it removes the previous message if aMessage is Nil. 
+	aMessage or it removes the previous message if aMessage is Nil.
 	*/
 
 	IoObject *v = IoMessage_locals_valueArgAt_(m , locals, 0);
@@ -1054,7 +1054,7 @@ IO_METHOD(IoMessage, arguments)
 	/*doc Message arguments
 	Returns a list of the message objects that act as the
 	receiver's arguments. Modifying this list will not alter the actual
-	list of arguments. Use the arguments_() method to do that. 
+	list of arguments. Use the arguments_() method to do that.
 	*/
 
 	IoList *argsList = IoList_new(IOSTATE);
@@ -1091,13 +1091,13 @@ IO_METHOD(IoMessage, appendArg)
 {
 /*doc Message appendArg(aMessage)
 Adds aMessage to the argument list of receiver. Examples,
-<pre>	
+<pre>
 Io> message(a) appendArg(message(b))
 ==> a(b)
 
 Io> message(a(1,2)) appendArg(message(3))
 ==> a(1, 2, 3)
-</pre>	
+</pre>
 */
 
 	IoMessage *msg = IoMessage_locals_messageArgAt_(m, locals, 0);
@@ -1120,13 +1120,13 @@ IO_METHOD(IoMessage, argCount_)
 {
 /*doc Message argCount
 Returns the number of arguments this message has. A faster way to do, msg arguments size. Examples,
-<pre>	
+<pre>
 Io> message(a(1,2,3)) argCount
 ==> 3
 
 Io> message(a) argCount
 ==> 0
-</pre>	
+</pre>
 */
 
 	return IONUMBER(IoMessage_argCount(self));
@@ -1136,7 +1136,7 @@ IO_METHOD(IoMessage, fromString)
 {
 	/*doc Message fromString(aString)
 	Returns a new Message object for the compiled(but not executed)
-	result of aString. 
+	result of aString.
 	*/
 
 	IoSymbol *string = IoMessage_locals_symbolArgAt_(m, locals, 0);
@@ -1184,7 +1184,7 @@ IO_METHOD(IoMessage, hasCachedResult)
 	Returns true if there is a cached result. Nil is a valid cached result.
 	*/
 
-	return IOBOOL(self, 
+	return IOBOOL(self,
 		IoMessage_rawCachedResult(self) != NULL
 	);
 }
@@ -1193,7 +1193,7 @@ IO_METHOD(IoMessage, argsEvaluatedIn)
 {
 	/*doc Message argsEvaluatedIn(anObject)
 	Returns a List containing the argument messages evaluated in the
-	context of anObject. 
+	context of anObject.
 	*/
 
 	IoObject *context = IoMessage_locals_valueArgAt_(m, locals, 0);

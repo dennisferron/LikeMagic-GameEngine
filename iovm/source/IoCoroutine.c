@@ -342,10 +342,22 @@ void IoCoroutine_rawRun(IoCoroutine *self)
 		IoCoroutine *current = IoState_currentCoroutine(IOSTATE);
 		Coro *currentCoro = IoCoroutine_rawCoro(current);
 		//IoState_stackRetain_(IOSTATE, self);
-		Coro_startCoro_(currentCoro, coro, self, (CoroStartCallback *)IoCoroutine_coroStart);
+		Coro* coro = NULL;  // Needed?
+		Coro_startCoro_(currentCoro, coro, self, IoCoroutine_coroStart);
 		//IoState_setCurrentCoroutine_(IOSTATE, current);
 	}
+
 	*/
+
+	IoObject *result;
+
+	IoObject *runTarget  = IoCoroutine_rawRunTarget(self);
+	IoObject *runLocals  = IoCoroutine_rawRunLocals(self);
+	IoObject *runMessage = IoCoroutine_rawRunMessage(self);
+
+    result = IoMessage_locals_performOn_(runMessage, runLocals, runTarget);
+
+	IoCoroutine_rawSetResult_(self, result);
 }
 
 IO_METHOD(IoCoroutine, run)
