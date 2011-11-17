@@ -230,7 +230,7 @@ void IoCoroutine_rawReturnToParent(IoCoroutine *self)
 		if (self == IOSTATE->mainCoroutine)
 		{
 			printf("IoCoroutine error: attempt to return from main coro\n");
-			exit(-1);
+			//exit(-1);
 		}
 	}
 
@@ -241,7 +241,7 @@ void IoCoroutine_rawReturnToParent(IoCoroutine *self)
 
 	printf("IoCoroutine error: unable to auto abort coro %p by resuming parent coro %s_%p\n",
 			(void *)self, IoObject_name(parent), (void *)parent);
-	exit(-1);
+	//exit(-1);
 }
 
 void IoCoroutine_coroStart(void *context) // Called by Coro_Start()

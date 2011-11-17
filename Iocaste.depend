@@ -659,7 +659,7 @@
 1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCompiler.h
 	"IoObject.h"
 
-1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCoroutine.c
+1321503197 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCoroutine.c
 	"IoCoroutine.h"
 	"IoObject.h"
 	"IoState.h"
@@ -1102,4 +1102,14 @@
 1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/tools/io2c.c
 	<stdio.h>
 	<stdlib.h>
+
+1321503534 source:/home/dennis/code/LikeMagic-All/Iocaste/Source/IoVMInit.cpp
+	<iostream>
+	<fstream>
+	<string>
+	<streambuf>
+	<sstream>
+	"IoState.h"
+	"IoObject.h"
+	"IoFile.h"
 

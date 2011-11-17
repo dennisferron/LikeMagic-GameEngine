@@ -171,3 +171,4 @@ cmake_install.cmake
 install_manifest.txt
 Makefile
 bin/Debug/IoCasteDebugBuild
+bin/
