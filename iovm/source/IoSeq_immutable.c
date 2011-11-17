@@ -3,7 +3,7 @@
 //metadoc Sequence copyright Steve Dekorte 2002
 //metadoc Sequence license BSD revised
 /*metadoc Sequence description
-A Sequence is a container for a list of data elements. 
+A Sequence is a container for a list of data elements.
 Immutable Sequences are also called "Symbols".
 */
 
@@ -71,7 +71,7 @@ IO_METHOD(IoSeq, with)
 IO_METHOD(IoSeq, itemType)
 {
 	/*doc Sequence itemType
-	Returns machine type of elements. 
+	Returns machine type of elements.
 	*/
 
 	return IOSYMBOL(CTYPE_name(UArray_itemType(DATA(self))));
@@ -80,7 +80,7 @@ IO_METHOD(IoSeq, itemType)
 IO_METHOD(IoSeq, itemSize)
 {
 	/*doc Sequence itemSize
-	Returns number of bytes in each element. 
+	Returns number of bytes in each element.
 	*/
 
 	return IONUMBER(UArray_itemSize(DATA(self)));
@@ -89,7 +89,7 @@ IO_METHOD(IoSeq, itemSize)
 IO_METHOD(IoSeq, encoding)
 {
 	/*doc Sequence encoding
-	Returns the encoding of the elements. 
+	Returns the encoding of the elements.
 	*/
 
 	return IOSYMBOL(CENCODING_name(UArray_encoding(DATA(self))));
@@ -98,7 +98,7 @@ IO_METHOD(IoSeq, encoding)
 IO_METHOD(IoSeq, asUTF8)
 {
 	/*doc Sequence asUTF8
-	Returns a new copy of the receiver converted to utf8 encoding. 
+	Returns a new copy of the receiver converted to utf8 encoding.
 	*/
 
 	return IoSeq_newWithUArray_copy_(IOSTATE, UArray_asUTF8(DATA(self)), 0);
@@ -107,7 +107,7 @@ IO_METHOD(IoSeq, asUTF8)
 IO_METHOD(IoSeq, asUCS2)
 {
 	/*doc Sequence asUCS2
-	Returns a new copy of the receiver converted to UCS2 (fixed character width UTF16) encoding. 
+	Returns a new copy of the receiver converted to UCS2 (fixed character width UTF16) encoding.
 	*/
 
 	return IoSeq_newWithUArray_copy_(IOSTATE, UArray_asUCS2(DATA(self)), 0);
@@ -116,7 +116,7 @@ IO_METHOD(IoSeq, asUCS2)
 IO_METHOD(IoSeq, asUCS4)
 {
 	/*doc Sequence asUCS4
-	Returns a new copy of the receiver converted to UCS4 (fixed character width UTF32) encoding. 
+	Returns a new copy of the receiver converted to UCS4 (fixed character width UTF32) encoding.
 	*/
 
 	return IoSeq_newWithUArray_copy_(IOSTATE, UArray_asUCS4(DATA(self)), 0);
@@ -125,14 +125,14 @@ IO_METHOD(IoSeq, asUCS4)
 IO_METHOD(IoSeq, asFixedSizeType)
 {
 	/*doc Sequence asFixedSizeType
-	Returns a new sequence with the receiver encoded in the 
-	minimal fixed width text encoding that its characters can fit 
-	into (either, ascii, utf8, utf16 or utf32). 
+	Returns a new sequence with the receiver encoded in the
+	minimal fixed width text encoding that its characters can fit
+	into (either, ascii, utf8, utf16 or utf32).
 	*/
-	
+
 	UArray *out = UArray_new();
 	UArray_copy_(out, DATA(self));
-	UArray_convertToFixedSizeType(out);	
+	UArray_convertToFixedSizeType(out);
 	return IoSeq_newWithUArray_copy_(IOSTATE, out, 0);
 }
 
@@ -148,16 +148,16 @@ IO_METHOD(IoSeq, asBinaryUnsignedInteger)
 	if(byteCount == 1)
 	{
 		return IONUMBER(*((const uint8_t *)bytes));
-	} 
+	}
 	else if(byteCount == 2)
 	{
 		return IONUMBER(*((const uint16_t *)bytes));
-	} 
+	}
 	else if(byteCount == 4)
 	{
 		return IONUMBER(*((const uint32_t *)bytes));
-	} 
-	else 
+	}
+	else
 	{
 		IoState_error_(IOSTATE, m, "Sequence is %i bytes but only conversion of 1, 2, or 4 bytes is supported", byteCount);
 	}
@@ -177,16 +177,16 @@ IO_METHOD(IoSeq, asBinarySignedInteger)
 	if(byteCount == 1)
 	{
 		return IONUMBER(*((const int8_t *)bytes));
-	} 
+	}
 	else if(byteCount == 2)
 	{
 		return IONUMBER(*((const int16_t *)bytes));
-	} 
+	}
 	else if(byteCount == 4)
 	{
 		return IONUMBER(*((const int32_t *)bytes));
-	} 
-	else 
+	}
+	else
 	{
 		IoState_error_(IOSTATE, m, "Sequence is %i bytes but only conversion of 1, 2, or 4 bytes is supported", byteCount);
 	}
@@ -295,9 +295,9 @@ IO_METHOD(IoSeq, size)
 Returns the length in number of items (which may or may not
 be the number of bytes, depending on the item type) of the receiver. For example,
 <p>
-<pre>	
+<pre>
 "abc" size == 3
-</pre>	
+</pre>
 */
 
 	return IONUMBER(UArray_size(DATA(self)));
@@ -341,7 +341,7 @@ IO_METHOD(IoSeq, exclusiveSlice)
 	/*doc Sequence exclusiveSlice(inclusiveStartIndex, exclusiveEndIndex)
 	Returns a new string containing the subset of the
 	receiver from the inclusiveStartIndex to the exclusiveEndIndex. The exclusiveEndIndex argument
-	is optional. If not given, it is assumed to be one beyond the end of the string. 
+	is optional. If not given, it is assumed to be one beyond the end of the string.
 	*/
 
 	long fromIndex = IoMessage_locals_longArgAt_(m, locals, 0);
@@ -368,7 +368,7 @@ IO_METHOD(IoSeq, inclusiveSlice)
 	/*doc Sequence inclusiveSlice(inclusiveStartIndex, inclusiveEndIndex)
 	Returns a new string containing the subset of the
 	receiver from the inclusiveStartIndex to the inclusiveEndIndex. The inclusiveEndIndex argument
-	is optional. If not given, it is assumed to be the end of the string. 
+	is optional. If not given, it is assumed to be the end of the string.
 	*/
 
 	long fromIndex = IoMessage_locals_longArgAt_(m, locals, 0);
@@ -388,7 +388,7 @@ IO_METHOD(IoSeq, inclusiveSlice)
 	{
 		last = last + 1;
 	}
-	
+
 	ba = UArray_slice(DATA(self), fromIndex, last);
 
 	if (ISSYMBOL(self))
@@ -403,7 +403,7 @@ IO_METHOD(IoSeq, between)
 {
 	/*doc Sequence betweenSeq(aSequence, anotherSequence)
 	Returns a new Sequence containing the bytes between the
-	occurrence of aSequence and anotherSequence in the receiver. 
+	occurrence of aSequence and anotherSequence in the receiver.
 	If aSequence is empty, this method is equivalent to beforeSeq(anotherSequence).
 	If anotherSequence is nil, this method is equivalent to afterSeq(aSequence).
 	nil is returned if no match is found.
@@ -473,12 +473,12 @@ IO_METHOD(IoSeq, between)
 IO_METHOD(IoSeq, findSeqs)
 {
 	/*doc Sequence findSeqs(listOfSequences, optionalStartIndex)
-	Returns an object with two slots - an \"index\" slot which contains 
-	the first occurrence of any of the sequences in listOfSequences found 
-	in the receiver after the startIndex, and a \"match\" slot, which 
-	contains a reference to the matching sequence from listOfSequences. 
-	If no startIndex is specified, the search starts at index 0. 
-	nil is returned if no occurences are found. 
+	Returns an object with two slots - an \"index\" slot which contains
+	the first occurrence of any of the sequences in listOfSequences found
+	in the receiver after the startIndex, and a \"match\" slot, which
+	contains a reference to the matching sequence from listOfSequences.
+	If no startIndex is specified, the search starts at index 0.
+	nil is returned if no occurences are found.
 	*/
 
 	IoList *others = IoMessage_locals_listArgAt_(m, locals, 0);
@@ -527,7 +527,7 @@ IO_METHOD(IoSeq, findSeq)
 	Returns a number with the first occurrence of aSequence in
 	the receiver after the startIndex. If no startIndex is specified,
 	the search starts at index 0.
-	nil is returned if no occurences are found. 
+	nil is returned if no occurences are found.
 	*/
 
 	IoSeq *otherSequence = IoMessage_locals_seqArgAt_(m, locals, 0);
@@ -550,7 +550,7 @@ IO_METHOD(IoSeq, reverseFindSeq)
 	Returns a number with the first occurrence of aSequence in
 	the receiver before the startIndex. The startIndex argument is optional.
 	By default reverseFind starts at the end of the string. Nil is
-	returned if no occurrences are found. 
+	returned if no occurrences are found.
 	*/
 
 	IoSeq *other = IoMessage_locals_seqArgAt_(m, locals, 0);
@@ -586,7 +586,7 @@ IO_METHOD(IoSeq, beginsWithSeq)
 IO_METHOD(IoSeq, endsWithSeq)
 {
 	/*doc Sequence endsWithSeq(aSequence)
-	Returns true if the receiver ends with aSequence, false otherwise. 
+	Returns true if the receiver ends with aSequence, false otherwise.
 	*/
 
 	IoSeq *other = IoMessage_locals_seqArgAt_(m, locals, 0);
@@ -596,7 +596,7 @@ IO_METHOD(IoSeq, endsWithSeq)
 IO_METHOD(IoSeq, contains)
 {
 	/*doc Sequence contains(aNumber)
-	Returns true if the receiver contains an element equal in value to aNumber, false otherwise. 
+	Returns true if the receiver contains an element equal in value to aNumber, false otherwise.
 	*/
 
 	// will make this more efficient when Numbers are Arrays
@@ -611,7 +611,7 @@ IO_METHOD(IoSeq, containsSeq)
 {
 	/*doc Sequence containsSeq(aSequence)
 	Returns true if the receiver contains the substring
-	aSequence, false otherwise. 
+	aSequence, false otherwise.
 	*/
 
 	IoSeq *other = IoMessage_locals_seqArgAt_(m, locals, 0);
@@ -623,7 +623,7 @@ IO_METHOD(IoSeq, containsAnyCaseSeq)
 {
 	/*doc Sequence containsAnyCaseSeq(aSequence)
 	Returns true if the receiver contains the aSequence
-	regardless of casing, false otherwise. 
+	regardless of casing, false otherwise.
 	*/
 
 	IoSeq *other = IoMessage_locals_seqArgAt_(m, locals, 0);
@@ -709,7 +709,7 @@ IoList *IoSeq_stringListForArgs(IoSeq *self, IoObject *locals, IoMessage *m)
 	{
 		return IoSeq_whiteSpaceStrings(self, locals, m);
 	}
-	
+
 	return IoMessage_evaluatedArgs(m, locals, m);
 }
 
@@ -775,12 +775,12 @@ IO_METHOD(IoSeq, split)
 Returns a list containing the sub-sequences of the receiver divided by the given arguments.
 If no arguments are given the sequence is split on white space.
 Examples:
-<pre>	
+<pre>
 "a b c d" split == list("a", "b", "c", "d")
 "a*b*c*d" split("*") == list("a", "b", "c", "d")
 "a*b|c,d" split("*", "|", ",") == list("a", "b", "c", "d")
 "a   b  c d" split == list("a", "", "", "", "b", "", "", "c", "", "d")
-</pre>	
+</pre>
 */
 
 	return IoSeq_splitToFunction(self, locals, m, IoSeq_newWithUArray_copy_);
@@ -791,7 +791,7 @@ IO_METHOD(IoSeq, splitAt)
 	/*doc Sequence splitAt(indexNumber)
 	Returns a list containing the two parts of the receiver as split at the given index.
 	*/
-	
+
 	int index = IoMessage_locals_intArgAt_(m, locals, 0);
 	IoList *splitSeqs = IoList_new(IOSTATE);
 	index = UArray_wrapPos_(DATA(self), index);
@@ -847,7 +847,7 @@ IO_METHOD(IoSeq, toBase)
 	/*doc Sequence toBase(aNumber)
 	Returns a Sequence containing the receiver (which is
 	assumed to be a base 10 number) converted to the specified base.
-	Only base 8 and 16 are currently supported. 
+	Only base 8 and 16 are currently supported.
 	*/
 
 	const char * const table = "0123456789abcdefghijklmnopqrstuvwxyz";
@@ -859,13 +859,13 @@ IO_METHOD(IoSeq, toBase)
 	{
 		IoState_error_(IOSTATE, m, "conversion to base %i not supported", base);
 	}
-	
+
 	#if defined(_MSC_VER) || defined(__MINGW32__)
 		n = strtoul(IoSeq_asCString(self), NULL, 0);
 	#else
 		n = (unsigned long) IoSeq_asDouble(self);
 	#endif
-	
+
 	/* Build the converted string backwards. */
 	*(--ptr) = '\0';
 
@@ -924,12 +924,12 @@ IO_METHOD(IoSeq, foreach)
 {
 /*doc Sequence foreach(optionalIndex, value, message)
 For each element, set index to the index of the
-element and value to the element value and execute message. 
+element and value to the element value and execute message.
 Example:
-<pre>	
+<pre>
 aSequence foreach(i, v, writeln("value at index ", i, " is ", v))
 aSequence foreach(v, writeln("value ", v))
-</pre>	
+</pre>
 */
 
 	IoObject *result = IONIL(self);
@@ -1029,7 +1029,7 @@ IO_METHOD(IoSeq, cloneAppendSeq)
 IO_METHOD(IoSeq, asMutable)
 {
 	/*doc Sequence asMutable
-	Returns a mutable copy of the receiver. 
+	Returns a mutable copy of the receiver.
 	*/
 
 	return IoSeq_rawMutableCopy(self);
@@ -1040,7 +1040,7 @@ IO_METHOD(IoSeq, asMutable)
 IO_METHOD(IoSeq, asUppercase)
 {
 	/*doc Sequence asUppercase
-	Returns a symbol containing the reveiver made uppercase. 
+	Returns a symbol containing the reveiver made uppercase.
 	*/
 
 	UArray *ba = UArray_clone(DATA(self));
@@ -1051,7 +1051,7 @@ IO_METHOD(IoSeq, asUppercase)
 IO_METHOD(IoSeq, asLowercase)
 {
 	/*doc Sequence asLowercase
-	Returns a symbol containing the reveiver made lowercase. 
+	Returns a symbol containing the reveiver made lowercase.
 	*/
 
 	UArray *ba = UArray_clone(DATA(self));
@@ -1066,7 +1066,7 @@ IO_METHOD(IoSeq, lastPathComponent)
 {
 	/*doc Sequence lastPathComponent
 	Returns a string containing the receiver clipped up
-	to the last path separator. 
+	to the last path separator.
 	*/
 
 	UArray *ba = UArray_lastPathComponent(DATA(self));
@@ -1076,7 +1076,7 @@ IO_METHOD(IoSeq, lastPathComponent)
 IO_METHOD(IoSeq, pathExtension)
 {
 	/*doc Sequence pathExtension
-	Returns a string containing the receiver clipped up to the last period. 
+	Returns a string containing the receiver clipped up to the last period.
 	*/
 
 	UArray *path = UArray_pathExtension(DATA(self));
@@ -1109,7 +1109,7 @@ IO_METHOD(IoSeq, cloneAppendPath)
 IO_METHOD(IoSeq, pathComponent)
 {
 	/*doc Sequence pathComponent
-	Returns a slice of the receiver before the last path separator as a symbol. 
+	Returns a slice of the receiver before the last path separator as a symbol.
 	*/
 
 	UArray *ba = UArray_clone(DATA(self));
@@ -1234,16 +1234,16 @@ IO_METHOD(IoSeq, occurancesOfSeq)
 IO_METHOD(IoSeq, asBase64)
 {
 	/*doc Sequence asBase64(optionalCharactersPerLine)
-	Returns an immutable, base64 encoded (according to RFC 1421) version of self. 
+	Returns an immutable, base64 encoded (according to RFC 1421) version of self.
 	optionalCharactersPerLine describes the number of characters between line breaks and defaults to 0.
 	*/
 	int charsPerLine = 0;
-	
+
 	if (IoMessage_argCount(m) > 0)
 	{
 		charsPerLine = IoMessage_locals_intArgAt_(m, locals, 0);
 	}
-	
+
 	return IoSeq_newWithUArray_copy_(IOSTATE, UArray_asBase64(IoSeq_rawUArray(self), charsPerLine), 0);
 }
 
@@ -1252,7 +1252,7 @@ IO_METHOD(IoSeq, fromBase64)
 	/*doc Sequence fromBase64
 	Returns an immutable, base64 decoded (according to RFC 1421) version of self.
 	*/
-	
+
 	return IoSeq_newWithUArray_copy_(IOSTATE, UArray_fromBase64(IoSeq_rawUArray(self)), 0);
 }
 
@@ -1270,7 +1270,7 @@ IO_METHOD(IoSeq, interpolate)
 IO_METHOD(IoSeq, distanceTo)
 {
 	/*doc Sequence distanceTo(aSeq)
-	Returns a number with the square root of the sum of the square 
+	Returns a number with the square root of the sum of the square
 	of the differences of the items between the sequences.
 	*/
 
@@ -1283,40 +1283,40 @@ IO_METHOD(IoSeq, distanceTo)
 
 IO_METHOD(IoSeq, greaterThan_)
 {
-	/*doc Sequence greaterThan(aSeq) 
+	/*doc Sequence greaterThan(aSeq)
 	Returns true if the receiver is greater than aSeq, false otherwise.
 	*/
-	
+
 	IoSeq *other = IoMessage_locals_seqArgAt_(m, locals, 0);
 	return IOBOOL(self, UArray_greaterThan_(DATA(self), DATA(other)));
 }
 
 IO_METHOD(IoSeq, lessThan_)
 {
-	/*doc Sequence lessThan(aSeq) 
+	/*doc Sequence lessThan(aSeq)
 	Returns true if the receiver is less than aSeq, false otherwise.
 	*/
-	
+
 	IoSeq *other = IoMessage_locals_seqArgAt_(m, locals, 0);
 	return IOBOOL(self, UArray_lessThan_(DATA(self), DATA(other)));
 }
 
 IO_METHOD(IoSeq, greaterThanOrEqualTo_)
 {
-	/*doc Sequence greaterThanOrEqualTo(aSeq) 
+	/*doc Sequence greaterThanOrEqualTo(aSeq)
 	Returns true if the receiver is greater than or equal to aSeq, false otherwise.
 	*/
-	
+
 	IoSeq *other = IoMessage_locals_seqArgAt_(m, locals, 0);
 	return IOBOOL(self, UArray_greaterThanOrEqualTo_(DATA(self), DATA(other)));
 }
 
 IO_METHOD(IoSeq, lessThanOrEqualTo_)
 {
-	/*doc Sequence lessThanOrEqualTo(aSeq) 
+	/*doc Sequence lessThanOrEqualTo(aSeq)
 	Returns true if the receiver is less than or equal to aSeq, false otherwise.
 	*/
-	
+
 	IoSeq *other = IoMessage_locals_seqArgAt_(m, locals, 0);
 	return IOBOOL(self, UArray_lessThanOrEqualTo_(DATA(self), DATA(other)));
 }
@@ -1333,18 +1333,18 @@ IO_METHOD(IoSeq, lessThanOrEqualTo_)
 
 IO_METHOD(IoSeq, asStruct)
 {
-/*doc Sequence asStruct(memberList) 
+/*doc Sequence asStruct(memberList)
 For a sequence that contains the data for a raw memory data structure (as used in C),
 this method can be used to extract its members into an Object. The memberList argument
 specifies the layout of the datastructure. Its form is:
 <p>
 list(memberType1, memberName1, memberType2, memberName2, ...)
 <p>
-Member types include: 
+Member types include:
 <pre>
 int8, int16, int32, int64
 uint8, uint16, uint32, uint64
-float32, float64 
+float32, float64
 </pre>
 Example:
 <pre>
@@ -1352,7 +1352,7 @@ pointObject := structPointSeq asStruct(list("float32", "x", "float32", "y"))
 </pre>
 The output pointObject would contain x and y slots with Number objects.
 */
-	
+
 	IoObject *st = IoObject_new(IOSTATE);
 	const unsigned char *data = UArray_bytes(DATA(self));
 	size_t size = UArray_sizeInBytes(DATA(self));
@@ -1401,17 +1401,17 @@ The output pointObject would contain x and y slots with Number objects.
 
 IO_METHOD(IoSeq, withStruct)
 {
-/*doc Sequence withStruct(memberList) 
+/*doc Sequence withStruct(memberList)
 This method is useful for producing a Sequence containing a raw datastructure with
 the specified types and values. The memberList format is:
 <p>
 list(memberType1, memberName1, memberType2, memberName2, ...)
 <p>
-Member types include: 
+Member types include:
 <pre>
 int8, int16, int32, int64
 uint8, uint16, uint32, uint64
-float32, float64 
+float32, float64
 </pre>
 Example:
 <pre>
@@ -1419,7 +1419,7 @@ pointStructSeq := Sequence withStruct(list("float32", 1.2, "float32", 3.5))
 </pre>
 The output pointStructSeq would contain 2 raw 32 bit floats.
 */
-	
+
 	List *members = IoList_rawList(IoMessage_locals_listArgAt_(m, locals, 0));
 	int memberIndex;
 	size_t maxSize = List_size(members) * 8;
@@ -1460,13 +1460,13 @@ The output pointStructSeq would contain 2 raw 32 bit floats.
 // ------------------
 
 /* Converts a hex character to its integer value */
-static char from_hex(char ch) 
+static char from_hex(char ch)
 {
 	return isdigit(ch) ? ch - '0' : tolower(ch) - 'a' + 10;
 }
 
 /* Converts an integer value to its hex character*/
-static char to_hex(char code) 
+static char to_hex(char code)
 {
 	static char hex[] = "0123456789ABCDEF";
 	return hex[code & 15];
@@ -1475,63 +1475,63 @@ static char to_hex(char code)
 
 /* Returns a url-encoded version of str */
 /* IMPORTANT: be sure to free() the returned string after use */
-static char *url_encode(const char *str, int isPercentEncoded) 
+static char *url_encode(const char *str, int isPercentEncoded)
 {
 	const char *pstr = str;
 	char *buf = malloc(strlen(str) * 3 + 1);
 	char *pbuf = buf;
-	
-	while (*pstr) 
+
+	while (*pstr)
 	{
 		if (isalnum(*pstr) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~')
 		{
 			*pbuf++ = *pstr;
 		}
-		else if (!isPercentEncoded && *pstr == ' ') 
+		else if (!isPercentEncoded && *pstr == ' ')
 		{
 			*pbuf++ = '+';
 		}
-		else 
+		else
 		{
 			*pbuf++ = '%', *pbuf++ = to_hex(*pstr >> 4), *pbuf++ = to_hex(*pstr & 15);
 		}
-		
+
 		pstr++;
 	}
-	
+
 	*pbuf = '\0';
 	return buf;
 }
 
 /* Returns a url-decoded version of str */
 /* IMPORTANT: be sure to free() the returned string after use */
-static char *url_decode(const char *str, int isPercentEncoded) 
+static char *url_decode(const char *str, int isPercentEncoded)
 {
 	const char *pstr = str;
 	char *buf = malloc(strlen(str) + 1);
 	char *pbuf = buf;
-	
-	while (*pstr) 
+
+	while (*pstr)
 	{
-		if (*pstr == '%') 
+		if (*pstr == '%')
 		{
-			if (pstr[1] && pstr[2]) 
+			if (pstr[1] && pstr[2])
 			{
 				*pbuf++ = from_hex(pstr[1]) << 4 | from_hex(pstr[2]);
 				pstr += 2;
 			}
-		} 
-		else if (!isPercentEncoded && *pstr == '+') 
-		{ 
+		}
+		else if (!isPercentEncoded && *pstr == '+')
+		{
 			*pbuf++ = ' ';
-		} 
-		else 
+		}
+		else
 		{
 			*pbuf++ = *pstr;
 		}
 		pstr++;
 	}
-	
+
 	*pbuf = '\0';
 	return buf;
 }
@@ -1541,7 +1541,7 @@ IO_METHOD(IoSeq, percentEncoded)
 /*doc Sequence percentEncoded
 Returns percent encoded version of receiver.
 */
-	char *s = url_encode(UArray_bytes(DATA(self)), 1);
+	char *s = url_encode((const char*)UArray_bytes(DATA(self)), 1);
 	IoObject *result = IOSYMBOL(s);
 	free(s);
 	return result;
@@ -1552,7 +1552,7 @@ IO_METHOD(IoSeq, percentDecoded)
 /*doc Sequence percentDecoded
 Returns percent decoded version of receiver.
 */
-	char *s = url_decode(UArray_bytes(DATA(self)), 1);
+	char *s = url_decode((const char*)UArray_bytes(DATA(self)), 1);
 	IoObject *result = IOSYMBOL(s);
 	free(s);
 	return result;
@@ -1565,7 +1565,7 @@ IO_METHOD(IoSeq, urlEncoded)
 /*doc Sequence urlEncoded
 Returns url encoded version of receiver.
 */
-	char *s = url_encode(UArray_bytes(DATA(self)), 0);
+	char *s = url_encode((const char *)UArray_bytes(DATA(self)), 0);
 	IoObject *result = IOSYMBOL(s);
 	free(s);
 	return result;
@@ -1576,7 +1576,7 @@ IO_METHOD(IoSeq, urlDecoded)
 /*doc Sequence urlDecoded
 Returns url decoded version of receiver.
 */
-	char *s = url_decode(UArray_bytes(DATA(self)), 0);
+	char *s = url_decode((const char *)UArray_bytes(DATA(self)), 0);
 	IoObject *result = IOSYMBOL(s);
 	free(s);
 	return result;
@@ -1592,7 +1592,7 @@ IO_METHOD(IoSeq, pack)
 	Returns a new Sequence with the values packed in.
 
 	Codes:
-	
+
 	*: (one at the beginning of the format string) declare format string as BigEndian
 	B: unsigned byte
 	b: byte
@@ -1609,18 +1609,18 @@ IO_METHOD(IoSeq, pack)
 	s: string
 
 	A '*' at the begging of the format string indicates native types are to be treated as Big Endiand.
-	
+
 	A number preceding a code declares an array of that type.
-	
+
 	In the case of 's', the preceding number indicates the size of the string to be packed.
 	If the string passed is shorter than size, 0 padding will be used to fill to size. If the
 	string passed is longer than size, only size chars will be packed.
-	
+
 	The difference between b/B and c/C is in the values passed to pack. For b/B pack expects a number.
 	For c/C pack expects a one-char-string (this is the same as '1s' or 's')
-	
+
 	Examples:
-	
+
 	s := Sequence pack("IC5s", 100, "a", "hello")
 	s := Sequence pack("5c", "h", "e", "l", "l", "o")
 	s := Sequence pack("I", 0x01020304)
@@ -1633,7 +1633,7 @@ IO_METHOD(IoSeq, pack)
 	int argCount = IoMessage_argCount(m);
 	int isBigEndian = 0, doBigEndian = 0;
 	int i = 0, argIdx = 0, count = 0;
-	
+
 	char *from = NULL;
 	int size = 0;
 	int padding = 0;
@@ -1662,7 +1662,7 @@ IO_METHOD(IoSeq, pack)
 			from = val;
 			padding = 0;
 			size = 0;
-			
+
 			switch(strFmt[i])
 			{
 				case 'B': //unsigned byte
@@ -1704,7 +1704,7 @@ IO_METHOD(IoSeq, pack)
 					*((double *)val)  = IoMessage_locals_doubleArgAt_(m, locals, argIdx);
 					size = sizeof(double);
 				break;
-				
+
 				case 's': //string
 					from = IoMessage_locals_cStringArgAt_(m, locals, argIdx);
 					size = strlen(from);
@@ -1716,15 +1716,15 @@ IO_METHOD(IoSeq, pack)
 					count = 0; //finish processing
 				break;
 			}
-			
+
 			{
 				int inc = doBigEndian ? -1 : 1;
 				int pos = doBigEndian ? size - 1 : 0;
 				int j = 0;
-				
+
 				for(j = 0 ; j < size ; j ++, pos += inc)
 					UArray_appendLong_(ua, from[pos]);
-					
+
 				for(j = 0 ; j < padding ; j ++)
 					UArray_appendLong_(ua, 0);
 			}
@@ -1769,9 +1769,9 @@ break;
 IO_METHOD(IoSeq, unpack)
 {
 	/*doc Sequence unpack(optionalStartPosition, format)
-	
+
 	Unpacks self into a list using the format passed in. See Sequence pack.
-	
+
 	Returns a List.
 
 	Examples:
@@ -1795,7 +1795,7 @@ IO_METHOD(IoSeq, unpack)
 	int strFmtLen = 0;
 	int isBigEndian = 0, i = 0, count = 0, seqPos = 0;
 	char val[16];
-	
+
 	IoList *values = IoList_new(IOSTATE);
 	//UArray *selfUArray = DATA(self);
 	char *selfUArray = (char *)DATA(self)->data;
@@ -1806,7 +1806,7 @@ IO_METHOD(IoSeq, unpack)
 		strFmt = IoMessage_locals_cStringArgAt_(m, locals, 0);
 	}
 	else
-	{	
+	{
 		seqPos = IoMessage_locals_intArgAt_(m, locals, 0);
 		strFmt = IoMessage_locals_cStringArgAt_(m, locals, 1);
 	}
@@ -1824,7 +1824,7 @@ IO_METHOD(IoSeq, unpack)
 		}
 
 		count = count > 1 ? count : 1;
-		
+
 		for( ; count > 0 ; count --)
 		{
 			IoObject *v;
@@ -1843,14 +1843,14 @@ IO_METHOD(IoSeq, unpack)
 				SEQ_UNPACK_VALUE_ASSIGN_LOOP('L', unsigned long, val, v)
 				SEQ_UNPACK_VALUE_ASSIGN_LOOP('f', float, val, v)
 				SEQ_UNPACK_VALUE_ASSIGN_LOOP('F', double, val, v)
-				
+
 				case 's': //string
 				{
 					char *uap = NULL;
 					UArray *ua = UArray_new();
 					UArray_setItemType_(ua, CTYPE_uint8_t);
 					UArray_setEncoding_(ua, CENCODING_ASCII);
-					
+
 					if(count == 1) {
 						count = strlen(&selfUArray[seqPos]);
 						UArray_setSize_(ua, count);
@@ -1868,11 +1868,11 @@ IO_METHOD(IoSeq, unpack)
 					break;
 				}
 			}
-			
+
 			IoList_rawAppend_(values, v);
 		}
 	}
-	
+
 	return values;
 }
 
@@ -1964,10 +1964,10 @@ void IoSeq_addImmutableMethods(IoSeq *self)
 
 	{"asStruct", IoSeq_asStruct},
 	{"withStruct", IoSeq_withStruct},
-	
+
 	{"percentEncoded", IoSeq_percentEncoded},
 	{"percentDecoded", IoSeq_percentDecoded},
-	
+
 	{"urlEncoded", IoSeq_urlEncoded},
 	{"urlDecoded", IoSeq_urlDecoded},
 

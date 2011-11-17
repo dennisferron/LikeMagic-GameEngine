@@ -1,1 +1,1105 @@
 # depslib dependency file v1.0
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/BStream.c
+	"Base.h"
+	"BStream.h"
+	<string.h>
+	<ctype.h>
+	<stdlib.h>
+	<math.h>
+	<limits.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Base.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stddef.h>
+	<time.h>
+	<setjmp.h>
+	<stdarg.h>
+	<string.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/BStream.h
+	"Common.h"
+	"UArray.h"
+	"BStreamTag.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Common.h
+	<stdlib.h>
+	<string.h>
+	<stddef.h>
+	<inttypes.h>
+	<inttypes.h>
+	<stdint.h>
+	<winsock2.h>
+	<winsock2.h>
+	"PortableStdint.h"
+	<memory.h>
+	<string.h>
+	<malloc.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableStdint.h
+	<stddef.h>
+	<limits.h>
+	<signal.h>
+	<stdint.h>
+	<wchar.h>
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray.h
+	"Common.h"
+	<stdarg.h>
+	<stdio.h>
+	<stddef.h>
+	"UArray_character.h"
+	"UArray_format.h"
+	"UArray_math.h"
+	"UArray_path.h"
+	"UArray_stream.h"
+	"UArray_string.h"
+	"UArray_utf.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_character.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_format.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_math.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_path.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_stream.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_string.h
+	<string.h>
+	<stdarg.h>
+	<stdio.h>
+	<stddef.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_utf.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/BStreamTag.h
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/BStreamTag.c
+	"BStreamTag.h"
+	<stdio.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/CHash.c
+	"CHash.h"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<assert.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/CHash.h
+	"Common.h"
+	<stddef.h>
+	"PortableStdint.h"
+	"CHash_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/CHash_inline.h
+	"Common_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Common_inline.h
+	"TargetConditionals.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Common.c
+	"Common.h"
+	<stdio.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Date.c
+	"Date.h"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<time.h>
+	<math.h>
+	"PortableStrptime.h"
+	"UArray.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Date.h
+	"Base.h"
+	"Common.h"
+	"Duration.h"
+	"PortableGettimeofday.h"
+	<time.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Duration.h
+	"Common.h"
+	"UArray.h"
+	"PortableGettimeofday.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableGettimeofday.h
+	<winsock2.h>
+	<sys/time.h>
+	"Common.h"
+	<sys/time.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableStrptime.h
+	<time.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Duration.c
+	"Duration.h"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<math.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/DynLib.c
+	"Base.h"
+	"DynLib.h"
+	"PortableStrlcpy.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<windows.h>
+	<dlfcn.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/DynLib.h
+	"Common.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableStrlcpy.h
+	<stddef.h>
+	<sys/types.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Hash_fnv.c
+	<stdlib.h>
+	"Hash_fnv.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Hash_fnv.h
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Hash_murmur.c
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Hash_superfast.c
+	"Common.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/List.c
+	"List.h"
+	<stdlib.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/List.h
+	"Common.h"
+	"PortableSorting.h"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"UArray.h"
+	"List_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableSorting.h
+	"Common.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/List_inline.h
+	"Common_inline.h"
+	"PortableSorting.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/MainArgs.c
+	"Base.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"MainArgs.h"
+	"PortableStrlcpy.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/MainArgs.h
+	"Common.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PointerHash.c
+	"PointerHash.h"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<assert.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PointerHash.h
+	"Common.h"
+	<stddef.h>
+	"PortableStdint.h"
+	"PointerHash_struct.h"
+	"PointerHash_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PointerHash_struct.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PointerHash_inline.h
+	"Common_inline.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableGettimeofday.c
+	<time.h>
+	<sys/types.h>
+	<sys/timeb.h>
+	"PortableGettimeofday.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableSnprintf.c
+	<string.h>
+	<ctype.h>
+	<sys/types.h>
+	<stdarg.h>
+	<stdlib.h>
+	"config.h"
+	<string.h>
+	<strings.h>
+	<ctype.h>
+	<sys/types.h>
+	<stdarg.h>
+	<stdlib.h>
+	<stdio.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableSorting.c
+	"PortableSorting.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableStrlcpy.c
+	<sys/types.h>
+	"PortableStrlcpy.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableStrptime.c
+	"Base.h"
+	"PortableStrptime.h"
+	<time.h>
+	<ctype.h>
+	<locale.h>
+	<string.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableTruncate.c
+	"PortableTruncate.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<windows.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableTruncate.h
+	"Common.h"
+	<unistd.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableUsleep.c
+	<windows.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/RandomGen.c
+	"Base.h"
+	"RandomGen.h"
+	<time.h>
+	<time.h>
+	<stdlib.h>
+	<math.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/RandomGen.h
+	"Common.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Stack.c
+	"Stack.h"
+	<inttypes.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Stack.h
+	"Common.h"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<stddef.h>
+	"List.h"
+	"Stack_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Stack_inline.h
+	"Common_inline.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray.c
+	"Base.h"
+	"UArray.h"
+	<string.h>
+	<ctype.h>
+	<stdlib.h>
+	<limits.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_character.c
+	"UArray.h"
+	<math.h>
+	<ctype.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_format.c
+	"UArray.h"
+	<string.h>
+	<stdarg.h>
+	<stdio.h>
+	<stddef.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_math.c
+	"UArray.h"
+	<math.h>
+	<float.h>
+	"simd_cp.h"
+	"simd_cp_emu.h"
+	"Hash_fnv.h"
+	"Hash_superfast.h"
+	"Hash_murmur.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/simd_cph/include/simd_cp.h
+	<simd_cp_emu.h>
+	<simd_cp_x86.h>
+	<simd_cp_arm-iwmmx.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/simd_cph/include/simd_cp_emu.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/simd_cph/include/simd_cp_x86.h
+	<xmmintrin.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/simd_cph/include/simd_cp_arm-iwmmx.h
+	<xmmintrin.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Hash_superfast.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/Hash_murmur.h
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_path.c
+	"UArray.h"
+	<string.h>
+	<stdarg.h>
+	<stdio.h>
+	<stddef.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_stream.c
+	"UArray.h"
+	<string.h>
+	<stdarg.h>
+	<stdio.h>
+	<stddef.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_string.c
+	"UArray.h"
+	"cencode.h"
+	"cdecode.h"
+	<string.h>
+	<stdarg.h>
+	<stdio.h>
+	<stddef.h>
+	<ctype.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/cencode.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/cdecode.h
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/UArray_utf.c
+	"UArray.h"
+	"utf_convert.h"
+	<string.h>
+	<stdarg.h>
+	<stdio.h>
+	<stddef.h>
+	"utf8.h"
+	<assert.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/utf_convert.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/utf8.h
+	"Common.h"
+	"su_types.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/cdecode.c
+	"cdecode.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/cencode.c
+	"cencode.h"
+	<stdio.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/simd_cph/test/test_simd.c
+	<simd_cp.h>
+	<stdio.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/ucs2.c
+	"utf8.h"
+	"utf8internal.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/utf8internal.h
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/ucs4.c
+	"utf8.h"
+	"utf8internal.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/utf8.c
+	"utf8.h"
+	"utf8internal.h"
+	<assert.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/basekit/source/utf_convert.c
+	"utf_convert.h"
+	<stdio.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/garbagecollector/source/Collector.c
+	"Collector.h"
+	<assert.h>
+	<time.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/garbagecollector/source/Collector.h
+	"CollectorMarker.h"
+	"Collector_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/garbagecollector/source/CollectorMarker.h
+	"Common.h"
+	"List.h"
+	"CollectorMarker_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/garbagecollector/source/CollectorMarker_inline.h
+	"Common_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/garbagecollector/source/Collector_inline.h
+	"Common_inline.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/garbagecollector/source/CollectorMarker.c
+	"CollectorMarker.h"
+	<assert.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoBlock.c
+	"IoBlock.h"
+	"IoMessage.h"
+	"IoMessage_parser.h"
+	"IoCFunction.h"
+	"IoSeq.h"
+	"IoNumber.h"
+	"IoList.h"
+	"UArray.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoBlock.h
+	"Common.h"
+	"List.h"
+	"IoObject.h"
+	"IoState.h"
+	"IoCall.h"
+	<time.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.h
+	"IoVMApi.h"
+	"Common.h"
+	"PHash.h"
+	"IoObject_struct.h"
+	"IoMessage.h"
+	"IoSeq.h"
+	"IoObject_flow.h"
+	"IoObject_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoVMApi.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/PHash.h
+	"Common.h"
+	<stddef.h>
+	"IoVMApi.h"
+	"PortableStdint.h"
+	"PHash_struct.h"
+	"PHash_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/PHash_struct.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/PHash_inline.h
+	"Common_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject_struct.h
+	"Common.h"
+	"PHash_struct.h"
+	"BStream.h"
+	"IoTag.h"
+	"Collector.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoTag.h
+	"Common.h"
+	"BStream.h"
+	"IoVMApi.h"
+	"IoTag_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoTag_inline.h
+	"Common_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.h
+	"IoVMApi.h"
+	"Common.h"
+	"List.h"
+	"UArray.h"
+	"IoTag.h"
+	"IoObject_struct.h"
+	"IoMessage_inline.h"
+	"IoMessage_parser.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage_inline.h
+	"Common_inline.h"
+	"IoObject.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage_parser.h
+	"IoMessage.h"
+	"IoLexer.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoLexer.h
+	"List.h"
+	"Stack.h"
+	"IoToken.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoToken.h
+	"List.h"
+	<string.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoSeq.h
+	"IoVMApi.h"
+	"Common.h"
+	"UArray.h"
+	"IoObject_struct.h"
+	"IoMessage.h"
+	"IoSeq_immutable.h"
+	"IoSeq_mutable.h"
+	"IoSeq_vector.h"
+	"IoSeq_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoSeq_immutable.h
+	"IoSeq.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoSeq_mutable.h
+	"IoSeq.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoSeq_vector.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoSeq_inline.h
+	"Common_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject_flow.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject_inline.h
+	"Common_inline.h"
+	"IoVMApi.h"
+	"IoState.h"
+	"PHash.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState.h
+	"IoVMApi.h"
+	"Stack.h"
+	"PointerHash.h"
+	"CHash.h"
+	"MainArgs.h"
+	"IoObject_struct.h"
+	"RandomGen.h"
+	"Collector.h"
+	"IoSeq.h"
+	"IoCoroutine.h"
+	"IoState_callbacks.h"
+	"IoState_coros.h"
+	"IoState_debug.h"
+	"IoState_eval.h"
+	"IoState_symbols.h"
+	"IoState_exceptions.h"
+	"IoState_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCoroutine.h
+	"IoVMApi.h"
+	"IoState.h"
+	"Common.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_callbacks.h
+	"IoVMApi.h"
+	"UArray.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_coros.h
+	"IoVMApi.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_debug.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.h
+	"IoVMApi.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_symbols.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_exceptions.h
+	"IoVMApi.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_inline.h
+	"Common_inline.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCall.h
+	"Common.h"
+	"IoState.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCFunction.h
+	"IoVMApi.h"
+	"Common.h"
+	"IoObject.h"
+	<time.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoNumber.h
+	"IoVMApi.h"
+	"Common.h"
+	"IoState.h"
+	"IoObject.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoList.h
+	"IoVMApi.h"
+	"Common.h"
+	"IoState.h"
+	"IoObject.h"
+	"List.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCFunction.c
+	"IoCFunction.h"
+	"IoState.h"
+	"IoNumber.h"
+	<stddef.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCall.c
+	"IoCall.h"
+	"IoState.h"
+	"IoObject.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCollector.c
+	"IoCollector.h"
+	"IoNumber.h"
+	"IoList.h"
+	"IoBlock.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCollector.h
+	"IoObject.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCompiler.c
+	"IoCompiler.h"
+	"IoNumber.h"
+	"IoMessage_parser.h"
+	"IoLexer.h"
+	"IoToken.h"
+	"IoList.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCompiler.h
+	"IoObject.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCoroutine.c
+	"IoCoroutine.h"
+	"IoObject.h"
+	"IoState.h"
+	"IoCFunction.h"
+	"IoSeq.h"
+	"IoNumber.h"
+	"IoList.h"
+	"IoBlock.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoDate.c
+	"IoDate.h"
+	"IoState.h"
+	"IoCFunction.h"
+	"IoObject.h"
+	"IoSeq.h"
+	"IoNumber.h"
+	"IoDuration.h"
+	"PortableStrptime.h"
+	<string.h>
+	<time.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoDate.h
+	"Common.h"
+	"IoObject.h"
+	"IoSeq.h"
+	"Date.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoDuration.h
+	<sys/types.h>
+	"Common.h"
+	"Duration.h"
+	"IoObject.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoDebugger.c
+	"IoDebugger.h"
+	"IoMessage_parser.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoDebugger.h
+	"IoObject.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoDirectory.c
+	"IoDirectory.h"
+	"IoState.h"
+	"IoNumber.h"
+	"IoList.h"
+	"IoFile.h"
+	<sys/stat.h>
+	<unistd.h>
+	<direct.h>
+	<dirent.h>
+	<sys/file.h>
+	<unistd.h>
+	<windows.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoDirectory.h
+	"IoVMApi.h"
+	"IoObject.h"
+	"IoSeq.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoFile.h
+	"Common.h"
+	"IoObject.h"
+	"UArray.h"
+	"IoNumber.h"
+	"IoSeq.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoDuration.c
+	"IoDuration.h"
+	"IoState.h"
+	"IoCFunction.h"
+	"IoObject.h"
+	"IoNumber.h"
+	<time.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoDynLib.c
+	"IoObject.h"
+	"IoState.h"
+	"IoSeq.h"
+	"IoBlock.h"
+	"IoNumber.h"
+	"IoList.h"
+	"IoMessage.h"
+	"IoDynLib.h"
+	"DynLib.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoDynLib.h
+	"Common.h"
+	"IoObject.h"
+	"IoState.h"
+	"IoSeq.h"
+	"IoMessage.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoError.c
+	"IoError.h"
+	"IoState.h"
+	"IoSeq.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoError.h
+	"IoObject.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoFile.c
+	"IoDate.h"
+	"IoFile.h"
+	"IoFile_stat.h"
+	"IoSeq.h"
+	"IoState.h"
+	"IoCFunction.h"
+	"IoObject.h"
+	"IoList.h"
+	"IoSeq.h"
+	"UArray.h"
+	"PortableTruncate.h"
+	<errno.h>
+	<stdio.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<unistd.h>
+	<direct.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoFile_stat.h
+	"IoFile.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoFile_stat.c
+	"IoFile_stat.h"
+	"IoState.h"
+	"IoDate.h"
+	<errno.h>
+	<stdio.h>
+	<sys/types.h>
+	<sys/stat.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoLexer.c
+	"IoLexer.h"
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+	<stddef.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoList.c
+	"IoList.h"
+	"IoObject.h"
+	"IoState.h"
+	"IoCFunction.h"
+	"IoSeq.h"
+	"IoState.h"
+	"IoNumber.h"
+	"IoBlock.h"
+	<math.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMap.c
+	"IoMap.h"
+	"IoObject.h"
+	"IoState.h"
+	"IoCFunction.h"
+	"IoSeq.h"
+	"IoState.h"
+	"IoNumber.h"
+	"IoList.h"
+	"IoBlock.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMap.h
+	"Common.h"
+	"IoObject.h"
+	"IoList.h"
+	"PHash.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.c
+	"IoObject.h"
+	"IoMessage.h"
+	"IoSeq.h"
+	"IoMap.h"
+	"IoNumber.h"
+	"IoState.h"
+	"IoState_debug.h"
+	"IoCFunction.h"
+	"IoBlock.h"
+	"IoList.h"
+	"IoDate.h"
+	"IoSeq.h"
+	<ctype.h>
+	<stdarg.h>
+	"IoMessage_parser.h"
+	"IoMessage_opShuffle.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage_opShuffle.h
+	"IoMessage.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage_opShuffle.c
+	"IoMessage_opShuffle.h"
+	"IoMap.h"
+	"IoNumber.h"
+	<ctype.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage_parser.c
+	"IoMessage_parser.h"
+	"IoMessage_opShuffle.h"
+	"IoObject.h"
+	"IoSeq.h"
+	"IoMap.h"
+	"IoNumber.h"
+	"IoState.h"
+	"IoLexer.h"
+	<ctype.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoNumber.c
+	"IoNumber.h"
+	"IoObject.h"
+	"IoState.h"
+	"IoSeq.h"
+	"IoSeq.h"
+	"IoDate.h"
+	"IoState.h"
+	<math.h>
+	<ctype.h>
+	<assert.h>
+	<setjmp.h>
+	<machine/limits.h>
+	<limits.h>
+	<float.h>
+	<winsock2.h>
+	<arpa/inet.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c
+	"IoState.h"
+	"IoObject.h"
+	"IoCoroutine.h"
+	"IoTag.h"
+	"IoCFunction.h"
+	"IoSeq.h"
+	"IoNumber.h"
+	"IoMessage.h"
+	"IoMessage_parser.h"
+	"IoCFunction.h"
+	"IoBlock.h"
+	"IoList.h"
+	"IoObject.h"
+	"IoFile.h"
+	"IoSeq.h"
+	<string.h>
+	<stddef.h>
+	<assert.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject_flow.c
+	"IoObject.h"
+	"IoNumber.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoProfiler.c
+	"IoProfiler.h"
+	"IoNumber.h"
+	"IoList.h"
+	"IoBlock.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoProfiler.h
+	"IoObject.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoSandbox.c
+	"IoSandbox.h"
+	"IoSeq.h"
+	"IoState.h"
+	"IoCFunction.h"
+	"IoObject.h"
+	"IoList.h"
+	"IoSeq.h"
+	"UArray.h"
+	"PortableTruncate.h"
+	<errno.h>
+	<stdio.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoSandbox.h
+	"Common.h"
+	"IoObject.h"
+	"UArray.h"
+	"IoNumber.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoSeq.c
+	"IoSeq.h"
+	"IoSeq_mutable.h"
+	"IoSeq_immutable.h"
+	"IoState.h"
+	"IoCFunction.h"
+	"IoObject.h"
+	"IoNumber.h"
+	"IoMessage.h"
+	"IoList.h"
+	"IoSeq.h"
+	<ctype.h>
+
+1321500681 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoSeq_immutable.c
+	"IoSeq.h"
+	"IoState.h"
+	"IoCFunction.h"
+	"IoObject.h"
+	"IoNumber.h"
+	"IoMessage.h"
+	"IoList.h"
+	<ctype.h>
+	<errno.h>
+	<math.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoSeq_mutable.c
+	"IoSeq.h"
+	"IoState.h"
+	"IoCFunction.h"
+	"IoObject.h"
+	"IoNumber.h"
+	"IoMessage.h"
+	"IoList.h"
+	"IoMap.h"
+	<ctype.h>
+	<errno.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoSeq_vector.c
+	"IoSeq.h"
+	"IoNumber.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState.c
+	"IoState.h"
+	"IoObject.h"
+	"IoCall.h"
+	"IoCoroutine.h"
+	"IoSeq.h"
+	"IoNumber.h"
+	"IoCFunction.h"
+	"IoBlock.h"
+	"IoList.h"
+	"IoMap.h"
+	"IoFile.h"
+	"IoDate.h"
+	"IoDuration.h"
+	"IoSeq.h"
+	"IoMessage_parser.h"
+	"IoDynLib.h"
+	"IoWeakLink.h"
+	"IoError.h"
+	"IoSystem.h"
+	"IoCompiler.h"
+	"IoDebugger.h"
+	"IoCollector.h"
+	"IoSandbox.h"
+	"IoDirectory.h"
+	"IoProfiler.h"
+	<stdlib.h>
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoWeakLink.h
+	"Common.h"
+	"IoObject_struct.h"
+	"IoMessage.h"
+	"BStream.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoSystem.h
+	"IoObject.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_callbacks.c
+	"IoState.h"
+	"IoObject.h"
+	"IoCoroutine.h"
+	"IoSeq.h"
+	"IoNumber.h"
+	"IoWeakLink.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_coros.c
+	"IoState.h"
+	"IoObject.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_debug.c
+	"IoState.h"
+	"IoObject.h"
+	"IoSystem.h"
+	<signal.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c
+	"IoState.h"
+	"IoObject.h"
+	<time.h>
+	"PortableGettimeofday.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_exceptions.c
+	"IoState.h"
+	"IoObject.h"
+	"IoCoroutine.h"
+	"IoSeq.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_symbols.c
+	"IoState.h"
+	"IoObject.h"
+	"IoSeq.h"
+	"IoNumber.h"
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoTag.c
+	"IoTag.h"
+	"IoObject.h"
+	"IoState.h"
+	<string.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoToken.c
+	"IoToken.h"
+	<stdlib.h>
+	<string.h>
+	<stdio.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoWeakLink.c
+	"IoWeakLink.h"
+	"IoSeq.h"
+	"IoState.h"
+	"IoObject.h"
+	"IoNumber.h"
+
+1321500578 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoSystem.c
+	"IoSystem.h"
+	"IoNumber.h"
+	"IoMessage_parser.h"
+	"IoVersion.h"
+	<unistd.h>
+	<sys/utsname.h>
+	<sys/param.h>
+	<sys/sysctl.h>
+	<windows.h>
+	<windows.h>
+	<stdio.h>
+	<errno.h>
+	<shellapi.h>
+	"IoError.h"
+	"PortableUsleep.h"
+	"IoList.h"
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoVersion.h
+
+1321499524 /home/dennis/code/LikeMagic-All/Iocaste/basekit/source/PortableUsleep.h
+	<windows.h>
+	<unistd.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/source/PHash.c
+	"PHash.h"
+	"IoObject.h"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<assert.h>
+
+1321499524 source:/home/dennis/code/LikeMagic-All/Iocaste/iovm/tools/io2c.c
+	<stdio.h>
+	<stdlib.h>
+

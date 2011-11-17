@@ -10,7 +10,7 @@ Contains methods related to the IoVM.
 #include "IoMessage_parser.h"
 #include "IoVersion.h"
 #ifndef WIN32
-#include "IoInstallPrefix.h"
+//#include "IoInstallPrefix.h"
 #endif
 
 #if defined(linux)
@@ -143,6 +143,8 @@ IoObject *IoSystem_proto(void *state)
 	*/
 
 #ifndef WIN32
+    // DLF:  screw it:
+    #define INSTALL_PREFIX "."
 	IoObject_setSlot_to_(self, IOSYMBOL("installPrefix"), IOSYMBOL(INSTALL_PREFIX));
 #endif
 

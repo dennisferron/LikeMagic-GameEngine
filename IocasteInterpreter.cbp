@@ -37,6 +37,37 @@
 					<Add library="/Users/dennisferron/code/LikeMagic-All/Iocaste/libIoCaste-Mac.a" />
 				</Linker>
 			</Target>
+			<Target title="Debug Linux">
+				<Option output="bin/Debug/IocasteDebugBuild" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="./" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-Wextra" />
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-fexceptions" />
+					<Add option="-Werror=return-type" />
+					<Add option="-fdiagnostics-show-option" />
+					<Add option="-Wno-unused-variable" />
+					<Add option="-Wno-unused-parameter" />
+					<Add option="-DNO_USE_DMALLOC" />
+					<Add directory="basekit/source" />
+					<Add directory="coroutine/source" />
+					<Add directory="garbagecollector/source" />
+					<Add directory="iovm/source" />
+				</Compiler>
+				<Linker>
+					<Add option="-framework Carbon" />
+					<Add option="-framework Cocoa" />
+					<Add option="-framework IOKit" />
+					<Add option="-ldl" />
+					<Add option="-lpthread" />
+					<Add library="/Users/dennisferron/code/LikeMagic-All/Iocaste/libIoCaste-Mac.a" />
+				</Linker>
+			</Target>
 		</Build>
 		<Unit filename="main.cpp" />
 		<Extensions>
