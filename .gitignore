@@ -96,8 +96,6 @@ doxygen/*
 *.tmp_versions
 *CVS
 *RCS
-*IoVMCode.c*
-*Io*Init.c*
 ~*
 *_darcs
 *_build
@@ -137,9 +135,6 @@ doxygen/*
 _objs
 _includes
 *_libs
-*Io.*Code.c*
-io2c
-*Io.*Init.c*
 *pngtest*
 *steve.model*
 *skipdbtest*
@@ -175,5 +170,4 @@ CMakeCache.txt
 cmake_install.cmake
 install_manifest.txt
 Makefile
-IoInstallPrefix.h
 bin/Debug/IoCasteDebugBuild
