@@ -47,6 +47,7 @@
 			<Add directory="garbagecollector/source" />
 			<Add directory="iovm/source" />
 		</Compiler>
+		<Unit filename="Source/Exception.cpp" />
 		<Unit filename="Source/IoVMInit.cpp" />
 		<Unit filename="basekit/source/BStream.c">
 			<Option compilerVar="CC" />

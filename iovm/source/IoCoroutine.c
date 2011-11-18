@@ -320,35 +320,6 @@ void IoCoroutine_clearStack(IoCoroutine *self)
 
 void IoCoroutine_rawRun(IoCoroutine *self)
 {
-    /*
-	Coro *coro = DATA(self)->cid;
-
-	if (!coro)
-	{
-		coro = Coro_new();
-		DATA(self)->cid = coro;
-	}
-
-	{
-		IoObject *stackSize = IoObject_getSlot_(self, IOSTATE->stackSizeSymbol);
-
-		if(ISNUMBER(stackSize))
-		{
-			Coro_setStackSize_(coro, CNUMBER(stackSize));
-		}
-	}
-
-	{
-		IoCoroutine *current = IoState_currentCoroutine(IOSTATE);
-		Coro *currentCoro = IoCoroutine_rawCoro(current);
-		//IoState_stackRetain_(IOSTATE, self);
-		Coro* coro = NULL;  // Needed?
-		Coro_startCoro_(currentCoro, coro, self, IoCoroutine_coroStart);
-		//IoState_setCurrentCoroutine_(IOSTATE, current);
-	}
-
-	*/
-
 	IoObject *result;
 
 	IoObject *runTarget  = IoCoroutine_rawRunTarget(self);
@@ -366,8 +337,11 @@ IO_METHOD(IoCoroutine, run)
 	Runs receiver and returns self.
 	*/
 
-	IoCoroutine_rawRun(self);
-	return IoCoroutine_rawResult(self);
+	IoObject *runTarget  = IoMessage_locals_valueArgAt_(m, locals, 2);
+	IoObject *runLocals  = IoMessage_locals_valueArgAt_(m, locals, 1);
+	IoObject *runMessage = IoMessage_locals_valueArgAt_(m, locals, 0);
+
+    return IoMessage_locals_performOn_(runMessage, runLocals, runTarget);
 }
 
 void IoCoroutine_try(IoCoroutine *self, IoObject *target, IoObject *locals, IoMessage *message)

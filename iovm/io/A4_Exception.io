@@ -339,12 +339,8 @@ Object do(
 		<br/>
 		See also documentation for Exception catch and pass.
 		*/
-		coro := Coroutine clone
-		coro setParentCoroutine(Scheduler currentCoroutine)
-		coro setRunTarget(call sender)
-		coro setRunLocals(call sender)
-		coro setRunMessage(call argAt(0))
-		coro run
+		coro := Scheduler currentCoroutine
+		coro run(call argAt(0), call sender, call sender)
 		if(coro exception, coro exception, nil)
 	)
 

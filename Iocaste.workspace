@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="Workspace">
-		<Project filename="IocasteInterpreter.cbp">
+		<Project filename="IocasteInterpreter.cbp" active="1">
 			<Depends filename="Iocaste.cbp" />
 		</Project>
-		<Project filename="Iocaste.cbp" active="1" />
+		<Project filename="Iocaste.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
