@@ -28,6 +28,7 @@
 					<Add directory="coroutine/source" />
 					<Add directory="garbagecollector/source" />
 					<Add directory="iovm/source" />
+					<Add directory="Include" />
 				</Compiler>
 				<Linker>
 					<Add option="-framework Carbon" />

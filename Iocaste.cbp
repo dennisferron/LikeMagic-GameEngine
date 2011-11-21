@@ -46,7 +46,10 @@
 			<Add directory="coroutine/source" />
 			<Add directory="garbagecollector/source" />
 			<Add directory="iovm/source" />
+			<Add directory="Include" />
 		</Compiler>
+		<Unit filename="Include/Iocaste/CShims/Exception.h" />
+		<Unit filename="Include/Iocaste/Exception.hpp" />
 		<Unit filename="Source/Exception.cpp" />
 		<Unit filename="Source/IoVMInit.cpp" />
 		<Unit filename="basekit/source/BStream.c">

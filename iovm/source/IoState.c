@@ -34,6 +34,8 @@
 #include "IoProfiler.h"
 //#include "IoEditLine.h"
 
+#include "Iocaste/CShims/Exception.h"
+
 #include <stdlib.h>
 
 void IoVMCodeInit(IoObject *context);
@@ -138,7 +140,7 @@ void IoState_new_atAddress(void *address)
 
 		IoObject_setSlot_to_(core, SIOSYMBOL("Compiler"),  IoCompiler_proto(self));
 		IoObject_setSlot_to_(core, SIOSYMBOL("Collector"), IoCollector_proto(self));
-		IoObject_setSlot_to_(core, SIOSYMBOL("Exception"), IOCLONE(objectProto));
+		IoObject_setSlot_to_(core, SIOSYMBOL("Exception"), IocasteException_proto(self));
 
 		// setup proto chain
 
