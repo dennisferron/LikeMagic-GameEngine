@@ -339,9 +339,12 @@ Object do(
 		<br/>
 		See also documentation for Exception catch and pass.
 		*/
-		coro := Scheduler currentCoroutine
-		coro run(call argAt(0), call sender, call sender)
-		if(coro exception, coro exception, nil)
+		//coro := Scheduler currentCoroutine
+		//coro run(call argAt(0), call sender, call sender)
+
+		// This does all the work of returning nil or a C++/Io exception.
+		return Exception doTry(call argAt(0), call sender, call sender)
+		//if(coro exception, coro exception, nil)
 	)
 
 
