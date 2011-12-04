@@ -47,7 +47,7 @@ IoObject* atPut(std::map<s32, IoObject*>& self, s32 key, IoObject* value)
     return self[key] = value;
 }
 
-IoObject* removeAt(std::map<s32, IoObject*>& self, s32 key)
+void removeAt(std::map<s32, IoObject*>& self, s32 key)
 {
     self.erase(key);
 }
