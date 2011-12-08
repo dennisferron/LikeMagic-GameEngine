@@ -15,6 +15,7 @@
 #include "Bindings/Custom/GearConstraint.hpp"
 #include "Bindings/Custom/SoftBodyMeshSynchronizer.hpp"
 #include "Bindings/Custom/MeshTools.hpp"
+#include "Bindings/Custom/FlagBits.hpp"
 
 #include "BulletSoftBody/btSoftBodyHelpers.h"
 
@@ -52,6 +53,10 @@ void removeAt(std::map<s32, IoObject*>& self, s32 key)
     self.erase(key);
 }
 
+// Support FlagBits for Irrlicht Scene Node* ID
+int  flag_bits_get_value(ISceneNode* node)            { return node->getID();       }
+void flag_bits_set_value(ISceneNode* node, int value) {        node->setID(value);  }
+typedef FlagBits<ISceneNode*> FlagBits_of_ISceneNode;
 
 DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
 {
@@ -119,6 +124,10 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_CONSTR(map_of_s32_IoObject,,)
     LM_EXTENSION_METHOD(map_of_s32_IoObject, (at)(atPut)(removeAt))
 
+    LM_CLASS(ns_custom, FlagBits_of_ISceneNode)
+    LM_CONSTR(FlagBits_of_ISceneNode,, ISceneNode*)
+    LM_FUNC(FlagBits_of_ISceneNode, (getBit)(setBit)(extractNumber)(embedNumber))
 }
 
 }}
+
