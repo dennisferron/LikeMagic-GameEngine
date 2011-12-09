@@ -488,13 +488,11 @@ MyErrorType := Error clone
 
 	raise := method(error, nestedException,
 		//doc Exception raise(error, optionalNestedException) Raise an exception with the specified error message.
-		coro := Scheduler currentCoroutine
-		coro raiseException(self clone setError(error) setCoroutine(coro) setNestedException(nestedException))
+		self clone setError(error) setNestedException(nestedException) throw
 	)
 
 	raiseFrom := method(originalCall, error, nestedException,
-		coro := Scheduler currentCoroutine
-		coro raiseException(self clone setError(error) setCoroutine(coro) setNestedException(nestedException) setOriginalCall(originalCall))
+		self clone setError(error) setNestedException(nestedException) setOriginalCall(originalCall) throw
 	)
 
 	catch := method(exceptionProto,

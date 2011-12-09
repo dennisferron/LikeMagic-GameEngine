@@ -19,6 +19,7 @@
 					<Add option="-g" />
 					<Add option="-DIO_USE_SIMD" />
 					<Add directory="basekit/source/simd_cph/include" />
+					<Add directory="../Common/boost" />
 				</Compiler>
 			</Target>
 			<Target title="Debug Linux">

@@ -23,9 +23,13 @@ double System_UserTime(void)
 #endif
 
 #include <iostream>
+using namespace std;
 
 int main(int argc, const char *argv[])
 {
+    try
+    {
+
     std::cout << "Hello C++" << std::endl;
 
 	int exitResult;
@@ -82,4 +86,9 @@ int main(int argc, const char *argv[])
 
 	//printf("exitResult = %i\n", exitResult);
 	return exitResult;
+    }
+    catch (...)
+    {
+        cout << "main.cpp caught unhandled exception" << endl;
+    }
 }
