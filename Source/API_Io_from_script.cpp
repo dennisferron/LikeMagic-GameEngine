@@ -147,6 +147,11 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     type_sys.add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoBlock&>(), new FromIoBlock(type_sys, iovm));
 
     MKCONV(type_sys, Number, double, IoNumber_asDouble)
+    MKCONV(type_sys, Number, int, IoNumber_asInt)
+    MKCONV(type_sys, Number, unsigned int, IoNumber_asInt)
+    MKCONV(type_sys, Number, short, (short)IoNumber_asInt)
+    MKCONV(type_sys, Number, unsigned char, (unsigned char)IoNumber_asInt)
+    MKCONV(type_sys, Number, float, IoNumber_asFloat)
     MKCONV(type_sys, Sequence, std::string, IoSeq_asCString)
     //MKCONV(type_sys, Bool, bool, ISTRUE)
 

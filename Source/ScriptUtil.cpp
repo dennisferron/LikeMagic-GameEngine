@@ -49,6 +49,11 @@ float ScriptUtil::get_float(float value)
     return value;
 }
 
+void* ScriptUtil::get_void_ptr(void* value)
+{
+    return value;
+}
+
 float ScriptUtil::get_random_float(float min, float max)
 {
     boost::minstd_rand algorithm;

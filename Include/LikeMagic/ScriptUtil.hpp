@@ -52,6 +52,7 @@ public:
     static double get_double(double value);
     static int get_int(int value);
     static float get_float(float value);
+    static void* get_void_ptr(void* value);
 
     static std::string get_string(std::string const& value);
 
