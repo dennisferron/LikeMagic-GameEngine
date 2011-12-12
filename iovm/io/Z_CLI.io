@@ -35,6 +35,7 @@ CLI := Object clone do(
         # i.e. <reader> readLine.
         reader := DummyLine
 
+        # DLF - Don't try to load this, causes lock up on throw.
         # Trying to use GNU ReadLine as the default line reader, falling
         # back to EditLine, if the attempt failed.
         #try(reader := ReadLine) catch(Exception,
@@ -45,11 +46,9 @@ CLI := Object clone do(
 
     # A list of error messages for the errors we understand.
     knownErrors := lazySlot(
-        # DLF: removed try
-        list()
-        #list("(", "[", "{", "\"\"\"", "(x,") map(error,
-        #    self errorMessage(try(error asMessage) error)
-        #)
+        list("(", "[", "{", "\"\"\"", "(x,") map(error,
+            self errorMessage(try(error asMessage) error)
+        )
     )
 
     errorMessage := method(error, error beforeSeq(" on line"))
@@ -68,15 +67,17 @@ CLI := Object clone do(
 
     doLine := method(lineAsMessage,
         # Execute the line and report any exceptions which happened.
-        # DLF: Removed try-catch from here since try catch is broken after removing coroutine.
-        result := context doMessage(lineAsMessage)
-
-        # Write out the command's result to stdout; nothing is written
-        # if the CLI is terminated, this condition is satisfied, only
-        # when CLI exit() was called.
-        if(isRunning,
-            context set_(getSlot("result"))
-            writeCommandResult(getSlot("result")))
+        executionError := try(result := context doMessage(lineAsMessage))
+        if(executionError,
+            executionError showStack
+        ,
+            # Write out the command's result to stdout; nothing is written
+            # if the CLI is terminated, this condition is satisfied, only
+            # when CLI exit() was called.
+            if(isRunning,
+                context set_(getSlot("result"))
+                writeCommandResult(getSlot("result")))
+        )
     )
 
     doIorc := method(
@@ -170,9 +171,22 @@ CLI := Object clone do(
                 "\n" print # Fixing the newline issue.
             )
 
-            // Instead of try-catch, just assume it worked.
-            lineAsMessage := line asMessage setLabel(commandLineLabel)
-            doLine(lineAsMessage)
+            compileError := try(
+                lineAsMessage := line asMessage setLabel(commandLineLabel)
+            )
+
+            if(compileError,
+                # Not sure that, displaying a different notification for
+                # each error actually makes sense.
+                if(nextLine size > 0 and errorMessage(compileError error) in(knownErrors),
+                    prompt = continuedLinePrompt
+                    continue
+                )
+                # If the error can't be fixed by continuing the line - report it.
+                compileError showStack
+            ,
+                doLine(lineAsMessage)
+            )
 
             lineReader ?addHistory(line)
             return if(isRunning, interactive, nil)
@@ -192,7 +206,7 @@ options:
   --version   print the version of the interpreter and exit
   -h          print this help message and exit
   -e          eval a given expression and exit
-  -i          run the interpreter, after processing the files passed
+  -i          run the interpreter, after processsing the files passed
 
 """ println
         System exit

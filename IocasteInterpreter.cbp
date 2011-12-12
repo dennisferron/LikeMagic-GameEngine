@@ -23,6 +23,8 @@
 					<Add option="-fdiagnostics-show-option" />
 					<Add option="-Wno-unused-variable" />
 					<Add option="-Wno-unused-parameter" />
+					<Add option="-v" />
+					<Add option="--std=c++0x" />
 					<Add option="-DNO_USE_DMALLOC" />
 					<Add directory="basekit/source" />
 					<Add directory="coroutine/source" />
@@ -38,6 +40,10 @@
 					<Add option="-lpthread" />
 					<Add library="libIoCaste-Mac.a" />
 				</Linker>
+				<ExtraCommands>
+					<Add before="rm bin/Debug/IocasteDebugBuild" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Debug Linux">
 				<Option output="bin/Debug/IocasteDebugBuild" prefix_auto="1" extension_auto="1" />

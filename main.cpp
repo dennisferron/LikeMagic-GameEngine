@@ -8,6 +8,8 @@ void IoAddonsInit(IoObject *context);
 #define IO_SHOW_STATS 1
 #endif
 
+#include "Iocaste/Exception.hpp"
+
 #ifdef IO_SHOW_STATS
 #include <time.h>
 #include <sys/time.h>
@@ -87,8 +89,15 @@ int main(int argc, const char *argv[])
 	//printf("exitResult = %i\n", exitResult);
 	return exitResult;
     }
+    catch (Iocaste::ScriptException const& ex)
+    {
+        cout << "main.cpp caught unhandled script exception" << endl;
+    }
     catch (...)
     {
-        cout << "main.cpp caught unhandled exception" << endl;
+        cout << "main.cpp caught unhandled unknown exception" << endl;
     }
+
+    cout << "Exiting with error" << endl;
+    return -1;
 }

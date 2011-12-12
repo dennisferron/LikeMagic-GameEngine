@@ -43,12 +43,17 @@
 			<Add option="-fdiagnostics-show-option" />
 			<Add option="-Wno-unused-variable" />
 			<Add option="-Wno-unused-parameter" />
+			<Add option="--std=c++0x" />
 			<Add directory="basekit/source" />
 			<Add directory="coroutine/source" />
 			<Add directory="garbagecollector/source" />
 			<Add directory="iovm/source" />
 			<Add directory="Include" />
 		</Compiler>
+		<ExtraCommands>
+			<Add before="rm libIoCaste-mac.a" />
+			<Mode after="always" />
+		</ExtraCommands>
 		<Unit filename="Include/Iocaste/CShims/Exception.h" />
 		<Unit filename="Include/Iocaste/Exception.hpp" />
 		<Unit filename="Source/Exception.cpp" />

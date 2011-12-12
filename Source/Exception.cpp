@@ -41,7 +41,12 @@ extern "C" IoObject *IocasteException_proto(void *state)
 
 extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
 {
-    cout << "doTry" << endl;
+    // Disambiguating stack frames for this function to try to figure
+    // out why CLI try is not catching final exception.
+    static int instanceCounter = 0;
+    int thisInstance = ++instanceCounter;
+
+    cout << "doTry " << thisInstance << endl;
 
     try
     {
@@ -52,7 +57,7 @@ extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
         // Result is discared, nil or exception returned instead.
         /*IoObject* result = */ IoMessage_locals_performOn_(runMessage, runLocals, runTarget);
     }
-    catch (ScriptException& ex)
+    catch (ScriptException const& ex)
     {
         return ex.getSelf();
     }
@@ -63,6 +68,7 @@ extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
         return IONIL(self);
     }
 
+    cout << "exitTry " << thisInstance << endl;
 
     // discard result, return nil on success, catch and return exception on error.
     return IONIL(self);

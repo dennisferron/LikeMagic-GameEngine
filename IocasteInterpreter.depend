@@ -318,8 +318,9 @@
 1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/source/IoState_inline.h
 	"Common_inline.h"
 
-1323403203 source:/Users/dennisferron/code/LikeMagic-All/Iocaste/main.cpp
+1323711795 source:/Users/dennisferron/code/LikeMagic-All/Iocaste/main.cpp
 	"IoState.h"
+	"Iocaste/Exception.hpp"
 	<time.h>
 	<sys/time.h>
 	<sys/resource.h>
@@ -608,4 +609,8 @@
 
 1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_inline.h
 	"Common_inline.h"
+
+1323402583 /Users/dennisferron/code/LikeMagic-All/Iocaste/Include/Iocaste/Exception.hpp
+	"boost/exception/exception.hpp"
+	<stdexcept>
 
