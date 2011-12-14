@@ -71,3 +71,4 @@ doxygen/*
 !LikeMagicManual/*.html
 !LikeMagic/LikeMagicManual/*.*
 
+*.depend
