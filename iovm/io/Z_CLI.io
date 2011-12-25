@@ -189,7 +189,18 @@ CLI := Object clone do(
             )
 
             lineReader ?addHistory(line)
-            return if(isRunning, interactive, nil)
+
+            # It used to recurse with every newline instead of only looping - bug, or feature?
+            #return if(isRunning, interactive, nil)
+
+            # Iterate instead of recursing
+            if(isRunning,
+                # Simulate the effect of re-entering this function
+                prompt := self prompt
+                line := ""
+            ,
+                return nil
+            )
         )
     )
 

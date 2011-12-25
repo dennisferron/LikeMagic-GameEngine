@@ -33,8 +33,13 @@ void IoState_error_(IoState *self, IoMessage *m, const char *format, ...)
 		Collector_popPause(self->collector);
 	}
 
+	/* replaced with Iocaste_raiseError
 	{
 		IoCoroutine *coroutine = IoState_currentCoroutine(self);
 		IoCoroutine_raiseError(coroutine, description, m);
 	}
+	*/
+
+    IoCoroutine *coroutine = IoState_currentCoroutine(self);
+    Iocaste_raiseError(coroutine, CSTRING(description), m);
 }

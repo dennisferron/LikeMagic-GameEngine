@@ -331,7 +331,7 @@ Message do(
 Object do(
 	try := method(
 
-        writeln("trying to execute a try")
+        //writeln("trying to execute a try")
 
 		/*doc Object try(code)
 		Executes particular code in a new coroutine.
@@ -488,11 +488,13 @@ MyErrorType := Error clone
 
 	raise := method(error, nestedException,
 		//doc Exception raise(error, optionalNestedException) Raise an exception with the specified error message.
-		self clone setError(error) setNestedException(nestedException) throw
+		// Note:  No longer clones the current coroutine (should it?)
+		self clone setError(error) setCoroutine(Scheduler currentCoroutine) setNestedException(nestedException) throw
 	)
 
 	raiseFrom := method(originalCall, error, nestedException,
-		self clone setError(error) setNestedException(nestedException) setOriginalCall(originalCall) throw
+		// Note:  No longer clones the current coroutine (should it?)
+		self clone setError(error) setCoroutine(Scheduler currentCoroutine) setNestedException(nestedException) setOriginalCall(originalCall) throw
 	)
 
 	catch := method(exceptionProto,
@@ -507,11 +509,16 @@ MyErrorType := Error clone
 
 	showStack := method(
 		//doc Exception showStack Print the exception and related stack.
-		coroutine showStack
-		if(nestedException,
-				writeln("Nested Exception: '", nestedException,  "'")
-				nestedException showStack
-		)
+		if(coroutine == nil,
+            writeln("Exception showStack - slot 'coroutine' is nil!")
+        ,
+            coroutine showStack
+        )
+
+        if(nestedException,
+                writeln("Nested Exception: '", nestedException,  "'")
+                nestedException showStack
+        )
 	)
 )
 

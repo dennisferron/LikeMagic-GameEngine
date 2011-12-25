@@ -95,7 +95,9 @@ IOVM_API IoCoroutine *IoCoroutine_newWithTry(void *state,
 											IoObject *target,
 											IoObject *locals,
 											IoMessage *message);
-IOVM_API void IoCoroutine_raiseError(IoCoroutine *self, IoSymbol *description, IoMessage *m);
+
+// Iocaste uses C++ exceptions or Iocaste::Exception functions or CShims to raise C++ exceptions instead.
+//IOVM_API void IoCoroutine_raiseError(IoCoroutine *self, IoSymbol *description, IoMessage *m);
 
 // methods
 

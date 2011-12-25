@@ -41,7 +41,7 @@
 					<Add library="libIoCaste-Mac.a" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="rm bin/Debug/IocasteDebugBuild" />
+					<Add before="rm -f bin/Debug/IocasteDebugBuil*" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

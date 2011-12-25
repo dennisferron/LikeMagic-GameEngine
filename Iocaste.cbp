@@ -51,7 +51,7 @@
 			<Add directory="Include" />
 		</Compiler>
 		<ExtraCommands>
-			<Add before="rm libIoCaste-mac.a" />
+			<Add before="rm -f libIoCaste-mac.a" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="Include/Iocaste/CShims/Exception.h" />

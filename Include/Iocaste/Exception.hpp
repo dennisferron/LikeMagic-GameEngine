@@ -10,23 +10,35 @@ typedef IoObject IoError;
 
 namespace Iocaste
 {
-    class Exception : boost::exception, std::exception
+    class Exception : public boost::exception, public std::exception
     {
     };
 
-    class ScriptException : Exception
+    class ScriptException : public Exception
     {
     private:
         IoObject* self;
     public:
         ScriptException(IoObject* self_);
         IoObject* getSelf() const;
+        virtual char const* what() const throw();
     };
 
-    class CppException : Exception
+    class CppException : public Exception
     {
+    };
+
+    // TODO:  This is blanket exception to replace IoState_error; Parsing should throw a ParseError instead.
+    class IoStateError : public ScriptException
+    {
+    private:
+        std::string description;
+        IoObject* message;
+    public:
+        IoStateError(IoObject* self, std::string description_, IoObject* message_);
+        virtual ~IoStateError() throw();
+        IoObject* getMessage() const;
+        virtual char const* what() const throw();
     };
 }
 
-extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m);
-extern "C" IoObject* throwScriptException(IoObject *self, IoObject *locals, IoMessage *m);

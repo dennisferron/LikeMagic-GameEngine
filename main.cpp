@@ -91,7 +91,7 @@ int main(int argc, const char *argv[])
     }
     catch (Iocaste::ScriptException const& ex)
     {
-        cout << "main.cpp caught unhandled script exception" << endl;
+        cout << "main.cpp caught unhandled script exception: " << ex.what() << endl;
     }
     catch (...)
     {

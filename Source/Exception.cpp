@@ -18,6 +18,43 @@ IoObject* ScriptException::getSelf() const
     return self;
 }
 
+char const* ScriptException::what() const throw()
+{
+    if (!self)
+        return "<<Missing Io Exception object>>";
+
+	IoObject *msg = IoObject_rawGetSlot_(self, IOSYMBOL("error"));
+
+	if (!msg)
+        return "<<Io Exception object has no 'error' slot>>";
+
+	if (!ISSEQ(msg))
+        return "<<Io Exception 'error' slot is not a string>>";
+
+    return CSTRING(msg);
+}
+
+
+IoStateError::IoStateError(IoObject* self, std::string description_, IoObject* message_)
+    : ScriptException(self), description(description_), message(message_)
+{
+}
+
+IoStateError::~IoStateError() throw()
+{
+}
+
+IoObject* IoStateError::getMessage() const
+{
+    return message;
+}
+
+char const* IoStateError::what() const throw()
+{
+    return description.c_str();
+}
+
+
 extern "C" IoObject *IocasteException_proto(void *state)
 {
 	IoObject *self = IoObject_new(state);
@@ -46,7 +83,7 @@ extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
     static int instanceCounter = 0;
     int thisInstance = ++instanceCounter;
 
-    cout << "doTry " << thisInstance << endl;
+    //cout << "doTry " << thisInstance << endl;
 
     try
     {
@@ -59,16 +96,19 @@ extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
     }
     catch (ScriptException const& ex)
     {
+        //cout << "exitTry " << thisInstance << " returning script error " << ex.what() << endl;
         return ex.getSelf();
     }
-    catch (...)
-    {
-        cout << "Caught unspecified exception" << endl;
-        // TODO:  Create an IoError object and return it.
-        return IONIL(self);
-    }
+    // Don't catch all exceptions with ... below.  There could be a higher C++ frame
+    // which recognizes the exception type, so we don't want to just eat it here.
+    // catch (...)
+    //{
+        //cout << "Caught unspecified exception" << endl;
+        //cout << "exitTry " << thisInstance << " returning unspecified error" << endl;
+        //throw; // rethrow for higher C++ frame to handle.
+    //}
 
-    cout << "exitTry " << thisInstance << endl;
+    //cout << "exitTry " << thisInstance << endl;
 
     // discard result, return nil on success, catch and return exception on error.
     return IONIL(self);
@@ -77,8 +117,26 @@ extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
 
 extern "C" IoObject* throwScriptException(IoObject *self, IoObject *locals, IoMessage *m)
 {
-    cout << "throwException" << endl;
+    cout << "throwScriptException" << endl;
     throw ScriptException(self);
 }
 
+// replaces IoCoroutine_raiseError
+// need iocoroutine for Exception proto slot and to set exception coroutine slot
+extern "C" void Iocaste_raiseError(IoObject* self, char* description, IoMessage* m)
+{
+    // IoState_error does this:
+    //IoCoroutine *coroutine = IoState_currentCoroutine(state);
+    //IoCoroutine_raiseError(coroutine, description, m);
+    //void IoCoroutine_raiseError(IoCoroutine *self, IoSymbol *description, IoMessage *m)
+	IoObject *e = IoObject_rawGetSlot_(self, IOSYMBOL("Exception"));
 
+	if (e)
+	{
+		e = IOCLONE(e);
+		IoObject_setSlot_to_(e, IOSYMBOL("error"), IOSYMBOL(description));
+		if (m) IoObject_setSlot_to_(e, IOSYMBOL("caughtMessage"), m);
+		IoObject_setSlot_to_(e, IOSYMBOL("coroutine"), self);
+        throw Iocaste::IoStateError(e, description, m);
+	}
+}

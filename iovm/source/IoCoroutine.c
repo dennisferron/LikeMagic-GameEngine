@@ -364,6 +364,8 @@ IoCoroutine *IoCoroutine_newWithTry(void *state,
 	return self;
 }
 
+/*
+// Iocaste uses C++ exceptions or Iocaste::Exception functions or CShims to raise C++ exceptions instead.
 void IoCoroutine_raiseError(IoCoroutine *self, IoSymbol *description, IoMessage *m)
 {
 	IoObject *e = IoObject_rawGetSlot_(self, IOSYMBOL("Exception"));
@@ -379,6 +381,7 @@ void IoCoroutine_raiseError(IoCoroutine *self, IoSymbol *description, IoMessage 
 
 	IoCoroutine_rawReturnToParent(self);
 }
+*/
 
 // methods
 
