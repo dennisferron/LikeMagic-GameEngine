@@ -155,11 +155,6 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys), last_exception(
     // The object that represents the global namespace.
     //add_proto("namespace", Namespace::global(type_sys).register_functions().create_class_proxy(), false);
 
-    type_sys.print_conv_chain(BetterTypeInfo::create_index<float&>(), ToIoTypeInfo::create_index());
-    auto term = Term<float, true>::create(1.99);
-    cout << "Term value is " << term->eval() << endl;
-    auto converted = type_sys.try_conv<double>(term);
-    cout << "Convert to double is " << converted->description() << " " << converted->eval() << endl;
     return;
 }
 
@@ -312,8 +307,8 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 
         std::string method_name = CSTRING(IoMessage_name(m));
 
-        if (method_name == "unsafe_ptr_cast")
-            cout << "unsafe_ptr_cast used" << endl;
+        //if (method_name == "unsafe_ptr_cast")
+        //    cout << "unsafe_ptr_cast used" << endl;
 
         auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
         proxy->check_magic();
