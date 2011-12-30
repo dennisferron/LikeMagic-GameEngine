@@ -15,6 +15,7 @@
 #include "Bindings/Custom/GearConstraint.hpp"
 #include "Bindings/Custom/SoftBodyMeshSynchronizer.hpp"
 #include "Bindings/Custom/MeshTools.hpp"
+#include "Bindings/Custom/FlagBits.hpp"
 
 #include "BulletSoftBody/btSoftBodyHelpers.h"
 
@@ -22,13 +23,40 @@
 
 #include <boost/preprocessor/repetition/repeat.hpp>
 
+#include "IoObject.h"
+
 using namespace LikeMagic;
 
+using namespace irr;
 using namespace irr::scene;
 
 namespace Bindings { namespace Custom {
 
-template <int N> class TooManyTypes {};
+// Extension methods
+
+IoObject* at(std::map<s32, IoObject*> const& self, s32 key)
+{
+    auto result = self.find(key);
+    if (result == self.end())
+        return NULL;
+    else
+        return result->second;
+}
+
+IoObject* atPut(std::map<s32, IoObject*>& self, s32 key, IoObject* value)
+{
+    return self[key] = value;
+}
+
+void removeAt(std::map<s32, IoObject*>& self, s32 key)
+{
+    self.erase(key);
+}
+
+// Support FlagBits for Irrlicht Scene Node* ID
+int  flag_bits_get_value(ISceneNode* node)            { return node->getID();       }
+void flag_bits_set_value(ISceneNode* node, int value) {        node->setID(value);  }
+typedef FlagBits<ISceneNode*> FlagBits_of_ISceneNode;
 
 DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
 {
@@ -91,19 +119,15 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_CLASS(ns_custom, SplitMeshResult)
     LM_FIELD(SplitMeshResult, (left)(middle)(right))
 
-/*
-    auto& testclass_LM = type_sys.register_class<TooManyTypes<1>>("foobar");
+    typedef std::map<irr::s32, IoObject*> map_of_s32_IoObject;
+    LM_CLASS(ns_custom, map_of_s32_IoObject)
+    LM_CONSTR(map_of_s32_IoObject,,)
+    LM_EXTENSION_METHOD(map_of_s32_IoObject, (at)(atPut)(removeAt))
 
-    typedef TooManyTypes<2> TooMany2;
-    LM_CLASS(ns_custom, TooMany2)
-    typedef TooManyTypes<3> TooMany3;
-    LM_CLASS(ns_custom, TooMany3)
-    typedef TooManyTypes<4> TooMany4;
-    LM_CLASS(ns_custom, TooMany4)
-    typedef TooManyTypes<5> TooMany5;
-    LM_CLASS(ns_custom, TooMany5)
-*/
-
+    LM_CLASS(ns_custom, FlagBits_of_ISceneNode)
+    LM_CONSTR(FlagBits_of_ISceneNode,, ISceneNode*)
+    LM_FUNC(FlagBits_of_ISceneNode, (getBit)(setBit)(extractNumber)(embedNumber))
 }
 
 }}
+

@@ -33,8 +33,8 @@
 					<Add option="-s" />
 				</Linker>
 			</Target>
-			<Target title="DropEcho-Wayup-Debug">
-				<Option output="libGameBindings-Linux" prefix_auto="1" extension_auto="1" />
+			<Target title="Debug Windows">
+				<Option output="libGameBindings-Windows" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
 				<Option type="2" />
@@ -45,8 +45,8 @@
 					<Add option="-g" />
 				</Compiler>
 			</Target>
-			<Target title="Debug Windows">
-				<Option output="libGameBindings-Windows" prefix_auto="1" extension_auto="1" />
+			<Target title="Debug Linux Old">
+				<Option output="libGameBindings-Linux" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
 				<Option type="2" />
