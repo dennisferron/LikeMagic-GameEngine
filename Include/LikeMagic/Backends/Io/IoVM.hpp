@@ -113,6 +113,8 @@ public:
     virtual void register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::CallTargets::AbstractCallTargetSelector* method);
 
     virtual void mark() const;
+
+    virtual void setShowAllMessages(bool value);
 };
 
 

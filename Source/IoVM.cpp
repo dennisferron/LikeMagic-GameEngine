@@ -79,6 +79,11 @@ void print_conv(AbstractTypeSystem& type_sys)
     print_conv<From>(to, type_sys);
 }
 
+void IoVM::setShowAllMessages(bool value)
+{
+    state->showAllMessages = value;
+}
+
 IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys), last_exception(0)
 {
     state = IoState_new();
@@ -113,7 +118,7 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys), last_exception(
     // Register this vm
     LM_CLASS_NO_COPY(type_sys, IoVM)
     LM_BASE(IoVM, ITypeSystemObserver)
-    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(proxy_to_io_obj))
+    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(proxy_to_io_obj)(setShowAllMessages))
     LM_FIELD(IoVM, (onRegisterMethod)(onRegisterClass)(onRegisterBase)(onAddProto))
 
     LM_CLASS_NO_COPY(type_sys, AbstractTypeSystem)
