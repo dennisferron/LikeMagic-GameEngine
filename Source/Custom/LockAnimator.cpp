@@ -7,6 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "Bindings/Custom/LockAnimator.hpp"
+#include "Bindings/Custom/CustomAnimatorTypes.hpp"
 
 #include <stdexcept>
 
@@ -19,6 +20,10 @@ using namespace Bindings::Custom;
 LockAnimator::LockAnimator(btMotionState const& target_, btTransform const& centerOfMassOffset_)
     : stop_rotation(true), target(target_), centerOfMassOffset(centerOfMassOffset_) {}
 
+ESCENE_NODE_ANIMATOR_TYPE LockAnimator::getType() const
+{
+    return static_cast<ESCENE_NODE_ANIMATOR_TYPE>(C_ESNAT_LOCK);
+}
 
 void LockAnimator::setWorldTransform(btTransform const& worldTrans)
 {

@@ -7,18 +7,17 @@
 // (See the license file in LikeMagic/Licenses.)
 
 
-#include "btBulletDynamicsCommon.h"
 #include "irrlicht.h"
+#include "LikeMagic/IMarkable.hpp"
+
+struct CollectorMarker;
+typedef CollectorMarker IoObject;
 
 namespace Bindings { namespace Custom {
 
-class LockAnimator : public btMotionState, public irr::scene::ISceneNodeAnimator
+class ScriptObjAnimator : public irr::scene::ISceneNodeAnimator, public LikeMagic::IMarkable
 {
 public:
-
-    // Bullet stuff
-    virtual void setWorldTransform(btTransform const& worldTrans);
-    virtual void getWorldTransform(btTransform& worldTrans) const;
 
     // Irrlicht stuff
     virtual void animateNode(irr::scene::ISceneNode* node, irr::u32 timeMs);
@@ -26,15 +25,17 @@ public:
                     irr::scene::ISceneManager* newManager=0);
     irr::scene::ESCENE_NODE_ANIMATOR_TYPE getType() const;
 
-    LockAnimator(btMotionState const& target_, btTransform const& centerOfMassOffset_);
+    ScriptObjAnimator(IoObject* io_obj_);
 
-    bool stop_rotation;
+    IoObject* getScriptObj() const;
+
+    static ScriptObjAnimator* findIn(irr::scene::ISceneNode* node);
+
+    virtual void mark() const;
 
 private:
 
-    btMotionState const& target;
-    mutable btTransform trans;
-    btTransform centerOfMassOffset;
+    IoObject* io_obj;
 };
 
 }}
