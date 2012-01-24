@@ -2,6 +2,7 @@
 // This file is auto-copied from LikeMagic/Script/Io/*.
 // Make sure you edit the original and not a copy.
 
+writeln("bootstrap 1")
 
 // The LikeMagic object is a regular Io object that we use as a container to
 // hold things like the C++ namespace and C++ classes objects.
@@ -206,3 +207,5 @@ UnitTest := Object clone do(
         )
     )
 )
+
+writeln("bootstrap 2")
