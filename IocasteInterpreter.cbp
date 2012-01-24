@@ -13,6 +13,7 @@
 				<Option external_deps="libIoCaste-Mac.a;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="../LikeMagic/Script/Io/bootstrap.io --runCLI" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-Wextra" />
@@ -31,6 +32,14 @@
 					<Add directory="garbagecollector/source" />
 					<Add directory="iovm/source" />
 					<Add directory="Include" />
+					<Add directory="../GameBindings/Include" />
+					<Add directory="../Interpreter/Include" />
+					<Add directory="../LikeMagic/Include" />
+					<Add directory="../Common/boost" />
+					<Add directory="../io/_build/headers" />
+					<Add directory="../GameBindings/bullet/src" />
+					<Add directory="../GameBindings/irrlicht/include" />
+					<Add directory="../desteer/bindings/Include" />
 				</Compiler>
 				<Linker>
 					<Add option="-framework Carbon" />
@@ -79,6 +88,9 @@
 		<Linker>
 			<Add directory="../Iocaste" />
 		</Linker>
+		<Unit filename="../Interpreter/Source/Bindings.cpp" />
+		<Unit filename="../Interpreter/Source/Protos.cpp" />
+		<Unit filename="IocasteInterpreter.cbp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

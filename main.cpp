@@ -1,3 +1,26 @@
+
+#include "Interpreter/Bindings.hpp"
+#include "Interpreter/Protos.hpp"
+
+using namespace LikeMagic;
+using namespace LikeMagic::Backends::Io;
+
+using namespace Interpreter;
+
+#include <sstream>
+#include <stdexcept>
+
+#include "boost/algorithm/string/trim.hpp"
+#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/Backends/Io/IoVM.hpp"
+
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
+
+using namespace std;
+
+
 #include "IoState.h"
 
 void IoAddonsInit(IoObject *context);
@@ -27,71 +50,69 @@ double System_UserTime(void)
 #include <iostream>
 using namespace std;
 
+// Predicate for trimming characters up to a directory marker.
+struct IsNotDir { bool operator()(char c) { return c != '/' && c != '\\'; } };
+
+void do_cli(IoVM& vm)
+{
+    cout << std::endl;
+    cout << "LikeMagic Io binding library." << std::endl;
+    cout << "To run file from system commandline: LikeMagic <filename.io>" << std::endl;
+    cout << "To run file from the Io> prompt: doFile(\"<filename.io>\")" << std::endl;
+    cout << "" << std::endl;
+    cout << "Type 'exit' to quit." << std::endl;
+    vm.run_cli();
+}
+
+void do_file(IoVM& vm, string file_name)
+{
+    std::string scriptPath(file_name);
+    boost::algorithm::trim_right_if(scriptPath, IsNotDir());
+    vm.add_proto("scriptPath", scriptPath, NamespacePath::global(), true);
+
+    std::stringstream code;
+    code << "doFile(\"" << file_name << "\")";
+    vm.do_string(code.str());
+}
+
+
 int main(int argc, const char *argv[])
 {
+ #ifdef USE_DMALLOC
+    // Starting LikeMagic in codeblocks debug mode doesn't propagate the dmalloc environment settings.  I don't know why.
+    dmalloc_debug_setup("check-blank,log=~/dmalloc.log");
+#endif
     try
     {
+        RuntimeTypeSystem type_sys;
+        add_bindings(type_sys);
 
-    std::cout << "Hello C++" << std::endl;
+        IoVM vm(type_sys);
 
-	int exitResult;
-	IoState *self;
-#ifdef IO_SHOW_STATS
-	size_t t1 = clock();
-	size_t maxAllocatedBytes;
-	double collectorTime;
-	size_t sweepCount;
-#endif
+        for (int i=1; i<argc; ++i)
+        {
+            cout << flush;
+            if (string(argv[i]) == "--runCLI")
+                do_cli(vm);
+            else
+                do_file(vm, argv[i]);
+        }
 
-
-	self = IoState_new();
-#ifdef IOBINDINGS
-	IoState_setBindingsInitCallback(self, (IoStateBindingsInitCallback *)IoAddonsInit);
-#endif
-	IoState_init(self);
-	IoState_argc_argv_(self, argc, argv);
-	//IoState_doCString_(self, "some test code...");
-	IoState_runCLI(self);
-	exitResult = IoState_exitResult(self);
-
-#ifdef IO_SHOW_STATS
-	maxAllocatedBytes = io_maxAllocatedBytes();
-	collectorTime = Collector_timeUsed(self->collector);
-	sweepCount = self->collector->sweepCount;
-#endif
-
-	IoState_free(self);
-
-#ifdef IO_SHOW_STATS
-	{
-		float totalTime = (clock()-t1)/(float)CLOCKS_PER_SEC;
-		printf("[ %.3fs user  %.3fs total  %.1f%% gc  %i sweeps  %i frees  %.3fmb max ]\n",
-			   System_UserTime(),
-			   totalTime,
-			   100.0*collectorTime/totalTime,
-			   (int)sweepCount,
-			   (int)io_frees(),
-			   maxAllocatedBytes/1048576.0);
-
-		if(io_allocatedBytes() != 0)
-		{
-			printf("warning: %i bytes in %i blocks not freed:\n\n",
-				   (int)io_allocatedBytes(), (int)(io_allocs() - io_frees()));
-			io_showUnfreed();
-		}
-		else
-		{
-			printf("[ no memory leaks found ]\n");
-		}
-	}
-#endif
-
-	//printf("exitResult = %i\n", exitResult);
-	return exitResult;
+        cout << "Press enter..." << std::endl;
+        std::cin.ignore( 99, '\n' );
+        return 0;
     }
     catch (Iocaste::ScriptException const& ex)
     {
         cout << "main.cpp caught unhandled script exception: " << ex.what() << endl;
+    }
+    catch (std::logic_error e)
+    {
+        cout << "LikeMagic exited with exception '" << e.what() << "'" << std::endl;
+    }
+    catch (std::exception e)
+    {
+        cout << "Exited with exception " << e.what() << std::endl;
     }
     catch (...)
     {
