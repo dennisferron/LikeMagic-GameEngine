@@ -11,7 +11,14 @@ using namespace std;
 
 using namespace Iocaste;
 
-ScriptException::ScriptException(IoObject* self_) : self(self_) {}
+ScriptException::ScriptException(IoObject* self_) : self(self_), errorText(getErrorText(self_))
+{
+}
+
+ScriptException::~ScriptException() noexcept(true)
+{
+}
+
 
 IoObject* ScriptException::getSelf() const
 {
@@ -20,9 +27,16 @@ IoObject* ScriptException::getSelf() const
 
 char const* ScriptException::what() const throw()
 {
+    return errorText.c_str();
+}
+
+std::string ScriptException::getErrorText(IoObject* self)
+{
     if (!self)
         return "<<Missing Io Exception object>>";
 
+    // This freezes up if the exception causes destruction of the IoVM object
+    // maybe we should just cache the what() message in a string.
 	IoObject *msg = IoObject_rawGetSlot_(self, IOSYMBOL("error"));
 
 	if (!msg)
@@ -117,8 +131,9 @@ extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
 
 extern "C" IoObject* throwScriptException(IoObject *self, IoObject *locals, IoMessage *m)
 {
-    cout << "throwScriptException" << endl;
-    throw ScriptException(self);
+    ScriptException se(self);
+    cout << "throwScriptException: " << se.what() << endl;
+    throw se;
 }
 
 // replaces IoCoroutine_raiseError

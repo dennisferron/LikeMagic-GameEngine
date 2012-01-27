@@ -18,10 +18,14 @@ namespace Iocaste
     {
     private:
         IoObject* self;
+        std::string errorText;
     public:
         ScriptException(IoObject* self_);
+        ~ScriptException() noexcept(true);
+
         IoObject* getSelf() const;
         virtual char const* what() const throw();
+        static std::string getErrorText(IoObject* self);
     };
 
     class CppException : public Exception

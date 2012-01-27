@@ -82,21 +82,31 @@ int main(int argc, const char *argv[])
     // Starting LikeMagic in codeblocks debug mode doesn't propagate the dmalloc environment settings.  I don't know why.
     dmalloc_debug_setup("check-blank,log=~/dmalloc.log");
 #endif
+
+
+        // If the IoVM object is declared inside the try catch as a stack variable,
+        // it gets destructed when there's an exception and then is unavailable for e.g.
+        // printing the error message or the stack.  Should maybe create with new and/or
+        // use an intrusive_ptr to track references to the IoVM object.
+        IoVM* vm=NULL;
+
     try
     {
         RuntimeTypeSystem type_sys;
         add_bindings(type_sys);
-
-        IoVM vm(type_sys);
+        vm = new IoVM(type_sys);
 
         for (int i=1; i<argc; ++i)
         {
             cout << flush;
             if (string(argv[i]) == "--runCLI")
-                do_cli(vm);
+                do_cli(*vm);
             else
-                do_file(vm, argv[i]);
+                do_file(*vm, argv[i]);
         }
+
+        delete vm;
+        vm=NULL;
 
         cout << "Press enter..." << std::endl;
         std::cin.ignore( 99, '\n' );
@@ -104,7 +114,8 @@ int main(int argc, const char *argv[])
     }
     catch (Iocaste::ScriptException const& ex)
     {
-        cout << "main.cpp caught unhandled script exception: " << ex.what() << endl;
+        // Attempting to access ex.what() here is stepping back into Io and never coming out ??
+        cout << "main.cpp caught unhandled script exception: " << ex.what() << endl << flush;
     }
     catch (std::logic_error e)
     {
@@ -120,5 +131,8 @@ int main(int argc, const char *argv[])
     }
 
     cout << "Exiting with error" << endl;
+
+    delete vm;
+
     return -1;
 }
