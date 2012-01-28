@@ -118,7 +118,10 @@
 			<Add option="-Wno-ignored-qualifiers" />
 			<Add option="-DUSE_DELEGATES_HACK" />
 			<Add directory="../Common/boost" />
-			<Add directory="../io/_build/headers" />
+			<Add directory="../Iocaste/basekit/source" />
+			<Add directory="../Iocaste/garbagecollector/source" />
+			<Add directory="../Iocaste/iovm/source" />
+			<Add directory="../Iocaste/Include" />
 			<Add directory="Include" />
 		</Compiler>
 		<Unit filename="Include/LikeMagic/AbstractTypeSystem.hpp" />

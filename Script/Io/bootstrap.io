@@ -133,3 +133,76 @@ print_class_info := method(obj,
 
 //Lobby appendProto(LikeMagic)
 //Lobby appendProto(LikeMagic namespace)
+
+
+/*
+
+The code below might be a good idea but I'm not sure that the architecture
+of LikeMagic will support it at this time.  It looks like I would
+need to unify CallTarget with Expression to make this work.
+
+ExpressionBuilder := Object clone
+
+ExpressionBuilder _parseArgs := method(symbols, args, sender,
+
+    results := list()
+
+    if (args != nil,
+        args foreach(a,
+            results append(_build_expr(symbols, a))
+        )
+    )
+    return results
+)
+
+ExpressionBuilder _build_expr := method(symbols, rootMessage,
+
+    if (root == nil,  Exception raise("Error in structure; nil message encountered."))
+
+    ns := Likemagic namespace NamespacePath global
+
+    curMsg := rootMessage
+    while(nextMessage != nil,
+        nextPart := type_system look_up(ns, curMsg name)
+
+        if(nextPart is_namespace,
+            ns := ns subspace(curMsg name)
+        )
+
+        args := _build_expr
+    )
+)
+
+ExpressionBuilder build := method(
+
+    if (call argCount < 1, Exception raise("build_expr - no expression passed!"))
+
+    args := map()
+    for (i, 0, call argCount - 2,
+        a := call argAt(i)
+        name := a name
+        value := call sender perform(name)
+        args atPut(name, value)
+    )
+
+    code := call argAt(argCount - 1)
+
+    _build_expr(args, code)
+)
+
+*/
+
+UnitTest := Object clone do(
+
+    float_equal := method(left, right,
+        (left - right) abs < 0.01
+    )
+
+    test_equal := method(expected, actual,
+        if( float_equal(expected, actual),
+            writeln("PASSED - ", call message argAt(1) code)
+        ,
+            writeln("FAILED - ", call message argAt(1) code, " Expected: ", expected, " Actual: ", actual)
+        )
+    )
+)
