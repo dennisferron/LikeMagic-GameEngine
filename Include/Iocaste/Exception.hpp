@@ -21,7 +21,7 @@ namespace Iocaste
         std::string errorText;
     public:
         ScriptException(IoObject* self_);
-        ~ScriptException() noexcept(true);
+        ~ScriptException() throw();
 
         IoObject* getSelf() const;
         virtual char const* what() const throw();

@@ -15,7 +15,7 @@ ScriptException::ScriptException(IoObject* self_) : self(self_), errorText(getEr
 {
 }
 
-ScriptException::~ScriptException() noexcept(true)
+ScriptException::~ScriptException() throw()
 {
 }
 
