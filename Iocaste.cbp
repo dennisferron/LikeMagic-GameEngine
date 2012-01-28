@@ -33,7 +33,6 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-DIO_USE_SIMD" />
-					<Add directory="basekit/source/simd_cph/include" />
 				</Compiler>
 			</Target>
 		</Build>
@@ -49,6 +48,8 @@
 			<Add directory="garbagecollector/source" />
 			<Add directory="iovm/source" />
 			<Add directory="Include" />
+			<Add directory="basekit/source/simd_cph/include" />
+			<Add directory="../Common/boost" />
 		</Compiler>
 		<ExtraCommands>
 			<Add before="rm -f libIoCaste-mac.a" />

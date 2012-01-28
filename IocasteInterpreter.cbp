@@ -19,27 +19,6 @@
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add option="-fexceptions" />
-					<Add option="-Werror=return-type" />
-					<Add option="-fdiagnostics-show-option" />
-					<Add option="-Wno-unused-variable" />
-					<Add option="-Wno-unused-parameter" />
-					<Add option="-v" />
-					<Add option="--std=c++0x" />
-					<Add option="-DNO_USE_DMALLOC" />
-					<Add directory="basekit/source" />
-					<Add directory="coroutine/source" />
-					<Add directory="garbagecollector/source" />
-					<Add directory="iovm/source" />
-					<Add directory="Include" />
-					<Add directory="../GameBindings/Include" />
-					<Add directory="../Interpreter/Include" />
-					<Add directory="../LikeMagic/Include" />
-					<Add directory="../Common/boost" />
-					<Add directory="../io/_build/headers" />
-					<Add directory="../GameBindings/bullet/src" />
-					<Add directory="../GameBindings/irrlicht/include" />
-					<Add directory="../desteer/bindings/Include" />
 				</Compiler>
 				<Linker>
 					<Add option="-framework Carbon" />
@@ -62,34 +41,50 @@
 				<Option external_deps="libIoCaste-Linux.a;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="../LikeMagic/Script/Io/bootstrap.io --runCLI" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add option="-fexceptions" />
-					<Add option="-Werror=return-type" />
-					<Add option="-fdiagnostics-show-option" />
-					<Add option="-Wno-unused-variable" />
-					<Add option="-Wno-unused-parameter" />
-					<Add option="-DNO_USE_DMALLOC" />
-					<Add directory="basekit/source" />
-					<Add directory="coroutine/source" />
-					<Add directory="garbagecollector/source" />
-					<Add directory="iovm/source" />
 				</Compiler>
 				<Linker>
 					<Add option="-ldl" />
 					<Add option="-lpthread" />
 					<Add library="libIoCaste-Linux.a" />
+					<Add library="../LikeMagic/libLikeMagic-Linux.a" />
 				</Linker>
 			</Target>
 		</Build>
+		<Compiler>
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add option="-Werror=return-type" />
+			<Add option="-fdiagnostics-show-option" />
+			<Add option="-Wno-unused-variable" />
+			<Add option="-Wno-unused-parameter" />
+			<Add option="-v" />
+			<Add option="--std=c++0x" />
+			<Add option="-DNO_USE_DMALLOC" />
+			<Add directory="basekit/source" />
+			<Add directory="coroutine/source" />
+			<Add directory="garbagecollector/source" />
+			<Add directory="iovm/source" />
+			<Add directory="Include" />
+			<Add directory="../GameBindings/Include" />
+			<Add directory="../Interpreter/Include" />
+			<Add directory="../LikeMagic/Include" />
+			<Add directory="../Common/boost" />
+			<Add directory="../io/_build/headers" />
+			<Add directory="../GameBindings/bullet/src" />
+			<Add directory="../GameBindings/irrlicht/include" />
+			<Add directory="../desteer/bindings/Include" />
+		</Compiler>
 		<Linker>
 			<Add directory="../Iocaste" />
 		</Linker>
 		<Unit filename="../Interpreter/Source/Bindings.cpp" />
-		<Unit filename="../Interpreter/Source/Protos.cpp" />
 		<Unit filename="IocasteInterpreter.cbp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
