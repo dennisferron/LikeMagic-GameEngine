@@ -99,12 +99,12 @@
 			<Add option="-Wno-deprecated" />
 			<Add option="-Wno-ignored-qualifiers" />
 			<Add option="-DUSE_DELEGATES_HACK" />
+			<Add directory="../Common/boost" />
+			<Add directory="../Iocaste/basekit/source" />
+			<Add directory="../Iocaste/garbagecollector/source" />
+			<Add directory="../Iocaste/iovm/source" />
+			<Add directory="../Iocaste/Include" />
 			<Add directory="Include" />
-			<Add directory="..\Iocaste\Include" />
-			<Add directory="..\Iocaste\basekit\source" />
-			<Add directory="..\Iocaste\garbagecollector\source" />
-			<Add directory="..\Iocaste\iovm\source" />
-			<Add directory="..\Common\boost" />
 		</Compiler>
 		<Unit filename="Include\LikeMagic\AbstractTypeSystem.hpp" />
 		<Unit filename="Include\LikeMagic\Backends\Io\API_Io.hpp" />

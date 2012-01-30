@@ -72,3 +72,5 @@ doxygen/*
 !LikeMagic/LikeMagicManual/*.*
 
 *.depend
+.DS_Store
+
