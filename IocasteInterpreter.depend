@@ -627,7 +627,7 @@
 1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_inline.h
 	"Common_inline.h"
 
-1327599822 /Users/dennisferron/code/LikeMagic-All/Iocaste/Include/Iocaste/Exception.hpp
+1327731437 /Users/dennisferron/code/LikeMagic-All/Iocaste/Include/Iocaste/Exception.hpp
 	"boost/exception/exception.hpp"
 	<stdexcept>
 
@@ -6563,7 +6563,7 @@
 	"LikeMagic/TypeConv/ConvertibleTo.hpp"
 	"LikeMagic/SFMO/Trampoline.hpp"
 
-1317693764 /Users/dennisferron/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Backends/Io/IoVM.hpp
+1327900803 /Users/dennisferron/code/LikeMagic-All/LikeMagic/Include/LikeMagic/Backends/Io/IoVM.hpp
 	"LikeMagic/RuntimeTypeSystem.hpp"
 	"LikeMagic/Backends/Io/IoBlock.hpp"
 	"LikeMagic/Backends/Io/API_Io.hpp"
@@ -13222,4 +13222,12 @@
 1325122752 /home/dennis/code/LikeMagic-All/Iocaste/Include/Iocaste/Exception.hpp
 	"boost/exception/exception.hpp"
 	<stdexcept>
+
+1327945005 source:/Users/dennisferron/code/LikeMagic-All/Iocaste/Bindings.cpp
+	"Interpreter/Bindings.hpp"
+	"LikeMagic/Backends/Io/IoVM.hpp"
+	"Bindings/IrrKlang/Bindings.hpp"
+	"Bindings/RakNet/Bindings.hpp"
+	"Bindings/RakNet/Protos.hpp"
+	"LikeMagic/Utility/UserMacros.hpp"
 
