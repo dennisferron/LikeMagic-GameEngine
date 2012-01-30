@@ -8,6 +8,7 @@
 
 #include "Bindings/Custom/Bindings.hpp"
 #include "Bindings/Custom/Protos.hpp"
+#include "Bindings/Custom/ScriptObjAnimator.hpp"
 #include "Bindings/Custom/PhysicsAnimator.hpp"
 #include "Bindings/Custom/KinematicAnimator.hpp"
 #include "Bindings/Custom/LockAnimator.hpp"
@@ -83,6 +84,12 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_BASE(LockAnimator, ISceneNodeAnimator)
     LM_CONSTR(LockAnimator,, btMotionState const&, btTransform const&)
     LM_FIELD(LockAnimator, (stop_rotation))
+
+    LM_CLASS(ns_custom, ScriptObjAnimator)
+    LM_BASE(ScriptObjAnimator, ISceneNodeAnimator)
+    LM_CONSTR(ScriptObjAnimator,, IoObject*)
+    LM_FUNC(ScriptObjAnimator, (getScriptObj))
+    LM_STATIC_MEMBER_FUNC(ScriptObjAnimator, (findIn))
 
     LM_CLASS(ns_custom, btIDebugDraw)
 

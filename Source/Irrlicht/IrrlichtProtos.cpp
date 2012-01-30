@@ -23,6 +23,7 @@ using namespace irr;
 using namespace irr::video;
 using namespace irr::core;
 using namespace irr::scene;
+using namespace irr::gui;
 
 namespace Bindings { namespace Irrlicht {
 
@@ -299,6 +300,7 @@ void add_protos_irr(IoVM& vm)
 		(EMIE_COUNT)
     )
 
+    LM_ENUM_PROTOS(vm, (EGUIA_UPPERLEFT)(EGUIA_LOWERRIGHT)(EGUIA_CENTER)(EGUIA_SCALE))
 
 }
 

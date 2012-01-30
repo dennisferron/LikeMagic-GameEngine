@@ -82,6 +82,8 @@
 		<Unit filename="Include/Bindings/Bullet/ScriptedContactResultCallback.hpp" />
 		<Unit filename="Include/Bindings/Bullet/ScriptedWorldManager.hpp" />
 		<Unit filename="Include/Bindings/Custom/Bindings.hpp" />
+		<Unit filename="Include/Bindings/Custom/CustomAnimatorTypes.hpp" />
+		<Unit filename="Include/Bindings/Custom/FlagBits.hpp" />
 		<Unit filename="Include/Bindings/Custom/GearConstraint.hpp" />
 		<Unit filename="Include/Bindings/Custom/IrrlichtBulletDebugDrawer.hpp" />
 		<Unit filename="Include/Bindings/Custom/KinematicAnimator.hpp" />
@@ -89,6 +91,7 @@
 		<Unit filename="Include/Bindings/Custom/MeshTools.hpp" />
 		<Unit filename="Include/Bindings/Custom/PhysicsAnimator.hpp" />
 		<Unit filename="Include/Bindings/Custom/Protos.hpp" />
+		<Unit filename="Include/Bindings/Custom/ScriptObjAnimator.hpp" />
 		<Unit filename="Include/Bindings/Custom/SoftBodyMeshSynchronizer.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/Bindings.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/Protos.hpp" />
@@ -132,6 +135,7 @@
 		<Unit filename="Source/Custom/MeshTools.cpp" />
 		<Unit filename="Source/Custom/PhysicsAnimator.cpp" />
 		<Unit filename="Source/Custom/Protos.cpp" />
+		<Unit filename="Source/Custom/ScriptObjAnimator.cpp" />
 		<Unit filename="Source/Custom/SoftBodyMeshSynchronizer.cpp" />
 		<Unit filename="Source/IrrKlang/IrrKlangBindings.cpp" />
 		<Unit filename="Source/IrrKlang/IrrKlangProtos.cpp" />

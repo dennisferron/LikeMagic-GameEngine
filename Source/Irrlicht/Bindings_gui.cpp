@@ -49,6 +49,7 @@ void add_bindings_gui(RuntimeTypeSystem& type_sys)
     LM_ENUM(ns_irr_gui, EMOUSE_INPUT_EVENT)
     LM_ENUM(ns_irr_gui, E_MOUSE_BUTTON_STATE_MASK)
     LM_ENUM(ns_irr_gui, EGUI_EVENT_TYPE)
+    LM_ENUM(ns_irr_gui, EGUI_ALIGNMENT)
 
     LM_CLASS(ns_irr_gui, SEvent)
     LM_FIELD(SEvent, (EventType)(GUIEvent)(MouseInput)(KeyInput)(JoystickEvent)(LogEvent)(UserEvent))

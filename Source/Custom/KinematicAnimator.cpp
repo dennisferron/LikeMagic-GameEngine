@@ -7,6 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "Bindings/Custom/KinematicAnimator.hpp"
+#include "Bindings/Custom/CustomAnimatorTypes.hpp"
 
 #include <stdexcept>
 #include <iostream>
@@ -27,6 +28,10 @@ KinematicAnimator::KinematicAnimator(btTransform const& trans_, btTransform cons
     sync_to_irrlicht();
 }
 
+ESCENE_NODE_ANIMATOR_TYPE KinematicAnimator::getType() const
+{
+    return static_cast<ESCENE_NODE_ANIMATOR_TYPE>(C_ESNAT_KINEMATIC);
+}
 
 void KinematicAnimator::setWorldTransform(btTransform const& worldTrans)
 {

@@ -24,6 +24,7 @@ public:
     virtual void animateNode(irr::scene::ISceneNode* node, irr::u32 timeMs);
     virtual irr::scene::ISceneNodeAnimator* createClone(irr::scene::ISceneNode* node,
                     irr::scene::ISceneManager* newManager=0);
+    irr::scene::ESCENE_NODE_ANIMATOR_TYPE getType() const;
 
     KinematicAnimator(btTransform const& trans_, btTransform const& centerOfMassOffset_);
 

@@ -7,6 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "Bindings/Custom/PhysicsAnimator.hpp"
+#include "Bindings/Custom/CustomAnimatorTypes.hpp"
 
 #include <stdexcept>
 #include <iostream>
@@ -24,6 +25,11 @@ PhysicsAnimator::PhysicsAnimator(btTransform const& trans_, btTransform const& c
     // so need to synchronize the irrlicht object to the start transform.
     // WAIT!  How can this work?  There is no cached node yet to sync!
     sync();
+}
+
+ESCENE_NODE_ANIMATOR_TYPE PhysicsAnimator::getType() const
+{
+    return static_cast<ESCENE_NODE_ANIMATOR_TYPE>(C_ESNAT_PHYSICAL);
 }
 
 // For debugging
