@@ -48,7 +48,7 @@ ISceneNodeAnimator* ScriptObjAnimator::createClone(ISceneNode* node, ISceneManag
 ScriptObjAnimator* ScriptObjAnimator::findIn(irr::scene::ISceneNode* node)
 {
     for(auto it=node->getAnimators().begin(); it!=node->getAnimators().end(); ++it)
-        if( (*it)->getType() == C_ESNAT_SCRIPT_OBJ)
+        if( (*it)->getType() == static_cast<irr::scene::ESCENE_NODE_ANIMATOR_TYPE>(C_ESNAT_SCRIPT_OBJ))
             return dynamic_cast<ScriptObjAnimator*>(*it);
 
     return NULL;
