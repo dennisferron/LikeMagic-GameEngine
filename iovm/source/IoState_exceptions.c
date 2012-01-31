@@ -7,6 +7,8 @@
 #include "IoCoroutine.h"
 #include "IoSeq.h"
 
+#include "Iocaste/CShims/Exception.h"
+
 void IoState_fatalError_(IoState *self, char *error)
 {
 	fputs(error, stderr);

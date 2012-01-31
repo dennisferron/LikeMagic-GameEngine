@@ -100,7 +100,7 @@ IOINLINE void *List_at_(const List *self, ssize_t index)
         index += self->size;
     }
 
-    if (index < self->size)
+    if (index < (ssize_t)self->size)
     {
         return self->items[index];
     }
@@ -231,7 +231,7 @@ IOINLINE void List_removeLast_(List *self, void *item)
 {
 	size_t index = self->size - 1;
 
-	for (index = self->size - 1; index > -1; index --)
+	for (index = self->size - 1; (ssize_t)index > -1; index --)
 	{
 		if (self->items[index] == item)
 		{

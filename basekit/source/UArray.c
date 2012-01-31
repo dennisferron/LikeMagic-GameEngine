@@ -137,7 +137,7 @@ size_t UArray_itemSize(const UArray *self)
 	return self->itemSize;
 }
 
-//inline 
+//inline
 size_t UArray_sizeRequiredToContain_(const UArray *self, const UArray *other)
 {
 	return (UArray_sizeInBytes(other)  + self->itemSize - 1) / self->itemSize;
@@ -518,12 +518,12 @@ void UArray_convertToItemType_(UArray *self, CTYPE newItemType)
 		UArray *tmp = UArray_new();
 		CENCODING encoding = UArray_encoding(self);
 		UArray_setItemType_(tmp, newItemType);
-		
+
 		if(CENCODING_isText(self->encoding))
 		{
 			encoding = CTYPE_fixedWidthTextEncodingForType(newItemType);
 		}
-		
+
 		UArray_setEncoding_(tmp, encoding);
 		UArray_setSize_(tmp, self->size);
 		UArray_copyItems_(tmp, self);
@@ -682,20 +682,20 @@ void UArray_leave_thenRemove_(UArray *self, size_t itemsToLeave, size_t itemsToR
 		UArray_setSize_(self, 0);
 		return;
 	}
-	
+
 	if (itemsToRemove <= 0)
 	{
 		return;
 	}
-	
+
 	{
 		size_t tailChunkSizeInBytes;
-		
+
 		size_t period = itemsToLeave + itemsToRemove;
 		size_t tailItemCount = UArray_size(self) % period;
 		size_t itemSize = self->itemSize;
 		size_t chunkSizeInBytes = itemSize * itemsToLeave;
-		
+
 		if (tailItemCount == 0)
 		{
 			tailChunkSizeInBytes = 0;
@@ -708,15 +708,15 @@ void UArray_leave_thenRemove_(UArray *self, size_t itemsToLeave, size_t itemsToR
 		{
 			tailChunkSizeInBytes = chunkSizeInBytes;
 		}
-		
+
 		{
 			size_t chunkCount = UArray_size(self) / period;
 			size_t newItemCount = chunkCount * itemsToLeave + tailChunkSizeInBytes / itemSize;
 			uint8_t *newData = malloc(newItemCount * itemSize);
-			
+
 			{
 				size_t chunkPos;
-				
+
 				for (chunkPos = 0; chunkPos < chunkCount; chunkPos++)
 				{
 					memmove(newData + chunkPos * chunkSizeInBytes, UARRAY_BYTESAT_(self, chunkPos * period), chunkSizeInBytes);
@@ -726,7 +726,7 @@ void UArray_leave_thenRemove_(UArray *self, size_t itemsToLeave, size_t itemsToR
 				{
 					memmove(newData + chunkPos * chunkSizeInBytes, UARRAY_BYTESAT_(self, chunkPos * period), tailChunkSizeInBytes);
 				}
-				
+
 				UArray_setData_type_size_copy_(self, newData, UArray_itemType(self), newItemCount, 0);
 				UArray_changed(self);
 			}
@@ -803,6 +803,8 @@ void UArray_at_putPointer_(UArray *self, size_t pos, void *v)
 				UArray_changed(self);
 			}
 			return;
+        default:
+            ; // fall to UArray_error_ below
 	}
 
 	UArray_error_(self, "UArray_at_putPointer_ not supported with this type");
@@ -833,7 +835,7 @@ void UArray_appendBytes_size_(UArray *self, const uint8_t *bytes, size_t size)
 void UArray_appendByte_(UArray *self, uint8_t byte)
 {
 	UArray a = UArray_stackAllocedWithData_type_size_(&byte, CTYPE_uint8_t, 1);
-	UArray_append_(self, &a);	
+	UArray_append_(self, &a);
 }
 */
 
@@ -841,29 +843,29 @@ void UArray_insert_every_(UArray *self, UArray *other, size_t itemCount)
 {
 	UArray *out = UArray_new();
 	UArray *convertedOther = other;
-	
+
 	if (itemCount == 0)
 	{
 		UArray_error_(self, "UArray_insert_every_: itemCount must be > 0");
 		return;
 	}
-	
+
 	if(UArray_itemType(self) != UArray_itemType(other))
 	{
 		UArray *convertedOther = UArray_clone(other);
 		UArray_convertToItemType_(convertedOther, UArray_itemType(self));
 	}
-		
+
 	{
 		size_t selfSizeInBytes  = UArray_sizeInBytes(self);
 		size_t otherSize = UArray_size(convertedOther);
 		size_t chunkSize  = itemCount * UArray_itemSize(self);
 		size_t i;
-		
+
 		for(i = 0; i < selfSizeInBytes; i += chunkSize)
 		{
-			if (i + chunkSize > selfSizeInBytes) 
-			{ 
+			if (i + chunkSize > selfSizeInBytes)
+			{
 				UArray_appendBytes_size_(out, self->data + i, selfSizeInBytes - i);
 			}
 			else
@@ -873,12 +875,12 @@ void UArray_insert_every_(UArray *self, UArray *other, size_t itemCount)
 			}
 		}
 	}
-	
+
 	if(UArray_itemType(self) != UArray_itemType(other))
 	{
 		UArray_free(convertedOther);
 	}
-	
+
 	UArray_copy_(self, out);
 	UArray_free(out);
 }
@@ -1046,8 +1048,8 @@ int UArray_isZero(const UArray *self)
 
 // find
 
-// printf("i %i %c j %i %c\n", i, v1, j, v2);\
-// printf("j%i == %i\n", i, other->size);\
+// printf("i %i %c j %i %c\n", i, v1, j, v2);
+// printf("j%i == %i\n", i, other->size);
 
 #define UARRAY_FIND_TYPES(OP2, TYPE1, self, TYPE2, other)\
 {\
@@ -1240,6 +1242,8 @@ int UArray_isSignedType(const UArray *self)
 		case CTYPE_int64_t:   return 1;
 		case CTYPE_float32_t: return 1;
 		case CTYPE_float64_t: return 1;
+		default:
+            UArray_error_(self, "UArray_at_putPointer_ not supported with this type");
 	}
 	return 0;
 }

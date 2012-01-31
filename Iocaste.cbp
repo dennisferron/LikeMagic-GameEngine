@@ -56,6 +56,9 @@
 		<Compiler>
 			<Add option="-g" />
 			<Add option="-Werror=return-type" />
+			<Add option="-Werror=implicit-function-declaration" />
+			<Add option="-Werror=format" />
+			<Add option="-Werror=switch" />
 			<Add option="-fdiagnostics-show-option" />
 			<Add option="-Wno-unused-variable" />
 			<Add option="-Wno-unused-parameter" />
