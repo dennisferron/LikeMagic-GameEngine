@@ -17,15 +17,22 @@ namespace Iocaste
     class ScriptException : public Exception
     {
     private:
+
         IoObject* self;
         std::string errorText;
+        std::string backTraceString;
+
     public:
+
         ScriptException(IoObject* self_);
         ~ScriptException() throw();
 
         IoObject* getSelf() const;
         virtual char const* what() const throw();
+        std::string getErrorText() const;
+        std::string getBackTraceString() const;
         static std::string getErrorText(IoObject* self);
+        static std::string getBackTraceString(IoObject* self);
     };
 
     class CppException : public Exception

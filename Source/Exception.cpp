@@ -11,7 +11,8 @@ using namespace std;
 
 using namespace Iocaste;
 
-ScriptException::ScriptException(IoObject* self_) : self(self_), errorText(getErrorText(self_))
+ScriptException::ScriptException(IoObject* self_)
+    : self(self_), errorText(getErrorText(self_)), backTraceString(getBackTraceString(self))
 {
 }
 
@@ -27,7 +28,17 @@ IoObject* ScriptException::getSelf() const
 
 char const* ScriptException::what() const throw()
 {
-    return errorText.c_str();
+    return (errorText+"\n"+backTraceString).c_str();
+}
+
+std::string ScriptException::getErrorText() const
+{
+    return errorText;
+}
+
+std::string ScriptException::getBackTraceString() const
+{
+    return backTraceString;
 }
 
 std::string ScriptException::getErrorText(IoObject* self)
@@ -36,7 +47,7 @@ std::string ScriptException::getErrorText(IoObject* self)
         return "<<Missing Io Exception object>>";
 
     // This freezes up if the exception causes destruction of the IoVM object
-    // maybe we should just cache the what() message in a string.
+    // that's why we cache the what() message in a string in the exception constructor.
 	IoObject *msg = IoObject_rawGetSlot_(self, IOSYMBOL("error"));
 
 	if (!msg)
@@ -48,6 +59,19 @@ std::string ScriptException::getErrorText(IoObject* self)
     return CSTRING(msg);
 }
 
+std::string ScriptException::getBackTraceString(IoObject* self)
+{
+    IoObject* msg = IoState_on_doCString_withLabel_(IOSTATE, self, "coroutine backTraceString", "[Exception.cpp]");
+
+	if (!msg)
+        return "<<Failed to get back trace string>>";
+
+	if (!ISSEQ(msg))
+        return "<<Back trace 'string' is not a string>>";
+
+    return CSTRING(msg);
+
+}
 
 IoStateError::IoStateError(IoObject* self, std::string description_, IoObject* message_)
     : ScriptException(self), description(description_), message(message_)
@@ -132,7 +156,7 @@ extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
 extern "C" IoObject* throwScriptException(IoObject *self, IoObject *locals, IoMessage *m)
 {
     ScriptException se(self);
-    cout << "throwScriptException: " << se.what() << endl;
+    //cout << "throwScriptException: " << se.what() << endl;
     throw se;
 }
 

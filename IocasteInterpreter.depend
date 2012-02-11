@@ -71,7 +71,7 @@
 1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/basekit/source/PortableSorting.h
 	"Common.h"
 
-1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/basekit/source/UArray.h
+1327985079 /Users/dennisferron/code/LikeMagic-All/Iocaste/basekit/source/UArray.h
 	"Common.h"
 	<stdarg.h>
 	<stdio.h>
@@ -102,7 +102,7 @@
 
 1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/basekit/source/UArray_utf.h
 
-1317693787 /Users/dennisferron/code/LikeMagic-All/Iocaste/basekit/source/List_inline.h
+1327985079 /Users/dennisferron/code/LikeMagic-All/Iocaste/basekit/source/List_inline.h
 	"Common_inline.h"
 	"PortableSorting.h"
 
@@ -627,7 +627,7 @@
 1321499524 /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_inline.h
 	"Common_inline.h"
 
-1327731437 /Users/dennisferron/code/LikeMagic-All/Iocaste/Include/Iocaste/Exception.hpp
+1328929068 /Users/dennisferron/code/LikeMagic-All/Iocaste/Include/Iocaste/Exception.hpp
 	"boost/exception/exception.hpp"
 	<stdexcept>
 
