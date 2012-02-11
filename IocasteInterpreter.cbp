@@ -13,7 +13,7 @@
 				<Option external_deps="libIoCaste-Mac.a;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="../LikeMagic/Script/Io/bootstrap.io --runCLI" />
+				<Option parameters="../../wayup/Engine/Startup.io" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-Wextra" />
@@ -30,7 +30,7 @@
 					<Add library="libIocaste-Mac.a" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="rm -f bin/Debug/IocasteDebugBuil*" />
+					<Add before="rm -f bin/Debug-Mac/IocasteDebugBuild" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
