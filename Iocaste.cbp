@@ -17,8 +17,6 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-DIO_USE_SIMD" />
-					<Add directory="basekit/source/simd_cph/include" />
-					<Add directory="../Common/boost" />
 				</Compiler>
 				<ExtraCommands>
 					<Add before="rm -f libIocaste-Mac.a" />
@@ -70,10 +68,27 @@
 			<Add directory="Include" />
 			<Add directory="basekit/source/simd_cph/include" />
 			<Add directory="../Common/boost" />
+			<Add directory="../LikeMagic/Include" />
 		</Compiler>
 		<Unit filename="Include/Iocaste/CShims/Exception.h" />
 		<Unit filename="Include/Iocaste/Exception.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/API_Io.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/API_Io_Impl.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoBlock.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoListSTL.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoObjectExpr.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoVM.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoVectorSTL.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/ToIoObjectExpr.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/ToIoTypeInfo.hpp" />
+		<Unit filename="Source/API_Io.cpp" />
+		<Unit filename="Source/API_Io_from_script.cpp" />
+		<Unit filename="Source/API_Io_to_script.cpp" />
 		<Unit filename="Source/Exception.cpp" />
+		<Unit filename="Source/IoBlock.cpp" />
+		<Unit filename="Source/IoObjectExpr.cpp" />
+		<Unit filename="Source/IoVM.cpp" />
 		<Unit filename="Source/IoVMInit.cpp" />
 		<Unit filename="basekit/source/BStream.c">
 			<Option compilerVar="CC" />
