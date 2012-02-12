@@ -50,6 +50,9 @@ private:
 
         auto args_tuple = std::make_tuple(type_system.try_conv<Args>(args[Indices])...);
 
+        // When there are no args, args_tuple does not get expanded below and therefore is set but unused.
+        #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+
         boost::intrusive_ptr<Expression<R&>> result = Term<R, true>::create(
             (*func_ptr)(std::get<Indices>(args_tuple)->eval()...)
         );

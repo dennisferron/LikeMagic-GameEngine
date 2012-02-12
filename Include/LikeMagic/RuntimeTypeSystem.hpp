@@ -50,20 +50,11 @@ private:
     // because we might actually want to bind methods to it later.
     struct ProxyMethodsType {};
 
-    // Dummy type to represent SFMO collection methods.
-    //struct SFMOCollection {};
-
     // Dummy type to represent an unregistered C++ class
     // (which may be the return value of a function)
     struct Unknown_CppObj {};
 
-    // Don't use this anymore; use namespace static methods instead.
-    //StaticMethods* functions;
-
     ProxyMethods* proxy_methods;
-
-    // Don't use this anymore - used to be used for SFMO.
-    //ProxyMethods* collection_methods;
 
     template <typename T, bool is_copyable>
     typename boost::enable_if_c<is_copyable>::type

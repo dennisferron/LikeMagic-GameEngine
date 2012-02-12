@@ -8,6 +8,8 @@
 
 // Defines a collection of macros to aid in binding or protos.
 
+#pragma once
+
 #include "LikeMagic/RuntimeTypeSystem.hpp"
 #include "LikeMagic/Namespace.hpp"
 
