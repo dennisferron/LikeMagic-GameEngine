@@ -7,7 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/MarkableObjGraph.hpp"
-#include "LikeMagic/Backends/Io/IoBlock.hpp"
+#include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 
 #include <stdexcept>
 
@@ -22,7 +22,7 @@
 // undue burden on implementors who do not need/use base classes with default implementations.
 //
 #define ScriptFunc(IsVoid, RType, FuncName, CONST, ArgTypes) \
-LikeMagic::Backends::Io::IoBlock On##FuncName; \
+Iocaste::LikeMagicAdapters::IoBlock On##FuncName; \
 virtual RType FuncName( \
     BOOST_PP_SEQ_FOR_EACH_I(TypedArgList, arg, ArgTypes) \
 ) CONST \

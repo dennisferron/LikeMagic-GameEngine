@@ -108,16 +108,6 @@
 			<Add directory="Include" />
 		</Compiler>
 		<Unit filename="Include/LikeMagic/AbstractTypeSystem.hpp" />
-		<Unit filename="Include/LikeMagic/Backends/Io/API_Io.hpp" />
-		<Unit filename="Include/LikeMagic/Backends/Io/API_Io_Impl.hpp" />
-		<Unit filename="Include/LikeMagic/Backends/Io/FromIoTypeInfo.hpp" />
-		<Unit filename="Include/LikeMagic/Backends/Io/IoBlock.hpp" />
-		<Unit filename="Include/LikeMagic/Backends/Io/IoListSTL.hpp" />
-		<Unit filename="Include/LikeMagic/Backends/Io/IoObjectExpr.hpp" />
-		<Unit filename="Include/LikeMagic/Backends/Io/IoVM.hpp" />
-		<Unit filename="Include/LikeMagic/Backends/Io/IoVectorSTL.hpp" />
-		<Unit filename="Include/LikeMagic/Backends/Io/ToIoObjectExpr.hpp" />
-		<Unit filename="Include/LikeMagic/Backends/Io/ToIoTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/AbstractCallTargetSelector.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldGetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldReferenceTarget.hpp" />
@@ -220,9 +210,6 @@
 		<Unit filename="Include/LikeMagic/Utility/UserMacros.hpp" />
 		<Unit filename="Script/Io/bootstrap.io" />
 		<Unit filename="Script/TestScripts/debugtest.io" />
-		<Unit filename="Source/API_Io.cpp" />
-		<Unit filename="Source/API_Io_from_script.cpp" />
-		<Unit filename="Source/API_Io_to_script.cpp" />
 		<Unit filename="Source/AbstractCallTargetSelector.cpp" />
 		<Unit filename="Source/AbstractClass.cpp" />
 		<Unit filename="Source/AbstractCppObjProxy.cpp" />
@@ -232,9 +219,6 @@
 		<Unit filename="Source/AbstractTypeSystem.cpp" />
 		<Unit filename="Source/BetterTypeInfo.cpp" />
 		<Unit filename="Source/CodeTest.cpp" />
-		<Unit filename="Source/IoBlock.cpp" />
-		<Unit filename="Source/IoObjectExpr.cpp" />
-		<Unit filename="Source/IoVM.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/Namespace.cpp" />
 		<Unit filename="Source/NamespacePath.cpp" />
