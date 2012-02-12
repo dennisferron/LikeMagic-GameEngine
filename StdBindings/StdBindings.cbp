@@ -34,6 +34,14 @@
 				</Linker>
 			</Target>
 		</Build>
+		<Compiler>
+			<Add directory="Include" />
+			<Add directory="../Include" />
+			<Add directory="../../Common/boost" />
+		</Compiler>
+		<Unit filename="Include/LikeMagic/StdBindings/Bindings.hpp" />
+		<Unit filename="Source/CustomBindings.cpp" />
+		<Unit filename="Source/RuntimeTypeSystem.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
