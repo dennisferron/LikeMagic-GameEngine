@@ -26,6 +26,7 @@
 					<Add option="-framework IOKit" />
 					<Add option="-ldl" />
 					<Add option="-lpthread" />
+					<Add library="../LikeMagic/StdBindings/libStdBindings-Mac.a" />
 					<Add library="../LikeMagic/libLikeMagic-Mac.a" />
 					<Add library="libIocaste-Mac.a" />
 				</Linker>

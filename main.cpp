@@ -89,12 +89,13 @@ int main(int argc, const char *argv[])
         // printing the error message or the stack.  Should maybe create with new and/or
         // use an intrusive_ptr to track references to the IoVM object.
         IoVM* vm=NULL;
+        RuntimeTypeSystem* type_sys=NULL;
 
     try
     {
-        RuntimeTypeSystem type_sys;
-        add_bindings(type_sys);
-        vm = new IoVM(type_sys);
+        type_sys = RuntimeTypeSystem::create();
+        add_bindings(*type_sys);
+        vm = new IoVM(*type_sys);
 
         for (int i=1; i<argc; ++i)
         {
@@ -107,6 +108,8 @@ int main(int argc, const char *argv[])
 
         delete vm;
         vm=NULL;
+        delete type_sys;
+        type_sys=NULL;
 
         cout << "Press enter..." << std::endl;
         std::cin.ignore( 99, '\n' );
@@ -133,6 +136,7 @@ int main(int argc, const char *argv[])
     cout << "Exiting with error" << endl;
 
     delete vm;
+    delete type_sys;
 
     cout << "Press enter..." << std::endl;
     std::cin.ignore( 99, '\n' );
