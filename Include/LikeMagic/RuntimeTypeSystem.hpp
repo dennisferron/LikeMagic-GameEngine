@@ -23,6 +23,33 @@
 #include "LikeMagic/TypeConv/PtrDerefConv.hpp"
 #include "LikeMagic/TypeConv/PtrCastConv.hpp"
 
+
+#if defined(USE_DLL_BUILD) && (defined _WIN32 || defined __CYGWIN__ || defined __MINGW32__)
+  #ifdef BUILDING_DLL_STD_BINDINGS
+    #ifdef __GNUC__
+      #define DLL_PUBLIC_RUNTIME_TYPE_SYSTEM __attribute__((dllexport))
+    #else
+      #define DLL_PUBLIC_RUNTIME_TYPE_SYSTEM __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
+    #endif
+  #else
+    #ifdef __GNUC__
+      #define DLL_PUBLIC_RUNTIME_TYPE_SYSTEM __attribute__((dllimport))
+    #else
+      #define DLL_PUBLIC_RUNTIME_TYPE_SYSTEM __declspec(dllimport) // Note: actually gcc seems to also supports this syntax.
+    #endif
+  #endif
+  #define DLL_LOCAL
+#else
+  #if __GNUC__ >= 4
+    #define DLL_PUBLIC_RUNTIME_TYPE_SYSTEM __attribute__ ((visibility("default")))
+    #define DLL_LOCAL  __attribute__ ((visibility("hidden")))
+  #else
+    #define DLL_PUBLIC_RUNTIME_TYPE_SYSTEM
+    #define DLL_LOCAL
+  #endif
+#endif
+
+
 namespace LikeMagic {
 
 using namespace LikeMagic::Marshaling;
@@ -96,12 +123,16 @@ private:
         return *result;
     }
 
-public:
-
     RuntimeTypeSystem();
+
+public:
 
     // Important:  you must set the type info cache instances in all your DLLs to this pointer.
     TypeInfoCache* get_typeinfo_cache() { return dll_shared_typeinfo; }
+
+    // Use this function to create the RuntimeTypesystem object.  I put it in the StdBindings project
+    // to reduce the size of the LikeMagic static library when using DLL-based build.
+    DLL_PUBLIC_RUNTIME_TYPE_SYSTEM static RuntimeTypeSystem* create();
 
     template <typename T, bool is_copyable=!boost::is_abstract<T>::value, bool add_deref_ptr_conv=true>
     Class<T, is_copyable>& register_class(std::string name, NamespacePath const ns=NamespacePath::global())

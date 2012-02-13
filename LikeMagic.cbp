@@ -218,7 +218,6 @@
 		<Unit filename="Source/AbstractTypeInfo.cpp" />
 		<Unit filename="Source/AbstractTypeSystem.cpp" />
 		<Unit filename="Source/BetterTypeInfo.cpp" />
-		<Unit filename="Source/CodeTest.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/Namespace.cpp" />
 		<Unit filename="Source/NamespacePath.cpp" />

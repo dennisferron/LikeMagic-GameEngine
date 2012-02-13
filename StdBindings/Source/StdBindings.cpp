@@ -83,7 +83,7 @@ void at_put(vector<T>& target, size_t pos, T const& value)
     target.at(pos) = value;
 }
 
-DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
+void LikeMagic::StdBindings::add_bindings(RuntimeTypeSystem& type_sys)
 {
     // This needs to be done once in every DLL.
     LM_SET_TYPE_INFO(type_sys)
@@ -161,7 +161,7 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     // which is an expression   of type of void* that always returns NULL.
     // Some fancy magic happens in try_conv to intercept the void* NULL value
     // and replace it with a NullExpr of the appropriate pointer type for the function argument.
-    add_conv<void*&, void*>();
+    type_sys.add_conv<void*&, void*>();
 
     // Allow char*& terms to be converted to char* values.
     type_sys.add_conv<  char const*&,    char const*,    ImplicitConv>();

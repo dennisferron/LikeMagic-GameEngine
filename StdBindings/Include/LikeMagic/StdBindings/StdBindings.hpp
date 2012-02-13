@@ -9,11 +9,12 @@
 
 #pragma once
 
-#include "LikeMagic/RuntimeTypeSystem.hpp"
-#include "LikeMagic/Utility/DLLHelper.hpp"
+namespace LikeMagic { class RuntimeTypeSystem; }
 
 namespace LikeMagic { namespace StdBindings {
 
-DLL_PUBLIC void add_bindings(LikeMagic::RuntimeTypeSystem& type_sys);
+// You don't call this directly; you call RuntimeTypeSystem::create and it calls this.
+// Static member function RuntimeTypeSystem::create is DLL_PUBLIC instead of this function.
+void add_bindings(LikeMagic::RuntimeTypeSystem& type_sys);
 
 }}
