@@ -11,6 +11,8 @@ Notes: first element of items is always 0x0.
 #include <inttypes.h>
 #endif
 
+/*
+
 Stack *Stack_new(void)
 {
 	// size is the number of pointers, including the starting NULL.
@@ -136,3 +138,5 @@ List *Stack_asList(const Stack *self) // slow
 	Stack_do_on_(self, (StackDoOnCallback *)List_append_, list);
 	return list;
 }
+
+*/

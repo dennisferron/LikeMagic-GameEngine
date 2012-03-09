@@ -6,6 +6,11 @@
 
 #include "IoObject.h"
 
+extern "C" {
+intptr_t Stack_pushMarkPoint(Stack *self);
+int Stack_popMarkPoint_(Stack *self, intptr_t mark);
+}
+
 #include <iostream>
 using namespace std;
 
@@ -123,32 +128,36 @@ extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
 
     //cout << "doTry " << thisInstance << endl;
 
+    intptr_t mark = NULL;
+
     try
     {
+        // Should marking the stack go before or after getting the runTarget, runLocals, runMessage?
+        // Calling valueArgAt can do performOn, don't know if the stack state is significant.  I am
+        // thinking it is safest to mark the stack first so it all gets reversed on a caught exception.
+        mark = Stack_pushMarkPoint(IOSTATE->currentIoStack);
+
         IoObject *runTarget  = IoMessage_locals_valueArgAt_(m, locals, 2);
         IoObject *runLocals  = IoMessage_locals_valueArgAt_(m, locals, 1);
         IoObject *runMessage = IoMessage_locals_valueArgAt_(m, locals, 0);
+        IoMessage_locals_performOn_(runMessage, runLocals, runTarget);
 
-        // Result is discared, nil or exception returned instead.
-        /*IoObject* result = */ IoMessage_locals_performOn_(runMessage, runLocals, runTarget);
+        if (mark)
+            Stack_popMarkPoint_(IOSTATE->currentIoStack, mark);
     }
     catch (ScriptException const& ex)
     {
-        //cout << "exitTry " << thisInstance << " returning script error " << ex.what() << endl;
+        if (mark)
+            Stack_popMarkPoint_(IOSTATE->currentIoStack, mark);
         return ex.getSelf();
     }
-    // Don't catch all exceptions with ... below.  There could be a higher C++ frame
-    // which recognizes the exception type, so we don't want to just eat it here.
-    // catch (...)
-    //{
-        //cout << "Caught unspecified exception" << endl;
-        //cout << "exitTry " << thisInstance << " returning unspecified error" << endl;
-        //throw; // rethrow for higher C++ frame to handle.
-    //}
+    catch (...)
+    {
+        if (mark)
+            Stack_popMarkPoint_(IOSTATE->currentIoStack, mark);
+        throw;
+    }
 
-    //cout << "exitTry " << thisInstance << endl;
-
-    // discard result, return nil on success, catch and return exception on error.
     return IONIL(self);
 }
 

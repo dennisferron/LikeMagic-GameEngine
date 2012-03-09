@@ -23,39 +23,17 @@
 extern "C" {
 #endif
 
-#ifdef LOW_MEMORY_SYSTEM
-	#define STACK_START_SIZE 512
-	#define STACK_RESIZE_FACTOR 2
-#else
-	#define STACK_START_SIZE 512
-	#define STACK_RESIZE_FACTOR 2
-#endif
-
 typedef void (StackDoCallback)(void *);
-typedef void (StackDoOnCallback)(void *, void *);
-
-//#define STACK_POP_CALLBACK
-
-#ifdef STACK_POP_CALLBACK
-typedef void (StackPopCallback)(void *);
-#endif
+//typedef void (StackDoOnCallback)(void *, void *);
 
 typedef struct
 {
-	void **items;
-	void **memEnd;
-	void **top;
-	intptr_t lastMark;
-
-#ifdef STACK_POP_CALLBACK
-	StackPopCallback *popCallback;
-#endif
+	void* impl;
 } Stack;
 
-#define Stack_popCallback_(self, callback) self->popCallback = callback;
+//#define Stack_popCallback_(self, callback) self->popCallback = callback;
 
-BASEKIT_API Stack *Stack_new(void);
-BASEKIT_API void Stack_free(Stack *self);
+/*
 BASEKIT_API Stack *Stack_clone(const Stack *self);
 BASEKIT_API void Stack_copy_(Stack *self, const Stack *other);
 
@@ -72,9 +50,34 @@ BASEKIT_API void Stack_makeMarksNull(Stack *self);
 BASEKIT_API Stack *Stack_newCopyWithNullMarks(const Stack *self);
 BASEKIT_API void Stack_do_on_(const Stack *self, StackDoOnCallback *callback, void *target);
 
+*/
+
+// Used in IO_METHOD(IoCoroutine, ioStack)
 BASEKIT_API List *Stack_asList(const Stack *self);
 
-#include "Stack_inline.h"
+// Used in IoCoroutine *IoCoroutine_proto(void *state)
+BASEKIT_API Stack *Stack_new(void);
+
+// Used in void IoCoroutine_free(IoCoroutine *self)
+BASEKIT_API void Stack_free(Stack *self);
+
+
+//#include "Stack_inline.h"
+ void Stack_do_(const Stack *self, StackDoCallback *callback);
+ void Stack_clear(Stack *self);
+ size_t Stack_totalSize(const Stack *self);
+ int Stack_count(const Stack *self);
+ void Stack_push_(Stack *self, void *item);
+ intptr_t Stack_pushMarkPoint(Stack *self);
+ void *Stack_pop(Stack *self);
+ void Stack_popMark(Stack *self);
+ int Stack_popMarkPoint_(Stack *self, intptr_t mark);
+ void Stack_clearTop(Stack *self);
+ void *Stack_top(const Stack *self);
+
+//void *Stack_at_(const Stack *self, int i);
+//BASEKIT_API void Stack_do_on_(const Stack *self, StackDoOnCallback *callback, void *target);
+
 
 #ifdef __cplusplus
 }

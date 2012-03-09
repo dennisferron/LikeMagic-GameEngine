@@ -4,15 +4,17 @@
  Stack - array of void pointers
  supports setting marks - when a mark is popped,
  all stack items above it are popped as well
- */
+*/
 
 #ifdef STACK_C
 #define IO_IN_C_FILE
 #endif
-#include "Common_inline.h"
+//#include "Common_inline.h"
 #ifdef IO_DECLARE_INLINES
 
-IOINLINE void Stack_do_(const Stack *self, StackDoCallback *callback)
+/*
+// Only used in IoCoroutine_mark to mark all the stack objects
+IOINLINE void Stack_do_(const Stack *self, StackDoCallback *callback);
 {
 	void **itemP = self->top;
 	intptr_t mark = self->lastMark;
@@ -31,6 +33,7 @@ IOINLINE void Stack_do_(const Stack *self, StackDoCallback *callback)
 		itemP --;
 	}
 }
+
 
 IOINLINE void Stack_doUntilMark_(const Stack *self, StackDoCallback *callback)
 {
@@ -52,6 +55,7 @@ IOINLINE void Stack_doUntilMark_(const Stack *self, StackDoCallback *callback)
 	}
 }
 
+
 IOINLINE void Stack_clear(Stack *self)
 {
 	self->top = self->items;
@@ -70,6 +74,7 @@ IOINLINE int Stack_count(const Stack *self)
 
 IOINLINE void Stack_push_(Stack *self, void *item)
 {
+
 	self->top ++;
 
 	if (self->top == self->memEnd)
@@ -78,7 +83,10 @@ IOINLINE void Stack_push_(Stack *self, void *item)
 	}
 
 	*(self->top) = item;
+
 }
+
+
 
 IOINLINE void Stack_pushMark(Stack *self)
 {
@@ -86,7 +94,9 @@ IOINLINE void Stack_pushMark(Stack *self)
 	self->lastMark = self->top - self->items;
 }
 
-IOINLINE intptr_t Stack_pushMarkPoint(Stack *self)
+
+
+IOINLINE intptr_t Stack_pushMarkPoint(Stack *self);
 {
 	Stack_push_(self, (void *)self->lastMark);
 	self->lastMark = self->top - self->items;
@@ -122,7 +132,8 @@ IOINLINE void Stack_popMark(Stack *self)
 	}
 }
 
-IOINLINE int Stack_popMarkPoint_(Stack *self, intptr_t mark)
+
+IOINLINE int Stack_popMarkPoint_(Stack *self, intptr_t mark);
 {
 	while (self->lastMark && self->lastMark != mark)
 	{
@@ -138,24 +149,26 @@ IOINLINE int Stack_popMarkPoint_(Stack *self, intptr_t mark)
 	return 1;
 }
 
-IOINLINE void Stack_clearTop(Stack *self)
+// I don't know what this does...?
+IOINLINE void Stack_clearTop(Stack *self);
 {
 	Stack_popMark(self);
 	Stack_pushMark(self);
 	//self->top = self->items + self->lastMark;
 }
 
+// Used in char *IoLexer_lastPos(IoLexer *self)
 IOINLINE void *Stack_top(const Stack *self)
 {
 	return *(self->top);
 }
 
+// Only used in Stack_do_on_
 IOINLINE void *Stack_at_(const Stack *self, int i)
 {
 	return self->items[i + 1];
 }
-
-
+*/
 
 #undef IO_IN_C_FILE
 #endif
