@@ -59,7 +59,7 @@ public:
             // type will result in "void*" because a "void&" is illegal.
             // It doesn't matter whether we use call by reference or
             // call by pointer, because LikeMagic supports both.
-            CppObjProxy<T*, true>::create
+            ExprProxy::create
             (
                 ClassExpr<T*>::create(),
                 type_system

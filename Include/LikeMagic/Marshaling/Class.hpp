@@ -118,7 +118,7 @@ public:
             // Return as call by reference, not call by value, in case type is not copyable.
             // It doesn't matter whether we use call by reference or
             // call by pointer, because LikeMagic supports both.
-            CppObjProxy<T&, is_copyable>::create
+            ExprProxy::create
             (
                 ClassExpr<T&>::create(),
                 type_system

@@ -46,7 +46,7 @@ public:
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
-        return CppObjProxy<RType, true>::create(
+        return ExprProxy::create(
                 Reference<RType>::create(
                     SetField<CallAs>::get(type_system.try_conv<CallAs>(proxy->get_expr())->eval(), f_ptr)
                 ), type_system

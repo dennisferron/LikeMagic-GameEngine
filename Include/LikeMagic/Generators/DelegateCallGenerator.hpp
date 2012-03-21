@@ -68,7 +68,7 @@ public:
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
-       auto result_proxy = CppObjProxy<R, true>::create(build_method_call(proxy->get_expr(), args, IPack()), type_system);
+       auto result_proxy = ExprProxy::create(build_method_call(proxy->get_expr(), args, IPack()), type_system);
        result_proxy->check_magic();
        return result_proxy;
     }
@@ -118,7 +118,7 @@ public:
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
-       auto result_proxy = CppObjProxy<R, true>::create(build_method_call(proxy->get_expr(), args, IPack()), type_system);
+       auto result_proxy = ExprProxy::create(build_method_call(proxy->get_expr(), args, IPack()), type_system);
        result_proxy->check_magic();
        return result_proxy;
     }
@@ -174,7 +174,7 @@ public:
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
-       auto result_proxy = CppObjProxy<R, true>::create(build_method_call(proxy->get_expr(), args, IPack()), type_system);
+       auto result_proxy = ExprProxy::create(build_method_call(proxy->get_expr(), args, IPack()), type_system);
        result_proxy->check_magic();
        return result_proxy;
     }

@@ -81,7 +81,7 @@ public:
 
     virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
     {
-        auto result_proxy = CppObjProxy<typename ReturnAs<R>::type, true>::create
+        auto result_proxy = ExprProxy::create
         (
             build_method_call
             (

@@ -31,7 +31,7 @@ private:
     template<int... Indices>
     AbstractCppObjProxy* construct_obj(AbstractCppObjProxy* proxy, ArgList args, IndexPack<Indices...>) const
     {
-        return CppObjProxy<ObjT&, IsCopyable>::create(
+        return ExprProxy::create(
                 Term<ObjT, IsCopyable>::create(
                     type_system.try_conv<Args>(args[Indices])->eval()...
                 ), type_system
@@ -67,7 +67,7 @@ private:
     template<int... Indices>
     AbstractCppObjProxy* construct_obj(AbstractCppObjProxy* proxy, ArgList args, IndexPack<Indices...>) const
     {
-        return CppObjProxy<ObjT*&, IsCopyable>::create(
+        return ExprProxy::create(
                 Term<ObjT*, IsCopyable>::create(
                     new ObjT(type_system.try_conv<Args>(args[Indices])->eval()...)
                 ), type_system
@@ -110,7 +110,7 @@ private:
             )
         ;
 
-        return CppObjProxy<ObjT&, IsCopyable>::create(
+        return ExprProxy::create(
             Reference<ObjT>::create(storage_location->eval(), storage_location)
         ,
             type_system
@@ -156,7 +156,7 @@ private:
             )
         ;
 
-        return CppObjProxy<ObjT*&, IsCopyable>::create(
+        return ExprProxy::create(
             Reference<ObjT*>::create(storage_location->eval(), storage_location)
         ,
             type_system
