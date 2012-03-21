@@ -56,7 +56,6 @@ public:
     inline virtual BottomPtrType eval() { return reinterpret_cast<BottomPtrType>(inner->eval()); }
     virtual boost::intrusive_ptr<Expression<BottomPtrType>> clone() const { return new BottomPtrExpr(inner->clone()); }
     virtual bool is_terminal() const { return inner->is_terminal(); }
-    virtual bool is_lazy() const { return inner->is_lazy(); }
 
     virtual std::string description() const
     {

@@ -26,7 +26,6 @@ public:
     inline virtual BottomPtrType eval() { return NULL; }
     virtual boost::intrusive_ptr<Expression<BottomPtrType>> clone() const { return new NullExpr(); }
     virtual bool is_terminal() const { return true; }
-    virtual bool is_lazy() const { return false; }
 
     virtual bool is_null() const { return true; }
 

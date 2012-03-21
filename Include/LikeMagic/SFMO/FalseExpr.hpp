@@ -28,7 +28,6 @@ public:
     inline virtual bool eval() { return false; }
     virtual boost::intrusive_ptr<Expression<bool>> clone() const { return new FalseExpr(); }
     virtual bool is_terminal() const { return true; }
-    virtual bool is_lazy() const { return false; }
 
     virtual std::string description() const
     {

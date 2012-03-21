@@ -34,7 +34,6 @@ public:
 
     inline virtual T& eval() { return value; }
     virtual boost::intrusive_ptr<Expression<T&>> clone() const { return new Term<T>(value); }
-    virtual std::set<AbstractObjectSet*> get_objsets() { return std::set<AbstractObjectSet*>(); }
     virtual bool is_terminal() const { return true; }
 
     virtual std::string description() const

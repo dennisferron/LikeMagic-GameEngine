@@ -148,16 +148,14 @@
 		<Unit filename="Include/LikeMagic/RuntimeTypeSystem.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/AbstractCppObjProxy.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/AbstractExpression.hpp" />
-		<Unit filename="Include/LikeMagic/SFMO/AbstractObjectSet.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/BottomPtrExpr.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/ClassExpr.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/ConstructedTerm.hpp" />
-		<Unit filename="Include/LikeMagic/SFMO/ContainerSet.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/CppObjProxy.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/DelegateMethodCall.hpp" />
+		<Unit filename="Include/LikeMagic/SFMO/ExprProxy.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/Expression.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/FalseExpr.hpp" />
-		<Unit filename="Include/LikeMagic/SFMO/LazyExpr.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/MethodCall.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/NamespaceProxy.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/NullExpr.hpp" />
@@ -218,6 +216,7 @@
 		<Unit filename="Source/AbstractTypeInfo.cpp" />
 		<Unit filename="Source/AbstractTypeSystem.cpp" />
 		<Unit filename="Source/BetterTypeInfo.cpp" />
+		<Unit filename="Source/ExprProxy.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/Namespace.cpp" />
 		<Unit filename="Source/NamespacePath.cpp" />

@@ -33,7 +33,8 @@ namespace LikeMagic { namespace SFMO {
 using LikeMagic::Utility::TypeIndex;
 
 // more forward declarations
-class AbstractObjectSet;
+
+class AbstractCppObjProxy;
 
 class AbstractExpression;
 
@@ -41,8 +42,7 @@ void intrusive_ptr_add_ref(AbstractExpression* p);
 void intrusive_ptr_release(AbstractExpression* p);
 
 
-template <typename To>
-class Expression;
+template <typename T, bool IsCopyable=true> class Expression;
 
 class AbstractExpression : public LikeMagic::IMarkable
 {
@@ -68,13 +68,13 @@ protected:
 
 public:
 
-    virtual std::set<AbstractObjectSet*> get_objsets() { return std::set<AbstractObjectSet*>(); }
     virtual bool is_terminal() const = 0;
-    virtual bool is_lazy() const = 0;
     virtual LikeMagic::Utility::TypeIndex get_type() const = 0;
+    virtual LikeMagic::Utility::TypeIndex get_class_type() const;
     virtual std::string description() const = 0;
     virtual bool disable_to_script_conv() const { return false; }
     virtual bool is_null() const { return false; }
+    virtual AbstractCppObjProxy* eval_proxy() = 0;
 };
 
 // Most of the time you will be using an expression via smart ptr.

@@ -66,19 +66,9 @@ std::string NamespaceProxy::describe() const
     return "namespace proxy: " + methods->get_type().describe();
 }
 
-bool NamespaceProxy::is_lazy() const
-{
-    return false;
-}
-
 bool NamespaceProxy::disable_to_script_conv() const
 {
     return true;
-}
-
-AbstractCppObjProxy* NamespaceProxy::lazy()
-{
-    throw std::logic_error("Not sure what it means to create a lazy version of a Namespace.");
 }
 
 // mark Io objects held by this object so the garbage collector won't free them

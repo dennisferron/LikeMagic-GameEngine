@@ -84,9 +84,6 @@ public:
     // Same as eval but discards the result.
     virtual void exec() = 0;
 
-    // Returns a new proxy containing a  copy of this expression and copy of the object set.
-    virtual AbstractCppObjProxy* clone() const = 0;
-
     std::string get_class_name() const;
     AbstractCppObjProxy* call(std::string method_name, ArgList args);
     AbstractCppObjProxy* call(AbstractCallTargetSelector* method, ArgList args);
@@ -101,10 +98,7 @@ public:
     virtual TypeIndex get_type() const = 0;
     AbstractTypeSystem const& get_type_system() const { return type_system; }
 
-    // determines whether you have to use "eval" or "exec" at the end of the expression
-    virtual bool is_lazy() const = 0;
     virtual bool disable_to_script_conv() const = 0;
-    virtual AbstractCppObjProxy* lazy() = 0;
     virtual bool is_terminal() const = 0;
     virtual std::string describe() const = 0;
 };

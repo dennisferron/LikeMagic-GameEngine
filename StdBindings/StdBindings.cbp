@@ -63,6 +63,7 @@
 			<Add directory="../../Iocaste/iovm/source" />
 			<Add directory="../../Iocaste/basekit/source" />
 			<Add directory="../../Iocaste/garbagecollector/source" />
+			<Add directory="../../Iocaste/Include/Iocaste/CShims" />
 		</Compiler>
 		<Unit filename="Include/LikeMagic/StdBindings/StdBindings.hpp" />
 		<Unit filename="Source/RuntimeTypeSystem.cpp" />

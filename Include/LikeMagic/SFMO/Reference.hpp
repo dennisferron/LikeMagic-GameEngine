@@ -64,7 +64,6 @@ public:
     }
 
     virtual bool is_terminal() const { return false; }
-    virtual bool is_lazy() const { return false; }
     virtual bool disable_script_conv() const { return true; }
 
     virtual std::string description() const
@@ -83,9 +82,6 @@ public:
     }
 
     virtual boost::intrusive_ptr<Expression<T&>> clone() const { return new Reference<T>(value, storage_location); }
-
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return std::set<AbstractObjectSet*>(); }
-
     virtual bool disable_to_script_conv() const { return true; }
 };
 

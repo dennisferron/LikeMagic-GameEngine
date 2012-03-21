@@ -83,7 +83,6 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     add_class(proxy_methods_type, proxy_methods);
     proxy_methods->bind_method("eval", &AbstractCppObjProxy::eval);
     proxy_methods->bind_method("exec", &AbstractCppObjProxy::exec);
-    proxy_methods->bind_method("lazy", &AbstractCppObjProxy::lazy);
     proxy_methods->bind_method("get_class", &AbstractCppObjProxy::get_class);
     proxy_methods->bind_method("get_type", &AbstractCppObjProxy::get_type);
     proxy_methods->bind_method("lm_get_type", &AbstractCppObjProxy::get_type);  // Added this because AbstractClass class_proxy also has a get_type we don't want to call

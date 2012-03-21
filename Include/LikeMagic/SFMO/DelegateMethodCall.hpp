@@ -60,12 +60,8 @@ public:
         throw std::logic_error("Clone LikeMagic delegate method call not implemented.");
     }
 
-    // DelegateMethodCall is lazy if target is lazy; we deliberately do NOT check for lazy args;
-    // passing a lazy expression as an argument to an eager method call forces evaluation of the lazy arg!
-    virtual bool is_lazy() const { return target->is_lazy(); }
     virtual std::string description() const { return methodcall_args::description(target, args) + " returning " + TypeDescr<R>::text(); }
     virtual bool is_terminal() const { return false; }
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return methodcall_args::get_objsets(target, args); }
 
     // mark Io objects held by this object so the garbage collector won't free them
     virtual void mark() const
@@ -115,12 +111,8 @@ public:
         throw std::logic_error("Clone LikeMagic delegate method call not implemented.");
     }
 
-    // MethodCall is lazy if target is lazy; we deliberately do NOT check for lazy args;
-    // passing a lazy expression as an argument to an eager method call forces evaluation of the lazy arg!
-    virtual bool is_lazy() const { return target->is_lazy(); }
     virtual std::string description() const { return methodcall_args::description(target, args); }
     virtual bool is_terminal() const { return false; }
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return methodcall_args::get_objsets(target, args); }
 
     // mark Io objects held by this object so the garbage collector won't free them
     virtual void mark() const
@@ -170,12 +162,8 @@ public:
         throw std::logic_error("Clone LikeMagic delegate method call not implemented.");
     }
 
-    // DelegateMethodCall is lazy if target is lazy; we deliberately do NOT check for lazy args;
-    // passing a lazy expression as an argument to an eager method call forces evaluation of the lazy arg!
-    virtual bool is_lazy() const { return target->is_lazy(); }
     virtual std::string description() const { return methodcall_args::description(target, args) + " returning " + TypeDescr<R>::text(); }
     virtual bool is_terminal() const { return false; }
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return methodcall_args::get_objsets(target, args); }
 
     // mark Io objects held by this object so the garbage collector won't free them
     virtual void mark() const
@@ -225,12 +213,8 @@ public:
         throw std::logic_error("Clone LikeMagic delegate method call not implemented.");
     }
 
-    // MethodCall is lazy if target is lazy; we deliberately do NOT check for lazy args;
-    // passing a lazy expression as an argument to an eager method call forces evaluation of the lazy arg!
-    virtual bool is_lazy() const { return target->is_lazy(); }
     virtual std::string description() const { return methodcall_args::description(target, args); }
     virtual bool is_terminal() const { return false; }
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return methodcall_args::get_objsets(target, args); }
 
     // mark Io objects held by this object so the garbage collector won't free them
     virtual void mark() const

@@ -47,7 +47,7 @@ template <> struct TermStoreAs<bool&> { typedef bool type; };
 
 template <typename T, bool IsCopyable>
 class Term :
-    public Expression<T&>
+    public Expression<T&, IsCopyable>
 {
 private:
     char debug_padding[13];
@@ -120,9 +120,7 @@ public:
 
     virtual boost::intrusive_ptr<Expression<T&>> clone() const { return new Term<T, IsCopyable>(value); }
 
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return std::set<AbstractObjectSet*>(); }
     virtual bool is_terminal() const { return true; }
-    virtual bool is_lazy() const { return false; }
 
     virtual std::string description() const
     {
@@ -215,9 +213,7 @@ public:
         throw std::logic_error("Cannot clone " + description() + " because the class is registered as not having a copy constructor.");
     }
 
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return std::set<AbstractObjectSet*>(); }
     virtual bool is_terminal() const { return true; }
-    virtual bool is_lazy() const { return false; }
 
     virtual std::string description() const
     {
@@ -294,9 +290,7 @@ public:
 
     virtual boost::intrusive_ptr<Expression<T*&>> clone() const { return new Term<T*, true>(value); }
 
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return std::set<AbstractObjectSet*>(); }
     virtual bool is_terminal() const { return true; }
-    virtual bool is_lazy() const { return false; }
 
     virtual std::string description() const
     {
@@ -373,9 +367,7 @@ public:
 
     virtual boost::intrusive_ptr<Expression<T*&>> clone() const { return new Term<T*, false>(value); }
 
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return std::set<AbstractObjectSet*>(); }
     virtual bool is_terminal() const { return true; }
-    virtual bool is_lazy() const { return false; }
 
     virtual std::string description() const
     {
@@ -406,15 +398,9 @@ public:
     template <typename... Args>
     static boost::intrusive_ptr<Expression<void>> create(Args... args) { return new Term(); }
 
-    // A term never has any object sets, even if it's a container, because it represents one object by itself so it doesn't
-    // have anything to iterate against.  There is another class called ContainerSet that holds a Term
-    // but represents an element from the set in the held Term; it's target does change when the set is iterated.
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return std::set<AbstractObjectSet*>(); }
-
     inline virtual void eval() { }
     virtual boost::intrusive_ptr<Expression<void>> clone() const { return new Term(); }
     virtual bool is_terminal() const { return true; }
-    virtual bool is_lazy() const { return false; }
 
     virtual std::string description() const
     {

@@ -19,7 +19,8 @@
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 
 namespace LikeMagic { namespace SFMO {
-    template <typename T> class Expression;
+    // Why is this here?
+    template <typename T, bool IsCopyable> class Expression;
 }}
 
 namespace LikeMagic { namespace Utility {

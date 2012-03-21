@@ -48,11 +48,8 @@ public:
 
     virtual boost::intrusive_ptr<Expression<R>> clone() const { return new StaticMethodCall(func, methodcall_args::clone_args(args, IPack())); }
 
-    // TODO:  Need new system for determining lazy args.  Static methods do not have access to the target object (maybe pass lazy flag from methodcall generator?)
-    virtual bool is_lazy() const { return false; }
     virtual std::string description() const { return methodcall_args::description(args) + " returning " + TypeDescr<R>::text(); }
     virtual bool is_terminal() const { return false; }
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return methodcall_args::get_objsets(args); }
 
     // mark Io objects held by this object so the garbage collector won't free them
     virtual void mark() const
@@ -93,11 +90,8 @@ public:
         return new StaticMethodCall(func, methodcall_args::clone_args(args, IPack()));
     }
 
-    // TODO:  Need new system for determining lazy args.  Static methods do not have access to the target object (maybe pass lazy flag from methodcall generator?)
-    virtual bool is_lazy() const { return false; }
     virtual std::string description() const { return methodcall_args::description(args); }
     virtual bool is_terminal() const { return false; }
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return methodcall_args::get_objsets(args); }
 
     // mark Io objects held by this object so the garbage collector won't free them
     virtual void mark() const

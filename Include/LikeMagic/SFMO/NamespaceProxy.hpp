@@ -34,9 +34,7 @@ public:
     virtual AbstractCppObjProxy* clone() const;
     virtual bool is_terminal() const;
     virtual std::string describe() const;
-    virtual bool is_lazy() const;
     virtual bool disable_to_script_conv() const;
-    virtual AbstractCppObjProxy* lazy();
     virtual void mark() const;
     virtual TypeIndex get_type() const;
 };

@@ -42,7 +42,6 @@ public:
 
     virtual boost::intrusive_ptr<Expression<T>> clone() const { return new ClassExpr(); }
     virtual bool is_terminal() const { return true; }
-    virtual bool is_lazy() const { return false; }
 
     virtual std::string description() const
     {

@@ -17,8 +17,7 @@ namespace LikeMagic { namespace SFMO {
 
 class AbstractExpression;
 
-template <typename To>
-class Expression;
+template <typename T, bool IsCopyable> class Expression;
 
 typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
 

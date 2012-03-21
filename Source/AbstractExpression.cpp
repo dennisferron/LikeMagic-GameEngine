@@ -23,4 +23,9 @@ void intrusive_ptr_release(AbstractExpression* p)
         delete p;
 }
 
+LikeMagic::Utility::TypeIndex AbstractExpression::get_class_type() const
+{
+    return get_type().class_type();
+}
+
 }}

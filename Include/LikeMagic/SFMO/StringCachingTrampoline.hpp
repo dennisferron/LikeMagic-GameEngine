@@ -65,10 +65,7 @@ public:
 
     virtual boost::intrusive_ptr<Expression<To>> clone() const { return new StringCachingTrampoline(from_expr); }
 
-    virtual std::set<AbstractObjectSet*> get_objsets() const { return from_expr->get_objsets(); }
-
     virtual bool is_terminal() const { return false; }
-    virtual bool is_lazy() const { return from_expr->is_lazy(); }
 
     virtual std::string description() const
     {

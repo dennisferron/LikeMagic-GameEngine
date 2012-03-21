@@ -50,7 +50,7 @@ AbstractCppObjProxy* AbstractCppObjProxy::call(AbstractCallTargetSelector* metho
     {
         return NULL;
     }
-    else if (proxy1->is_lazy() || proxy1->is_terminal() || proxy1->disable_to_script_conv())
+    else if (proxy1->is_terminal() || proxy1->disable_to_script_conv())
     {
         return proxy1;
     }
