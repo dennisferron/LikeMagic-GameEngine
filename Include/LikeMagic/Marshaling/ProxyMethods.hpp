@@ -19,7 +19,7 @@ namespace LikeMagic { class RuntimeTypeSystem; }
 namespace LikeMagic { namespace Marshaling {
 
 using LikeMagic::AbstractTypeSystem;
-using LikeMagic::Generators::ProxyMethodSelector;
+using LikeMagic::CallTargets::ProxyMethodSelector;
 
 class ProxyMethods : public DummyClass<ProxyMethods>
 {

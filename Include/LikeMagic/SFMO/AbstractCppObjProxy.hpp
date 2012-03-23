@@ -78,12 +78,6 @@ public:
     template <typename To>
     boost::intrusive_ptr<Expression<To>> try_conv() { return type_system.try_conv<To>(get_expr()); }
 
-    // Evaluate expression and get a result.  If there are object sets, result is a vector of results.
-    virtual AbstractCppObjProxy* eval() = 0;
-
-    // Same as eval but discards the result.
-    virtual void exec() = 0;
-
     std::string get_class_name() const;
     AbstractCppObjProxy* call(std::string method_name, ArgList args);
     AbstractCppObjProxy* call(AbstractCallTargetSelector* method, ArgList args);

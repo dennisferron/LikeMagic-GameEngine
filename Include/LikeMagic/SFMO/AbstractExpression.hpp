@@ -74,7 +74,6 @@ public:
     virtual std::string description() const = 0;
     virtual bool disable_to_script_conv() const { return false; }
     virtual bool is_null() const { return false; }
-    virtual AbstractCppObjProxy* eval_proxy() = 0;
 };
 
 // Most of the time you will be using an expression via smart ptr.

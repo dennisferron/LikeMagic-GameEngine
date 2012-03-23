@@ -44,23 +44,7 @@ AbstractCppObjProxy* AbstractCppObjProxy::call(AbstractCallTargetSelector* metho
     if (!method)
         throw std::logic_error("Method is null.");
 
-    auto proxy1 = method->call(this, args);
-
-    if (!proxy1)
-    {
-        return NULL;
-    }
-    else if (proxy1->is_terminal() || proxy1->disable_to_script_conv())
-    {
-        return proxy1;
-    }
-    else
-    {
-        // eagerly evaluate the first result, delete that proxy, and return the new result instead.
-        auto proxy2 = proxy1->eval();
-        delete proxy1;
-        return proxy2;
-    }
+    return method->call(this, args);
 }
 
 

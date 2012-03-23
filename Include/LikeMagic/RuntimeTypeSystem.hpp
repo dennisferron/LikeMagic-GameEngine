@@ -49,7 +49,6 @@
   #endif
 #endif
 
-
 namespace LikeMagic {
 
 using namespace LikeMagic::Marshaling;
@@ -71,6 +70,7 @@ using LikeMagic::Utility::EnumHelper;
 class RuntimeTypeSystem : public AbstractTypeSystem
 {
 private:
+
     TypeInfoCache* dll_shared_typeinfo;
 
     // Used for a type index for proxy methods.  Don't want to use AbstractCppObjProxy

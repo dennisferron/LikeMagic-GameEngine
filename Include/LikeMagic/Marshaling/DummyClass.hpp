@@ -9,7 +9,6 @@
 #pragma once
 
 #include "LikeMagic/Marshaling/AbstractClass.hpp"
-#include "LikeMagic/CallTargets/CallTargetSelector.hpp"
 #include "LikeMagic/CallTargets/ConstructorCallTarget.hpp"
 #include "LikeMagic/TypeConv/NumberConv.hpp"
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
@@ -34,10 +33,6 @@ template <typename T>
 class DummyClass : public AbstractClass
 {
 protected:
-    //friend class LikeMagic::RuntimeTypeSystem;
-    //DummyClass(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePath const namespace_) : AbstractClass(name_, type_system_, namespace_), type(type_)
-    //{
-    //}
 
     TypeIndex type;
 

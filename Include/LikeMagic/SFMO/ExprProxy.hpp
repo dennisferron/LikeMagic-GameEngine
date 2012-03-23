@@ -33,8 +33,6 @@ public:
 
     virtual void dispose() const;
     virtual boost::intrusive_ptr<AbstractExpression> get_expr();
-    virtual AbstractCppObjProxy* eval();
-    virtual void exec();
     virtual bool is_terminal() const;
     virtual std::string describe() const;
     virtual bool disable_to_script_conv() const;

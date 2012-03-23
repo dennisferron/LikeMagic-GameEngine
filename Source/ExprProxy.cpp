@@ -51,17 +51,6 @@ void ExprProxy::dispose() const
 
 boost::intrusive_ptr<AbstractExpression> ExprProxy::get_expr() { return expr; }
 
-AbstractCppObjProxy* ExprProxy::eval()
-{
-    return expr->eval_proxy();
-}
-
-void ExprProxy::exec()
-{
-    // Could use either ->eval or ->eval_proxy here.
-    expr->eval_proxy();
-}
-
 bool ExprProxy::is_terminal() const
 {
     return expr->is_terminal();
