@@ -10,7 +10,7 @@
 
 #include "LikeMagic/SFMO/BottomPtrExpr.hpp"
 #include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
-#include "LikeMagic/SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/ExprProxy.hpp"
 #include "LikeMagic/SFMO/BottomPtrExpr.hpp"
 #include "LikeMagic/SFMO/NullExpr.hpp"
 

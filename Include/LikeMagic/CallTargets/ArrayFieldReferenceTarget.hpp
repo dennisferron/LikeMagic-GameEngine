@@ -17,7 +17,7 @@
 #include "boost/type_traits/is_void.hpp"
 
 #include "LikeMagic/SFMO/MethodCall.hpp"
-#include "LikeMagic/SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/ExprProxy.hpp"
 
 #include "LikeMagic/SFMO/Reference.hpp"
 

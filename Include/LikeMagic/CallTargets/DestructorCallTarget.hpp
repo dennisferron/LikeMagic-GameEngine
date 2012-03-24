@@ -12,7 +12,7 @@
 
 #include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
 
-#include "LikeMagic/SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/ExprProxy.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 

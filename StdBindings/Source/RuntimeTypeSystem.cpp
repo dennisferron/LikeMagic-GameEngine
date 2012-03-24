@@ -76,7 +76,7 @@ RuntimeTypeSystem::RuntimeTypeSystem()
 
     Namespace global_ns = Namespace::global(*this);
 
-    // Register proxy methods (methods that act on the CppObjProxy instead of the object itself)
+    // Register proxy methods (methods that act on the ExprProxy instead of the object itself)
     // Everything below here uses proxy methods.
     static TypeIndex proxy_methods_type = BetterTypeInfo::create_index<ProxyMethodsType>();
     proxy_methods = new ProxyMethods(proxy_methods_type, "ProxyMethods", *this, NamespacePath::global());

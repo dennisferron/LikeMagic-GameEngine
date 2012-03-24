@@ -17,10 +17,14 @@
 
 #include "LikeMagic/SFMO/methodcall_args.hpp"
 
-#include "LikeMagic/SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/ExprProxy.hpp"
 
 #include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
 #include "LikeMagic/Generators/MemberKind.hpp"
+
+// When there are no args, args_tuple does not get expanded below and therefore is set but unused.
+// GCC no longer recognizes this option?
+//#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 
 namespace LikeMagic { namespace CallTargets {
 
@@ -49,9 +53,6 @@ private:
             throw std::logic_error("Wrong number of arguments.");
 
         auto args_tuple = std::make_tuple(type_system.try_conv<Args>(args[Indices])...);
-
-        // When there are no args, args_tuple does not get expanded below and therefore is set but unused.
-        #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 
         boost::intrusive_ptr<Expression<R&>> result = Term<R, true>::create(
             (*func_ptr)(std::get<Indices>(args_tuple)->eval()...)

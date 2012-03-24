@@ -18,7 +18,7 @@
 #include "boost/type_traits/is_base_of.hpp"
 
 #include "LikeMagic/SFMO/MethodCall.hpp"
-#include "LikeMagic/SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/ExprProxy.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
