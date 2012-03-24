@@ -15,7 +15,7 @@
 #include "Bindings/Bullet/ScriptedWorldManager.hpp"
 
 using namespace LikeMagic;
-using namespace LikeMagic::Backends::Io;
+using namespace Iocaste::LikeMagicAdapters;
 
 namespace Bindings { namespace Bullet {
 

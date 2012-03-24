@@ -3,12 +3,12 @@
 #include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
 
 #include "LikeMagic/IMarkable.hpp"
-#include "LikeMagic/Backends/Io/IoVM.hpp"
-#include "LikeMagic/Backends/Io/IoBlock.hpp"
+#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+#include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 
 namespace Bindings { namespace Bullet {
 
-using LikeMagic::Backends::Io::IoBlock;
+using Iocaste::LikeMagicAdapters::IoBlock;
 using LikeMagic::IMarkable;
 
 class ScriptedContactResultCallback : public IMarkable, public btCollisionWorld::ContactResultCallback

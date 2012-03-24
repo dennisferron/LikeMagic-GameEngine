@@ -18,7 +18,7 @@
 
 
 using namespace std;
-using namespace LikeMagic::Backends::Io;
+using namespace Iocaste::LikeMagicAdapters;
 
 namespace Bindings { namespace Bullet {
 

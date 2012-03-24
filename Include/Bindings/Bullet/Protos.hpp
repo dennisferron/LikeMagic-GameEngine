@@ -9,10 +9,10 @@
 #pragma once
 
 #include "LikeMagic/Utility/DLLHelper.hpp"
-#include "LikeMagic/Backends/Io/IoVM.hpp"
+#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 
 namespace Bindings { namespace Bullet {
 
-DLL_PUBLIC void add_protos(LikeMagic::Backends::Io::IoVM& vm);
+DLL_PUBLIC void add_protos(Iocaste::LikeMagicAdapters::IoVM& vm);
 
 }}

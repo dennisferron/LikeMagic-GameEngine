@@ -78,6 +78,7 @@
 			<Add directory="../Iocaste/iovm/source" />
 			<Add directory="../Iocaste/garbagecollector/source" />
 			<Add directory="../Iocaste/basekit/source" />
+			<Add directory="../Iocaste/Include/Iocaste/CShims" />
 		</Compiler>
 		<Unit filename="Include/Bindings/Bullet/Bindings.hpp" />
 		<Unit filename="Include/Bindings/Bullet/Protos.hpp" />
@@ -177,6 +178,7 @@
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
