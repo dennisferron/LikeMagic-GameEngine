@@ -11,7 +11,8 @@
 #include "Iocaste/LikeMagicAdapters/API_Io.hpp"
 
 #include "LikeMagic/AbstractTypeSystem.hpp"
-#include "LikeMagic/SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/ExprProxy.hpp"
+#include "LikeMagic/SFMO/Term.hpp"
 
 #include "LikeMagic/IMarkable.hpp"
 #include "LikeMagic/DebugInfo.hpp"
@@ -41,7 +42,7 @@ private:
     template <typename T>
     AbstractCppObjProxy* make_proxy(T t) const
     {
-        return CppObjProxy<T&, true>::create(Term<T, true>::create(t), *type_sys);
+        return ExprProxy::create(Term<T, true>::create(t), *type_sys);
     }
 
     void add_arg(IoMessage* m, AbstractCppObjProxy* proxy) const;

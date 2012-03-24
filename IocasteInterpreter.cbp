@@ -53,6 +53,7 @@
 					<Add option="-ldl" />
 					<Add option="-lpthread" />
 					<Add library="libIocaste-Linux.a" />
+					<Add library="../LikeMagic/StdBindings/libStdBindings-Linux.a" />
 					<Add library="../LikeMagic/libLikeMagic-Linux.a" />
 				</Linker>
 			</Target>
@@ -102,6 +103,7 @@
 			<Add directory="../GameBindings/bullet/src" />
 			<Add directory="../GameBindings/irrlicht/include" />
 			<Add directory="../desteer/bindings/Include" />
+			<Add directory="Include/Iocaste/CShims" />
 		</Compiler>
 		<Linker>
 			<Add directory="../Iocaste" />

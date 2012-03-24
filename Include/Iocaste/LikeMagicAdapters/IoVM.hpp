@@ -11,7 +11,7 @@
 #include "LikeMagic/RuntimeTypeSystem.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 #include "Iocaste/LikeMagicAdapters/API_Io.hpp"
-#include "LikeMagic/SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/ExprProxy.hpp"
 #include "LikeMagic/ITypeSystemObserver.hpp"
 #include "LikeMagic/MarkableObjGraph.hpp"
 
@@ -71,7 +71,7 @@ public:
         add_proto
         (
             name,
-            CppObjProxy<T&, true>::create
+            ExprProxy::create
             (
                 Term<T, true>::create
                 (

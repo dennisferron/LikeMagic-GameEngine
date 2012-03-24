@@ -12,7 +12,7 @@
 #include "Iocaste/LikeMagicAdapters/API_Io.hpp"
 
 #include "LikeMagic/AbstractTypeSystem.hpp"
-#include "LikeMagic/SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/ExprProxy.hpp"
 
 #include "LikeMagic/IMarkable.hpp"
 

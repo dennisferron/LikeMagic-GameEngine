@@ -14,7 +14,7 @@
 #include "Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 
-#include "LikeMagic/SFMO/CppObjProxy.hpp"
+#include "LikeMagic/SFMO/ExprProxy.hpp"
 
 #include "LikeMagic/Utility/TypeDescr.hpp"
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"

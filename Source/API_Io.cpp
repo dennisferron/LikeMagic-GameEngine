@@ -126,20 +126,9 @@ IoObject* API_io_rawClone(IoObject* proto)
     IoObject* clone = reinterpret_cast<IoObject*>(IoObject_rawClonePrimitive(
             reinterpret_cast<IoObject*>(proto)));
 
-    // When we clone a methodset proto, there's no CppObjProxy.
-    if (!IoObject_dataPointer(reinterpret_cast<IoObject*>(proto)))
-    {
-        //cout << "Raw clone called for proto " << proto << ", no cpp obj" << endl;
-    }
-    else
-    {
-        //cout << "Raw clone called for proto " << proto << " data pointer is " << IoObject_dataPointer(proto) << endl;
-
-        LikeMagic::SFMO::AbstractCppObjProxy* proxy(
-                reinterpret_cast<LikeMagic::SFMO::AbstractCppObjProxy*>(IoObject_dataPointer(proto)));
-
-        IoObject_setDataPointer_(clone, proxy->clone());
-    }
+    // LikeMagic objects are not really intended to be cloned, so I don't know whether
+    // to throw an exception here or just make the new Io object point at the same C++ object as I do here:
+    IoObject_setDataPointer_(clone, IoObject_dataPointer(reinterpret_cast<IoObject*>(proto)));
 
     return clone;
 }
