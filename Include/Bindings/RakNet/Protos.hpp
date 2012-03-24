@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include "LikeMagic/Backends/Io/IoVM.hpp"
+#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 #include "LikeMagic/Utility/DLLHelper.hpp"
 
 namespace Bindings { namespace RakNet {
 
-DLL_PUBLIC void add_protos(LikeMagic::Backends::Io::IoVM& vm);
+DLL_PUBLIC void add_protos(Iocaste::LikeMagicAdapters::IoVM& vm);
 
 }}

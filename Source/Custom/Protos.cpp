@@ -11,7 +11,7 @@
 #include "LikeMagic/Utility/UserMacros.hpp"
 
 using namespace std;
-using namespace LikeMagic::Backends::Io;
+using namespace Iocaste::LikeMagicAdapters;
 
 namespace Bindings { namespace Custom {
 

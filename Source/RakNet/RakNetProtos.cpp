@@ -17,7 +17,7 @@
 
 
 using namespace std;
-using namespace LikeMagic::Backends::Io;
+using namespace Iocaste::LikeMagicAdapters;
 using namespace RakNet;
 
 namespace Bindings { namespace RakNet {

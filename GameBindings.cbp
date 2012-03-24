@@ -96,6 +96,8 @@
 		<Unit filename="Include/Bindings/Custom/Protos.hpp" />
 		<Unit filename="Include/Bindings/Custom/ScriptObjAnimator.hpp" />
 		<Unit filename="Include/Bindings/Custom/SoftBodyMeshSynchronizer.hpp" />
+		<Unit filename="Include/Bindings/IrrKlang/Bindings.hpp" />
+		<Unit filename="Include/Bindings/IrrKlang/Protos.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/Bindings.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/Protos.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/ScriptedDataSerializer.hpp" />

@@ -10,14 +10,14 @@
 
 #include <irrlicht.h>
 
-#include "LikeMagic/Backends/Io/IoVM.hpp"
+#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 
 #include "LikeMagic/Utility/UserMacros.hpp"
 #include "Bindings/Irrlicht/ScriptedSceneNode.hpp"
 #include "Bindings/Irrlicht/ScriptedEventReceiver.hpp"
 
 using namespace std;
-using namespace LikeMagic::Backends::Io;
+using namespace Iocaste::LikeMagicAdapters;
 using namespace LikeMagic;
 using namespace irr;
 using namespace irr::video;

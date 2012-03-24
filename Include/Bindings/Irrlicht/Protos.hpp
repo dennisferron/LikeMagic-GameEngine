@@ -10,17 +10,14 @@
 
 #include "LikeMagic/Utility/DLLHelper.hpp"
 
-namespace LikeMagic {
-    class RuntimeTypeSystem;
-    namespace Backends {
-        namespace Io {
-            class IoVM;
-        }
-    }
-}
+namespace LikeMagic { class RuntimeTypeSystem; }
+
+namespace Iocaste { namespace LikeMagicAdapters {
+    class IoVM;
+}}
 
 namespace Bindings { namespace Irrlicht {
 
-DLL_PUBLIC void add_protos(LikeMagic::Backends::Io::IoVM&, LikeMagic::RuntimeTypeSystem&);
+DLL_PUBLIC void add_protos(Iocaste::LikeMagicAdapters::IoVM&, LikeMagic::RuntimeTypeSystem&);
 
 }}

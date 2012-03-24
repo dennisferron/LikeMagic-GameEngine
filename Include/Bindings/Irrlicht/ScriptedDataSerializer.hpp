@@ -9,13 +9,13 @@
 #include <irrlicht.h>
 
 #include "LikeMagic/IMarkable.hpp"
-#include "LikeMagic/Backends/Io/IoVM.hpp"
-#include "LikeMagic/Backends/Io/IoBlock.hpp"
+#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+#include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 
 
 namespace Bindings { namespace Irrlicht {
 
-using LikeMagic::Backends::Io::IoBlock;
+using Iocaste::LikeMagicAdapters::IoBlock;
 using namespace irr;
 using namespace irr::io;
 using namespace irr::scene;

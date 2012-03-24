@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "LikeMagic/Backends/Io/IoVM.hpp"
+#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 
 namespace Bindings { namespace IrrKlang {
 
-void add_protos(LikeMagic::Backends::Io::IoVM& vm);
+void add_protos(Iocaste::LikeMagicAdapters::IoVM& vm);
 
 }}

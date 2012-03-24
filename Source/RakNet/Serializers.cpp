@@ -17,9 +17,9 @@ using namespace RakNet;
 using namespace LikeMagic;
 
 #include "LikeMagic/IMarkable.hpp"
-#include "LikeMagic/Backends/Io/IoVM.hpp"
-#include "LikeMagic/Backends/Io/IoBlock.hpp"
-using LikeMagic::Backends::Io::IoBlock;
+#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+#include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
+using Iocaste::LikeMagicAdapters::IoBlock;
 
 
 #include "StringTable.h"

@@ -8,7 +8,7 @@
 
 #include "Bindings/Irrlicht/Bindings.hpp"
 #include "LikeMagic/Utility/UserMacros.hpp"
-#include "LikeMagic/Backends/Io/IoVM.hpp"
+#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 
 using namespace LikeMagic;
 
