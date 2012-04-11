@@ -124,6 +124,10 @@ void add_class_to_observer(ITypeSystemObserver* observer, AbstractClass const* c
 
 void AbstractTypeSystem::add_type_system_observer(ITypeSystemObserver* observer)
 {
+    // For debugging
+    if (observer == NULL)
+        return;
+
     // If this is the first time adding the observer, catch them up on what has been set up.
     if (observers.find(observer) == observers.end())
     {

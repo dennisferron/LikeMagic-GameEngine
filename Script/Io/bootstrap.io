@@ -7,7 +7,6 @@
 // hold things like the C++ namespace and C++ classes objects.
 LikeMagic := Object clone
 
-
 // The bootstrap object is a temporary object pre-provided by the LikeMagic
 // io_vm C++ code to provide the minimum functionality necessary to bootstrap
 // the rest of the C++ namespace and classes system.
@@ -18,8 +17,6 @@ appendProto(bootstrap LM_Protos)
 
 io_vm := LM_Protos io_vm
 type_system := LM_Protos type_system
-
-LikeMagic := Object clone
 
 // Set up the root aka global namespace.
 // Later this will be supplanted by the LikeMagic static methods object
@@ -89,7 +86,7 @@ find_namespace := method(ns,
     //writeln("find_namespace(", ns to_string, ")")
     if (ns is_root,
         //writeln("namespace ", ns to_string, " is root")
-        return Lobby LikeMagic namespace
+        return self LikeMagic namespace
     ,
         parentNs := find_namespace(ns get_parent)
         if (parentNs hasSlot(ns get_name) not,
@@ -129,5 +126,4 @@ print_class_info := method(obj,
 
 print_namespace_tree(LikeMagic namespace, "global", 0)
 
-print_class_info(LikeMagic namespace Irrlicht)
 
