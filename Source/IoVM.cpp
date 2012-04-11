@@ -12,6 +12,7 @@
 #include "Iocaste/LikeMagicAdapters/IoObjectExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/ToIoObjectExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp"
+#include "Iocaste/Exception.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 
 #include "LikeMagic/SFMO/ExprProxy.hpp"
@@ -359,6 +360,11 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 
         return result_obj;
     }
+    catch (Iocaste::Exception& e)
+    {
+        std::cout << "Caught script exception: " << e.what() << std::endl;
+        throw;
+    }
     catch (std::logic_error le)
     {
         //std::cout << "Caught exception: " << le.what() << std::endl;
@@ -367,7 +373,7 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
     }
     catch (std::exception e)
     {
-        //std::cout << "Caught exception: " << e.what() << std::endl;
+        std::cout << "Caught exception: " << e.what() << std::endl;
         IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(e).name()).c_str(), e.what());
         return IONIL(self);
     }

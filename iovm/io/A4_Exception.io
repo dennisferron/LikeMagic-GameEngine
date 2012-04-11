@@ -65,17 +65,9 @@ Coroutine do(
 	//metadoc Coroutine category Core
 	//metadoc Coroutine description Coroutine is an primitive for Io's lightweight cooperative C-stack based threads.
 
-	/*
-	init := method(
-		resend
-		"Coroutine init" p[rintln
-	)
-	*/
-
-	//doc Coroutine stackSize Stack size allocated for each new coroutine. Coroutines will automatically chain themselves as need if more stack space is required.
-	//doc Coroutine setStackSize(aNumber) Sets the stack size in bytes to allocate for new Coros. Returns self.
-	//stackSize ::= 131072 // PPC needs 128k for current parser
-	stackSize ::= 131072 // PPC needs 128k for current parser
+	//doc Coroutine stackSize Iocaste does not allocate separate C-stacks for coroutines.  Slot kept for backwards compatibility.
+	//doc Coroutine setStackSize(aNumber) Set stack size (does nothing).
+	stackSize ::= 1
 
 	//doc Coroutine exception Returns the current exception or nil if there is none.
 	//doc Coroutine setException
@@ -486,15 +478,24 @@ MyErrorType := Error clone
 	newSlot("originalCall")
 	//doc Exception originalCall Returns the call object associated with the exception.
 
+	_buildException := method(error, nestedException,
+		curCoro := Scheduler currentCoroutine
+		errCoro := curCoro clone
+
+		// In the proto "ioStack" is a method returning raw stack as IoList;
+		// we are redefining that slot on errCoro to hold the *result* of calling ioStack.
+		errCoro ioStack = curCoro ioStack
+
+		self clone setError(error) setCoroutine(errCoro) setNestedException(nestedException)
+	)
+
 	raise := method(error, nestedException,
 		//doc Exception raise(error, optionalNestedException) Raise an exception with the specified error message.
-		// Note:  No longer clones the current coroutine (should it?)
-		self clone setError(error) setCoroutine(Scheduler currentCoroutine) setNestedException(nestedException) throw
+		_buildException(error, nestedException) throw
 	)
 
 	raiseFrom := method(originalCall, error, nestedException,
-		// Note:  No longer clones the current coroutine (should it?)
-		self clone setError(error) setCoroutine(Scheduler currentCoroutine) setNestedException(nestedException) setOriginalCall(originalCall) throw
+		 _buildException(error, nestedException) setOriginalCall(originalCall) throw
 	)
 
 	catch := method(exceptionProto,
