@@ -109,7 +109,6 @@
 		<Unit filename="Script/BulletBindings.io" />
 		<Unit filename="Script/CustomBindings.io" />
 		<Unit filename="Script/IrrlichtBindings.io" />
-		<Unit filename="Script/RakNetBindings.io" />
 		<Unit filename="Source/Bullet/BulletBindings.cpp" />
 		<Unit filename="Source/Bullet/BulletProtos.cpp" />
 		<Unit filename="Source/Bullet/ScriptedClosestRayResultCallback.cpp" />

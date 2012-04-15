@@ -33,27 +33,6 @@ using namespace irr::scene;
 
 namespace Bindings { namespace Custom {
 
-// Extension methods
-
-IoObject* at(std::map<s32, IoObject*> const& self, s32 key)
-{
-    auto result = self.find(key);
-    if (result == self.end())
-        return NULL;
-    else
-        return result->second;
-}
-
-IoObject* atPut(std::map<s32, IoObject*>& self, s32 key, IoObject* value)
-{
-    return self[key] = value;
-}
-
-void removeAt(std::map<s32, IoObject*>& self, s32 key)
-{
-    self.erase(key);
-}
-
 // Support FlagBits for Irrlicht Scene Node* ID
 int  flag_bits_get_value(ISceneNode* node)            { return node->getID();       }
 void flag_bits_set_value(ISceneNode* node, int value) {        node->setID(value);  }
@@ -105,12 +84,6 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_CONSTR(GearConstraint,, btRigidBody&, btRigidBody&, btScalar)
     GearConstraint_LM.bind_static_method("getRotZ", GearConstraint::getRotZ);
 
-    //LM_STATIC_FUNC(ns_custom, KinematicAnimator, get_watch_node)
-    //LM_STATIC_FUNC(ns_custom, KinematicAnimator, set_watch_node)
-
-    //LM_STATIC_FUNC(ns_custom, PhysicsAnimator, get_watch_node2)
-    //LM_STATIC_FUNC(ns_custom, PhysicsAnimator, set_watch_node2)
-
     LM_STATIC_FUNC(ns_custom, Bindings::Custom, add_protos)
 
     LM_CLASS(ns_custom, SoftBodyMeshSynchronizer)
@@ -125,11 +98,6 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     typedef MeshTools::SplitMeshResult SplitMeshResult;
     LM_CLASS(ns_custom, SplitMeshResult)
     LM_FIELD(SplitMeshResult, (left)(middle)(right))
-
-    typedef std::map<irr::s32, IoObject*> map_of_s32_IoObject;
-    LM_CLASS(ns_custom, map_of_s32_IoObject)
-    LM_CONSTR(map_of_s32_IoObject,,)
-    LM_EXTENSION_METHOD(map_of_s32_IoObject, (at)(atPut)(removeAt))
 
     LM_CLASS(ns_custom, FlagBits_of_ISceneNode)
     LM_CONSTR(FlagBits_of_ISceneNode,, ISceneNode*)
