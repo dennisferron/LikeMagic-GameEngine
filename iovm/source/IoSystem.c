@@ -5,6 +5,8 @@
 Contains methods related to the IoVM.
 */
 
+#include <io.h>
+
 #include "IoSystem.h"
 #include "IoNumber.h"
 #include "IoMessage_parser.h"
@@ -261,9 +263,6 @@ IO_METHOD(IoObject, getEnvironmentVariable)
 	return IoState_symbolWithCString_(IOSTATE, s);
 }
 
-// getcwd was undefined on OSX after removing Coro.h
-char	*getcwd(char *, size_t);
-
 IO_METHOD(IoObject, system)
 {
 	/*doc System system(aString)
@@ -423,7 +422,7 @@ IO_METHOD(IoObject, platformVersion)
 	GetVersionEx(&os);
 
 	snprintf(platformVersion, sizeof(platformVersion) - 1, "%d.%d",
-		os.dwMajorVersion, os.dwMinorVersion);
+		(int)os.dwMajorVersion, (int)os.dwMinorVersion);
 
 #elif defined(unix) || defined(__APPLE__) || defined(__NetBSD__) || defined(__OpenBSD__)
 	/* Why Apple and NetBSD don't define 'unix' I'll never know. */

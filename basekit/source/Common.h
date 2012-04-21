@@ -15,6 +15,8 @@ These defines are helpful for doing OS specific checks in the code.
 #include <string.h>
 #include <stddef.h>
 
+// Include unistd.h to get ssize_t
+#include <unistd.h>
 
 #if defined (__SVR4) && defined (__sun)
 #include <inttypes.h>
@@ -29,53 +31,13 @@ typedef unsigned short uint16_t;
 typedef   signed short  int16_t;
 typedef unsigned long  uint32_t;
 typedef   signed long   int32_t;
-/*
- typedef unsigned long uint64_t;
- typedef signed long int64_t;
- */
 typedef unsigned long long uint64_t;
 typedef long long int64_t;
 #endif
 
-/* Windows stuff */
-
-/*
-#if defined _WIN32 || defined __WINS__ || defined _MSC_VER
-#  define inline __inline
-#  define snprintf _snprintf
-#  ifndef __MINGW32__
-#    define usleep(x) Sleep(((x)+999)/1000)
-#  endif
-
-#  define HAS_FIBERS 1
-
-#  define ON_WINDOWS 1
-
-// Enable fibers.
-#  ifndef _WIN32_WINNT
-#    define _WIN32_WINNT 0x0400
-#  endif
-
-// This also includes windows.h.
-#  include <winsock2.h>
-
-#  if !defined __MINGW32__
-#    if defined BUILDING_BASEKIT_DLL || defined BUILDING_IOVMALL_DLL
-#      define BASEKIT_API __declspec(dllexport)
-#    else
-#      define BASEKIT_API __declspec(dllimport)
-#    endif
-#  else
-#    define BASEKIT_API
-#  endif
-*/
 #if defined(WIN32) || defined(__WINS__) || defined(__MINGW32__) || defined(_MSC_VER)
+// TODO:  Get rid of all the inlines -DLF
 #define inline __inline
-#define snprintf _snprintf
-#ifndef __MINGW32__
-#define usleep(x) Sleep(((x)+999)/1000)
-#endif
-#define ssize_t SSIZE_T
 
 #define HAS_FIBERS 1
 
@@ -84,21 +46,12 @@ typedef long long int64_t;
 // this also includes windows.h
 #include <winsock2.h>
 
-//#if !defined(__MINGW32__)
 #if defined(BUILDING_BASEKIT_DLL) || defined(BUILDING_IOVMALL_DLL)
 #define BASEKIT_API __declspec(dllexport)
 #else
 #define BASEKIT_API __declspec(dllimport)
 #endif
-//#else
-//#define BASEKIT_API
-//#endif
 
-/*
-#  ifndef _SYS_STDINT_H_
-#    include "PortableStdint.h"
-#  endif
- */
 
 #  if !defined __MINGW32__
 /* disable compile warnings which are always treated
