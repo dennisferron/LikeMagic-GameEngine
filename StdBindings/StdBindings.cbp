@@ -9,7 +9,7 @@
 			<Target title="Debug Linux">
 				<Option output="libStdBindings-Linux" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/Debug-Linux/" />
+				<Option object_output="obj\Debug-Linux\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -21,7 +21,7 @@
 			<Target title="Release Linux">
 				<Option output="libStdBindings-Linux" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/Release-Linux/" />
+				<Option object_output="obj\Release-Linux\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -36,7 +36,19 @@
 			<Target title="Debug Mac">
 				<Option output="libStdBindings-Mac" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/Debug-Mac/" />
+				<Option object_output="obj\Debug-Mac\" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Debug Windows">
+				<Option output="libStdBindings-Windows" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj\Debug-Windows\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -58,16 +70,16 @@
 			<Add option="-Wno-ignored-qualifiers" />
 			<Add option="-DBUILDING_DLL_STD_BINDINGS" />
 			<Add directory="Include" />
-			<Add directory="../Include" />
-			<Add directory="../../Common/boost" />
-			<Add directory="../../Iocaste/iovm/source" />
-			<Add directory="../../Iocaste/basekit/source" />
-			<Add directory="../../Iocaste/garbagecollector/source" />
-			<Add directory="../../Iocaste/Include/Iocaste/CShims" />
+			<Add directory="..\Include" />
+			<Add directory="..\..\Common\boost" />
+			<Add directory="..\..\Iocaste\iovm\source" />
+			<Add directory="..\..\Iocaste\basekit\source" />
+			<Add directory="..\..\Iocaste\garbagecollector\source" />
+			<Add directory="..\..\Iocaste\Include\Iocaste\CShims" />
 		</Compiler>
-		<Unit filename="Include/LikeMagic/StdBindings/StdBindings.hpp" />
-		<Unit filename="Source/RuntimeTypeSystem.cpp" />
-		<Unit filename="Source/StdBindings.cpp" />
+		<Unit filename="Include\LikeMagic\StdBindings\StdBindings.hpp" />
+		<Unit filename="Source\RuntimeTypeSystem.cpp" />
+		<Unit filename="Source\StdBindings.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
