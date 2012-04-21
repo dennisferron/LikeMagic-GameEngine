@@ -15,7 +15,7 @@ Aug 2004 - removed {} from op chars
 //#define LEXER_DEBUG
 //#define LEXER_DEBUG_TOKENS
 //#define TEST_INLINE inline
-#define TEST_INLINE 
+#define TEST_INLINE
 
 static IoToken *IoLexer_currentToken(IoLexer *self)
 {
@@ -634,7 +634,7 @@ int IoLexer_readMessage(IoLexer *self)
 				*/
 				if (groupChar == '(')
 				{
-					IoLexer_readMessage_error(self, "unmatched ()s");
+					IoLexer_readMessage_error(self, "unmatched ()s or double commas somewhere");
 				}
 				else if (groupChar == '[')
 				{
