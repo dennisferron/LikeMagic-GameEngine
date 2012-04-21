@@ -13,7 +13,7 @@
 				<Option external_deps="libIoCaste-Mac.a;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="../../wayup/Engine/Startup.io" />
+				<Option parameters="../../wayup/Engine/Startup.io --runCLI" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-Wextra" />
@@ -85,6 +85,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="-Werror=return-type" />
+			<Add option="-Werror=conversion-null" />
 			<Add option="-fdiagnostics-show-option" />
 			<Add option="-Wno-unused-variable" />
 			<Add option="-Wno-unused-parameter" />

@@ -1,6 +1,9 @@
 
+#pragma once
+
 #include "boost/exception/exception.hpp"
 #include <stdexcept>
+#include <vector>
 
 struct IoState;
 struct CollectorMarker;
@@ -12,6 +15,8 @@ namespace Iocaste
 {
     class Exception : public boost::exception, public std::exception
     {
+    public:
+        typedef boost::error_info<struct tag_file_name, std::vector<std::string>> file_name_info;
     };
 
     class ScriptException : public Exception

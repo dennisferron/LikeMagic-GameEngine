@@ -14,6 +14,10 @@ using namespace Interpreter;
 #include "LikeMagic/Utility/UserMacros.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 
+#include "Iocaste/Exception.hpp"
+#include "boost/exception/info.hpp"
+#include "boost/exception/get_error_info.hpp"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
@@ -117,14 +121,29 @@ int main(int argc, const char *argv[])
     }
     catch (Iocaste::ScriptException const& ex)
     {
-        // Attempting to access ex.what() here is stepping back into Io and never coming out ??
         cout << "main.cpp caught unhandled script exception: " << ex.what() << endl << flush;
+
+        if( auto err=boost::get_error_info<Iocaste::Exception::file_name_info>(ex) )
+        {
+            for (int i=0; i<err->size(); ++i)
+                std::cout << std::string(i, '\t')  << "via file: " << (*err)[i] << endl << flush;
+        }
     }
-    catch (std::logic_error e)
+    catch (Iocaste::Exception const& iex)
+    {
+        cout << "main.cpp caught unhandled boost exception: " << iex.what() << endl << flush;
+
+        if( auto err=boost::get_error_info<Iocaste::Exception::file_name_info>(iex) )
+        {
+            for (int i=0; i<err->size(); ++i)
+                std::cout << std::string(i, '\t')  << "via file: " << (*err)[i] << endl << flush;
+        }
+    }
+    catch (std::logic_error const& e)
     {
         cout << "LikeMagic exited with exception '" << e.what() << "'" << std::endl;
     }
-    catch (std::exception e)
+    catch (std::exception const& e)
     {
         cout << "Exited with exception " << e.what() << std::endl;
     }

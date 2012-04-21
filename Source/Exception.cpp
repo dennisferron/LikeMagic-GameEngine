@@ -128,7 +128,7 @@ extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
 
     //cout << "doTry " << thisInstance << endl;
 
-    intptr_t mark = NULL;
+    intptr_t mark = 0;
 
     try
     {

@@ -28,6 +28,8 @@ When cloned, an Object will call its init slot (with no arguments).
 #include <string.h>
 #include <stddef.h>
 
+#include "IoObjectImpl.h"
+
 IoObject *IoObject_activateFunc(IoObject *self,
 								IoObject *target,
 								IoObject *locals,
@@ -1421,27 +1423,6 @@ IO_METHOD(IoObject, doString)
 	return result;
 }
 
-IO_METHOD(IoObject, doFile)
-{
-	/*doc Object doFile(pathString)
-	Evaluates the File in the context of the receiver. Returns the result.
-	pathString is relative to the current working directory.
-	*/
-
-	IoSymbol *path = IoMessage_locals_symbolArgAt_(m, locals, 0);
-	IoFile *file = IoFile_newWithPath_(IOSTATE, path);
-	IoSymbol *string = (IoSymbol *)IoSeq_rawAsSymbol(IoFile_contents(file, locals, m));
-
-	if (IoSeq_rawSize(string))
-	{
-		return IoObject_rawDoString_label_(self, string, path);
-	}
-	else
-	{
-		return IONIL(self);
-	}
-}
-
 IO_METHOD(IoObject, isIdenticalTo)
 {
 	/*doc Object isIdenticalTo(aValue)
@@ -1813,8 +1794,8 @@ IO_METHOD(IoObject, do)
 IO_METHOD(IoObject, lexicalDo)
 {
 	/*doc Object lexicalDo(expression)
-	Evaluates the message in the context of the receiver. 
-	The lexical context is added as a proto of the receiver while the argument is evaluated. 
+	Evaluates the message in the context of the receiver.
+	The lexical context is added as a proto of the receiver while the argument is evaluated.
 	Returns self.
 	*/
 
