@@ -16,7 +16,8 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add option="-DIO_USE_SIMD" />
+					<Add option="-Dx_IO_USE_SIMD" />
+					<Add option="-D__SIMD_EMU__" />
 				</Compiler>
 				<ExtraCommands>
 					<Add before="rm -f libIocaste-Mac.a" />
@@ -33,7 +34,8 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add option="-DIO_USE_SIMD" />
+					<Add option="-Dx_IO_USE_SIMD" />
+					<Add option="-D__SIMD_EMU__" />
 				</Compiler>
 			</Target>
 			<Target title="Debug Windows">
@@ -47,7 +49,8 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-msse" />
-					<Add option="-DIO_USE_SIMD" />
+					<Add option="-Dx_IO_USE_SIMD" />
+					<Add option="-D__SIMD_EMU__" />
 				</Compiler>
 			</Target>
 		</Build>
