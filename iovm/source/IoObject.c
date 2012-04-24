@@ -178,7 +178,7 @@ IoObject *IoObject_protoFinish(void *state)
 	{"print", IoObject_lobbyPrint},
 	{"do", IoObject_do},
 	{"lexicalDo", IoObject_lexicalDo},
-	{"nonlexicalDo", IoObject_do},
+	{"nonlexicalDo", IoObject_nonlexicalDo},
 	{"message", IoObject_message},
 	{"doMessage", IoObject_doMessage},
 	{"doString", IoObject_doString},
