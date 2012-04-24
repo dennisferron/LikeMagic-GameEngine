@@ -5,7 +5,9 @@
 Contains methods related to the IoVM.
 */
 
+#ifdef __MINGW32__
 #include <io.h>
+#endif
 
 #include "IoSystem.h"
 #include "IoNumber.h"
