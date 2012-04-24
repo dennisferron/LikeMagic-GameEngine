@@ -18,7 +18,7 @@ typedef Iocaste::Stack<void*>::mark_type mark_type;
 extern "C" {
 
 // Used in IO_METHOD(IoCoroutine, ioStack)
-BASEKIT_API List *Stack_asList(const Stack *self)
+List *Stack_asList(const Stack *self)
 {
 	List *list = List_new();
 
@@ -40,7 +40,7 @@ void Stack_do_(const Stack *self, StackDoCallback *callback)
 
 
 // Used in IoCoroutine *IoCoroutine_proto(void *state)
-BASEKIT_API Stack *Stack_new(void)
+Stack *Stack_new(void)
 {
     Stack* s = new Stack();
     s->impl = new Iocaste::Stack<void*>();
@@ -48,7 +48,7 @@ BASEKIT_API Stack *Stack_new(void)
 }
 
 // Used in void IoCoroutine_free(IoCoroutine *self)
-BASEKIT_API void Stack_free(Stack *self)
+void Stack_free(Stack *self)
 {
     delete reinterpret_cast<Iocaste::Stack<void*>*>(self->impl);
     delete self;
