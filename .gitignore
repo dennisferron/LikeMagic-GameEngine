@@ -1,6 +1,11 @@
 #Ignore codeblocks temporary files and layout files (layout files change often, making a repo look modified when it is not)
 *.cbTemp
 *.layout
+*.depend
+
+# Ignore Mac xcode build project
+Deps/irrlicht/source/Irrlicht/MacOSX/build/*
+Deps/irrlicht/source/Irrlicht/MacOSX/MacOSX.xcodeproj/*
 
 # Don't allow adding of files of libraries we can't redistribute.
 Deps/raknet/*
