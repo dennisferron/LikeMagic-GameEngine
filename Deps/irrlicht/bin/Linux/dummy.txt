@@ -1,0 +1,1 @@
+Git requires some content to force this directory to be created.
