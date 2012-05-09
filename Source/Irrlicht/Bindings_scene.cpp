@@ -46,11 +46,19 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
     LM_FUNC_OVERLOAD(ISceneManager, "getMeshFromPath", getMesh, IAnimatedMesh*, path const&);
     LM_FUNC_OVERLOAD(ISceneManager, "createOctreeTriangleSelector", createOctreeTriangleSelector, ITriangleSelector*, IMesh*, ISceneNode*, s32)
 
+#ifdef IRR_1_7
     LM_FUNC_OVERLOAD(ISceneManager, "loadSceneFromIReadFile", loadScene, bool, IReadFile*, ISceneUserDataSerializer*);
     LM_FUNC_OVERLOAD(ISceneManager, "loadSceneFromPath", loadScene, bool, path const&, ISceneUserDataSerializer*);
 
     LM_FUNC_OVERLOAD(ISceneManager, "saveSceneToIReadFile", saveScene, bool, IWriteFile*, ISceneUserDataSerializer*);
     LM_FUNC_OVERLOAD(ISceneManager, "saveSceneToPath", saveScene, bool, path const&, ISceneUserDataSerializer*);
+#else  // Changed in 1.8
+    LM_FUNC_OVERLOAD(ISceneManager, "loadSceneFromIReadFile", loadScene, bool, IReadFile*, ISceneUserDataSerializer*, ISceneNode*);
+    LM_FUNC_OVERLOAD(ISceneManager, "loadSceneFromPath", loadScene, bool, path const&, ISceneUserDataSerializer*, ISceneNode*);
+
+    LM_FUNC_OVERLOAD(ISceneManager, "saveSceneToIReadFile", saveScene, bool, IWriteFile*, ISceneUserDataSerializer*, ISceneNode*);
+    LM_FUNC_OVERLOAD(ISceneManager, "saveSceneToPath", saveScene, bool, path const&, ISceneUserDataSerializer*, ISceneNode*);
+#endif
 
     LM_FUNC_OVERLOAD(ISceneManager, "addTerrainSceneNodeFromIReadFile", addTerrainSceneNode,
 		ITerrainSceneNode*, // return type
