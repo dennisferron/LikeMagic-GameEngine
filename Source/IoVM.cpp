@@ -302,8 +302,6 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 
     try
     {
-        //std::cout << "perform "  << method_name << std::endl;
-
         if (!IOSTATE->callbackContext)
             throw std::logic_error("The IoState does not have a callbackContext (supposed to contain pointer to IoVM object).");
 
@@ -313,6 +311,7 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
             throw std::logic_error("Failed to retrieve IoVM object from IoState callback context.");
 
         std::string method_name = CSTRING(IoMessage_name(m));
+        //std::cout << "perform "  << method_name << std::endl << std::flush;
 
         //if (method_name == "unsafe_ptr_cast")
         //    cout << "unsafe_ptr_cast used" << endl;
