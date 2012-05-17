@@ -290,6 +290,13 @@ IoObject* IoVM::proxy_to_io_obj(AbstractCppObjProxy* proxy)
     return clone;
 }
 
+void build_arg_exception(string method_name, TypeInfoList arg_types, int i, int arg_count, std::exception const& e)
+{
+    throw std::logic_error(
+           std::string() + "In call of method " + method_name +
+           ", error converting argument " + boost::lexical_cast<std::string>(i) + " of " + boost::lexical_cast<std::string>(arg_count) +
+           " to type " + arg_types[i].describe() + " exception was: " + e.what());
+}
 
 IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 {
@@ -340,13 +347,9 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
                 //std::cout << "arg " << i << " expects " << arg_types[i].describe() << " got " << expr->get_type().describe() << std::endl;
                 args.push_back(expr);
             }
-            catch (std::logic_error le)
+            catch (std::exception const& e)
             {
-                throw std::logic_error(std::string() + "Error converting argument " + boost::lexical_cast<std::string>(i) + ": " + le.what());
-            }
-            catch (std::exception e)
-            {
-                throw std::logic_error(std::string() + "Error converting argument " + boost::lexical_cast<std::string>(i) + ": " + e.what());
+                build_arg_exception(method_name, arg_types, i, arg_count, e);
             }
         }
 

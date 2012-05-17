@@ -16,6 +16,12 @@ using namespace std;
 
 using namespace Iocaste;
 
+char const* Iocaste::Exception::what() const throw()
+{
+    return "Iocaste::Exception";
+}
+
+
 ScriptException::ScriptException(IoObject* self_)
     : self(self_), errorText(getErrorText(self_)), backTraceString(getBackTraceString(self))
 {
