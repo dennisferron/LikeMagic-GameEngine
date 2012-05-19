@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include <tuple>
 #include <vector>
+#include <tuple>
 
 #include "LikeMagic/Utility/IndexPack.hpp"
 #include "LikeMagic/Utility/TypePack.hpp"

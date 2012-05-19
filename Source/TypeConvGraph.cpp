@@ -112,7 +112,11 @@ struct FindType
         if (u == dest)
         {
             found_conv = true;
-            throw TypeFoundException("Found: " + boost::lexical_cast<std::string>(u));
+
+            // I believe Djikstra's shortest paths requires NOT doing an early exit,
+            // and anyway not throwing here allows us to turn "Catch C++ Exceptions"
+            // back on in code::blocks to catch error exceptions.
+            //throw TypeFoundException("Found: " + boost::lexical_cast<std::string>(u));
         }
     }
 };
@@ -230,101 +234,48 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeIndex from, TypeInd
         bool found_conv = false;
         FindType finder(dest, found_conv);
 
-        try
-        {
-            // Marker for the (beginning) end of the chain
-            pred[source] = source;
+        // Marker for the (beginning) end of the chain
+        pred[source] = source;
 
-            // Will it default to something sensible if I don't pass a distance map?
-            vector<float> distances(num_vertices(graph));
+        // Will it default to something sensible if I don't pass a distance map?
+        vector<float> distances(num_vertices(graph));
 
-            dijkstra_shortest_paths
+        dijkstra_shortest_paths
+        (
+            graph,
+            source,
+            predecessor_map
             (
-                graph,
-                source,
-                predecessor_map
+                &pred[0]
+            )
+            .
+            weight_map
+            (
+                get
                 (
-                    &pred[0]
+                    &edge_info::cost,
+                    graph
                 )
-                .
-                weight_map
+            )
+            .
+            distance_map
+            (
+                make_iterator_property_map
                 (
+                    distances.begin(),
                     get
                     (
-                        &edge_info::cost,
+                        vertex_index,
                         graph
                     )
                 )
-                .
-                distance_map
-                (
-                    make_iterator_property_map
-                    (
-                        distances.begin(),
-                        get
-                        (
-                            vertex_index,
-                            graph
-                        )
-                    )
-                )
-                .
-                visitor
-                (
-                    make_dijkstra_visitor(finder)
-                )
-                /*
-                .
-                visitor
-                (
-                    make_dijkstra_visitor
-                    (
-                        std::make_pair
-                        (
-                            finder,
-                            boost::record_predecessors
-                            (
-                                &pred[0],
-                                boost::on_tree_edge()
-                            )
-                        )
-                    )
-                )
-                */
-            );
-
-            /*
-            boost::breadth_first_search
+            )
+            .
+            visitor
             (
-                graph,
-                source,
-                boost::visitor
-                (
-                    boost::make_bfs_visitor
-                    (
-                        std::make_pair
-                        (
-                            finder,
-                            boost::record_predecessors
-                            (
-                                &pred[0],
-                                boost::on_tree_edge()
-                            )
-                        )
-                    )
-                )
-            );
-
-            */
-        }
-        catch (FindType::TypeFoundException const& tfe)
-        {
-            //std::cout << "Found the type. " << tfe.msg << std::endl;
-        }
-        catch (...)
-        {
-            //std::cout << "Unknown exception in type conv graph search." << std::endl;
-        }
+                make_dijkstra_visitor(finder)
+            )
+        );
 
         if (!finder.found_conv || pred[dest] == no_vertex)
             return conv_cache[key] = p_chain_t(); // NULL
