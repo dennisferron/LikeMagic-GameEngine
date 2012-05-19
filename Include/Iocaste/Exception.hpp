@@ -17,6 +17,7 @@ namespace Iocaste
     {
     public:
         typedef boost::error_info<struct tag_file_name, std::vector<std::string>> file_name_info;
+        virtual char const* what() const throw();
     };
 
     class ScriptException : public Exception
