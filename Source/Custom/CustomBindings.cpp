@@ -26,12 +26,16 @@
 
 #include "IoObject.h"
 
+#include "Bindings/Custom/SceneNodePtrTest.hpp"
+
 using namespace LikeMagic;
 
 using namespace irr;
 using namespace irr::scene;
 
+
 namespace Bindings { namespace Custom {
+
 
 // Support FlagBits for Irrlicht Scene Node* ID
 int  flag_bits_get_value(ISceneNode* node)            { return node->getID();       }
@@ -44,6 +48,11 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_SET_TYPE_INFO(type_sys)
 
     auto ns_custom = Namespace::global(type_sys).subspace("Custom");
+
+    LM_CLASS(ns_custom, SceneNodePtrTest)
+    LM_STATIC_MEMBER_FUNC(SceneNodePtrTest,
+        (printSceneNodePtr)(sceneNodePtrToVoidPtr)(voidPtrToSceneNodePtr)
+        (sceneNodePtrToString)(stringToSceneNodePtr)(addLightSceneNode))
 
     LM_CLASS(ns_custom, btMotionState)
     LM_CLASS(ns_custom, ISceneNodeAnimator)
