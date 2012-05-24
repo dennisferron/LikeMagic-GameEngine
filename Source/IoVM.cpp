@@ -347,6 +347,10 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
                 //std::cout << "arg " << i << " expects " << arg_types[i].describe() << " got " << expr->get_type().describe() << std::endl;
                 args.push_back(expr);
             }
+            catch (ScriptException const&)
+            {
+                throw;
+            }
             catch (std::exception const& e)
             {
                 build_arg_exception(method_name, arg_types, i, arg_count, e);
