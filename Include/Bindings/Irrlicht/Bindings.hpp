@@ -30,6 +30,8 @@ void add_bindings_core(LikeMagic::RuntimeTypeSystem& type_sys);
 void add_bindings_custom(LikeMagic::RuntimeTypeSystem& type_sys);
 void add_bindings_irr_io(LikeMagic::RuntimeTypeSystem& type_sys);
 
+void add_bindings_orientation(LikeMagic::RuntimeTypeSystem& type_sys);
+
 void add_protos_irr(Iocaste::LikeMagicAdapters::IoVM& vm);
 
 }}

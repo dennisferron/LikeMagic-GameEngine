@@ -22,6 +22,8 @@ namespace Bindings { namespace Irrlicht {
 
 void add_bindings_custom(RuntimeTypeSystem& type_sys)
 {
+    add_bindings_orientation(type_sys);
+
     auto ns_irr_custom = Namespace::global(type_sys).subspace("irr").subspace("custom");
 
     LM_CLASS(ns_irr_custom, ISceneNode)

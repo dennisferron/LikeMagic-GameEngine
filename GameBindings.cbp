@@ -114,6 +114,7 @@
 		<Unit filename="Include/Bindings/IrrKlang/Bindings.hpp" />
 		<Unit filename="Include/Bindings/IrrKlang/Protos.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/Bindings.hpp" />
+		<Unit filename="Include/Bindings/Irrlicht/OrientationHelperSceneNode.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/Protos.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/ScriptedDataSerializer.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/ScriptedEventReceiver.hpp" />
@@ -157,6 +158,7 @@
 		<Unit filename="Source/Custom/SoftBodyMeshSynchronizer.cpp" />
 		<Unit filename="Source/IrrKlang/IrrKlangBindings.cpp" />
 		<Unit filename="Source/IrrKlang/IrrKlangProtos.cpp" />
+		<Unit filename="Source/Irrlicht/Bindings_OrientationHelperSceneNode.cpp" />
 		<Unit filename="Source/Irrlicht/Bindings_core.cpp" />
 		<Unit filename="Source/Irrlicht/Bindings_custom.cpp" />
 		<Unit filename="Source/Irrlicht/Bindings_gui.cpp" />
@@ -166,6 +168,7 @@
 		<Unit filename="Source/Irrlicht/Bindings_video.cpp" />
 		<Unit filename="Source/Irrlicht/IrrlichtBindings.cpp" />
 		<Unit filename="Source/Irrlicht/IrrlichtProtos.cpp" />
+		<Unit filename="Source/Irrlicht/OrientationHelperSceneNode.cpp" />
 		<Unit filename="Source/Irrlicht/ScriptedDataSerializer.cpp" />
 		<Unit filename="Source/Irrlicht/ScriptedEventReceiver.cpp" />
 		<Unit filename="Source/Irrlicht/ScriptedSceneNode.cpp" />
