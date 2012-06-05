@@ -28,7 +28,7 @@
 
 
 
-#include <Irrlicht.h>
+#include <irrlicht.h>
 
 using namespace irr;
 
