@@ -1,21 +1,26 @@
 #pragma once
 
 #include "pthread.h"
+#include <iostream>
 
 class Worker
 {
 private:
 	pthread_t thread;
-	istream& input;
-	ostream& output;
+	std::istream& input;
+	std::ostream& output;
+    std::string debug_name;
+    std::ostream& debug_log;
+	//pthread_mutex record_mutex;
 
 	static void* callback(void* obj);
 	volatile bool stop;
+	volatile bool is_running;
 	void run_loop();
 
 public:
-	Worker(istream& input, ostream& output);
+	Worker(std::istream& input_, std::ostream& output_, std::string debug_name_, std::ostream& debug_log_);
 	~Worker();
 	void stop_thread();
-	void is_stopped();
+	bool is_stopped() const;
 };

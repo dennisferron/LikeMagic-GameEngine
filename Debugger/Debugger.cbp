@@ -31,12 +31,14 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add directory="Include" />
 			<Add directory="../../Common/process" />
 			<Add directory="../../Common/boost_1_49_0" />
 		</Compiler>
 		<Linker>
 			<Add option="-lpthread" />
-			<Add library="../../Common/boost_1_49_0/bin.v2/libs/system/build/gcc-4.5.2/release/link-static/threading-multi/libboost_system.a" />
+			<Add library="../../Common/boost_1_49_0/build-gcc-linux/libboost_filesystem.a" />
+			<Add library="../../Common/boost_1_49_0/build-gcc-linux/libboost_system.a" />
 		</Linker>
 		<Unit filename="Include/Worker.hpp" />
 		<Unit filename="Source/Worker.cpp" />
