@@ -34,14 +34,10 @@ int main(int argc, char* argv[])
     bp::postream& os = c.get_stdin();
     bp::pistream& is = c.get_stdout();
 
-    //std::ofstream debug_log("debug.log", ios::out | ios::binary);
     std::ofstream debug_log("debug.log", ofstream::out);
 
-
-
-    Worker worker1(std::cin, os, "from cin to child stdin", debug_log);
-    Worker worker2(is, std::cout, "from child stdout to cout", debug_log);
-    //Worker worker2(std::cin, std::cout, "from child stdout to cout", debug_log);
+    Worker worker1(std::cin, os, true, "from cin to child stdin", debug_log);
+    Worker worker2(is, std::cout, false, "from child stdout to cout", debug_log);
 
     while (!worker2.is_stopped())
     {
@@ -55,3 +51,4 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+
