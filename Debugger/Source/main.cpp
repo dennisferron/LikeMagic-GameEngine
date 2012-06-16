@@ -39,52 +39,47 @@ int main(int argc, char* argv[])
     int is_fd = is.handle().get();
 
     struct pollfd fds[1];
-    int timeout_msecs = 5000;
     fds[0].fd = is_fd;
 
     while (1)
     {
-        int ret = poll(fds, 1, timeout_msecs);
-        if (ret > 0)
+        std::string s;
+        int failcount = 0;
+        while (true)
         {
-            if (fds[0].revents & POLLWRBAND)
+            bool is_eof = is.eof();
+            int ret = poll(fds, 1, 0);
+            bool has_data = (ret > 0);
+
+            std::cerr << " is_eof = " << " ret = " << ret << " has_data = " << has_data << std::endl;
+
+            if (is_eof || !has_data)
             {
-                std::cerr << "Priority data" << std::endl;
-            }
-            if (fds[0].revents & POLLOUT)
-            {
-                std::cerr << "Regular data" << std::endl;
-                std::string s;
-                while (true)
+                ++failcount;
+                if (failcount > 3)
+                    break;
+                else
                 {
-                    bool is_eof = is.eof();
-                    ret = poll(fds, 1, 0);
-                    bool has_data = (ret > 0);
-                    if (!is_eof && has_data)
-                    {
-                        char c;
-                        is.get(c);
-                        std::cout << c;
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    usleep(1000000L);
                 }
-                std::cout << std::flush;
             }
-            if (fds[0].revents & POLLHUP)
+            else
             {
-                std::cerr << "Stream hungup" << std::endl;
-                break;
+                char c;
+                ssize_t bytes_read = read(is_fd, &c, 1);
+                //is.get(c);
+                std::cout << c << std::flush;
+                std::cerr << "bytes_read = " << bytes_read << std::endl;
             }
         }
-        std::cerr << "wait on input" << std::endl;
+        std::cout << std::flush;
+
+        //std::cerr << "wait on input" << std::endl;
         string line;
-        if (std::getline(is, line))
+        if (std::getline(std::cin, line))
         {
-            std::cerr << "getline" << std::endl;
-            os << line << std::endl;
+            //std::cerr << "getline" << std::endl;
+            os << line << std::endl << std::flush;
         }
     }
 
