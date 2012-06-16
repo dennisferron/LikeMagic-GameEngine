@@ -8,7 +8,9 @@
 using namespace std;
 namespace bp = ::boost::process;
 
-#include "Worker.hpp"
+//#include "Worker.hpp"
+
+#include "poll.h"
 
 bp::child start_child(std::vector<string> args)
 {
@@ -34,6 +36,60 @@ int main(int argc, char* argv[])
     bp::postream& os = c.get_stdin();
     bp::pistream& is = c.get_stdout();
 
+    int is_fd = is.handle().get();
+
+    struct pollfd fds[1];
+    int timeout_msecs = 5000;
+    fds[0].fd = is_fd;
+
+    while (1)
+    {
+        int ret = poll(fds, 1, timeout_msecs);
+        if (ret > 0)
+        {
+            if (fds[0].revents & POLLWRBAND)
+            {
+                std::cerr << "Priority data" << std::endl;
+            }
+            if (fds[0].revents & POLLOUT)
+            {
+                std::cerr << "Regular data" << std::endl;
+                std::string s;
+                while (true)
+                {
+                    bool is_eof = is.eof();
+                    ret = poll(fds, 1, 0);
+                    bool has_data = (ret > 0);
+                    if (!is_eof && has_data)
+                    {
+                        char c;
+                        is.get(c);
+                        std::cout << c;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                std::cout << std::flush;
+            }
+            if (fds[0].revents & POLLHUP)
+            {
+                std::cerr << "Stream hungup" << std::endl;
+                break;
+            }
+        }
+        std::cerr << "wait on input" << std::endl;
+        string line;
+        if (std::getline(is, line))
+        {
+            std::cerr << "getline" << std::endl;
+            os << line << std::endl;
+        }
+    }
+
+    /*
+
     std::ofstream debug_log("debug.log", ofstream::out);
 
     Worker worker1(std::cin, os, true, "from cin to child stdin", debug_log);
@@ -48,6 +104,8 @@ int main(int argc, char* argv[])
     worker1.stop_thread();
 
     c.wait();
+
+    */
 
     return 0;
 }

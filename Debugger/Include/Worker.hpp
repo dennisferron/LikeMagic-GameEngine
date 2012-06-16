@@ -3,6 +3,8 @@
 #include "pthread.h"
 #include <iostream>
 
+#include "ProducerConsumerQueue.hpp"
+
 class Worker
 {
 private:
