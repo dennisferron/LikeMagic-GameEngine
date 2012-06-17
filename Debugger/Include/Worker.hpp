@@ -3,18 +3,21 @@
 #include "pthread.h"
 #include <iostream>
 
-#include "ProducerConsumerQueue.hpp"
+#include "AbstractInput.hpp"
+#include "AbstractOutput.hpp"
+
+namespace Iocaste {
+    namespace Debugger {
 
 class Worker
 {
 private:
 	pthread_t thread;
-	std::istream& input;
-	std::ostream& output;
+	AbstractInput<std::string>& input;
+	AbstractOutput<std::string>& output;
 	bool line_mode;
     std::string debug_name;
     std::ostream& debug_log;
-	//pthread_mutex record_mutex;
 
 	static void* callback(void* obj);
 	volatile bool stop;
@@ -23,8 +26,11 @@ private:
 	void run_loop();
 
 public:
-	Worker(std::istream& input_, std::ostream& output_, bool line_mode_, std::string debug_name_, std::ostream& debug_log_);
+	Worker(AbstractInput<std::string>& input_, AbstractOutput<std::string>& output_, std::string debug_name_, std::ostream& debug_log_);
 	virtual ~Worker();
 	void stop_thread();
 	bool is_stopped() const;
 };
+
+    }
+}

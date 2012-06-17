@@ -8,9 +8,15 @@
 using namespace std;
 namespace bp = ::boost::process;
 
-//#include "Worker.hpp"
+#include "Worker.hpp"
+#include "CharInput.hpp"
+#include "LineInput.hpp"
+#include "StreamOutput.hpp"
+#include "QueueInput.hpp"
+#include "QueueOutput.hpp"
+#include "LookForPrompt.hpp"
 
-#include "poll.h"
+using namespace Iocaste::Debugger;
 
 bp::child start_child(std::vector<string> args)
 {
@@ -36,71 +42,31 @@ int main(int argc, char* argv[])
     bp::postream& os = c.get_stdin();
     bp::pistream& is = c.get_stdout();
 
-    int is_fd = is.handle().get();
-
-    struct pollfd fds[1];
-    fds[0].fd = is_fd;
-
-    while (1)
-    {
-        std::string s;
-        int failcount = 0;
-        while (true)
-        {
-            bool is_eof = is.eof();
-            int ret = poll(fds, 1, 0);
-            bool has_data = (ret > 0);
-
-            std::cerr << " is_eof = " << " ret = " << ret << " has_data = " << has_data << std::endl;
-
-            if (is_eof || !has_data)
-            {
-                ++failcount;
-                if (failcount > 3)
-                    break;
-                else
-                {
-                    usleep(1000000L);
-                }
-            }
-            else
-            {
-                char c;
-                ssize_t bytes_read = read(is_fd, &c, 1);
-                //is.get(c);
-                std::cout << c << std::flush;
-                std::cerr << "bytes_read = " << bytes_read << std::endl;
-            }
-        }
-        std::cout << std::flush;
-
-        //std::cerr << "wait on input" << std::endl;
-        string line;
-        if (std::getline(std::cin, line))
-        {
-            //std::cerr << "getline" << std::endl;
-            os << line << std::endl << std::flush;
-        }
-    }
-
-    /*
-
     std::ofstream debug_log("debug.log", ofstream::out);
 
-    Worker worker1(std::cin, os, true, "from cin to child stdin", debug_log);
-    Worker worker2(is, std::cout, false, "from child stdout to cout", debug_log);
+    CharInput from_gdb(is);
+    StreamOutput to_gdb(os);
 
-    while (!worker2.is_stopped())
+    LineInput from_user(std::cin);
+    StreamOutput to_user(std::cout);
+
+    ProducerConsumerQueue<string> gdb_chunks;
+    LookForPrompt look_for_prompt(gdb_chunks, "(gdb) ");
+    QueueInput<string> get_gdb_chunks(gdb_chunks);
+
+    Worker gdb_writer(from_user, to_gdb, "from cin to gdb cin", debug_log);
+    Worker gdb_reader(from_gdb, look_for_prompt, "from gdb cout to find prompt", debug_log);
+    Worker gdb_to_screen(get_gdb_chunks, to_user, "from gdb chunks to cout", debug_log);
+
+    while (!gdb_reader.is_stopped())
     {
         pthread_yield();
         usleep(100);
     }
 
-    worker1.stop_thread();
+    gdb_writer.stop_thread();
 
     c.wait();
-
-    */
 
     return 0;
 }

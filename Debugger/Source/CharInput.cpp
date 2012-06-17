@@ -1,4 +1,6 @@
 #include "CharInput.hpp"
+#include <boost/algorithm/string/predicate.hpp>
+
 
 using namespace std;
 using namespace Iocaste::Debugger;
@@ -15,14 +17,8 @@ bool CharInput::HasData() const
 
 string CharInput::ReadData()
 {
-    string result;
-    while (input.good())
-    {
-        char c ;
-        input.get(c);
-        debug_log << c << std::flush;
-        output    << c << std::flush;
-    }
-
+    char c;
+    stream.get(c);
+    return string(1, c);
 }
 

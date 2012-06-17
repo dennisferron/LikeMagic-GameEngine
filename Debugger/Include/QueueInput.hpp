@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ProducerConsumerQueue.hpp"
+#include "AbstractInput.hpp"
 
 namespace Iocaste {
     namespace Debugger {

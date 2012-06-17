@@ -1,3 +1,4 @@
+#pragma once
 
 namespace Iocaste {
     namespace Debugger {

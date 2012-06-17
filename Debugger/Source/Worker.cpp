@@ -1,8 +1,11 @@
 #include "Worker.hpp"
 
-Worker::Worker(std::istream& input_, std::ostream& output_, bool line_mode_, std::string debug_name_, std::ostream& debug_log_)
+using namespace std;
+using namespace Iocaste::Debugger;
+
+Worker::Worker(AbstractInput<string>& input_, AbstractOutput<string>& output_, string debug_name_, std::ostream& debug_log_)
     :
-        input(input_), output(output_), line_mode(line_mode_),
+        input(input_), output(output_),
         debug_name(debug_name_), debug_log(debug_log_),
         stop(false), is_running(false)
 {
@@ -33,22 +36,13 @@ void Worker::run_loop()
 {
     std::string line;
 
-    if (line_mode)
+    while (!stop)
     {
-        while (std::getline(input, line) && !stop)
+        if (input.HasData())
         {
-            debug_log   << line << std::endl << std::flush;
-            output      << line << std::endl << std::flush;
-        }
-    }
-    else
-    {
-        while (input.good())
-        {
-            char c ;
-            input.get(c);
-            debug_log << c << std::flush;
-            output    << c << std::flush;
+            string s = input.ReadData();
+            debug_log << s << std::flush;
+            output.WriteData(s);
         }
     }
 

@@ -40,11 +40,23 @@
 			<Add library="../../Common/boost_1_49_0/build-gcc-linux/libboost_filesystem.a" />
 			<Add library="../../Common/boost_1_49_0/build-gcc-linux/libboost_system.a" />
 		</Linker>
+		<Unit filename="Include/AbstractInput.hpp" />
+		<Unit filename="Include/AbstractOutput.hpp" />
+		<Unit filename="Include/CharInput.hpp" />
+		<Unit filename="Include/LineInput.hpp" />
 		<Unit filename="Include/Log.hpp" />
+		<Unit filename="Include/LookForPrompt.hpp" />
 		<Unit filename="Include/ProducerConsumerQueue.hpp" />
+		<Unit filename="Include/QueueInput.hpp" />
+		<Unit filename="Include/QueueOutput.hpp" />
+		<Unit filename="Include/StreamOutput.hpp" />
 		<Unit filename="Include/Thread.hpp" />
 		<Unit filename="Include/Worker.hpp" />
+		<Unit filename="Source/CharInput.cpp" />
+		<Unit filename="Source/LineInput.cpp" />
 		<Unit filename="Source/Log.cpp" />
+		<Unit filename="Source/LookForPrompt.cpp" />
+		<Unit filename="Source/StreamOutput.cpp" />
 		<Unit filename="Source/Thread.cpp" />
 		<Unit filename="Source/Worker.cpp" />
 		<Unit filename="Source/main.cpp" />

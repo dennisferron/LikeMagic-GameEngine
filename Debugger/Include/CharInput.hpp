@@ -1,6 +1,8 @@
-#pragma
+#pragma once
 
 #include "AbstractInput.hpp"
+
+#include "Thread.hpp"
 
 #include <string>
 #include <iostream>

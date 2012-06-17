@@ -1,6 +1,6 @@
-#pragma
+#pragma once
 
-#include "AbstractInput.hpp"
+#include "AbstractOutput.hpp"
 
 #include <string>
 #include <iostream>
@@ -16,7 +16,7 @@ private:
 
 public:
     StreamOutput(std::ostream& stream_);
-    virtual void WriteData(std::string data);
+    virtual void WriteData(std::string const& data);
 };
 
     }
