@@ -27,6 +27,7 @@ namespace Iocaste
         IoObject* self;
         std::string errorText;
         std::string backTraceString;
+        int lineNumber;
 
     public:
 
@@ -37,8 +38,10 @@ namespace Iocaste
         virtual char const* what() const throw();
         std::string getErrorText() const;
         std::string getBackTraceString() const;
+        int getLineNumber() const;
         static std::string getErrorText(IoObject* self);
         static std::string getBackTraceString(IoObject* self);
+        static int getLineNumber(IoObject* self);
     };
 
     class CppException : public Exception

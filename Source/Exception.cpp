@@ -3,8 +3,11 @@
 
 #include "Iocaste/CShims/Exception.h"
 #include "IoState.h"
+#include "IoNumber.h"
 
 #include "IoObject.h"
+
+#include "boost/lexical_cast.hpp"
 
 extern "C" {
 intptr_t Stack_pushMarkPoint(Stack *self);
@@ -23,7 +26,7 @@ char const* Iocaste::Exception::what() const throw()
 
 
 ScriptException::ScriptException(IoObject* self_)
-    : self(self_), errorText(getErrorText(self_)), backTraceString(getBackTraceString(self))
+    : self(self_), errorText(getErrorText(self_)), backTraceString(getBackTraceString(self)), lineNumber(getLineNumber(self))
 {
 }
 
@@ -39,7 +42,12 @@ IoObject* ScriptException::getSelf() const
 
 char const* ScriptException::what() const throw()
 {
-    return (errorText+"\n"+backTraceString).c_str();
+    return (errorText+"\n"+backTraceString+"\nAt line number "+boost::lexical_cast<std::string>(lineNumber)).c_str();
+}
+
+int ScriptException::getLineNumber() const
+{
+    return lineNumber;
 }
 
 std::string ScriptException::getErrorText() const
@@ -82,6 +90,14 @@ std::string ScriptException::getBackTraceString(IoObject* self)
 
     return CSTRING(msg);
 
+}
+
+int ScriptException::getLineNumber(IoObject* self)
+{
+    IoObject* message = IoObject_getSlot_(self, IOSYMBOL("caughtMessage"));
+    IoObject* lineNumberObj = IoObject_getSlot_(self, IOSYMBOL("lineNumber"));
+    int lineNumber = IoNumber_asInt(lineNumberObj);
+    return lineNumber;
 }
 
 IoStateError::IoStateError(IoObject* self, std::string description_, IoObject* message_)
