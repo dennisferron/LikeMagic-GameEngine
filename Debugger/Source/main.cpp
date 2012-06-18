@@ -60,10 +60,13 @@ int main(int argc, char* argv[])
     Worker gdb_reader(from_gdb, look_for_prompt, "from gdb cout to find prompt", debug_log);
     //Worker gdb_to_screen(get_gdb_chunks, to_user, "from gdb chunks to cout", debug_log);
 
-    while (!gdb_reader.is_stopped())
+
+    std::string line;
+    do
     {
         std::cout << get_gdb_chunks.ReadData() << std::flush;
-        std::string line = from_user.ReadData();
+
+        line = from_user.ReadData();
 
         SetPrompt set_prompt;
         if (Parse(line, set_prompt))
@@ -73,9 +76,11 @@ int main(int argc, char* argv[])
         }
 
         to_gdb.WriteData(line + "\n");
-    }
+    } while (line!="quit");
 
-    c.wait();
+    bp::status s = c.wait();
+
+    std::cerr << "exited = " << s.exited() << " exit_status = " << s.exit_status() << std::endl;
 
     return 0;
 }
