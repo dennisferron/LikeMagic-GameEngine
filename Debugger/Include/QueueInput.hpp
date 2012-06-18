@@ -27,6 +27,9 @@ public:
 
     virtual T ReadData()
     {
+        while (!HasData())
+            Thread::nice(1);
+
         return queue.pop();
     }
 };

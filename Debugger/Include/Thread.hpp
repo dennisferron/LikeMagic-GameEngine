@@ -13,7 +13,7 @@ class Thread
 {
 public:
 	static void usleep(int usec);
-	static void nice(int usec);
+	static void nice(int msec);
 };
 
 

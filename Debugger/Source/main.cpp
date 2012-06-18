@@ -15,6 +15,7 @@ namespace bp = ::boost::process;
 #include "QueueInput.hpp"
 #include "QueueOutput.hpp"
 #include "LookForPrompt.hpp"
+#include "Parser.hpp"
 
 using namespace Iocaste::Debugger;
 
@@ -28,6 +29,7 @@ bp::child start_child(std::vector<string> args)
 
     return bp::launch(exec, args, ctx);
 }
+
 
 int main(int argc, char* argv[])
 {
@@ -54,17 +56,24 @@ int main(int argc, char* argv[])
     LookForPrompt look_for_prompt(gdb_chunks, "(gdb) ");
     QueueInput<string> get_gdb_chunks(gdb_chunks);
 
-    Worker gdb_writer(from_user, to_gdb, "from cin to gdb cin", debug_log);
+    //Worker gdb_writer(from_user, to_gdb, "from cin to gdb cin", debug_log);
     Worker gdb_reader(from_gdb, look_for_prompt, "from gdb cout to find prompt", debug_log);
-    Worker gdb_to_screen(get_gdb_chunks, to_user, "from gdb chunks to cout", debug_log);
+    //Worker gdb_to_screen(get_gdb_chunks, to_user, "from gdb chunks to cout", debug_log);
 
     while (!gdb_reader.is_stopped())
     {
-        pthread_yield();
-        usleep(100);
-    }
+        std::cout << get_gdb_chunks.ReadData() << std::flush;
+        std::string line = from_user.ReadData();
 
-    gdb_writer.stop_thread();
+        SetPrompt set_prompt;
+        if (Parse(line, set_prompt))
+        {
+            std::cerr << "New end marker: " << set_prompt.new_prompt << std::endl;
+            look_for_prompt.set_end_marker(set_prompt.new_prompt);
+        }
+
+        to_gdb.WriteData(line + "\n");
+    }
 
     c.wait();
 

@@ -23,26 +23,13 @@ namespace Iocaste
 	{
 
 
-void Thread::nice(int usec)
+void Thread::nice(int msec)
 {
-	int times = usec / 1000;
-	int remainder = usec % 1000;
-
-	for (int i=0; i < times; i++)
+	for (int i=0; i < msec; i++)
 	{
-#ifdef _LINUX
 		pthread_yield();
-#endif
 		Thread::usleep(1000);
 	}
-
-#ifdef _LINUX
-	// Yield if we haven't already
-	if (times < 1)
-		pthread_yield();
-#endif
-
-	Thread::usleep(remainder);
 }
 
 void Thread::usleep(int usec)
