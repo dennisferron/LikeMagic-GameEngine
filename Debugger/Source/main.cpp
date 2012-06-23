@@ -44,7 +44,9 @@ int main(int argc, char* argv[])
     bp::postream& os = c.get_stdin();
     bp::pistream& is = c.get_stdout();
 
-    std::ofstream debug_log("debug.log", ofstream::out);
+    std::ofstream debug_log("/Users/dennisferron/debug.log", ofstream::out);
+
+    debug_log << "testing..." << std::endl;
 
     CharInput from_gdb(is);
     StreamOutput to_gdb(os);
@@ -67,12 +69,19 @@ int main(int argc, char* argv[])
         std::cout << get_gdb_chunks.ReadData() << std::flush;
 
         line = from_user.ReadData();
+        debug_log << line << std::endl;
 
         SetPrompt set_prompt;
         if (Parse(line, set_prompt))
         {
             std::cerr << "New end marker: " << set_prompt.new_prompt << std::endl;
             look_for_prompt.set_end_marker(set_prompt.new_prompt);
+        }
+
+        SetBreakpoint breakpoint;
+        if (Parse(line, breakpoint))
+        {
+            std::cerr << "Set breakpoint: " << breakpoint.file_name << ":" << breakpoint.line_number << std::endl;
         }
 
         to_gdb.WriteData(line + "\n");

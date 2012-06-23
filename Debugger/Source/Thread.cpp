@@ -16,6 +16,10 @@
 
 #endif
 
+#ifdef __APPLE__
+#include <sched.h>
+#endif
+
 
 namespace Iocaste
 {
@@ -27,7 +31,11 @@ void Thread::nice(int msec)
 {
 	for (int i=0; i < msec; i++)
 	{
-		pthread_yield();
+	    #ifdef __APPLE__
+            sched_yield();
+	    #else
+            pthread_yield();
+        #endif
 		Thread::usleep(1000);
 	}
 }
