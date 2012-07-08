@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 using namespace std;
 namespace bp = ::boost::process;
 
@@ -16,8 +17,60 @@ namespace bp = ::boost::process;
 #include "QueueOutput.hpp"
 #include "LookForPrompt.hpp"
 #include "Parser.hpp"
+#include "StringEscaper.hpp"
+#include "ActivityLog.hpp"
 
 using namespace Iocaste::Debugger;
+
+/*
+struct ActivityLog
+{
+private:
+    std::string label;
+    std::string data;
+
+    static std::string encode(std::string data)
+    {
+        std::stringstream r;
+        for (int i=0; i<data.size(); ++i)
+        {
+            char c = data.at(i);
+            switch (c)
+            {
+            case '\0':
+                r << "\\0";
+                break;
+            case '\n':
+                r << "\\n":
+                break;
+            case 26:
+                r << "\\x" << std::hex(2) << c;
+                break;
+            default:
+                r.put(c);
+            }
+        }
+        return r;
+    }
+
+    static std::string decode(std::string data)
+    {
+        std::stringstream r;
+        for (int i=0; i<data.size(); ++i)
+        {
+
+            if ()
+        }
+    }
+
+public:
+
+    std::string toLogStr()
+    {
+        return label + ": " + encode(data);
+    }
+};
+*/
 
 bp::child start_child(std::vector<string> args)
 {
@@ -33,6 +86,14 @@ bp::child start_child(std::vector<string> args)
 
 int main(int argc, char* argv[])
 {
+    //unescape(escape("teststr"));
+    string str = "myTag:some\\nline";
+    ActivityLogLine a;
+    bool success = a.Parse(str);
+    cerr << a.tag << endl;
+    cerr << a.content << endl;
+    return 0;
+
     std::vector<std::string> args;
     args.push_back("/usr/bin/gdb");
 
@@ -66,9 +127,45 @@ int main(int argc, char* argv[])
     std::string line;
     do
     {
-        std::cout << get_gdb_chunks.ReadData() << std::flush;
+        string gdb_out = get_gdb_chunks.ReadData();
+
+//        if (0 == gdb_out.compare(0, 9, string("Breakpoint")))
+//        {
+//            debug_log << "Removing breakpoint confirmation just to see what happens" << endl;
+//            gdb_out = "";
+//        }
+
+        if (0 == gdb_out.compare(1, 5, "/Users", 0))
+        {
+            /*
+/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/Source/main.cpp:36:730:beg:0x100000d39
+            */
+            debug_log << "Replacing char in current pos" << endl << flush;
+            cerr << "found /Users in " << gdb_out << endl;
+            gdb_out.replace(74, 1, "1");
+        }
+        else
+        {
+            cerr << "Failed to match /Users in " << gdb_out << endl;
+            debug_log << "Failed to match /Users in " << gdb_out << endl;
+        }
+
+
+//        if (gdb_out.at(0)==26)
+//        {
+//            debug_log << "Encountered eof char with " << gdb_out << endl;
+//            gdb_out.erase(0, 2);
+//            cout.put(26);
+//            cout.put(26);
+//            cout << flush;
+//        }
+        cout << gdb_out;
+        cout << std::flush;
 
         line = from_user.ReadData();
+
+        // We need to do this for input because we are getting the lines directly.
+        // For output from GDB, the worker logs it already.
         debug_log << line << std::endl;
 
         SetPrompt set_prompt;
@@ -82,9 +179,15 @@ int main(int argc, char* argv[])
         if (Parse(line, breakpoint))
         {
             std::cerr << "Set breakpoint: " << breakpoint.file_name << ":" << breakpoint.line_number << std::endl;
+//            stringstream ss;
+//            ss << "break \"" << breakpoint.file_name << ":" << (breakpoint.line_number+10) << "\"";
+//            // break "/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/Source/main.cpp:36"
+//            to_gdb.WriteData(ss.str()+"\n");
+//            continue;
         }
 
         to_gdb.WriteData(line + "\n");
+
     } while (line!="quit");
 
     bp::status s = c.wait();

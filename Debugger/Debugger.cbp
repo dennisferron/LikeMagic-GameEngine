@@ -42,6 +42,7 @@
 		</Linker>
 		<Unit filename="Include/AbstractInput.hpp" />
 		<Unit filename="Include/AbstractOutput.hpp" />
+		<Unit filename="Include/ActivityLog.hpp" />
 		<Unit filename="Include/CharInput.hpp" />
 		<Unit filename="Include/LineInput.hpp" />
 		<Unit filename="Include/Log.hpp" />
@@ -51,8 +52,10 @@
 		<Unit filename="Include/QueueInput.hpp" />
 		<Unit filename="Include/QueueOutput.hpp" />
 		<Unit filename="Include/StreamOutput.hpp" />
+		<Unit filename="Include/StringEscaper.hpp" />
 		<Unit filename="Include/Thread.hpp" />
 		<Unit filename="Include/Worker.hpp" />
+		<Unit filename="Source/ActivityLog.cpp" />
 		<Unit filename="Source/CharInput.cpp" />
 		<Unit filename="Source/LineInput.cpp" />
 		<Unit filename="Source/Log.cpp" />
