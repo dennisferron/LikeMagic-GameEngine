@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <complex>
+using namespace std;
 
 #include "ActivityLog.hpp"
 
@@ -17,11 +18,9 @@ using namespace Iocaste::Debugger;
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
-
-
 BOOST_FUSION_ADAPT_STRUCT(
     ActivityLogLine,
-    (std::string, tag)
+    (std::string, label)
     (std::string, content)
 )
 
@@ -41,17 +40,17 @@ struct ActivityLogParser : qi::grammar<Iterator, ActivityLogLine()>
 
         unesc_char.add("\\a", '\a')("\\b", '\b')("\\f", '\f')("\\n", '\n')
                       ("\\r", '\r')("\\t", '\t')("\\v", '\v')("\\\\", '\\')
-                      ("\\\'", '\'')("\\\"", '\"')('\0', "\\0")(26, "\\z")
+                      ("\\\'", '\'')("\\\"", '\"')("\\0", '\0')("\\z", 26)
             ;
 
-        unesc_str = *(unesc_char | qi::alnum | "\\x" >> qi::hex >> "x");
+        unesc_str = *(unesc_char | qi::alnum | "\\x" >> qi::hex >> ";");
 
-        tag %=  +qi::alnum;
+        label %=  +qi::alnum;
         content %= unesc_str;
-        start %= tag >> ':' >> content;
+        start %= label >> ": " >> content;
     }
 
-    qi::rule<Iterator, std::string()> tag;
+    qi::rule<Iterator, std::string()> label;
     qi::rule<Iterator, std::string()> content;
     qi::rule<Iterator, ActivityLogLine()> start;
     qi::rule<Iterator, std::string()> unesc_str;
@@ -94,62 +93,102 @@ namespace karma = boost::spirit::karma;
 
 template <typename OutputIterator>
 struct ActivityLogWriter
-  : karma::grammar<OutputIterator, std::string()>
+  : karma::grammar<OutputIterator, ActivityLogLine()>
 {
-    escaped_string()
-      : escaped_string::base_type()
+    ActivityLogWriter()
+      : ActivityLogWriter::base_type(start)
     {
         esc_char.add('\a', "\\a")('\b', "\\b")('\f', "\\f")('\n', "\\n")
                     ('\r', "\\r")('\t', "\\t")('\v', "\\v")('\\', "\\\\")
                     ('\'', "\\\'")('\"', "\\\"")('\0', "\\0")(26, "\\z")
             ;
 
-        esc_str = *(esc_char | karma::print | "\\x" << karma::hex << "x");
+        esc_str = *(esc_char | karma::print | "\\x" << karma::hex << ";");
 
-        tag %= +karma::print;
+        label %= +karma::print;
         content %= esc_str;
-        start %= tag << ":" << content;
+        start %= label << ": " << content;
     }
 
-    karma::rule<OutputIterator, std::string()> tag;
+    karma::rule<OutputIterator, std::string()> label;
     karma::rule<OutputIterator, std::string()> content;
     karma::rule<OutputIterator, ActivityLogLine()> start;
     karma::rule<OutputIterator, std::string()> esc_str;
     karma::symbols<char, char const*> esc_char;
 };
 
-bool ActivityLogLine::Write(std::string& generated)
+bool ActivityLogLine::Write(std::string& generated) const
 {
     namespace karma = boost::spirit::karma;
 
     typedef std::back_insert_iterator<std::string> sink_type;
 
-    std::string generated;
     sink_type sink(generated);
 
-    std::string str("string to escape: \n\r\t\"'\x19");
-    str.push_back(0);
-    str.push_back(26);
-    char const* quote = "'''";
-
     ActivityLogWriter<sink_type> g;
-    if (!karma::generate(sink, g, str))
+    if (!karma::generate(sink, g, *this))
     {
         std::cout << "-------------------------\n";
         std::cout << "Generating failed\n";
         std::cout << "-------------------------\n";
+        return false;
     }
     else
     {
         std::cout << "-------------------------\n";
         std::cout << "Generated: " << generated << "\n";
         std::cout << "-------------------------\n";
+        return true;
     }
-    return generated;
+}
+
+ActivityLog::Channel::Channel(std::string label_,
+  AbstractOutput<std::string>& wrappee_,
+  AbstractOutput<ActivityLogLine>& log_)
+    : label(label_), wrappee(wrappee_), log(log_)
+{
+}
+
+void ActivityLog::Channel::WriteData(std::string const& data)
+{
+    ActivityLogLine entry;
+    entry.label = label;
+    entry.content = data;
+    log.WriteData(entry);
+    wrappee.WriteData(data);
+}
+
+void ActivityLog::WriteData(ActivityLogLine const& entry)
+{
+    pthread_mutex_lock(&record_mutex);
+    std::string output;
+    entry.Write(output);
+    log_file.WriteData(output);
+    pthread_mutex_unlock(&record_mutex);
+}
+
+// Write actual log file line back onto outputs.
+void ActivityLog::WriteData(std::string const& data)
+{
+    pthread_mutex_lock(&record_mutex);
+    ActivityLogLine entry;
+    entry.Parse(data);
+    channels[entry.label]->wrappee.WriteData(entry.content);
+    pthread_mutex_unlock(&record_mutex);
 }
 
 
+ActivityLog::ActivityLog(AbstractOutput<std::string>& log_file_)
+    : log_file(log_file_)
+{
+}
 
+AbstractOutput<string>& ActivityLog::Wrap(string label, AbstractOutput<string>& wrappee)
+{
+    boost::shared_ptr<Channel> result(new Channel(label, wrappee, *this));
+    channels[label] = result;
+    return *result;
+}
 
     }
 }

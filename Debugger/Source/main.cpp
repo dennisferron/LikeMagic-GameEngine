@@ -17,60 +17,9 @@ namespace bp = ::boost::process;
 #include "QueueOutput.hpp"
 #include "LookForPrompt.hpp"
 #include "Parser.hpp"
-#include "StringEscaper.hpp"
 #include "ActivityLog.hpp"
 
 using namespace Iocaste::Debugger;
-
-/*
-struct ActivityLog
-{
-private:
-    std::string label;
-    std::string data;
-
-    static std::string encode(std::string data)
-    {
-        std::stringstream r;
-        for (int i=0; i<data.size(); ++i)
-        {
-            char c = data.at(i);
-            switch (c)
-            {
-            case '\0':
-                r << "\\0";
-                break;
-            case '\n':
-                r << "\\n":
-                break;
-            case 26:
-                r << "\\x" << std::hex(2) << c;
-                break;
-            default:
-                r.put(c);
-            }
-        }
-        return r;
-    }
-
-    static std::string decode(std::string data)
-    {
-        std::stringstream r;
-        for (int i=0; i<data.size(); ++i)
-        {
-
-            if ()
-        }
-    }
-
-public:
-
-    std::string toLogStr()
-    {
-        return label + ": " + encode(data);
-    }
-};
-*/
 
 bp::child start_child(std::vector<string> args)
 {
@@ -83,16 +32,49 @@ bp::child start_child(std::vector<string> args)
     return bp::launch(exec, args, ctx);
 }
 
-
 int main(int argc, char* argv[])
 {
-    //unescape(escape("teststr"));
-    string str = "myTag:some\\nline";
-    ActivityLogLine a;
-    bool success = a.Parse(str);
-    cerr << a.tag << endl;
-    cerr << a.content << endl;
-    return 0;
+    ProducerConsumerQueue<string> log_queue;
+    QueueOutput<string> log_file(log_queue);
+    QueueInput<string> replay(log_queue);
+    ActivityLog activity_log(log_file);
+    ProducerConsumerQueue<string> sink_queue[2];
+    QueueOutput<string> sink0(sink_queue[0]);
+    QueueOutput<string> sink1(sink_queue[1]);
+    QueueInput<string> show_sink0(sink_queue[0]);
+    QueueInput<string> show_sink1(sink_queue[1]);
+    AbstractOutput<string>& wrap0 = activity_log.Wrap("label0", sink0);
+    AbstractOutput<string>& wrap1 = activity_log.Wrap("label1", sink1);
+
+    wrap0.WriteData("content0");
+    wrap1.WriteData("content1");
+
+    // Show outputs
+    cout << show_sink0.ReadData() << endl;
+    cout << show_sink1.ReadData() << endl;
+
+    // Show log file
+    for(int i=0; i<2; ++i)
+    {
+        string str = replay.ReadData();
+        cout << "log line: " << str << endl;
+
+        // Put it back so we can replay it to the Activity log
+        log_file.WriteData(str);
+    }
+
+    // Replay
+    for(int i=0; i<2; ++i)
+    {
+        string str = replay.ReadData();
+        activity_log.WriteData(str);
+
+        if (show_sink0.HasData())
+            cout << "Replayed to " << 0 << " " << show_sink0.ReadData() << endl;
+
+        if (show_sink1.HasData())
+            cout << "Replayed to " << 1 << " " << show_sink1.ReadData() << endl;
+    }
 
     std::vector<std::string> args;
     args.push_back("/usr/bin/gdb");
@@ -105,11 +87,12 @@ int main(int argc, char* argv[])
     bp::postream& os = c.get_stdin();
     bp::pistream& is = c.get_stdout();
 
-    std::ofstream debug_log("/Users/dennisferron/debug.log", ofstream::out);
+    std::ofstream log_file("/Users/dennisferron/debug.log", ofstream::out);
+    StreamOutput debug_log(log_file, true);
 
     debug_log << "testing..." << std::endl;
 
-    CharInput from_gdb(is);
+    CharInput raw_gdb_chars(is);
     StreamOutput to_gdb(os);
 
     LineInput from_user(std::cin);
@@ -120,7 +103,7 @@ int main(int argc, char* argv[])
     QueueInput<string> get_gdb_chunks(gdb_chunks);
 
     //Worker gdb_writer(from_user, to_gdb, "from cin to gdb cin", debug_log);
-    Worker gdb_reader(from_gdb, look_for_prompt, "from gdb cout to find prompt", debug_log);
+    Worker gdb_reader(raw_gdb_chars, look_for_prompt, "from gdb cout to find prompt", debug_log);
     //Worker gdb_to_screen(get_gdb_chunks, to_user, "from gdb chunks to cout", debug_log);
 
 

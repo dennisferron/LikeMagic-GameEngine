@@ -13,9 +13,10 @@ class StreamOutput :
 {
 private:
     std::ostream& stream;
+    bool add_newline;
 
 public:
-    StreamOutput(std::ostream& stream_);
+    StreamOutput(std::ostream& stream_, bool add_newline_=false);
     virtual void WriteData(std::string const& data);
 };
 
