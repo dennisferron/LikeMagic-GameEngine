@@ -98,19 +98,42 @@ int main(int argc, char* argv[])
     LineInput from_user(std::cin);
     StreamOutput to_user(std::cout);
 
-    ProducerConsumerQueue<string> gdb_chunks;
-    LookForPrompt look_for_prompt(gdb_chunks, "(gdb) ");
-    QueueInput<string> get_gdb_chunks(gdb_chunks);
+    ProducerConsumerQueue<string> gdb_packets;
+    LookForPrompt look_for_prompt(gdb_packets, "(gdb) ");
+    QueueInput<string> read_gdb_packets(gdb_packets);
 
     //Worker gdb_writer(from_user, to_gdb, "from cin to gdb cin", debug_log);
     Worker gdb_reader(raw_gdb_chars, look_for_prompt, "from gdb cout to find prompt", debug_log);
     //Worker gdb_to_screen(get_gdb_chunks, to_user, "from gdb chunks to cout", debug_log);
 
+/*
+
+when a gdb output says we landed on a breakpoint on an Iocaste Debug API function,
+process-gdb needs to call process user cmd, or directly call gdb to determine
+what script file and line number to substitute in the output.
+
+when a user cmd is seen to indicate a script file, process-usr-cmd
+must change it to a break on the Iocaste Debug API function.
+However it must (?) also eat the result from that call and substitute
+a result that indicates the breakpoint was made for a script line.
+
+Maybe need a loop bypass mode that can be turned on or off.
+
+1
+gdb pkts<--gdb<--to-gdb 6
+    |       /     ^
+2   v      /      |
+process-gdb<==>process-user-cmd 5
+    |             ^
+    v             |
+3 cout-->user-->cin 4
+
+*/
 
     std::string line;
     do
     {
-        string gdb_out = get_gdb_chunks.ReadData();
+        string gdb_out = get_gdb_packets.ReadData();
 
 //        if (0 == gdb_out.compare(0, 9, string("Breakpoint")))
 //        {

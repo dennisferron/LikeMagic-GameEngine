@@ -7,9 +7,9 @@ using namespace std;
 using namespace Iocaste::Debugger;
 
 LookForPrompt::LookForPrompt(
-     ProducerConsumerQueue<std::string>& queue_,
+     AbstractOutput<std::string>& output_,
      std::string end_marker_)
-        : buffer(), queue(queue_), end_marker(end_marker_)
+        : buffer(), output(output_), end_marker(end_marker_)
 {
     pthread_mutex_init(&end_marker_mutex, NULL);
 }
@@ -17,9 +17,6 @@ LookForPrompt::LookForPrompt(
 void LookForPrompt::WriteData(string const& data)
 {
     bool read_finished = false;
-
-    //if (data.at(0) == eof_char)
-        ;//read_finished = true;
 
     buffer.append(data);
 
@@ -30,7 +27,7 @@ void LookForPrompt::WriteData(string const& data)
 
     if (read_finished && buffer.size() > 0)
     {
-        queue.push(buffer);
+        queue.WriteData(buffer);
         buffer.clear();
     }
 }

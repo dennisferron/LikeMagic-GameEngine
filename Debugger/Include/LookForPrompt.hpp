@@ -1,7 +1,6 @@
 #pragma once
 
 #include "AbstractOutput.hpp"
-#include "ProducerConsumerQueue.hpp"
 
 #include "Thread.hpp"
 
@@ -16,12 +15,12 @@ class LookForPrompt :
 {
 private:
     std::string buffer;
-    ProducerConsumerQueue<std::string>& queue;
+    AbstractOutput<std::string>& output;
     std::string end_marker;
     mutable pthread_mutex_t end_marker_mutex;
 
 public:
-    LookForPrompt(ProducerConsumerQueue<std::string>& queue_, std::string end_marker_);
+    LookForPrompt(AbstractOutput<std::string>& output_, std::string end_marker_);
     virtual void WriteData(std::string const& data);
     std::string get_end_marker() const;
     void set_end_marker(std::string end_marker_);

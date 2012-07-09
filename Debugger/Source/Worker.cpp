@@ -9,15 +9,25 @@ Worker::Worker(AbstractInput<string>& input_, AbstractOutput<string>& output_, s
         debug_name(debug_name_), debug_log(debug_log_),
         stop(false), is_running(false)
 {
-	is_running = true;
-	//pthread_mutex_init(&record_mutex, NULL);
-	pthread_create(&thread, NULL, Worker::callback, this);
 }
 
 Worker::~Worker()
 {
 	if (is_running)
 		stop_thread();
+}
+
+void Worker::RunAsync()
+{
+	is_running = true;
+	//pthread_mutex_init(&record_mutex, NULL);
+	pthread_create(&thread, NULL, Worker::callback, this);
+}
+
+void Worker::RunSync()
+{
+    is_running = true;
+    run_loop();
 }
 
 void Worker::stop_thread()

@@ -30,6 +30,8 @@ public:
 	virtual ~Worker();
 	void stop_thread();
 	bool is_stopped() const;
+	void RunAsync();
+	void RunSync();
 };
 
     }
