@@ -13,16 +13,71 @@ namespace bp = ::boost::process;
 #include "CharInput.hpp"
 #include "LineInput.hpp"
 #include "StreamOutput.hpp"
-#include "QueueInput.hpp"
-#include "QueueOutput.hpp"
+#include "Queue.hpp"
 #include "LookForPrompt.hpp"
 #include "Parser.hpp"
 #include "ActivityLog.hpp"
+#include "Channel.hpp"
 
 using namespace Iocaste::Debugger;
 
-bp::child start_child(std::vector<string> args)
+enum class MainLoopState
 {
+    ReadUser,
+    WriteGdb,
+    ReadGdb,
+    WriteUser,
+    Quit
+};
+
+void main_loop(Channel<UserCmd, GdbResponse> gdb, Channel<GdbResponse, UserCmd> user)
+{
+    // Relay gdb's welcome message before processing user commands.  Codeblocks seems to require this.
+    user.to.WriteData(gdb.from.ReadData());
+
+    MainLoopState state = MainLoopState.ReadUser;
+    UserCmd cmd;
+    GdbResponse response;
+
+    while (true)
+    {
+        switch (state)
+        {
+            case MainLoopState.ReadUser:
+                cmd = user.from.ReadData();
+                state = processCmd(cmd, gdb, user);
+                break;
+
+            case MainLoopState.WriteGdb:
+                gdb.to.WriteData(cmd)
+                state = MainLoopState.ReadGdb;
+                break;
+
+            case MainLoopState.ReadGdb:
+                response = gdb.from.ReadData();
+                state = processResponse(response, gdb, user);
+                break;
+
+            case MainLoopState.WriteUser:
+                user.to.WriteData(response);
+                state = MainLoopState.ReadUser;
+                break;
+
+            case MainLoopState.Quit:
+                return;
+        }
+    }
+}
+
+
+bp::child start_gdb(int argc, char* argv[])
+{
+    std::vector<std::string> args;
+    args.push_back("/usr/bin/gdb");
+
+    for (int i=1; i<argc; ++i)
+        args.push_back(argv[i]);
+
     std::string exec = args[0];
 
     bp::context ctx;
@@ -34,167 +89,48 @@ bp::child start_child(std::vector<string> args)
 
 int main(int argc, char* argv[])
 {
-    ProducerConsumerQueue<string> log_queue;
-    QueueOutput<string> log_file(log_queue);
-    QueueInput<string> replay(log_queue);
-    ActivityLog activity_log(log_file);
-    ProducerConsumerQueue<string> sink_queue[2];
-    QueueOutput<string> sink0(sink_queue[0]);
-    QueueOutput<string> sink1(sink_queue[1]);
-    QueueInput<string> show_sink0(sink_queue[0]);
-    QueueInput<string> show_sink1(sink_queue[1]);
-    AbstractOutput<string>& wrap0 = activity_log.Wrap("label0", sink0);
-    AbstractOutput<string>& wrap1 = activity_log.Wrap("label1", sink1);
+    std::ofstream log_file("/Users/dennisferron/debug.log", ofstream::out);
+    StreamOutput debug_log(log_file, true);
+    ActivityLog activity_log(debug_log);
 
-    wrap0.WriteData("content0");
-    wrap1.WriteData("content1");
-
-    // Show outputs
-    cout << show_sink0.ReadData() << endl;
-    cout << show_sink1.ReadData() << endl;
-
-    // Show log file
-    for(int i=0; i<2; ++i)
-    {
-        string str = replay.ReadData();
-        cout << "log line: " << str << endl;
-
-        // Put it back so we can replay it to the Activity log
-        log_file.WriteData(str);
-    }
-
-    // Replay
-    for(int i=0; i<2; ++i)
-    {
-        string str = replay.ReadData();
-        activity_log.WriteData(str);
-
-        if (show_sink0.HasData())
-            cout << "Replayed to " << 0 << " " << show_sink0.ReadData() << endl;
-
-        if (show_sink1.HasData())
-            cout << "Replayed to " << 1 << " " << show_sink1.ReadData() << endl;
-    }
-
-    std::vector<std::string> args;
-    args.push_back("/usr/bin/gdb");
-
-    for (int i=1; i<argc; ++i)
-        args.push_back(argv[i]);
-
-    bp::child c = start_child(args);
+    bp::child c = start_gdb(argc, argv);
 
     bp::postream& os = c.get_stdin();
     bp::pistream& is = c.get_stdout();
 
-    std::ofstream log_file("/Users/dennisferron/debug.log", ofstream::out);
-    StreamOutput debug_log(log_file, true);
-
-    debug_log << "testing..." << std::endl;
-
     CharInput raw_gdb_chars(is);
     StreamOutput to_gdb(os);
 
-    LineInput from_user(std::cin);
-    StreamOutput to_user(std::cout);
+    AbstractOutput<string>& log_to_gdb = activity_log.Wrap("toGdb", to_gdb);
 
-    ProducerConsumerQueue<string> gdb_packets;
-    LookForPrompt look_for_prompt(gdb_packets, "(gdb) ");
-    QueueInput<string> read_gdb_packets(gdb_packets);
+    Queue<string> gdb_response_queue;
 
-    //Worker gdb_writer(from_user, to_gdb, "from cin to gdb cin", debug_log);
-    Worker gdb_reader(raw_gdb_chars, look_for_prompt, "from gdb cout to find prompt", debug_log);
-    //Worker gdb_to_screen(get_gdb_chunks, to_user, "from gdb chunks to cout", debug_log);
+    AbstractOutput<string>& log_gdb = activity_log.Wrap("fromGdb", gdb_response_queue);
 
-/*
+    LookForPrompt look_for_prompt(log_gdb, "(gdb) ");
+    Worker gdb_reader(raw_gdb_chars, look_for_prompt, "from gdb look for prompt", debug_log);
 
-when a gdb output says we landed on a breakpoint on an Iocaste Debug API function,
-process-gdb needs to call process user cmd, or directly call gdb to determine
-what script file and line number to substitute in the output.
+    LineInput raw_from_user(std::cin);
+    StreamOutput raw_to_user(std::cout);
 
-when a user cmd is seen to indicate a script file, process-usr-cmd
-must change it to a break on the Iocaste Debug API function.
-However it must (?) also eat the result from that call and substitute
-a result that indicates the breakpoint was made for a script line.
+    AbstractOutput<string>& log_to_user = activity_log.Wrap("toUser", raw_to_user);
 
-Maybe need a loop bypass mode that can be turned on or off.
+    Queue<UserCmd> user_cmd_queue;
 
-1
-gdb pkts<--gdb<--to-gdb 6
-    |       /     ^
-2   v      /      |
-process-gdb<==>process-user-cmd 5
-    |             ^
-    v             |
-3 cout-->user-->cin 4
+    UserCmdParser cmd_parser(user_cmd_queue);
 
-*/
+    AbstractOutput<string>& log_from_user = activity_log.Wrap("fromUser", cmd_parser);
 
-    std::string line;
-    do
-    {
-        string gdb_out = get_gdb_packets.ReadData();
+    Worker user_reader(raw_from_user, log_from_user);
 
-//        if (0 == gdb_out.compare(0, 9, string("Breakpoint")))
-//        {
-//            debug_log << "Removing breakpoint confirmation just to see what happens" << endl;
-//            gdb_out = "";
-//        }
+    /*
 
-        if (0 == gdb_out.compare(1, 5, "/Users", 0))
-        {
-            /*
-/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/Source/main.cpp:36:730:beg:0x100000d39
-            */
-            debug_log << "Replacing char in current pos" << endl << flush;
-            cerr << "found /Users in " << gdb_out << endl;
-            gdb_out.replace(74, 1, "1");
-        }
-        else
-        {
-            cerr << "Failed to match /Users in " << gdb_out << endl;
-            debug_log << "Failed to match /Users in " << gdb_out << endl;
-        }
+    FromUser to Worker to Log to CmdParser to Queue
+    IssueCmd to CmdWriter to Log to ToGdb
+    FromGdb  to Worker to LookForPrompt to Log to GdbParser to Queue to ProcessResponse
+    IssueResponse to ResponseWriter to ToUser
 
-
-//        if (gdb_out.at(0)==26)
-//        {
-//            debug_log << "Encountered eof char with " << gdb_out << endl;
-//            gdb_out.erase(0, 2);
-//            cout.put(26);
-//            cout.put(26);
-//            cout << flush;
-//        }
-        cout << gdb_out;
-        cout << std::flush;
-
-        line = from_user.ReadData();
-
-        // We need to do this for input because we are getting the lines directly.
-        // For output from GDB, the worker logs it already.
-        debug_log << line << std::endl;
-
-        SetPrompt set_prompt;
-        if (Parse(line, set_prompt))
-        {
-            std::cerr << "New end marker: " << set_prompt.new_prompt << std::endl;
-            look_for_prompt.set_end_marker(set_prompt.new_prompt);
-        }
-
-        SetBreakpoint breakpoint;
-        if (Parse(line, breakpoint))
-        {
-            std::cerr << "Set breakpoint: " << breakpoint.file_name << ":" << breakpoint.line_number << std::endl;
-//            stringstream ss;
-//            ss << "break \"" << breakpoint.file_name << ":" << (breakpoint.line_number+10) << "\"";
-//            // break "/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/Source/main.cpp:36"
-//            to_gdb.WriteData(ss.str()+"\n");
-//            continue;
-        }
-
-        to_gdb.WriteData(line + "\n");
-
-    } while (line!="quit");
+    */
 
     bp::status s = c.wait();
 
