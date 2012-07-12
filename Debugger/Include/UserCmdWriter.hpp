@@ -6,9 +6,9 @@ namespace Iocaste { namespace Debugger {
 class UserCmdWriter : public AbstractOutput<UserCmd>
 {
 private:
-    AbstractOutput<std::string> sink;
+    AbstractOutput<std::string>& sink;
 public:
-    UserCmdWriter(AbstractOutput<std::string> const& sink_);
+    UserCmdWriter(AbstractOutput<std::string>& sink_);
     virtual void WriteData(UserCmd const& input);
 };
 

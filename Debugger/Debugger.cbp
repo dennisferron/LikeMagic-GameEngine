@@ -44,7 +44,6 @@
 		<Unit filename="Include/AbstractInput.hpp" />
 		<Unit filename="Include/AbstractOutput.hpp" />
 		<Unit filename="Include/ActivityLog.hpp" />
-		<Unit filename="Include/Channel.hpp" />
 		<Unit filename="Include/CharInput.hpp" />
 		<Unit filename="Include/GdbResponse.hpp" />
 		<Unit filename="Include/GdbResponseParser.hpp" />

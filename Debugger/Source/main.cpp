@@ -9,17 +9,17 @@
 using namespace std;
 namespace bp = ::boost::process;
 
-#include "Worker.hpp"
-#include "CharInput.hpp"
-#include "LineInput.hpp"
-#include "StreamOutput.hpp"
-#include "Queue.hpp"
-#include "LookForPrompt.hpp"
-#include "Parser.hpp"
-#include "ActivityLog.hpp"
-#include "Channel.hpp"
+//#include "Worker.hpp"
+//#include "CharInput.hpp"
+//#include "LineInput.hpp"
+//#include "StreamOutput.hpp"
+//#include "Queue.hpp"
+//#include "LookForPrompt.hpp"
+//#include "Parser.hpp"
+//#include "ActivityLog.hpp"
+//#include "Channel.hpp"
 
-using namespace Iocaste::Debugger;
+//using namespace Iocaste::Debugger;
 
 enum class MainLoopState
 {
@@ -30,6 +30,7 @@ enum class MainLoopState
     Quit
 };
 
+/*
 void main_loop(Channel<UserCmd, GdbResponse> gdb, Channel<GdbResponse, UserCmd> user)
 {
     // Relay gdb's welcome message before processing user commands.  Codeblocks seems to require this.
@@ -68,7 +69,7 @@ void main_loop(Channel<UserCmd, GdbResponse> gdb, Channel<GdbResponse, UserCmd> 
         }
     }
 }
-
+*/
 
 bp::child start_gdb(int argc, char* argv[])
 {
@@ -87,8 +88,183 @@ bp::child start_gdb(int argc, char* argv[])
     return bp::launch(exec, args, ctx);
 }
 
+struct UnusedType {};
+
+struct ChainPolicy
+{
+    struct None {};
+    struct RHS {};
+    struct Both {};
+};
+
+template <typename T>
+UnusedType get(ChainPolicy, T const&)
+{
+    static_assert(sizeof(T) && 0, "No chaining policy defined for this type.");
+    throw nullptr;
+}
+
+template <typename T, typename LHS, typename RHS, typename Policy>
+struct ChainBuilder
+{
+    static T* create(LHS lhs, RHS rhs)
+        { static_assert(sizeof(T) && false, "Unrecognized Chaining policy."); throw 0; }
+};
+
+template <typename T, typename LHS, typename RHS>
+struct ChainBuilder<T, LHS, RHS, ChainPolicy::None>
+{
+    static T* create(LHS lhs, RHS rhs)
+        { return new T(); }
+};
+
+template <typename T, typename LHS, typename RHS>
+struct ChainBuilder<T, LHS, RHS, ChainPolicy::RHS>
+{
+    static T* create(LHS lhs, RHS rhs)
+        { return new T(rhs); }
+};
+
+template <typename T, typename LHS, typename RHS>
+struct ChainBuilder<T, LHS, RHS, ChainPolicy::Both>
+{
+    static T* create(LHS lhs, RHS rhs)
+        { return new T(*lhs.force().second, rhs); }
+};
+
+template <typename RHS>
+struct StopUnwind
+{
+    RHS& _unwind(RHS& rhs) { return rhs; }
+};
+
+template <typename T, typename LeftFuture, typename HeadType>
+struct Future
+{
+    T* self;
+
+    LeftFuture& lhs;
+
+    Future(LeftFuture& lhs_) : self(nullptr), lhs(lhs_) { }
+
+    std::pair<HeadType*, T*> force()
+    {
+        HeadType& head = _unwind(UnusedType());
+        T& temp = *self;
+        return std::make_pair(&head, &temp);
+    }
+
+    template <typename RHS>
+    HeadType& _unwind(RHS rhs)
+    {
+        if (!self)
+            self = ChainBuilder<T, decltype(lhs), decltype(rhs),
+                decltype(get(ChainPolicy(), *(T*)0))>::create(lhs, rhs);
+
+        return lhs._unwind(*self);
+    }
+
+    template <typename Next>
+    Future<Next, Future, HeadType> to()
+    {
+        return Future<Next, Future, HeadType>(*this);
+    }
+};
+
+struct Chain
+{
+    template <typename T>
+    Future<T, StopUnwind<T>, T> to()
+    {
+        StopUnwind<T>& lhs = *new StopUnwind<T>();
+        return Future<T, StopUnwind<T>, T>(lhs);
+    }
+};
+
+int global_counter = 0;
+
+struct HasId
+{
+private:
+    int id;
+protected:
+    HasId() : id(++global_counter) {}
+public:
+    int GetId() const { return id; }
+};
+
+struct IInput : public virtual HasId { };
+struct IOutput : public virtual HasId { };
+
+struct Input : public IInput
+{
+    Input()
+    {
+        cout << " Input " << GetId() << " created " << endl;
+    }
+};
+
+struct Output : public IOutput
+{
+    //typedef ChainPolicy::None policy;
+
+    Output()
+    {
+        cout << " Output " << GetId() << " created " << endl;
+    }
+};
+
+struct Adapter : public IOutput
+{
+    typedef ChainPolicy::RHS policy;
+
+    Adapter(IOutput& rhs)
+    {
+        cout << " Adapter " << GetId() << " created over(" << rhs.GetId() << ") " << endl;
+    }
+};
+
+struct TestWorker : private HasId
+{
+    typedef ChainPolicy::Both policy;
+
+    TestWorker(IInput& lhs, IOutput& rhs)
+    {
+        cout << " Worker " << GetId() << " created over(" << lhs.GetId() << "," << rhs.GetId() << ") " << endl;
+    }
+};
+
+struct TestQueue : public IInput, public IOutput
+{
+    typedef ChainPolicy::None policy;
+
+    TestQueue()
+    {
+        cout << " Queue " << GetId() << " created " << endl;
+    }
+};
+
+// You define chaining policies for various base types by overloading the "get(ChainPolicy,x)" function.
+// You don't need to define these functions; the declaration of the return type is enough.
+// The reason overloading is a useful mechanism for doing this is that it has two useful features:
+//  1. If derived <: base, then derived will "inherit" base's policies too
+//  2. Unless you defined a policy for derived, in which case overload resolution rules will match "derived", which is what you want.
+//  3. The declaration that associates a policy with a class can be separate from both the class and the user, kind of like a Concept.
+// Keep in mind that a class may have many types of policies associated with it in different contexts,
+// and policies may be defined for classes we don't have the freedom to change, like library or framework classes.
+// Google Andrei Alexandrescu for more info on Policy based programming.
+ChainPolicy::None get(ChainPolicy, Input const&);
+ChainPolicy::None get(ChainPolicy, Output const&);
+ChainPolicy::RHS  get(ChainPolicy, Adapter const&);
+ChainPolicy::Both get(ChainPolicy, TestWorker const&);
+ChainPolicy::None get(ChainPolicy, TestQueue const&);
+
 int main(int argc, char* argv[])
 {
+    Chain().to<Input>().to<TestWorker>().to<TestQueue>().to<TestWorker>().to<Adapter>().to<Output>().force();
+    return 0;
+    /*
+
     std::ofstream log_file("/Users/dennisferron/debug.log", ofstream::out);
     StreamOutput debug_log(log_file, true);
     ActivityLog activity_log(debug_log);
@@ -123,19 +299,11 @@ int main(int argc, char* argv[])
 
     Worker user_reader(raw_from_user, log_from_user);
 
-    /*
-
-    FromUser to Worker to Log to CmdParser to Queue
-    IssueCmd to CmdWriter to Log to ToGdb
-    FromGdb  to Worker to LookForPrompt to Log to GdbParser to Queue to ProcessResponse
-    IssueResponse to ResponseWriter to ToUser
-
-    */
-
     bp::status s = c.wait();
 
     std::cerr << "exited = " << s.exited() << " exit_status = " << s.exit_status() << std::endl;
 
     return 0;
+    */
 }
 

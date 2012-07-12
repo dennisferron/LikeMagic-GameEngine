@@ -27,7 +27,7 @@ void LookForPrompt::WriteData(string const& data)
 
     if (read_finished && buffer.size() > 0)
     {
-        queue.WriteData(buffer);
+        output.WriteData(buffer);
         buffer.clear();
     }
 }

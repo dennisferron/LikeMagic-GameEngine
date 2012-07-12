@@ -1,7 +1,7 @@
 #include "UserCmdParser.hpp"
 using namespace Iocaste::Debugger;
 
-UserCmdParser::UserCmdParser(AbstractOutput<UserCmd> sink_)
+UserCmdParser::UserCmdParser(AbstractOutput<UserCmd>& sink_)
     : sink(sink_)
 {
 }

@@ -1,7 +1,9 @@
 
 #pragma once
 
-namespace Iocaste { namespace Debug {
+#include <string>
+
+namespace Iocaste { namespace Debugger {
 
 struct UserCmd
 {
