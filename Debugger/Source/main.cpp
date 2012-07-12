@@ -88,6 +88,10 @@ bp::child start_gdb(int argc, char* argv[])
     return bp::launch(exec, args, ctx);
 }
 
+#include "LikeMagic/Utility/IndexPack.hpp"
+using LikeMagic::Utility::IndexPack;
+using LikeMagic::Utility::MakeIndexPack;
+
 struct UnusedType {};
 
 struct ChainPolicy
@@ -107,29 +111,33 @@ UnusedType get(ChainPolicy, T const&)
 template <typename T, typename LHS, typename RHS, typename Policy>
 struct ChainBuilder
 {
-    static T* create(LHS lhs, RHS rhs)
+    template <typename... Args, int... Indices>
+    static T* create(LHS lhs, RHS rhs, std::tuple<Args...> args, IndexPack<Indices...> ipack)
         { static_assert(sizeof(T) && false, "Unrecognized Chaining policy."); throw 0; }
 };
 
 template <typename T, typename LHS, typename RHS>
 struct ChainBuilder<T, LHS, RHS, ChainPolicy::None>
 {
-    static T* create(LHS lhs, RHS rhs)
-        { return new T(); }
+    template <typename... Args, int... Indices>
+    static T* create(LHS lhs, RHS rhs, std::tuple<Args...> args, IndexPack<Indices...> ipack)
+        { return new T(std::get<Indices>(args)...); }
 };
 
 template <typename T, typename LHS, typename RHS>
 struct ChainBuilder<T, LHS, RHS, ChainPolicy::RHS>
 {
-    static T* create(LHS lhs, RHS rhs)
-        { return new T(rhs); }
+    template <typename... Args, int... Indices>
+    static T* create(LHS lhs, RHS rhs, std::tuple<Args...> args, IndexPack<Indices...> ipack)
+        { return new T(rhs, std::get<Indices>(args)...); }
 };
 
 template <typename T, typename LHS, typename RHS>
 struct ChainBuilder<T, LHS, RHS, ChainPolicy::Both>
 {
-    static T* create(LHS lhs, RHS rhs)
-        { return new T(*lhs.force().second, rhs); }
+    template <typename... Args, int... Indices>
+    static T* create(LHS lhs, RHS rhs, std::tuple<Args...> args, IndexPack<Indices...> ipack)
+        { return new T(*lhs.force().second, rhs, std::get<Indices>(args)...); }
 };
 
 template <typename RHS>
@@ -138,14 +146,15 @@ struct StopUnwind
     RHS& _unwind(RHS& rhs) { return rhs; }
 };
 
-template <typename T, typename LeftFuture, typename HeadType>
+template <typename T, typename LeftFuture, typename HeadType, typename... Args>
 struct Future
 {
     T* self;
-
     LeftFuture& lhs;
+    std::tuple<Args...> args;
 
-    Future(LeftFuture& lhs_) : self(nullptr), lhs(lhs_) { }
+    Future(LeftFuture& lhs_, std::tuple<Args...> args_)
+        : self(nullptr), lhs(lhs_), args(args_) { }
 
     std::pair<HeadType*, T*> force()
     {
@@ -157,27 +166,29 @@ struct Future
     template <typename RHS>
     HeadType& _unwind(RHS rhs)
     {
+        typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
+
         if (!self)
             self = ChainBuilder<T, decltype(lhs), decltype(rhs),
-                decltype(get(ChainPolicy(), *(T*)0))>::create(lhs, rhs);
+                decltype(get(ChainPolicy(), *(T*)0))>::create(lhs, rhs, args, IPack());
 
         return lhs._unwind(*self);
     }
 
-    template <typename Next>
-    Future<Next, Future, HeadType> to()
+    template <typename Next, typename... NextArgs>
+    Future<Next, Future, HeadType, NextArgs...> to(NextArgs... args_)
     {
-        return Future<Next, Future, HeadType>(*this);
+        return Future<Next, Future, HeadType, NextArgs...>(*this, std::make_tuple(args_...));
     }
 };
 
 struct Chain
 {
-    template <typename T>
-    Future<T, StopUnwind<T>, T> to()
+    template <typename T, typename... NextArgs>
+    Future<T, StopUnwind<T>, T, NextArgs...> to(NextArgs... args_)
     {
         StopUnwind<T>& lhs = *new StopUnwind<T>();
-        return Future<T, StopUnwind<T>, T>(lhs);
+        return Future<T, StopUnwind<T>, T, NextArgs...>(lhs, std::make_tuple(args_...));
     }
 };
 
@@ -227,10 +238,12 @@ struct Adapter : public IOutput
 struct TestWorker : private HasId
 {
     typedef ChainPolicy::Both policy;
+    std::string name;
 
-    TestWorker(IInput& lhs, IOutput& rhs)
+    TestWorker(IInput& lhs, IOutput& rhs, std::string name_)
+        : name(name_)
     {
-        cout << " Worker " << GetId() << " created over(" << lhs.GetId() << "," << rhs.GetId() << ") " << endl;
+        cout << " Worker " << GetId() << "'" << name << "'" << " created over(" << lhs.GetId() << "," << rhs.GetId() << ") " << endl;
     }
 };
 
@@ -261,7 +274,7 @@ ChainPolicy::None get(ChainPolicy, TestQueue const&);
 
 int main(int argc, char* argv[])
 {
-    Chain().to<Input>().to<TestWorker>().to<TestQueue>().to<TestWorker>().to<Adapter>().to<Output>().force();
+    Chain().to<Input>().to<TestWorker>("first").to<TestQueue>().to<TestWorker>("second").to<Adapter>().to<Output>().force();
     return 0;
     /*
 
