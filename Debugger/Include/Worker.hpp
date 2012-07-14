@@ -9,7 +9,9 @@
 namespace Iocaste {
     namespace Debugger {
 
-class Worker
+struct WorkerComponentTag {};
+
+class Worker : public WorkerComponentTag
 {
 private:
 	pthread_t thread;
@@ -17,7 +19,6 @@ private:
 	AbstractOutput<std::string>& output;
 	bool line_mode;
     std::string debug_name;
-    std::ostream& debug_log;
 
 	static void* callback(void* obj);
 	volatile bool stop;
@@ -26,7 +27,7 @@ private:
 	void run_loop();
 
 public:
-	Worker(AbstractInput<std::string>& input_, AbstractOutput<std::string>& output_, std::string debug_name_, std::ostream& debug_log_);
+	Worker(AbstractInput<std::string>& input_, AbstractOutput<std::string>& output_, std::string debug_name_);
 	virtual ~Worker();
 	void stop_thread();
 	bool is_stopped() const;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AbstractOutput.hpp"
+#include "AbstractAdapter.hpp"
 
 #include "Thread.hpp"
 
@@ -11,7 +11,7 @@ namespace Iocaste {
     namespace Debugger {
 
 class LookForPrompt :
-    public AbstractOutput<std::string>
+    public AbstractAdapter<std::string>
 {
 private:
     std::string buffer;

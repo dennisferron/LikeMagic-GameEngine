@@ -6,20 +6,9 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <functional>
 using namespace std;
 namespace bp = ::boost::process;
-
-//#include "Worker.hpp"
-//#include "CharInput.hpp"
-//#include "LineInput.hpp"
-//#include "StreamOutput.hpp"
-//#include "Queue.hpp"
-//#include "LookForPrompt.hpp"
-//#include "Parser.hpp"
-//#include "ActivityLog.hpp"
-//#include "Channel.hpp"
-
-//using namespace Iocaste::Debugger;
 
 
 enum class MainLoopState
@@ -93,11 +82,102 @@ bp::child start_gdb(int argc, char* argv[])
     return bp::launch(exec, args, ctx);
 }
 
+struct Named
+{
+    string s;
+    Named(string s_) : s(s_) { cout << s << " constructed" << endl; }
+    ~Named() { cout << s << " destructed" << endl; }
+    template <typename T>
+    T to(Named const& x)
+    {
+        return T(x);
+    }
+};
+
+struct A : Named
+{
+    A(Named const& x) : Named("A") {}
+};
+
+struct B : Named
+{
+    B(Named const& y) : Named("B") {}
+};
+
+struct C : Named
+{
+    Named const& x;
+    C(Named && x_) : Named("C"), x(x_) {}
+};
+
+struct X : Named
+{
+    X() : Named("X"){}
+};
+
+struct Y : Named
+{
+    Y() : Named("Y"){}
+};
+
+template <typename T, typename U>
+T g(U&& arg)
+{
+    cout << "g<" << typeid(T).name() << ">(" << arg.s << ")" << endl;
+    return T(forward<U>(arg));
+}
+
+void f(C const& a, C const& b)
+{
+    cout << "f(" << a.x.s << "," << b.x.s << ")" << endl;
+}
+
+template <typename... T>
+void force(T... futures)
+{
+    vector<Named*> list = {&futures...};
+    for (auto it = list.begin(); it != list.end(); ++it)
+        cout << "got " << (*it)->s << endl;
+}
+
+template <typename... T>
+std::function<int (float, T...)> make_future(T... args)
+{
+    return [](float f, T... args...) { return (int)f; };
+}
+
+template <typename... T>
+int i(std::function<int (float, T...)> f)
+{
+    return f(2.1f, 1, 2);
+}
+
+template <typename... T>
+void h(T... args)
+{
+    vector<int> v = { i(args)... };
+    int sum = 0;
+    for (auto it=v.begin(); it!=v.end(); ++it)
+        sum += *it;
+    cout << "Got: " << sum << endl;
+}
+
+
 
 int main(int argc, char* argv[])
 {
-    InputChain().to<Input>().to<TestWorker>("first").to<TestQueue>().to<TestWorker>("second").to<Adapter>().to<Output>().force();
+    //h(make_future(1,2), make_future(1,2), make_future(1,2));
+
+    cout << "function call" << endl;
+    force(g<A>(X()), g<B>(Y()));
+
+    cout << endl << "fluent" << endl;
+    Named("start").to<A>(X()).to<B>(Y());
+
+    //InputChain().to<Input<float>>(0.1f, cin).to<TestWorker>("first").to<TestQueue>().to<TestWorker>("second").to<Adapter>().to<Output>().force();
+    //InputChain().to<LineInput>(0).force(); //.to<Worker>("test").to<LookForPrompt>().to<Queue<string>>().force();
     return 0;
+
     /*
 
     std::ofstream log_file("/Users/dennisferron/debug.log", ofstream::out);

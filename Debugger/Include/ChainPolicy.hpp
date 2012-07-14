@@ -13,11 +13,9 @@ struct ChainPolicy
 };
 
 template <typename T>
-UndefinedPolicy<ChainPolicy, T> get(ChainPolicy, T const&);
-
-template <typename T>
-struct ChainPolicyGetter : public PolicyGetter<ChainPolicy, T>
+struct GetChainPolicy
 {
+    static_assert(sizeof(T) && false, "No chain policy defined for type T.");
 };
 
     }

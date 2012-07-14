@@ -6,7 +6,7 @@
 namespace Iocaste {
     namespace Debugger {
 
-    struct InputChain : BeginFuture<ChainPolicyGetter>
+    struct InputChain : BeginFuture<ChainPolicy>
     {
     };
 

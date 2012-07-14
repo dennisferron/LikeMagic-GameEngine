@@ -10,9 +10,11 @@ namespace Iocaste
 	namespace Debugger
 	{
 
+	    struct QueueComponentTag {};
+
 //! This queue is designed to be thread safe for one producer thread and one consumer thread.
 template <typename T>
-class Queue : public AbstractInput<T>, AbstractOutput<T>
+class Queue : public AbstractInput<T>, public AbstractOutput<T>, public QueueComponentTag
 {
 private:
 

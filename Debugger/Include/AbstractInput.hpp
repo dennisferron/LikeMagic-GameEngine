@@ -3,8 +3,10 @@
 namespace Iocaste {
     namespace Debugger {
 
+struct InputComponentTag {};
+
 template <typename T>
-class AbstractInput
+class AbstractInput : public InputComponentTag
 {
 public:
     virtual bool HasData() const = 0;

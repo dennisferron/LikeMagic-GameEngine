@@ -3,10 +3,10 @@
 using namespace std;
 using namespace Iocaste::Debugger;
 
-Worker::Worker(AbstractInput<string>& input_, AbstractOutput<string>& output_, string debug_name_, std::ostream& debug_log_)
+Worker::Worker(AbstractInput<string>& input_, AbstractOutput<string>& output_, string debug_name_)
     :
         input(input_), output(output_),
-        debug_name(debug_name_), debug_log(debug_log_),
+        debug_name(debug_name_),
         stop(false), is_running(false)
 {
 }
@@ -51,7 +51,6 @@ void Worker::run_loop()
         if (input.HasData())
         {
             string s = input.ReadData();
-            debug_log << s << std::flush;
             output.WriteData(s);
         }
     }

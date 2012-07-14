@@ -5,6 +5,7 @@
 namespace Iocaste {
     namespace Debugger {
 
+//template <typename T> UnusedType get(ChainPolicy, T const&);
 
 template <typename T, typename LHS, typename RHS, typename Policy>
 struct ChainBuilder
@@ -13,10 +14,7 @@ struct ChainBuilder
     static T* create(LHS lhs, RHS rhs, std::tuple<Args...> args, IndexPack<Indices...> ipack)
     {
         static_assert(
-            sizeof(T) // This prevents this assert from firing prematurely.
-            &&
-            false,  // This fires the assert.
-            "Unrecognized chaining policy."
+            sizeof(T) && false, "Unrecognized chaining policy."
         );
         throw 0;
     }

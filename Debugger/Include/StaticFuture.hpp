@@ -26,15 +26,15 @@ order, and then instantiate everything only after the complete chain is describe
 
 */
 
-template <typename T, template<typename T_> class ConstructorPolicy, typename LeftFuture, typename HeadType, typename... Args>
+template <typename T, typename ConstructorPolicy, typename LeftFuture, typename HeadType, typename... Args>
 struct StaticFuture
 {
     T* self;
     LeftFuture& lhs;
-    std::tuple<Args...> args;
+    std::tuple<Args&...> args;
 
-    StaticFuture(LeftFuture& lhs_, Args... args_)
-        : self(nullptr), lhs(lhs_), args(std::make_tuple(args_...))
+    StaticFuture(LeftFuture& lhs_, Args&... args_)
+        : self(nullptr), lhs(lhs_), args(std::forward_as_tuple(args_...))
     {
     }
 
@@ -49,10 +49,12 @@ struct StaticFuture
     HeadType& _unwind(RHS rhs)
     {
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
+        typedef decltype(get(ChainPolicy(), *(T*)0)) ConstructorPolicyType;
+        //typedef typename GetChainPolicy<T>::type ConstructorPolicyType;
 
         if (!self)
             self = ChainBuilder<T, decltype(lhs), decltype(rhs),
-                typename ConstructorPolicy<T>::type>::create(lhs, rhs, args, IPack());
+                ConstructorPolicyType>::create(lhs, rhs, args, IPack());
 
         return lhs._unwind(*self);
     }
@@ -60,7 +62,7 @@ struct StaticFuture
     typedef StaticFuture ThisFuture;
 
     template <typename Next, typename... NextArgs>
-    StaticFuture<Next, ConstructorPolicy, ThisFuture, HeadType, NextArgs...> to(NextArgs... args_)
+    StaticFuture<Next, ConstructorPolicy, ThisFuture, HeadType, NextArgs...> to(NextArgs&&... args_)
     {
         return StaticFuture<Next, ConstructorPolicy, ThisFuture, HeadType, NextArgs...>(*this, args_...);
     }
@@ -72,11 +74,11 @@ struct StopUnwind
     RHS& _unwind(RHS& rhs) { return rhs; }
 };
 
-template <template <typename T> class ConstructorPolicy>
+template <typename ConstructorPolicy>
 struct BeginFuture
 {
     template <typename T, typename... NextArgs>
-    StaticFuture<T, ConstructorPolicy, StopUnwind<T>, T, NextArgs...> to(NextArgs... args_)
+    StaticFuture<T, ConstructorPolicy, StopUnwind<T>, T, NextArgs...> to(NextArgs&&... args_)
     {
         StopUnwind<T>& lhs = *new StopUnwind<T>();
         return StaticFuture<T, ConstructorPolicy, StopUnwind<T>, T, NextArgs...>(lhs, args_...);

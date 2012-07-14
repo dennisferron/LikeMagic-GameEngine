@@ -1,7 +1,14 @@
 #pragma once
 
 #include "ChainPolicy.hpp"
-// include other components
+#include "Worker.hpp"
+#include "CharInput.hpp"
+#include "LineInput.hpp"
+#include "StreamOutput.hpp"
+#include "Queue.hpp"
+#include "LookForPrompt.hpp"
+#include "Parser.hpp"
+#include "ActivityLog.hpp"
 
 // testing
 namespace Iocaste {
@@ -22,12 +29,19 @@ public:
 struct IInput : public virtual HasId { };
 struct IOutput : public virtual HasId { };
 
+template <typename T>
 struct Input : public IInput
 {
-    Input()
+    Input(T n, std::istream& inp)
     {
-        cout << " Input " << GetId() << " created " << endl;
+        cout << " Input " << n << " " << GetId() << " created " << endl;
     }
+};
+
+template <typename T>
+struct DerivedInput : public Input<T>
+{
+    DerivedInput(std::string str) : Input<T>(str) {}
 };
 
 struct Output : public IOutput
@@ -77,11 +91,41 @@ struct TestQueue : public IInput, public IOutput
 namespace Iocaste {
     namespace Debugger {
 
-ChainPolicy::None get(ChainPolicy, Input const&);
+// testing
+template <typename T>
+ChainPolicy::None get(ChainPolicy, Input<T> const&);
+
 ChainPolicy::None get(ChainPolicy, Output const&);
 ChainPolicy::RHS  get(ChainPolicy, Adapter const&);
 ChainPolicy::Both get(ChainPolicy, TestWorker const&);
 ChainPolicy::None get(ChainPolicy, TestQueue const&);
 
+//template <> struct GetChainPolicy<InputComponentTag>
+//    { typedef ChainPolicy::None type; };
+
+template <typename T> struct GetChainPolicy<AbstractOutput<T>>
+    { typedef ChainPolicy::None type; };
+
+template <typename T> struct GetChainPolicy<AbstractAdapter<T>>
+    { typedef ChainPolicy::RHS type; };
+
+template <> struct GetChainPolicy<Worker>
+    { typedef ChainPolicy::Both type; };
+
+template <typename T> struct GetChainPolicy<Queue<T>>
+    { typedef ChainPolicy::None type; };
+
+
+//ChainPolicy::None get(ChainPolicy, AbstractInput<T> const&);
+//template <typename T> ChainPolicy::None get(ChainPolicy, AbstractOutput<T> const&);
+//template <typename T> ChainPolicy::RHS  get(ChainPolicy, AbstractAdapter<T> const&);
+//ChainPolicy::Both get(ChainPolicy, Worker const&);
+//template <typename T> ChainPolicy::None get(ChainPolicy, Queue<T> const&);
+
+//ChainPolicy::None get(ChainPolicy, InputComponentTag const&);
+//ChainPolicy::None get(ChainPolicy, OutputComponentTag const&);
+//ChainPolicy::RHS  get(ChainPolicy, AdapterComponentTag const&);
+//ChainPolicy::Both get(ChainPolicy, WorkerComponentTag const&);
+//ChainPolicy::None get(ChainPolicy, QueueComponentTag const&);
     }
 }
