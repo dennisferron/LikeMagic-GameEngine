@@ -12,11 +12,5 @@ struct ChainPolicy
     struct Both {};
 };
 
-template <typename T>
-struct GetChainPolicy
-{
-    static_assert(sizeof(T) && false, "No chain policy defined for type T.");
-};
-
     }
 }

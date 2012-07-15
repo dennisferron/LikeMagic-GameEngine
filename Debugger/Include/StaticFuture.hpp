@@ -68,9 +68,9 @@ struct StaticFuture
     }
 };
 
-template <typename RHS>
 struct StopUnwind
 {
+    template <typename RHS>
     RHS& _unwind(RHS& rhs) { return rhs; }
 };
 
@@ -78,10 +78,11 @@ template <typename ConstructorPolicy>
 struct BeginFuture
 {
     template <typename T, typename... NextArgs>
-    StaticFuture<T, ConstructorPolicy, StopUnwind<T>, T, NextArgs...> to(NextArgs&&... args_)
+    StaticFuture<T, ConstructorPolicy, StopUnwind, T, NextArgs...> to(NextArgs&&... args_)
     {
-        StopUnwind<T>& lhs = *new StopUnwind<T>();
-        return StaticFuture<T, ConstructorPolicy, StopUnwind<T>, T, NextArgs...>(lhs, std::forward<NextArgs>(args_)...);
+        static_assert(sizeof...(NextArgs)>0, "begin");
+        StopUnwind& lhs = *new StopUnwind();
+        return StaticFuture<T, ConstructorPolicy, StopUnwind, T, NextArgs...>(lhs, std::forward<NextArgs>(args_)...);
     }
 };
 

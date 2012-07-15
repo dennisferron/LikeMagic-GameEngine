@@ -3,10 +3,8 @@
 namespace Iocaste {
     namespace Debugger {
 
-struct OutputComponentTag {};
-
 template <typename T>
-class AbstractOutput : public OutputComponentTag
+class AbstractOutput
 {
 public:
     virtual void WriteData(T const& data) = 0;

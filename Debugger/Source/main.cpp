@@ -87,7 +87,7 @@ bp::child start_gdb(int argc, char* argv[])
 int main(int argc, char* argv[])
 {
     //InputChain().to<Input<float>>(0.1f, cin).to<TestWorker>("first").to<TestQueue>().to<TestWorker>("second").to<Adapter>().to<Output>().force();
-    InputChain().to<LineInput>(cin).to<Worker>("test").to<LookForPrompt>().to<Queue<string>>().force();
+    InputChain().to<LineInput>(cin).to<Worker>("test").to<LookForPrompt>("(gdb) ").to<Queue<string>>().force();
     return 0;
 
     /*

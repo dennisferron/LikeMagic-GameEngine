@@ -5,8 +5,6 @@
 namespace Iocaste {
     namespace Debugger {
 
-//template <typename T> UnusedType get(ChainPolicy, T const&);
-
 template <typename T, typename LHS, typename RHS, typename Policy>
 struct ChainBuilder
 {
