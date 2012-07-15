@@ -87,20 +87,24 @@ bp::child start_gdb(int argc, char* argv[])
 int main(int argc, char* argv[])
 {
     //InputChain().to<Input<float>>(0.1f, cin).to<TestWorker>("first").to<TestQueue>().to<TestWorker>("second").to<Adapter>().to<Output>().force();
-    InputChain().to<LineInput>(cin).to<Worker>("test").to<LookForPrompt>("(gdb) ").to<Queue<string>>().force();
-    return 0;
-
-    /*
+    //InputChain().to<LineInput>(cin).to<Worker>("test").to<LookForPrompt>("(gdb) ").to<Queue<string>>().force();
+    //return 0;
 
     std::ofstream log_file("/Users/dennisferron/debug.log", ofstream::out);
     StreamOutput debug_log(log_file, true);
-    ActivityLog activity_log(debug_log);
+    ActivityLog log(debug_log);
 
     bp::child c = start_gdb(argc, argv);
 
     bp::postream& os = c.get_stdin();
     bp::pistream& is = c.get_stdout();
 
+    InputChain().to<LineInput>(cin).to<Worker>("fromUser").to<LogChannel>(log, "fromUser").to<UserCmdParser>().to<Queue<UserCmd>>().force();
+    InputChain().to<UserCmdWriter>().to<LogChannel>(log, "toGdb").to<StreamOutput>(os).force();
+    InputChain().to<CharInput>(is).to<Worker>("fromGdb").to<LookForPrompt>("(gdb) ").to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().force();
+    InputChain().to<GdbResponseWriter>().to<LogChannel>(log, "toUser").to<StreamOutput>(cout).force();
+
+    /*
     CharInput raw_gdb_chars(is);
     StreamOutput to_gdb(os);
 
@@ -130,7 +134,8 @@ int main(int argc, char* argv[])
 
     std::cerr << "exited = " << s.exited() << " exit_status = " << s.exit_status() << std::endl;
 
-    return 0;
     */
+
+    return 0;
 }
 

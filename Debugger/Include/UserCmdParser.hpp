@@ -1,19 +1,19 @@
 #pragma once
 
-#include "AbstractOutput.hpp"
+#include "AbstractAdapter.hpp"
 #include "UserCmd.hpp"
 #include <string>
 
 namespace Iocaste { namespace Debugger {
 
-class UserCmdParser : public AbstractOutput<std::string>
+class UserCmdParser : public AbstractAdapter<std::string>
 {
 private:
     AbstractOutput<UserCmd>& sink;
 
 public:
     UserCmdParser(AbstractOutput<UserCmd>& sink_);
-    virtual void WriteData(std::string input);
+    virtual void WriteData(std::string const& input);
 };
 
 }}

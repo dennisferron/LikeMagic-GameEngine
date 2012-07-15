@@ -30,7 +30,7 @@ template <typename T, typename ConstructorPolicy, typename LeftFuture, typename 
 struct StaticFuture
 {
     T* self;
-    LeftFuture& lhs;
+    LeftFuture lhs;
     std::tuple<Args&&...> args;
 
     StaticFuture(LeftFuture& lhs_, Args&&... args_)
@@ -50,7 +50,6 @@ struct StaticFuture
     {
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
         typedef decltype(get(ChainPolicy(), *(T*)0)) ConstructorPolicyType;
-        //typedef typename GetChainPolicy<T>::type ConstructorPolicyType;
 
         if (!self)
             self = ChainBuilder<T, decltype(lhs), decltype(rhs),
@@ -80,7 +79,6 @@ struct BeginFuture
     template <typename T, typename... NextArgs>
     StaticFuture<T, ConstructorPolicy, StopUnwind, T, NextArgs...> to(NextArgs&&... args_)
     {
-        static_assert(sizeof...(NextArgs)>0, "begin");
         StopUnwind& lhs = *new StopUnwind();
         return StaticFuture<T, ConstructorPolicy, StopUnwind, T, NextArgs...>(lhs, std::forward<NextArgs>(args_)...);
     }

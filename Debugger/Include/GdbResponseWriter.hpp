@@ -1,12 +1,16 @@
-#include "AbstractOutput.hpp"
+#include "AbstractAdapter.hpp"
+#include "GdbResponse.hpp"
 
+namespace Iocaste { namespace Debugger {
 
-class GdbResponseWriter : public AbstractOutput<GdbResponse>
+class GdbResponseWriter : public AbstractAdapter<GdbResponse>
 {
 private:
-    AbstractOutput<std::string> sink;
+    AbstractOutput<std::string>& sink;
 
 public:
     GdbResponseWriter(AbstractOutput<std::string>& sink_);
-    virtual void WriteData(GdbResponse input);
+    virtual void WriteData(GdbResponse const& input);
 };
+
+}}

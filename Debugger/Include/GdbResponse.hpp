@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace Iocaste { namespace Debug {
+namespace Iocaste { namespace Debugger {
 
 struct GdbResponse
 {

@@ -6,7 +6,7 @@ UserCmdParser::UserCmdParser(AbstractOutput<UserCmd>& sink_)
 {
 }
 
-void UserCmdParser::WriteData(std::string input)
+void UserCmdParser::WriteData(std::string const& input)
 {
     UserCmd cmd;
     cmd.raw_string = input;

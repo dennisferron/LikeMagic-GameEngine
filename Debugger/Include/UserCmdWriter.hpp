@@ -1,9 +1,9 @@
 #include "UserCmd.hpp"
-#include "AbstractOutput.hpp"
+#include "AbstractAdapter.hpp"
 
 namespace Iocaste { namespace Debugger {
 
-class UserCmdWriter : public AbstractOutput<UserCmd>
+class UserCmdWriter : public AbstractAdapter<UserCmd>
 {
 private:
     AbstractOutput<std::string>& sink;
