@@ -116,11 +116,11 @@ template <typename T> struct GetChainPolicy<Queue<T>>
     { typedef ChainPolicy::None type; };
 
 
-//ChainPolicy::None get(ChainPolicy, AbstractInput<T> const&);
-//template <typename T> ChainPolicy::None get(ChainPolicy, AbstractOutput<T> const&);
-//template <typename T> ChainPolicy::RHS  get(ChainPolicy, AbstractAdapter<T> const&);
-//ChainPolicy::Both get(ChainPolicy, Worker const&);
-//template <typename T> ChainPolicy::None get(ChainPolicy, Queue<T> const&);
+template <typename T> ChainPolicy::None get(ChainPolicy, AbstractInput<T> const&);
+template <typename T> ChainPolicy::None get(ChainPolicy, AbstractOutput<T> const&);
+template <typename T> ChainPolicy::RHS  get(ChainPolicy, AbstractAdapter<T> const&);
+ChainPolicy::Both get(ChainPolicy, Worker const&);
+template <typename T> ChainPolicy::None get(ChainPolicy, Queue<T> const&);
 
 //ChainPolicy::None get(ChainPolicy, InputComponentTag const&);
 //ChainPolicy::None get(ChainPolicy, OutputComponentTag const&);

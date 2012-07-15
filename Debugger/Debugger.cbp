@@ -42,6 +42,7 @@
 			<Add library="../../Common/boost_1_49_0/build-gcc/libboost_filesystem.a" />
 			<Add library="../../Common/boost_1_49_0/build-gcc/libboost_system.a" />
 		</Linker>
+		<Unit filename="Include/AbstractAdapter.hpp" />
 		<Unit filename="Include/AbstractInput.hpp" />
 		<Unit filename="Include/AbstractOutput.hpp" />
 		<Unit filename="Include/ActivityLog.hpp" />

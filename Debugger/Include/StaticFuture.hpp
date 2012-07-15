@@ -31,9 +31,9 @@ struct StaticFuture
 {
     T* self;
     LeftFuture& lhs;
-    std::tuple<Args&...> args;
+    std::tuple<Args&&...> args;
 
-    StaticFuture(LeftFuture& lhs_, Args&... args_)
+    StaticFuture(LeftFuture& lhs_, Args&&... args_)
         : self(nullptr), lhs(lhs_), args(std::forward_as_tuple(args_...))
     {
     }
@@ -64,7 +64,7 @@ struct StaticFuture
     template <typename Next, typename... NextArgs>
     StaticFuture<Next, ConstructorPolicy, ThisFuture, HeadType, NextArgs...> to(NextArgs&&... args_)
     {
-        return StaticFuture<Next, ConstructorPolicy, ThisFuture, HeadType, NextArgs...>(*this, args_...);
+        return StaticFuture<Next, ConstructorPolicy, ThisFuture, HeadType, NextArgs...>(*this, std::forward<NextArgs>(args_)...);
     }
 };
 
@@ -81,7 +81,7 @@ struct BeginFuture
     StaticFuture<T, ConstructorPolicy, StopUnwind<T>, T, NextArgs...> to(NextArgs&&... args_)
     {
         StopUnwind<T>& lhs = *new StopUnwind<T>();
-        return StaticFuture<T, ConstructorPolicy, StopUnwind<T>, T, NextArgs...>(lhs, args_...);
+        return StaticFuture<T, ConstructorPolicy, StopUnwind<T>, T, NextArgs...>(lhs, std::forward<NextArgs>(args_)...);
     }
 };
 
