@@ -39,7 +39,7 @@ struct ChainBuilder<T, LHS, RHS, ChainPolicy::Both>
 {
     template <typename... Args, int... Indices>
     static T* create(LHS lhs, RHS rhs, std::tuple<Args...> args, IndexPack<Indices...> ipack)
-        { return new T(*lhs.force().second, rhs, std::get<Indices>(args)...); }
+        { return new T(lhs.complete().tail(), rhs, std::get<Indices>(args)...); }
 };
 
     }

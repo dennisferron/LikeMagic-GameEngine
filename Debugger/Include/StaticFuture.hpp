@@ -29,20 +29,33 @@ order, and then instantiate everything only after the complete chain is describe
 template <typename T, typename ConstructorPolicy, typename LeftFuture, typename HeadType, typename... Args>
 struct StaticFuture
 {
-    T* self;
+    boost::shared_ptr<T> self;
     LeftFuture lhs;
     std::tuple<Args&&...> args;
 
     StaticFuture(LeftFuture& lhs_, Args&&... args_)
-        : self(nullptr), lhs(lhs_), args(std::forward_as_tuple(args_...))
+        : self(), lhs(lhs_), args(std::forward_as_tuple(args_...))
     {
     }
 
-    std::pair<HeadType*, T*> force()
+    ~StaticFuture()
     {
-        HeadType& head = _unwind(UnusedType());
-        T& temp = *self;
-        return std::make_pair(&head, &temp);
+    }
+
+    HeadType& head()
+    {
+        return lhs._unwind(*self);
+    }
+
+    T& tail()
+    {
+        return *self;
+    }
+
+    StaticFuture complete()
+    {
+        _unwind(UnusedType());
+        return *this;
     }
 
     template <typename RHS>
@@ -52,8 +65,8 @@ struct StaticFuture
         typedef decltype(get(ChainPolicy(), *(T*)0)) ConstructorPolicyType;
 
         if (!self)
-            self = ChainBuilder<T, decltype(lhs), decltype(rhs),
-                ConstructorPolicyType>::create(lhs, rhs, args, IPack());
+            self = boost::shared_ptr<T>(ChainBuilder<T, decltype(lhs), decltype(rhs),
+                ConstructorPolicyType>::create(lhs, rhs, args, IPack()));
 
         return lhs._unwind(*self);
     }

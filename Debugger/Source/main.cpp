@@ -25,7 +25,7 @@ enum class MainLoopState
 using namespace Iocaste::Debugger;
 
 /*
-void main_loop(Channel<UserCmd, GdbResponse> gdb, Channel<GdbResponse, UserCmd> user)
+void main_loop(AbstractInput<UserCmd> fromUser, AbstractOutput<> toUser, Channel<GdbResponse, UserCmd> user)
 {
     // Relay gdb's welcome message before processing user commands.  Codeblocks seems to require this.
     user.to.WriteData(gdb.from.ReadData());
@@ -99,10 +99,10 @@ int main(int argc, char* argv[])
     bp::postream& os = c.get_stdin();
     bp::pistream& is = c.get_stdout();
 
-    InputChain().to<LineInput>(cin).to<Worker>("fromUser").to<LogChannel>(log, "fromUser").to<UserCmdParser>().to<Queue<UserCmd>>().force();
-    InputChain().to<UserCmdWriter>().to<LogChannel>(log, "toGdb").to<StreamOutput>(os).force();
-    InputChain().to<CharInput>(is).to<Worker>("fromGdb").to<LookForPrompt>("(gdb) ").to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().force();
-    InputChain().to<GdbResponseWriter>().to<LogChannel>(log, "toUser").to<StreamOutput>(cout).force();
+    auto fromUser = InputChain().to<LineInput>(cin).to<Worker>("fromUser").to<LogChannel>(log, "fromUser").to<UserCmdParser>().to<Queue<UserCmd>>().complete();
+    auto toGdb = InputChain().to<UserCmdWriter>().to<LogChannel>(log, "toGdb").to<StreamOutput>(os).complete();
+    auto fromGdb = InputChain().to<CharInput>(is).to<Worker>("fromGdb").to<LookForPrompt>("(gdb) ").to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().complete();
+    auto toUser = InputChain().to<GdbResponseWriter>().to<LogChannel>(log, "toUser").to<StreamOutput>(cout).complete();
 
     /*
     CharInput raw_gdb_chars(is);
