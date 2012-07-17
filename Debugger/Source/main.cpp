@@ -156,17 +156,17 @@ int main(int argc, char* argv[])
     bp::postream& os = c.get_stdin();
     bp::pistream& is = c.get_stdout();
 
-    //auto fromUser = InputChain().to<LineInput>(cin).to<Worker>("fromUser").to<LogChannel>(log, "fromUser").to<UserCmdParser>().to<Queue<UserCmd>>().complete();
-    //auto toGdb = InputChain().to<UserCmdWriter>().to<LogChannel>(log, "toGdb").to<StreamOutput>(os).complete();
-    //auto fromGdb = InputChain().to<CharInput>(is).to<Worker>("fromGdb").to<LookForPrompt>("(gdb) ").to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().complete();
-    //auto toUser = InputChain().to<GdbResponseWriter>().to<LogChannel>(log, "toUser").to<StreamOutput>(cout, false).complete();
+    auto fromUser = InputChain().to<LineInput>(cin).to<Worker>("fromUser").to<LogChannel>(log, "fromUser").to<UserCmdParser>().to<Queue<UserCmd>>().complete();
+    auto toGdb = InputChain().to<UserCmdWriter>().to<LogChannel>(log, "toGdb").to<StreamOutput>(os).complete();
+    auto fromGdb = InputChain().to<CharInput>(is).to<Worker>("fromGdb").to<LogChannel>(log, "rawGDB").to<LookForPrompt>("(gdb) ").to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().complete();
+    auto toUser = InputChain().to<GdbResponseWriter>().to<LogChannel>(log, "toUser").to<StreamOutput>(cout, false).complete();
 
     //auto test = InputChain().to<LogChannel>(log, "testing").to<StreamOutput>(cout, true).complete();
     //auto test = InputChain().to<StreamOutput>(cout, true).complete();
-    auto test = InputChain().to<TestAdapter<3>>().to<TestAdapter<3>>().to<TestAdapter<3>>().to<StreamOutput>(cout, true).complete();
-    test.head().WriteData("Hello!!");
+    //auto test = InputChain().to<TestAdapter<3>>().to<TestAdapter<3>>().to<TestAdapter<3>>().to<StreamOutput>(cout, true).complete();
+    //test.head().WriteData("Hello!!");
 
-    //mainLoop(MainChannels(fromUser.tail(), toUser.head(), fromGdb.tail(), toGdb.head()));
+    mainLoop(MainChannels(fromUser.tail(), toUser.head(), fromGdb.tail(), toGdb.head()));
 
     bp::status s = c.wait();
 

@@ -12,6 +12,12 @@ using namespace Iocaste::Debugger;
 namespace Iocaste {
     namespace Debugger {
 
+AbstractOutput<std::string>& no_call_copy_constructor(LogChannel& value)
+{
+    return static_cast<AbstractOutput<std::string>&>(value);
+}
+
+
 LogChannel::LogChannel(
   AbstractOutput<std::string>& sink_,
   ActivityLog& log_,

@@ -24,6 +24,9 @@ private:
     virtual void WriteData(ActivityLogLine const& data);
 
 public:
+
+    LogChannel(LogChannel const&) = delete;
+
     LogChannel(
             AbstractOutput<std::string>& sink_,
             ActivityLog& log_,

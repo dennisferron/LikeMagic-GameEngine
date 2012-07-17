@@ -11,6 +11,12 @@ template <typename T>
 AbstractOutput<T>& no_call_copy_constructor(AbstractOutput<T>& t)
     { return t; }
 
+class LogChannel;
+AbstractOutput<std::string>& no_call_copy_constructor(LogChannel& value);
+
+class ActivityLog;
+AbstractOutput<std::string>& no_call_copy_constructor(ActivityLog& value);
+
 template <typename T, typename LHS, typename RHS, typename Policy>
 struct ChainBuilder
 {
