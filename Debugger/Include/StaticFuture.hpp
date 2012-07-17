@@ -33,8 +33,9 @@ struct StaticFuture
     LeftFuture lhs;
     std::tuple<Args&&...> args;
 
+
     StaticFuture(LeftFuture& lhs_, Args&&... args_)
-        : self(), lhs(lhs_), args(std::forward_as_tuple(args_...))
+        : self(), lhs(lhs_), args(std::forward<Args>(args_)...)
     {
     }
 
@@ -54,21 +55,31 @@ struct StaticFuture
 
     StaticFuture complete()
     {
-        _unwind(UnusedType());
+        auto temp = new UnusedType;
+        _unwind(*temp);
+        delete temp;
         return *this;
     }
 
     template <typename RHS>
-    HeadType& _unwind(RHS rhs)
+    HeadType& _unwind(RHS& rhs)
     {
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
-        typedef decltype(get(ChainPolicy(), *(T*)0)) ConstructorPolicyType;
 
         if (!self)
-            self = boost::shared_ptr<T>(ChainBuilder<T, decltype(lhs), decltype(rhs),
-                ConstructorPolicyType>::create(lhs, rhs, args, IPack()));
+            self = boost::shared_ptr<T>(_createSelf(rhs, IPack()));
 
         return lhs._unwind(*self);
+    }
+
+    template <typename RHS, int... Indices>
+    T* _createSelf(RHS& rhs, IndexPack<Indices...>)
+    {
+        typedef decltype(get(ChainPolicy(), *(T*)0)) ConstructorPolicyType;
+        return  ChainBuilder<
+            T, LeftFuture&, RHS&, ConstructorPolicyType
+        >::
+            create(lhs, rhs, std::get<Indices>(args)...);
     }
 
     typedef StaticFuture ThisFuture;
@@ -80,20 +91,16 @@ struct StaticFuture
     }
 };
 
-struct StopUnwind
-{
-    template <typename RHS>
-    RHS& _unwind(RHS& rhs) { return rhs; }
-};
-
 template <typename ConstructorPolicy>
 struct BeginFuture
 {
+    template <typename RHS>
+    RHS& _unwind(RHS& rhs) { return rhs; }
+
     template <typename T, typename... NextArgs>
-    StaticFuture<T, ConstructorPolicy, StopUnwind, T, NextArgs...> to(NextArgs&&... args_)
+    StaticFuture<T, ConstructorPolicy, BeginFuture, T, NextArgs...> to(NextArgs&&... args_)
     {
-        StopUnwind& lhs = *new StopUnwind();
-        return StaticFuture<T, ConstructorPolicy, StopUnwind, T, NextArgs...>(lhs, std::forward<NextArgs>(args_)...);
+        return StaticFuture<T, ConstructorPolicy, BeginFuture, T, NextArgs...>(*this, std::forward<NextArgs>(args_)...);
     }
 };
 

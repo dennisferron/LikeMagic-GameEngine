@@ -5,11 +5,17 @@
 namespace Iocaste {
     namespace Debugger {
 
+template <typename T> class AbstractOutput;
+
+template <typename T>
+AbstractOutput<T>& no_call_copy_constructor(AbstractOutput<T>& t)
+    { return t; }
+
 template <typename T, typename LHS, typename RHS, typename Policy>
 struct ChainBuilder
 {
-    template <typename... Args, int... Indices>
-    static T* create(LHS lhs, RHS rhs, std::tuple<Args...> args, IndexPack<Indices...> ipack)
+    template <typename... Args>
+    static T* create(LHS& lhs, RHS& rhs, Args&&...)
     {
         static_assert(
             sizeof(T) && false, "Unrecognized chaining policy."
@@ -21,25 +27,25 @@ struct ChainBuilder
 template <typename T, typename LHS, typename RHS>
 struct ChainBuilder<T, LHS, RHS, ChainPolicy::None>
 {
-    template <typename... Args, int... Indices>
-    static T* create(LHS lhs, RHS rhs, std::tuple<Args...> args, IndexPack<Indices...> ipack)
-        { return new T(std::get<Indices>(args)...); }
+    template <typename... Args>
+    static T* create(LHS& lhs, RHS& rhs, Args&&... args)
+        { return new T(std::forward<Args>(args)...); }
 };
 
 template <typename T, typename LHS, typename RHS>
 struct ChainBuilder<T, LHS, RHS, ChainPolicy::RHS>
 {
-    template <typename... Args, int... Indices>
-    static T* create(LHS lhs, RHS rhs, std::tuple<Args...> args, IndexPack<Indices...> ipack)
-        { return new T(rhs, std::get<Indices>(args)...); }
+    template <typename... Args>
+    static T* create(LHS& lhs, RHS& rhs, Args&&... args)
+        { return new T(no_call_copy_constructor(rhs), std::forward<Args>(args)...); }
 };
 
 template <typename T, typename LHS, typename RHS>
-struct ChainBuilder<T, LHS, RHS, ChainPolicy::Both>
+struct ChainBuilder<T, LHS, RHS&, ChainPolicy::Both>
 {
-    template <typename... Args, int... Indices>
-    static T* create(LHS lhs, RHS rhs, std::tuple<Args...> args, IndexPack<Indices...> ipack)
-        { return new T(lhs.complete().tail(), rhs, std::get<Indices>(args)...); }
+    template <typename... Args>
+    static T* create(LHS& lhs, RHS& rhs, Args&&... args)
+        { return new T(lhs.complete().tail(), rhs, std::forward<Args>(args)...); }
 };
 
     }

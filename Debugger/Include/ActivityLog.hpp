@@ -29,6 +29,7 @@ private:
 
 public:
 
+    ActivityLog(ActivityLog const&) = delete;
     ActivityLog(AbstractOutput<std::string>& log_file_);
     void AddChannel(std::string label, AbstractOutput<ActivityLogLine>& channel);
 

@@ -1,5 +1,6 @@
 #define BOOST_FILESYSTEM_VERSION 2
 #include <boost/process.hpp>
+#include <boost/assert.hpp>
 
 #include <string>
 #include <vector>
@@ -24,13 +25,34 @@ enum class MainLoopState
 #include "InputChainComponents.hpp"
 using namespace Iocaste::Debugger;
 
-/*
-void main_loop(AbstractInput<UserCmd> fromUser, AbstractOutput<> toUser, Channel<GdbResponse, UserCmd> user)
+struct MainChannels
+{
+    AbstractInput<UserCmd>& fromUser;
+    AbstractOutput<GdbResponse>& toUser;
+    AbstractInput<GdbResponse>& fromGdb;
+    AbstractOutput<UserCmd>& toGdb;
+
+    MainChannels(AbstractInput<UserCmd>& fromUser_, AbstractOutput<GdbResponse>& toUser_, AbstractInput<GdbResponse>& fromGdb_, AbstractOutput<UserCmd>& toGdb_)
+        : fromUser(fromUser_), toUser(toUser_), fromGdb(fromGdb_), toGdb(toGdb_) {}
+};
+
+MainLoopState processUserCmd(UserCmd& cmd, MainChannels channels)
+{
+    return MainLoopState::WriteGdb;
+}
+
+MainLoopState processResponse(GdbResponse& response, MainChannels channels)
+{
+    return MainLoopState::WriteUser;
+}
+
+void mainLoop(MainChannels channels)
 {
     // Relay gdb's welcome message before processing user commands.  Codeblocks seems to require this.
-    user.to.WriteData(gdb.from.ReadData());
+    BOOST_ASSERT_MSG(channels.fromGdb.HasData(), "Expected to receive banner message from GDB.");
+    channels.toUser.WriteData(channels.fromGdb.ReadData());
 
-    MainLoopState state = MainLoopState.ReadUser;
+    MainLoopState state = MainLoopState::ReadUser;
     UserCmd cmd;
     GdbResponse response;
 
@@ -38,32 +60,32 @@ void main_loop(AbstractInput<UserCmd> fromUser, AbstractOutput<> toUser, Channel
     {
         switch (state)
         {
-            case MainLoopState.ReadUser:
-                cmd = user.from.ReadData();
-                state = processCmd(cmd, gdb, user);
+            case MainLoopState::ReadUser:
+                cmd = channels.fromUser.ReadData();
+                state = processUserCmd(cmd, channels);
                 break;
 
-            case MainLoopState.WriteGdb:
-                gdb.to.WriteData(cmd)
-                state = MainLoopState.ReadGdb;
+            case MainLoopState::WriteGdb:
+                channels.toGdb.WriteData(cmd);
+                state = MainLoopState::ReadGdb;
                 break;
 
-            case MainLoopState.ReadGdb:
-                response = gdb.from.ReadData();
-                state = processResponse(response, gdb, user);
+            case MainLoopState::ReadGdb:
+                response = channels.fromGdb.ReadData();
+                state = processResponse(response, channels);
                 break;
 
-            case MainLoopState.WriteUser:
-                user.to.WriteData(response);
-                state = MainLoopState.ReadUser;
+            case MainLoopState::WriteUser:
+                channels.toUser.WriteData(response);
+                state = MainLoopState::ReadUser;
                 break;
 
-            case MainLoopState.Quit:
+            case MainLoopState::Quit:
                 return;
         }
     }
 }
-*/
+
 
 bp::child start_gdb(int argc, char* argv[])
 {
@@ -82,7 +104,34 @@ bp::child start_gdb(int argc, char* argv[])
     return bp::launch(exec, args, ctx);
 }
 
+template <int I>
+struct TestAdapter : public AbstractAdapter<string>
+{
+    AbstractOutput<string>& sink;
 
+    TestAdapter(TestAdapter const&)=delete;
+
+    TestAdapter(AbstractOutput<string>& sink_) : sink(sink_)
+    {
+        cout << "TestAdapter " << this << " created" << endl;
+    }
+
+    TestAdapter(AbstractOutput<string>& sink_, int i) : sink(sink_)
+    {
+        cout << "TestAdapter " << this << " created" << endl;
+    }
+
+    ~TestAdapter()
+    {
+        cout << "~TestAdapter " << this << " destructed" << endl;
+    }
+
+    void WriteData(string const& str)
+    {
+        cout << "Got: " << str << endl;
+        sink.WriteData(str+"x");
+    }
+};
 
 int main(int argc, char* argv[])
 {
@@ -90,7 +139,15 @@ int main(int argc, char* argv[])
     //InputChain().to<LineInput>(cin).to<Worker>("test").to<LookForPrompt>("(gdb) ").to<Queue<string>>().force();
     //return 0;
 
-    std::ofstream log_file("/Users/dennisferron/debug.log", ofstream::out);
+    char const* logFileName =
+#ifdef __APPLE__
+    "/Users/dennisferron/debug.log"
+#else
+    "/home/dennis/debug.log"
+#endif
+        ;
+
+    std::ofstream log_file(logFileName, ofstream::out);
     StreamOutput debug_log(log_file, true);
     ActivityLog log(debug_log);
 
@@ -99,42 +156,21 @@ int main(int argc, char* argv[])
     bp::postream& os = c.get_stdin();
     bp::pistream& is = c.get_stdout();
 
-    auto fromUser = InputChain().to<LineInput>(cin).to<Worker>("fromUser").to<LogChannel>(log, "fromUser").to<UserCmdParser>().to<Queue<UserCmd>>().complete();
-    auto toGdb = InputChain().to<UserCmdWriter>().to<LogChannel>(log, "toGdb").to<StreamOutput>(os).complete();
-    auto fromGdb = InputChain().to<CharInput>(is).to<Worker>("fromGdb").to<LookForPrompt>("(gdb) ").to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().complete();
-    auto toUser = InputChain().to<GdbResponseWriter>().to<LogChannel>(log, "toUser").to<StreamOutput>(cout).complete();
+    //auto fromUser = InputChain().to<LineInput>(cin).to<Worker>("fromUser").to<LogChannel>(log, "fromUser").to<UserCmdParser>().to<Queue<UserCmd>>().complete();
+    //auto toGdb = InputChain().to<UserCmdWriter>().to<LogChannel>(log, "toGdb").to<StreamOutput>(os).complete();
+    //auto fromGdb = InputChain().to<CharInput>(is).to<Worker>("fromGdb").to<LookForPrompt>("(gdb) ").to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().complete();
+    //auto toUser = InputChain().to<GdbResponseWriter>().to<LogChannel>(log, "toUser").to<StreamOutput>(cout, false).complete();
 
-    /*
-    CharInput raw_gdb_chars(is);
-    StreamOutput to_gdb(os);
+    //auto test = InputChain().to<LogChannel>(log, "testing").to<StreamOutput>(cout, true).complete();
+    //auto test = InputChain().to<StreamOutput>(cout, true).complete();
+    auto test = InputChain().to<TestAdapter<3>>().to<TestAdapter<3>>().to<TestAdapter<3>>().to<StreamOutput>(cout, true).complete();
+    test.head().WriteData("Hello!!");
 
-    AbstractOutput<string>& log_to_gdb = activity_log.Wrap("toGdb", to_gdb);
-
-    Queue<string> gdb_response_queue;
-
-    AbstractOutput<string>& log_gdb = activity_log.Wrap("fromGdb", gdb_response_queue);
-
-    LookForPrompt look_for_prompt(log_gdb, "(gdb) ");
-    Worker gdb_reader(raw_gdb_chars, look_for_prompt, "from gdb look for prompt", debug_log);
-
-    LineInput raw_from_user(std::cin);
-    StreamOutput raw_to_user(std::cout);
-
-    AbstractOutput<string>& log_to_user = activity_log.Wrap("toUser", raw_to_user);
-
-    Queue<UserCmd> user_cmd_queue;
-
-    UserCmdParser cmd_parser(user_cmd_queue);
-
-    AbstractOutput<string>& log_from_user = activity_log.Wrap("fromUser", cmd_parser);
-
-    Worker user_reader(raw_from_user, log_from_user);
+    //mainLoop(MainChannels(fromUser.tail(), toUser.head(), fromGdb.tail(), toGdb.head()));
 
     bp::status s = c.wait();
 
     std::cerr << "exited = " << s.exited() << " exit_status = " << s.exit_status() << std::endl;
-
-    */
 
     return 0;
 }
