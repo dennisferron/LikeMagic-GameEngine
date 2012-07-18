@@ -50,6 +50,7 @@
 		<Unit filename="Include/ChainBuilder.hpp" />
 		<Unit filename="Include/ChainPolicy.hpp" />
 		<Unit filename="Include/CharInput.hpp" />
+		<Unit filename="Include/Exception.hpp" />
 		<Unit filename="Include/GdbResponse.hpp" />
 		<Unit filename="Include/GdbResponseParser.hpp" />
 		<Unit filename="Include/GdbResponseWriter.hpp" />
@@ -72,6 +73,7 @@
 		<Unit filename="Source/ActivityLog.cpp" />
 		<Unit filename="Source/ActivityLogLine.cpp" />
 		<Unit filename="Source/CharInput.cpp" />
+		<Unit filename="Source/Exception.cpp" />
 		<Unit filename="Source/GdbResponseParser.cpp" />
 		<Unit filename="Source/GdbResponseWriter.cpp" />
 		<Unit filename="Source/LineInput.cpp" />

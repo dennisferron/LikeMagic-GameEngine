@@ -31,9 +31,10 @@ struct MainChannels
     AbstractOutput<GdbResponse>& toUser;
     AbstractInput<GdbResponse>& fromGdb;
     AbstractOutput<UserCmd>& toGdb;
+    AbstractOutput<std::string>& info;
 
-    MainChannels(AbstractInput<UserCmd>& fromUser_, AbstractOutput<GdbResponse>& toUser_, AbstractInput<GdbResponse>& fromGdb_, AbstractOutput<UserCmd>& toGdb_)
-        : fromUser(fromUser_), toUser(toUser_), fromGdb(fromGdb_), toGdb(toGdb_) {}
+    MainChannels(AbstractInput<UserCmd>& fromUser_, AbstractOutput<GdbResponse>& toUser_, AbstractInput<GdbResponse>& fromGdb_, AbstractOutput<UserCmd>& toGdb_, AbstractOutput<std::string>& info_)
+        : fromUser(fromUser_), toUser(toUser_), fromGdb(fromGdb_), toGdb(toGdb_), info(info_) {}
 };
 
 MainLoopState processUserCmd(UserCmd& cmd, MainChannels channels)
@@ -48,9 +49,16 @@ MainLoopState processResponse(GdbResponse& response, MainChannels channels)
 
 void mainLoop(MainChannels channels)
 {
+    Thread::usleep(100000L);
+
     // Relay gdb's welcome message before processing user commands.  Codeblocks seems to require this.
-    BOOST_ASSERT_MSG(channels.fromGdb.HasData(), "Expected to receive banner message from GDB.");
-    channels.toUser.WriteData(channels.fromGdb.ReadData());
+    if(channels.fromGdb.HasData())
+    {
+        auto banner = channels.fromGdb.ReadData();
+        channels.toUser.WriteData(banner);
+    }
+    else
+        channels.info.WriteData("Failed to receive gdb's welcome banner, or it did not end with a '(gdb)' prompt.");
 
     MainLoopState state = MainLoopState::ReadUser;
     UserCmd cmd;
@@ -61,26 +69,35 @@ void mainLoop(MainChannels channels)
         switch (state)
         {
             case MainLoopState::ReadUser:
+                channels.info.WriteData("MainLoopState::ReadUser");
                 cmd = channels.fromUser.ReadData();
                 state = processUserCmd(cmd, channels);
                 break;
 
             case MainLoopState::WriteGdb:
+                channels.info.WriteData("MainLoopState::WriteGdb");
                 channels.toGdb.WriteData(cmd);
-                state = MainLoopState::ReadGdb;
+
+                if (cmd.raw_string == "quit")
+                    state = MainLoopState::Quit;
+                else
+                    state = MainLoopState::ReadGdb;
                 break;
 
             case MainLoopState::ReadGdb:
+                channels.info.WriteData("MainLoopState::ReadGdb");
                 response = channels.fromGdb.ReadData();
                 state = processResponse(response, channels);
                 break;
 
             case MainLoopState::WriteUser:
+                channels.info.WriteData("MainLoopState::WriteUser");
                 channels.toUser.WriteData(response);
                 state = MainLoopState::ReadUser;
                 break;
 
             case MainLoopState::Quit:
+                channels.info.WriteData("MainLoopState::Quit");
                 return;
         }
     }
@@ -156,17 +173,30 @@ int main(int argc, char* argv[])
     bp::postream& os = c.get_stdin();
     bp::pistream& is = c.get_stdout();
 
+    //cout << is.rdbuf();
+
+
     auto fromUser = InputChain().to<LineInput>(cin).to<Worker>("fromUser").to<LogChannel>(log, "fromUser").to<UserCmdParser>().to<Queue<UserCmd>>().complete();
-    auto toGdb = InputChain().to<UserCmdWriter>().to<LogChannel>(log, "toGdb").to<StreamOutput>(os).complete();
-    auto fromGdb = InputChain().to<CharInput>(is).to<Worker>("fromGdb").to<LogChannel>(log, "rawGDB").to<LookForPrompt>("(gdb) ").to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().complete();
+
+    // LineInput eats newlines so fromUser -> toGdb stream output must re-add newline (pass true to stream output).
+    auto toGdb = InputChain().to<UserCmdWriter>().to<LogChannel>(log, "toGdb").to<StreamOutput>(os, true).complete();
+
+    auto fromGdb = InputChain().to<CharInput>(is).to<Worker>("fromGdb").to<LookForPrompt>("(gdb) ").to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().complete();
+
+    // CharInput does not eat newlines, and look-for-prompt looks for a prompt string not a newline, so newlines are NOT eaten
+    // therefore fromGdb -> toUser does not need to re-add a newline.
     auto toUser = InputChain().to<GdbResponseWriter>().to<LogChannel>(log, "toUser").to<StreamOutput>(cout, false).complete();
+
+    auto info = InputChain().to<LogChannel>(log, "info").to<StreamOutput>(cerr, true).complete();
 
     //auto test = InputChain().to<LogChannel>(log, "testing").to<StreamOutput>(cout, true).complete();
     //auto test = InputChain().to<StreamOutput>(cout, true).complete();
     //auto test = InputChain().to<TestAdapter<3>>().to<TestAdapter<3>>().to<TestAdapter<3>>().to<StreamOutput>(cout, true).complete();
     //test.head().WriteData("Hello!!");
 
-    mainLoop(MainChannels(fromUser.tail(), toUser.head(), fromGdb.tail(), toGdb.head()));
+    info.head().WriteData("Built input chains.");
+
+    mainLoop(MainChannels(fromUser.tail(), toUser.head(), fromGdb.tail(), toGdb.head(), info.head()));
 
     bp::status s = c.wait();
 

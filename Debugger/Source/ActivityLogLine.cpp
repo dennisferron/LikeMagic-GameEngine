@@ -12,6 +12,7 @@
 using namespace std;
 
 #include "ActivityLogLine.hpp"
+#include "Exception.hpp"
 
 using namespace Iocaste::Debugger;
 
@@ -58,7 +59,7 @@ struct ActivityLogParser : qi::grammar<Iterator, ActivityLogLine()>
 };
 
 
-bool ActivityLogLine::Parse(std::string str)
+void ActivityLogLine::Parse(std::string str)
 {
     using boost::spirit::ascii::space;
     typedef std::string::const_iterator iterator_type;
@@ -72,19 +73,17 @@ bool ActivityLogLine::Parse(std::string str)
 
     if (!success)
     {
-        std::cerr << "Failed to parse" << std::endl;
-        return false;
+        stringstream ss;
+        ss << "Failed to parse: " << str << std::endl;
+        throw GeneratorException(ss.str());
     }
     else
     {
         if (iter != end)
         {
-            std::cerr << "Not all of the line was parsed: " << std::string(iter, end) << std::endl;
-            return false;
-        }
-        else
-        {
-            return true;
+            stringstream ss;
+            ss << "Not all of the line was parsed: " << std::string(iter, end) << std::endl;
+            throw GeneratorException(ss.str());
         }
     }
 }
@@ -117,7 +116,7 @@ struct ActivityLogWriter
     karma::symbols<char, char const*> esc_char;
 };
 
-bool ActivityLogLine::Write(std::string& generated) const
+void ActivityLogLine::Write(std::string& generated) const
 {
     namespace karma = boost::spirit::karma;
 
@@ -126,20 +125,9 @@ bool ActivityLogLine::Write(std::string& generated) const
     sink_type sink(generated);
 
     ActivityLogWriter<sink_type> g;
-    if (!karma::generate(sink, g, *this))
-    {
-        std::cout << "-------------------------\n";
-        std::cout << "Generating failed\n";
-        std::cout << "-------------------------\n";
-        return false;
-    }
-    else
-    {
-        std::cout << "-------------------------\n";
-        std::cout << "Generated: " << generated << "\n";
-        std::cout << "-------------------------\n";
-        return true;
-    }
+
+    if(!karma::generate(sink, g, *this))
+        throw GeneratorException("Error writing activity log line.");
 }
 
     }

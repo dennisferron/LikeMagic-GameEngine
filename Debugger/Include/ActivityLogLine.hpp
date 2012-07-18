@@ -7,8 +7,8 @@ struct ActivityLogLine
     std::string label;
     std::string content;
 
-    bool Parse(std::string str);
-    bool Write(std::string& generated) const;
+    void Parse(std::string str);
+    void Write(std::string& generated) const;
 };
 
 }}

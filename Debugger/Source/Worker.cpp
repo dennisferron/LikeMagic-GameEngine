@@ -44,7 +44,6 @@ void Worker::run_loop()
         }
     }
 
-    std::cerr << "Worker " << debug_name << " finished" << std::endl;
     is_running = false;
 }
 
