@@ -71,6 +71,8 @@ void mainLoop(MainChannels channels)
             channels.info.WriteData("MainLoopState::ReadUser");
             cmd = channels.fromUser.ReadData();
             channels.toGdb.WriteData(cmd);
+            if (cmd.raw_string == "quit")
+                return;
         }
 
         if (channels.fromGdb.HasData())
@@ -79,8 +81,6 @@ void mainLoop(MainChannels channels)
             response = channels.fromGdb.ReadData();
             channels.toUser.WriteData(response);
         }
-
-        cerr << "no data" << endl;
     }
 
 /*
@@ -208,7 +208,9 @@ int main(int argc, char* argv[])
     // LineInput eats newlines so fromUser -> toGdb stream output must re-add newline (pass true to stream output).
     auto toGdb = InputChain().to<UserCmdWriter>().to<LogChannel>(log, "toGdb").to<StreamOutput>(os, true).complete();
 
-    auto fromGdb = InputChain().to<CharInput>(is).to<Worker>("fromGdb").to<LookForPrompt>("(gdb) ").to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().complete();
+    //string prompt = "(gdb) ";
+    string prompt = ">>>>>>cb_gdb:";
+    auto fromGdb = InputChain().to<CharInput>(is).to<Worker>("fromGdb").to<LookForPrompt>(prompt).to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().complete();
 
     // CharInput does not eat newlines, and look-for-prompt looks for a prompt string not a newline, so newlines are NOT eaten
     // therefore fromGdb -> toUser does not need to re-add a newline.
@@ -225,9 +227,9 @@ int main(int argc, char* argv[])
 
     mainLoop(MainChannels(fromUser.tail(), toUser.head(), fromGdb.tail(), toGdb.head(), info.head()));
 
-    bp::status s = c.wait();
+    //bp::status s = c.wait();
 
-    std::cerr << "exited = " << s.exited() << " exit_status = " << s.exit_status() << std::endl;
+    //std::cerr << "exited = " << s.exited() << " exit_status = " << s.exit_status() << std::endl;
 
     return 0;
 }

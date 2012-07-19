@@ -22,7 +22,7 @@ Worker::~Worker()
 void Worker::stop_thread()
 {
 	stop = true;
-	pthread_join(thread, NULL);
+    pthread_join(thread, NULL);
 }
 
 void* Worker::callback(void* obj)
