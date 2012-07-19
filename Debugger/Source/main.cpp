@@ -49,21 +49,41 @@ MainLoopState processResponse(GdbResponse& response, MainChannels channels)
 
 void mainLoop(MainChannels channels)
 {
-    Thread::usleep(100000L);
+    //Thread::usleep(100000L);
 
     // Relay gdb's welcome message before processing user commands.  Codeblocks seems to require this.
-    if(channels.fromGdb.HasData())
-    {
-        auto banner = channels.fromGdb.ReadData();
-        channels.toUser.WriteData(banner);
-    }
-    else
-        channels.info.WriteData("Failed to receive gdb's welcome banner, or it did not end with a '(gdb)' prompt.");
+    //if(channels.fromGdb.HasData())
+    //{
+    //    auto banner = channels.fromGdb.ReadData();
+    //    channels.toUser.WriteData(banner);
+    //}
+    //else
+    //    channels.info.WriteData("Failed to receive gdb's welcome banner, or it did not end with a '(gdb)' prompt.");
 
     MainLoopState state = MainLoopState::ReadUser;
     UserCmd cmd;
     GdbResponse response;
 
+    while (true)
+    {
+        if (channels.fromUser.HasData())
+        {
+            channels.info.WriteData("MainLoopState::ReadUser");
+            cmd = channels.fromUser.ReadData();
+            channels.toGdb.WriteData(cmd);
+        }
+
+        if (channels.fromGdb.HasData())
+        {
+            channels.info.WriteData("MainLoopState::ReadGdb");
+            response = channels.fromGdb.ReadData();
+            channels.toUser.WriteData(response);
+        }
+
+        cerr << "no data" << endl;
+    }
+
+/*
     while (true)
     {
         switch (state)
@@ -101,6 +121,7 @@ void mainLoop(MainChannels channels)
                 return;
         }
     }
+    */
 }
 
 
@@ -173,8 +194,14 @@ int main(int argc, char* argv[])
     bp::postream& os = c.get_stdin();
     bp::pistream& is = c.get_stdout();
 
-    //cout << is.rdbuf();
-
+/*
+    Testing protocol by activity log line label:
+        ignore info
+        write fromUser
+        expect toGdb
+        write fromGdb
+        expect toUser
+*/
 
     auto fromUser = InputChain().to<LineInput>(cin).to<Worker>("fromUser").to<LogChannel>(log, "fromUser").to<UserCmdParser>().to<Queue<UserCmd>>().complete();
 
