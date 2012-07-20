@@ -23,6 +23,7 @@ enum class MainLoopState
 
 #include "InputChain.hpp"
 #include "InputChainComponents.hpp"
+#include "TestPlan.hpp"
 using namespace Iocaste::Debugger;
 
 struct MainChannels
@@ -185,9 +186,25 @@ int main(int argc, char* argv[])
 #endif
         ;
 
+    char const* replayFileName =
+#ifdef __APPLE__
+    "/Users/dennisferron/gdb-sample.log"
+#else
+    "/home/dennis/gdb-sample.log"
+#endif
+        ;
+
+    TestPlan plan1;
+    plan1.setAction("info", TestActionType::ignore);
+    plan1.setAction("fromUser", TestActionType::write);
+    plan1.setAction("toGdb", TestActionType::expectExact);
+    plan1.setAction("fromGdb", TestActionType::write);
+    plan1.setAction("toUser", TestActionType::expectExact);
+
+    std::ifstream replay_file(replayFileName);
     std::ofstream log_file(logFileName, ofstream::out);
-    StreamOutput debug_log(log_file, true);
-    ActivityLog log(debug_log);
+    auto log_replay = InputChain().to<LineInput>(replay_file).to<Worker>().to<ActivityLog>(plan1).to<StreamOutput>(log_file, true).complete();
+    auto& log = log_replay.get<ActivityLog, 0>();
 
     bp::child c = start_gdb(argc, argv);
 

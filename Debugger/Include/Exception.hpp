@@ -36,5 +36,16 @@ namespace Iocaste {
         virtual char const* what() const throw();
     };
 
+    class TestException : public Exception
+    {
+    private:
+        std::string msg;
+
+    public:
+        TestException(std::string msg, std::string expected, std::string actual);
+        ~TestException() throw();
+        virtual char const* what() const throw();
+    };
+
     }
 }

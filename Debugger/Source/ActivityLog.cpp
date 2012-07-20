@@ -5,6 +5,7 @@ using namespace std;
 
 #include "ActivityLog.hpp"
 #include "ActivityLogLine.hpp"
+#include "TestPlan.hpp"
 using namespace Iocaste::Debugger;
 
 namespace Iocaste {
@@ -15,8 +16,8 @@ AbstractOutput<std::string>& no_call_copy_constructor(ActivityLog& value)
     return static_cast<AbstractOutput<std::string>&>(value);
 }
 
-ActivityLog::ActivityLog(AbstractOutput<std::string>& log_file_)
-    : log_file(log_file_)
+ActivityLog::ActivityLog(AbstractOutput<std::string>& log_file_, TestPlan& plan_)
+    : log_file(log_file_), test_plan(plan_)
 {
 }
 
@@ -27,7 +28,7 @@ void ActivityLog::WriteData(ActivityLogLine const& entry)
 
     // Putting this inside the locks complies with queue's documented semantics of
     // "valid for one producer and one consumer thread".  But maybe it is actually ok to push to it from multiple threads?
-    code_under_test.WriteData(entry);
+    test_results.WriteData(entry);
 
     std::string output;
     entry.Write(output);
@@ -36,14 +37,29 @@ void ActivityLog::WriteData(ActivityLogLine const& entry)
     pthread_mutex_unlock(&record_mutex);
 }
 
-// Write actual log file line back onto outputs.
+// Write log file line back onto outputs.
 void ActivityLog::WriteData(std::string const& data)
 {
-    pthread_mutex_lock(&record_mutex);
     ActivityLogLine entry;
     entry.Parse(data);
-    channels[entry.label]->WriteData(entry);
-    pthread_mutex_unlock(&record_mutex);
+
+    switch (test_plan.actionType(test_log_entry))
+    {
+        case TestActionType::ignore:
+            break;
+        case TestActionType::write:
+            if (channels.find(entry.label) != channels.end())
+                channels[entry.label]->WriteData(entry);
+            else
+                pending[entry.label].WriteData(entry);
+            break;
+        case TestActionType::expectAny:
+            expect(test_log_entry, false);
+            break;
+        case TestActionType::expectExact:
+            expect(test_log_entry, true);
+            break;
+    }
 }
 
 void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
@@ -51,43 +67,25 @@ void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
     ActivityLogLine test_result;
 
     // Get the next result that is not part of the ignored labels.
-    do { test_result = code_under_test.ReadData(); }
+    do { test_result = test_results.ReadData(); }
     while (test_plan.actionType(test_result) == TestActionType.ignore);
 
     if (test_result.label != test_log_entry.label)
-        throw TestException("Did not get expected label");
+        throw TestException("Did not get expected label", test_log_entry.label, test_result.label);
     else if (exact_match && test_result.content != test_log_entry.content)
-        throw TestException("Did not get expected content");
+        throw TestException("Did not get expected content", test_log_entry.content, test_result.content);
 }
-
-void ActivityLog::RunLoop()
-{
-    while (true)
-    {
-        ActivityLogLine test_log_entry = test_queue.ReadData();
-
-        switch (test_plan.actionType(test_log_entry))
-        {
-            case TestActionType::ignore:
-                break;
-            case TestActionType::write:
-                channels[test_log_entry.label]->WriteData(test_log_entry);
-                break;
-            case TestActionType::expectAny:
-                expect(test_log_entry, false);
-                break;
-            case TestActionType::expectExact:
-                expect(test_log_entry, true);
-                break;
-        }
-    }
-}
-
 
 
 void ActivityLog::AddChannel(std::string label, AbstractOutput<ActivityLogLine>& channel)
 {
     channels[label] = &channel;
+
+    if (pending.find(label) != pending.end())
+    {
+        while (pending[label].HasData())
+            channel.WriteData(pending[label].ReadData());
+    }
 }
 
     }

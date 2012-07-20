@@ -26,3 +26,17 @@ char const* GeneratorException::what() const throw()
 {
     return msg.c_str();
 }
+
+TestException::TestException(std::string msg_, std::string expected, std::string actual)
+{
+    msg = msg + " Expected: " + expected + " Actual: " + actual;
+}
+
+TestException::~TestException() throw()
+{
+}
+
+char const* TestException::what() const throw()
+{
+    return msg.c_str();
+}
