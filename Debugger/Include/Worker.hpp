@@ -9,9 +9,7 @@
 namespace Iocaste {
     namespace Debugger {
 
-struct WorkerComponentTag {};
-
-class Worker : public WorkerComponentTag
+class Worker
 {
 private:
 	pthread_t thread;

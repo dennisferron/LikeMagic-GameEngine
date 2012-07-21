@@ -28,6 +28,7 @@ LogChannel::LogChannel(
     log_.AddChannel(label_, *this);
 }
 
+// When the log channel is passed a string both log it and pass it on
 void LogChannel::WriteData(std::string const& data)
 {
     ActivityLogLine entry;
@@ -37,6 +38,7 @@ void LogChannel::WriteData(std::string const& data)
     sink.WriteData(data);
 }
 
+// When an activity log line is replayed back to us, don't log it just write the content.
 void LogChannel::WriteData(ActivityLogLine const& data)
 {
     sink.WriteData(data.content);

@@ -4,7 +4,7 @@ using namespace Iocaste::Debugger;
 
 TestActionType TestPlan::actionType(ActivityLogLine entry) const
 {
-    return label_actions[entry.label];
+    return label_actions.find(entry.label)->second;
 }
 
 void TestPlan::setAction(std::string label, TestActionType action)

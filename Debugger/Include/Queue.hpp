@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Thread.hpp"
+#include "AbstractInput.hpp"
+#include "AbstractOutput.hpp"
 
 #include <queue>
 

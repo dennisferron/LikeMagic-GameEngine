@@ -24,6 +24,7 @@ template <typename T> ChainPolicy::RHS  get(ChainPolicy, AbstractAdapter<T> cons
 ChainPolicy::Both get(ChainPolicy, Worker const&);
 template <typename T> ChainPolicy::None get(ChainPolicy, Queue<T> const&);
 ChainPolicy::RHS get(ChainPolicy, LogChannel const&);
+ChainPolicy::RHS get(ChainPolicy, ActivityLog const&);
 
     }
 }

@@ -64,6 +64,7 @@
 		<Unit filename="Include/StaticFuture.hpp" />
 		<Unit filename="Include/StreamOutput.hpp" />
 		<Unit filename="Include/StringEscaper.hpp" />
+		<Unit filename="Include/TestPlan.hpp" />
 		<Unit filename="Include/Thread.hpp" />
 		<Unit filename="Include/TypePolicy.hpp" />
 		<Unit filename="Include/UserCmd.hpp" />
@@ -81,6 +82,7 @@
 		<Unit filename="Source/LookForPrompt.cpp" />
 		<Unit filename="Source/Parser.cpp" />
 		<Unit filename="Source/StreamOutput.cpp" />
+		<Unit filename="Source/TestPlan.cpp" />
 		<Unit filename="Source/Thread.cpp" />
 		<Unit filename="Source/UserCmdParser.cpp" />
 		<Unit filename="Source/UserCmdWriter.cpp" />

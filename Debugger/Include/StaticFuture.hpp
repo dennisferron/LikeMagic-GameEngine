@@ -1,6 +1,9 @@
 #pragma once
 
 #include "ChainBuilder.hpp"
+#include "boost/utility/enable_if.hpp"
+#include "boost/type_traits.hpp"
+#include <stdexcept>
 
 namespace Iocaste {
     namespace Debugger {
@@ -89,6 +92,43 @@ struct StaticFuture
     {
         return StaticFuture<Next, ConstructorPolicy, ThisFuture, HeadType, NextArgs...>(*this, std::forward<NextArgs>(args_)...);
     }
+
+    template <typename T_>
+    typename boost::enable_if<
+        boost::is_same<T,T_>, int
+    >::type count() const
+    {
+        return 1+lhs.count<T_>();
+    }
+
+    template <typename T_>
+    typename boost::disable_if<
+        boost::is_same<T,T_>, int
+    >::type count() const
+    {
+        return lhs.count<T_>();
+    }
+
+    template <typename T_>
+    typename boost::enable_if<
+        boost::is_same<T,T_>, T_&
+    >::type at(int n) const
+    {
+        int num_preceding = count<T_>();
+
+        if (n==(num_preceding-1))
+            return *self;
+        else
+            return lhs.at<T_>(n);
+    }
+
+    template <typename T_>
+    typename boost::disable_if<
+        boost::is_same<T,T_>, T_&
+    >::type at(int n) const
+    {
+        return lhs.at<T_>(n);
+    }
 };
 
 template <typename ConstructorPolicy>
@@ -96,6 +136,12 @@ struct BeginFuture
 {
     template <typename RHS>
     RHS& _unwind(RHS& rhs) { return rhs; }
+
+    template <typename T>
+    int count() const { return 0; }
+
+    template <typename T>
+    T& at(int n) const { throw std::out_of_range("Index of StaticFuture at() out of range."); }
 
     template <typename T, typename... NextArgs>
     StaticFuture<T, ConstructorPolicy, BeginFuture, T, NextArgs...> to(NextArgs&&... args_)

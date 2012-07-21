@@ -203,13 +203,16 @@ int main(int argc, char* argv[])
 
     std::ifstream replay_file(replayFileName);
     std::ofstream log_file(logFileName, ofstream::out);
-    auto log_replay = InputChain().to<LineInput>(replay_file).to<Worker>().to<ActivityLog>(plan1).to<StreamOutput>(log_file, true).complete();
-    auto& log = log_replay.get<ActivityLog, 0>();
+    auto log_replay = InputChain().to<LineInput>(replay_file).to<Worker>("log_replay").to<ActivityLog>(plan1).to<StreamOutput>(log_file, true).complete();
+    auto& log = log_replay.at<ActivityLog>(0);
 
-    bp::child c = start_gdb(argc, argv);
+    // Comment out for testing
+    //bp::child c = start_gdb(argc, argv);
+    //bp::postream& os = c.get_stdin();
+    //bp::pistream& is = c.get_stdout();
 
-    bp::postream& os = c.get_stdin();
-    bp::pistream& is = c.get_stdout();
+    auto& os = cout;
+    auto& is = cin;
 
 /*
     Testing protocol by activity log line label:

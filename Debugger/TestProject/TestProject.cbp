@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug Linux">
-				<Option output="../TestProject" prefix_auto="1" extension_auto="1" />
+				<Option output="TestProject" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug-Linux/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -16,7 +16,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release Linux">
-				<Option output="../TestProject" prefix_auto="1" extension_auto="1" />
+				<Option output="TestProject" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release-Linux/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -36,6 +36,7 @@
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

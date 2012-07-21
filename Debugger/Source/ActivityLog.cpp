@@ -6,6 +6,8 @@ using namespace std;
 #include "ActivityLog.hpp"
 #include "ActivityLogLine.hpp"
 #include "TestPlan.hpp"
+#include "Exception.hpp"
+#include "LogChannel.hpp"
 using namespace Iocaste::Debugger;
 
 namespace Iocaste {
@@ -43,7 +45,7 @@ void ActivityLog::WriteData(std::string const& data)
     ActivityLogLine entry;
     entry.Parse(data);
 
-    switch (test_plan.actionType(test_log_entry))
+    switch (test_plan.actionType(entry))
     {
         case TestActionType::ignore:
             break;
@@ -54,10 +56,10 @@ void ActivityLog::WriteData(std::string const& data)
                 pending[entry.label].WriteData(entry);
             break;
         case TestActionType::expectAny:
-            expect(test_log_entry, false);
+            expect(entry, false);
             break;
         case TestActionType::expectExact:
-            expect(test_log_entry, true);
+            expect(entry, true);
             break;
     }
 }
@@ -68,7 +70,7 @@ void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
 
     // Get the next result that is not part of the ignored labels.
     do { test_result = test_results.ReadData(); }
-    while (test_plan.actionType(test_result) == TestActionType.ignore);
+    while (test_plan.actionType(test_result) == TestActionType::ignore);
 
     if (test_result.label != test_log_entry.label)
         throw TestException("Did not get expected label", test_log_entry.label, test_result.label);
@@ -77,7 +79,7 @@ void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
 }
 
 
-void ActivityLog::AddChannel(std::string label, AbstractOutput<ActivityLogLine>& channel)
+void ActivityLog::AddChannel(std::string label, LogChannel& channel)
 {
     channels[label] = &channel;
 
