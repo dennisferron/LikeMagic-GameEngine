@@ -1,7 +1,13 @@
-#define BOOST_FILESYSTEM_VERSION 2
-#include <boost/process.hpp>
-#include <boost/assert.hpp>
 
+#ifndef NO_LOAD_GDB
+
+#define BOOST_FILESYSTEM_VERSION 2
+#include "boost/process.hpp"
+namespace bp = ::boost::process;
+
+#endif
+
+#include "boost/assert.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -9,17 +15,6 @@
 #include <sstream>
 #include <functional>
 using namespace std;
-namespace bp = ::boost::process;
-
-
-enum class MainLoopState
-{
-    ReadUser,
-    WriteGdb,
-    ReadGdb,
-    WriteUser,
-    Quit
-};
 
 #include "InputChain.hpp"
 #include "InputChainComponents.hpp"
@@ -33,40 +28,44 @@ struct MainChannels
     AbstractInput<GdbResponse>& fromGdb;
     AbstractOutput<UserCmd>& toGdb;
     AbstractOutput<std::string>& info;
+    AbstractInput<boost::exception_ptr>& errors;
+    AbstractOutput<std::string>& end_markers;
 
-    MainChannels(AbstractInput<UserCmd>& fromUser_, AbstractOutput<GdbResponse>& toUser_, AbstractInput<GdbResponse>& fromGdb_, AbstractOutput<UserCmd>& toGdb_, AbstractOutput<std::string>& info_)
-        : fromUser(fromUser_), toUser(toUser_), fromGdb(fromGdb_), toGdb(toGdb_), info(info_) {}
+    MainChannels(AbstractInput<UserCmd>& fromUser_, AbstractOutput<GdbResponse>& toUser_, AbstractInput<GdbResponse>& fromGdb_,
+                 AbstractOutput<UserCmd>& toGdb_, AbstractOutput<std::string>& info_, AbstractInput<boost::exception_ptr>& errors_,
+                 AbstractOutput<std::string>& end_markers_)
+        : fromUser(fromUser_), toUser(toUser_), fromGdb(fromGdb_), toGdb(toGdb_), info(info_), errors(errors_), end_markers(end_markers_) {}
 };
 
-MainLoopState processUserCmd(UserCmd& cmd, MainChannels channels)
+void checkErrors(MainChannels channels)
 {
-    return MainLoopState::WriteGdb;
-}
-
-MainLoopState processResponse(GdbResponse& response, MainChannels channels)
-{
-    return MainLoopState::WriteUser;
+    try
+    {
+        if (channels.errors.HasData())
+        {
+            auto e = channels.errors.ReadData();
+            boost::rethrow_exception(e);
+        }
+    }
+    catch (Exception const& e)
+    {
+        cerr << e.what() << endl;
+    }
+    catch (...)
+    {
+        cerr << "unknown err" << endl;
+    }
 }
 
 void mainLoop(MainChannels channels)
 {
-    //Thread::usleep(100000L);
-
-    // Relay gdb's welcome message before processing user commands.  Codeblocks seems to require this.
-    //if(channels.fromGdb.HasData())
-    //{
-    //    auto banner = channels.fromGdb.ReadData();
-    //    channels.toUser.WriteData(banner);
-    //}
-    //else
-    //    channels.info.WriteData("Failed to receive gdb's welcome banner, or it did not end with a '(gdb)' prompt.");
-
-    MainLoopState state = MainLoopState::ReadUser;
     UserCmd cmd;
     GdbResponse response;
 
     while (true)
     {
+        checkErrors(channels);
+
         if (channels.fromUser.HasData())
         {
             channels.info.WriteData("MainLoopState::ReadUser");
@@ -76,6 +75,8 @@ void mainLoop(MainChannels channels)
                 return;
         }
 
+        checkErrors(channels);
+
         if (channels.fromGdb.HasData())
         {
             channels.info.WriteData("MainLoopState::ReadGdb");
@@ -83,48 +84,9 @@ void mainLoop(MainChannels channels)
             channels.toUser.WriteData(response);
         }
     }
-
-/*
-    while (true)
-    {
-        switch (state)
-        {
-            case MainLoopState::ReadUser:
-                channels.info.WriteData("MainLoopState::ReadUser");
-                cmd = channels.fromUser.ReadData();
-                state = processUserCmd(cmd, channels);
-                break;
-
-            case MainLoopState::WriteGdb:
-                channels.info.WriteData("MainLoopState::WriteGdb");
-                channels.toGdb.WriteData(cmd);
-
-                if (cmd.raw_string == "quit")
-                    state = MainLoopState::Quit;
-                else
-                    state = MainLoopState::ReadGdb;
-                break;
-
-            case MainLoopState::ReadGdb:
-                channels.info.WriteData("MainLoopState::ReadGdb");
-                response = channels.fromGdb.ReadData();
-                state = processResponse(response, channels);
-                break;
-
-            case MainLoopState::WriteUser:
-                channels.info.WriteData("MainLoopState::WriteUser");
-                channels.toUser.WriteData(response);
-                state = MainLoopState::ReadUser;
-                break;
-
-            case MainLoopState::Quit:
-                channels.info.WriteData("MainLoopState::Quit");
-                return;
-        }
-    }
-    */
 }
 
+#ifndef NO_LOAD_GDB
 
 bp::child start_gdb(int argc, char* argv[])
 {
@@ -143,56 +105,31 @@ bp::child start_gdb(int argc, char* argv[])
     return bp::launch(exec, args, ctx);
 }
 
-template <int I>
-struct TestAdapter : public AbstractAdapter<string>
-{
-    AbstractOutput<string>& sink;
-
-    TestAdapter(TestAdapter const&)=delete;
-
-    TestAdapter(AbstractOutput<string>& sink_) : sink(sink_)
-    {
-        cout << "TestAdapter " << this << " created" << endl;
-    }
-
-    TestAdapter(AbstractOutput<string>& sink_, int i) : sink(sink_)
-    {
-        cout << "TestAdapter " << this << " created" << endl;
-    }
-
-    ~TestAdapter()
-    {
-        cout << "~TestAdapter " << this << " destructed" << endl;
-    }
-
-    void WriteData(string const& str)
-    {
-        cout << "Got: " << str << endl;
-        sink.WriteData(str+"x");
-    }
-};
+#endif
 
 int main(int argc, char* argv[])
 {
-    //InputChain().to<Input<float>>(0.1f, cin).to<TestWorker>("first").to<TestQueue>().to<TestWorker>("second").to<Adapter>().to<Output>().force();
-    //InputChain().to<LineInput>(cin).to<Worker>("test").to<LookForPrompt>("(gdb) ").to<Queue<string>>().force();
-    //return 0;
+    try
+    {
 
     char const* logFileName =
-#ifdef __APPLE__
-    "/Users/dennisferron/debug.log"
+#if defined(_WIN32)
+    ".\\debug.log"
 #else
-    "/home/dennis/debug.log"
+    "./debug.log"
 #endif
         ;
 
     char const* replayFileName =
-#ifdef __APPLE__
-    "/Users/dennisferron/gdb-sample.log"
+#if defined(_WIN32)
+    ".\\gdb-sample.log"
 #else
-    "/home/dennis/gdb-sample.log"
+    "./gdb-sample.log"
 #endif
         ;
+
+    Queue<boost::exception_ptr> error_queue;
+    Queue<std::string> end_marker_queue;
 
     TestPlan plan1;
     plan1.setAction("info", TestActionType::ignore);
@@ -203,34 +140,26 @@ int main(int argc, char* argv[])
 
     std::ifstream replay_file(replayFileName);
     std::ofstream log_file(logFileName, ofstream::out);
-    auto log_replay = InputChain().to<LineInput>(replay_file).to<Worker>("log_replay").to<ActivityLog>(plan1).to<StreamOutput>(log_file, true).complete();
+    auto log_replay = InputChain().to<LineInput>(replay_file).to<Worker>("log_replay", error_queue).to<ActivityLog>(plan1).to<StreamOutput>(log_file, true).complete();
     auto& log = log_replay.at<ActivityLog>(0);
 
-    // Comment out for testing
-    //bp::child c = start_gdb(argc, argv);
-    //bp::postream& os = c.get_stdin();
-    //bp::pistream& is = c.get_stdout();
-
+#ifdef NO_LOAD_GDB
     auto& os = cout;
     auto& is = cin;
+#else
+    bp::child c = start_gdb(argc, argv);
+    bp::postream& os = c.get_stdin();
+    bp::pistream& is = c.get_stdout();
+#endif
 
-/*
-    Testing protocol by activity log line label:
-        ignore info
-        write fromUser
-        expect toGdb
-        write fromGdb
-        expect toUser
-*/
-
-    auto fromUser = InputChain().to<LineInput>(cin).to<Worker>("fromUser").to<LogChannel>(log, "fromUser").to<UserCmdParser>().to<Queue<UserCmd>>().complete();
+    auto fromUser = InputChain().to<LineInput>(cin).to<Worker>("fromUser", error_queue).to<LogChannel>(log, "fromUser").to<UserCmdParser>().to<Queue<UserCmd>>().complete();
 
     // LineInput eats newlines so fromUser -> toGdb stream output must re-add newline (pass true to stream output).
     auto toGdb = InputChain().to<UserCmdWriter>().to<LogChannel>(log, "toGdb").to<StreamOutput>(os, true).complete();
 
     //string prompt = "(gdb) ";
     string prompt = ">>>>>>cb_gdb:";
-    auto fromGdb = InputChain().to<CharInput>(is).to<Worker>("fromGdb").to<LookForPrompt>(prompt).to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().complete();
+    auto fromGdb = InputChain().to<CharInput>(is).to<Worker>("fromGdb", error_queue).to<LookForPrompt>(end_marker_queue).to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().complete();
 
     // CharInput does not eat newlines, and look-for-prompt looks for a prompt string not a newline, so newlines are NOT eaten
     // therefore fromGdb -> toUser does not need to re-add a newline.
@@ -238,18 +167,22 @@ int main(int argc, char* argv[])
 
     auto info = InputChain().to<LogChannel>(log, "info").to<StreamOutput>(cerr, true).complete();
 
-    //auto test = InputChain().to<LogChannel>(log, "testing").to<StreamOutput>(cout, true).complete();
-    //auto test = InputChain().to<StreamOutput>(cout, true).complete();
-    //auto test = InputChain().to<TestAdapter<3>>().to<TestAdapter<3>>().to<TestAdapter<3>>().to<StreamOutput>(cout, true).complete();
-    //test.head().WriteData("Hello!!");
-
     info.head().WriteData("Built input chains.");
 
-    mainLoop(MainChannels(fromUser.tail(), toUser.head(), fromGdb.tail(), toGdb.head(), info.head()));
+    mainLoop(MainChannels(fromUser.tail(), toUser.head(), fromGdb.tail(), toGdb.head(), info.head(), error_queue, end_marker_queue));
 
     //bp::status s = c.wait();
 
     //std::cerr << "exited = " << s.exited() << " exit_status = " << s.exit_status() << std::endl;
+    }
+    catch (Exception const& e)
+    {
+        cerr << e.what() << endl;
+    }
+    catch (...)
+    {
+        cerr << "Unknown exception" << endl;
+    }
 
     return 0;
 }

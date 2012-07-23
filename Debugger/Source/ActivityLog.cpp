@@ -26,17 +26,11 @@ ActivityLog::ActivityLog(AbstractOutput<std::string>& log_file_, TestPlan& plan_
 // channels write data to log
 void ActivityLog::WriteData(ActivityLogLine const& entry)
 {
-    pthread_mutex_lock(&record_mutex);
-
-    // Putting this inside the locks complies with queue's documented semantics of
-    // "valid for one producer and one consumer thread".  But maybe it is actually ok to push to it from multiple threads?
+    boost::mutex::scoped_lock lock(record_mutex);
     test_results.WriteData(entry);
-
     std::string output;
     entry.Write(output);
     log_file.WriteData(output);
-
-    pthread_mutex_unlock(&record_mutex);
 }
 
 // Write log file line back onto outputs.
@@ -69,8 +63,8 @@ void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
     ActivityLogLine test_result;
 
     // Get the next result that is not part of the ignored labels.
-    do { test_result = test_results.ReadData(); }
-    while (test_plan.actionType(test_result) == TestActionType::ignore);
+    do      { test_result = test_results.ReadData(); }
+    while   (test_plan.actionType(test_result) == TestActionType::ignore);
 
     if (test_result.label != test_log_entry.label)
         throw TestException("Did not get expected label", test_log_entry.label, test_result.label);

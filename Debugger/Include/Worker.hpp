@@ -1,10 +1,11 @@
 #pragma once
 
-#include "pthread.h"
+#include "boost/thread.hpp"
 #include <iostream>
 
 #include "AbstractInput.hpp"
 #include "AbstractOutput.hpp"
+#include "Exception.hpp"
 
 namespace Iocaste {
     namespace Debugger {
@@ -12,20 +13,19 @@ namespace Iocaste {
 class Worker
 {
 private:
-	pthread_t thread;
+	boost::thread thread;
 	AbstractInput<std::string>& input;
 	AbstractOutput<std::string>& output;
-	bool line_mode;
+	AbstractOutput<boost::exception_ptr>& errors;
     std::string debug_name;
 
-	static void* callback(void* obj);
 	volatile bool stop;
 	volatile bool is_running;
 
 	void run_loop();
 
 public:
-	Worker(AbstractInput<std::string>& input_, AbstractOutput<std::string>& output_, std::string debug_name_);
+	Worker(AbstractInput<std::string>& input_, AbstractOutput<std::string>& output_, std::string debug_name_, AbstractOutput<boost::exception_ptr>& errors_);
 	virtual ~Worker();
 	void stop_thread();
 	bool is_stopped() const;

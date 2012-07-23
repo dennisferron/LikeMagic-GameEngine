@@ -3,14 +3,14 @@
 using namespace std;
 using namespace Iocaste::Debugger;
 
-Worker::Worker(AbstractInput<string>& input_, AbstractOutput<string>& output_, string debug_name_)
+Worker::Worker(AbstractInput<string>& input_, AbstractOutput<string>& output_, string debug_name_, AbstractOutput<boost::exception_ptr>& errors_)
     :
         input(input_), output(output_),
-        debug_name(debug_name_),
+        debug_name(debug_name_), errors(errors_),
         stop(false), is_running(false)
 {
 	is_running = true;
-	pthread_create(&thread, NULL, Worker::callback, this);
+	thread = boost::thread(&Worker::run_loop, this);
 }
 
 Worker::~Worker()
@@ -22,26 +22,32 @@ Worker::~Worker()
 void Worker::stop_thread()
 {
 	stop = true;
-    pthread_join(thread, NULL);
+    thread.join();
 }
 
-void* Worker::callback(void* obj)
-{
-	static_cast<Worker*>(obj)->run_loop();
-	return NULL;
-}
 
 void Worker::run_loop()
 {
-    std::string line;
-
-    while (!stop)
+    try
     {
-        if (input.HasData())
+        std::string line;
+
+        while (!stop)
         {
-            string s = input.ReadData();
-            output.WriteData(s);
+            if (input.HasData())
+            {
+                string s = input.ReadData();
+                output.WriteData(s);
+            }
+            else
+            {
+                boost::this_thread::sleep(boost::posix_time::milliseconds(5));
+            }
         }
+    }
+    catch (...)
+    {
+        errors.WriteData(boost::current_exception());
     }
 
     is_running = false;

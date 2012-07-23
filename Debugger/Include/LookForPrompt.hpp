@@ -1,8 +1,7 @@
 #pragma once
 
+#include "AbstractInput.hpp"
 #include "AbstractAdapter.hpp"
-
-#include "Thread.hpp"
 
 #include <string>
 #include <iostream>
@@ -15,15 +14,13 @@ class LookForPrompt :
 {
 private:
     std::string buffer;
+    std::string end_marker_str;
     AbstractOutput<std::string>& output;
-    std::string end_marker;
-    mutable pthread_mutex_t end_marker_mutex;
+    AbstractInput<std::string>& end_marker_queue;
 
 public:
-    LookForPrompt(AbstractOutput<std::string>& output_, std::string end_marker_);
+    LookForPrompt(AbstractOutput<std::string>& output_, AbstractInput<std::string>& end_marker_queue_);
     virtual void WriteData(std::string const& data);
-    std::string get_end_marker() const;
-    void set_end_marker(std::string end_marker_);
 };
 
     }

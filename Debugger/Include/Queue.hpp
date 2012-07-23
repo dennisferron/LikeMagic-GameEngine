@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Thread.hpp"
+#include "boost/thread.hpp"
 #include "AbstractInput.hpp"
 #include "AbstractOutput.hpp"
 
@@ -12,45 +12,38 @@ namespace Iocaste
 	namespace Debugger
 	{
 
-//! This queue is designed to be thread safe for one producer thread and one consumer thread.
 template <typename T>
 class Queue : public AbstractInput<T>, public AbstractOutput<T>
 {
 private:
 
-    mutable pthread_mutex_t record_mutex;
+    mutable boost::mutex record_mutex;
     std::queue<T> entries;
 
     size_t size() const
     {
-        pthread_mutex_lock(&record_mutex);
-        size_t sz = entries.size();
-        pthread_mutex_unlock(&record_mutex);
-        return sz;
+        boost::mutex::scoped_lock lock(record_mutex);
+        return entries.size();
     }
 
     T pop()
     {
-        T record;
-        pthread_mutex_lock(&record_mutex);
-        record = entries.front();
+        boost::mutex::scoped_lock lock(record_mutex);
+        T record = entries.front();
         entries.pop();
-        pthread_mutex_unlock(&record_mutex);
         return record;
     }
 
     void push(T const& value)
     {
-        pthread_mutex_lock(&record_mutex);
+        boost::mutex::scoped_lock lock(record_mutex);
         entries.push(value);
-        pthread_mutex_unlock(&record_mutex);
     }
 
 public:
 
     Queue()
     {
-        pthread_mutex_init(&record_mutex, NULL);
     }
 
     virtual bool HasData() const
@@ -61,7 +54,9 @@ public:
     virtual T ReadData()
     {
         while (!HasData())
-            Thread::nice(1);
+            boost::this_thread::sleep(
+                boost::posix_time::milliseconds(5)
+              );
 
         return pop();
     }
