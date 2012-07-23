@@ -10,7 +10,7 @@ LineInput::LineInput(istream& stream_) :
 
 bool LineInput::HasData() const
 {
-    return true;
+    return stream.good();
 }
 
 string LineInput::ReadData()

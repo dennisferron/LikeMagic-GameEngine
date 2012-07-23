@@ -15,16 +15,23 @@ Worker::Worker(AbstractInput<string>& input_, AbstractOutput<string>& output_, s
 
 Worker::~Worker()
 {
-	if (is_running)
-		stop_thread();
+	// Unfortunately if we wait for join, threads that are
+	// stuck on blocking input from istreams will never finish.
+	//if (is_running)
+	//	stop_thread_now();
 }
 
-void Worker::stop_thread()
+void Worker::stop_thread_now()
 {
+	cerr << "Waiting on thread " << debug_name << endl;
 	stop = true;
     thread.join();
 }
 
+void Worker::stop_thread_soon()
+{
+	stop = true;
+}
 
 void Worker::run_loop()
 {
@@ -43,7 +50,14 @@ void Worker::run_loop()
             {
                 boost::this_thread::sleep(boost::posix_time::milliseconds(5));
             }
+
+            if (stop)
+            {
+                cerr << "Thread " << debug_name << " received stop command." << endl;
+            }
         }
+
+        cerr << "Thread " << debug_name << " has finished." << endl;
     }
     catch (...)
     {

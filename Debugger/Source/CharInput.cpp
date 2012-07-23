@@ -12,7 +12,7 @@ CharInput::CharInput(istream& stream_) :
 
 bool CharInput::HasData() const
 {
-    return true;
+    return stream.good();
 }
 
 string CharInput::ReadData()

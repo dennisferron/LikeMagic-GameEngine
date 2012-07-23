@@ -72,7 +72,10 @@ void mainLoop(MainChannels channels)
             cmd = channels.fromUser.ReadData();
             channels.toGdb.WriteData(cmd);
             if (cmd.raw_string == "quit")
+            {
+                cerr << "Received quit command" << endl;
                 return;
+            }
         }
 
         checkErrors(channels);
@@ -109,9 +112,6 @@ bp::child start_gdb(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-    try
-    {
-
     char const* logFileName =
 #if defined(_WIN32)
     ".\\debug.log"
@@ -171,18 +171,13 @@ int main(int argc, char* argv[])
 
     mainLoop(MainChannels(fromUser.tail(), toUser.head(), fromGdb.tail(), toGdb.head(), info.head(), error_queue, end_marker_queue));
 
-    //bp::status s = c.wait();
+    // This doesn't do much good if they are blocked waiting on stream input.
+    fromUser.at<Worker>(0).stop_thread_soon();
+    fromGdb.at<Worker>(0).stop_thread_soon();
+    log_replay.at<Worker>(0).stop_thread_soon();
 
+    //bp::status s = c.wait();
     //std::cerr << "exited = " << s.exited() << " exit_status = " << s.exit_status() << std::endl;
-    }
-    catch (Exception const& e)
-    {
-        cerr << e.what() << endl;
-    }
-    catch (...)
-    {
-        cerr << "Unknown exception" << endl;
-    }
 
     return 0;
 }
