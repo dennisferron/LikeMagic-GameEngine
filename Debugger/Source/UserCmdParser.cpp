@@ -30,6 +30,7 @@ namespace ascii = boost::spirit::ascii;
 BOOST_FUSION_ADAPT_STRUCT(
     UserSetOption,
     (std::string, name)
+    (boost::optional<std::string>, modifier)
     (std::string, value)
 )
 
@@ -37,43 +38,27 @@ namespace Iocaste {
     namespace Debugger {
 
 template <typename Iterator>
-struct ActivityLogParser : qi::grammar<Iterator, ActivityLogLine()>
+struct UserCmdParser : qi::grammar<Iterator, UserCmd(), ascii::space_type>
 {
-    ActivityLogParser() : ActivityLogParser::base_type(start)
+    UserCmdParser() : UserCmdParser::base_type(start)
     {
-        using qi::int_;
-        using qi::lit;
-        using qi::double_;
-        using qi::lexeme;
-        using ascii::char_;
-
-        unesc_char.add("\\a", '\a')("\\b", '\b')("\\f", '\f')("\\n", '\n')
-                      ("\\r", '\r')("\\t", '\t')("\\v", '\v')("\\\\", '\\')
-                      ("\\\'", '\'')("\\\"", '\"')("\\0", '\0')("\\z", 26)
-            ;
-
-        unesc_str = *(unesc_char | qi::print | "\\x" >> qi::hex >> ";");
-
-        label %=  +qi::alnum;
-        content %= unesc_str;
-        start %= label >> ": " >> content;
+        set_option = qi::lit("set") >> qi::alpha >> -qi::alpha >> qi::print;
+        start = set_option | raw_str;
     }
 
-    qi::rule<Iterator, std::string()> label;
-    qi::rule<Iterator, std::string()> content;
+    qi::rule<Iterator, std::string()> raw_str;
+    qi::rule<Iterator, UserSetOption(), ascii::space_type> set_option;
     qi::rule<Iterator, UserCmd()> start;
-    qi::rule<Iterator, std::string()> unesc_str;
-    qi::symbols<char const, char const> unesc_char;
 };
 
 
-void ActivityLogLine::Parse(std::string str)
+void UserCmd::Parse(std::string str)
 {
     using boost::spirit::ascii::space;
     typedef std::string::const_iterator iterator_type;
-    typedef ActivityLogParser<iterator_type> ActivityLogParser;
+    typedef UserCmdParser<iterator_type> UserCmdParser;
 
-    ActivityLogParser g; // Our grammar
+    UserCmdParser g; // Our grammar
 
     std::string::const_iterator iter = str.begin();
     std::string::const_iterator end = str.end();
@@ -94,48 +79,6 @@ void ActivityLogLine::Parse(std::string str)
             throw boost::enable_current_exception(ParseException(ss.str()));
         }
     }
-}
-
-namespace karma = boost::spirit::karma;
-
-template <typename OutputIterator>
-struct ActivityLogWriter
-  : karma::grammar<OutputIterator, ActivityLogLine()>
-{
-    ActivityLogWriter()
-      : ActivityLogWriter::base_type(start)
-    {
-        esc_char.add('\a', "\\a")('\b', "\\b")('\f', "\\f")('\n', "\\n")
-                    ('\r', "\\r")('\t', "\\t")('\v', "\\v")('\\', "\\\\")
-                    ('\'', "\\\'")('\"', "\\\"")('\0', "\\0")(26, "\\z")
-            ;
-
-        esc_str = *(esc_char | karma::print | "\\x" << karma::hex << ";");
-
-        label %= +karma::print;
-        content %= esc_str;
-        start %= label << ": " << content;
-    }
-
-    karma::rule<OutputIterator, std::string()> label;
-    karma::rule<OutputIterator, std::string()> content;
-    karma::rule<OutputIterator, ActivityLogLine()> start;
-    karma::rule<OutputIterator, std::string()> esc_str;
-    karma::symbols<char, char const*> esc_char;
-};
-
-void ActivityLogLine::Write(std::string& generated) const
-{
-    namespace karma = boost::spirit::karma;
-
-    typedef std::back_insert_iterator<std::string> sink_type;
-
-    sink_type sink(generated);
-
-    ActivityLogWriter<sink_type> g;
-
-    if(!karma::generate(sink, g, *this))
-        throw boost::enable_current_exception(GeneratorException("Error writing activity log line."));
 }
 
 
