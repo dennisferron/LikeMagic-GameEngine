@@ -34,15 +34,22 @@ BOOST_FUSION_ADAPT_STRUCT(
     (std::string, value)
 )
 
+BOOST_FUSION_ADAPT_STRUCT(
+    UserCmd,
+    (boost::optional<std::string>, raw_string)
+    (boost::optional<UserSetOption>, set_option)
+)
+
 namespace Iocaste {
     namespace Debugger {
 
 template <typename Iterator>
-struct UserCmdGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
+struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
 {
-    UserCmdGrammar() : UserCmdGrammar::base_type(start)
+    UserCmdParseGrammar() : UserCmdParseGrammar::base_type(start)
     {
-        set_option = qi::lit("set") >> qi::alpha >> -qi::alpha >> qi::print;
+        raw_str = +qi::print;
+        set_option = qi::lit("set") >> +qi::alpha >> -(+qi::alpha) >> +qi::print;
         start = set_option | raw_str;
     }
 
@@ -56,7 +63,7 @@ void UserCmd::Parse(std::string str)
 {
     using boost::spirit::ascii::space;
     typedef std::string::const_iterator iterator_type;
-    typedef UserCmdGrammar<iterator_type> UserCmdGrammar;
+    typedef UserCmdParseGrammar<iterator_type> UserCmdGrammar;
 
     UserCmdGrammar g; // Our grammar
 

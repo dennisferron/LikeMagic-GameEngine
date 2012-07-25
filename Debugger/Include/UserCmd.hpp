@@ -29,6 +29,7 @@ struct UserCmd
         {}
 
     void Parse(std::string str);
+    void Write(std::string& str) const;
 };
 
 }}
