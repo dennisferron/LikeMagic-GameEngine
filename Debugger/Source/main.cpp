@@ -71,7 +71,7 @@ void mainLoop(MainChannels channels)
             channels.info.WriteData("MainLoopState::ReadUser");
             cmd = channels.fromUser.ReadData();
             channels.toGdb.WriteData(cmd);
-            if (cmd.raw_string == "quit")
+            if (cmd.raw_string && *(cmd.raw_string) == "quit")
             {
                 cerr << "Received quit command" << endl;
                 return;

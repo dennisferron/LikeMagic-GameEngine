@@ -15,21 +15,20 @@ struct UserSetOption
 
 struct UserCmd
 {
-    const typeinfo& tag;
-    union data {
-        std::string raw_string;
-        UserSetOption set_option;
-    };
+    boost::optional<std::string> raw_string;
+    boost::optional<UserSetOption> set_option;
+
+    UserCmd() {}
 
     UserCmd(std::string str) :
-        tag(typeid(std::string)),
-        data.raw_string(str)
+        raw_string(str)
         {}
 
     UserCmd(UserSetOption set_option_) :
-        tag(typeid(UserSetOption)),
-        data.set_option(set_option_)
+        set_option(set_option_)
         {}
+
+    void Parse(std::string str);
 };
 
 }}

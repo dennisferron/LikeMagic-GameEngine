@@ -38,9 +38,9 @@ namespace Iocaste {
     namespace Debugger {
 
 template <typename Iterator>
-struct UserCmdParser : qi::grammar<Iterator, UserCmd(), ascii::space_type>
+struct UserCmdGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
 {
-    UserCmdParser() : UserCmdParser::base_type(start)
+    UserCmdGrammar() : UserCmdGrammar::base_type(start)
     {
         set_option = qi::lit("set") >> qi::alpha >> -qi::alpha >> qi::print;
         start = set_option | raw_str;
@@ -48,7 +48,7 @@ struct UserCmdParser : qi::grammar<Iterator, UserCmd(), ascii::space_type>
 
     qi::rule<Iterator, std::string()> raw_str;
     qi::rule<Iterator, UserSetOption(), ascii::space_type> set_option;
-    qi::rule<Iterator, UserCmd()> start;
+    qi::rule<Iterator, UserCmd(), ascii::space_type> start;
 };
 
 
@@ -56,13 +56,13 @@ void UserCmd::Parse(std::string str)
 {
     using boost::spirit::ascii::space;
     typedef std::string::const_iterator iterator_type;
-    typedef UserCmdParser<iterator_type> UserCmdParser;
+    typedef UserCmdGrammar<iterator_type> UserCmdGrammar;
 
-    UserCmdParser g; // Our grammar
+    UserCmdGrammar g; // Our grammar
 
     std::string::const_iterator iter = str.begin();
     std::string::const_iterator end = str.end();
-    bool success = parse(iter, end, g, *this);
+    bool success = phrase_parse(iter, end, g, space, *this);
 
     if (!success)
     {
@@ -90,7 +90,8 @@ UserCmdParser::UserCmdParser(AbstractOutput<UserCmd>& sink_)
 void UserCmdParser::WriteData(std::string const& input)
 {
     UserCmd cmd;
-    cmd.raw_string = input;
+    //cmd.raw_string = input;
+    cmd.Parse(input);
     sink.WriteData(cmd);
 }
 

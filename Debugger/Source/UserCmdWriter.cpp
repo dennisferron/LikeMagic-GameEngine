@@ -6,6 +6,12 @@ UserCmdWriter::UserCmdWriter(AbstractOutput<std::string>& sink_)
 
 void UserCmdWriter::WriteData(UserCmd const& input)
 {
-    // TODO:  Actually write out the input...
-    sink.WriteData(input.raw_string);
+    if (input.raw_string)
+        sink.WriteData(*input.raw_string);
+    else if (input.set_option)
+    {
+        cerr << "Got " << input.set_option->name << " " << input.set_option->value << endl;
+    }
+    else
+        throw GeneratorException("No fields set on UserCmd");
 }
