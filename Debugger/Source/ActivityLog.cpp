@@ -67,9 +67,9 @@ void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
     while   (test_plan.actionType(test_result) == TestActionType::ignore);
 
     if (test_result.label != test_log_entry.label)
-        throw TestException("Did not get expected label", test_log_entry.label, test_result.label);
+        throw boost::enable_current_exception(TestException("Did not get expected label", test_log_entry.label, test_result.label));
     else if (exact_match && test_result.content != test_log_entry.content)
-        throw TestException("Did not get expected content", test_log_entry.content, test_result.content);
+        throw boost::enable_current_exception(TestException("Did not get expected content", test_log_entry.content, test_result.content));
 }
 
 

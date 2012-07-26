@@ -29,7 +29,7 @@ char const* GeneratorException::what() const throw()
 
 TestException::TestException(std::string msg_, std::string expected, std::string actual)
 {
-    msg = msg + " Expected: " + expected + " Actual: " + actual;
+    msg = msg_ + " Expected: " + expected + " Actual: " + actual;
 }
 
 TestException::~TestException() throw()

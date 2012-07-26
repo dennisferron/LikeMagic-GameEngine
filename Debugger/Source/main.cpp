@@ -47,10 +47,18 @@ void checkErrors(MainChannels channels)
             boost::rethrow_exception(e);
         }
     }
+    catch (TestException const& e)
+    {
+        cerr << "Test failed " << e.what() << endl;
+    }
     catch (Exception const& e)
     {
         cerr << e.what() << endl;
     }
+//    catch (std::exception const& e)
+//    {
+//        cerr << e.what() << endl;
+//    }
     catch (...)
     {
         cerr << "unknown err" << endl;
@@ -75,6 +83,10 @@ void mainLoop(MainChannels channels)
             {
                 cerr << "Received quit command" << endl;
                 return;
+            }
+            if (cmd.set_option && cmd.set_option->name == "prompt")
+            {
+                channels.end_markers.WriteData(cmd.set_option->value);
             }
         }
 

@@ -9,7 +9,7 @@
 namespace Iocaste {
     namespace Debugger {
 
-    class Exception : public boost::exception, public std::exception
+    class Exception : public virtual boost::exception, public virtual std::exception
     {
     public:
         virtual char const* what() const throw() = 0;
@@ -37,7 +37,7 @@ namespace Iocaste {
         virtual char const* what() const throw();
     };
 
-    class TestException : public Exception
+    class TestException : public virtual Exception
     {
     private:
         std::string msg;

@@ -39,7 +39,7 @@ struct UserCmdWriteGrammar
     {
         raw_str = karma::string;
         set_option = karma::lit("set") << karma::string << -karma::string << karma::string;
-        start = raw_str | set_option;
+        start = -raw_str << -set_option;
     }
 
     karma::rule<OutputIterator, std::string()> raw_str;
@@ -57,8 +57,14 @@ void UserCmd::Write(std::string& generated) const
 
     UserCmdWriteGrammar<sink_type> g;
 
+    if (raw_string)
+        cerr << "raw_string is " << *raw_string << endl;
+
+    if (set_option)
+        cerr << "set option is " << set_option->name << " " << set_option->value << endl;
+
     if(!karma::generate(sink, g, *this))
-        throw boost::enable_current_exception(GeneratorException("Error writing activity log line."));
+        throw boost::enable_current_exception(GeneratorException("Error writing user cmd."));
 }
 
 

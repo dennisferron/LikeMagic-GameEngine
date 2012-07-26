@@ -59,6 +59,16 @@ void Worker::run_loop()
 
         cerr << "Thread " << debug_name << " has finished." << endl;
     }
+//    catch (boost::exception const& e)
+//    {
+//        //cerr << e.what() << endl;
+//        errors.WriteData(boost::current_exception());
+//    }
+    catch (TestException const& e)
+    {
+        cerr << "Test failed " << e.what() << endl;
+        errors.WriteData(boost::current_exception());
+    }
     catch (...)
     {
         errors.WriteData(boost::current_exception());
