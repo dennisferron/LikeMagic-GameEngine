@@ -8,10 +8,6 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 #endif
 
 #include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/spirit/include/phoenix_object.hpp>
-#include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/fusion/include/io.hpp>
 #include <boost/spirit/include/karma.hpp>
 
@@ -27,25 +23,11 @@ using namespace Iocaste::Debugger;
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
-BOOST_FUSION_ADAPT_STRUCT(
-    UserCmd::SetOption,
-    (std::string, name)
-    (boost::optional<std::string>, modifier)
-    (std::string, value)
-)
+#include "UserCmdFusion.hpp"
 
-BOOST_FUSION_ADAPT_STRUCT(
-    UserCmd::SetBreakpoint,
-    (std::string, file_name)
-    (int, line_number)
-)
 
-BOOST_FUSION_ADAPT_STRUCT(
-    UserCmd,
-    (boost::optional<std::string>, raw_string)
-    (boost::optional<UserCmd::SetOption>, set_option)
-    (boost::optional<UserCmd::SetBreakpoint>, set_breakpoint)
-)
+// Uncomment to pass otherwise unknown commands un-parsed
+//#define PARSE_RAW_STRING
 
 namespace Iocaste {
     namespace Debugger {
@@ -58,16 +40,38 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
         raw_str = +qi::print;
         ident = +(qi::alpha | qi::char_('-'));
         file_name = +(qi::print -  qi::char_(':'));
-        set_option = qi::lit("set") >> ident >> -ident >> +qi::print >> qi::eoi;
+        device_name = +(qi::print); // for tty
+        value = +qi::char_;
+        set_option = qi::lit("set") >> set_option_no_modifier | set_option_with_modifier;
+        set_option_no_modifier = ident >> value >> qi::eoi;
+        set_option_with_modifier = ident >> ident >> value >> qi::eoi;
+        show_option = qi::lit("show") >> ident >> -ident;
         set_breakpoint = qi::lit("break") >> "\"" >> file_name >> ":" >> qi::int_ >> "\"";
-        start = set_option | raw_str;
+        source = qi::lit("source") >> file_name;
+        directory = qi::lit("directory") >> file_name;
+        tty = qi::lit("tty") >> device_name;
+        run = qi::lit("run") >> -value;
+        start = set_option | show_option | set_breakpoint | source | directory | tty | run;
+        #ifdef PARSE_RAW_STRING
+            | raw_str
+        #endif
+        ;
     }
 
     qi::rule<Iterator, std::string()> raw_str;
     qi::rule<Iterator, std::string()> ident;
+    qi::rule<Iterator, std::string()> value;
     qi::rule<Iterator, std::string()> file_name;
+    qi::rule<Iterator, std::string()> device_name;
+    qi::rule<Iterator, UserCmd::SetOption(), ascii::space_type> set_option_with_modifier;
+    qi::rule<Iterator, UserCmd::SetOption::Pair(), ascii::space_type> set_option_no_modifier;
     qi::rule<Iterator, UserCmd::SetOption(), ascii::space_type> set_option;
+    qi::rule<Iterator, UserCmd::ShowOption(), ascii::space_type> show_option;
     qi::rule<Iterator, UserCmd::SetBreakpoint(), ascii::space_type> set_breakpoint;
+    qi::rule<Iterator, UserCmd::Source(), ascii::space_type> source;
+    qi::rule<Iterator, UserCmd::Directory(), ascii::space_type> directory;
+    qi::rule<Iterator, UserCmd::TTY(), ascii::space_type> tty;
+    qi::rule<Iterator, UserCmd::Run(), ascii::space_type> run;
     qi::rule<Iterator, UserCmd(), ascii::space_type> start;
 };
 

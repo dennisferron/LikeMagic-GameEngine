@@ -49,11 +49,11 @@ void checkErrors(MainChannels channels)
     }
     catch (TestException const& e)
     {
-        cerr << "Test failed " << e.what() << endl;
+        cerr << endl << "Test failed " << e.what() << endl;
     }
     catch (Exception const& e)
     {
-        cerr << e.what() << endl;
+        cerr << endl << e.what() << endl;
     }
 //    catch (std::exception const& e)
 //    {
