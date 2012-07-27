@@ -16,16 +16,23 @@ using namespace Iocaste::Debugger;
 using namespace std;
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserSetOption,
+    UserCmd::SetOption,
     (std::string, name)
     (boost::optional<std::string>, modifier)
     (std::string, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    UserCmd::SetBreakpoint,
+    (std::string, file_name)
+    (int, line_number)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     UserCmd,
     (boost::optional<std::string>, raw_string)
-    (boost::optional<UserSetOption>, set_option)
+    (boost::optional<UserCmd::SetOption>, set_option)
+    (boost::optional<UserCmd::SetBreakpoint>, set_breakpoint)
 )
 
 namespace karma = boost::spirit::karma;
@@ -38,12 +45,12 @@ struct UserCmdWriteGrammar
       : UserCmdWriteGrammar::base_type(start)
     {
         raw_str = karma::string;
-        set_option = karma::lit("set") << karma::string << -karma::string << karma::string;
+        set_option = karma::lit("set") << " " << karma::string << -(" " << karma::string) << " " << karma::string;
         start = -raw_str << -set_option;
     }
 
     karma::rule<OutputIterator, std::string()> raw_str;
-    karma::rule<OutputIterator, UserSetOption()> set_option;
+    karma::rule<OutputIterator, UserCmd::SetOption()> set_option;
     karma::rule<OutputIterator, UserCmd()> start;
 };
 
@@ -61,7 +68,10 @@ void UserCmd::Write(std::string& generated) const
         cerr << "raw_string is " << *raw_string << endl;
 
     if (set_option)
-        cerr << "set option is " << set_option->name << " " << set_option->value << endl;
+        cerr << "set option is " << set_option->name << " " << (set_option->modifier? *(set_option->modifier) + " " : "") << set_option->value << endl;
+
+    if (set_breakpoint)
+        cerr << "set breakpoint is " << set_breakpoint->file_name << " " << set_breakpoint->line_number << endl;
 
     if(!karma::generate(sink, g, *this))
         throw boost::enable_current_exception(GeneratorException("Error writing user cmd."));

@@ -28,16 +28,23 @@ namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserSetOption,
+    UserCmd::SetOption,
     (std::string, name)
     (boost::optional<std::string>, modifier)
     (std::string, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    UserCmd::SetBreakpoint,
+    (std::string, file_name)
+    (int, line_number)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     UserCmd,
     (boost::optional<std::string>, raw_string)
-    (boost::optional<UserSetOption>, set_option)
+    (boost::optional<UserCmd::SetOption>, set_option)
+    (boost::optional<UserCmd::SetBreakpoint>, set_breakpoint)
 )
 
 namespace Iocaste {
@@ -49,12 +56,18 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
     UserCmdParseGrammar() : UserCmdParseGrammar::base_type(start)
     {
         raw_str = +qi::print;
-        set_option = qi::lit("set") >> +qi::alpha >> -(+qi::alpha) >> +qi::print;
+        ident = +(qi::alpha | qi::char_('-'));
+        file_name = +(qi::print -  qi::char_(':'));
+        set_option = qi::lit("set") >> ident >> -ident >> +qi::print >> qi::eoi;
+        set_breakpoint = qi::lit("break") >> "\"" >> file_name >> ":" >> qi::int_ >> "\"";
         start = set_option | raw_str;
     }
 
     qi::rule<Iterator, std::string()> raw_str;
-    qi::rule<Iterator, UserSetOption(), ascii::space_type> set_option;
+    qi::rule<Iterator, std::string()> ident;
+    qi::rule<Iterator, std::string()> file_name;
+    qi::rule<Iterator, UserCmd::SetOption(), ascii::space_type> set_option;
+    qi::rule<Iterator, UserCmd::SetBreakpoint(), ascii::space_type> set_breakpoint;
     qi::rule<Iterator, UserCmd(), ascii::space_type> start;
 };
 

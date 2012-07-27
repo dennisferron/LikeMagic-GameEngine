@@ -38,9 +38,10 @@ void LogChannel::WriteData(std::string const& data)
     sink.WriteData(data);
 }
 
-// When an activity log line is replayed back to us, don't log it just write the content.
+// When an activity log line is replayed back to us, log it as a replay
 void LogChannel::WriteData(ActivityLogLine const& data)
 {
+    log.WriteData({data.label + "Replay", data.content });
     sink.WriteData(data.content);
 }
 
