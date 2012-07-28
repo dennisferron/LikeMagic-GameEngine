@@ -55,6 +55,7 @@
 		<Unit filename="Include\CharInput.hpp" />
 		<Unit filename="Include\Exception.hpp" />
 		<Unit filename="Include\GdbResponse.hpp" />
+		<Unit filename="Include\GdbResponseFusion.hpp" />
 		<Unit filename="Include\GdbResponseParser.hpp" />
 		<Unit filename="Include\GdbResponseWriter.hpp" />
 		<Unit filename="Include\InputChain.hpp" />

@@ -1,13 +1,37 @@
-
 #pragma once
 
 #include <string>
+#include "boost/optional.hpp"
+#include "boost/variant.hpp"
 
 namespace Iocaste { namespace Debugger {
 
-struct GdbResponse
+namespace GdbResponses
 {
-    std::string raw_string;
+
+struct Banner
+{
+    std::string version;
+    std::string msg;
 };
+
+struct Empty
+{
+    boost::optional<std::string> dummy;
+};
+
+struct ReadingLibs
+{
+    boost::optional<std::string> dummy;
+};
+
+}
+
+typedef  boost::variant
+<
+    GdbResponses::Banner,
+    GdbResponses::ReadingLibs,
+    GdbResponses::Empty
+> GdbResponse;
 
 }}

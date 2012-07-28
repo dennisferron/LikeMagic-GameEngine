@@ -7,6 +7,7 @@ class GdbResponseWriter : public AbstractAdapter<GdbResponse>
 {
 private:
     AbstractOutput<std::string>& sink;
+    std::string Write(GdbResponse const& response) const;
 
 public:
     GdbResponseWriter(AbstractOutput<std::string>& sink_);
