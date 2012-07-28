@@ -10,59 +10,86 @@
 using namespace Iocaste::Debugger;
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmd::SetOption,
+    UserCmds::RawString,
+    (std::string, value)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    UserCmds::SetOption,
     (std::string, name)
     (boost::optional<std::string>, modifier)
     (std::string, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmd::SetOption::Pair,
+    UserCmds::SetOption::Pair,
     (string, first)
     (string, second)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmd::ShowOption,
+    UserCmds::ShowOption,
     (std::string, name)
     (boost::optional<std::string>, modifier)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmd::SetBreakpoint,
+    UserCmds::SetBreakpoint,
     (std::string, file_name)
     (int, line_number)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmd::Source,
+    UserCmds::Source,
     (std::string, file_name)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmd::Directory,
+    UserCmds::Directory,
     (std::string, file_name)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmd::TTY,
+    UserCmds::TTY,
     (std::string, device_name)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmd::Run,
+    UserCmds::Run,
     (boost::optional<std::string>, dummy)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmd,
-    (boost::optional<std::string>, raw_string)
-    (boost::optional<UserCmd::SetOption>, set_option)
-    (boost::optional<UserCmd::ShowOption>, show_option)
-    (boost::optional<UserCmd::SetBreakpoint>, set_breakpoint)
-    (boost::optional<UserCmd::Source>, source)
-    (boost::optional<UserCmd::Directory>, directory)
-    (boost::optional<UserCmd::TTY>, tty)
-    (boost::optional<UserCmd::Run>, run)
+    UserCmds::Info,
+    (std::string, value)
 )
 
+BOOST_FUSION_ADAPT_STRUCT(
+    UserCmds::Backtrace,
+    (boost::optional<int>, num_frames)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    UserCmds::Next,
+    (boost::optional<std::string>, dummy)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    UserCmds::Step,
+    (boost::optional<std::string>, dummy)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    UserCmds::Finish,
+    (boost::optional<std::string>, dummy)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    UserCmds::Quit,
+    (boost::optional<std::string>, dummy)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    UserCmds::Empty,
+    (boost::optional<std::string>, dummy)
+)

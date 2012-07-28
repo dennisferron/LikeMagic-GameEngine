@@ -51,7 +51,14 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
         directory = qi::lit("directory") >> file_name;
         tty = qi::lit("tty") >> device_name;
         run = qi::lit("run") >> -value;
-        start = set_option | show_option | set_breakpoint | source | directory | tty | run;
+        info = qi::lit("info") >> value;
+        backtrace = (qi::lit("bt")|qi::lit("backtrace")) >> qi::int_;
+        next = qi::lit("next") >> -value;
+        step = qi::lit("step") >> -value;
+        finish = qi::lit("finish") >> -value;
+        quit = qi::lit("quit") >> -value;
+        empty = qi::eps >> -value >> qi::eoi;
+        start = set_option | show_option | set_breakpoint | source | directory | tty | run | info | backtrace | next | step | finish | quit | empty;
         #ifdef PARSE_RAW_STRING
             | raw_str
         #endif
@@ -63,20 +70,27 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
     qi::rule<Iterator, std::string()> value;
     qi::rule<Iterator, std::string()> file_name;
     qi::rule<Iterator, std::string()> device_name;
-    qi::rule<Iterator, UserCmd::SetOption(), ascii::space_type> set_option_with_modifier;
-    qi::rule<Iterator, UserCmd::SetOption::Pair(), ascii::space_type> set_option_no_modifier;
-    qi::rule<Iterator, UserCmd::SetOption(), ascii::space_type> set_option;
-    qi::rule<Iterator, UserCmd::ShowOption(), ascii::space_type> show_option;
-    qi::rule<Iterator, UserCmd::SetBreakpoint(), ascii::space_type> set_breakpoint;
-    qi::rule<Iterator, UserCmd::Source(), ascii::space_type> source;
-    qi::rule<Iterator, UserCmd::Directory(), ascii::space_type> directory;
-    qi::rule<Iterator, UserCmd::TTY(), ascii::space_type> tty;
-    qi::rule<Iterator, UserCmd::Run(), ascii::space_type> run;
+    qi::rule<Iterator, UserCmds::SetOption(), ascii::space_type> set_option_with_modifier;
+    qi::rule<Iterator, UserCmds::SetOption::Pair(), ascii::space_type> set_option_no_modifier;
+    qi::rule<Iterator, UserCmds::SetOption(), ascii::space_type> set_option;
+    qi::rule<Iterator, UserCmds::ShowOption(), ascii::space_type> show_option;
+    qi::rule<Iterator, UserCmds::SetBreakpoint(), ascii::space_type> set_breakpoint;
+    qi::rule<Iterator, UserCmds::Source(), ascii::space_type> source;
+    qi::rule<Iterator, UserCmds::Directory(), ascii::space_type> directory;
+    qi::rule<Iterator, UserCmds::TTY(), ascii::space_type> tty;
+    qi::rule<Iterator, UserCmds::Run(), ascii::space_type> run;
+    qi::rule<Iterator, UserCmds::Info(), ascii::space_type> info;
+    qi::rule<Iterator, UserCmds::Backtrace(), ascii::space_type> backtrace;
+    qi::rule<Iterator, UserCmds::Next(), ascii::space_type> next;
+    qi::rule<Iterator, UserCmds::Step(), ascii::space_type> step;
+    qi::rule<Iterator, UserCmds::Finish(), ascii::space_type> finish;
+    qi::rule<Iterator, UserCmds::Quit(), ascii::space_type> quit;
+    qi::rule<Iterator, UserCmds::Empty(), ascii::space_type> empty;
     qi::rule<Iterator, UserCmd(), ascii::space_type> start;
 };
 
 
-void UserCmd::Parse(std::string str)
+UserCmd UserCmdParser::Parse(std::string str) const
 {
     using boost::spirit::ascii::space;
     typedef std::string::const_iterator iterator_type;
@@ -86,12 +100,14 @@ void UserCmd::Parse(std::string str)
 
     std::string::const_iterator iter = str.begin();
     std::string::const_iterator end = str.end();
-    bool success = phrase_parse(iter, end, g, space, *this);
+    UserCmd result;
+    bool success = phrase_parse(iter, end, g, space, result);
 
     if (!success)
     {
         stringstream ss;
         ss << "Failed to parse: " << str << std::endl;
+        cerr << endl << ss.str() << endl;
         throw boost::enable_current_exception(ParseException(ss.str()));
     }
     else
@@ -100,9 +116,12 @@ void UserCmd::Parse(std::string str)
         {
             stringstream ss;
             ss << "Not all of the line was parsed: " << std::string(iter, end) << std::endl;
+            cerr << endl << ss.str() << endl;
             throw boost::enable_current_exception(ParseException(ss.str()));
         }
     }
+
+    return result;
 }
 
 
@@ -113,12 +132,9 @@ UserCmdParser::UserCmdParser(AbstractOutput<UserCmd>& sink_)
 
 void UserCmdParser::WriteData(std::string const& input)
 {
-    UserCmd cmd;
-    //cmd.raw_string = input;
-    cmd.Parse(input);
+    UserCmd cmd = Parse(input);
     sink.WriteData(cmd);
 }
-
 
     }
 }

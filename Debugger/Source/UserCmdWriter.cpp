@@ -16,6 +16,7 @@ using namespace Iocaste::Debugger;
 using namespace std;
 
 #include "UserCmdFusion.hpp"
+using namespace Iocaste::Debugger::UserCmds;
 
 namespace karma = boost::spirit::karma;
 
@@ -33,54 +34,136 @@ struct UserCmdWriteGrammar
         source = karma::lit("source") << " " << karma::string;
         directory = karma::lit("directory") << " " << karma::string;
         tty = karma::lit("tty") << " " << karma::string;
-        run = karma::lit("run") << karma::string;
-        start = -raw_str << -set_option << -show_option << -set_breakpoint << -source << -directory << -tty << -run;
+        run = karma::lit("run") << -karma::string;
+        info = karma::lit("info") << " " << karma::string;
+        backtrace = karma::lit("bt") << " " << karma::int_;
+        next = karma::lit("next") << -karma::string;
+        step = karma::lit("step") << -karma::string;
+        finish = karma::lit("finish") << -karma::string;
+        quit = karma::lit("quit") << -karma::string;
+        empty = karma::lit("") << -karma::string;
+        start = raw_str | set_option | show_option | set_breakpoint | source | directory | tty | run | info | backtrace | next | step | finish | quit | empty;
     }
 
-    karma::rule<OutputIterator, std::string()> raw_str;
-    karma::rule<OutputIterator, UserCmd::SetOption()> set_option;
-    karma::rule<OutputIterator, UserCmd::ShowOption()> show_option;
-    karma::rule<OutputIterator, UserCmd::SetBreakpoint()> set_breakpoint;
-    karma::rule<OutputIterator, UserCmd::Source()> source;
-    karma::rule<OutputIterator, UserCmd::Directory()> directory;
-    karma::rule<OutputIterator, UserCmd::TTY()> tty;
-    karma::rule<OutputIterator, UserCmd::Run()> run;
+    karma::rule<OutputIterator, UserCmds::RawString()> raw_str;
+    karma::rule<OutputIterator, UserCmds::SetOption()> set_option;
+    karma::rule<OutputIterator, UserCmds::ShowOption()> show_option;
+    karma::rule<OutputIterator, UserCmds::SetBreakpoint()> set_breakpoint;
+    karma::rule<OutputIterator, UserCmds::Source()> source;
+    karma::rule<OutputIterator, UserCmds::Directory()> directory;
+    karma::rule<OutputIterator, UserCmds::TTY()> tty;
+    karma::rule<OutputIterator, UserCmds::Run()> run;
+    karma::rule<OutputIterator, UserCmds::Info()> info;
+    karma::rule<OutputIterator, UserCmds::Backtrace()> backtrace;
+    karma::rule<OutputIterator, UserCmds::Next()> next;
+    karma::rule<OutputIterator, UserCmds::Step()> step;
+    karma::rule<OutputIterator, UserCmds::Finish()> finish;
+    karma::rule<OutputIterator, UserCmds::Quit()> quit;
+    karma::rule<OutputIterator, UserCmds::Empty()> empty;
     karma::rule<OutputIterator, UserCmd()> start;
 };
 
-void UserCmd::Write(std::string& generated) const
+struct UserCmdPrinter : boost::static_visitor<>
+{
+    template <typename T>
+    void operator()(const T& t) const
+    {
+        static_assert(sizeof(T) && false, "No debug printer defined for type T");
+    }
+
+    void operator()(const RawString& t) const
+    {
+        cerr << "raw string is " << t.value << endl;
+    }
+
+    void operator()(const SetOption& t) const
+    {
+        cerr << "set option is name '" << t.name << "'" << (t.modifier? ", mod '" + *(t.modifier) + "' " : "") << ", value '" << t.value << "'" << endl;
+    }
+
+    void operator()(const ShowOption& t) const
+    {
+        cerr << "show option is name '" << t.name << "'" << (t.modifier? ", mod '" + *(t.modifier) + "' " : "")<< endl;
+    }
+
+    void operator()(const SetBreakpoint& t) const
+    {
+        cerr << "set breakpoint is " << t.file_name << " " << t.line_number << endl;
+    }
+
+    void operator()(const Source& t) const
+    {
+        cerr << "source is \"" << t.file_name << "\"" << endl;
+    }
+
+    void operator()(const Directory& t) const
+    {
+        cerr << "directory is \"" << t.file_name << "\"" << endl;
+    }
+
+    void operator()(const TTY& t) const
+    {
+        cerr << "tty is \"" << t.device_name << "\"" << endl;
+    }
+
+    void operator()(const Run& t) const
+    {
+        cerr << "run is (no members)" << endl;
+    }
+
+    void operator()(const Info& t) const
+    {
+        cerr << "info is " << t.value << endl;
+    }
+
+    void operator()(const Backtrace& t) const
+    {
+        cerr << "bt is " << t.num_frames << endl;
+    }
+
+    void operator()(const Next& t) const
+    {
+        cerr << "next is (no members)" << endl;
+    }
+
+    void operator()(const Step& t) const
+    {
+        cerr << "step is (no members)" << endl;
+    }
+
+    void operator()(const Finish& t) const
+    {
+        cerr << "finish is (no members)" << endl;
+    }
+
+    void operator()(const Quit& t) const
+    {
+        cerr << "quit is (no members)" << endl;
+    }
+
+    void operator()(const Empty& t) const
+    {
+        cerr << "empty is (no members)" << endl;
+    }
+};
+
+string UserCmdWriter::Write(UserCmd const& cmd) const
 {
     namespace karma = boost::spirit::karma;
-
     typedef std::back_insert_iterator<std::string> sink_type;
 
-    sink_type sink(generated);
+    // For debugging
+    boost::apply_visitor(UserCmdPrinter(), cmd);
+
+    std::string result;
+    sink_type sink(result);
 
     UserCmdWriteGrammar<sink_type> g;
 
-    if (raw_string)
-        cerr << "raw_string is " << *raw_string << endl;
-
-    if (set_option)
-        cerr << "set option is name '" << set_option->name << "'" << (set_option->modifier? ", mod '" + *(set_option->modifier) + "' " : "") << ", value '" << set_option->value << "'" << endl;
-
-    if (set_breakpoint)
-        cerr << "set breakpoint is " << set_breakpoint->file_name << " " << set_breakpoint->line_number << endl;
-
-    if (source)
-        cerr << "source is \"" << source->file_name << "\"" << endl;
-
-    if (directory)
-        cerr << "directory is \"" << directory->file_name << "\"" << endl;
-
-    if (tty)
-        cerr << "tty is \"" << tty->device_name << "\"" << endl;
-
-    if (run)
-        cerr << "run is (no members)" << endl;
-
-    if(!karma::generate(sink, g, *this))
+    if(!karma::generate(sink, g, cmd))
         throw boost::enable_current_exception(GeneratorException("Error writing user cmd."));
+
+    return result;
 }
 
 
@@ -89,17 +172,7 @@ UserCmdWriter::UserCmdWriter(AbstractOutput<std::string>& sink_)
 
 void UserCmdWriter::WriteData(UserCmd const& input)
 {
-    string result;
-    input.Write(result);
+    string result = Write(input);
     cerr << "Wrote: " << result << endl;
     sink.WriteData(result);
-
-//    if (input.raw_string)
-//        sink.WriteData(*input.raw_string);
-//    else if (input.set_option)
-//    {
-//        std::cerr << "Got " << input.set_option->name << " " << (input.set_option->modifier? *(input.set_option->modifier) : "") << input.set_option->value << std::endl;
-//    }
-//    else
-//        throw GeneratorException("No fields set on UserCmd");
 }
