@@ -2,19 +2,19 @@
 
 #include "AbstractAdapter.hpp"
 #include "GdbResponse.hpp"
-#include <string>
+#include "StringWithPrompt.hpp"
 
 namespace Iocaste { namespace Debugger {
 
-class GdbResponseParser : public AbstractAdapter<std::string>
+class GdbResponseParser : public AbstractAdapter<StringWithPrompt>
 {
 private:
     AbstractOutput<GdbResponse>& sink;
-    GdbResponse Parse(std::string str) const;
+    GdbResponse Parse(StringWithPrompt const& str) const;
 
 public:
     GdbResponseParser(AbstractOutput<GdbResponse>& sink_);
-    virtual void WriteData(std::string const& input);
+    virtual void WriteData(StringWithPrompt const& input);
 };
 
 }}

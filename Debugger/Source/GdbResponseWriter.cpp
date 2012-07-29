@@ -22,14 +22,14 @@ namespace karma = boost::spirit::karma;
 
 template <typename OutputIterator>
 struct GdbResponseWriteGrammar
-  : karma::grammar<OutputIterator, GdbResponse()>
+  : karma::grammar<OutputIterator, GdbResponseType()>
 {
     GdbResponseWriteGrammar()
       : GdbResponseWriteGrammar::base_type(start)
     {
         banner = karma::lit("GNU gdb ") << karma::string << " " << karma::string;
         dummy %= karma::string;
-        reading_libs = karma::lit("Reading symbols for shared libraries") << karma::lit(" .... ") << karma::lit("done") << -dummy;
+        reading_libs = karma::lit("Reading symbols for shared libraries .... done") << -dummy;
         empty = karma::lit("") << -dummy;
         start = banner | reading_libs | empty;
     }
@@ -38,7 +38,7 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, GdbResponses::Banner()> banner;
     karma::rule<OutputIterator, GdbResponses::ReadingLibs()> reading_libs;
     karma::rule<OutputIterator, GdbResponses::Empty()> empty;
-    karma::rule<OutputIterator, GdbResponse()> start;
+    karma::rule<OutputIterator, GdbResponseType()> start;
 };
 
 struct GdbResponsePrinter : boost::static_visitor<>
@@ -65,7 +65,7 @@ struct GdbResponsePrinter : boost::static_visitor<>
     }
 };
 
-string GdbResponseWriter::Write(GdbResponse const& response) const
+string GdbResponseWriter::Write(GdbResponseType const& response) const
 {
     namespace karma = boost::spirit::karma;
     typedef std::back_insert_iterator<std::string> sink_type;
@@ -85,12 +85,12 @@ string GdbResponseWriter::Write(GdbResponse const& response) const
 }
 
 
-GdbResponseWriter::GdbResponseWriter(AbstractOutput<std::string>& sink_)
+GdbResponseWriter::GdbResponseWriter(AbstractOutput<StringWithPrompt>& sink_)
     : sink(sink_) {}
 
 void GdbResponseWriter::WriteData(GdbResponse const& input)
 {
-    string result = Write(input);
+    string result = Write(input.value);
     cerr << "Wrote: " << result << endl;
-    sink.WriteData(result);
+    sink.WriteData({result, input.prompt});
 }

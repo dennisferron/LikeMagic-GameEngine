@@ -69,11 +69,14 @@ void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
     if (test_result.label != test_log_entry.label)
         throw boost::enable_current_exception(TestException("Did not get expected label", test_log_entry.label, test_result.label));
     else if (exact_match && test_result.content != test_log_entry.content)
+    {
+        cerr << endl << "Did not get expected content" << endl << "expected: " << test_log_entry.content << endl << "actual: " << test_result.content << endl;
         throw boost::enable_current_exception(TestException("Did not get expected content", test_log_entry.content, test_result.content));
+    }
 }
 
 
-void ActivityLog::AddChannel(std::string label, LogChannel& channel)
+void ActivityLog::AddChannel(std::string label, AbstractOutput<ActivityLogLine>& channel)
 {
     channels[label] = &channel;
 

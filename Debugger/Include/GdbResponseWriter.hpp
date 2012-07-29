@@ -1,16 +1,17 @@
 #include "AbstractAdapter.hpp"
 #include "GdbResponse.hpp"
+#include "StringWithPrompt.hpp"
 
 namespace Iocaste { namespace Debugger {
 
 class GdbResponseWriter : public AbstractAdapter<GdbResponse>
 {
 private:
-    AbstractOutput<std::string>& sink;
-    std::string Write(GdbResponse const& response) const;
+    AbstractOutput<StringWithPrompt>& sink;
+    std::string Write(GdbResponseType const& response) const;
 
 public:
-    GdbResponseWriter(AbstractOutput<std::string>& sink_);
+    GdbResponseWriter(AbstractOutput<StringWithPrompt>& sink_);
     virtual void WriteData(GdbResponse const& input);
 };
 

@@ -14,6 +14,10 @@ AbstractOutput<T>& no_call_copy_constructor(AbstractOutput<T>& t)
 class LogChannel;
 AbstractOutput<std::string>& no_call_copy_constructor(LogChannel& value);
 
+class StringWithPrompt;
+class LogChannelWithPrompt;
+AbstractOutput<StringWithPrompt>& no_call_copy_constructor(LogChannelWithPrompt& value);
+
 class ActivityLog;
 AbstractOutput<std::string>& no_call_copy_constructor(ActivityLog& value);
 

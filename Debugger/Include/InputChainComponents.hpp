@@ -14,6 +14,8 @@
 #include "GdbResponseParser.hpp"
 #include "GdbResponseWriter.hpp"
 #include "LogChannel.hpp"
+#include "LogChannelWithPrompt.hpp"
+#include "RecombinePrompt.hpp"
 
 namespace Iocaste {
     namespace Debugger {
@@ -24,6 +26,7 @@ template <typename T> ChainPolicy::RHS  get(ChainPolicy, AbstractAdapter<T> cons
 ChainPolicy::Both get(ChainPolicy, Worker const&);
 template <typename T> ChainPolicy::None get(ChainPolicy, Queue<T> const&);
 ChainPolicy::RHS get(ChainPolicy, LogChannel const&);
+ChainPolicy::RHS get(ChainPolicy, LogChannelWithPrompt const&);
 ChainPolicy::RHS get(ChainPolicy, ActivityLog const&);
 
     }

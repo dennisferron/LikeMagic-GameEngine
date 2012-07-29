@@ -33,7 +33,7 @@ namespace Iocaste {
     namespace Debugger {
 
 template <typename Iterator>
-struct GdbResponseParseGrammar : qi::grammar<Iterator, GdbResponse(), ascii::space_type>
+struct GdbResponseParseGrammar : qi::grammar<Iterator, GdbResponseType(), ascii::space_type>
 {
     GdbResponseParseGrammar() : GdbResponseParseGrammar::base_type(start)
     {
@@ -42,16 +42,12 @@ struct GdbResponseParseGrammar : qi::grammar<Iterator, GdbResponse(), ascii::spa
         file_name = +(qi::print -  qi::char_(':'));
         device_name = +(qi::print); // for tty
         value = +qi::char_;
-        dummy = *qi::char_('\xFF');
-        version_number = +(qi::digit | qi::char_('.'));
-        banner = qi::lit("GNU") >> qi::lit("gdb") >> version_number >> +qi::char_;
+        dummy = +qi::char_('\xFF');
+        version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
+        banner = qi::lit("GNU") >> qi::lit("gdb") >> version_number >> value;
         reading_libs = qi::lit("Reading symbols for shared libraries .... done") >> -dummy;
-        empty = !qi::char_ >> -dummy;
-        start = (banner | empty) >> -qi::lit("\n") >> qi::lit(">>>>>>cb_gdb:")
-        #ifdef PARSE_RAW_STRING
-            | raw_str
-        #endif
-        ;
+        empty = -dummy;
+        start = (banner | reading_libs | empty) >> qi::eoi;
     }
 
     qi::rule<Iterator, std::string()> raw_str;
@@ -64,11 +60,11 @@ struct GdbResponseParseGrammar : qi::grammar<Iterator, GdbResponse(), ascii::spa
     qi::rule<Iterator, GdbResponses::Banner(), ascii::space_type> banner;
     qi::rule<Iterator, GdbResponses::ReadingLibs(), ascii::space_type> reading_libs;
     qi::rule<Iterator, GdbResponses::Empty(), ascii::space_type> empty;
-    qi::rule<Iterator, GdbResponse(), ascii::space_type> start;
+    qi::rule<Iterator, GdbResponseType(), ascii::space_type> start;
 };
 
 
-GdbResponse GdbResponseParser::Parse(std::string str) const
+GdbResponse GdbResponseParser::Parse(StringWithPrompt const& input) const
 {
     using boost::spirit::ascii::space;
     typedef std::string::const_iterator iterator_type;
@@ -76,15 +72,15 @@ GdbResponse GdbResponseParser::Parse(std::string str) const
 
     GdbResponseGrammar g; // Our grammar
 
-    std::string::const_iterator iter = str.begin();
-    std::string::const_iterator end = str.end();
-    GdbResponse result;
+    std::string::const_iterator iter = input.content.begin();
+    std::string::const_iterator end = input.content.end();
+    GdbResponseType result;
     bool success = phrase_parse(iter, end, g, space, result);
 
     if (!success)
     {
         stringstream ss;
-        ss << "Failed to parse: " << str << std::endl;
+        ss << "Failed to parse: " << input.content << std::endl;
         cerr << endl << ss.str() << endl;
         throw boost::enable_current_exception(ParseException(ss.str()));
     }
@@ -99,7 +95,7 @@ GdbResponse GdbResponseParser::Parse(std::string str) const
         }
     }
 
-    return result;
+    return {result, input.prompt};
 }
 
 
@@ -108,7 +104,7 @@ GdbResponseParser::GdbResponseParser(AbstractOutput<GdbResponse>& sink_)
 {
 }
 
-void GdbResponseParser::WriteData(std::string const& input)
+void GdbResponseParser::WriteData(StringWithPrompt const& input)
 {
     GdbResponse cmd = Parse(input);
     sink.WriteData(cmd);

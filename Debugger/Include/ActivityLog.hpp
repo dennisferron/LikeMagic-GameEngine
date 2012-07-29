@@ -9,15 +9,13 @@
 namespace Iocaste { namespace Debugger {
 
 struct ActivityLogLine;
-class LogChannel;
 class TestPlan;
 
 class ActivityLog :
     public AbstractOutput<std::string>,
-    private AbstractOutput<ActivityLogLine>
+    public AbstractOutput<ActivityLogLine>
 {
 private:
-    friend class LogChannel;
 
     AbstractOutput<std::string>& log_file;
     TestPlan& test_plan;
@@ -25,7 +23,7 @@ private:
 
     boost::unordered_map<
         std::string,
-        LogChannel*
+        AbstractOutput<ActivityLogLine>*
     > channels;
 
     boost::unordered_map<
@@ -42,7 +40,7 @@ public:
 
     ActivityLog(ActivityLog const&) = delete;
     ActivityLog(AbstractOutput<std::string>& log_file_, TestPlan& plan_);
-    void AddChannel(std::string label, LogChannel& channel);
+    void AddChannel(std::string label, AbstractOutput<ActivityLogLine>& channel);
 
     // Write actual log file line back onto outputs.
     virtual void WriteData(std::string const& data);

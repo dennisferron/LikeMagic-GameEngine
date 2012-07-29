@@ -1,22 +1,22 @@
 #include "AbstractAdapter.hpp"
 
-#include <string>
+#include "StringWithPrompt.hpp"
 
 #include "boost/shared_ptr.hpp"
 #include "boost/unordered_map.hpp"
 
 namespace Iocaste { namespace Debugger {
 
-class ActivityLog;
 struct ActivityLogLine;
+class ActivityLog;
 
-class LogChannel :
-    public AbstractAdapter<std::string>,
+class LogChannelWithPrompt :
+    public AbstractAdapter<StringWithPrompt>,
     public AbstractOutput<ActivityLogLine>
 {
 private:
 
-    AbstractOutput<std::string>& sink;
+    AbstractOutput<StringWithPrompt>& sink;
     AbstractOutput<ActivityLogLine>& log;
     std::string label;
 
@@ -24,14 +24,16 @@ private:
 
 public:
 
-    LogChannel(LogChannel const&) = delete;
+/*
+    //LogChannelWithPrompt(LogChannelWithPrompt const&) = delete;
+*/
 
-    LogChannel(
-            AbstractOutput<std::string>& sink_,
+    LogChannelWithPrompt(
+            AbstractOutput<StringWithPrompt>& sink_,
             ActivityLog& log_,
             std::string label_);
 
-    virtual void WriteData(std::string const& data);
+    virtual void WriteData(StringWithPrompt const& data);
 };
 
 }}

@@ -8,6 +8,7 @@
 // Ok because this header should only ever be included in implementation files:
 using namespace Iocaste::Debugger;
 
+
 BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::Banner,
     (std::string, version)

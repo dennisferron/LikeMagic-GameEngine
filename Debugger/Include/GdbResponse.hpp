@@ -32,6 +32,12 @@ typedef  boost::variant
     GdbResponses::Banner,
     GdbResponses::ReadingLibs,
     GdbResponses::Empty
-> GdbResponse;
+> GdbResponseType;
+
+struct GdbResponse
+{
+    GdbResponseType value;
+    std::string prompt;
+};
 
 }}

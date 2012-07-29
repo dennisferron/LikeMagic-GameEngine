@@ -65,6 +65,27 @@ void checkErrors(MainChannels channels)
     }
 }
 
+struct UserCmdHandler : boost::static_visitor<>
+{
+    MainChannels channels;
+
+    UserCmdHandler(MainChannels& channels_) : channels(channels_) {}
+
+    template <typename T>
+    void operator()(const T& t) const
+    {
+        // do nothing
+    }
+
+    void operator()(const UserCmds::SetOption& t) const
+    {
+        if (t.name == "prompt")
+        {
+            channels.end_markers.WriteData(t.value);
+        }
+    }
+};
+
 void mainLoop(MainChannels channels)
 {
     UserCmd cmd;
@@ -77,7 +98,12 @@ void mainLoop(MainChannels channels)
         if (channels.fromUser.HasData())
         {
             channels.info.WriteData("MainLoopState::ReadUser");
+
             cmd = channels.fromUser.ReadData();
+
+            UserCmdHandler cmd_handler(channels);
+            boost::apply_visitor(cmd_handler, cmd);
+
             channels.toGdb.WriteData(cmd);
 
             /*
@@ -172,13 +198,13 @@ int main(int argc, char* argv[])
     // LineInput eats newlines so fromUser -> toGdb stream output must re-add newline (pass true to stream output).
     auto toGdb = InputChain().to<UserCmdWriter>().to<LogChannel>(log, "toGdb").to<StreamOutput>(os, true).complete();
 
-    //string prompt = "(gdb) ";
-    string prompt = ">>>>>>cb_gdb:";
-    auto fromGdb = InputChain().to<CharInput>(is).to<Worker>("fromGdb", error_queue).to<LookForPrompt>(end_marker_queue).to<LogChannel>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().complete();
+    string prompt = "(gdb) ";
+    //string prompt = ">>>>>>cb_gdb:";
+    auto fromGdb = InputChain().to<CharInput>(is).to<Worker>("fromGdb", error_queue).to<LookForPrompt>(end_marker_queue).to<LogChannelWithPrompt>(log, "fromGdb").to<GdbResponseParser>().to<Queue<GdbResponse>>().complete();
 
     // CharInput does not eat newlines, and look-for-prompt looks for a prompt string not a newline, so newlines are NOT eaten
     // therefore fromGdb -> toUser does not need to re-add a newline.
-    auto toUser = InputChain().to<GdbResponseWriter>().to<LogChannel>(log, "toUser").to<StreamOutput>(cout, false).complete();
+    auto toUser = InputChain().to<GdbResponseWriter>().to<LogChannelWithPrompt>(log, "toUser").to<RecombinePrompt>().to<StreamOutput>(cout, false).complete();
 
     auto info = InputChain().to<LogChannel>(log, "info").to<StreamOutput>(cerr, true).complete();
 

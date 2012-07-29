@@ -17,7 +17,6 @@ string LineInput::ReadData()
 {
     string result;
     getline(stream, result);
-    //result.push_back('\n');
     return result;
 }
 
