@@ -22,23 +22,33 @@ namespace karma = boost::spirit::karma;
 
 template <typename OutputIterator>
 struct GdbResponseWriteGrammar
-  : karma::grammar<OutputIterator, GdbResponseType()>
+  : karma::grammar<OutputIterator, vector<GdbResponseType>()>
 {
     GdbResponseWriteGrammar()
       : GdbResponseWriteGrammar::base_type(start)
     {
         banner = karma::lit("GNU gdb ") << karma::string << " " << karma::string;
         dummy %= karma::string;
-        reading_libs = karma::lit("Reading symbols for shared libraries .... done") << -dummy;
+        reading_libs = karma::lit("Reading symbols for shared libraries ") << karma::string << " done";
+        typedef karma::uint_generator<unsigned long long, 16> address;
+        breakpoint_set = karma::lit("Breakpoint ") << karma::int_ << " at 0x" << address() << ": file " << karma::string << ", line " << karma::int_ << ".";
         empty = karma::lit("") << -dummy;
-        start = banner | reading_libs | empty;
+
+        //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
+        cursor_pos = karma::lit("\x1A\x1A") << karma::string << ":" << karma::int_ << ":" << karma::int_ << ":" << karma::string << ":0x" << address();
+
+        response_item = banner | reading_libs | breakpoint_set | cursor_pos | empty;
+        start = response_item << *(karma::lit("\n") << response_item);
     }
 
     karma::rule<OutputIterator, string()> dummy;
     karma::rule<OutputIterator, GdbResponses::Banner()> banner;
     karma::rule<OutputIterator, GdbResponses::ReadingLibs()> reading_libs;
+    karma::rule<OutputIterator, GdbResponses::BreakpointSet()> breakpoint_set;
+    karma::rule<OutputIterator, GdbResponses::CursorPos()> cursor_pos;
     karma::rule<OutputIterator, GdbResponses::Empty()> empty;
-    karma::rule<OutputIterator, GdbResponseType()> start;
+    karma::rule<OutputIterator, GdbResponseType()> response_item;
+    karma::rule<OutputIterator, vector<GdbResponseType>()> start;
 };
 
 struct GdbResponsePrinter : boost::static_visitor<>
@@ -59,19 +69,37 @@ struct GdbResponsePrinter : boost::static_visitor<>
         cerr << "reading libs is (no members)" << endl;
     }
 
+    void operator()(const BreakpointSet& t) const
+    {
+        cerr << "breakpoint set is " << t.breakpoint_number << " " << t.address << " "
+        << t.file_name << " " << t.line_number << endl;
+    }
+
+    void operator()(const CursorPos& t) const
+    {
+        cerr << "cursor pos is"
+        << " " << t.file_name
+        << " " << t.line_number
+        << " " << t.char_number
+        << " " << t.address
+        << " " << t.unknown
+        << endl;
+    }
+
     void operator()(const Empty& t) const
     {
         cerr << "empty is (no members)" << endl;
     }
 };
 
-string GdbResponseWriter::Write(GdbResponseType const& response) const
+string GdbResponseWriter::Write(vector<GdbResponseType> const& response) const
 {
     namespace karma = boost::spirit::karma;
     typedef std::back_insert_iterator<std::string> sink_type;
 
     // For debugging
-    boost::apply_visitor(GdbResponsePrinter(), response);
+    for (auto element : response)
+        boost::apply_visitor(GdbResponsePrinter(), element);
 
     std::string result;
     sink_type sink(result);
@@ -90,7 +118,7 @@ GdbResponseWriter::GdbResponseWriter(AbstractOutput<StringWithPrompt>& sink_)
 
 void GdbResponseWriter::WriteData(GdbResponse const& input)
 {
-    string result = Write(input.value);
+    string result = Write(input.values);
     cerr << "Wrote: " << result << endl;
     sink.WriteData({result, input.prompt});
 }

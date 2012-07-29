@@ -22,5 +22,22 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::ReadingLibs,
-    (boost::optional<std::string>, dummy)
+    (std::string, periods)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::BreakpointSet,
+    (int, breakpoint_number)
+    (unsigned long long, address)
+    (std::string, file_name)
+    (int, line_number)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::CursorPos,
+    (std::string, file_name)
+    (int, line_number)
+    (int, char_number)
+    (std::string, unknown)
+    (unsigned long long, address)
 )

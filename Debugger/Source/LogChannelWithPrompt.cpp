@@ -33,7 +33,7 @@ void LogChannelWithPrompt::WriteData(StringWithPrompt const& data)
 {
     ActivityLogLine entry;
     entry.label = label;
-    entry.content = data.content + "\a" + data.prompt;
+    entry.content = data.content + "\b" + data.prompt;
     cerr << "Logging " << entry.content;
     log.WriteData(entry);
     sink.WriteData(data);
@@ -43,7 +43,7 @@ void LogChannelWithPrompt::WriteData(StringWithPrompt const& data)
 void LogChannelWithPrompt::WriteData(ActivityLogLine const& data)
 {
     log.WriteData({data.label + "Replay", data.content });
-    size_t divider = data.content.find('\a');
+    size_t divider = data.content.find('\b');
     string msg = data.content.substr(0, divider);
     string prompt = data.content.substr(divider+1);
     sink.WriteData({msg, prompt});

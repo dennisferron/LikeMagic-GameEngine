@@ -33,21 +33,28 @@ namespace Iocaste {
     namespace Debugger {
 
 template <typename Iterator>
-struct GdbResponseParseGrammar : qi::grammar<Iterator, GdbResponseType(), ascii::space_type>
+struct GdbResponseParseGrammar : qi::grammar<Iterator, vector<GdbResponseType>(), ascii::space_type>
 {
     GdbResponseParseGrammar() : GdbResponseParseGrammar::base_type(start)
     {
         raw_str = +qi::print;
         ident = +(qi::alpha | qi::char_('-'));
-        file_name = +(qi::print -  qi::char_(':'));
+        file_name = +(qi::print -  qi::char_(':') - qi::char_(','));
         device_name = +(qi::print); // for tty
         value = +qi::char_;
         dummy = +qi::char_('\xFF');
         version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
         banner = qi::lit("GNU") >> qi::lit("gdb") >> version_number >> value;
-        reading_libs = qi::lit("Reading symbols for shared libraries .... done") >> -dummy;
+        reading_libs = qi::lit("Reading symbols for shared libraries") >> *(qi::char_('.') | qi::char_('+')) >> "done";
+        typedef qi::uint_parser<unsigned long long, 16, 1, 99> address;
+        breakpoint_set = qi::lit("Breakpoint") >> qi::int_ >> "at 0x" >> address() >> ": file" >> file_name >> "," >> "line" >> qi::int_ >> ".";
+
+        //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
+        cursor_pos = qi::lit("\x1A\x1A") >> file_name >> ":" >> qi::int_ >> ":" >> qi::int_ >> ":" >> *(!qi::char_(":")) >> ":0x" >> address();
+
         empty = -dummy;
-        start = (banner | reading_libs | empty) >> qi::eoi;
+        response_item = banner | reading_libs | breakpoint_set | cursor_pos | empty;
+        start = response_item >> qi::eoi;
     }
 
     qi::rule<Iterator, std::string()> raw_str;
@@ -59,12 +66,15 @@ struct GdbResponseParseGrammar : qi::grammar<Iterator, GdbResponseType(), ascii:
     qi::rule<Iterator, std::string()> version_number;
     qi::rule<Iterator, GdbResponses::Banner(), ascii::space_type> banner;
     qi::rule<Iterator, GdbResponses::ReadingLibs(), ascii::space_type> reading_libs;
+    qi::rule<Iterator, GdbResponses::BreakpointSet(), ascii::space_type> breakpoint_set;
+    qi::rule<Iterator, GdbResponses::CursorPos()> cursor_pos;
     qi::rule<Iterator, GdbResponses::Empty(), ascii::space_type> empty;
-    qi::rule<Iterator, GdbResponseType(), ascii::space_type> start;
+    qi::rule<Iterator, GdbResponseType(), ascii::space_type> response_item;
+    qi::rule<Iterator, vector<GdbResponseType>(), ascii::space_type> start;
 };
 
 
-GdbResponse GdbResponseParser::Parse(StringWithPrompt const& input) const
+vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
 {
     using boost::spirit::ascii::space;
     typedef std::string::const_iterator iterator_type;
@@ -72,15 +82,15 @@ GdbResponse GdbResponseParser::Parse(StringWithPrompt const& input) const
 
     GdbResponseGrammar g; // Our grammar
 
-    std::string::const_iterator iter = input.content.begin();
-    std::string::const_iterator end = input.content.end();
-    GdbResponseType result;
+    std::string::const_iterator iter = input.begin();
+    std::string::const_iterator end = input.end();
+    vector<GdbResponseType> result;
     bool success = phrase_parse(iter, end, g, space, result);
 
     if (!success)
     {
         stringstream ss;
-        ss << "Failed to parse: " << input.content << std::endl;
+        ss << "Failed to parse: " << input << std::endl;
         cerr << endl << ss.str() << endl;
         throw boost::enable_current_exception(ParseException(ss.str()));
     }
@@ -95,7 +105,7 @@ GdbResponse GdbResponseParser::Parse(StringWithPrompt const& input) const
         }
     }
 
-    return {result, input.prompt};
+    return result;
 }
 
 
@@ -106,7 +116,7 @@ GdbResponseParser::GdbResponseParser(AbstractOutput<GdbResponse>& sink_)
 
 void GdbResponseParser::WriteData(StringWithPrompt const& input)
 {
-    GdbResponse cmd = Parse(input);
+    GdbResponse cmd = { Parse(input.content), input.prompt };
     sink.WriteData(cmd);
 }
 

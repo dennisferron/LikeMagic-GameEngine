@@ -10,7 +10,7 @@ class GdbResponseParser : public AbstractAdapter<StringWithPrompt>
 {
 private:
     AbstractOutput<GdbResponse>& sink;
-    GdbResponse Parse(StringWithPrompt const& str) const;
+    std::vector<GdbResponseType> Parse(std::string const& str) const;
 
 public:
     GdbResponseParser(AbstractOutput<GdbResponse>& sink_);

@@ -66,6 +66,7 @@
 		<Unit filename="Include\LookForPrompt.hpp" />
 		<Unit filename="Include\Parser.hpp" />
 		<Unit filename="Include\Queue.hpp" />
+		<Unit filename="Include\RecombinePrompt.hpp" />
 		<Unit filename="Include\StaticFuture.hpp" />
 		<Unit filename="Include\StreamOutput.hpp" />
 		<Unit filename="Include\StringEscaper.hpp" />
@@ -88,6 +89,7 @@
 		<Unit filename="Source\LogChannelWithPrompt.cpp" />
 		<Unit filename="Source\LookForPrompt.cpp" />
 		<Unit filename="Source\Parser.cpp" />
+		<Unit filename="Source\RecombinePrompt.cpp" />
 		<Unit filename="Source\StreamOutput.cpp" />
 		<Unit filename="Source\TestPlan.cpp" />
 		<Unit filename="Source\UserCmdParser.cpp" />
