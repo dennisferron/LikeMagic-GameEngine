@@ -1,6 +1,6 @@
 info: Built input chains.
-fromGdb: Reading symbols for shared libraries .... done\b\n(gdb) 
-toUser: Reading symbols for shared libraries .... done\b\n(gdb) 
+fromGdb: Reading symbols for shared libraries .... done\b\n(gdb)
+toUser: Reading symbols for shared libraries .... done\b\n(gdb)
 fromUser: set prompt \b>>>>>>cb_gdb:
 info: MainLoopState::ReadUser
 toGdb: set prompt \b>>>>>>cb_gdb:
@@ -82,6 +82,12 @@ toUser: \b>>>>>>cb_gdb:
 fromUser: run
 info: MainLoopState::ReadUser
 toGdb: run
+info: Begin test
+info: Begin test
+fromGdb: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46\b\n>>>>>>cb_gdb:
+toUser: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46\b\n>>>>>>cb_gdb:
+info: End test
+info: End test
 fromGdb: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46\b\n>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
 toUser: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46\b\n>>>>>>cb_gdb:
@@ -182,10 +188,10 @@ fromGdb: #0  0x0000000100000e20 in start ()\b\n>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
 toUser: #0  0x0000000100000e20 in start ()\b\n>>>>>>cb_gdb:
 fromUser: quit
-fromUser: 
-fromUser: 
+fromUser:
+fromUser:
 info: MainLoopState::ReadUser
-fromUser: 
+fromUser:
 toGdb: quit
-fromUser: 
-fromUser: 
+fromUser:
+fromUser:

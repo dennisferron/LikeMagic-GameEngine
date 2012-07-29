@@ -46,15 +46,15 @@ struct GdbResponseParseGrammar : qi::grammar<Iterator, vector<GdbResponseType>()
         version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
         banner = qi::lit("GNU") >> qi::lit("gdb") >> version_number >> value;
         reading_libs = qi::lit("Reading symbols for shared libraries") >> *(qi::char_('.') | qi::char_('+')) >> "done";
-        typedef qi::uint_parser<unsigned long long, 16, 1, 99> address;
+        typedef qi::uint_parser<unsigned long long, 16, 1, 9> address;
         breakpoint_set = qi::lit("Breakpoint") >> qi::int_ >> "at 0x" >> address() >> ": file" >> file_name >> "," >> "line" >> qi::int_ >> ".";
 
         //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
-        cursor_pos = qi::lit("\x1A\x1A") >> file_name >> ":" >> qi::int_ >> ":" >> qi::int_ >> ":" >> *(!qi::char_(":")) >> ":0x" >> address();
+        cursor_pos = qi::lit("\x1A\x1A") >> file_name >> ":" >> qi::int_ >> ":" >> qi::int_ >> ":" >> *qi::alpha >> ":0x" >> address();
 
         empty = -dummy;
         response_item = banner | reading_libs | breakpoint_set | cursor_pos | empty;
-        start = response_item >> qi::eoi;
+        start = response_item >> *(qi::lit("\n") >> response_item) >> qi::eoi;
     }
 
     qi::rule<Iterator, std::string()> raw_str;
