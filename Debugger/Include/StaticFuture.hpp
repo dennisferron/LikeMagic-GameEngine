@@ -142,7 +142,10 @@ struct BeginFuture
     int count() const { return 0; }
 
     template <typename T>
-    T& at(int n) const { throw std::out_of_range("Index of StaticFuture at() out of range."); }
+    T& at(int n) const
+    {
+        throw std::out_of_range("Index of StaticFuture at() out of range.");
+    }
 
     template <typename T, typename... NextArgs>
     StaticFuture<T, ConstructorPolicy, BeginFuture, T, NextArgs...> to(NextArgs&&... args_)

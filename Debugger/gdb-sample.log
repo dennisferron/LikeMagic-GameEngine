@@ -1,6 +1,6 @@
 info: Built input chains.
-fromGdb: Reading symbols for shared libraries .... done\b\n(gdb)
-toUser: Reading symbols for shared libraries .... done\b\n(gdb)
+fromGdb: Reading symbols for shared libraries .... done\n\b(gdb)
+toUser: Reading symbols for shared libraries .... done\n\b(gdb)
 fromUser: set prompt \b>>>>>>cb_gdb:
 info: MainLoopState::ReadUser
 toGdb: set prompt \b>>>>>>cb_gdb:
@@ -10,9 +10,9 @@ toUser: \b>>>>>>cb_gdb:
 fromUser: show version
 info: MainLoopState::ReadUser
 toGdb: show version
-fromGdb: GNU gdb 6.3.50-20050815 (Apple version gdb-1705) (Fri Jul  1 10:50:06 UTC 2011)\nCopyright 2004 Free Software Foundation, Inc.\nGDB is free software, covered by the GNU General Public License, and you are\nwelcome to change it and/or distribute copies of it under certain conditions.\nType \"show copying\" to see the conditions.\nThere is absolutely no warranty for GDB.  Type \"show warranty\" for details.\nThis GDB was configured as \"x86_64-apple-darwin\".\b\n>>>>>>cb_gdb:
+fromGdb: GNU gdb 6.3.50-20050815 (Apple version gdb-1705) (Fri Jul  1 10:50:06 UTC 2011)\nCopyright 2004 Free Software Foundation, Inc.\nGDB is free software, covered by the GNU General Public License, and you are\nwelcome to change it and/or distribute copies of it under certain conditions.\nType \"show copying\" to see the conditions.\nThere is absolutely no warranty for GDB.  Type \"show warranty\" for details.\nThis GDB was configured as \"x86_64-apple-darwin\".\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: GNU gdb 6.3.50-20050815 (Apple version gdb-1705) (Fri Jul  1 10:50:06 UTC 2011)\nCopyright 2004 Free Software Foundation, Inc.\nGDB is free software, covered by the GNU General Public License, and you are\nwelcome to change it and/or distribute copies of it under certain conditions.\nType \"show copying\" to see the conditions.\nThere is absolutely no warranty for GDB.  Type \"show warranty\" for details.\nThis GDB was configured as \"x86_64-apple-darwin\".\b\n>>>>>>cb_gdb:
+toUser: GNU gdb 6.3.50-20050815 (Apple version gdb-1705) (Fri Jul  1 10:50:06 UTC 2011)\nCopyright 2004 Free Software Foundation, Inc.\nGDB is free software, covered by the GNU General Public License, and you are\nwelcome to change it and/or distribute copies of it under certain conditions.\nType \"show copying\" to see the conditions.\nThere is absolutely no warranty for GDB.  Type \"show warranty\" for details.\nThis GDB was configured as \"x86_64-apple-darwin\".\n\b>>>>>>cb_gdb:
 fromUser: set confirm off
 info: MainLoopState::ReadUser
 toGdb: set confirm off
@@ -70,9 +70,9 @@ toUser: \b>>>>>>cb_gdb:
 fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\"
 info: MainLoopState::ReadUser
 toGdb: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\"
-fromGdb: Breakpoint 1 at 0x100000e46: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 7.\b\n>>>>>>cb_gdb:
+fromGdb: Breakpoint 1 at 0x100000e46: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 7.\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: Breakpoint 1 at 0x100000e46: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 7.\b\n>>>>>>cb_gdb:
+toUser: Breakpoint 1 at 0x100000e46: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 7.\n\b>>>>>>cb_gdb:
 fromUser: tty /dev/ttys002
 info: MainLoopState::ReadUser
 toGdb: tty /dev/ttys002
@@ -82,81 +82,75 @@ toUser: \b>>>>>>cb_gdb:
 fromUser: run
 info: MainLoopState::ReadUser
 toGdb: run
-info: Begin test
-info: Begin test
-fromGdb: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46\b\n>>>>>>cb_gdb:
-toUser: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46\b\n>>>>>>cb_gdb:
-info: End test
-info: End test
-fromGdb: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46\b\n>>>>>>cb_gdb:
+fromGdb: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46\b\n>>>>>>cb_gdb:
+toUser: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46\n\b>>>>>>cb_gdb:
 fromUser: info locals
 info: MainLoopState::ReadUser
 toGdb: info locals
-fromGdb: No locals.\b\n>>>>>>cb_gdb:
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: No locals.\b\n>>>>>>cb_gdb:
+toUser: No locals.\n\b>>>>>>cb_gdb:
 fromUser: info args
 info: MainLoopState::ReadUser
 toGdb: info args
-fromGdb: No arguments.\b\n>>>>>>cb_gdb:
+fromGdb: No arguments.\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: No arguments.\b\n>>>>>>cb_gdb:
+toUser: No arguments.\n\b>>>>>>cb_gdb:
 fromUser: bt 30
 info: MainLoopState::ReadUser
 toGdb: bt 30
-fromGdb: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\b\n>>>>>>cb_gdb:
+fromGdb: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\b\n>>>>>>cb_gdb:
+toUser: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\n\b>>>>>>cb_gdb:
 fromUser: next
 info: MainLoopState::ReadUser
 toGdb: next
-fromGdb: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:8:99:beg:0x100000e6e\b\n>>>>>>cb_gdb:
+fromGdb: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:8:99:beg:0x100000e6e\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:8:99:beg:0x100000e6e\b\n>>>>>>cb_gdb:
+toUser: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:8:99:beg:0x100000e6e\n\b>>>>>>cb_gdb:
 fromUser: info locals
 info: MainLoopState::ReadUser
 toGdb: info locals
-fromGdb: No locals.\b\n>>>>>>cb_gdb:
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: No locals.\b\n>>>>>>cb_gdb:
+toUser: No locals.\n\b>>>>>>cb_gdb:
 fromUser: info args
 info: MainLoopState::ReadUser
 toGdb: info args
-fromGdb: No arguments.\b\n>>>>>>cb_gdb:
+fromGdb: No arguments.\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: No arguments.\b\n>>>>>>cb_gdb:
+toUser: No arguments.\n\b>>>>>>cb_gdb:
 fromUser: bt 30
 info: MainLoopState::ReadUser
 toGdb: bt 30
-fromGdb: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:8\b\n>>>>>>cb_gdb:
+fromGdb: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:8\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:8\b\n>>>>>>cb_gdb:
+toUser: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:8\n\b>>>>>>cb_gdb:
 fromUser: step
 info: MainLoopState::ReadUser
 toGdb: step
-fromGdb: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:9:114:beg:0x100000e73\b\n>>>>>>cb_gdb:
+fromGdb: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:9:114:beg:0x100000e73\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:9:114:beg:0x100000e73\b\n>>>>>>cb_gdb:
+toUser: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:9:114:beg:0x100000e73\n\b>>>>>>cb_gdb:
 fromUser: info locals
 info: MainLoopState::ReadUser
 toGdb: info locals
-fromGdb: No locals.\b\n>>>>>>cb_gdb:
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: No locals.\b\n>>>>>>cb_gdb:
+toUser: No locals.\n\b>>>>>>cb_gdb:
 fromUser: info args
 info: MainLoopState::ReadUser
 toGdb: info args
-fromGdb: No arguments.\b\n>>>>>>cb_gdb:
+fromGdb: No arguments.\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: No arguments.\b\n>>>>>>cb_gdb:
+toUser: No arguments.\n\b>>>>>>cb_gdb:
 fromUser: bt 30
 info: MainLoopState::ReadUser
 toGdb: bt 30
-fromGdb: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:9\b\n>>>>>>cb_gdb:
+fromGdb: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:9\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:9\b\n>>>>>>cb_gdb:
+toUser: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:9\n\b>>>>>>cb_gdb:
 fromUser: finish
 info: MainLoopState::ReadUser
 toGdb: finish
@@ -166,27 +160,27 @@ toUser: \b>>>>>>cb_gdb:
 fromUser: step
 info: MainLoopState::ReadUser
 toGdb: step
-fromGdb: 0x0000000100000e20 in start ()\b\n>>>>>>cb_gdb:
+fromGdb: 0x0000000100000e20 in start ()\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: 0x0000000100000e20 in start ()\b\n>>>>>>cb_gdb:
+toUser: 0x0000000100000e20 in start ()\n\b>>>>>>cb_gdb:
 fromUser: info locals
 info: MainLoopState::ReadUser
 toGdb: info locals
-fromGdb: No symbol table info available.\b\n>>>>>>cb_gdb:
+fromGdb: No symbol table info available.\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: No symbol table info available.\b\n>>>>>>cb_gdb:
+toUser: No symbol table info available.\n\b>>>>>>cb_gdb:
 fromUser: info args
 info: MainLoopState::ReadUser
 toGdb: info args
-fromGdb: No symbol table info available.\b\n>>>>>>cb_gdb:
+fromGdb: No symbol table info available.\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: No symbol table info available.\b\n>>>>>>cb_gdb:
+toUser: No symbol table info available.\n\b>>>>>>cb_gdb:
 fromUser: bt 30
 info: MainLoopState::ReadUser
 toGdb: bt 30
-fromGdb: #0  0x0000000100000e20 in start ()\b\n>>>>>>cb_gdb:
+fromGdb: #0  0x0000000100000e20 in start ()\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: #0  0x0000000100000e20 in start ()\b\n>>>>>>cb_gdb:
+toUser: #0  0x0000000100000e20 in start ()\n\b>>>>>>cb_gdb:
 fromUser: quit
 fromUser:
 fromUser:

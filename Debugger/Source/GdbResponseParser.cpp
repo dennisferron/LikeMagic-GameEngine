@@ -16,6 +16,15 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 #include <complex>
 using namespace std;
 
+#include <boost/algorithm/string.hpp>
+
+#include <boost/spirit/home/phoenix/bind/bind_member_variable.hpp>
+#include <boost/spirit/home/phoenix/scope/let.hpp>
+#include <boost/spirit/home/phoenix/scope/local_variable.hpp>
+#include <boost/spirit/home/phoenix/statement/if.hpp>
+using namespace boost::phoenix::local_names;
+namespace phx = boost::phoenix;
+
 #include "Exception.hpp"
 
 using namespace Iocaste::Debugger;
@@ -33,28 +42,34 @@ namespace Iocaste {
     namespace Debugger {
 
 template <typename Iterator>
-struct GdbResponseParseGrammar : qi::grammar<Iterator, vector<GdbResponseType>(), ascii::space_type>
+struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
 {
-    GdbResponseParseGrammar() : GdbResponseParseGrammar::base_type(start)
+    GdbResponseGrammar() : GdbResponseGrammar::base_type(start)
     {
         raw_str = +qi::print;
         ident = +(qi::alpha | qi::char_('-'));
         file_name = +(qi::print -  qi::char_(':') - qi::char_(','));
         device_name = +(qi::print); // for tty
-        value = +qi::char_;
         dummy = +qi::char_('\xFF');
+        function_name = +(qi::char_ - qi::char_(' '));
+        function_args = *(qi::char_ - qi::char_(')'));
         version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
-        banner = qi::lit("GNU") >> qi::lit("gdb") >> version_number >> value;
-        reading_libs = qi::lit("Reading symbols for shared libraries") >> *(qi::char_('.') | qi::char_('+')) >> "done";
+        reading_libs = qi::lit("Reading symbols for shared libraries ") >> *(qi::char_('.') | qi::char_('+')) >> " done";
         typedef qi::uint_parser<unsigned long long, 16, 1, 9> address;
-        breakpoint_set = qi::lit("Breakpoint") >> qi::int_ >> "at 0x" >> address() >> ": file" >> file_name >> "," >> "line" >> qi::int_ >> ".";
+        breakpoint_set = qi::lit("Breakpoint ") >> qi::int_ >> " at 0x" >> address() >> ": file " >> file_name >> "," >> " line " >> qi::int_ >> ".";
 
         //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
         cursor_pos = qi::lit("\x1A\x1A") >> file_name >> ":" >> qi::int_ >> ":" >> qi::int_ >> ":" >> *qi::alpha >> ":0x" >> address();
 
-        empty = -dummy;
-        response_item = banner | reading_libs | breakpoint_set | cursor_pos | empty;
-        start = response_item >> *(qi::lit("\n") >> response_item) >> qi::eoi;
+        // Breakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
+        breakpoint_hit = qi::lit("Breakpoint ") >> qi::int_ >> ", " >> function_name >> " (" >> function_args >> ") at " >> file_name >> ":" >> qi::int_;
+
+        // No locals.
+        // No symbol table info available.
+        no_locals = qi::string("No locals.") | qi::string("No arguments.") | qi::string("No symbol table info available.");
+        locals_info = no_locals;
+
+        start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info;
     }
 
     qi::rule<Iterator, std::string()> raw_str;
@@ -62,15 +77,36 @@ struct GdbResponseParseGrammar : qi::grammar<Iterator, vector<GdbResponseType>()
     qi::rule<Iterator, std::string()> value;
     qi::rule<Iterator, std::string()> dummy;
     qi::rule<Iterator, std::string()> file_name;
+    qi::rule<Iterator, std::string()> function_name;
+    qi::rule<Iterator, std::string()> function_args;
     qi::rule<Iterator, std::string()> device_name;
     qi::rule<Iterator, std::string()> version_number;
-    qi::rule<Iterator, GdbResponses::Banner(), ascii::space_type> banner;
-    qi::rule<Iterator, GdbResponses::ReadingLibs(), ascii::space_type> reading_libs;
-    qi::rule<Iterator, GdbResponses::BreakpointSet(), ascii::space_type> breakpoint_set;
+    qi::rule<Iterator, std::string()> no_locals;
+    qi::rule<Iterator, GdbResponses::LocalsInfo()> locals_info;
+    qi::rule<Iterator, GdbResponses::ReadingLibs()> reading_libs;
+    qi::rule<Iterator, GdbResponses::BreakpointSet()> breakpoint_set;
+    qi::rule<Iterator, GdbResponses::BreakpointHit()> breakpoint_hit;
     qi::rule<Iterator, GdbResponses::CursorPos()> cursor_pos;
-    qi::rule<Iterator, GdbResponses::Empty(), ascii::space_type> empty;
-    qi::rule<Iterator, GdbResponseType(), ascii::space_type> response_item;
-    qi::rule<Iterator, vector<GdbResponseType>(), ascii::space_type> start;
+    qi::rule<Iterator, GdbResponseType()> start;
+};
+
+
+
+template <typename Iterator>
+struct GdbBannerGrammar : qi::grammar<Iterator, GdbResponses::Banner()>
+{
+    GdbBannerGrammar() : GdbBannerGrammar::base_type(banner)
+    {
+        version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
+        banner_line = +(qi::char_ - '\n');
+        banner_message = banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line;
+        banner = qi::lit("GNU gdb ") >> version_number >> banner_message >> qi::lit("\n") >> qi::eoi;
+    }
+
+    qi::rule<Iterator, std::string()> version_number;
+    qi::rule<Iterator, std::string()> banner_line;
+    qi::rule<Iterator, std::string()> banner_message;
+    qi::rule<Iterator, GdbResponses::Banner()> banner;
 };
 
 
@@ -78,30 +114,66 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
 {
     using boost::spirit::ascii::space;
     typedef std::string::const_iterator iterator_type;
-    typedef GdbResponseParseGrammar<iterator_type> GdbResponseGrammar;
 
-    GdbResponseGrammar g; // Our grammar
-
-    std::string::const_iterator iter = input.begin();
-    std::string::const_iterator end = input.end();
+    iterator_type banner_iter = input.begin();
+    iterator_type banner_end = input.end();
     vector<GdbResponseType> result;
-    bool success = phrase_parse(iter, end, g, space, result);
 
-    if (!success)
+    // The banner doesn't conform to the pattern of the other GdbResponses.
+    // Rather than twist the grammar to handle it I just handle it with another parser.
+    GdbBannerGrammar<iterator_type> g_banner; // Banner grammar
+    GdbResponses::Banner banner;
+    if (parse(banner_iter, banner_end, g_banner, banner))
     {
-        stringstream ss;
-        ss << "Failed to parse: " << input << std::endl;
-        cerr << endl << ss.str() << endl;
-        throw boost::enable_current_exception(ParseException(ss.str()));
+        result.push_back(banner);
+        return result;
     }
     else
     {
-        if (iter != end)
+        // When the grammar fails to match I want to know which line failed.
+        // I couldn't figure out how to get spirit expectation failure to work
+        // in a spirit grammar (nothing happens) so I just handle each line individually.
+        vector<string> lines;
+        boost::split(lines, input, boost::is_any_of("\n"));
+
+        // Grrr, boost split adds a suprious empty entry at the end for the last newline.
+        // It also writes one vector entry for an empty input string instead of returning zero elements.
+        if ( (*(lines.end()-1)).size() == 0)
+            lines.erase(lines.end()-1);
+
+        for (string line : lines)
         {
-            stringstream ss;
-            ss << "Not all of the line was parsed: " << std::string(iter, end) << std::endl;
-            cerr << endl << ss.str() << endl;
-            throw boost::enable_current_exception(ParseException(ss.str()));
+            if (line.size() == 0)
+            {
+                result.push_back(GdbResponses::Empty());
+            }
+            else
+            {
+                GdbResponseGrammar<iterator_type> g; // Our grammar
+                iterator_type iter = line.begin();
+                iterator_type end = line.end();
+                GdbResponseType line_item;
+                bool success = parse(iter, end, g, line_item);
+
+                if (!success)
+                {
+                    stringstream ss;
+                    ss << "Failed to parse ->" << line << "<- in string ->" << input << "<-" << std::endl;
+                    cerr << endl << ss.str() << endl;
+                    throw boost::enable_current_exception(ParseException(ss.str()));
+                }
+                else if (iter != end)
+                {
+                    stringstream ss;
+                    ss << "Not all of the line was parsed: " << std::string(iter, end) << std::endl;
+                    cerr << endl << ss.str() << endl;
+                    throw boost::enable_current_exception(ParseException(ss.str()));
+                }
+                else
+                {
+                    result.push_back(line_item);
+                }
+            }
         }
     }
 
@@ -116,8 +188,8 @@ GdbResponseParser::GdbResponseParser(AbstractOutput<GdbResponse>& sink_)
 
 void GdbResponseParser::WriteData(StringWithPrompt const& input)
 {
-    GdbResponse cmd = { Parse(input.content), input.prompt };
-    sink.WriteData(cmd);
+    GdbResponse response = { Parse(input.content), input.prompt };
+    sink.WriteData(response);
 }
 
     }

@@ -43,6 +43,20 @@ struct CursorPos
     unsigned long long address;
 };
 
+struct BreakpointHit
+{
+    int breakpoint_number;
+    std::string function;
+    std::string args;
+    std::string file_name;
+    int line_number;
+};
+
+struct LocalsInfo
+{
+    std::string msg;
+};
+
 }
 
 typedef  boost::variant
@@ -51,6 +65,8 @@ typedef  boost::variant
     GdbResponses::ReadingLibs,
     GdbResponses::BreakpointSet,
     GdbResponses::CursorPos,
+    GdbResponses::BreakpointHit,
+    GdbResponses::LocalsInfo,
     GdbResponses::Empty
 > GdbResponseType;
 

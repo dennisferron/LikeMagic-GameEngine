@@ -51,7 +51,7 @@ struct ActivityLogParser : qi::grammar<Iterator, ActivityLogLine()>
                       ("\\\'", '\'')("\\\"", '\"')("\\0", '\0')("\\z", 26)
             ;
 
-        unesc_str = *(unesc_char | qi::print | "\\x" >> qi::hex >> ";");
+        unesc_str = *(unesc_char | (qi::print - '\\') | "\\x" >> qi::hex >> ";");
 
         label %=  +qi::alnum;
         content %= unesc_str;
@@ -109,7 +109,7 @@ struct ActivityLogWriter
                     ('\'', "\\\'")('\"', "\\\"")('\0', "\\0")(26, "\\z")
             ;
 
-        esc_str = *(esc_char | karma::print | "\\x" << karma::hex << ";");
+        esc_str = *(esc_char | karma::print | "\\x" << karma::hex << ';' );
 
         label %= +karma::print;
         content %= esc_str;

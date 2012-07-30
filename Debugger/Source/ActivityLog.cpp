@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <complex>
+#include <algorithm>
 using namespace std;
 
 #include "ActivityLog.hpp"
@@ -58,6 +59,16 @@ void ActivityLog::WriteData(std::string const& data)
     }
 }
 
+void print_error(string expected, string actual)
+{
+    int expected_lines = std::count(expected.begin(), expected.end(), '\n');
+    int actual_lines = std::count(actual.begin(), actual.end(), '\n');
+
+    cerr << endl << "Did not get expected content" << endl << "expected (" << expected_lines << " lines): ->" << expected << "<-" << endl
+    << "actual (" << actual_lines << " lines):  ->" << actual << "<-" << endl;
+    cerr << endl;
+}
+
 void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
 {
     ActivityLogLine test_result;
@@ -70,8 +81,12 @@ void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
         throw boost::enable_current_exception(TestException("Did not get expected label", test_log_entry.label, test_result.label));
     else if (exact_match && test_result.content != test_log_entry.content)
     {
-        cerr << endl << "Did not get expected content" << endl << "expected: " << test_log_entry.content << endl << "actual: " << test_result.content << endl;
-        throw boost::enable_current_exception(TestException("Did not get expected content", test_log_entry.content, test_result.content));
+        string expected = test_log_entry.content;
+        string actual = test_result.content;
+
+        print_error(expected, actual);
+
+        throw boost::enable_current_exception(TestException("Did not get expected content", expected, actual));
     }
 }
 

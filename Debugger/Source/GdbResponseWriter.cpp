@@ -27,7 +27,7 @@ struct GdbResponseWriteGrammar
     GdbResponseWriteGrammar()
       : GdbResponseWriteGrammar::base_type(start)
     {
-        banner = karma::lit("GNU gdb ") << karma::string << " " << karma::string;
+        banner = karma::lit("GNU gdb ") << karma::string << karma::string;
         dummy %= karma::string;
         reading_libs = karma::lit("Reading symbols for shared libraries ") << karma::string << " done";
         typedef karma::uint_generator<unsigned long long, 16> address;
@@ -37,15 +37,24 @@ struct GdbResponseWriteGrammar
         //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
         cursor_pos = karma::lit("\x1A\x1A") << karma::string << ":" << karma::int_ << ":" << karma::int_ << ":" << karma::string << ":0x" << address();
 
-        response_item = banner | reading_libs | breakpoint_set | cursor_pos | empty;
-        start = response_item << *(karma::lit("\n") << response_item);
+        // Breakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
+        breakpoint_hit = karma::lit("Breakpoint ") << karma::int_ << ", " << karma::string << " (" << karma::string << ") at " << karma::string << ":" << karma::int_;
+
+        // No locals.
+        // No symbol table info available.
+        locals_info = karma::string;
+
+        response_item = (banner | reading_libs | breakpoint_set | breakpoint_hit | cursor_pos | locals_info | empty) << "\n";
+        start = *response_item;
     }
 
     karma::rule<OutputIterator, string()> dummy;
     karma::rule<OutputIterator, GdbResponses::Banner()> banner;
     karma::rule<OutputIterator, GdbResponses::ReadingLibs()> reading_libs;
     karma::rule<OutputIterator, GdbResponses::BreakpointSet()> breakpoint_set;
+    karma::rule<OutputIterator, GdbResponses::BreakpointHit()> breakpoint_hit;
     karma::rule<OutputIterator, GdbResponses::CursorPos()> cursor_pos;
+    karma::rule<OutputIterator, GdbResponses::LocalsInfo()> locals_info;
     karma::rule<OutputIterator, GdbResponses::Empty()> empty;
     karma::rule<OutputIterator, GdbResponseType()> response_item;
     karma::rule<OutputIterator, vector<GdbResponseType>()> start;
@@ -61,12 +70,17 @@ struct GdbResponsePrinter : boost::static_visitor<>
 
     void operator()(const Banner& t) const
     {
-        cerr << "banner is " << t.version << " " << t.msg << endl;
+        cerr << "banner is version->" << t.version << "< message->" << t.msg << "<" << endl;
     }
 
     void operator()(const ReadingLibs& t) const
     {
         cerr << "reading libs is (no members)" << endl;
+    }
+
+    void operator()(const LocalsInfo& t) const
+    {
+        cerr << "locals info is " << t.msg << endl;
     }
 
     void operator()(const BreakpointSet& t) const
@@ -83,6 +97,17 @@ struct GdbResponsePrinter : boost::static_visitor<>
         << " " << t.char_number
         << " " << t.address
         << " " << t.unknown
+        << endl;
+    }
+
+    void operator()(const BreakpointHit& t) const
+    {
+        cerr << "breakpoint hit is"
+        << " " << t.breakpoint_number
+        << " " << t.function
+        << " " << t.args
+        << " " << t.file_name
+        << " " << t.line_number
         << endl;
     }
 

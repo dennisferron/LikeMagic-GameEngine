@@ -34,10 +34,24 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::BreakpointHit,
+    (int, breakpoint_number)
+    (std::string, function)
+    (std::string, args)
+    (std::string, file_name)
+    (int, line_number)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::CursorPos,
     (std::string, file_name)
     (int, line_number)
     (int, char_number)
     (std::string, unknown)
     (unsigned long long, address)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::LocalsInfo,
+    (std::string, msg)
 )

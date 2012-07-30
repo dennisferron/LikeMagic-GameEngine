@@ -26,15 +26,6 @@ void LookForPrompt::WriteData(string const& data)
     if (read_finished)
     {
         buffer.erase(buffer.end() - end_marker_str.size(), buffer.end());
-
-        string prompt(end_marker_str);
-
-        if (*(buffer.end()-1) == '\n')
-        {
-            prompt.push_back('\n');
-            buffer.erase(buffer.end() - 1, buffer.end());
-        }
-
         output.WriteData( { buffer, end_marker_str } );
         buffer.clear();
     }
