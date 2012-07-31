@@ -55,11 +55,13 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         function_args = *(qi::char_ - qi::char_(')'));
         version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
         reading_libs = qi::lit("Reading symbols for shared libraries ") >> *(qi::char_('.') | qi::char_('+')) >> " done";
-        typedef qi::uint_parser<unsigned long long, 16, 1, 9> address;
-        breakpoint_set = qi::lit("Breakpoint ") >> qi::int_ >> " at 0x" >> address() >> ": file " >> file_name >> "," >> " line " >> qi::int_ >> ".";
+
+        address = qi::string("0x") >> + qi::alnum;
+
+        breakpoint_set = qi::lit("Breakpoint ") >> qi::int_ >> " at " >> address >> ": file " >> file_name >> "," >> " line " >> qi::int_ >> ".";
 
         //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
-        cursor_pos = qi::lit("\x1A\x1A") >> file_name >> ":" >> qi::int_ >> ":" >> qi::int_ >> ":" >> *qi::alpha >> ":0x" >> address();
+        cursor_pos = qi::lit("\x1A\x1A") >> file_name >> ":" >> qi::int_ >> ":" >> qi::int_ >> ":" >> *qi::alpha >> ":" >> address;
 
         // Breakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
         breakpoint_hit = qi::lit("Breakpoint ") >> qi::int_ >> ", " >> function_name >> " (" >> function_args >> ") at " >> file_name >> ":" >> qi::int_;
@@ -69,7 +71,21 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         no_locals = qi::string("No locals.") | qi::string("No arguments.") | qi::string("No symbol table info available.");
         locals_info = no_locals;
 
-        start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info;
+        // 0x0000000100000e20 in start ()
+        address_in_function = address >> " in " >> function_args >> "(" >> function_args >> ")";
+
+        // #6  0xb7f42f47 in operator new () from /usr/lib/libstdc++.so.6
+        // #7  0x0805bd20 in Image<Color>::fft (this=0xb467640) at ../image_processing/image.cpp:545
+        // #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
+        // #0  0x0000000100000e20 in start ()
+        // -(address in) (function|?? (args)) ((at file:line)(from module))
+        backtrace_line = qi::lit("#") >> qi::int_ >> "  "
+            >> -(address >> " in ")
+            >> function_name >> " (" >> function_args >> ") "
+            >> -("from " >> file_name)
+            >> -("at " >> file_name >> ":" >> qi::int_);
+
+        start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | backtrace_line | address_in_function;
     }
 
     qi::rule<Iterator, std::string()> raw_str;
@@ -81,11 +97,14 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, std::string()> function_args;
     qi::rule<Iterator, std::string()> device_name;
     qi::rule<Iterator, std::string()> version_number;
+    qi::rule<Iterator, std::string()> address;
     qi::rule<Iterator, std::string()> no_locals;
     qi::rule<Iterator, GdbResponses::LocalsInfo()> locals_info;
     qi::rule<Iterator, GdbResponses::ReadingLibs()> reading_libs;
     qi::rule<Iterator, GdbResponses::BreakpointSet()> breakpoint_set;
     qi::rule<Iterator, GdbResponses::BreakpointHit()> breakpoint_hit;
+    qi::rule<Iterator, GdbResponses::BacktraceLine()> backtrace_line;
+    qi::rule<Iterator, GdbResponses::AddressInFunction()> address_in_function;
     qi::rule<Iterator, GdbResponses::CursorPos()> cursor_pos;
     qi::rule<Iterator, GdbResponseType()> start;
 };

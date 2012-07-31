@@ -28,7 +28,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::BreakpointSet,
     (int, breakpoint_number)
-    (unsigned long long, address)
+    (std::string, address)
     (std::string, file_name)
     (int, line_number)
 )
@@ -43,12 +43,31 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::AddressInFunction,
+    (std::string, address)
+    (std::string, function)
+    (std::string, args)
+)
+
+
+BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::BacktraceLine,
+    (int, backtrace_number)
+    (boost::optional<std::string>, address)
+    (std::string, function)
+    (std::string, args)
+    (boost::optional<std::string>, module)
+    (boost::optional<std::string>, file_name)
+    (boost::optional<int>, line_number)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::CursorPos,
     (std::string, file_name)
     (int, line_number)
     (int, char_number)
     (std::string, unknown)
-    (unsigned long long, address)
+    (std::string, address)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
