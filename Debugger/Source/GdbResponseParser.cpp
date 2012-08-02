@@ -41,12 +41,33 @@ namespace ascii = boost::spirit::ascii;
 namespace Iocaste {
     namespace Debugger {
 
+/*
+template <typename Iterator>
+struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponses::TestStr2()>
+{
+    GdbResponseGrammar() : GdbResponseGrammar::base_type(test_str2)
+    {
+        raw_str = qi::char_('R') >> qi::char_('e');
+        test_str1 = raw_str; //qi::string("Reading symbols for shared libraries .... done");
+        test_str2 = raw_str; // *(qi::char_('R') >> qi::char_('e') >> qi::char_('a') >> qi::char_);
+        uninit = qi::double_;
+        //start = test_str1 | test_str2 | uninit;
+        start = test_str1; // | test_str2 | uninit;
+    }
+
+    qi::rule<Iterator, std::string()> raw_str;
+    qi::rule<Iterator, GdbResponses::TestStr1()> test_str1;
+    qi::rule<Iterator, GdbResponses::TestStr2()> test_str2;
+    qi::rule<Iterator, GdbResponses::AddressInFunction> uninit;
+    qi::rule<Iterator, GdbResponseType()> start;
+};
+*/
+
 template <typename Iterator>
 struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
 {
     GdbResponseGrammar() : GdbResponseGrammar::base_type(start)
     {
-        raw_str = +qi::print;
         ident = +(qi::alpha | qi::char_('-'));
         file_name = +(qi::print -  qi::char_(':') - qi::char_(','));
         device_name = +(qi::print); // for tty
@@ -56,7 +77,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
         reading_libs = qi::lit("Reading symbols for shared libraries ") >> *(qi::char_('.') | qi::char_('+')) >> " done";
 
-        address = qi::string("0x") >> + qi::alnum;
+        address = qi::string("0x") >> +qi::alnum;
 
         breakpoint_set = qi::lit("Breakpoint ") >> qi::int_ >> " at " >> address >> ": file " >> file_name >> "," >> " line " >> qi::int_ >> ".";
 
@@ -72,7 +93,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         locals_info = no_locals;
 
         // 0x0000000100000e20 in start ()
-        address_in_function = address >> " in " >> function_args >> "(" >> function_args >> ")";
+        address_in_function = address >> " in " >> function_name >> " (" >> function_args >> ")";
 
         // #6  0xb7f42f47 in operator new () from /usr/lib/libstdc++.so.6
         // #7  0x0805bd20 in Image<Color>::fft (this=0xb467640) at ../image_processing/image.cpp:545
@@ -81,11 +102,15 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         // -(address in) (function|?? (args)) ((at file:line)(from module))
         backtrace_line = qi::lit("#") >> qi::int_ >> "  "
             >> -(address >> " in ")
-            >> function_name >> " (" >> function_args >> ") "
-            >> -("from " >> file_name)
-            >> -("at " >> file_name >> ":" >> qi::int_);
+            >> function_name >> " (" >> function_args >> ")"
+            >> -(" from " >> file_name)
+            >> -(" at " >> file_name)
+            >> -(":" >> qi::int_);
 
-        start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | backtrace_line | address_in_function;
+        raw_str = *qi::char_;
+        //test_str1 = qi::lit("#0  ") >> raw_str;
+
+        start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function | backtrace_line;
     }
 
     qi::rule<Iterator, std::string()> raw_str;
@@ -99,6 +124,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, std::string()> version_number;
     qi::rule<Iterator, std::string()> address;
     qi::rule<Iterator, std::string()> no_locals;
+    qi::rule<Iterator, GdbResponses::TestStr1()> test_str1;
     qi::rule<Iterator, GdbResponses::LocalsInfo()> locals_info;
     qi::rule<Iterator, GdbResponses::ReadingLibs()> reading_libs;
     qi::rule<Iterator, GdbResponses::BreakpointSet()> breakpoint_set;
@@ -108,8 +134,6 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, GdbResponses::CursorPos()> cursor_pos;
     qi::rule<Iterator, GdbResponseType()> start;
 };
-
-
 
 template <typename Iterator>
 struct GdbBannerGrammar : qi::grammar<Iterator, GdbResponses::Banner()>
@@ -171,6 +195,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                 GdbResponseGrammar<iterator_type> g; // Our grammar
                 iterator_type iter = line.begin();
                 iterator_type end = line.end();
+
                 GdbResponseType line_item;
                 bool success = parse(iter, end, g, line_item);
 
@@ -183,6 +208,13 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                 }
                 else if (iter != end)
                 {
+                    if (boost::get<GdbResponses::UninitializedVariant>(&line_item))
+                        cerr << "Uninitialized after parse, success was " << success << " line was " << line << endl;
+                    else if (auto* p = boost::get<GdbResponses::TestStr1>(&line_item))
+                    {
+                        cerr << "Got " << p->value << endl;
+                    }
+
                     stringstream ss;
                     ss << "Not all of the line was parsed: " << std::string(iter, end) << std::endl;
                     cerr << endl << ss.str() << endl;
@@ -190,6 +222,13 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                 }
                 else
                 {
+                    if (boost::get<GdbResponses::UninitializedVariant>(&line_item))
+                        cerr << "Uninitialized after parse, success was " << success << " line was " << line << endl;
+                    else if (auto* p = boost::get<GdbResponses::TestStr1>(&line_item))
+                    {
+                        cerr << "Got " << p->value << endl;
+                    }
+
                     result.push_back(line_item);
                 }
             }

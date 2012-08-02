@@ -101,11 +101,35 @@ struct AddressInFunction
     std::string args;
 };
 
+struct TestStr1
+{
+    std::string value;
+};
+
+struct TestStr2
+{
+    std::string value;
+};
+
+struct UninitializedVariant
+{
+    double dummy;
+};
+
 }
+
+/*
+typedef  boost::variant
+<
+    GdbResponses::UninitializedVariant,
+    GdbResponses::TestStr1,
+    GdbResponses::TestStr2
+> GdbResponseType;
+*/
 
 typedef  boost::variant
 <
-    GdbResponses::Banner,
+    GdbResponses::UninitializedVariant,
     GdbResponses::ReadingLibs,
     GdbResponses::BreakpointSet,
     GdbResponses::CursorPos,
@@ -113,8 +137,11 @@ typedef  boost::variant
     GdbResponses::LocalsInfo,
     GdbResponses::BacktraceLine,
     GdbResponses::AddressInFunction,
+    GdbResponses::TestStr1,
+    GdbResponses::Banner,
     GdbResponses::Empty
 > GdbResponseType;
+
 
 struct GdbResponse
 {

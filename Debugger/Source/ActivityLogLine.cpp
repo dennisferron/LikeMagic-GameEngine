@@ -55,7 +55,7 @@ struct ActivityLogParser : qi::grammar<Iterator, ActivityLogLine()>
 
         label %=  +qi::alnum;
         content %= unesc_str;
-        start %= label >> ": " >> content;
+        start %= label >> ":" >> (" " >> content | qi::eoi);
     }
 
     qi::rule<Iterator, std::string()> label;
@@ -81,7 +81,7 @@ void ActivityLogLine::Parse(std::string str)
     if (!success)
     {
         stringstream ss;
-        ss << "Failed to parse: " << str << std::endl;
+        ss << "Failed to parse activity log line:  ->" << str << "<-" << std::endl;
         throw boost::enable_current_exception(ParseException(ss.str()));
     }
     else

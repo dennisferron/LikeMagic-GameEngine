@@ -40,17 +40,27 @@ struct GdbResponseWriteGrammar
         // Breakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
         breakpoint_hit = karma::lit("Breakpoint ") << karma::int_ << ", " << karma::string << " (" << karma::string << ") at " << karma::string << ":" << karma::int_;
 
+        // #0  0x0000000100000e20 in start ()
         // #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
-        //backtrace_line = karma::lit("#") << karma::int_ << "  " << karma::string << " (" << karma::string << ") at " << karma::string << ":" << karma::int_;
+        //backtrace_line = karma::int_ << -karma::string << karma::string << karma::string << -karma::string << -karma::string << -karma::int_;
+        backtrace_line = karma::lit("#") << karma::int_ << karma::lit("  ")
+            << -(karma::string << karma::lit(" in "))
+            << karma::string << karma::lit(" (") << karma::string << karma::lit(")")
+            << -(karma::lit(" from") << karma::string)
+            << -(karma::lit(" at ") << karma::string)
+            << -(karma::lit(":") << karma::int_);
 
         // No locals.
         // No symbol table info available.
         locals_info = karma::string;
 
         // 0x0000000100000e20 in start ()
-        //address_in_function = karma::lit("0x") << karma::string << " in " << karma::string << " (" << karma::string << ")";
+        address_in_function = karma::string << " in " << karma::string << " (" << karma::string << ")";
 
-        response_item = (banner | reading_libs | breakpoint_set | breakpoint_hit | backtrace_line | cursor_pos | locals_info | address_in_function | empty) << "\n";
+        test_str1 = karma::string;
+        test_str2 = karma::string;
+
+        response_item = (test_str1 | backtrace_line | banner | reading_libs | breakpoint_set | breakpoint_hit | cursor_pos | locals_info | address_in_function | empty) << "\n";
         start = *response_item;
     }
 
@@ -64,6 +74,8 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, GdbResponses::BacktraceLine()> backtrace_line;
     karma::rule<OutputIterator, GdbResponses::AddressInFunction()> address_in_function;
     karma::rule<OutputIterator, GdbResponses::Empty()> empty;
+    karma::rule<OutputIterator, GdbResponses::TestStr1()> test_str1;
+    karma::rule<OutputIterator, GdbResponses::TestStr2()> test_str2;
     karma::rule<OutputIterator, GdbResponseType()> response_item;
     karma::rule<OutputIterator, vector<GdbResponseType>()> start;
 };
@@ -74,6 +86,22 @@ struct GdbResponsePrinter : boost::static_visitor<>
     void operator()(const T& t) const
     {
         static_assert(sizeof(T) && false, "No debug printer defined for type T");
+    }
+
+    void operator()(const UninitializedVariant& t) const
+    {
+        cerr << "got uninitialized variant" << endl;
+        //throw boost::enable_current_exception(GeneratorException("Generator was passed uninitialized variant in GdbResponse object."));
+    }
+
+    void operator()(const TestStr1& t) const
+    {
+        cerr << "got test string1 ->" << t.value << "<-" << endl;
+    }
+
+    void operator()(const TestStr2& t) const
+    {
+        cerr << "got test string2 ->" << t.value << "<-" << endl;
     }
 
     void operator()(const Banner& t) const
@@ -122,11 +150,13 @@ struct GdbResponsePrinter : boost::static_visitor<>
     void operator()(const BacktraceLine& t) const
     {
         cerr << "backtrace line is"
-        << " " << t.backtrace_number
-        << " " << t.function
-        << " " << t.args
-        << " " << t.file_name
-        << " " << t.line_number
+        << " #" << t.backtrace_number
+        << " at addr:" << t.address
+        << " in func:" << t.function
+        << " with args:" << t.args
+        << " from module:" << t.module
+        << " in file:" << t.file_name
+        << " at line:" << t.line_number
         << endl;
     }
 

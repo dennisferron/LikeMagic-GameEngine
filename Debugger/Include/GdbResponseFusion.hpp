@@ -16,6 +16,21 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::TestStr1,
+    (std::string, value)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::TestStr2,
+    (std::string, value)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::UninitializedVariant,
+    (double, dummy)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::Empty,
     (boost::optional<std::string>, dummy)
 )
