@@ -66,16 +66,85 @@ void checkErrors(MainChannels channels)
     }
 }
 
+
+/*
+
+Execution diagram
+
+    main loop           user cmd handler
+
+    +---+          +-------+              +-------+
+    |   |          |       v              |       |
+    |   |          |  GDB will handle?    |       v
+    |   v          |  Yes  No------->handle   write GDB
+    |   user cmd?  |   v             cmd  ^     read GDB
+    |   No Yes->read   write         |    +-------+
+    |   |       user   GDB           v
+    |   v              v         fake response
+    |   gdb resp?<-----+<--------write to user
+    +-<--No  Yes
+    ^         |
+    |         v
+    |     gdb response
+    |     write to user
+    |         |
+    +<--------+
+
+It is not as crazy as it looks.
+
+There are just a few basic ideas at work in the diagram:
+
+UserCmd handler
+
+    Whenever a UserCmd is received, the user command handler
+    either writes it to gdb or handles it internally.
+
+    In the process of handling a command itself, the handler may write
+    other commands to gdb and read those responses.
+
+    After handling a command internally, the command
+    handler always writes some (faked) response.
+
+Main Loop
+
+    The main loop is agnostic as to whether the next
+    input should be from the user first or gdb first.
+
+        This prevents the debugger from becoming unresponsive
+        while waiting on the wrong input source.
+
+    There is an asymmetry between the handling of user cmds
+    versus gdb responses.  A user command always goes
+    to the separate handler, but a gdb response gets forwarded
+    directly to the user.
+
+        There is no concern for gdb responses from the
+        user cmd handler reaching to the main loop because
+        the user cmd handler should have eaten those itself.
+
+        HOWEVER, we will need a "gdb response handler"
+        in the future to munge the breakpoint numbering
+        when the user gets breakpoint information, because
+        the actual number of gdb breakpoints is less
+        by the amount of "virtual" Io breakpoints.
+*/
+
+
 class UserCmdHandler : public boost::static_visitor<>
 {
 private:
     MainChannels channels;
 
-    template <typename T>
-    void toGdb(const T& cmd) const
+    void toGdb(UserCmd const& cmd) const
     {
         channels.toGdb.WriteData(cmd);
     }
+
+    void toUser(GdbResponse const& response)
+    {
+
+    }
+
 
 public:
 
@@ -99,10 +168,7 @@ public:
     void operator()(const UserCmds::SetBreakpoint& t) const
     {
         if (boost::algorithm::ends_with(t.file_name, ".io"))
-        {
-            //auto response = setIoBreakpoint(t);
-            //fakeResponse(response);
-        }
+            toUser(setIoBreakpoint(t));
         else
             toGdb(t);
     }
