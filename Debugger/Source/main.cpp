@@ -129,11 +129,59 @@ Main Loop
         by the amount of "virtual" Io breakpoints.
 */
 
+struct GdbBreakpoint
+{
+    int number;
+};
+
+struct IoBreakpoint
+{
+    int number;
+};
+
+struct UserBreakpoint
+{
+    int number;
+};
+
+class BreakpointMap
+{
+private:
+    typedef boost::variant<GdbBreakpoint, IoBreakpoint> record_t;
+    std::vector<record_t> tbl;
+
+    template <typename T>
+    int indexOf(T const& t) const
+    {
+        for (int i=0; i < (int)tbl.size(); ++i)
+            if (T* m = boost::get<T*>(tbl[i]))
+                if (m->number == t.number)
+                    return i;
+
+        tbl.push_back(t);
+        return tbl.size()-1;
+    }
+
+public:
+
+    UserBreakpoint add(GdbBreakpoint gbp) const { return { indexOf(gbp) }; }
+    UserBreakpoint add(IoBreakpoint  ibp) const { return { indexOf(ibp) }; }
+
+    template <typename T>
+    T const& get(UserBreakpoint ub) const
+    {
+        if (T* m = boost::get<T*>(tbl.at(ub.number)))
+            return *m;
+        else
+            throw std::logic_error("asdf");
+    }
+};
 
 class UserCmdHandler : public boost::static_visitor<>
 {
 private:
     MainChannels channels;
+    BreakpointMap& brkpts;
 
     void toGdb(UserCmd const& cmd) const
     {
@@ -142,13 +190,33 @@ private:
 
     void toUser(GdbResponse const& response)
     {
-
+        channels.toUser.WriteData(response);
     }
 
+    IoBreakpoint setIoBreakpoint(UserCmds::SetBreakpoint const& stbk) const
+    {
+        // todo: implement real Io breakpoints
+        static int counter=0;
+        return { counter++ };
+    }
+
+    void handleIoBreakpoint(UserCmds::SetBreakpoint const& stbk) const
+    {
+        fakeBreakpointResponse(
+            setIoBreakpoint(stbk)
+        );
+    }
+
+    void fakeBreakpointResponse(IoBreakpoint ib)
+    {
+        UserBreakpoint ub = brkpts.add(ib);
+        // TODO:  Write faked gdb response to user with ub
+    }
 
 public:
 
-    UserCmdHandler(MainChannels& channels_) : channels(channels_) {}
+    UserCmdHandler(MainChannels const& channels_, BreakpointMap& brkpts_)
+        : channels(channels_), brkpts(brkpts_) {}
 
     template <typename T>
     void operator()(const T& t) const
@@ -168,11 +236,76 @@ public:
     void operator()(const UserCmds::SetBreakpoint& t) const
     {
         if (boost::algorithm::ends_with(t.file_name, ".io"))
-            toUser(setIoBreakpoint(t));
+            handleIoBreakpoint(t);
         else
             toGdb(t);
     }
 };
+
+// TODO:  Need to handle disparity between GdbResponse with vector<GdbResponseType>,
+// the fact that this handler is for line items, and the GdbResponse is
+// what is actually needed for returning to the user.
+class GdbResponseHandler : public boost::static_visitor<>
+{
+private:
+    MainChannels channels;
+
+    int mapBreakpoint(int gdbNumber) const
+    {
+        // TODO: map gdb number out of list of gdb + Io breakpoints
+        return 99;
+    }
+
+    void toUser(GdbResponse const& response)
+    {
+        channels.toUser.WriteData(response);
+    }
+
+public:
+
+    template <typename T>
+    void operator()(const T& t) const
+    {
+        toUser(t);
+    }
+
+    void operator()(const GdbResponses::UninitializedVariant& t) const
+    {
+        cerr << "got uninitialized variant" << endl;
+        throw boost::enable_current_exception(ParseException("GdbResponseHandler was passed uninitialized variant in GdbResponse object."));
+    }
+
+    void operator()(const GdbResponses::BreakpointSet& t) const
+    {
+        cerr << "breakpoint set is " << t.breakpoint_number << " " << t.address << " "
+        << t.file_name << " " << t.line_number << endl;
+
+        GdbResponses::BreakpointSet munged = t;
+        munged.breakpoint_number = mapBreakpoint(t.breakpoint_number);
+        //toUser(munged);
+    }
+
+/*
+    Power goal - mix Io stack frames and C++ stack frames in backtrace lines.
+    This will require detecting backtraces at the GdbResponse level rather
+    than at the GdbResponseType item level.
+    void operator()(const BacktraceLine& t) const
+    {
+        cerr << "backtrace line is"
+        << " #" << t.backtrace_number
+        << " at addr:" << t.address
+        << " in func:" << t.function
+        << " with args:" << t.args
+        << " from module:" << t.module
+        << " in file:" << t.file_name
+        << " at line:" << t.line_number
+        << endl;
+    }
+*/
+
+};
+
+
 
 void mainLoop(MainChannels channels)
 {
