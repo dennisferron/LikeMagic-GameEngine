@@ -1,5 +1,5 @@
 #include "LookForPrompt.hpp"
-#include <boost/algorithm/string/predicate.hpp>
+#include "boost/algorithm/string/predicate.hpp"
 
 using namespace std;
 using namespace Iocaste::Debugger;

@@ -8,6 +8,7 @@ namespace bp = ::boost::process;
 #endif
 
 #include "boost/assert.hpp"
+#include "boost/algorithm/string/predicate.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -65,16 +66,25 @@ void checkErrors(MainChannels channels)
     }
 }
 
-struct UserCmdHandler : boost::static_visitor<>
+class UserCmdHandler : public boost::static_visitor<>
 {
+private:
     MainChannels channels;
+
+    template <typename T>
+    void toGdb(const T& cmd) const
+    {
+        channels.toGdb.WriteData(cmd);
+    }
+
+public:
 
     UserCmdHandler(MainChannels& channels_) : channels(channels_) {}
 
     template <typename T>
     void operator()(const T& t) const
     {
-        // do nothing
+        toGdb(t);
     }
 
     void operator()(const UserCmds::SetOption& t) const
@@ -83,6 +93,18 @@ struct UserCmdHandler : boost::static_visitor<>
         {
             channels.end_markers.WriteData(t.value);
         }
+        toGdb(t);
+    }
+
+    void operator()(const UserCmds::SetBreakpoint& t) const
+    {
+        if (boost::algorithm::ends_with(t.file_name, ".io"))
+        {
+            //auto response = setIoBreakpoint(t);
+            //fakeResponse(response);
+        }
+        else
+            toGdb(t);
     }
 };
 
@@ -103,8 +125,6 @@ void mainLoop(MainChannels channels)
 
             UserCmdHandler cmd_handler(channels);
             boost::apply_visitor(cmd_handler, cmd);
-
-            channels.toGdb.WriteData(cmd);
 
             /*
             if (cmd.raw_string && *(cmd.raw_string) == "quit")
