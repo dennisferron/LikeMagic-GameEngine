@@ -112,21 +112,6 @@ Main Loop
 
         This prevents the debugger from becoming unresponsive
         while waiting on the wrong input source.
-
-    There is an asymmetry between the handling of user cmds
-    versus gdb responses.  A user command always goes
-    to the separate handler, but a gdb response gets forwarded
-    directly to the user.
-
-        There is no concern for gdb responses from the
-        user cmd handler reaching to the main loop because
-        the user cmd handler should have eaten those itself.
-
-        HOWEVER, we will need a "gdb response handler"
-        in the future to munge the breakpoint numbering
-        when the user gets breakpoint information, because
-        the actual number of gdb breakpoints is less
-        by the amount of "virtual" Io breakpoints.
 */
 
 struct GdbBreakpoint
@@ -151,7 +136,7 @@ private:
     std::vector<record_t> tbl;
 
     template <typename T>
-    int indexOf(T const& t) const
+    int indexOf(T const& t)
     {
         for (int i=0; i < (int)tbl.size(); ++i)
             if (T* m = boost::get<T*>(tbl[i]))
@@ -164,8 +149,8 @@ private:
 
 public:
 
-    UserBreakpoint add(GdbBreakpoint gbp) const { return { indexOf(gbp) }; }
-    UserBreakpoint add(IoBreakpoint  ibp) const { return { indexOf(ibp) }; }
+    UserBreakpoint add(GdbBreakpoint gbp) { return { indexOf(gbp) }; }
+    UserBreakpoint add(IoBreakpoint  ibp) { return { indexOf(ibp) }; }
 
     template <typename T>
     T const& get(UserBreakpoint ub) const
@@ -207,7 +192,7 @@ private:
         );
     }
 
-    void fakeBreakpointResponse(IoBreakpoint ib)
+    void fakeBreakpointResponse(IoBreakpoint ib) const
     {
         UserBreakpoint ub = brkpts.add(ib);
         // TODO:  Write faked gdb response to user with ub
@@ -217,6 +202,11 @@ public:
 
     UserCmdHandler(MainChannels const& channels_, BreakpointMap& brkpts_)
         : channels(channels_), brkpts(brkpts_) {}
+
+    void handle(UserCmd const& cmd)
+    {
+        boost::apply_visitor(*this, cmd);
+    }
 
     template <typename T>
     void operator()(const T& t) const
@@ -249,6 +239,7 @@ class GdbResponseHandler : public boost::static_visitor<>
 {
 private:
     MainChannels channels;
+    BreakpointMap& brkpts;
 
     int mapBreakpoint(int gdbNumber) const
     {
@@ -262,6 +253,18 @@ private:
     }
 
 public:
+
+    GdbResponseHandler(MainChannels const& channels_, BreakpointMap& brkpts_)
+        : channels(channels_), brkpts(brkpts_) {}
+
+
+    void handle(GdbResponse const& response)
+    {
+        // TODO:  Create a new response object,
+        // iterate through the passed responses
+        // and visit each, then pass the munged response.
+        channels.toUser.WriteData(response);
+    }
 
     template <typename T>
     void operator()(const T& t) const
@@ -309,8 +312,9 @@ public:
 
 void mainLoop(MainChannels channels)
 {
-    UserCmd cmd;
-    GdbResponse response;
+    BreakpointMap brkpts;
+    UserCmdHandler cmd_handler(channels, brkpts);
+    GdbResponseHandler resp_handler(channels, brkpts);
 
     while (true)
     {
@@ -319,23 +323,8 @@ void mainLoop(MainChannels channels)
         if (channels.fromUser.HasData())
         {
             channels.info.WriteData("MainLoopState::ReadUser");
-
-            cmd = channels.fromUser.ReadData();
-
-            UserCmdHandler cmd_handler(channels);
-            boost::apply_visitor(cmd_handler, cmd);
-
-            /*
-            if (cmd.raw_string && *(cmd.raw_string) == "quit")
-            {
-                cerr << "Received quit command" << endl;
-                return;
-            }
-            if (cmd.set_option && cmd.set_option->name == "prompt")
-            {
-                channels.end_markers.WriteData(cmd.set_option->value);
-            }
-            */
+            UserCmd cmd = channels.fromUser.ReadData();
+            cmd_handler.handle(cmd);
         }
 
         checkErrors(channels);
@@ -343,8 +332,7 @@ void mainLoop(MainChannels channels)
         if (channels.fromGdb.HasData())
         {
             channels.info.WriteData("MainLoopState::ReadGdb");
-            response = channels.fromGdb.ReadData();
-            channels.toUser.WriteData(response);
+            GdbResponse response = channels.fromGdb.ReadData();
         }
     }
 }

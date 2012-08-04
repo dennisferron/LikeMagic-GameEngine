@@ -7,7 +7,6 @@
 #include "StreamOutput.hpp"
 #include "Queue.hpp"
 #include "LookForPrompt.hpp"
-#include "Parser.hpp"
 #include "ActivityLog.hpp"
 #include "UserCmdParser.hpp"
 #include "UserCmdWriter.hpp"
