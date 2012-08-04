@@ -149,8 +149,8 @@ private:
 
 public:
 
-    UserBreakpoint add(GdbBreakpoint gbp) { return { indexOf(gbp) }; }
-    UserBreakpoint add(IoBreakpoint  ibp) { return { indexOf(ibp) }; }
+    UserBreakpoint map(GdbBreakpoint gbp) { return { indexOf(gbp) }; }
+    UserBreakpoint map(IoBreakpoint  ibp) { return { indexOf(ibp) }; }
 
     template <typename T>
     T const& get(UserBreakpoint ub) const
@@ -194,7 +194,7 @@ private:
 
     void fakeBreakpointResponse(IoBreakpoint ib) const
     {
-        UserBreakpoint ub = brkpts.add(ib);
+        UserBreakpoint ub = brkpts.map(ib);
         // TODO:  Write faked gdb response to user with ub
     }
 
@@ -241,12 +241,6 @@ private:
     MainChannels channels;
     BreakpointMap& brkpts;
 
-    int mapBreakpoint(int gdbNumber) const
-    {
-        // TODO: map gdb number out of list of gdb + Io breakpoints
-        return 99;
-    }
-
     void toUser(GdbResponse const& response)
     {
         channels.toUser.WriteData(response);
@@ -260,39 +254,45 @@ public:
 
     void handle(GdbResponse const& response)
     {
-        // TODO:  Create a new response object,
-        // iterate through the passed responses
-        // and visit each, then pass the munged response.
-        channels.toUser.WriteData(response);
+        GdbResponse munged;
+
+        munged.prompt = response.prompt;
+
+        // TODO: Figure out a different way to pass munged.values reference.
+        //for (auto line_item : response.values)
+        //    boost::apply_visitor(*this, munged.values, line_item);
+
+        channels.toUser.WriteData(munged);
     }
 
     template <typename T>
-    void operator()(const T& t) const
+    void operator()(std::vector<GdbResponseType>& output, const T& t) const
     {
-        toUser(t);
+        output.push_back(t);
     }
 
-    void operator()(const GdbResponses::UninitializedVariant& t) const
+    void operator()(std::vector<GdbResponseType>& output, const GdbResponses::UninitializedVariant& t) const
     {
         cerr << "got uninitialized variant" << endl;
         throw boost::enable_current_exception(ParseException("GdbResponseHandler was passed uninitialized variant in GdbResponse object."));
     }
 
-    void operator()(const GdbResponses::BreakpointSet& t) const
+    void operator()(std::vector<GdbResponseType>& output, const GdbResponses::BreakpointSet& t) const
     {
-        cerr << "breakpoint set is " << t.breakpoint_number << " " << t.address << " "
-        << t.file_name << " " << t.line_number << endl;
+        cerr << "breakpoint set is " << t.breakpoint_number << " " << t.address << " " << t.file_name << " " << t.line_number << endl;
 
-        GdbResponses::BreakpointSet munged = t;
-        munged.breakpoint_number = mapBreakpoint(t.breakpoint_number);
-        //toUser(munged);
+        GdbResponses::BreakpointSet bs(t);
+        GdbBreakpoint gb = {t.breakpoint_number};
+        bs.breakpoint_number = brkpts.map(gb).number;
+        output.push_back(bs);
     }
+
 
 /*
     Power goal - mix Io stack frames and C++ stack frames in backtrace lines.
     This will require detecting backtraces at the GdbResponse level rather
     than at the GdbResponseType item level.
-    void operator()(const BacktraceLine& t) const
+    void operator()(std::vector<GdbResponseType>& output, const BacktraceLine& t) const
     {
         cerr << "backtrace line is"
         << " #" << t.backtrace_number
@@ -333,6 +333,7 @@ void mainLoop(MainChannels channels)
         {
             channels.info.WriteData("MainLoopState::ReadGdb");
             GdbResponse response = channels.fromGdb.ReadData();
+            resp_handler.handle(response);
         }
     }
 }

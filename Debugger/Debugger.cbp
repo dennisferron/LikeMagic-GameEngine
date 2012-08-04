@@ -7,8 +7,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin\Debug\Debugger" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Debug\" />
+				<Option platforms="Windows;Mac;" />
+				<Option output="bin/Debug/Debugger" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -16,8 +17,9 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin\Release\Debugger" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Release\" />
+				<Option platforms="Windows;Mac;" />
+				<Option output="bin/Release/Debugger" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -25,6 +27,19 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="Debug Linux">
+				<Option platforms="Unix;" />
+				<Option output="bin/Debug/Debugger" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-pthread" />
 				</Linker>
 			</Target>
 		</Build>
@@ -35,75 +50,75 @@
 			<Add option="-DNO_LOAD_GDB" />
 			<Add option="-DBOOST_THREAD_USE_LIB" />
 			<Add directory="Include" />
-			<Add directory="..\..\LikeMagic\Include" />
-			<Add directory="..\..\Common\process" />
-			<Add directory="..\..\Common\boost_1_49_0" />
+			<Add directory="../../LikeMagic/Include" />
+			<Add directory="../../Common/process" />
+			<Add directory="../../Common/boost_1_49_0" />
 		</Compiler>
 		<Linker>
-			<Add library="..\..\Common\boost_1_49_0\build-gcc\libboost_thread.a" />
-			<Add library="..\..\Common\boost_1_49_0\build-gcc\libboost_filesystem.a" />
-			<Add library="..\..\Common\boost_1_49_0\build-gcc\libboost_system.a" />
-			<Add library="..\..\Common\boost_1_49_0\build-gcc\libboost_exception.a" />
+			<Add library="../../Common/boost_1_49_0/build-gcc/libboost_thread.a" />
+			<Add library="../../Common/boost_1_49_0/build-gcc/libboost_filesystem.a" />
+			<Add library="../../Common/boost_1_49_0/build-gcc/libboost_system.a" />
+			<Add library="../../Common/boost_1_49_0/build-gcc/libboost_exception.a" />
 		</Linker>
-		<Unit filename="Include\AbstractAdapter.hpp" />
-		<Unit filename="Include\AbstractInput.hpp" />
-		<Unit filename="Include\AbstractOutput.hpp" />
-		<Unit filename="Include\ActivityLog.hpp" />
-		<Unit filename="Include\ActivityLogLine.hpp" />
-		<Unit filename="Include\ChainBuilder.hpp" />
-		<Unit filename="Include\ChainPolicy.hpp" />
-		<Unit filename="Include\CharInput.hpp" />
-		<Unit filename="Include\Exception.hpp" />
-		<Unit filename="Include\GdbResponse.hpp" />
-		<Unit filename="Include\GdbResponseFusion.hpp" />
-		<Unit filename="Include\GdbResponseParser.hpp" />
-		<Unit filename="Include\GdbResponseWriter.hpp" />
-		<Unit filename="Include\InputChain.hpp" />
-		<Unit filename="Include\InputChainComponents.hpp" />
-		<Unit filename="Include\LineInput.hpp" />
-		<Unit filename="Include\LogChannel.hpp" />
-		<Unit filename="Include\LogChannelWithPrompt.hpp" />
-		<Unit filename="Include\LookForPrompt.hpp" />
-		<Unit filename="Include\Queue.hpp" />
-		<Unit filename="Include\RecombinePrompt.hpp" />
-		<Unit filename="Include\StaticFuture.hpp" />
-		<Unit filename="Include\StreamOutput.hpp" />
-		<Unit filename="Include\StringEscaper.hpp" />
-		<Unit filename="Include\StringWithPrompt.hpp" />
-		<Unit filename="Include\TestPlan.hpp" />
-		<Unit filename="Include\TypePolicy.hpp" />
-		<Unit filename="Include\UserCmd.hpp" />
-		<Unit filename="Include\UserCmdFusion.hpp" />
-		<Unit filename="Include\UserCmdParser.hpp" />
-		<Unit filename="Include\UserCmdWriter.hpp" />
-		<Unit filename="Include\Worker.hpp" />
-		<Unit filename="Source\ActivityLog.cpp" />
-		<Unit filename="Source\ActivityLogLine.cpp">
+		<Unit filename="Include/AbstractAdapter.hpp" />
+		<Unit filename="Include/AbstractInput.hpp" />
+		<Unit filename="Include/AbstractOutput.hpp" />
+		<Unit filename="Include/ActivityLog.hpp" />
+		<Unit filename="Include/ActivityLogLine.hpp" />
+		<Unit filename="Include/ChainBuilder.hpp" />
+		<Unit filename="Include/ChainPolicy.hpp" />
+		<Unit filename="Include/CharInput.hpp" />
+		<Unit filename="Include/Exception.hpp" />
+		<Unit filename="Include/GdbResponse.hpp" />
+		<Unit filename="Include/GdbResponseFusion.hpp" />
+		<Unit filename="Include/GdbResponseParser.hpp" />
+		<Unit filename="Include/GdbResponseWriter.hpp" />
+		<Unit filename="Include/InputChain.hpp" />
+		<Unit filename="Include/InputChainComponents.hpp" />
+		<Unit filename="Include/LineInput.hpp" />
+		<Unit filename="Include/LogChannel.hpp" />
+		<Unit filename="Include/LogChannelWithPrompt.hpp" />
+		<Unit filename="Include/LookForPrompt.hpp" />
+		<Unit filename="Include/Queue.hpp" />
+		<Unit filename="Include/RecombinePrompt.hpp" />
+		<Unit filename="Include/StaticFuture.hpp" />
+		<Unit filename="Include/StreamOutput.hpp" />
+		<Unit filename="Include/StringEscaper.hpp" />
+		<Unit filename="Include/StringWithPrompt.hpp" />
+		<Unit filename="Include/TestPlan.hpp" />
+		<Unit filename="Include/TypePolicy.hpp" />
+		<Unit filename="Include/UserCmd.hpp" />
+		<Unit filename="Include/UserCmdFusion.hpp" />
+		<Unit filename="Include/UserCmdParser.hpp" />
+		<Unit filename="Include/UserCmdWriter.hpp" />
+		<Unit filename="Include/Worker.hpp" />
+		<Unit filename="Source/ActivityLog.cpp" />
+		<Unit filename="Source/ActivityLogLine.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>
-		<Unit filename="Source\CharInput.cpp" />
-		<Unit filename="Source\Exception.cpp" />
-		<Unit filename="Source\GdbResponseParser.cpp">
+		<Unit filename="Source/CharInput.cpp" />
+		<Unit filename="Source/Exception.cpp" />
+		<Unit filename="Source/GdbResponseParser.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -s -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>
-		<Unit filename="Source\GdbResponseWriter.cpp">
+		<Unit filename="Source/GdbResponseWriter.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>
-		<Unit filename="Source\LineInput.cpp" />
-		<Unit filename="Source\LogChannel.cpp" />
-		<Unit filename="Source\LogChannelWithPrompt.cpp" />
-		<Unit filename="Source\LookForPrompt.cpp" />
-		<Unit filename="Source\RecombinePrompt.cpp" />
-		<Unit filename="Source\StreamOutput.cpp" />
-		<Unit filename="Source\TestPlan.cpp" />
-		<Unit filename="Source\UserCmdParser.cpp">
+		<Unit filename="Source/LineInput.cpp" />
+		<Unit filename="Source/LogChannel.cpp" />
+		<Unit filename="Source/LogChannelWithPrompt.cpp" />
+		<Unit filename="Source/LookForPrompt.cpp" />
+		<Unit filename="Source/RecombinePrompt.cpp" />
+		<Unit filename="Source/StreamOutput.cpp" />
+		<Unit filename="Source/TestPlan.cpp" />
+		<Unit filename="Source/UserCmdParser.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>
-		<Unit filename="Source\UserCmdWriter.cpp">
+		<Unit filename="Source/UserCmdWriter.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>
-		<Unit filename="Source\Worker.cpp" />
-		<Unit filename="Source\main.cpp" />
+		<Unit filename="Source/Worker.cpp" />
+		<Unit filename="Source/main.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
