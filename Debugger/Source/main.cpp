@@ -138,10 +138,18 @@ private:
     template <typename T>
     int indexOf(T const& t)
     {
-        for (int i=0; i < (int)tbl.size(); ++i)
-            if (T* m = boost::get<T*>(tbl[i]))
-                if (m->number == t.number)
-                    return i;
+        try
+        {
+            for (int i=0; i < (int)tbl.size(); ++i)
+                if (T* m = boost::get<T>(&tbl[i]))
+                    if (m->number == t.number)
+                        return i;
+        }
+        catch (exception const& e)
+        {
+            cerr << "Error getting indexOf breakpoint " << t.number << " exception was " << e.what() << endl;
+            throw;
+        }
 
         tbl.push_back(t);
         return tbl.size()-1;
@@ -155,11 +163,25 @@ public:
     template <typename T>
     T const& get(UserBreakpoint ub) const
     {
-        if (T* m = boost::get<T*>(tbl.at(ub.number-1)))
+        if (ub.number-1 >= tbl.size())
+            throw boost::enable_current_exception(LogicError("Index out of range in breakpoint map."));
+
+        T* m = NULL;
+
+        try
+        {
+            m = boost::get<T>(&tbl.at(ub.number-1));
+        }
+        catch (...)
+        {
+            throw boost::enable_current_exception(LogicError("Error getting breakpoint from breakpoint map."));
+        }
+
+        if (m)
             return *m;
         else
-            throw std::logic_error("asdf");
-    }
+            throw boost::enable_current_exception(LogicError("Tried to get wrong breakpoint type for this index from breakpoint map."));
+   }
 };
 
 class UserCmdHandler

@@ -32,11 +32,21 @@ TestException::TestException(std::string msg_, std::string expected, std::string
     msg = msg_ + " Expected: " + expected + " Actual: " + actual;
 }
 
-TestException::~TestException() throw()
+TestException::~TestException() throw() {}
+
+char const* TestException::what() const throw()
+{
+    return msg.c_str();
+}
+
+LogicError::LogicError(std::string msg_)
+    : msg(msg_)
 {
 }
 
-char const* TestException::what() const throw()
+LogicError::~LogicError() throw() {}
+
+char const* LogicError::what() const throw()
 {
     return msg.c_str();
 }

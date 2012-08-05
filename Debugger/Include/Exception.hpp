@@ -48,5 +48,16 @@ namespace Iocaste {
         virtual char const* what() const throw();
     };
 
+    class LogicError : public Exception
+    {
+    private:
+        std::string msg;
+
+    public:
+        LogicError(std::string msg_);
+        ~LogicError() throw();
+        virtual char const* what() const throw();
+    };
+
     }
 }

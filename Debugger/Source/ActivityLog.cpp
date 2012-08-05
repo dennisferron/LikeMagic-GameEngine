@@ -116,10 +116,10 @@ void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
             boost::this_thread::sleep(boost::posix_time::milliseconds(5));
             if (++counter > 100)
             {
-                string msg = "Timed out waiting on next test result.";
-                string log_line = test_log_entry.label + ": " + expected;
-                cerr << msg << " expected " << log_line << endl;
-                throw boost::enable_current_exception(TestException(msg, log_line, ""));
+                //string msg = "Timed out waiting on next test result.";
+                //string log_line = test_log_entry.label + ": " + expected;
+                //cerr << msg << " expected " << log_line << endl;
+                //throw boost::enable_current_exception(TestException(msg, log_line, ""));
             }
         }
         test_result = test_results.ReadData();
@@ -127,7 +127,10 @@ void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
     while   (test_plan.actionType(test_result) == TestActionType::ignore);
 
     if (test_result.label != test_log_entry.label)
+    {
+        cerr << "Did not get expected label, expected " << test_log_entry.label << " got " << test_result.label << endl;
         throw boost::enable_current_exception(TestException("Did not get expected label", test_log_entry.label, test_result.label));
+    }
     else if (exact_match && test_result.content != test_log_entry.content)
     {
         string actual = test_result.content;
