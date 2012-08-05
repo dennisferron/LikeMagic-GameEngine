@@ -5,6 +5,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <typeinfo>
 
 namespace Iocaste {
     namespace Debugger {
@@ -58,6 +59,17 @@ namespace Iocaste {
         ~LogicError() throw();
         virtual char const* what() const throw();
     };
+
+    template <typename T> class AbstractOutput;
+    void setExceptionLog(AbstractOutput<std::string>* log_output_);
+    void logException(std::type_info const& exception_type, std::string msg);
+
+    template <typename T>
+    void raiseError(T const& e)
+    {
+        logException(typeid(T), e.what());
+        throw boost::enable_current_exception(e);
+    }
 
     }
 }

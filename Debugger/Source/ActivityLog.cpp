@@ -37,25 +37,28 @@ void ActivityLog::WriteData(ActivityLogLine const& entry)
 // Write log file line back onto outputs.
 void ActivityLog::WriteData(std::string const& data)
 {
-    ActivityLogLine entry;
-    entry.Parse(data);
-
-    switch (test_plan.actionType(entry))
+    if (!data.empty())
     {
-        case TestActionType::ignore:
-            break;
-        case TestActionType::write:
-            if (channels.find(entry.label) != channels.end())
-                channels[entry.label]->WriteData(entry);
-            else
-                pending[entry.label].WriteData(entry);
-            break;
-        case TestActionType::expectAny:
-            expect(entry, false);
-            break;
-        case TestActionType::expectExact:
-            expect(entry, true);
-            break;
+        ActivityLogLine entry;
+        entry.Parse(data);
+
+        switch (test_plan.actionType(entry))
+        {
+            case TestActionType::ignore:
+                break;
+            case TestActionType::write:
+                if (channels.find(entry.label) != channels.end())
+                    channels[entry.label]->WriteData(entry);
+                else
+                    pending[entry.label].WriteData(entry);
+                break;
+            case TestActionType::expectAny:
+                expect(entry, false);
+                break;
+            case TestActionType::expectExact:
+                expect(entry, true);
+                break;
+        }
     }
 }
 
@@ -129,7 +132,7 @@ void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
     if (test_result.label != test_log_entry.label)
     {
         cerr << "Did not get expected label, expected " << test_log_entry.label << " got " << test_result.label << endl;
-        throw boost::enable_current_exception(TestException("Did not get expected label", test_log_entry.label, test_result.label));
+        raiseError(TestException("Did not get expected label", test_log_entry.label, test_result.label));
     }
     else if (exact_match && test_result.content != test_log_entry.content)
     {
@@ -137,7 +140,7 @@ void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
 
         print_error(expected, actual);
 
-        throw boost::enable_current_exception(TestException("Did not get expected content", expected, actual));
+        raiseError(TestException("Did not get expected content", expected, actual));
     }
 }
 

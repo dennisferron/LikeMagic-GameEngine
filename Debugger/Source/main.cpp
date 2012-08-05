@@ -164,7 +164,7 @@ public:
     T const& get(UserBreakpoint ub) const
     {
         if (ub.number-1 >= tbl.size())
-            throw boost::enable_current_exception(LogicError("Index out of range in breakpoint map."));
+            raiseError(LogicError("Index out of range in breakpoint map."));
 
         T* m = NULL;
 
@@ -174,13 +174,13 @@ public:
         }
         catch (...)
         {
-            throw boost::enable_current_exception(LogicError("Error getting breakpoint from breakpoint map."));
+            raiseError(LogicError("Error getting breakpoint from breakpoint map."));
         }
 
         if (m)
             return *m;
         else
-            throw boost::enable_current_exception(LogicError("Tried to get wrong breakpoint type for this index from breakpoint map."));
+            raiseError(LogicError("Tried to get wrong breakpoint type for this index from breakpoint map."));
    }
 };
 
@@ -299,7 +299,7 @@ private:
         void operator()(const GdbResponses::UninitializedVariant& t)
         {
             cerr << "got uninitialized variant" << endl;
-            throw boost::enable_current_exception(ParseException("GdbResponseHandler was passed uninitialized variant in GdbResponse object."));
+            raiseError(ParseException("GdbResponseHandler was passed uninitialized variant in GdbResponse object."));
         }
 
         void operator()(const GdbResponses::BreakpointSet& t)
@@ -425,16 +425,23 @@ int main(int argc, char* argv[])
     Queue<std::string> end_marker_queue;
 
     TestPlan plan1;
+
     plan1.setAction("info", TestActionType::ignore);
     plan1.setAction("fromUser", TestActionType::write);
     plan1.setAction("toGdb", TestActionType::expectExact);
     plan1.setAction("fromGdb", TestActionType::write);
     plan1.setAction("toUser", TestActionType::expectExact);
 
+    // ignore exceptions from code under test to prevent generating additional "did not get expected label" exceptions.
+    plan1.setAction("exception", TestActionType::ignore);
+
     std::ifstream replay_file(replayFileName);
     std::ofstream log_file(logFileName, ofstream::out);
     auto log_replay = InputChain().to<LineInput>(replay_file).to<Worker>("log_replay", error_queue).to<ActivityLog>(plan1).to<StreamOutput>(log_file, true).complete();
     auto& log = log_replay.at<ActivityLog>(0);
+
+    auto exception_log = InputChain().to<LogChannel>(log, "exception").to<StreamOutput>(cerr).complete();
+    setExceptionLog(&exception_log.at<LogChannel>(0));
 
 #ifdef NO_LOAD_GDB
     auto& os = cout;

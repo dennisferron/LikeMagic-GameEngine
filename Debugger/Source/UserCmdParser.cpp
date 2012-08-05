@@ -108,7 +108,7 @@ UserCmd UserCmdParser::Parse(std::string str) const
         stringstream ss;
         ss << "UserCmdParser failed to parse: " << str << std::endl;
         cerr << endl << ss.str() << endl;
-        throw boost::enable_current_exception(ParseException(ss.str()));
+        raiseError(ParseException(ss.str()));
     }
     else
     {
@@ -117,7 +117,7 @@ UserCmd UserCmdParser::Parse(std::string str) const
             stringstream ss;
             ss << "Not all of the line was parsed: " << std::string(iter, end) << std::endl;
             cerr << endl << ss.str() << endl;
-            throw boost::enable_current_exception(ParseException(ss.str()));
+            raiseError(ParseException(ss.str()));
         }
     }
 

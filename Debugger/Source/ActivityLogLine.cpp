@@ -82,7 +82,7 @@ void ActivityLogLine::Parse(std::string str)
     {
         stringstream ss;
         ss << "ActivityLogLine failed to parse activity log line:  ->" << str << "<-" << std::endl;
-        throw boost::enable_current_exception(ParseException(ss.str()));
+        raiseError(ParseException(ss.str()));
     }
     else
     {
@@ -90,7 +90,7 @@ void ActivityLogLine::Parse(std::string str)
         {
             stringstream ss;
             ss << "Not all of the line was parsed: " << std::string(iter, end) << std::endl;
-            throw boost::enable_current_exception(ParseException(ss.str()));
+            raiseError(ParseException(ss.str()));
         }
     }
 }
@@ -134,7 +134,7 @@ void ActivityLogLine::Write(std::string& generated) const
     ActivityLogWriter<sink_type> g;
 
     if(!karma::generate(sink, g, *this))
-        throw boost::enable_current_exception(GeneratorException("Error writing activity log line."));
+        raiseError(GeneratorException("Error writing activity log line."));
 }
 
     }

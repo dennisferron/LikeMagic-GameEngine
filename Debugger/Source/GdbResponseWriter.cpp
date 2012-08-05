@@ -91,7 +91,7 @@ struct GdbResponsePrinter : boost::static_visitor<>
     void operator()(const UninitializedVariant& t) const
     {
         cerr << "got uninitialized variant" << endl;
-        //throw boost::enable_current_exception(GeneratorException("Generator was passed uninitialized variant in GdbResponse object."));
+        //raiseError(GeneratorException("Generator was passed uninitialized variant in GdbResponse object."));
     }
 
     void operator()(const TestStr1& t) const
@@ -190,7 +190,7 @@ string GdbResponseWriter::Write(vector<GdbResponseType> const& response) const
     GdbResponseWriteGrammar<sink_type> g;
 
     if(!karma::generate(sink, g, response))
-        throw boost::enable_current_exception(GeneratorException("Error writing user response."));
+        raiseError(GeneratorException("Error writing user response."));
 
     return result;
 }

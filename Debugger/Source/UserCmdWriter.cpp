@@ -161,7 +161,7 @@ string UserCmdWriter::Write(UserCmd const& cmd) const
     UserCmdWriteGrammar<sink_type> g;
 
     if(!karma::generate(sink, g, cmd))
-        throw boost::enable_current_exception(GeneratorException("Error writing user cmd."));
+        raiseError(GeneratorException("Error writing user cmd."));
 
     return result;
 }
