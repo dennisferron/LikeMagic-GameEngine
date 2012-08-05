@@ -34,7 +34,6 @@ void LogChannelWithPrompt::WriteData(StringWithPrompt const& data)
     ActivityLogLine entry;
     entry.label = label;
     entry.content = data.content + "\b" + data.prompt;
-    cerr << "Logging " << entry.content;
     log.WriteData(entry);
     sink.WriteData(data);
 }

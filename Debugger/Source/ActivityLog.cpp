@@ -59,29 +59,77 @@ void ActivityLog::WriteData(std::string const& data)
     }
 }
 
+void print_diff(string expected, string actual)
+{
+    if (expected.size() != actual.size())
+        cerr << "The strings are not the same length, expected "
+            << expected.size() << " actual " << actual.size() << endl;
+
+    for (size_t i=0; i < expected.size() || i < actual.size(); ++i)
+    {
+        if (i < expected.size() && i < actual.size())
+        {
+            if (expected[i] != actual[i])
+            {
+                cerr << "At index " << i
+                    << " expected char "
+                        << (int)expected[i] << "'" << expected[i] << "'"
+                    << " got "
+                        << (int)actual[i] << "'" << actual[i] << "'"
+                    << endl;
+            }
+        }
+        else if (i < expected.size())
+        {
+            cerr << "At index " << i << " expected char " << (int)expected[i] << " got end of string" << endl;
+        }
+        else
+        {
+            cerr << "At index " << i << " expected end of string got char " << (int)actual[i] << endl;
+        }
+    }
+}
+
 void print_error(string expected, string actual)
 {
     int expected_lines = std::count(expected.begin(), expected.end(), '\n');
     int actual_lines = std::count(actual.begin(), actual.end(), '\n');
 
     cerr << endl << "Did not get expected content" << endl << "expected (" << expected_lines << " lines): ->" << expected << "<-" << endl
-    << "actual (" << actual_lines << " lines):  ->" << actual << "<-" << endl;
+    << "actual (" << actual_lines << " lines):   ->" << actual << "<-" << endl;
     cerr << endl;
+
+    print_diff(expected, actual);
 }
 
 void ActivityLog::expect(ActivityLogLine test_log_entry, bool exact_match)
 {
-    ActivityLogLine test_result;
+    string expected = test_log_entry.content;
 
     // Get the next result that is not part of the ignored labels.
-    do      { test_result = test_results.ReadData(); }
+    ActivityLogLine test_result;
+    do
+    {
+        int counter = 0;
+        while (!test_results.HasData())
+        {
+            boost::this_thread::sleep(boost::posix_time::milliseconds(5));
+            if (++counter > 100)
+            {
+                string msg = "Timed out waiting on next test result.";
+                string log_line = test_log_entry.label + ": " + expected;
+                cerr << msg << " expected " << log_line << endl;
+                throw boost::enable_current_exception(TestException(msg, log_line, ""));
+            }
+        }
+        test_result = test_results.ReadData();
+    }
     while   (test_plan.actionType(test_result) == TestActionType::ignore);
 
     if (test_result.label != test_log_entry.label)
         throw boost::enable_current_exception(TestException("Did not get expected label", test_log_entry.label, test_result.label));
     else if (exact_match && test_result.content != test_log_entry.content)
     {
-        string expected = test_log_entry.content;
         string actual = test_result.content;
 
         print_error(expected, actual);

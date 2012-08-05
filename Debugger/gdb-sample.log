@@ -1,9 +1,9 @@
 info: Built input chains.
-fromGdb: Reading symbols for shared libraries .... done\n\b(gdb)
-toUser: Reading symbols for shared libraries .... done\n\b(gdb)
-fromUser: set prompt \b>>>>>>cb_gdb:
+fromGdb: Reading symbols for shared libraries .... done\n\b(gdb) 
+toUser: Reading symbols for shared libraries .... done\n\b(gdb) 
+fromUser: set prompt >>>>>>cb_gdb:
 info: MainLoopState::ReadUser
-toGdb: set prompt \b>>>>>>cb_gdb:
+toGdb: set prompt >>>>>>cb_gdb:
 fromGdb: \b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
@@ -67,12 +67,14 @@ toGdb: directory /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestPro
 fromGdb: \b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
+fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io:5\"
+toUser: Breakpoint 1 at 0x00000000: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io, line 5.\n\b>>>>>>cb_gdb:
 fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\"
 info: MainLoopState::ReadUser
 toGdb: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\"
 fromGdb: Breakpoint 1 at 0x100000e46: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 7.\n\b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
-toUser: Breakpoint 1 at 0x100000e46: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 7.\n\b>>>>>>cb_gdb:
+toUser: Breakpoint 2 at 0x100000e46: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 7.\n\b>>>>>>cb_gdb:
 fromUser: tty /dev/ttys002
 info: MainLoopState::ReadUser
 toGdb: tty /dev/ttys002

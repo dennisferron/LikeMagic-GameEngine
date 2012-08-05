@@ -106,7 +106,7 @@ UserCmd UserCmdParser::Parse(std::string str) const
     if (!success)
     {
         stringstream ss;
-        ss << "Failed to parse: " << str << std::endl;
+        ss << "UserCmdParser failed to parse: " << str << std::endl;
         cerr << endl << ss.str() << endl;
         throw boost::enable_current_exception(ParseException(ss.str()));
     }

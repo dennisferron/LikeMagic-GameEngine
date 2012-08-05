@@ -202,7 +202,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                 if (!success)
                 {
                     stringstream ss;
-                    ss << "Failed to parse ->" << line << "<- in string ->" << input << "<-" << std::endl;
+                    ss << "GdbResponse failed to parse ->" << line << "<- in string ->" << input << "<-" << std::endl;
                     cerr << endl << ss.str() << endl;
                     throw boost::enable_current_exception(ParseException(ss.str()));
                 }

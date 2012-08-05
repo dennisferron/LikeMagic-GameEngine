@@ -202,6 +202,5 @@ GdbResponseWriter::GdbResponseWriter(AbstractOutput<StringWithPrompt>& sink_)
 void GdbResponseWriter::WriteData(GdbResponse const& input)
 {
     string result = Write(input.values);
-    cerr << "Wrote: " << result << endl;
     sink.WriteData({result, input.prompt});
 }

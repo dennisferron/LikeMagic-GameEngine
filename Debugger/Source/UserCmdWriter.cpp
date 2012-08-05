@@ -173,6 +173,5 @@ UserCmdWriter::UserCmdWriter(AbstractOutput<std::string>& sink_)
 void UserCmdWriter::WriteData(UserCmd const& input)
 {
     string result = Write(input);
-    cerr << "Wrote: " << result << endl;
     sink.WriteData(result);
 }

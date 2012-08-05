@@ -81,7 +81,7 @@ void ActivityLogLine::Parse(std::string str)
     if (!success)
     {
         stringstream ss;
-        ss << "Failed to parse activity log line:  ->" << str << "<-" << std::endl;
+        ss << "ActivityLogLine failed to parse activity log line:  ->" << str << "<-" << std::endl;
         throw boost::enable_current_exception(ParseException(ss.str()));
     }
     else
