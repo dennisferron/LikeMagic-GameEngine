@@ -68,6 +68,8 @@ fromGdb: \b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io:5\"
+toGdb: print io_debugger_set_breakpoint(\"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", 5)
+fromGdb: $1 = 1\b>>>>>>cb_gdb:
 toUser: Breakpoint 1 at 0x00000000: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io, line 5.\n\b>>>>>>cb_gdb:
 fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7\"
 info: MainLoopState::ReadUser
