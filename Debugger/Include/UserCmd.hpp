@@ -1,9 +1,7 @@
 
 #pragma once
 
-#include <string>
-#include "boost/optional.hpp"
-#include "boost/variant.hpp"
+#include "SharedTypes.hpp"
 
 namespace Iocaste { namespace Debugger {
 
@@ -22,6 +20,12 @@ namespace UserCmds
     struct RawString
     {
         std::string value;
+    };
+
+    struct PrintFunction
+    {
+        std::string function_name;
+        std::vector<SharedTypes::GdbValue> args;
     };
 
     struct SetOption
@@ -120,6 +124,7 @@ namespace UserCmds
 typedef  boost::variant
 <
     UserCmds::RawString,
+    UserCmds::PrintFunction,
     UserCmds::SetOption,
     UserCmds::ShowOption,
     UserCmds::SetBreakpoint,

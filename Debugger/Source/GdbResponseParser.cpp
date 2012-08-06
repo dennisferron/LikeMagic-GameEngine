@@ -110,7 +110,10 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         raw_str = *qi::char_;
         //test_str1 = qi::lit("#0  ") >> raw_str;
 
-        start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function | backtrace_line;
+        gdb_value = qi::int_ | (qi::lit('"') >> *(qi::char_ - qi::char_('"')) >> qi::lit('"'));
+        value_history = qi::lit('$') >> qi::int_ >> " = " >> gdb_value;
+
+        start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function | backtrace_line | value_history;
     }
 
     qi::rule<Iterator, std::string()> raw_str;
@@ -124,6 +127,8 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, std::string()> version_number;
     qi::rule<Iterator, std::string()> address;
     qi::rule<Iterator, std::string()> no_locals;
+    qi::rule<Iterator, SharedTypes::GdbValue()> gdb_value;
+    qi::rule<Iterator, GdbResponses::ValueHistory()> value_history;
     qi::rule<Iterator, GdbResponses::TestStr1()> test_str1;
     qi::rule<Iterator, GdbResponses::LocalsInfo()> locals_info;
     qi::rule<Iterator, GdbResponses::ReadingLibs()> reading_libs;

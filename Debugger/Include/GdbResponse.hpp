@@ -1,9 +1,6 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include "boost/optional.hpp"
-#include "boost/variant.hpp"
+#include "SharedTypes.hpp"
 
 namespace Iocaste { namespace Debugger {
 
@@ -101,6 +98,12 @@ struct AddressInFunction
     std::string args;
 };
 
+struct ValueHistory
+{
+    int number;
+    SharedTypes::GdbValue value;
+};
+
 struct TestStr1
 {
     std::string value;
@@ -139,6 +142,7 @@ typedef  boost::variant
     GdbResponses::AddressInFunction,
     GdbResponses::TestStr1,
     GdbResponses::Banner,
+    GdbResponses::ValueHistory,
     GdbResponses::Empty
 > GdbResponseType;
 

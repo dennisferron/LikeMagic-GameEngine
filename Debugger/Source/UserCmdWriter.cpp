@@ -42,9 +42,13 @@ struct UserCmdWriteGrammar
         finish = karma::lit("finish") << -karma::string;
         quit = karma::lit("quit") << -karma::string;
         empty = karma::lit("") << -karma::string;
-        start = raw_str | set_option | show_option | set_breakpoint | source | directory | tty | run | info | backtrace | next | step | finish | quit | empty;
+        gdb_value = karma::int_ | (karma::lit('"') << karma::string << '"');
+        print_function = karma::lit("print ") << -karma::string << "(" << (gdb_value % ", ") << ")";
+        start = print_function | raw_str | set_option | show_option | set_breakpoint | source | directory | tty | run | info | backtrace | next | step | finish | quit | empty;
     }
 
+    karma::rule<OutputIterator, SharedTypes::GdbValue()> gdb_value;
+    karma::rule<OutputIterator, UserCmds::PrintFunction()> print_function;
     karma::rule<OutputIterator, UserCmds::RawString()> raw_str;
     karma::rule<OutputIterator, UserCmds::SetOption()> set_option;
     karma::rule<OutputIterator, UserCmds::ShowOption()> show_option;
@@ -69,6 +73,11 @@ struct UserCmdPrinter : boost::static_visitor<>
     void operator()(const T& t) const
     {
         static_assert(sizeof(T) && false, "No debug printer defined for type T");
+    }
+
+    void operator()(const UserCmds::PrintFunction& t) const
+    {
+        cerr << "print function is " << t.function_name << endl;
     }
 
     void operator()(const RawString& t) const

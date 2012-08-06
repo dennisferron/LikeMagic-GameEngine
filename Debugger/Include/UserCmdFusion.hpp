@@ -1,13 +1,6 @@
 
-#include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/spirit/include/phoenix_object.hpp>
-#include <boost/fusion/include/adapt_struct.hpp>
-
+#include "SharedTypesFusion.hpp"
 #include "UserCmd.hpp"
-
-// Ok because this header should only ever be included in implementation files:
-using namespace Iocaste::Debugger;
 
 BOOST_FUSION_ADAPT_STRUCT(
     UserCmds::RawString,
@@ -93,3 +86,10 @@ BOOST_FUSION_ADAPT_STRUCT(
     UserCmds::Empty,
     (boost::optional<std::string>, dummy)
 )
+
+BOOST_FUSION_ADAPT_STRUCT(
+    UserCmds::PrintFunction,
+    (std::string, function_name)
+    (std::vector<SharedTypes::GdbValue>, args)
+)
+

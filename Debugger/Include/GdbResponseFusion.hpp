@@ -1,13 +1,8 @@
-#include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/spirit/include/phoenix_object.hpp>
-#include <boost/fusion/include/adapt_struct.hpp>
-
+#include "SharedTypesFusion.hpp"
 #include "GdbResponse.hpp"
 
 // Ok because this header should only ever be included in implementation files:
 using namespace Iocaste::Debugger;
-
 
 BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::Banner,
@@ -89,3 +84,10 @@ BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::LocalsInfo,
     (std::string, msg)
 )
+
+BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::ValueHistory,
+    (int, number)
+    (SharedTypes::GdbValue, value)
+)
+

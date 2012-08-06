@@ -88,6 +88,11 @@ struct GdbResponsePrinter : boost::static_visitor<>
         static_assert(sizeof(T) && false, "No debug printer defined for type T");
     }
 
+    void operator()(const ValueHistory& t) const
+    {
+        cerr << "Value history is $" << t.number << endl;
+    }
+
     void operator()(const UninitializedVariant& t) const
     {
         cerr << "got uninitialized variant" << endl;

@@ -81,6 +81,8 @@
 		<Unit filename="Include\LookForPrompt.hpp" />
 		<Unit filename="Include\Queue.hpp" />
 		<Unit filename="Include\RecombinePrompt.hpp" />
+		<Unit filename="Include\SharedTypes.hpp" />
+		<Unit filename="Include\SharedTypesFusion.hpp" />
 		<Unit filename="Include\StaticFuture.hpp" />
 		<Unit filename="Include\StreamOutput.hpp" />
 		<Unit filename="Include\StringEscaper.hpp" />

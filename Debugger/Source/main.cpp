@@ -234,9 +234,34 @@ private:
 
     IoBreakpoint setIoBreakpoint(UserCmds::SetBreakpoint const& stbk) const
     {
-        // todo: implement real Io breakpoints
-        static int counter=0;
-        return { counter++ };
+        UserCmds::PrintFunction print;
+        print.function_name = "io_debugger_set_breakpoint";
+        print.args.push_back(stbk.file_name);
+        print.args.push_back(stbk.line_number);
+        channels.toGdb.WriteData(print);
+
+        GdbResponse resp = channels.fromGdb.ReadData();
+
+        if (auto* vh = boost::get<GdbResponses::ValueHistory>(&resp.values.at(0)))
+        {
+            if (auto* breakpt_num = boost::get<int>(&vh->value))
+            {
+                return {*breakpt_num};
+            }
+            else
+            {
+                raiseError(LogicError("Did not get expected function return type from gdb when calling io_debugger_set_breakpoint."));
+            }
+        }
+        else
+        {
+            // Todo: this is not necessarily a logic error in this program per se,
+            // need an exception type for "did not get expected response".
+            raiseError(LogicError("Did not get expected gdb response type from gdb when calling io_debugger_set_breakpoint."));
+        }
+
+        // Never get here
+        return {-1};
     }
 
     void handleIoBreakpoint(UserCmds::SetBreakpoint const& stbk) const
