@@ -56,6 +56,10 @@ namespace UserCmds
         int line_number;
     };
 
+    struct SetBreakpointOnFunction
+    {
+        std::string function_name;
+    };
 
     struct Source
     {
@@ -128,6 +132,7 @@ typedef  boost::variant
     UserCmds::SetOption,
     UserCmds::ShowOption,
     UserCmds::SetBreakpoint,
+    UserCmds::SetBreakpointOnFunction,
     UserCmds::Source,
     UserCmds::Directory,
     UserCmds::TTY,

@@ -33,6 +33,11 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    UserCmds::SetBreakpointOnFunction,
+    (std::string, function_name)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     UserCmds::Source,
     (std::string, file_name)
 )

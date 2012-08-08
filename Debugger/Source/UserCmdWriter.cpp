@@ -44,7 +44,8 @@ struct UserCmdWriteGrammar
         empty = karma::lit("") << -karma::string;
         gdb_value = karma::int_ | (karma::lit('"') << karma::string << '"');
         print_function = karma::lit("print ") << -karma::string << "(" << (gdb_value % ", ") << ")";
-        start = print_function | raw_str | set_option | show_option | set_breakpoint | source | directory | tty | run | info | backtrace | next | step | finish | quit | empty;
+        set_breakpoint_on_function = karma::lit("break ") << karma::string;
+        start = print_function | raw_str | set_option | show_option | set_breakpoint | set_breakpoint_on_function | source | directory | tty | run | info | backtrace | next | step | finish | quit | empty;
     }
 
     karma::rule<OutputIterator, SharedTypes::GdbValue()> gdb_value;
@@ -53,6 +54,7 @@ struct UserCmdWriteGrammar
     karma::rule<OutputIterator, UserCmds::SetOption()> set_option;
     karma::rule<OutputIterator, UserCmds::ShowOption()> show_option;
     karma::rule<OutputIterator, UserCmds::SetBreakpoint()> set_breakpoint;
+    karma::rule<OutputIterator, UserCmds::SetBreakpointOnFunction()> set_breakpoint_on_function;
     karma::rule<OutputIterator, UserCmds::Source()> source;
     karma::rule<OutputIterator, UserCmds::Directory()> directory;
     karma::rule<OutputIterator, UserCmds::TTY()> tty;
@@ -98,6 +100,11 @@ struct UserCmdPrinter : boost::static_visitor<>
     void operator()(const SetBreakpoint& t) const
     {
         cerr << "set breakpoint is " << t.file_name << " " << t.line_number << endl;
+    }
+
+    void operator()(const SetBreakpointOnFunction& t) const
+    {
+        cerr << "set breakpoint on function is " << t.function_name << endl;
     }
 
     void operator()(const Source& t) const

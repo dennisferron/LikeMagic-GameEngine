@@ -1,0 +1,6 @@
+writeln("one")
+writeln("two")
+writeln("three")
+writeln("four")
+writeln("five")
+writeln("six")

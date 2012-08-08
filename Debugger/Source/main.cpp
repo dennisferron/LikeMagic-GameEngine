@@ -129,21 +129,30 @@ struct UserBreakpoint
     int number;
 };
 
+struct OurBreakpoint
+{
+    int number;
+};
+
 class BreakpointMap
 {
 private:
-    typedef boost::variant<GdbBreakpoint, IoBreakpoint> record_t;
-    std::vector<record_t> tbl;
+    typedef boost::variant<UserBreakpoint, OurBreakpoint> breakpoint_user;
+    typedef boost::variant<GdbBreakpoint, IoBreakpoint> breakpoint_provider;
+    typedef std::pair<breakpoint_user, breakpoint_provider> row_t;
+    std::vector<row_t> tbl;
 
-    template <typename T>
-    int indexOf(T const& t)
+public:
+
+    template <typename Result, typename Source>
+    Result get_user_breakpoint(Source t)
     {
         try
         {
-            for (int i=0; i < (int)tbl.size(); ++i)
-                if (T* m = boost::get<T>(&tbl[i]))
+            for (row_t row : tbl)
+                if (Result* m = boost::get<Result>(&row.first))
                     if (m->number == t.number)
-                        return i;
+                        return *m;
         }
         catch (exception const& e)
         {
@@ -151,37 +160,35 @@ private:
             throw;
         }
 
-        tbl.push_back(t);
-        return tbl.size()-1;
+        // Due to how function templates work, this static
+        // counter is specific to a given result type.
+        static int counter = 0;
+
+        Result r = {++counter};
+        tbl.push_back( { r, t } );
+        return r;
     }
 
-public:
-
-    UserBreakpoint map(GdbBreakpoint gbp) { return { indexOf(gbp)+1 }; }
-    UserBreakpoint map(IoBreakpoint  ibp) { return { indexOf(ibp)+1 }; }
-
-    template <typename T>
-    T const& get(UserBreakpoint ub) const
+    template <typename Result, typename Source>
+    Result get_provider_breakpoint(Source t)
     {
-        if (ub.number-1 >= tbl.size())
-            raiseError(LogicError("Index out of range in breakpoint map."));
-
-        T* m = NULL;
-
         try
         {
-            m = boost::get<T>(&tbl.at(ub.number-1));
+            for (row_t row : tbl)
+                if (Result* m = boost::get<Result>(&row.second))
+                    if (m->number == t.number)
+                        return *m;
         }
-        catch (...)
+        catch (exception const& e)
         {
-            raiseError(LogicError("Error getting breakpoint from breakpoint map."));
+            cerr << "Error getting indexOf breakpoint " << t.number << " exception was " << e.what() << endl;
+            throw;
         }
 
-        if (m)
-            return *m;
-        else
-            raiseError(LogicError("Tried to get wrong breakpoint type for this index from breakpoint map."));
-   }
+        // If we don't find a provider breakpoint, that's an error.
+        raiseError(LogicError("No provider breakpoint for this user breakpoint number."));
+    }
+
 };
 
 class UserCmdHandler
@@ -190,6 +197,7 @@ private:
     MainChannels channels;
     BreakpointMap& brkpts;
     std::string last_prompt;
+    boost::optional<OurBreakpoint> io_debugger_breakpoint;
 
     struct Visitor;
     friend struct Visitor;
@@ -232,8 +240,36 @@ private:
         channels.toUser.WriteData(response);
     }
 
-    IoBreakpoint setIoBreakpoint(UserCmds::SetBreakpoint const& stbk) const
+    OurBreakpoint setIoDebuggerBreakHere() const
     {
+        UserCmds::SetBreakpointOnFunction real_bkpt = { "io_debugger_break_here" };
+        UserCmd cmd;
+        cmd = real_bkpt;
+        channels.toGdb.WriteData( cmd );
+
+        GdbResponse resp = channels.fromGdb.ReadData();
+
+        if (auto* bs = boost::get<GdbResponses::BreakpointSet>(&resp.values.at(0)))
+        {
+            GdbBreakpoint gb = { bs->breakpoint_number };
+            return brkpts.get_user_breakpoint<OurBreakpoint>(gb);
+        }
+        else
+        {
+            // Todo: this is not necessarily a logic error in this program per se,
+            // need an exception type for "did not get expected response".
+            raiseError(LogicError("Did not get expected gdb response type from gdb when setting breakpoint on io_debugger_break_here() function."));
+
+            // never get here
+            return {-1};
+        }
+    }
+
+    IoBreakpoint setIoBreakpoint(UserCmds::SetBreakpoint const& stbk)
+    {
+        if (!io_debugger_breakpoint)
+            io_debugger_breakpoint = setIoDebuggerBreakHere();
+
         UserCmds::PrintFunction print;
         print.function_name = "io_debugger_set_breakpoint";
         print.args.push_back(stbk.file_name);
@@ -264,11 +300,11 @@ private:
         return {-1};
     }
 
-    void handleIoBreakpoint(UserCmds::SetBreakpoint const& stbk) const
+    void handleIoBreakpoint(UserCmds::SetBreakpoint const& stbk)
     {
         cerr << "start handleIoBreakpoint" << endl;
         IoBreakpoint ib = setIoBreakpoint(stbk);
-        UserBreakpoint ub = brkpts.map(ib);
+        UserBreakpoint ub = brkpts.get_user_breakpoint<UserBreakpoint>(ib);
 
         GdbResponses::BreakpointSet bs;
 
@@ -333,7 +369,7 @@ private:
 
             GdbResponses::BreakpointSet bs(t);
             GdbBreakpoint gb = {t.breakpoint_number};
-            bs.breakpoint_number = brkpts.map(gb).number;
+            bs.breakpoint_number = brkpts.get_user_breakpoint<UserBreakpoint>(gb).number;
             output.push_back(bs);
         }
 
