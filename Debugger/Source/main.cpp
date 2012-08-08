@@ -142,6 +142,27 @@ private:
     typedef std::pair<breakpoint_user, breakpoint_provider> row_t;
     std::vector<row_t> tbl;
 
+    template <typename Result>
+    Result next_user_breakpoint()
+    {
+        int max = 0;
+
+        try
+        {
+            for (row_t row : tbl)
+                if (Result* m = boost::get<Result>(&row.first))
+                    if (m->number > max)
+                        max = m->number;
+        }
+        catch (exception const& e)
+        {
+            cerr << "Error getting max_user_breakpoint " << t.number << " exception was " << e.what() << endl;
+            throw;
+        }
+
+        return {max+1};
+    }
+
 public:
 
     template <typename Result, typename Source>
@@ -156,15 +177,11 @@ public:
         }
         catch (exception const& e)
         {
-            cerr << "Error getting indexOf breakpoint " << t.number << " exception was " << e.what() << endl;
+            cerr << "Error in get_user_breakpoint " << t.number << " exception was " << e.what() << endl;
             throw;
         }
 
-        // Due to how function templates work, this static
-        // counter is specific to a given result type.
-        static int counter = 0;
-
-        Result r = {++counter};
+        Result r = next_user_breakpoint();
         tbl.push_back( { r, t } );
         return r;
     }
@@ -181,7 +198,7 @@ public:
         }
         catch (exception const& e)
         {
-            cerr << "Error getting indexOf breakpoint " << t.number << " exception was " << e.what() << endl;
+            cerr << "Error in get_provider_breakpoint " << t.number << " exception was " << e.what() << endl;
             throw;
         }
 
@@ -226,7 +243,7 @@ private:
             if (boost::algorithm::ends_with(t.file_name, ".io"))
                 handler.handleIoBreakpoint(t);
             else
-                handler.toGdb(t);
+                handler.handleGdbBreakpoint(t);
         }
     };
 
@@ -302,7 +319,24 @@ private:
 
     void handleIoBreakpoint(UserCmds::SetBreakpoint const& stbk)
     {
-        cerr << "start handleIoBreakpoint" << endl;
+        IoBreakpoint ib = setIoBreakpoint(stbk);
+        UserBreakpoint ub = brkpts.get_user_breakpoint<UserBreakpoint>(ib);
+
+        GdbResponses::BreakpointSet bs;
+
+        bs.breakpoint_number = ub.number;
+        bs.address = std::string("0x00000000");
+        bs.file_name = stbk.file_name;
+        bs.line_number = stbk.line_number;
+
+        GdbResponse resp;
+        resp.prompt = last_prompt;
+        resp.values.push_back(bs);
+        toUser(resp);
+    }
+
+    void handleGdbBreakpoint(UserCmds::SetBreakpoint const& stbk)
+    {
         IoBreakpoint ib = setIoBreakpoint(stbk);
         UserBreakpoint ub = brkpts.get_user_breakpoint<UserBreakpoint>(ib);
 
