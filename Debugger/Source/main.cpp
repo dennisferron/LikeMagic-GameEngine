@@ -145,6 +145,9 @@ private:
     template <typename Result>
     Result next_user_breakpoint()
     {
+        // TODO:  right now this returns max, perhaps it should return first free?
+        // (To handle the case of deleting a breakpoint.)
+
         int max = 0;
 
         try
@@ -156,7 +159,7 @@ private:
         }
         catch (exception const& e)
         {
-            cerr << "Error getting max_user_breakpoint " << t.number << " exception was " << e.what() << endl;
+            cerr << "Error getting next_user_breakpoint exception was " << e.what() << endl;
             throw;
         }
 
@@ -181,7 +184,8 @@ public:
             throw;
         }
 
-        Result r = next_user_breakpoint();
+        // If we didn't find an existing user breakpoint, just pull the next available number.
+        Result r = next_user_breakpoint<Result>();
         tbl.push_back( { r, t } );
         return r;
     }
@@ -335,24 +339,40 @@ private:
         toUser(resp);
     }
 
+    GdbResponses::BreakpointSet setGdbBreakpoint(UserCmds::SetBreakpoint const& stbk)
+    {
+        channels.toGdb.WriteData(stbk);
+
+        GdbResponse resp = channels.fromGdb.ReadData();
+
+        if (auto* bs = boost::get<GdbResponses::BreakpointSet>(&resp.values.at(0)))
+        {
+            return *bs;
+        }
+        else
+        {
+            // Todo: this is not necessarily a logic error in this program per se,
+            // need an exception type for "did not get expected response".
+            raiseError(LogicError("Did not get expected gdb response type from gdb when calling set breakpoint."));
+        }
+
+        // Never get here
+        return GdbResponses::BreakpointSet();
+    }
+
     void handleGdbBreakpoint(UserCmds::SetBreakpoint const& stbk)
     {
-        IoBreakpoint ib = setIoBreakpoint(stbk);
-        UserBreakpoint ub = brkpts.get_user_breakpoint<UserBreakpoint>(ib);
+        GdbResponses::BreakpointSet bs = setGdbBreakpoint(stbk);
 
-        GdbResponses::BreakpointSet bs;
+        GdbBreakpoint gb = { bs.breakpoint_number };
+        UserBreakpoint ub = brkpts.get_user_breakpoint<UserBreakpoint>(gb);
 
         bs.breakpoint_number = ub.number;
-        bs.address = std::string("0x00000000");
-        bs.file_name = stbk.file_name;
-        bs.line_number = stbk.line_number;
 
         GdbResponse resp;
         resp.prompt = last_prompt;
         resp.values.push_back(bs);
-        cerr << "Before toUser" << endl;
         toUser(resp);
-        cerr << "Wrote io breakpoint resp to user." << endl;
     }
 
 public:
