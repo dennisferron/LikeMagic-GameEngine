@@ -15,7 +15,7 @@ extern "C"
 #pragma GCC push_options
 #pragma GCC optimize ("0")
 
-void io_debugger_break_here(int breakpoint_number, char const* file_name, int line_number)
+void io_debugger_break_here(IoObject *self, IoObject *locals, IoMessage *m, int breakpoint_number, char const* file_name, int line_number)
 {
     // Prevent this function from being optimized away.
     asm ("nop;");

@@ -65,12 +65,15 @@
 		<Unit filename="Include/AbstractOutput.hpp" />
 		<Unit filename="Include/ActivityLog.hpp" />
 		<Unit filename="Include/ActivityLogLine.hpp" />
+		<Unit filename="Include/BreakpointMap.hpp" />
 		<Unit filename="Include/ChainBuilder.hpp" />
 		<Unit filename="Include/ChainPolicy.hpp" />
 		<Unit filename="Include/CharInput.hpp" />
+		<Unit filename="Include/Configuration.hpp" />
 		<Unit filename="Include/Exception.hpp" />
 		<Unit filename="Include/GdbResponse.hpp" />
 		<Unit filename="Include/GdbResponseFusion.hpp" />
+		<Unit filename="Include/GdbResponseHandler.hpp" />
 		<Unit filename="Include/GdbResponseParser.hpp" />
 		<Unit filename="Include/GdbResponseWriter.hpp" />
 		<Unit filename="Include/InputChain.hpp" />
@@ -79,6 +82,7 @@
 		<Unit filename="Include/LogChannel.hpp" />
 		<Unit filename="Include/LogChannelWithPrompt.hpp" />
 		<Unit filename="Include/LookForPrompt.hpp" />
+		<Unit filename="Include/MainChannels.hpp" />
 		<Unit filename="Include/Queue.hpp" />
 		<Unit filename="Include/RecombinePrompt.hpp" />
 		<Unit filename="Include/SharedTypes.hpp" />
@@ -91,6 +95,7 @@
 		<Unit filename="Include/TypePolicy.hpp" />
 		<Unit filename="Include/UserCmd.hpp" />
 		<Unit filename="Include/UserCmdFusion.hpp" />
+		<Unit filename="Include/UserCmdHandler.hpp" />
 		<Unit filename="Include/UserCmdParser.hpp" />
 		<Unit filename="Include/UserCmdWriter.hpp" />
 		<Unit filename="Include/Worker.hpp" />
@@ -99,6 +104,7 @@
 			<Option compiler="gcc" use="0" buildCommand="$compiler -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>
 		<Unit filename="Source/CharInput.cpp" />
+		<Unit filename="Source/Configuration.cpp" />
 		<Unit filename="Source/Exception.cpp" />
 		<Unit filename="Source/GdbResponseParser.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -s -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
