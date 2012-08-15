@@ -41,6 +41,9 @@ public:
         : replay_file(replayFileName),
           log_file(logFileName, ofstream::out)
     {
+        // If we did not do this, the dummy stringstream
+        // would return one empty read, which affects testing.
+        dummy.setstate(ios_base::eofbit);
     }
 
     virtual ~ReplayConfiguration()
@@ -121,6 +124,9 @@ public:
 #ifndef NO_LOAD_GDB
         gdb_process = start_gdb(argc, argv);
 #endif
+        // If we did not do this, the dummy stringstream
+        // would return one empty read, which is undesirable.
+        dummy.setstate(ios_base::eofbit);
     }
 
     virtual ~NormalConfiguration()
