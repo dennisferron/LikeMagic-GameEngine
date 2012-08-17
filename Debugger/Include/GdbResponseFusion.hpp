@@ -31,6 +31,11 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::RawStr,
+    (std::string, value)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::ReadingLibs,
     (std::string, periods)
 )

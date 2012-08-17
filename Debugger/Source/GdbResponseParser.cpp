@@ -107,16 +107,16 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
             >> -(" at " >> file_name)
             >> -(":" >> qi::int_);
 
-        raw_str = *qi::char_;
-        //test_str1 = qi::lit("#0  ") >> raw_str;
+        raw_str_value = *qi::char_;
+        raw_str = raw_str_value;
+        //test_str1 = qi::lit("#0  ") >> raw_str_value;
 
         gdb_value = qi::int_ | (qi::lit('"') >> *(qi::char_ - qi::char_('"')) >> qi::lit('"'));
         value_history = qi::lit('$') >> qi::int_ >> " = " >> gdb_value;
 
-        start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function | backtrace_line | value_history;
+        start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function | backtrace_line | value_history | raw_str;
     }
 
-    qi::rule<Iterator, std::string()> raw_str;
     qi::rule<Iterator, std::string()> ident;
     qi::rule<Iterator, std::string()> value;
     qi::rule<Iterator, std::string()> dummy;
@@ -127,6 +127,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, std::string()> version_number;
     qi::rule<Iterator, std::string()> address;
     qi::rule<Iterator, std::string()> no_locals;
+    qi::rule<Iterator, std::string()> raw_str_value;
     qi::rule<Iterator, SharedTypes::GdbValue()> gdb_value;
     qi::rule<Iterator, GdbResponses::ValueHistory()> value_history;
     qi::rule<Iterator, GdbResponses::TestStr1()> test_str1;
@@ -137,6 +138,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, GdbResponses::BacktraceLine()> backtrace_line;
     qi::rule<Iterator, GdbResponses::AddressInFunction()> address_in_function;
     qi::rule<Iterator, GdbResponses::CursorPos()> cursor_pos;
+    qi::rule<Iterator, GdbResponses::RawStr()> raw_str;
     qi::rule<Iterator, GdbResponseType()> start;
 };
 

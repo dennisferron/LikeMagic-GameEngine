@@ -47,7 +47,6 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="--std=c++0x" />
-			<Add option="-DNO_LOAD_GDB" />
 			<Add option="-DBOOST_THREAD_USE_LIB" />
 			<Add directory="Include" />
 			<Add directory="../../LikeMagic/Include" />

@@ -79,6 +79,16 @@ public:
     {
         return cout;
     }
+
+    istream& get_from_gdb_err()
+    {
+        return dummy;
+    }
+
+    ostream& get_to_user_err()
+    {
+        return cerr;
+    }
 };
 
 class NormalConfiguration : public Configuration
@@ -108,6 +118,7 @@ private:
 
         bp::context ctx;
         ctx.stdout_behavior = bp::capture_stream();
+        ctx.stderr_behavior = bp::capture_stream();
         ctx.stdin_behavior = bp::capture_stream();
 
         return bp::launch(exec, args, ctx);
@@ -117,16 +128,23 @@ private:
 
 public:
 
-    NormalConfiguration()
+    NormalConfiguration(int argc, char* argv[])
         :
           log_file(logFileName, ofstream::out)
-    {
 #ifndef NO_LOAD_GDB
-        gdb_process = start_gdb(argc, argv);
+        ,gdb_process(start_gdb(argc, argv))
 #endif
+
+    {
+#ifdef NO_LOAD_GDB
         // If we did not do this, the dummy stringstream
         // would return one empty read, which is undesirable.
         dummy.setstate(ios_base::eofbit);
+#endif
+
+        // If we did not do this, the dummy stringstream
+        // would return one empty read, which is undesirable.
+        dummy_replay_file.setstate(ios_base::eofbit);
     }
 
     virtual ~NormalConfiguration()
@@ -148,7 +166,7 @@ public:
 
     istream& get_from_user()
     {
-        return dummy;
+        return std::cin;
     }
 
     ostream& get_to_user()
@@ -159,7 +177,7 @@ public:
     istream& get_from_gdb()
     {
 #ifndef NO_LOAD_GDB
-        bp::pistream& is = gdb_process.get_stdout();
+        return gdb_process.get_stdout();
 #else
         return dummy;
 #endif
@@ -168,15 +186,30 @@ public:
     ostream& get_to_gdb()
     {
 #ifndef NO_LOAD_GDB
-        bp::postream& os = gdb_process.get_stdin();
+        return gdb_process.get_stdin();
 #else
         return cout;
 #endif
     }
+
+    istream& get_from_gdb_err()
+    {
+#ifndef NO_LOAD_GDB
+        return gdb_process.get_stderr();
+#else
+        return dummy;
+#endif
+    }
+
+    ostream& get_to_user_err()
+    {
+        return cerr;
+    }
 };
 
-boost::shared_ptr<Configuration> Iocaste::Debugger::getConfiguration()
+boost::shared_ptr<Configuration> Iocaste::Debugger::getConfiguration(int argc, char* argv[])
 {
-    return boost::shared_ptr<Configuration>(new ReplayConfiguration());
+    //return boost::shared_ptr<Configuration>(new ReplayConfiguration());
+    return boost::shared_ptr<Configuration>(new NormalConfiguration(argc, argv));
 }
 

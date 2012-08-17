@@ -34,6 +34,8 @@ struct GdbResponseWriteGrammar
         breakpoint_set = karma::lit("Breakpoint ") << karma::int_ << " at " << karma::string << ": file " << karma::string << ", line " << karma::int_ << ".";
         empty = karma::lit("") << -dummy;
 
+        raw_str = karma::string;
+
         //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
         cursor_pos = karma::lit("\x1A\x1A") << karma::string << ":" << karma::int_ << ":" << karma::int_ << ":" << karma::string << ":" << karma::string;
 
@@ -60,7 +62,7 @@ struct GdbResponseWriteGrammar
         test_str1 = karma::string;
         test_str2 = karma::string;
 
-        response_item = (test_str1 | backtrace_line | banner | reading_libs | breakpoint_set | breakpoint_hit | cursor_pos | locals_info | address_in_function | empty) << "\n";
+        response_item = (test_str1 | backtrace_line | banner | reading_libs | breakpoint_set | breakpoint_hit | cursor_pos | locals_info | address_in_function | raw_str | empty) << "\n";
         start = *response_item;
     }
 
@@ -76,6 +78,7 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, GdbResponses::Empty()> empty;
     karma::rule<OutputIterator, GdbResponses::TestStr1()> test_str1;
     karma::rule<OutputIterator, GdbResponses::TestStr2()> test_str2;
+    karma::rule<OutputIterator, GdbResponses::RawStr()> raw_str;
     karma::rule<OutputIterator, GdbResponseType()> response_item;
     karma::rule<OutputIterator, vector<GdbResponseType>()> start;
 };
@@ -91,6 +94,11 @@ struct GdbResponsePrinter : boost::static_visitor<>
     void operator()(const ValueHistory& t) const
     {
         cerr << "Value history is $" << t.number << endl;
+    }
+
+    void operator()(const RawStr& t) const
+    {
+        cerr << "RawStr is " << t.value << endl;
     }
 
     void operator()(const UninitializedVariant& t) const

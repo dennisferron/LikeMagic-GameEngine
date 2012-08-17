@@ -18,6 +18,11 @@ struct Empty
     boost::optional<std::string> dummy;
 };
 
+struct RawStr
+{
+    std::string value;
+};
+
 struct ReadingLibs
 {
     std::string periods;
@@ -121,14 +126,6 @@ struct UninitializedVariant
 
 }
 
-/*
-typedef  boost::variant
-<
-    GdbResponses::UninitializedVariant,
-    GdbResponses::TestStr1,
-    GdbResponses::TestStr2
-> GdbResponseType;
-*/
 
 typedef  boost::variant
 <
@@ -143,6 +140,7 @@ typedef  boost::variant
     GdbResponses::TestStr1,
     GdbResponses::Banner,
     GdbResponses::ValueHistory,
+    GdbResponses::RawStr,
     GdbResponses::Empty
 > GdbResponseType;
 

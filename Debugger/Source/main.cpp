@@ -124,7 +124,7 @@ void mainLoop(MainChannels channels)
 
 int main(int argc, char* argv[])
 {
-    boost::shared_ptr<Configuration> config = getConfiguration();
+    boost::shared_ptr<Configuration> config = getConfiguration(argc, argv);
 
     Queue<boost::exception_ptr> error_queue;
     Queue<std::string> end_marker_queue;
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
 
     // LineInput eats newlines so fromUser -> toGdb stream output must re-add newline (pass true to stream output).
     auto toGdb = InputChain().to<UserCmdWriter>().to<LogChannel>(log, "toGdb")
-        .to<StreamOutput>(config->get_to_user(), true).complete();
+        .to<StreamOutput>(config->get_to_gdb(), true).complete();
 
     string prompt = "(gdb) ";
     auto fromGdb = InputChain().to<CharInput>(config->get_from_gdb()).to<Worker>("fromGdb", error_queue)
@@ -165,6 +165,9 @@ int main(int argc, char* argv[])
     // therefore fromGdb -> toUser does not need to re-add a newline.
     auto toUser = InputChain().to<GdbResponseWriter>().to<LogChannelWithPrompt>(log, "toUser").to<RecombinePrompt>()
         .to<StreamOutput>(config->get_to_user(), false).complete();
+
+    auto errChannel = InputChain().to<LineInput>(config->get_from_gdb_err()).to<Worker>("fromGdbErr", error_queue)
+        .to<LogChannel>(log, "fromGdbErr").to<StreamOutput>(config->get_to_user_err(), true).complete();
 
     auto info = InputChain().to<LogChannel>(log, "info").to<StreamOutput>(cerr, true).complete();
 
