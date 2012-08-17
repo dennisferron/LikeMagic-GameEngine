@@ -12,12 +12,17 @@ std::vector<Breakpoint> breakpoints;
 
 extern "C"
 {
+    struct CollectorMarker {};
+    typedef struct CollectorMarker IoObject;
+    typedef IoObject IoMessage;
+
 #pragma GCC push_options
 #pragma GCC optimize ("0")
 
-void io_debugger_break_here(IoObject *self, IoObject *locals, IoMessage *m, int breakpoint_number, char const* file_name, int line_number)
+void io_debugger_break_here(IoObject *self, IoObject *locals, IoMessage *m,
+                            int breakpoint_number, char const* file_name, int line_number)
 {
-    // Prevent this function from being optimized away.
+    // Add some assembly lines to discourage the complier from optimizing away this function.
     asm ("nop;");
 }
 
@@ -34,12 +39,15 @@ int io_debugger_set_breakpoint(char const* file_name, int line_number)
 int main()
 {
     cout << "Hello world!" << endl;
+    cout << "Another line" << endl;
+    cout << "Another line" << endl;
 
-    // Simulate hitting a breakpoint.
-    //if (!breakpoints.empty())
-    //    io_debugger_break_here(1, breakpoints.at(0).file_name.c_str(), breakpoints.at(0).line_number);
+    IoObject self;
+    IoObject locals;
+    IoMessage m;
 
-    io_debugger_break_here(1, "/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io", 5);
+    io_debugger_break_here(&self, &locals, &m,
+           1, "/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io", 5);
 
     cout << "Goodbye, cruel world!" << endl;
     return 0;
