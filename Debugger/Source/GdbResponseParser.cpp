@@ -41,28 +41,6 @@ namespace ascii = boost::spirit::ascii;
 namespace Iocaste {
     namespace Debugger {
 
-/*
-template <typename Iterator>
-struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponses::TestStr2()>
-{
-    GdbResponseGrammar() : GdbResponseGrammar::base_type(test_str2)
-    {
-        raw_str = qi::char_('R') >> qi::char_('e');
-        test_str1 = raw_str; //qi::string("Reading symbols for shared libraries .... done");
-        test_str2 = raw_str; // *(qi::char_('R') >> qi::char_('e') >> qi::char_('a') >> qi::char_);
-        uninit = qi::double_;
-        //start = test_str1 | test_str2 | uninit;
-        start = test_str1; // | test_str2 | uninit;
-    }
-
-    qi::rule<Iterator, std::string()> raw_str;
-    qi::rule<Iterator, GdbResponses::TestStr1()> test_str1;
-    qi::rule<Iterator, GdbResponses::TestStr2()> test_str2;
-    qi::rule<Iterator, GdbResponses::AddressInFunction> uninit;
-    qi::rule<Iterator, GdbResponseType()> start;
-};
-*/
-
 template <typename Iterator>
 struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
 {
@@ -84,6 +62,9 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
         cursor_pos = qi::lit("\x1A\x1A") >> file_name >> ":" >> qi::int_ >> ":" >> qi::int_ >> ":" >> *qi::alpha >> ":" >> address;
 
+        // Breakpoint 2, io_debugger_break_here (self=0x7fff5fbffdff, locals=0x7fff5fbffdfe, m=0x7fff5fbffdfd, breakpoint_number=1,
+        //      file_name=0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5)
+        //          at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26
         // Breakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
         breakpoint_hit = qi::lit("Breakpoint ") >> qi::int_ >> ", " >> function_name >> " (" >> function_args >> ") at " >> file_name >> ":" >> qi::int_;
 
@@ -114,7 +95,11 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         gdb_value = qi::int_ | (qi::lit('"') >> *(qi::char_ - qi::char_('"')) >> qi::lit('"'));
         value_history = qi::lit('$') >> qi::int_ >> " = " >> gdb_value;
 
-        start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function | backtrace_line | value_history | raw_str;
+        start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function | backtrace_line | value_history
+        #ifdef PARSE_RAW_STRING
+            | raw_str
+        #endif
+        ;
     }
 
     qi::rule<Iterator, std::string()> ident;

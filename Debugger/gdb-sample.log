@@ -1,182 +1,175 @@
 fromUser: set prompt >>>>>>cb_gdb:
-info: Built input chains.
-info: MainLoopState::ReadUser
 toGdb: set prompt >>>>>>cb_gdb:
+fromGdb: \b>>>>>>cb_gdb:
+toUser: \b>>>>>>cb_gdb:
+
 fromUser: show version
-info: MainLoopState::ReadUser
-fromGdbErr:
-fromGdbErr:
-fromGdbErr: warning: Could not find object file \"/opt/local/var/macports/build/_opt_local_var_macports_sources_rsync.macports.org_release_tarballs_ports_lang_gcc46/gcc46/work/build/x86_64-apple-darwin11/libstdc++-v3/src/.libs/basic_file.o\" - no debug information available for \"basic_file.cc\".
 toGdb: show version
-fromGdb: Reading symbols for shared libraries .... done\n(gdb) \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 fromGdb: GNU gdb 6.3.50-20050815 (Apple version gdb-1705) (Fri Jul  1 10:50:06 UTC 2011)\nCopyright 2004 Free Software Foundation, Inc.\nGDB is free software, covered by the GNU General Public License, and you are\nwelcome to change it and/or distribute copies of it under certain conditions.\nType \"show copying\" to see the conditions.\nThere is absolutely no warranty for GDB.  Type \"show warranty\" for details.\nThis GDB was configured as \"x86_64-apple-darwin\".\n\b>>>>>>cb_gdb:
-fromGdbErr:
-toUser: Reading symbols for shared libraries .... done\n(gdb) \n\b>>>>>>cb_gdb:
-fromGdbErr:
-info: MainLoopState::ReadGdb
-fromGdbErr: warning: Could not find object file \"/opt/local/var/macports/build/_opt_local_var_macports_sources_rsync.macports.org_release_tarballs_ports_lang_gcc46/gcc46/work/build/x86_64-apple-darwin11/libgcc/_floatundixf_s.o\" - no debug information available for \"../../../gcc-4.6-20110325/libgcc/../gcc/libgcc2.c\".
 toUser: GNU gdb 6.3.50-20050815 (Apple version gdb-1705) (Fri Jul  1 10:50:06 UTC 2011)\nCopyright 2004 Free Software Foundation, Inc.\nGDB is free software, covered by the GNU General Public License, and you are\nwelcome to change it and/or distribute copies of it under certain conditions.\nType \"show copying\" to see the conditions.\nThere is absolutely no warranty for GDB.  Type \"show warranty\" for details.\nThis GDB was configured as \"x86_64-apple-darwin\".\n\b>>>>>>cb_gdb:
+
+fromGdb: Reading symbols for shared libraries .... done\n\b>>>>>>cb_gdb:
+toUser: Reading symbols for shared libraries .... done\n\b>>>>>>cb_gdb:
+
 fromUser: set confirm off
-info: MainLoopState::ReadUser
 toGdb: set confirm off
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
+
 fromUser: set width 0
-info: MainLoopState::ReadUser
+
 toGdb: set width 0
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \b>>>>>>cb_gdb:
 fromUser: set height 0
-info: MainLoopState::ReadUser
+
 toGdb: set height 0
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \b>>>>>>cb_gdb:
 fromUser: set breakpoint pending on
-info: MainLoopState::ReadUser
+
 toGdb: set breakpoint pending on
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \b>>>>>>cb_gdb:
 fromUser: set print asm-demangle on
-info: MainLoopState::ReadUser
+
 toGdb: set print asm-demangle on
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \b>>>>>>cb_gdb:
 fromUser: set unwindonsignal on
-info: MainLoopState::ReadUser
+
 toGdb: set unwindonsignal on
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \b>>>>>>cb_gdb:
 fromUser: set disassembly-flavor intel
-info: MainLoopState::ReadUser
+
 toGdb: set disassembly-flavor intel
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \b>>>>>>cb_gdb:
 fromUser: source /Developer/Applications/CodeBlocks/CodeBlocks.app/Contents/Resources/share/codeblocks/scripts/stl-views-1.0.3.gdb
-info: MainLoopState::ReadUser
+
 toGdb: source /Developer/Applications/CodeBlocks/CodeBlocks.app/Contents/Resources/share/codeblocks/scripts/stl-views-1.0.3.gdb
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/
-info: MainLoopState::ReadUser
+
 toGdb: directory /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \b>>>>>>cb_gdb:
 fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41\"
-info: MainLoopState::ReadUser
+
 toGdb: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41\"
 fromGdb: Breakpoint 1 at 0x100000b02: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 41.\n\b>>>>>>cb_gdb:
 toUser: Breakpoint 1 at 0x100000b02: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 41.\n\b>>>>>>cb_gdb:
 fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26\"
-info: MainLoopState::ReadUser
+
 toGdb: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26\"
 fromGdb: Breakpoint 2 at 0x100000a55: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 26.\n\b>>>>>>cb_gdb:
 toUser: Breakpoint 2 at 0x100000a55: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 26.\n\b>>>>>>cb_gdb:
 fromUser: tty /dev/ttys003
-info: MainLoopState::ReadUser
+
 toGdb: tty /dev/ttys003
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \b>>>>>>cb_gdb:
 fromUser: run
-info: MainLoopState::ReadUser
+
 toGdb: run
 fromGdb: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41:864:beg:0x100000b02\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41:864:beg:0x100000b02\n\b>>>>>>cb_gdb:
 fromUser: next
-info: MainLoopState::ReadUser
+
 toGdb: next
 fromGdb: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:42:900:beg:0x100000b2a\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:42:900:beg:0x100000b2a\n\b>>>>>>cb_gdb:
 fromUser: next
-info: MainLoopState::ReadUser
+
 toGdb: next
 fromGdb: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:936:beg:0x100000b52\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:936:beg:0x100000b52\n\b>>>>>>cb_gdb:
 fromUser: next
-info: MainLoopState::ReadUser
+
 toGdb: next
 fromGdb: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:50:1078:beg:0x100000b7a\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:50:1078:beg:0x100000b7a\n\b>>>>>>cb_gdb:
 fromUser: next
-info: MainLoopState::ReadUser
+
 toGdb: next
 fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdff, locals=0x7fff5fbffdfe, m=0x7fff5fbffdfd, breakpoint_number=1, file_name=0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26:627:beg:0x100000a55\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdff, locals=0x7fff5fbffdfe, m=0x7fff5fbffdfd, breakpoint_number=1, file_name=0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26:627:beg:0x100000a55\n\b>>>>>>cb_gdb:
 fromUser: info locals
-info: MainLoopState::ReadUser
+
 toGdb: info locals
 fromGdb: No locals.\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: No locals.\n\b>>>>>>cb_gdb:
 fromUser: info args
-info: MainLoopState::ReadUser
+
 toGdb: info args
 fromGdb: self = (IoObject *) 0x7fff5fbffdff\nlocals = (IoObject *) 0x7fff5fbffdfe\nm = (IoMessage *) 0x7fff5fbffdfd\nbreakpoint_number = 1\nfile_name = 0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 5\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: self = (IoObject *) 0x7fff5fbffdff\nlocals = (IoObject *) 0x7fff5fbffdfe\nm = (IoMessage *) 0x7fff5fbffdfd\nbreakpoint_number = 1\nfile_name = 0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 5\n\b>>>>>>cb_gdb:
 fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52\"
-info: MainLoopState::ReadUser
+
 toGdb: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52\"
 fromGdb: Breakpoint 3 at 0x100000ba0: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 52.\n\b>>>>>>cb_gdb:
 toUser: Breakpoint 3 at 0x100000ba0: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 52.\n\b>>>>>>cb_gdb:
 fromUser: cont
-info: MainLoopState::ReadUser
+
 toGdb: cont
 fromGdb: \nBreakpoint 3, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52:1178:beg:0x100000ba0\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \nBreakpoint 3, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52:1178:beg:0x100000ba0\n\b>>>>>>cb_gdb:
 fromUser: info locals
-info: MainLoopState::ReadUser
+
 toGdb: info locals
 fromGdb: self = {<No data fields>}\nlocals = {<No data fields>}\nm = {<No data fields>}\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: self = {<No data fields>}\nlocals = {<No data fields>}\nm = {<No data fields>}\n\b>>>>>>cb_gdb:
 fromUser: info args
-info: MainLoopState::ReadUser
+
 toGdb: info args
 fromGdb: No arguments.\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: No arguments.\n\b>>>>>>cb_gdb:
 fromUser: next
-info: MainLoopState::ReadUser
+
 toGdb: next
 fromGdb: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:53:1224:beg:0x100000bc8\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:53:1224:beg:0x100000bc8\n\b>>>>>>cb_gdb:
 fromUser: info locals
-info: MainLoopState::ReadUser
+
 toGdb: info locals
 fromGdb: self = {<No data fields>}\nlocals = {<No data fields>}\nm = {<No data fields>}\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: self = {<No data fields>}\nlocals = {<No data fields>}\nm = {<No data fields>}\n\b>>>>>>cb_gdb:
 fromUser: info args
-info: MainLoopState::ReadUser
+
 toGdb: info args
 fromGdb: No arguments.\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: No arguments.\n\b>>>>>>cb_gdb:
 fromUser: cont
-info: MainLoopState::ReadUser
+
 toGdb: cont
 fromGdb: \nProgram exited normally.\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+
 toUser: \nProgram exited normally.\n\b>>>>>>cb_gdb:
 fromUser: quit
-info: MainLoopState::ReadUser
+
 toGdb: quit
-fromGdbErr:
+
