@@ -71,7 +71,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         // No locals.
         // No symbol table info available.
         no_locals = qi::string("No locals.") | qi::string("No arguments.") | qi::string("No symbol table info available.");
-        locals_info = no_locals;
+        locals_info = no_locals | ;
 
         // 0x0000000100000e20 in start ()
         address_in_function = address >> " in " >> function_name >> " (" >> function_args >> ")";
@@ -92,8 +92,11 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         raw_str = raw_str_value;
         //test_str1 = qi::lit("#0  ") >> raw_str_value;
 
-        gdb_value = qi::int_ | (qi::lit('"') >> *(qi::char_ - qi::char_('"')) >> qi::lit('"'));
+        gdb_value = qi::int_ | quoted_string;
         value_history = qi::lit('$') >> qi::int_ >> " = " >> gdb_value;
+
+        quoted_string = qi::lit('"') >> *(qi::char_ - qi::char_('"')) >> qi::lit('"');
+        variable_equals = ident >> qi::lit(" = ") >> -(type_cast >> " ") >> gdb_value >> -(qi::lit(" ") >> quoted_string);
 
         start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function | backtrace_line | value_history
         #ifdef PARSE_RAW_STRING
@@ -113,6 +116,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, std::string()> address;
     qi::rule<Iterator, std::string()> no_locals;
     qi::rule<Iterator, std::string()> raw_str_value;
+    qi::rule<Iterator, std::string()> quoted_string;
     qi::rule<Iterator, SharedTypes::GdbValue()> gdb_value;
     qi::rule<Iterator, GdbResponses::ValueHistory()> value_history;
     qi::rule<Iterator, GdbResponses::TestStr1()> test_str1;
