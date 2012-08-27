@@ -35,7 +35,7 @@ private:
 
         void operator()(const GdbResponses::BreakpointSet& t)
         {
-            cerr << "breakpoint set is " << t.breakpoint_number << " " << t.address << " " << t.file_name << " " << t.line_number << endl;
+            cerr << "breakpoint set is " << t.breakpoint_number << " " << t.address.hex_value << " " << t.file_name << " " << t.line_number << endl;
 
             GdbResponses::BreakpointSet bs(t);
             GdbBreakpoint gb = {t.breakpoint_number};

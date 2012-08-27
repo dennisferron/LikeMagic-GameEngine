@@ -51,7 +51,8 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         device_name = +(qi::print); // for tty
         dummy = +qi::char_('\xFF');
         function_name = +(qi::char_ - qi::char_(' '));
-        function_args = *(qi::char_ - qi::char_(')'));
+        gdb_function = function_name >> " (" >> (function_arg % ", ") >> ")";
+        function_arg = ident >> "=" >> gdb_value;
         version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
         reading_libs = qi::lit("Reading symbols for shared libraries ") >> *(qi::char_('.') | qi::char_('+')) >> " done";
 
@@ -66,15 +67,28 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         //      file_name=0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5)
         //          at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26
         // Breakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
-        breakpoint_hit = qi::lit("Breakpoint ") >> qi::int_ >> ", " >> function_name >> " (" >> function_args >> ") at " >> file_name >> ":" >> qi::int_;
+        // Breakpoint 2, io_debugger_break_here (self=0x7fff5fbffdff, locals=0x7fff5fbffdfe, m=0x7fff5fbffdfd, breakpoint_number=1,
+        //      file_name=0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5)
+        //          at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26
+        breakpoint_hit = qi::lit("Breakpoint ") >> qi::int_ >> ", " >> gdb_function >> " at " >> file_name >> ":" >> qi::int_;
 
         // No locals.
         // No symbol table info available.
         no_locals = qi::string("No locals.") | qi::string("No arguments.") | qi::string("No symbol table info available.");
-        locals_info = no_locals | ;
+        locals_info = no_locals | variable_equals;
+
+        // self = (IoObject *) 0x7fff5fbffdff
+        // locals = (IoObject *) 0x7fff5fbffdfe
+        // m = (IoMessage *) 0x7fff5fbffdfd
+        // breakpoint_number = 1
+        // file_name = 0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"
+        // line_number = 5\n\b>>>>>>cb_gdb:
+        variable_equals = ident >> " = " >> -(type_cast >> " ") >> gdb_value;
+        quoted_string = qi::lit('"') >> *(qi::char_ - qi::char_('"')) >> qi::lit('"');
+        type_cast = qi::lit('(') >> *(qi::char_ - qi::char_(')')) >> qi::lit(')');
 
         // 0x0000000100000e20 in start ()
-        address_in_function = address >> " in " >> function_name >> " (" >> function_args >> ")";
+        address_in_function = address >> " in " >> gdb_function;
 
         // #6  0xb7f42f47 in operator new () from /usr/lib/libstdc++.so.6
         // #7  0x0805bd20 in Image<Color>::fft (this=0xb467640) at ../image_processing/image.cpp:545
@@ -83,7 +97,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         // -(address in) (function|?? (args)) ((at file:line)(from module))
         backtrace_line = qi::lit("#") >> qi::int_ >> "  "
             >> -(address >> " in ")
-            >> function_name >> " (" >> function_args >> ")"
+            >> gdb_function
             >> -(" from " >> file_name)
             >> -(" at " >> file_name)
             >> -(":" >> qi::int_);
@@ -92,11 +106,8 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         raw_str = raw_str_value;
         //test_str1 = qi::lit("#0  ") >> raw_str_value;
 
-        gdb_value = qi::int_ | quoted_string;
+        gdb_value = (address | qi::int_ | quoted_string) >> -(qi::lit(" ") >> quoted_string);
         value_history = qi::lit('$') >> qi::int_ >> " = " >> gdb_value;
-
-        quoted_string = qi::lit('"') >> *(qi::char_ - qi::char_('"')) >> qi::lit('"');
-        variable_equals = ident >> qi::lit(" = ") >> -(type_cast >> " ") >> gdb_value >> -(qi::lit(" ") >> quoted_string);
 
         start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function | backtrace_line | value_history
         #ifdef PARSE_RAW_STRING
@@ -110,13 +121,16 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, std::string()> dummy;
     qi::rule<Iterator, std::string()> file_name;
     qi::rule<Iterator, std::string()> function_name;
-    qi::rule<Iterator, std::string()> function_args;
     qi::rule<Iterator, std::string()> device_name;
     qi::rule<Iterator, std::string()> version_number;
-    qi::rule<Iterator, std::string()> address;
+    qi::rule<Iterator, SharedTypes::GdbAddress()> address;
     qi::rule<Iterator, std::string()> no_locals;
     qi::rule<Iterator, std::string()> raw_str_value;
     qi::rule<Iterator, std::string()> quoted_string;
+    qi::rule<Iterator, SharedTypes::TypeCast()> type_cast;
+    qi::rule<Iterator, SharedTypes::VariableEquals()> variable_equals;
+    qi::rule<Iterator, SharedTypes::GdbResponseFunctionArg()> function_arg;
+    qi::rule<Iterator, SharedTypes::GdbResponseFunction()> gdb_function;
     qi::rule<Iterator, SharedTypes::GdbValue()> gdb_value;
     qi::rule<Iterator, GdbResponses::ValueHistory()> value_history;
     qi::rule<Iterator, GdbResponses::TestStr1()> test_str1;

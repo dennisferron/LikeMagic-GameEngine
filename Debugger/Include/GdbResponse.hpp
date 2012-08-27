@@ -31,7 +31,7 @@ struct ReadingLibs
 struct BreakpointSet
 {
     int breakpoint_number;
-    std::string address;
+    SharedTypes::GdbAddress address;
     std::string file_name;
     int line_number;
 };
@@ -42,21 +42,24 @@ struct CursorPos
     int line_number;
     int char_number;
     std::string unknown;
-    std::string address;
+    SharedTypes::GdbAddress address;
 };
 
 struct BreakpointHit
 {
     int breakpoint_number;
-    std::string function;
-    std::string args;
+    SharedTypes::GdbResponseFunction function;
     std::string file_name;
     int line_number;
 };
 
 struct LocalsInfo
 {
-    std::string msg;
+    typedef boost::variant<
+        std::string,
+        SharedTypes::VariableEquals
+    > locals_type;
+    locals_type value;
 };
 
 /*
@@ -88,9 +91,8 @@ struct LocalsInfo
 struct BacktraceLine
 {
     int backtrace_number;
-    boost::optional<std::string> address;
-    std::string function;
-    std::string args;
+    boost::optional<SharedTypes::GdbAddress> address;
+    SharedTypes::GdbResponseFunction function;
     boost::optional<std::string> module;
     boost::optional<std::string> file_name;
     boost::optional<int> line_number;
@@ -98,9 +100,8 @@ struct BacktraceLine
 
 struct AddressInFunction
 {
-    std::string address;
-    std::string function;
-    std::string args;
+    SharedTypes::GdbAddress address;
+    SharedTypes::GdbResponseFunction function;
 };
 
 struct ValueHistory

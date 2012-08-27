@@ -84,15 +84,15 @@ private:
 
         UserCmds::PrintFunction print;
         print.function_name = "io_debugger_set_breakpoint";
-        print.args.push_back(stbk.file_name);
-        print.args.push_back(stbk.line_number);
+        print.args.push_back( { stbk.file_name } );
+        print.args.push_back( { stbk.line_number } );
         channels.toGdb.WriteData(print);
 
         GdbResponse resp = channels.fromGdb.ReadData();
 
         if (auto* vh = boost::get<GdbResponses::ValueHistory>(&resp.values.at(0)))
         {
-            if (auto* breakpt_num = boost::get<int>(&vh->value))
+            if (auto* breakpt_num = boost::get<int>(&(vh->value.value)))
             {
                 return {*breakpt_num};
             }
@@ -120,7 +120,7 @@ private:
         GdbResponses::BreakpointSet bs;
 
         bs.breakpoint_number = ub.number;
-        bs.address = std::string("0x00000000");
+        bs.address = { "0x00000000" };
         bs.file_name = stbk.file_name;
         bs.line_number = stbk.line_number;
 

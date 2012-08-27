@@ -43,7 +43,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::BreakpointSet,
     (int, breakpoint_number)
-    (std::string, address)
+    (SharedTypes::GdbAddress, address)
     (std::string, file_name)
     (int, line_number)
 )
@@ -51,26 +51,23 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::BreakpointHit,
     (int, breakpoint_number)
-    (std::string, function)
-    (std::string, args)
+    (SharedTypes::GdbResponseFunction, function)
     (std::string, file_name)
     (int, line_number)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::AddressInFunction,
-    (std::string, address)
-    (std::string, function)
-    (std::string, args)
+    (SharedTypes::GdbAddress, address)
+    (SharedTypes::GdbResponseFunction, function)
 )
 
 
 BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::BacktraceLine,
     (int, backtrace_number)
-    (boost::optional<std::string>, address)
-    (std::string, function)
-    (std::string, args)
+    (boost::optional<SharedTypes::GdbAddress>, address)
+    (SharedTypes::GdbResponseFunction, function)
     (boost::optional<std::string>, module)
     (boost::optional<std::string>, file_name)
     (boost::optional<int>, line_number)
@@ -82,12 +79,12 @@ BOOST_FUSION_ADAPT_STRUCT(
     (int, line_number)
     (int, char_number)
     (std::string, unknown)
-    (std::string, address)
+    (SharedTypes::GdbAddress, address)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::LocalsInfo,
-    (std::string, msg)
+    (GdbResponses::LocalsInfo::locals_type, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
