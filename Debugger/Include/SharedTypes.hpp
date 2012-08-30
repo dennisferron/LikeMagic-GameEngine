@@ -7,9 +7,29 @@
 
 namespace Iocaste { namespace Debugger { namespace SharedTypes {
 
+struct FromModule
+{
+    std::string module_name;
+};
+
+struct AtFile
+{
+    std::string file_name;
+};
+
 struct GdbAddress
 {
     std::string hex_value;
+};
+
+struct AddressIn
+{
+    GdbAddress address;
+};
+
+struct ValueAsString
+{
+    std::string text;
 };
 
 struct GdbValue
@@ -18,7 +38,9 @@ struct GdbValue
         int, std::string, GdbAddress
     > value_type;
     value_type value;
-    boost::optional<std::string> value_as_string;
+    boost::optional<
+        ValueAsString
+    > value_as_string;
 };
 
 struct GdbResponseFunctionArg

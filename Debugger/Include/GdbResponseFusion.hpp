@@ -58,19 +58,33 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::AddressInFunction,
-    (SharedTypes::GdbAddress, address)
+    (SharedTypes::AddressIn, address_in)
     (SharedTypes::GdbResponseFunction, function)
 )
 
 
 BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::BacktraceLine,
+
     (int, backtrace_number)
-    (boost::optional<SharedTypes::GdbAddress>, address)
+
+    (boost::optional<
+        SharedTypes::AddressIn
+    >, address_in)
+
     (SharedTypes::GdbResponseFunction, function)
-    (boost::optional<std::string>, module)
-    (boost::optional<std::string>, file_name)
-    (boost::optional<int>, line_number)
+
+    (boost::optional<
+        SharedTypes::FromModule
+    >, module)
+
+    (boost::optional<
+        SharedTypes::AtFile
+    >, file_name)
+
+    (boost::optional<
+        int
+    >, line_number)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(

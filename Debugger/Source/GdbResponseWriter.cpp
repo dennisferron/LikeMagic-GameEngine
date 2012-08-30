@@ -31,6 +31,14 @@ struct GdbResponseWriteGrammar
         dummy %= karma::string;
         reading_libs = karma::lit("Reading symbols for shared libraries ") << karma::string << " done";
 
+        function_name = karma::string;
+        ident = karma::string;
+        address = karma::string;
+        file_name = karma::string;
+
+        gdb_function = function_name << " (" << (function_arg % ", ") << ")";
+        function_arg = ident << "=" << gdb_value;
+
         breakpoint_set = karma::lit("Breakpoint ") << karma::int_ << " at " << karma::string << ": file " << karma::string << ", line " << karma::int_ << ".";
         empty = karma::lit("") << -dummy;
 
@@ -40,28 +48,33 @@ struct GdbResponseWriteGrammar
         cursor_pos = karma::lit("\x1A\x1A") << karma::string << ":" << karma::int_ << ":" << karma::int_ << ":" << karma::string << ":" << karma::string;
 
         // Breakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
-        breakpoint_hit = karma::lit("Breakpoint ") << karma::int_ << ", " << karma::string << " (" << karma::string << ") at " << karma::string << ":" << karma::int_;
+        breakpoint_hit = karma::lit("Breakpoint ") << karma::int_ << ", " << gdb_function << " at " << karma::string << ":" << karma::int_;
 
         // #0  0x0000000100000e20 in start ()
         // #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
         //backtrace_line = karma::int_ << -karma::string << karma::string << karma::string << -karma::string << -karma::string << -karma::int_;
         backtrace_line = karma::lit("#") << karma::int_ << karma::lit("  ")
-            << -(karma::string << karma::lit(" in "))
-            << karma::string << karma::lit(" (") << karma::string << karma::lit(")")
-            << -(karma::lit(" from") << karma::string)
-            << -(karma::lit(" at ") << karma::string)
+            << -address_in
+            << gdb_function
+            << -from_module
+            << -at_file
             << -(karma::lit(":") << karma::int_);
+
+        address_in = address << karma::lit(" in ");
+        from_module = karma::lit(" from ") << file_name;
+        at_file = karma::lit(" at ") << file_name;
 
         // No locals.
         // No symbol table info available.
         locals_info = (karma::string | variable_equals);
-        variable_equals = karma::string << " = " << -(type_cast << " ") << gdb_value;
+        variable_equals = karma::string << " = " << -type_cast << gdb_value;
         type_cast = karma::lit("(") << karma::string << ")";
         gdb_value = (address | karma::int_ | quoted_string)
-            << -(karma::lit(" ") << quoted_string);
+            << -value_as_string;
+        value_as_string = karma::lit(" ") << quoted_string;
 
         // 0x0000000100000e20 in start ()
-        address_in_function = karma::string << " in " << karma::string << " (" << karma::string << ")";
+        address_in_function = address_in << gdb_function;
 
         quoted_string = karma::lit("\"") << karma::string << "\"";
 
@@ -74,9 +87,19 @@ struct GdbResponseWriteGrammar
 
     karma::rule<OutputIterator, string()> dummy;
     karma::rule<OutputIterator, string()> quoted_string;
+    karma::rule<OutputIterator, string()> function_name;
+    karma::rule<OutputIterator, string()> ident;
+    karma::rule<OutputIterator, SharedTypes::GdbAddress()> address;
+    karma::rule<OutputIterator, string()> file_name;
+    karma::rule<OutputIterator, SharedTypes::AddressIn()> address_in;
+    karma::rule<OutputIterator, SharedTypes::FromModule()> from_module;
+    karma::rule<OutputIterator, SharedTypes::AtFile()> at_file;
+    karma::rule<OutputIterator, SharedTypes::ValueAsString()> value_as_string;
     karma::rule<OutputIterator, SharedTypes::TypeCast()> type_cast;
     karma::rule<OutputIterator, SharedTypes::GdbValue()> gdb_value;
     karma::rule<OutputIterator, SharedTypes::VariableEquals()> variable_equals;
+    karma::rule<OutputIterator, SharedTypes::GdbResponseFunction()> gdb_function;
+    karma::rule<OutputIterator, SharedTypes::GdbResponseFunctionArg()> function_arg;
     karma::rule<OutputIterator, GdbResponses::Banner()> banner;
     karma::rule<OutputIterator, GdbResponses::ReadingLibs()> reading_libs;
     karma::rule<OutputIterator, GdbResponses::BreakpointSet()> breakpoint_set;
@@ -144,8 +167,12 @@ struct GdbResponsePrinter : boost::static_visitor<>
 
     void operator()(const BreakpointSet& t) const
     {
-        cerr << "breakpoint set is " << t.breakpoint_number << " " << t.address << " "
-        << t.file_name << " " << t.line_number << endl;
+        cerr << "breakpoint set is "
+        << t.breakpoint_number << " "
+        << t.address.hex_value << " "
+        << t.file_name << " "
+        << t.line_number
+        << endl;
     }
 
     void operator()(const CursorPos& t) const
@@ -154,8 +181,8 @@ struct GdbResponsePrinter : boost::static_visitor<>
         << " " << t.file_name
         << " " << t.line_number
         << " " << t.char_number
-        << " " << t.address
         << " " << t.unknown
+        << " " << t.address.hex_value
         << endl;
     }
 
@@ -163,8 +190,8 @@ struct GdbResponsePrinter : boost::static_visitor<>
     {
         cerr << "breakpoint hit is"
         << " " << t.breakpoint_number
-        << " " << t.function
-        << " " << t.args
+        << " " << t.function.name
+        << " " << t.function.args.size()
         << " " << t.file_name
         << " " << t.line_number
         << endl;
@@ -172,23 +199,24 @@ struct GdbResponsePrinter : boost::static_visitor<>
 
     void operator()(const BacktraceLine& t) const
     {
+        // TODO:  Display boost optional values.
         cerr << "backtrace line is"
         << " #" << t.backtrace_number
-        << " at addr:" << t.address
-        << " in func:" << t.function
-        << " with args:" << t.args
-        << " from module:" << t.module
-        << " in file:" << t.file_name
-        << " at line:" << t.line_number
+        //<< " at addr:" << t.address_in.address.hex_value
+        << " in func:" << t.function.name
+        << " with num args:" << t.function.args.size()
+        //<< " from module:" << t.from_module.module_name
+        //<< " in file:" << t.in_file.file_name
+        //<< " at line:" << t.line_number
         << endl;
     }
 
     void operator()(const AddressInFunction& t) const
     {
         cerr << "address in function is"
-        << " " << t.address
-        << " " << t.function
-        << " " << t.args
+        << " " << t.address_in.address.hex_value
+        << " " << t.function.name
+        << " " << t.function.args.size()
         << endl;
     }
 
