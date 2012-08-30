@@ -33,22 +33,22 @@ struct GdbResponseWriteGrammar
 
         function_name = karma::string;
         ident = karma::string;
-        address = karma::string;
+        address = karma::lit("0x") << karma::string;
         file_name = karma::string;
 
-        gdb_function = function_name << " (" << (function_arg % ", ") << ")";
+        gdb_function = function_name << " (" << -(function_arg % ", ") << ")";
         function_arg = ident << "=" << gdb_value;
 
-        breakpoint_set = karma::lit("Breakpoint ") << karma::int_ << " at " << karma::string << ": file " << karma::string << ", line " << karma::int_ << ".";
+        breakpoint_set = karma::lit("Breakpoint ") << karma::int_ << " at " << address << ": file " << file_name << ", line " << karma::int_ << ".";
         empty = karma::lit("") << -dummy;
 
         raw_str = karma::string;
 
         //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
-        cursor_pos = karma::lit("\x1A\x1A") << karma::string << ":" << karma::int_ << ":" << karma::int_ << ":" << karma::string << ":" << karma::string;
+        cursor_pos = karma::lit("\x1A\x1A") << file_name << ":" << karma::int_ << ":" << karma::int_ << ":" << karma::string << ":" << address;
 
         // Breakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
-        breakpoint_hit = karma::lit("Breakpoint ") << karma::int_ << ", " << gdb_function << " at " << karma::string << ":" << karma::int_;
+        breakpoint_hit = karma::lit("Breakpoint ") << karma::int_ << ", " << gdb_function << " at " << file_name << ":" << karma::int_;
 
         // #0  0x0000000100000e20 in start ()
         // #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
@@ -67,11 +67,13 @@ struct GdbResponseWriteGrammar
         // No locals.
         // No symbol table info available.
         locals_info = (karma::string | variable_equals);
-        variable_equals = karma::string << " = " << -type_cast << gdb_value;
-        type_cast = karma::lit("(") << karma::string << ")";
+        variable_equals = ident << " = " << -type_cast << gdb_value;
+        type_cast = karma::string;
         gdb_value = (address | karma::int_ | quoted_string)
             << -value_as_string;
         value_as_string = karma::lit(" ") << quoted_string;
+
+        value_history = karma::lit('$') << karma::int_ << " = " << gdb_value;
 
         // 0x0000000100000e20 in start ()
         address_in_function = address_in << gdb_function;
@@ -101,6 +103,7 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, SharedTypes::GdbResponseFunction()> gdb_function;
     karma::rule<OutputIterator, SharedTypes::GdbResponseFunctionArg()> function_arg;
     karma::rule<OutputIterator, GdbResponses::Banner()> banner;
+    karma::rule<OutputIterator, GdbResponses::ValueHistory()> value_history;
     karma::rule<OutputIterator, GdbResponses::ReadingLibs()> reading_libs;
     karma::rule<OutputIterator, GdbResponses::BreakpointSet()> breakpoint_set;
     karma::rule<OutputIterator, GdbResponses::BreakpointHit()> breakpoint_hit;

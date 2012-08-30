@@ -52,17 +52,19 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         device_name = +(qi::print); // for tty
         dummy = +qi::char_('\xFF');
         function_name = +(qi::char_ - qi::char_(' '));
-        gdb_function = function_name >> " (" >> (function_arg % ", ") >> ")";
+        gdb_function = function_name >> " (" >> -(function_arg % ", ") >> ")";
         function_arg = ident >> "=" >> gdb_value;
         version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
         reading_libs = qi::lit("Reading symbols for shared libraries ") >> *(qi::char_('.') | qi::char_('+')) >> " done";
 
-        address = qi::string("0x") >> +qi::alnum;
+        address = qi::lit("0x") > +qi::alnum;
 
         breakpoint_set = qi::lit("Breakpoint ") >> qi::int_ >> " at " >> address >> ": file " >> file_name >> "," >> " line " >> qi::int_ >> ".";
 
         //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
         cursor_pos = qi::lit("\x1A\x1A") >> file_name >> ":" >> qi::int_ >> ":" >> qi::int_ >> ":" >> *qi::alpha >> ":" >> address;
+
+        // Breakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41
 
         // Breakpoint 2, io_debugger_break_here (self=0x7fff5fbffdff, locals=0x7fff5fbffdfe, m=0x7fff5fbffdfd, breakpoint_number=1,
         //      file_name=0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5)
