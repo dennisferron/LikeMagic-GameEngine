@@ -35,9 +35,10 @@ struct GdbResponseWriteGrammar
         ident = karma::string;
         address = karma::lit("0x") << karma::string;
         file_name = karma::string;
+        equals = karma::string;
 
         gdb_function = function_name << " (" << -(function_arg % ", ") << ")";
-        function_arg = ident << "=" << gdb_value;
+        function_arg = ident << equals << gdb_value;
 
         breakpoint_set = karma::lit("Breakpoint ") << karma::int_ << " at " << address << ": file " << file_name << ", line " << karma::int_ << ".";
         empty = karma::lit("") << -dummy;
@@ -67,13 +68,13 @@ struct GdbResponseWriteGrammar
         // No locals.
         // No symbol table info available.
         locals_info = (karma::string | variable_equals);
-        variable_equals = ident << " = " << -type_cast << gdb_value;
+        variable_equals = ident << equals << -type_cast << gdb_value;
         type_cast = karma::string;
         gdb_value = (address | karma::int_ | quoted_string)
             << -value_as_string;
         value_as_string = karma::lit(" ") << quoted_string;
 
-        value_history = karma::lit('$') << karma::int_ << " = " << gdb_value;
+        value_history = karma::lit('$') << karma::int_ << equals << gdb_value;
 
         // 0x0000000100000e20 in start ()
         address_in_function = address_in << gdb_function;
@@ -91,6 +92,7 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, string()> quoted_string;
     karma::rule<OutputIterator, string()> function_name;
     karma::rule<OutputIterator, string()> ident;
+    karma::rule<OutputIterator, string()> equals;
     karma::rule<OutputIterator, SharedTypes::GdbAddress()> address;
     karma::rule<OutputIterator, string()> file_name;
     karma::rule<OutputIterator, SharedTypes::AddressIn()> address_in;

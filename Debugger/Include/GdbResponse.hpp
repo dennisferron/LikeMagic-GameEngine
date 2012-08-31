@@ -121,6 +121,7 @@ struct AddressInFunction
 struct ValueHistory
 {
     int number;
+    std::string equals;
     SharedTypes::GdbValue value;
 };
 

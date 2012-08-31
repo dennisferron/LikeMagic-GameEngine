@@ -104,6 +104,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::ValueHistory,
     (int, number)
+    (std::string, equals)
     (SharedTypes::GdbValue, value)
 )
 

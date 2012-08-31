@@ -46,6 +46,7 @@ struct GdbValue
 struct GdbResponseFunctionArg
 {
     std::string name;
+    std::string equals;
     GdbValue value;
 };
 
@@ -63,6 +64,7 @@ struct TypeCast
 struct VariableEquals
 {
     std::string name;
+    std::string equals;
     boost::optional<TypeCast> type_cast;
     GdbValue value;
 };

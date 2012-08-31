@@ -53,7 +53,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         dummy = +qi::char_('\xFF');
         function_name = +(qi::char_ - qi::char_(' '));
         gdb_function = function_name >> " (" >> -(function_arg % ", ") >> ")";
-        function_arg = ident >> "=" >> gdb_value;
+        function_arg = ident >> equals >> gdb_value;
         version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
         reading_libs = qi::lit("Reading symbols for shared libraries ") >> *(qi::char_('.') | qi::char_('+')) >> " done";
 
@@ -64,8 +64,6 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
         cursor_pos = qi::lit("\x1A\x1A") >> file_name >> ":" >> qi::int_ >> ":" >> qi::int_ >> ":" >> *qi::alpha >> ":" >> address;
 
-        // Breakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41
-
         // Breakpoint 2, io_debugger_break_here (self=0x7fff5fbffdff, locals=0x7fff5fbffdfe, m=0x7fff5fbffdfd, breakpoint_number=1,
         //      file_name=0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5)
         //          at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26
@@ -73,12 +71,14 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         // Breakpoint 2, io_debugger_break_here (self=0x7fff5fbffdff, locals=0x7fff5fbffdfe, m=0x7fff5fbffdfd, breakpoint_number=1,
         //      file_name=0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5)
         //          at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26
-        breakpoint_hit = qi::lit("Breakpoint ") >> qi::int_ >> ", " >> gdb_function >> " at " >> file_name >> ":" >> qi::int_;
+        breakpoint_hit = qi::lit("Breakpoint ") >> qi::int_ >> ", " > gdb_function > " at " > file_name > ":" > qi::int_;
 
         // No locals.
         // No symbol table info available.
         no_locals = qi::string("No locals.") | qi::string("No arguments.") | qi::string("No symbol table info available.");
         locals_info = no_locals | variable_equals;
+
+        equals = *qi::space >> qi::char_("=") >> *qi::space;
 
         // self = (IoObject *) 0x7fff5fbffdff
         // locals = (IoObject *) 0x7fff5fbffdfe
@@ -86,7 +86,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         // breakpoint_number = 1
         // file_name = 0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"
         // line_number = 5\n\b>>>>>>cb_gdb:
-        variable_equals = ident >> " = " >> -type_cast >> gdb_value;
+        variable_equals = ident >> equals >> -type_cast >> gdb_value;
         type_cast = qi::char_('(') >> *(qi::char_ - qi::char_(')')) >> qi::char_(')') >> -qi::char_(' ');
 
         quoted_string = qi::lit('"') >> *(qi::char_ - qi::char_('"')) >> qi::lit('"');
@@ -118,7 +118,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         gdb_value = (address | qi::int_ | quoted_string) >> -value_as_string;
         value_as_string = qi::string(" ") >> quoted_string;
 
-        value_history = qi::lit('$') >> qi::int_ >> " = " >> gdb_value;
+        value_history = qi::lit('$') >> qi::int_ >> equals >> gdb_value;
 
         start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function | backtrace_line | value_history
         #ifdef PARSE_RAW_STRING
@@ -134,6 +134,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, std::string()> function_name;
     qi::rule<Iterator, std::string()> device_name;
     qi::rule<Iterator, std::string()> version_number;
+    qi::rule<Iterator, std::string()> equals;
     qi::rule<Iterator, SharedTypes::ValueAsString()> value_as_string;
     qi::rule<Iterator, SharedTypes::AtFile()> at_file;
     qi::rule<Iterator, SharedTypes::FromModule()> from_module;
@@ -221,40 +222,48 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                 iterator_type iter = line.begin();
                 iterator_type end = line.end();
 
-                GdbResponseType line_item;
-                bool success = parse(iter, end, g, line_item);
+                try
+                {
+                    GdbResponseType line_item;
+                    bool success = parse(iter, end, g, line_item);
 
-                if (!success)
-                {
-                    stringstream ss;
-                    ss << "GdbResponse failed to parse ->" << line << "<- in string ->" << input << "<-" << std::endl;
-                    cerr << endl << ss.str() << endl;
-                    raiseError(ParseException(ss.str()));
-                }
-                else if (iter != end)
-                {
-                    if (boost::get<GdbResponses::UninitializedVariant>(&line_item))
-                        cerr << "Uninitialized after parse, success was " << success << " line was " << line << endl;
-                    else if (auto* p = boost::get<GdbResponses::TestStr1>(&line_item))
+                    if (!success)
                     {
-                        cerr << "Got " << p->value << endl;
+                        stringstream ss;
+                        ss << "GdbResponse failed to parse ->" << line << "<- in string ->" << input << "<-" << std::endl;
+                        cerr << endl << ss.str() << endl;
+                        raiseError(ParseException(ss.str()));
                     }
-
-                    stringstream ss;
-                    ss << "Not all of the line was parsed: " << std::string(iter, end) << std::endl;
-                    cerr << endl << ss.str() << endl;
-                    raiseError(ParseException(ss.str()));
-                }
-                else
-                {
-                    if (boost::get<GdbResponses::UninitializedVariant>(&line_item))
-                        cerr << "Uninitialized after parse, success was " << success << " line was " << line << endl;
-                    else if (auto* p = boost::get<GdbResponses::TestStr1>(&line_item))
+                    else if (iter != end)
                     {
-                        cerr << "Got " << p->value << endl;
-                    }
+                        if (boost::get<GdbResponses::UninitializedVariant>(&line_item))
+                            cerr << "Uninitialized after parse, success was " << success << " line was " << line << endl;
+                        else if (auto* p = boost::get<GdbResponses::TestStr1>(&line_item))
+                        {
+                            cerr << "Got " << p->value << endl;
+                        }
 
-                    result.push_back(line_item);
+                        stringstream ss;
+                        ss << "Not all of the line was parsed: " << std::string(iter, end) << std::endl;
+                        cerr << endl << ss.str() << endl;
+                        raiseError(ParseException(ss.str()));
+                    }
+                    else
+                    {
+                        if (boost::get<GdbResponses::UninitializedVariant>(&line_item))
+                            cerr << "Uninitialized after parse, success was " << success << " line was " << line << endl;
+                        else if (auto* p = boost::get<GdbResponses::TestStr1>(&line_item))
+                        {
+                            cerr << "Got " << p->value << endl;
+                        }
+
+                        result.push_back(line_item);
+                    }
+                }
+                catch (boost::spirit::qi::expectation_failure<iterator_type>& exc)
+                {
+                    cerr << "Parse error: " << exc.what() << " at " << std::string(exc.first, exc.last) << endl;
+                    raiseError(exc);
                 }
             }
         }

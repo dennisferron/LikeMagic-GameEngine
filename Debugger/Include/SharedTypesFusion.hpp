@@ -44,6 +44,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(
     SharedTypes::GdbResponseFunctionArg,
     (std::string, name)
+    (std::string, equals)
     (SharedTypes::GdbValue, value)
 )
 
@@ -61,6 +62,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(
     SharedTypes::VariableEquals,
     (std::string, name)
+    (std::string, equals)
     (boost::optional<SharedTypes::TypeCast>, type_cast)
     (SharedTypes::GdbValue, value)
 )
