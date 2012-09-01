@@ -34,6 +34,11 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    SharedTypes::NoLocals,
+    (std::string, text)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     SharedTypes::GdbValue,
     (SharedTypes::GdbValue::value_type, value)
     (boost::optional<

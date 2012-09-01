@@ -32,6 +32,11 @@ struct ValueAsString
     std::string text;
 };
 
+struct NoLocals
+{
+    std::string text;
+};
+
 struct GdbValue
 {
     typedef boost::variant<

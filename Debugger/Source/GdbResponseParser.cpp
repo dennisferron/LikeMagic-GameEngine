@@ -78,7 +78,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         // No locals.
         // No symbol table info available.
         no_locals = qi::string("No locals.") | qi::string("No arguments.") | qi::string("No symbol table info available.");
-        locals_info = no_locals ;//| variable_equals;
+        locals_info = (no_locals | variable_equals);
 
         equals = -qi::space >> qi::char_("=") >> -qi::space;
 
@@ -142,7 +142,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, SharedTypes::FromModule()> from_module;
     qi::rule<Iterator, SharedTypes::GdbAddress()> address;
     qi::rule<Iterator, SharedTypes::AddressIn()> address_in;
-    qi::rule<Iterator, std::string()> no_locals;
+    qi::rule<Iterator, SharedTypes::NoLocals()> no_locals;
     qi::rule<Iterator, std::string()> raw_str_value;
     qi::rule<Iterator, std::string()> quoted_string;
     qi::rule<Iterator, SharedTypes::TypeCast()> type_cast;
