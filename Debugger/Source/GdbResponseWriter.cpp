@@ -84,7 +84,7 @@ struct GdbResponseWriteGrammar
         test_str1 = karma::string;
         test_str2 = karma::string;
 
-        response_item = (test_str1 | backtrace_line | banner | reading_libs | breakpoint_set | breakpoint_hit | cursor_pos | locals_info | address_in_function | raw_str | empty) << "\n";
+        response_item = (locals_info | test_str1 | backtrace_line | banner | reading_libs | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | raw_str | empty) << "\n";
         start = *response_item;
     }
 
@@ -167,7 +167,19 @@ struct GdbResponsePrinter : boost::static_visitor<>
 
     void operator()(const LocalsInfo& t) const
     {
-        cerr << "got LocalsInfo" << endl;
+        cerr << "LocalsInfo is ";
+        boost::apply_visitor(*this, t.value);
+        cerr << endl;
+    }
+
+    void operator ()(const SharedTypes::VariableEquals& t) const
+    {
+        cerr << "variable equals";
+    }
+
+    void operator ()(const std::string& t) const
+    {
+        cerr << "std::string " << t;
     }
 
     void operator()(const BreakpointSet& t) const
@@ -195,9 +207,17 @@ struct GdbResponsePrinter : boost::static_visitor<>
     {
         cerr << "breakpoint hit is"
         << " " << t.breakpoint_number
-        << " " << t.function.name
-        << " " << t.function.args.size()
-        << " " << t.file_name
+        << " " << t.function.name << " (";
+
+        for (auto arg : t.function.args)
+        {
+            cerr << arg.name << arg.equals << "GdbValue";
+            if (arg.value.value_as_string)
+                cerr << " \"" << arg.value.value_as_string->text << "\"";
+            cerr << ", ";
+        }
+
+        cerr << ") " << t.file_name
         << " " << t.line_number
         << endl;
     }

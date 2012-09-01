@@ -56,8 +56,8 @@ struct BreakpointHit
 struct LocalsInfo
 {
     typedef boost::variant<
-        std::string,
-        SharedTypes::VariableEquals
+        std::string//,
+        //SharedTypes::VariableEquals
     > locals_type;
     locals_type value;
 };

@@ -46,14 +46,14 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
 {
     GdbResponseGrammar() : GdbResponseGrammar::base_type(start)
     {
-        ident = +(qi::alpha | qi::char_('-'));
+        ident = +(qi::alpha | qi::char_('-') | qi::char_('_'));
 
         file_name = +(qi::print -  qi::char_(':') - qi::char_(','));
         device_name = +(qi::print); // for tty
         dummy = +qi::char_('\xFF');
         function_name = +(qi::char_ - qi::char_(' '));
-        gdb_function = function_name >> " (" >> -(function_arg % ", ") >> ")";
-        function_arg = ident >> equals >> gdb_value;
+        gdb_function = function_name > " (" > -(function_arg % ", ") > ")";
+        function_arg = ident > equals > gdb_value;
         version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
         reading_libs = qi::lit("Reading symbols for shared libraries ") >> *(qi::char_('.') | qi::char_('+')) >> " done";
 
@@ -71,14 +71,16 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         // Breakpoint 2, io_debugger_break_here (self=0x7fff5fbffdff, locals=0x7fff5fbffdfe, m=0x7fff5fbffdfd, breakpoint_number=1,
         //      file_name=0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5)
         //          at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26
+
+//Breakpoint 2, io_debugger_break_here (self=0x7fff5fbffdff, locals=0x7fff5fbffdfe, m=0x7fff5fbffdfd, breakpoint_number=1, file_name=0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26:627:beg:0x100000a55\n\b>>>>>>cb_gdb:
         breakpoint_hit = qi::lit("Breakpoint ") >> qi::int_ >> ", " > gdb_function > " at " > file_name > ":" > qi::int_;
 
         // No locals.
         // No symbol table info available.
         no_locals = qi::string("No locals.") | qi::string("No arguments.") | qi::string("No symbol table info available.");
-        locals_info = no_locals | variable_equals;
+        locals_info = no_locals ;//| variable_equals;
 
-        equals = *qi::space >> qi::char_("=") >> *qi::space;
+        equals = -qi::space >> qi::char_("=") >> -qi::space;
 
         // self = (IoObject *) 0x7fff5fbffdff
         // locals = (IoObject *) 0x7fff5fbffdfe
@@ -116,7 +118,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         //test_str1 = qi::lit("#0  ") >> raw_str_value;
 
         gdb_value = (address | qi::int_ | quoted_string) >> -value_as_string;
-        value_as_string = qi::string(" ") >> quoted_string;
+        value_as_string = qi::lit(" ") >> quoted_string;
 
         value_history = qi::lit('$') >> qi::int_ >> equals >> gdb_value;
 
