@@ -11,6 +11,11 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::ProgramExited,
+    (std::string, how)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::TestStr1,
     (std::string, value)
 )

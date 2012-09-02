@@ -37,10 +37,15 @@ struct NoLocals
     std::string text;
 };
 
+struct GdbStruct
+{
+    std::string contents;
+};
+
 struct GdbValue
 {
     typedef boost::variant<
-        int, std::string, GdbAddress
+        int, std::string, GdbAddress, GdbStruct
     > value_type;
     value_type value;
     boost::optional<

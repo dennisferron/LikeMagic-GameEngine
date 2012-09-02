@@ -40,10 +40,14 @@ struct GdbResponseWriteGrammar
         gdb_function = function_name << " (" << -(function_arg % ", ") << ")";
         function_arg = ident << equals << gdb_value;
 
+        gdb_struct = karma::lit("{") << karma::string << "}";
+
         breakpoint_set = karma::lit("Breakpoint ") << karma::int_ << " at " << address << ": file " << file_name << ", line " << karma::int_ << ".";
         empty = karma::lit("") << -dummy;
 
         raw_str = karma::string;
+
+        program_exited = karma::lit("Program exited ") << karma::string;
 
         //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
         cursor_pos = karma::lit("\x1A\x1A") << file_name << ":" << karma::int_ << ":" << karma::int_ << ":" << karma::string << ":" << address;
@@ -72,7 +76,7 @@ struct GdbResponseWriteGrammar
         no_locals = no_locals_str;
         variable_equals = ident << equals << -type_cast << gdb_value;
         type_cast = karma::string;
-        gdb_value = (address | karma::int_ | quoted_string)
+        gdb_value = (address | karma::int_ | quoted_string | gdb_struct)
             << -value_as_string;
         value_as_string = karma::lit(" ") << quoted_string;
 
@@ -86,7 +90,7 @@ struct GdbResponseWriteGrammar
         test_str1 = karma::string;
         test_str2 = karma::string;
 
-        response_item = (locals_info | test_str1 | backtrace_line | banner | reading_libs | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | raw_str | empty) << "\n";
+        response_item = (locals_info | test_str1 | backtrace_line | banner | reading_libs | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited | raw_str | empty) << "\n";
         start = *response_item;
     }
 
@@ -98,6 +102,7 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, string()> no_locals_str;
     karma::rule<OutputIterator, SharedTypes::NoLocals()> no_locals;
     karma::rule<OutputIterator, SharedTypes::GdbAddress()> address;
+    karma::rule<OutputIterator, SharedTypes::GdbStruct()> gdb_struct;
     karma::rule<OutputIterator, string()> file_name;
     karma::rule<OutputIterator, SharedTypes::AddressIn()> address_in;
     karma::rule<OutputIterator, SharedTypes::FromModule()> from_module;
@@ -108,6 +113,7 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, SharedTypes::VariableEquals()> variable_equals;
     karma::rule<OutputIterator, SharedTypes::GdbResponseFunction()> gdb_function;
     karma::rule<OutputIterator, SharedTypes::GdbResponseFunctionArg()> function_arg;
+    karma::rule<OutputIterator, GdbResponses::ProgramExited()> program_exited;
     karma::rule<OutputIterator, GdbResponses::Banner()> banner;
     karma::rule<OutputIterator, GdbResponses::ValueHistory()> value_history;
     karma::rule<OutputIterator, GdbResponses::ReadingLibs()> reading_libs;
@@ -136,6 +142,11 @@ struct GdbResponsePrinter : boost::static_visitor<>
     void operator()(const int& t) const
     {
         cerr << "int " << t;
+    }
+
+    void operator()(const ProgramExited& t) const
+    {
+        cerr << "Program exited, how: " << t.how << endl;
     }
 
     void operator()(const ValueHistory& t) const
@@ -198,6 +209,11 @@ struct GdbResponsePrinter : boost::static_visitor<>
     void operator ()(const SharedTypes::NoLocals& t) const
     {
         cerr << "no locals: " << t.text;
+    }
+
+    void operator ()(const SharedTypes::GdbStruct& t) const
+    {
+        cerr << "gdb struct {" << t.contents << "}";
     }
 
     void operator ()(const std::string& t) const

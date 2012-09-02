@@ -140,6 +140,11 @@ struct UninitializedVariant
     double dummy;
 };
 
+struct ProgramExited
+{
+    std::string how;
+};
+
 }
 
 
@@ -157,6 +162,7 @@ typedef  boost::variant
     GdbResponses::Banner,
     GdbResponses::ValueHistory,
     GdbResponses::RawStr,
+    GdbResponses::ProgramExited,
     GdbResponses::Empty
 > GdbResponseType;
 

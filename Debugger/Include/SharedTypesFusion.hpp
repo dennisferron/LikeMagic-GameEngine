@@ -9,6 +9,11 @@
 using namespace Iocaste::Debugger;
 
 BOOST_FUSION_ADAPT_STRUCT(
+    SharedTypes::GdbStruct,
+    (std::string, contents)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     SharedTypes::AddressIn,
     (SharedTypes::GdbAddress, address)
 )
