@@ -180,10 +180,11 @@ struct GdbBannerGrammar : qi::grammar<Iterator, GdbResponses::Banner()>
 {
     GdbBannerGrammar() : GdbBannerGrammar::base_type(banner)
     {
-        version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
+        // GNU gdb (Ubuntu/Linaro 7.2-1ubuntu11) 7.2
+        version_number = -(qi::char_('(') > +(qi::char_ - qi::char_(')')) > qi::char_(')') > qi::space ) > +(qi::digit | qi::char_('.') | qi::char_('-'));
         banner_line = +(qi::char_ - '\n');
         banner_message = banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line;
-        banner = qi::lit("GNU gdb ") >> version_number >> banner_message >> qi::lit("\n") >> qi::eoi;
+        banner = qi::lit("GNU gdb ") > version_number >> banner_message >> qi::lit("\n") >> qi::eoi;
     }
 
     qi::rule<Iterator, std::string()> version_number;

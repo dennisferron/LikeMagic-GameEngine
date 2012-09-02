@@ -22,6 +22,11 @@ namespace UserCmds
         std::string value;
     };
 
+    struct Cont
+    {
+        std::string cmd;
+    };
+
     struct PrintFunction
     {
         std::string function_name;
@@ -143,6 +148,7 @@ typedef  boost::variant
     UserCmds::Step,
     UserCmds::Finish,
     UserCmds::Quit,
+    UserCmds::Cont,
     UserCmds::Empty
 > UserCmd;
 

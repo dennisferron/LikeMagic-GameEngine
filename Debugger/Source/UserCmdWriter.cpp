@@ -28,6 +28,7 @@ struct UserCmdWriteGrammar
       : UserCmdWriteGrammar::base_type(start)
     {
         raw_str = karma::string;
+        cont = karma::string;
         set_option = karma::lit("set") << " " << karma::string << -(" " << karma::string) << " " << karma::string;
         show_option = karma::lit("show") << " " << karma::string << -(" " << karma::string);
         set_breakpoint = karma::lit("break") << " " << "\"" << karma::string << ":" << karma::int_ << "\"";
@@ -45,7 +46,7 @@ struct UserCmdWriteGrammar
         gdb_value = karma::int_ | (karma::lit('"') << karma::string << '"');
         print_function = karma::lit("print ") << -karma::string << "(" << (gdb_value % ", ") << ")";
         set_breakpoint_on_function = karma::lit("break ") << karma::string;
-        start = print_function | raw_str | set_option | show_option | set_breakpoint | set_breakpoint_on_function | source | directory | tty | run | info | backtrace | next | step | finish | quit | empty;
+        start = print_function | raw_str | set_option | show_option | set_breakpoint | set_breakpoint_on_function | source | directory | tty | run | info | backtrace | next | step | finish | cont | quit | empty;
     }
 
     karma::rule<OutputIterator, SharedTypes::GdbValue()> gdb_value;
@@ -59,6 +60,7 @@ struct UserCmdWriteGrammar
     karma::rule<OutputIterator, UserCmds::Directory()> directory;
     karma::rule<OutputIterator, UserCmds::TTY()> tty;
     karma::rule<OutputIterator, UserCmds::Run()> run;
+    karma::rule<OutputIterator, UserCmds::Cont()> cont;
     karma::rule<OutputIterator, UserCmds::Info()> info;
     karma::rule<OutputIterator, UserCmds::Backtrace()> backtrace;
     karma::rule<OutputIterator, UserCmds::Next()> next;
@@ -155,6 +157,11 @@ struct UserCmdPrinter : boost::static_visitor<>
     void operator()(const Quit& t) const
     {
         cerr << "quit is (no members)" << endl;
+    }
+
+    void operator()(const Cont& t) const
+    {
+        cerr << "cont is " << t.cmd << endl;
     }
 
     void operator()(const Empty& t) const

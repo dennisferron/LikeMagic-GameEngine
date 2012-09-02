@@ -20,3 +20,4 @@ public:
 boost::shared_ptr<Configuration> getConfiguration(int argc, char* argv[]);
 
 }}
+

@@ -88,6 +88,11 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    UserCmds::Cont,
+    (std::string, cmd)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     UserCmds::Empty,
     (boost::optional<std::string>, dummy)
 )
