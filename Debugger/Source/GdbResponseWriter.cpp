@@ -67,8 +67,9 @@ struct GdbResponseWriteGrammar
 
         // No locals.
         // No symbol table info available.
-        locals_info = (no_locals | variable_equals);
-        no_locals = karma::string;
+        locals_info = karma::lit("") << (no_locals | variable_equals);
+        no_locals_str = karma::string;
+        no_locals = no_locals_str;
         variable_equals = ident << equals << -type_cast << gdb_value;
         type_cast = karma::string;
         gdb_value = (address | karma::int_ | quoted_string)
@@ -94,6 +95,7 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, string()> function_name;
     karma::rule<OutputIterator, string()> ident;
     karma::rule<OutputIterator, string()> equals;
+    karma::rule<OutputIterator, string()> no_locals_str;
     karma::rule<OutputIterator, SharedTypes::NoLocals()> no_locals;
     karma::rule<OutputIterator, SharedTypes::GdbAddress()> address;
     karma::rule<OutputIterator, string()> file_name;
@@ -176,7 +178,10 @@ struct GdbResponsePrinter : boost::static_visitor<>
 
     void operator ()(const SharedTypes::VariableEquals& t) const
     {
-        cerr << "variable equals";
+        cerr << "variable equals " << t.name << t.equals
+            << (t.type_cast? t.type_cast->value : "");
+        boost::apply_visitor(*this, t.value);
+        cerr << endl;
     }
 
     void operator ()(const SharedTypes::NoLocals& t) const
@@ -187,6 +192,11 @@ struct GdbResponsePrinter : boost::static_visitor<>
     void operator ()(const std::string& t) const
     {
         cerr << "std::string " << t;
+    }
+
+    void operator ()(const GdbValue& t) const
+    {
+        boost::apply_visitor(*this, t.value);
     }
 
     void operator()(const BreakpointSet& t) const
