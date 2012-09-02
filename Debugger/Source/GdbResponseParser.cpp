@@ -56,7 +56,10 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         gdb_function = function_name > " (" > -(function_arg % ", ") > ")";
         function_arg = ident > equals > gdb_value;
         version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
-        reading_libs = qi::lit("Reading symbols for shared libraries ") >> *(qi::char_('.') | qi::char_('+')) >> " done";
+
+        // Reading symbols for shared libraries .... done
+        // Reading symbols from /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/TestProject...done.
+        reading_symbols = qi::lit("Reading ") > +qi::char_;
 
         program_exited = qi::lit("Program exited ") > program_exited_str;
         program_exited_str = +qi::print > qi::eoi;
@@ -129,7 +132,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
 
         value_history = qi::lit('$') >> qi::int_ >> equals >> gdb_value;
 
-        start = reading_libs | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function | backtrace_line | value_history | program_exited
+        start = reading_symbols | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function | backtrace_line | value_history | program_exited
         #ifdef PARSE_RAW_STRING
             | raw_str
         #endif
@@ -165,7 +168,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, GdbResponses::ValueHistory()> value_history;
     qi::rule<Iterator, GdbResponses::TestStr1()> test_str1;
     qi::rule<Iterator, GdbResponses::LocalsInfo()> locals_info;
-    qi::rule<Iterator, GdbResponses::ReadingLibs()> reading_libs;
+    qi::rule<Iterator, GdbResponses::ReadingSymbols()> reading_symbols;
     qi::rule<Iterator, GdbResponses::BreakpointSet()> breakpoint_set;
     qi::rule<Iterator, GdbResponses::BreakpointHit()> breakpoint_hit;
     qi::rule<Iterator, GdbResponses::BacktraceLine()> backtrace_line;

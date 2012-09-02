@@ -1,5 +1,6 @@
 #include "UserCmdWriter.hpp"
 #include "Exception.hpp"
+#include "SharedTypesPrinter.hpp"
 
 #if (defined(__MINGW32__) || defined(__MINGW64__)) && (__GNUC__ == 4)
 #include <stddef.h>
@@ -29,6 +30,17 @@ struct UserCmdWriteGrammar
     {
         raw_str = karma::string;
         cont = karma::string;
+
+        gdb_value = (address | karma::int_ | quoted_string | gdb_struct)
+            << -value_as_string;
+
+        gdb_value_list = -(gdb_value % ", ");
+
+        value_as_string = karma::lit(" ") << quoted_string;
+        quoted_string = karma::lit("\"") << karma::string << "\"";
+        address = karma::lit("0x") << karma::string;
+        gdb_struct = karma::lit("{") << karma::string << "}";
+
         set_option = karma::lit("set") << " " << karma::string << -(" " << karma::string) << " " << karma::string;
         show_option = karma::lit("show") << " " << karma::string << -(" " << karma::string);
         set_breakpoint = karma::lit("break") << " " << "\"" << karma::string << ":" << karma::int_ << "\"";
@@ -43,13 +55,20 @@ struct UserCmdWriteGrammar
         finish = karma::lit("finish") << -karma::string;
         quit = karma::lit("quit") << -karma::string;
         empty = karma::lit("") << -karma::string;
-        gdb_value = karma::int_ | (karma::lit('"') << karma::string << '"');
-        print_function = karma::lit("print ") << -karma::string << "(" << (gdb_value % ", ") << ")";
+
+        print_function = karma::lit("print ") << karma::string << karma::lit("(") << gdb_value_list << ")";
         set_breakpoint_on_function = karma::lit("break ") << karma::string;
         start = print_function | raw_str | set_option | show_option | set_breakpoint | set_breakpoint_on_function | source | directory | tty | run | info | backtrace | next | step | finish | cont | quit | empty;
     }
 
+    karma::rule<OutputIterator, std::vector<SharedTypes::GdbValue>()> gdb_value_list;
     karma::rule<OutputIterator, SharedTypes::GdbValue()> gdb_value;
+    karma::rule<OutputIterator, SharedTypes::TypeCast()> type_cast;
+    karma::rule<OutputIterator, SharedTypes::ValueAsString()> value_as_string;
+    karma::rule<OutputIterator, string()> quoted_string;
+    karma::rule<OutputIterator, SharedTypes::GdbAddress()> address;
+    karma::rule<OutputIterator, SharedTypes::GdbStruct()> gdb_struct;
+
     karma::rule<OutputIterator, UserCmds::PrintFunction()> print_function;
     karma::rule<OutputIterator, UserCmds::RawString()> raw_str;
     karma::rule<OutputIterator, UserCmds::SetOption()> set_option;
@@ -71,17 +90,13 @@ struct UserCmdWriteGrammar
     karma::rule<OutputIterator, UserCmd()> start;
 };
 
-struct UserCmdPrinter : boost::static_visitor<>
+struct UserCmdPrinter : SharedTypesPrinter
 {
-    template <typename T>
-    void operator()(const T& t) const
-    {
-        static_assert(sizeof(T) && false, "No debug printer defined for type T");
-    }
-
     void operator()(const UserCmds::PrintFunction& t) const
     {
-        cerr << "print function is " << t.function_name << endl;
+        cerr << "print function is " << t.function_name << "(";
+        SharedTypesPrinter()(t.args);
+        cerr << ")" << endl;
     }
 
     void operator()(const RawString& t) const

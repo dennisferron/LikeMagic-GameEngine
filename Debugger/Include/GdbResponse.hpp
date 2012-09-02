@@ -23,9 +23,9 @@ struct RawStr
     std::string value;
 };
 
-struct ReadingLibs
+struct ReadingSymbols
 {
-    std::string periods;
+    std::string message;
 };
 
 struct BreakpointSet
@@ -151,7 +151,7 @@ struct ProgramExited
 typedef  boost::variant
 <
     GdbResponses::UninitializedVariant,
-    GdbResponses::ReadingLibs,
+    GdbResponses::ReadingSymbols,
     GdbResponses::BreakpointSet,
     GdbResponses::CursorPos,
     GdbResponses::BreakpointHit,

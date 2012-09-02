@@ -1,5 +1,6 @@
 #include "GdbResponseWriter.hpp"
 #include "Exception.hpp"
+#include "SharedTypesPrinter.hpp"
 
 #if (defined(__MINGW32__) || defined(__MINGW64__)) && (__GNUC__ == 4)
 #include <stddef.h>
@@ -29,7 +30,8 @@ struct GdbResponseWriteGrammar
     {
         banner = karma::lit("GNU gdb ") << karma::string << karma::string;
         dummy %= karma::string;
-        reading_libs = karma::lit("Reading symbols for shared libraries ") << karma::string << " done";
+
+        reading_symbols = karma::lit("Reading ") << karma::string;
 
         function_name = karma::string;
         ident = karma::string;
@@ -90,7 +92,7 @@ struct GdbResponseWriteGrammar
         test_str1 = karma::string;
         test_str2 = karma::string;
 
-        response_item = (locals_info | test_str1 | backtrace_line | banner | reading_libs | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited | raw_str | empty) << "\n";
+        response_item = (locals_info | test_str1 | backtrace_line | banner | reading_symbols | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited | raw_str | empty) << "\n";
         start = *response_item;
     }
 
@@ -116,7 +118,7 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, GdbResponses::ProgramExited()> program_exited;
     karma::rule<OutputIterator, GdbResponses::Banner()> banner;
     karma::rule<OutputIterator, GdbResponses::ValueHistory()> value_history;
-    karma::rule<OutputIterator, GdbResponses::ReadingLibs()> reading_libs;
+    karma::rule<OutputIterator, GdbResponses::ReadingSymbols()> reading_symbols;
     karma::rule<OutputIterator, GdbResponses::BreakpointSet()> breakpoint_set;
     karma::rule<OutputIterator, GdbResponses::BreakpointHit()> breakpoint_hit;
     karma::rule<OutputIterator, GdbResponses::CursorPos()> cursor_pos;
@@ -131,19 +133,8 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, vector<GdbResponseType>()> start;
 };
 
-struct GdbResponsePrinter : boost::static_visitor<>
+struct GdbResponsePrinter : public SharedTypesPrinter
 {
-    template <typename T>
-    void operator()(const T& t) const
-    {
-        static_assert(sizeof(T) && false, "No debug printer defined for type T");
-    }
-
-    void operator()(const int& t) const
-    {
-        cerr << "int " << t;
-    }
-
     void operator()(const ProgramExited& t) const
     {
         cerr << "Program exited, how: " << t.how << endl;
@@ -180,60 +171,16 @@ struct GdbResponsePrinter : boost::static_visitor<>
         cerr << "banner is version->" << t.version << "< message->" << t.msg << "<" << endl;
     }
 
-    void operator()(const ReadingLibs& t) const
+    void operator()(const ReadingSymbols& t) const
     {
-        cerr << "reading libs is (no members)" << endl;
+        cerr << "reading libs is " << t.message << endl;
     }
 
     void operator()(const LocalsInfo& t) const
     {
         cerr << "LocalsInfo is ";
-        boost::apply_visitor(*this, t.value);
+        boost::apply_visitor(SharedTypesPrinter(), t.value);
         cerr << endl;
-    }
-
-    void operator ()(const SharedTypes::VariableEquals& t) const
-    {
-        cerr << "variable equals " << t.name << t.equals;
-
-        if (t.type_cast)
-            (*this)(*t.type_cast);
-        else
-            cerr << "(no type cast) ";
-
-        (*this)(t.value);
-
-        cerr << endl;
-    }
-
-    void operator ()(const SharedTypes::NoLocals& t) const
-    {
-        cerr << "no locals: " << t.text;
-    }
-
-    void operator ()(const SharedTypes::GdbStruct& t) const
-    {
-        cerr << "gdb struct {" << t.contents << "}";
-    }
-
-    void operator ()(const std::string& t) const
-    {
-        cerr << "std::string " << t;
-    }
-
-    void operator ()(const SharedTypes::TypeCast& t) const
-    {
-        cerr << "type_cast " << t.value;
-    }
-
-    void operator ()(const SharedTypes::GdbValue& t) const
-    {
-        boost::apply_visitor(*this, t.value);
-    }
-
-    void operator ()(const SharedTypes::GdbAddress& t) const
-    {
-        cerr << "GdbAddress " << t.hex_value;
     }
 
     void operator()(const BreakpointSet& t) const

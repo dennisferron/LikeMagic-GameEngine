@@ -1,11 +1,17 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 struct Breakpoint
 {
     std::string file_name;
     int line_number;
+
+    bool operator ==(Breakpoint const& that) const
+    {
+        return this->file_name == that.file_name && this->line_number == that.line_number;
+    }
 };
 
 std::vector<Breakpoint> breakpoints;
@@ -35,6 +41,35 @@ int io_debugger_set_breakpoint(char const* file_name, int line_number)
 #pragma GCC pop_options
 }
 
+std::string file_name =
+#ifdef __linux__
+    "/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io"
+#else // mac os
+    "/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io"
+#endif
+;
+
+void run_io()
+{
+    for (int line=0; line < 10; ++line)
+    {
+        IoObject self;
+        IoObject locals;
+        IoMessage m;
+
+        auto it = find(breakpoints.begin(), breakpoints.end(), Breakpoint { file_name, line });
+
+        if (it != breakpoints.end())
+        {
+            int breakpoint_number = it - breakpoints.begin();
+
+            io_debugger_break_here(
+                &self, &locals, &m,
+                breakpoint_number, file_name.c_str(), line
+            );
+        }
+    }
+}
 
 int main()
 {
@@ -42,12 +77,9 @@ int main()
     cout << "Another line" << endl;
     cout << "Another line" << endl;
 
-    IoObject self;
-    IoObject locals;
-    IoMessage m;
-
-    io_debugger_break_here(&self, &locals, &m,
-           1, "/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io", 5);
+    cout << "About to run io code" << endl;
+    run_io();
+    cout << "Finished running io code" << endl;
 
     cout << "Goodbye, cruel world!" << endl;
     return 0;
