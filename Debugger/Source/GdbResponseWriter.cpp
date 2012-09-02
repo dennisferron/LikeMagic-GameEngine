@@ -133,6 +133,11 @@ struct GdbResponsePrinter : boost::static_visitor<>
         static_assert(sizeof(T) && false, "No debug printer defined for type T");
     }
 
+    void operator()(const int& t) const
+    {
+        cerr << "int " << t;
+    }
+
     void operator()(const ValueHistory& t) const
     {
         cerr << "Value history is $" << t.number << endl;
@@ -178,9 +183,15 @@ struct GdbResponsePrinter : boost::static_visitor<>
 
     void operator ()(const SharedTypes::VariableEquals& t) const
     {
-        cerr << "variable equals " << t.name << t.equals
-            << (t.type_cast? t.type_cast->value : "");
-        boost::apply_visitor(*this, t.value);
+        cerr << "variable equals " << t.name << t.equals;
+
+        if (t.type_cast)
+            (*this)(*t.type_cast);
+        else
+            cerr << "(no type cast) ";
+
+        (*this)(t.value);
+
         cerr << endl;
     }
 
@@ -194,9 +205,19 @@ struct GdbResponsePrinter : boost::static_visitor<>
         cerr << "std::string " << t;
     }
 
-    void operator ()(const GdbValue& t) const
+    void operator ()(const SharedTypes::TypeCast& t) const
+    {
+        cerr << "type_cast " << t.value;
+    }
+
+    void operator ()(const SharedTypes::GdbValue& t) const
     {
         boost::apply_visitor(*this, t.value);
+    }
+
+    void operator ()(const SharedTypes::GdbAddress& t) const
+    {
+        cerr << "GdbAddress " << t.hex_value;
     }
 
     void operator()(const BreakpointSet& t) const

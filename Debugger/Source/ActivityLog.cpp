@@ -68,7 +68,8 @@ void print_diff(string expected, string actual)
         cerr << "The strings are not the same length, expected "
             << expected.size() << " actual " << actual.size() << endl;
 
-    for (size_t i=0; i < expected.size() || i < actual.size(); ++i)
+    size_t const max_print_diff = 10;
+    for (size_t i=0; i < max_print_diff && (i < expected.size() || i < actual.size()); ++i)
     {
         if (i < expected.size() && i < actual.size())
         {

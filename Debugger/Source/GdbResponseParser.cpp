@@ -17,6 +17,7 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 using namespace std;
 
 #include <boost/algorithm/string.hpp>
+#include "boost/algorithm/string/predicate.hpp"
 
 #include <boost/spirit/home/phoenix/bind/bind_member_variable.hpp>
 #include <boost/spirit/home/phoenix/scope/let.hpp>
@@ -90,7 +91,8 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         // file_name = 0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"
         // line_number = 5\n\b>>>>>>cb_gdb:
         variable_equals = ident >> equals >> -type_cast >> gdb_value;
-        type_cast = qi::char_('(') >> *(qi::char_ - qi::char_(')')) >> qi::char_(')') >> -qi::char_(' ');
+        type_cast = type_cast_str;
+        type_cast_str = qi::char_('(') >> *(qi::char_ - qi::char_(')')) >> qi::char_(')') >> -qi::char_(' ');
 
         quoted_string = qi::lit('"') >> *(qi::char_ - qi::char_('"')) >> qi::lit('"');
 
@@ -139,6 +141,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, std::string()> version_number;
     qi::rule<Iterator, std::string()> equals;
     qi::rule<Iterator, std::string()> no_locals_str;
+    qi::rule<Iterator, std::string()> type_cast_str;
     qi::rule<Iterator, SharedTypes::ValueAsString()> value_as_string;
     qi::rule<Iterator, SharedTypes::AtFile()> at_file;
     qi::rule<Iterator, SharedTypes::FromModule()> from_module;
@@ -204,8 +207,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
     else
     {
         // When the grammar fails to match I want to know which line failed.
-        // I couldn't figure out how to get spirit expectation failure to work
-        // in a spirit grammar (nothing happens) so I just handle each line individually.
+        // I found it easiest to just handle each line individually.
         vector<string> lines;
         boost::split(lines, input, boost::is_any_of("\n"));
 
@@ -216,6 +218,12 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
 
         for (string line : lines)
         {
+            // Debugging
+            //if (boost::algorithm::starts_with(line, "self = (IoObject *)"))
+            //{
+            //    cerr << "break here";
+            //}
+
             if (line.size() == 0)
             {
                 result.push_back(GdbResponses::Empty());
