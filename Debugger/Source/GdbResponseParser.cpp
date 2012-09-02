@@ -180,8 +180,9 @@ struct GdbBannerGrammar : qi::grammar<Iterator, GdbResponses::Banner()>
 {
     GdbBannerGrammar() : GdbBannerGrammar::base_type(banner)
     {
+        // GNU gdb 6.3.50-20050815 (Apple version gdb-1705) (Fri Jul  1 10:50:06 UTC 2011)\nCopyright 2004 Free Software Foundation, Inc.\n
         // GNU gdb (Ubuntu/Linaro 7.2-1ubuntu11) 7.2
-        version_number = -(qi::char_('(') > +(qi::char_ - qi::char_(')')) > qi::char_(')') > qi::space ) > +(qi::digit | qi::char_('.') | qi::char_('-'));
+        version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
         banner_line = +(qi::char_ - '\n');
         banner_message = banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line;
         banner = qi::lit("GNU gdb ") > version_number >> banner_message >> qi::lit("\n") >> qi::eoi;
@@ -207,7 +208,20 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
     // Rather than twist the grammar to handle it I just handle it with another parser.
     GdbBannerGrammar<iterator_type> g_banner; // Banner grammar
     GdbResponses::Banner banner;
-    if (parse(banner_iter, banner_end, g_banner, banner))
+
+    bool is_banner = false;
+
+    try
+    {
+        is_banner = parse(banner_iter, banner_end, g_banner, banner);
+    }
+    catch (boost::spirit::qi::expectation_failure<iterator_type> const& exc)
+    {
+        cerr << "While checking for gdb banner, got parse error: " << exc.what() << " at " << std::string(exc.first, exc.last) << endl;
+        raiseError(exc);
+    }
+
+    if (is_banner)
     {
         result.push_back(banner);
         return result;
@@ -280,9 +294,9 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                         result.push_back(line_item);
                     }
                 }
-                catch (boost::spirit::qi::expectation_failure<iterator_type>& exc)
+                catch (boost::spirit::qi::expectation_failure<iterator_type> const& exc)
                 {
-                    cerr << "Parse error: " << exc.what() << " at " << std::string(exc.first, exc.last) << endl;
+                    cerr << "Parse error on gdb response: " << exc.what() << " at " << std::string(exc.first, exc.last) << endl;
                     raiseError(exc);
                 }
             }

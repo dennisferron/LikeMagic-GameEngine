@@ -1,6 +1,8 @@
 
 #include "boost/assert.hpp"
 #include "boost/algorithm/string/predicate.hpp"
+#include "boost/spirit/include/qi.hpp"
+
 #include <string>
 #include <vector>
 #include <iostream>
@@ -26,6 +28,10 @@ void checkErrors(MainChannels channels)
             boost::rethrow_exception(e);
         }
     }
+    catch (boost::spirit::qi::expectation_failure<std::string::const_iterator> const& exc)
+    {
+        cerr << "Caught parse error from one of the channel threads: " << exc.what() << " at " << std::string(exc.first, exc.last) << endl;
+    }
     catch (TestException const& e)
     {
         cerr << endl << "Test failed " << e.what() << endl;
@@ -34,13 +40,13 @@ void checkErrors(MainChannels channels)
     {
         cerr << endl << e.what() << endl;
     }
-//    catch (std::exception const& e)
-//    {
-//        cerr << e.what() << endl;
-//    }
+    catch (std::exception const& e)
+    {
+        cerr << "Caught standard exception " << e.what() << endl;
+    }
     catch (...)
     {
-        cerr << "unknown err" << endl;
+        cerr << "Caught unknown exception from one of the channels threads." << endl;
     }
 }
 
