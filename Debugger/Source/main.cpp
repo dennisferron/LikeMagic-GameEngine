@@ -30,7 +30,7 @@ void checkErrors(MainChannels channels)
     }
     catch (boost::spirit::qi::expectation_failure<std::string::const_iterator> const& exc)
     {
-        cerr << "Caught parse error from one of the channel threads: " << exc.what() << " at " << std::string(exc.first, exc.last) << endl;
+        cerr << "Caught parse error from one of the channel threads: " << exc.what() << " at ->" << std::string(exc.first, exc.last) << "<-" << endl;
     }
     catch (TestException const& e)
     {

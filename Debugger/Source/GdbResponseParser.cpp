@@ -182,13 +182,17 @@ struct GdbBannerGrammar : qi::grammar<Iterator, GdbResponses::Banner()>
     {
         // GNU gdb 6.3.50-20050815 (Apple version gdb-1705) (Fri Jul  1 10:50:06 UTC 2011)\nCopyright 2004 Free Software Foundation, Inc.\n
         // GNU gdb (Ubuntu/Linaro 7.2-1ubuntu11) 7.2
-        version_number = +(qi::digit | qi::char_('.') | qi::char_('-'));
+        version_number = +(qi::alnum | qi::char_('.') | qi::char_('-') | qi::char_('/'));
+        paren_expr = qi::char_('(') > (version_number % qi::char_(' ')) > qi::char_(')');
+        version_or_expr = paren_expr | version_number;
         banner_line = +(qi::char_ - '\n');
-        banner_message = banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line >> qi::char_('\n') >> banner_line;
-        banner = qi::lit("GNU gdb ") > version_number >> banner_message >> qi::lit("\n") >> qi::eoi;
+        banner_message = banner_line > *(qi::char_('\n') >> banner_line);
+        banner = qi::lit("GNU gdb ") >> version_or_expr > banner_message > qi::lit("\n");
     }
 
+    qi::rule<Iterator, std::string()> paren_expr;
     qi::rule<Iterator, std::string()> version_number;
+    qi::rule<Iterator, std::string()> version_or_expr;
     qi::rule<Iterator, std::string()> banner_line;
     qi::rule<Iterator, std::string()> banner_message;
     qi::rule<Iterator, GdbResponses::Banner()> banner;
@@ -217,7 +221,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
     }
     catch (boost::spirit::qi::expectation_failure<iterator_type> const& exc)
     {
-        cerr << "While checking for gdb banner, got parse error: " << exc.what() << " at " << std::string(exc.first, exc.last) << endl;
+        cerr << "While checking for gdb banner, got parse error: " << exc.what() << " at ->" << std::string(exc.first, exc.last) << "<-" << endl;
         raiseError(exc);
     }
 
