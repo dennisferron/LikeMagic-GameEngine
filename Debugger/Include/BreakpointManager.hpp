@@ -26,11 +26,12 @@ private:
     void userSetIoBreakpoint(UserCmds::SetBreakpoint const& stbk);
     GdbResponses::BreakpointSet setGdbBreakpoint(UserCmds::SetBreakpoint const& stbk);
     void userSetGdbBreakpoint(UserCmds::SetBreakpoint const& stbk);
-    void ioDebuggerInit();
-    GdbResponseType ioDebuggerIoBreakpoint();
+    void ioDebuggerInit(const GdbResponses::BreakpointHit& bh);
+    GdbResponseType ioDebuggerIoBreakpoint(const GdbResponses::BreakpointHit& bh);
 
     typedef std::vector<std::pair<std::string, SharedTypes::GdbValue>> FunctionArgs;
     FunctionArgs getArgs();
+    FunctionArgs getArgs(SharedTypes::GdbResponseFunction func);
     SharedTypes::GdbValue getArg(FunctionArgs args, std::string arg_name);
     int getInt(FunctionArgs args, std::string arg_name);
     std::string getValueAsString(FunctionArgs args, std::string arg_name);

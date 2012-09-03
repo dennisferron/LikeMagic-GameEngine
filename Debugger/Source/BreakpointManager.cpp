@@ -148,6 +148,8 @@ void BreakpointManager::userSetGdbBreakpoint(UserCmds::SetBreakpoint const& stbk
     toUser(resp);
 }
 
+// I wrote this function for getting the args using info args,
+// but then realized I already could get the args from the BreakpointHit struct.
 BreakpointManager::FunctionArgs BreakpointManager::getArgs()
 {
     toGdb( UserCmds::Info { "args" } );
@@ -168,6 +170,18 @@ BreakpointManager::FunctionArgs BreakpointManager::getArgs()
         }
         else
             raiseError(BadResponseError("Did not get expected gdb response type from gdb when calling info locals."));
+    }
+
+    return result;
+}
+
+BreakpointManager::FunctionArgs BreakpointManager::getArgs(SharedTypes::GdbResponseFunction func)
+{
+    BreakpointManager::FunctionArgs result;
+
+    for (auto arg : func.args)
+    {
+        result.push_back({ arg.name, arg.value });
     }
 
     return result;
@@ -224,11 +238,11 @@ SharedTypes::GdbAddress BreakpointManager::getPointer(BreakpointManager::Functio
     return SharedTypes::GdbAddress();
 }
 
-void BreakpointManager::ioDebuggerInit()
+void BreakpointManager::ioDebuggerInit(const GdbResponses::BreakpointHit& bh)
 {
     // At inferior function "io_debugger_init"
 
-    auto args = getArgs();
+    auto args = getArgs(bh.function);
     SharedTypes::GdbAddress io_state = getPointer(args, "io_state");
 
     for (IoBreakpoint ib : deferred_breakpoints)
@@ -240,11 +254,11 @@ void BreakpointManager::ioDebuggerInit()
     toGdb( UserCmds::Cont {"cont"} );
 }
 
-GdbResponseType BreakpointManager::ioDebuggerIoBreakpoint()
+GdbResponseType BreakpointManager::ioDebuggerIoBreakpoint(const GdbResponses::BreakpointHit& bh)
 {
     // At inferior function "io_debugger_break_here"
 
-    auto args = getArgs();
+    auto args = getArgs(bh.function);
     auto self = getPointer(args, "self");
     auto locals = getPointer(args, "locals");
     auto m = getPointer(args, "m");
@@ -254,14 +268,14 @@ GdbResponseType BreakpointManager::ioDebuggerIoBreakpoint()
 
     // TODO:  Save self,locals,m to use when evaluating watches on Io code
 
-    GdbResponses::BreakpointHit bh;
+    GdbResponses::BreakpointHit spoof;
 
-    bh.breakpoint_number = breakpoint_number;
-    // bh.function = {}; TODO:  Get message name and argument names.
-    bh.file_name = file_name;
-    bh.line_number = line_number;
+    spoof.breakpoint_number = breakpoint_number;
+    // spoof.function = {}; TODO:  Get message name and argument names.
+    spoof.file_name = file_name;
+    spoof.line_number = line_number;
 
-    return bh;
+    return spoof;
 }
 
 void BreakpointManager::userSetBreakpoint(const UserCmds::SetBreakpoint& t)
@@ -290,12 +304,12 @@ GdbResponseType BreakpointManager::gdbBreakpointHit(const GdbResponses::Breakpoi
 
         if (ob == *io_init_breakpoint)
         {
-            ioDebuggerInit();
+            ioDebuggerInit(t);
             return GdbResponses::Empty();
         }
         else if (ob == *io_debugger_breakpoint)
         {
-            return ioDebuggerIoBreakpoint();
+            return ioDebuggerIoBreakpoint(t);
         }
         else
         {
