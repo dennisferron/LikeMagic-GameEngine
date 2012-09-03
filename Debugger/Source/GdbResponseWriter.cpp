@@ -223,18 +223,28 @@ struct GdbResponsePrinter : public SharedTypesPrinter
         << endl;
     }
 
+    template <typename T>
+    void printOpt(std::string msg, boost::optional<T> value) const
+    {
+        if (value)
+        {
+            cerr << msg;
+            SharedTypesPrinter()(*value);
+        }
+    }
+
     void operator()(const BacktraceLine& t) const
     {
-        // TODO:  Display boost optional values.
         cerr << "backtrace line is"
-        << " #" << t.backtrace_number
-        //<< " at addr:" << t.address_in.address.hex_value
-        << " in func:" << t.function.name
-        << " with num args:" << t.function.args.size()
-        //<< " from module:" << t.from_module.module_name
-        //<< " in file:" << t.in_file.file_name
-        //<< " at line:" << t.line_number
-        << endl;
+        << " #" << t.backtrace_number;
+        printOpt(" at addr:", t.address_in);
+        cerr << " in func:" << t.function.name;
+        cerr << " with args:";
+        SharedTypesPrinter()(t.function.args);
+        printOpt(" from module:", t.module);
+        printOpt(" in file:", t.file_name);
+        printOpt(" at line:", t.line_number);
+        cerr << endl;
     }
 
     void operator()(const AddressInFunction& t) const

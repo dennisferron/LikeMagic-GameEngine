@@ -1,6 +1,9 @@
 #pragma once
 
+#include "Exception.hpp"
 #include "boost/variant.hpp"
+
+#include <iostream>
 
 namespace Iocaste { namespace Debugger {
 
@@ -24,6 +27,11 @@ struct UserBreakpoint
 struct OurBreakpoint
 {
     int number;
+
+    bool operator ==(OurBreakpoint const& that)
+    {
+        return this->number == that.number;
+    }
 };
 
 class BreakpointMap
@@ -49,9 +57,9 @@ private:
                     if (m->number > max)
                         max = m->number;
         }
-        catch (exception const& e)
+        catch (std::exception const& e)
         {
-            cerr << "Error getting next_user_breakpoint exception was " << e.what() << endl;
+            std::cerr << "Error getting next_user_breakpoint exception was " << e.what() << std::endl;
             throw;
         }
 
@@ -70,9 +78,9 @@ public:
                     if (m->number == t.number)
                         return *m;
         }
-        catch (exception const& e)
+        catch (std::exception const& e)
         {
-            cerr << "Error in get_user_breakpoint " << t.number << " exception was " << e.what() << endl;
+            std::cerr << "Error in get_user_breakpoint " << t.number << " exception was " << e.what() << std::endl;
             raiseError(e);
         }
 
@@ -92,9 +100,9 @@ public:
                     if (m->number == t.number)
                         return true;
         }
-        catch (exception const& e)
+        catch (std::exception const& e)
         {
-            cerr << "Error in has_user_breakpoint " << t.number << " exception was " << e.what() << endl;
+            std::cerr << "Error in has_user_breakpoint " << t.number << " exception was " << e.what() << std::endl;
             raiseError(e);
         }
 
@@ -111,9 +119,9 @@ public:
                     if (m->number == t.number)
                         return *m;
         }
-        catch (exception const& e)
+        catch (std::exception const& e)
         {
-            cerr << "Error in get_provider_breakpoint " << t.number << " exception was " << e.what() << endl;
+            std::cerr << "Error in get_provider_breakpoint " << t.number << " exception was " << e.what() << std::endl;
             raiseError(e);
         }
 

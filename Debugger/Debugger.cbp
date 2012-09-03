@@ -62,6 +62,7 @@
 		<Unit filename="Include/AbstractOutput.hpp" />
 		<Unit filename="Include/ActivityLog.hpp" />
 		<Unit filename="Include/ActivityLogLine.hpp" />
+		<Unit filename="Include/BreakpointManager.hpp" />
 		<Unit filename="Include/BreakpointMap.hpp" />
 		<Unit filename="Include/ChainBuilder.hpp" />
 		<Unit filename="Include/ChainPolicy.hpp" />
@@ -102,9 +103,11 @@
 		<Unit filename="Source/ActivityLogLine.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>
+		<Unit filename="Source/BreakpointManager.cpp" />
 		<Unit filename="Source/CharInput.cpp" />
 		<Unit filename="Source/Configuration.cpp" />
 		<Unit filename="Source/Exception.cpp" />
+		<Unit filename="Source/GdbResponseHandler.cpp" />
 		<Unit filename="Source/GdbResponseParser.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -s -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>
@@ -118,6 +121,7 @@
 		<Unit filename="Source/RecombinePrompt.cpp" />
 		<Unit filename="Source/StreamOutput.cpp" />
 		<Unit filename="Source/TestPlan.cpp" />
+		<Unit filename="Source/UserCmdHandler.cpp" />
 		<Unit filename="Source/UserCmdParser.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>

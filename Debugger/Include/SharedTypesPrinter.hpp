@@ -19,6 +19,28 @@ struct SharedTypesPrinter : boost::static_visitor<>
         std::cerr << "int " << t;
     }
 
+    void operator()(SharedTypes::GdbResponseFunctionArg const& t) const
+    {
+        std::cerr << "Arg: " << t.name << t.equals;
+        (*this)(t.value);
+    }
+
+    void operator ()(const SharedTypes::AddressIn& t) const
+    {
+        std::cerr << "AddressIn: ";
+        (*this)(t.address);
+    }
+
+    void operator ()(const SharedTypes::FromModule& t) const
+    {
+        std::cerr << "FromModule: " << t.module_name;
+    }
+
+    void operator ()(const SharedTypes::AtFile& t) const
+    {
+        std::cerr << "AtFile: " << t.file_name;
+    }
+
     void operator ()(const SharedTypes::VariableEquals& t) const
     {
         std::cerr << "variable equals " << t.name << t.equals;
@@ -67,6 +89,16 @@ struct SharedTypesPrinter : boost::static_visitor<>
     void operator()(std::vector<SharedTypes::GdbValue> const& t) const
     {
         std::cerr << "vector<GdbValue> size " << t.size() << ": ";
+        for (auto arg : t)
+        {
+            (*this)(arg);
+            std::cerr << ", ";
+        }
+    }
+
+    void operator()(std::vector<SharedTypes::GdbResponseFunctionArg> const& t) const
+    {
+        std::cerr << "vector<Args> size " << t.size() << ": ";
         for (auto arg : t)
         {
             (*this)(arg);

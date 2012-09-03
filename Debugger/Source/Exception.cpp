@@ -88,3 +88,15 @@ char const* LogicError::what() const throw()
 {
     return msg.c_str();
 }
+
+BadResponseError::BadResponseError(std::string msg_)
+    : msg(msg_)
+{
+}
+
+BadResponseError::~BadResponseError() throw() {}
+
+char const* BadResponseError::what() const throw()
+{
+    return msg.c_str();
+}

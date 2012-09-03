@@ -101,9 +101,9 @@ Main Loop
 
 void mainLoop(MainChannels channels)
 {
-    BreakpointMap brkpts;
-    UserCmdHandler cmd_handler(channels, brkpts);
-    GdbResponseHandler resp_handler(channels, brkpts);
+    BreakpointManager brkpt_mgr(channels);
+    UserCmdHandler cmd_handler(channels, brkpt_mgr);
+    GdbResponseHandler resp_handler(channels, brkpt_mgr);
 
     while (true)
     {

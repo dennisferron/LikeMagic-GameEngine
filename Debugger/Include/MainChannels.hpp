@@ -3,6 +3,13 @@
 #include "AbstractInput.hpp"
 #include "AbstractOutput.hpp"
 
+#include "UserCmd.hpp"
+#include "GdbResponse.hpp"
+
+#include <string>
+
+#include "boost/exception/all.hpp"
+
 namespace Iocaste { namespace Debugger {
 
 struct MainChannels
