@@ -66,11 +66,11 @@ Execution diagram
     |   |       user   GDB           v
     |   v              v         fake response
     |   gdb resp?<-----+<--------write to user
-    +-<--No  Yes
-    ^         |
-    |         v
-    |     gdb response
-    |     write to user
+    +-<--No  Yes                             Send to handler
+    ^         |                                    ^
+    |         v                                    |
+    |     gdb response -----> special breakpoint? yes
+    |     write to user <---- no
     |         |
     +<--------+
 

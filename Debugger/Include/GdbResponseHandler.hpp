@@ -43,6 +43,26 @@ private:
             output.push_back(bs);
         }
 
+        void operator()(const GdbResponses::BreakpointHit& t)
+        {
+            cerr << "hit gdb breakpoint " << t.breakpoint_number << endl;
+            GdbBreakpoint gb = { t.breakpoint_number };
+
+            if (brkpts.has_user_breakpoint<OurBreakpoint>(gb))
+            {
+                // handle special breakpoint
+                // TODO:  Need to make a "breakpoint manager" class or something
+                // to combine reponse handler and user command handler.
+                // Or maybe it should be named something like CentralSomethingOrOther.
+            }
+            else
+            {
+                GdbResponses::BreakpointHit bh(t);
+                bs.breakpoint_number = brkpts.get_user_breakpoint<UserBreakpoint>(gb).number;
+                output.push_back(bs);
+            }
+        }
+
     /*
         Power goal - mix Io stack frames and C++ stack frames in backtrace lines.
         This will require detecting backtraces at the GdbResponse level rather
@@ -66,7 +86,6 @@ public:
 
     GdbResponseHandler(MainChannels const& channels_, BreakpointMap& brkpts_)
         : channels(channels_), brkpts(brkpts_) {}
-
 
     void handle(GdbResponse const& response)
     {

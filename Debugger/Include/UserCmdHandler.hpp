@@ -10,6 +10,8 @@ private:
     BreakpointMap& brkpts;
     std::string last_prompt;
     boost::optional<OurBreakpoint> io_debugger_breakpoint;
+    boost::optional<OurBreakpoint> io_init_breakpoint;
+    std::vector<IoBreakpoint> deferred_breakpoints;
 
     struct Visitor;
     friend struct Visitor;
@@ -52,9 +54,9 @@ private:
         channels.toUser.WriteData(response);
     }
 
-    OurBreakpoint setIoDebuggerBreakHere() const
+    OurBreakpoint setIoDebuggerBreakpoint(std::string function_name) const
     {
-        UserCmds::SetBreakpointOnFunction real_bkpt = { "io_debugger_break_here" };
+        UserCmds::SetBreakpointOnFunction real_bkpt = { function_name };
         UserCmd cmd;
         cmd = real_bkpt;
         channels.toGdb.WriteData( cmd );
@@ -70,22 +72,21 @@ private:
         {
             // Todo: this is not necessarily a logic error in this program per se,
             // need an exception type for "did not get expected response".
-            raiseError(LogicError("Did not get expected gdb response type from gdb when setting breakpoint on io_debugger_break_here() function."));
+            raiseError(LogicError("Did not get expected gdb response type from gdb when setting breakpoint on " + function_name + "() function."));
 
             // never get here
             return {-1};
         }
     }
 
-    IoBreakpoint setIoBreakpoint(UserCmds::SetBreakpoint const& stbk)
+    void loadDeferredBreakpoint(SharedTypes::GdbAddress io_state, IoBreakpoint ib)
     {
-        if (!io_debugger_breakpoint)
-            io_debugger_breakpoint = setIoDebuggerBreakHere();
-
         UserCmds::PrintFunction print;
         print.function_name = "io_debugger_set_breakpoint";
-        print.args.push_back( { stbk.file_name } );
-        print.args.push_back( { stbk.line_number } );
+        print.args.push_back( { io_state } );
+        print.args.push_back( { ib.breakpoint_number } );
+        print.args.push_back( { ib.file_name } );
+        print.args.push_back( { ib.line_number } );
         channels.toGdb.WriteData(print);
 
         GdbResponse resp = channels.fromGdb.ReadData();
@@ -107,9 +108,21 @@ private:
             // need an exception type for "did not get expected response".
             raiseError(LogicError("Did not get expected gdb response type from gdb when calling io_debugger_set_breakpoint."));
         }
+    }
 
-        // Never get here
-        return {-1};
+    IoBreakpoint setIoBreakpoint(UserCmds::SetBreakpoint const& stbk)
+    {
+        if (!io_init_breakpoint)
+            io_init_breakpoint = setIoDebuggerBreakpoint("io_debugger_init");
+
+        if (!io_debugger_breakpoint)
+            io_debugger_breakpoint = setIoDebuggerBreakpoint("io_debugger_break_here");
+
+        IoBreakpoint ib;
+        ib.file_name = stbk.file_name;
+        ib.file_name = stbk.line_number;
+        ib.number = deferred_breakpoints.size();
+        deferred_breakpoints.push_back(ib);
     }
 
     void handleIoBreakpoint(UserCmds::SetBreakpoint const& stbk)
@@ -176,6 +189,13 @@ public:
         boost::apply_visitor(Visitor(*this), cmd);
     }
 
+    void ioDebuggerInit(SharedTypes::GdbAddress io_state)
+    {
+        for (IoBreakpoint ib : deferred_breakpoints)
+        {
+            loadDeferredBreakpoint(io_state, ib);
+        }
+    }
 };
 
 }}

@@ -12,6 +12,8 @@ struct GdbBreakpoint
 struct IoBreakpoint
 {
     int number;
+    std::string file_name;
+    int line_number;
 };
 
 struct UserBreakpoint
@@ -71,13 +73,32 @@ public:
         catch (exception const& e)
         {
             cerr << "Error in get_user_breakpoint " << t.number << " exception was " << e.what() << endl;
-            throw;
+            raiseError(e);
         }
 
         // If we didn't find an existing user breakpoint, just pull the next available number.
         Result r = next_user_breakpoint<Result>();
         tbl.push_back( { r, t } );
         return r;
+    }
+
+    template <typename Result, typename Source>
+    bool has_user_breakpoint(Source t)
+    {
+        try
+        {
+            for (row_t row : tbl)
+                if (Result* m = boost::get<Result>(&row.first))
+                    if (m->number == t.number)
+                        return true;
+        }
+        catch (exception const& e)
+        {
+            cerr << "Error in has_user_breakpoint " << t.number << " exception was " << e.what() << endl;
+            raiseError(e);
+        }
+
+        return false;
     }
 
     template <typename Result, typename Source>
@@ -93,7 +114,7 @@ public:
         catch (exception const& e)
         {
             cerr << "Error in get_provider_breakpoint " << t.number << " exception was " << e.what() << endl;
-            throw;
+            raiseError(e);
         }
 
         // If we don't find a provider breakpoint, that's an error.
