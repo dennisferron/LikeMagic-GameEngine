@@ -1,4 +1,5 @@
 #include "UserCmdHandler.hpp"
+#include "boost/thread.hpp"
 
 using namespace Iocaste::Debugger;
 
@@ -20,6 +21,13 @@ void UserCmdHandler::operator()(const UserCmds::SetOption& t) const
 {
     if (t.name == "prompt")
     {
+        // Sometimes there's a race condition between the user sending he prompt change
+        // and GDB still spitting out other messages with the old prompt.
+        // This is a simple hack to get around that problem:
+        boost::this_thread::sleep(
+            boost::posix_time::milliseconds(5000)
+        );
+
         channels.end_markers.WriteData(t.value);
 
         // Needed so that the breakpoint manager can synthesize gdb response objects.
