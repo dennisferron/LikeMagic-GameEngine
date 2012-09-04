@@ -122,14 +122,15 @@ toGdb: info args
 fromGdb: self = (IoObject *) 0x7fff5fbffdff\nlocals = (IoObject *) 0x7fff5fbffdfe\nm = (IoMessage *) 0x7fff5fbffdfd\nbreakpoint_number = 1\nfile_name = 0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 5\n\b>>>>>>cb_gdb:
 
 toUser: self = (IoObject *) 0x7fff5fbffdff\nlocals = (IoObject *) 0x7fff5fbffdfe\nm = (IoMessage *) 0x7fff5fbffdfd\nbreakpoint_number = 1\nfile_name = 0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 5\n\b>>>>>>cb_gdb:
-fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52\"
+fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io:2\"
+toGdb: break io_debugger_init
+fromGdb: Breakpoint 1 at 0x100000ba0: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io, line 2.\n\b>>>>>>cb_gdb:
+toGdb: break io_debugger_break_here
+fromGdb: Breakpoint 2 at 0x100000ba0: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io, line 2.\n\b>>>>>>cb_gdb:
 
-toGdb: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52\"
-fromGdb: Breakpoint 3 at 0x100000ba0: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 52.\n\b>>>>>>cb_gdb:
-toUser: Breakpoint 3 at 0x100000ba0: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 52.\n\b>>>>>>cb_gdb:
 fromUser: cont
-
 toGdb: cont
+
 fromGdb: \nBreakpoint 3, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52:1178:beg:0x100000ba0\n\b>>>>>>cb_gdb:
 
 toUser: \nBreakpoint 3, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52:1178:beg:0x100000ba0\n\b>>>>>>cb_gdb:

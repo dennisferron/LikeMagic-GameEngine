@@ -230,6 +230,9 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
 
     if (is_banner)
     {
+        while (banner.msg.size() > 0 && *banner.msg.rbegin() == '\n')
+            banner.msg.resize(banner.msg.size()-1);
+
         result.push_back(banner);
         return result;
     }
