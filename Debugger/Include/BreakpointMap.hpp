@@ -10,6 +10,11 @@ namespace Iocaste { namespace Debugger {
 struct GdbBreakpoint
 {
     int number;
+
+    bool operator ==(GdbBreakpoint const& that)
+    {
+        return this->number == that.number;
+    }
 };
 
 struct IoBreakpoint
@@ -17,11 +22,21 @@ struct IoBreakpoint
     int number;
     std::string file_name;
     int line_number;
+
+    bool operator ==(IoBreakpoint const& that)
+    {
+        return this->number == that.number;
+    }
 };
 
 struct UserBreakpoint
 {
     int number;
+
+    bool operator ==(UserBreakpoint const& that)
+    {
+        return this->number == that.number;
+    }
 };
 
 struct OurBreakpoint
@@ -39,7 +54,13 @@ class BreakpointMap
 private:
     typedef boost::variant<UserBreakpoint, OurBreakpoint> breakpoint_user;
     typedef boost::variant<GdbBreakpoint, IoBreakpoint> breakpoint_provider;
-    typedef std::pair<breakpoint_user, breakpoint_provider> row_t;
+
+    struct row_t
+    {
+        breakpoint_user user_bkpt;
+        breakpoint_provider prov_bkpt;
+    };
+
     std::vector<row_t> tbl;
 
     template <typename Result>
@@ -53,7 +74,7 @@ private:
         try
         {
             for (row_t row : tbl)
-                if (Result* m = boost::get<Result>(&row.first))
+                if (Result* m = boost::get<Result>(&row.user_bkpt))
                     if (m->number > max)
                         max = m->number;
         }
@@ -74,9 +95,14 @@ public:
         try
         {
             for (row_t row : tbl)
-                if (Result* m = boost::get<Result>(&row.first))
-                    if (m->number == t.number)
-                        return *m;
+            {
+                Source* p = boost::get<Source>(&row.prov_bkpt);
+                Result* u = boost::get<Result>(&row.user_bkpt);
+                if (p && !u && *p == t)
+                    raiseError(LogicError("Wrong provider type for this user breakpoint."));
+                else if (p && u && *p == t)
+                    return *u;
+            }
         }
         catch (std::exception const& e)
         {
@@ -96,9 +122,12 @@ public:
         try
         {
             for (row_t row : tbl)
-                if (Result* m = boost::get<Result>(&row.first))
-                    if (m->number == t.number)
-                        return true;
+            {
+                Source* p = boost::get<Source>(&row.prov_bkpt);
+                Result* u = boost::get<Result>(&row.user_bkpt);
+                if (p && u && *p == t)
+                    return true;
+            }
         }
         catch (std::exception const& e)
         {
@@ -115,9 +144,14 @@ public:
         try
         {
             for (row_t row : tbl)
-                if (Result* m = boost::get<Result>(&row.second))
-                    if (m->number == t.number)
-                        return *m;
+            {
+                Source* u = boost::get<Source>(&row.user_bkpt);
+                Result* p = boost::get<Result>(&row.prov_bkpt);
+                if (u && !p && *u == t)
+                    raiseError(LogicError("Wrong provider type for this user breakpoint number."));
+                else if (u && p && *u == t)
+                    return *p;
+            }
         }
         catch (std::exception const& e)
         {
@@ -127,6 +161,9 @@ public:
 
         // If we don't find a provider breakpoint, that's an error.
         raiseError(LogicError("No provider breakpoint for this user breakpoint number."));
+
+        // Never get here
+        return { -1 };
     }
 
 };

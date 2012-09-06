@@ -1,6 +1,5 @@
 #include "LookForPrompt.hpp"
 #include "boost/algorithm/string/predicate.hpp"
-#include "boost/optional.hpp"
 
 using namespace std;
 using namespace Iocaste::Debugger;
@@ -14,13 +13,6 @@ LookForPrompt::LookForPrompt(
 
 void LookForPrompt::WriteData(string const& data)
 {
-    // Due to a race condition between "set prompt" and
-    // the dialog coming from GDB, when the prompt changes we need to keep the old
-    // end marker around until we get the first string with the new marker.
-    boost::optional<
-        std::string
-    > old_end_marker;
-
     buffer.append(data);
 
     if (end_marker_queue.HasData())
