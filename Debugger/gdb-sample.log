@@ -1,176 +1,1132 @@
+info: Built input chains.
+
+
+
+
+
+
+
+
+
+
+
 fromUser: set prompt >>>>>>cb_gdb:
+
+
+
+info: MainLoopState::ReadUser
+
+
+
 toGdb: set prompt >>>>>>cb_gdb:
-fromGdb: \b>>>>>>cb_gdb:
-toUser: \b>>>>>>cb_gdb:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 fromUser: show version
+info: MainLoopState::ReadUser
+
+
+
 toGdb: show version
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+fromGdb: Reading symbols for shared libraries ...\b>>>>>>cb_gdb:
+
+
+
+info: MainLoopState::ReadGdb
+fromGdb: \b>>>>>>cb_gdb:
+
+
+
+toUser: Reading symbols for shared libraries ...\n\b>>>>>>cb_gdb:
 fromGdb: GNU gdb 6.3.50-20050815 (Apple version gdb-1705) (Fri Jul  1 10:50:06 UTC 2011)\nCopyright 2004 Free Software Foundation, Inc.\nGDB is free software, covered by the GNU General Public License, and you are\nwelcome to change it and/or distribute copies of it under certain conditions.\nType \"show copying\" to see the conditions.\nThere is absolutely no warranty for GDB.  Type \"show warranty\" for details.\nThis GDB was configured as \"x86_64-apple-darwin\".\n\b>>>>>>cb_gdb:
+
+info: MainLoopState::ReadGdb
+
+
+toUser: \b>>>>>>cb_gdb:
+
+info: MainLoopState::ReadGdb
+
+
 toUser: GNU gdb 6.3.50-20050815 (Apple version gdb-1705) (Fri Jul  1 10:50:06 UTC 2011)\nCopyright 2004 Free Software Foundation, Inc.\nGDB is free software, covered by the GNU General Public License, and you are\nwelcome to change it and/or distribute copies of it under certain conditions.\nType \"show copying\" to see the conditions.\nThere is absolutely no warranty for GDB.  Type \"show warranty\" for details.\nThis GDB was configured as \"x86_64-apple-darwin\".\n\b>>>>>>cb_gdb:
 
-fromGdb: Reading symbols for shared libraries .... done\n\b>>>>>>cb_gdb:
-toUser: Reading symbols for shared libraries .... done\n\b>>>>>>cb_gdb:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 fromUser: set confirm off
+info: MainLoopState::ReadUser
 toGdb: set confirm off
 fromGdb: \b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
-
 fromUser: set width 0
-
+info: MainLoopState::ReadUser
 toGdb: set width 0
 fromGdb: \b>>>>>>cb_gdb:
-
+info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: set height 0
-
+info: MainLoopState::ReadUser
 toGdb: set height 0
 fromGdb: \b>>>>>>cb_gdb:
-
+info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: set breakpoint pending on
-
+info: MainLoopState::ReadUser
 toGdb: set breakpoint pending on
 fromGdb: \b>>>>>>cb_gdb:
-
+info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: set print asm-demangle on
-
+info: MainLoopState::ReadUser
 toGdb: set print asm-demangle on
 fromGdb: \b>>>>>>cb_gdb:
-
+info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: set unwindonsignal on
-
+info: MainLoopState::ReadUser
 toGdb: set unwindonsignal on
 fromGdb: \b>>>>>>cb_gdb:
-
+info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: set disassembly-flavor intel
-
+info: MainLoopState::ReadUser
 toGdb: set disassembly-flavor intel
 fromGdb: \b>>>>>>cb_gdb:
-
+info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: source /Developer/Applications/CodeBlocks/CodeBlocks.app/Contents/Resources/share/codeblocks/scripts/stl-views-1.0.3.gdb
-
+info: MainLoopState::ReadUser
 toGdb: source /Developer/Applications/CodeBlocks/CodeBlocks.app/Contents/Resources/share/codeblocks/scripts/stl-views-1.0.3.gdb
 fromGdb: \b>>>>>>cb_gdb:
-
+info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/
-
+info: MainLoopState::ReadUser
 toGdb: directory /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/
 fromGdb: \b>>>>>>cb_gdb:
-
+info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
-fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41\"
-
-toGdb: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41\"
-fromGdb: Breakpoint 1 at 0x100000b02: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 41.\n\b>>>>>>cb_gdb:
-toUser: Breakpoint 1 at 0x100000b02: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 41.\n\b>>>>>>cb_gdb:
-fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26\"
-
-toGdb: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26\"
-fromGdb: Breakpoint 2 at 0x100000a55: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 26.\n\b>>>>>>cb_gdb:
-toUser: Breakpoint 2 at 0x100000a55: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 26.\n\b>>>>>>cb_gdb:
-fromUser: tty /dev/ttys003
-
-toGdb: tty /dev/ttys003
+fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io:4\"
+info: MainLoopState::ReadUser
+toGdb: break io_debugger_init
+fromGdb: Breakpoint 1 at 0x10000111a: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 36.\n\b>>>>>>cb_gdb:
+info: Mapped gdb breakpoint #1 to our breakpoint #1
+toGdb: break io_debugger_break_here
+fromGdb: Breakpoint 2 at 0x100001138: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 43.\n\b>>>>>>cb_gdb:
+info: Mapped gdb breakpoint #2 to our breakpoint #2
+toUser: Breakpoint 1 at 0x0x00000000: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io, line 4.\n\b>>>>>>cb_gdb:
+fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:109\"
+info: MainLoopState::ReadUser
+toGdb: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:109\"
+fromGdb: Breakpoint 3 at 0x100001313: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 109.\n\b>>>>>>cb_gdb:
+toUser: Breakpoint 2 at 0x100001313: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 109.\n\b>>>>>>cb_gdb:
+fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io:2\"
+info: MainLoopState::ReadUser
+toUser: Breakpoint 3 at 0x0x00000000: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io, line 2.\n\b>>>>>>cb_gdb:
+fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:101\"
+info: MainLoopState::ReadUser
+toGdb: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:101\"
+fromGdb: Breakpoint 4 at 0x100001246: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 101.\n\b>>>>>>cb_gdb:
+toUser: Breakpoint 4 at 0x100001246: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 101.\n\b>>>>>>cb_gdb:
+fromUser: tty /dev/ttys012
+info: MainLoopState::ReadUser
+toGdb: tty /dev/ttys012
 fromGdb: \b>>>>>>cb_gdb:
-
+info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: run
-
+info: MainLoopState::ReadUser
 toGdb: run
-fromGdb: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41:864:beg:0x100000b02\n\b>>>>>>cb_gdb:
-
-toUser: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 1, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:41:864:beg:0x100000b02\n\b>>>>>>cb_gdb:
-fromUser: next
-
-toGdb: next
-fromGdb: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:42:900:beg:0x100000b2a\n\b>>>>>>cb_gdb:
-
-toUser: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:42:900:beg:0x100000b2a\n\b>>>>>>cb_gdb:
-fromUser: next
-
-toGdb: next
-fromGdb: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:936:beg:0x100000b52\n\b>>>>>>cb_gdb:
-
-toUser: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:936:beg:0x100000b52\n\b>>>>>>cb_gdb:
-fromUser: next
-
-toGdb: next
-fromGdb: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:50:1078:beg:0x100000b7a\n\b>>>>>>cb_gdb:
-
-toUser: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:50:1078:beg:0x100000b7a\n\b>>>>>>cb_gdb:
-fromUser: next
-
-toGdb: next
-fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdff, locals=0x7fff5fbffdfe, m=0x7fff5fbffdfd, breakpoint_number=1, file_name=0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26:627:beg:0x100000a55\n\b>>>>>>cb_gdb:
-
-toUser: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdff, locals=0x7fff5fbffdfe, m=0x7fff5fbffdfd, breakpoint_number=1, file_name=0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:26:627:beg:0x100000a55\n\b>>>>>>cb_gdb:
+fromGdb: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 4, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:101\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:101:2411:beg:0x100001246\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: Reading symbols for shared libraries +++........................ done\n\nBreakpoint 4, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:101\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:101:2411:beg:0x100001246\n\b>>>>>>cb_gdb:
 fromUser: info locals
-
+info: MainLoopState::ReadUser
 toGdb: info locals
 fromGdb: No locals.\n\b>>>>>>cb_gdb:
-
+info: MainLoopState::ReadGdb
 toUser: No locals.\n\b>>>>>>cb_gdb:
 fromUser: info args
-
+info: MainLoopState::ReadUser
 toGdb: info args
-fromGdb: self = (IoObject *) 0x7fff5fbffdff\nlocals = (IoObject *) 0x7fff5fbffdfe\nm = (IoMessage *) 0x7fff5fbffdfd\nbreakpoint_number = 1\nfile_name = 0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 5\n\b>>>>>>cb_gdb:
-
-toUser: self = (IoObject *) 0x7fff5fbffdff\nlocals = (IoObject *) 0x7fff5fbffdfe\nm = (IoMessage *) 0x7fff5fbffdfd\nbreakpoint_number = 1\nfile_name = 0x100001e28 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 5\n\b>>>>>>cb_gdb:
-fromUser: break \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io:2\"
-toGdb: break io_debugger_init
-fromGdb: Breakpoint 1 at 0x100000ba0: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io, line 2.\n\b>>>>>>cb_gdb:
-toGdb: break io_debugger_break_here
-fromGdb: Breakpoint 2 at 0x100000ba0: file /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io, line 2.\n\b>>>>>>cb_gdb:
-
+fromGdb: No arguments.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No arguments.\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:101\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:101\n\b>>>>>>cb_gdb:
+fromUser: info locals
+info: MainLoopState::ReadUser
+toGdb: info locals
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No locals.\n\b>>>>>>cb_gdb:
+fromUser: info args
+info: MainLoopState::ReadUser
+toGdb: info args
+fromGdb: No arguments.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No arguments.\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:101\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:101\n\b>>>>>>cb_gdb:
 fromUser: cont
+info: MainLoopState::ReadUser
 toGdb: cont
-
-fromGdb: \nBreakpoint 3, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52:1178:beg:0x100000ba0\n\b>>>>>>cb_gdb:
-
-toUser: \nBreakpoint 3, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:52:1178:beg:0x100000ba0\n\b>>>>>>cb_gdb:
+fromGdb: \nBreakpoint 1, io_debugger_init (io_state=0x7fff5fbffdeb) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:36\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:36:710:beg:0x10000111a\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+info: Mapped gdb breakpoint 1 to our breakpoint 1
+toGdb: print io_debugger_set_breakpoint(0x7fff5fbffdeb, 1, \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io\", 4)
+fromGdb: $1 = 1\n\b>>>>>>cb_gdb:
+toGdb: print io_debugger_set_breakpoint(0x7fff5fbffdeb, 2, \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io\", 2)
+fromGdb: $2 = 2\n\b>>>>>>cb_gdb:
+toGdb: cont
+toUser: \n\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:36:710:beg:0x10000111a\n\b>>>>>>cb_gdb:
+fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=0) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+info: Mapped gdb breakpoint 2 to our breakpoint 2
+toUser: \nBreakpoint 1,  () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io:0\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
 fromUser: info locals
-
+info: MainLoopState::ReadUser
 toGdb: info locals
-fromGdb: self = {<No data fields>}\nlocals = {<No data fields>}\nm = {<No data fields>}\n\b>>>>>>cb_gdb:
-
-toUser: self = {<No data fields>}\nlocals = {<No data fields>}\nm = {<No data fields>}\n\b>>>>>>cb_gdb:
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No locals.\n\b>>>>>>cb_gdb:
 fromUser: info args
-
+info: MainLoopState::ReadUser
 toGdb: info args
-fromGdb: No arguments.\n\b>>>>>>cb_gdb:
-
-toUser: No arguments.\n\b>>>>>>cb_gdb:
-fromUser: next
-
-toGdb: next
-fromGdb: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:53:1224:beg:0x100000bc8\n\b>>>>>>cb_gdb:
-
-toUser: \z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:53:1224:beg:0x100000bc8\n\b>>>>>>cb_gdb:
+fromGdb: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 0\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 0\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=0) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=0) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
 fromUser: info locals
-
+info: MainLoopState::ReadUser
 toGdb: info locals
-fromGdb: self = {<No data fields>}\nlocals = {<No data fields>}\nm = {<No data fields>}\n\b>>>>>>cb_gdb:
-
-toUser: self = {<No data fields>}\nlocals = {<No data fields>}\nm = {<No data fields>}\n\b>>>>>>cb_gdb:
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No locals.\n\b>>>>>>cb_gdb:
 fromUser: info args
-
+info: MainLoopState::ReadUser
 toGdb: info args
-fromGdb: No arguments.\n\b>>>>>>cb_gdb:
-
-toUser: No arguments.\n\b>>>>>>cb_gdb:
+fromGdb: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 0\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 0\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=0) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=0) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
 fromUser: cont
-
+info: MainLoopState::ReadUser
+toGdb: cont
+fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=1) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+info: Mapped gdb breakpoint 2 to our breakpoint 2
+toUser: \nBreakpoint 1,  () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io:1\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+fromUser: info locals
+info: MainLoopState::ReadUser
+toGdb: info locals
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No locals.\n\b>>>>>>cb_gdb:
+fromUser: info args
+info: MainLoopState::ReadUser
+toGdb: info args
+fromGdb: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 1\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 1\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=1) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=1) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+fromUser: cont
+info: MainLoopState::ReadUser
+toGdb: cont
+fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=2) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+info: Mapped gdb breakpoint 2 to our breakpoint 2
+toUser: \nBreakpoint 1,  () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io:2\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+fromUser: info locals
+info: MainLoopState::ReadUser
+toGdb: info locals
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No locals.\n\b>>>>>>cb_gdb:
+fromUser: info args
+info: MainLoopState::ReadUser
+toGdb: info args
+fromGdb: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 2\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 2\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=2) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=2) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+fromUser: cont
+info: MainLoopState::ReadUser
+toGdb: cont
+fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=3) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+info: Mapped gdb breakpoint 2 to our breakpoint 2
+toUser: \nBreakpoint 1,  () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io:3\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+fromUser: info locals
+info: MainLoopState::ReadUser
+toGdb: info locals
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No locals.\n\b>>>>>>cb_gdb:
+fromUser: info args
+info: MainLoopState::ReadUser
+toGdb: info args
+fromGdb: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 3\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 3\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=3) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=3) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+fromUser: cont
+info: MainLoopState::ReadUser
+toGdb: cont
+fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=4) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+info: Mapped gdb breakpoint 2 to our breakpoint 2
+toUser: \nBreakpoint 1,  () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io:4\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+fromUser: info locals
+info: MainLoopState::ReadUser
+toGdb: info locals
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No locals.\n\b>>>>>>cb_gdb:
+fromUser: info args
+info: MainLoopState::ReadUser
+toGdb: info args
+fromGdb: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 4\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 4\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=4) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=4) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+fromUser: cont
+info: MainLoopState::ReadUser
+toGdb: cont
+fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+info: Mapped gdb breakpoint 2 to our breakpoint 2
+toUser: \nBreakpoint 1,  () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io:5\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+fromUser: info locals
+info: MainLoopState::ReadUser
+toGdb: info locals
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No locals.\n\b>>>>>>cb_gdb:
+fromUser: info args
+info: MainLoopState::ReadUser
+toGdb: info args
+fromGdb: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 5\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 5\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=5) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+fromUser: cont
+info: MainLoopState::ReadUser
+toGdb: cont
+fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=6) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+info: Mapped gdb breakpoint 2 to our breakpoint 2
+toUser: \nBreakpoint 1,  () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io:6\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+fromUser: info locals
+info: MainLoopState::ReadUser
+toGdb: info locals
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No locals.\n\b>>>>>>cb_gdb:
+fromUser: info args
+info: MainLoopState::ReadUser
+toGdb: info args
+fromGdb: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 6\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 6\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=6) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=6) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+fromUser: cont
+info: MainLoopState::ReadUser
+toGdb: cont
+fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=7) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+info: Mapped gdb breakpoint 2 to our breakpoint 2
+toUser: \nBreakpoint 1,  () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io:7\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+fromUser: info locals
+info: MainLoopState::ReadUser
+toGdb: info locals
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No locals.\n\b>>>>>>cb_gdb:
+fromUser: info args
+info: MainLoopState::ReadUser
+toGdb: info args
+fromGdb: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 7\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 7\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=7) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=7) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+fromUser: cont
+info: MainLoopState::ReadUser
+toGdb: cont
+fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=8) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+info: Mapped gdb breakpoint 2 to our breakpoint 2
+toUser: \nBreakpoint 1,  () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io:8\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+fromUser: info locals
+info: MainLoopState::ReadUser
+toGdb: info locals
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No locals.\n\b>>>>>>cb_gdb:
+fromUser: info args
+info: MainLoopState::ReadUser
+toGdb: info args
+fromGdb: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 8\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 8\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=8) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=8) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+fromUser: cont
+info: MainLoopState::ReadUser
+toGdb: cont
+fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=9) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+info: Mapped gdb breakpoint 2 to our breakpoint 2
+toUser: \nBreakpoint 1,  () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io:9\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43:961:beg:0x100001138\n\b>>>>>>cb_gdb:
+fromUser: info locals
+info: MainLoopState::ReadUser
+toGdb: info locals
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No locals.\n\b>>>>>>cb_gdb:
+fromUser: info args
+info: MainLoopState::ReadUser
+toGdb: info args
+fromGdb: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 9\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: self = (void *) 0x7fff5fbffdea\nlocals = (void *) 0x7fff5fbffde9\nm = (void *) 0x7fff5fbffde8\nbreakpoint_number = 1\nfile_name = 0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\"\nline_number = 9\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=9) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  io_debugger_break_here (self=0x7fff5fbffdea, locals=0x7fff5fbffde9, m=0x7fff5fbffde8, breakpoint_number=1, file_name=0x100200448 \"/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io\", line_number=9) at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:43\n#1  0x0000000100001231 in run_io () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:83\n#2  0x00000001000012eb in main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:106\n\b>>>>>>cb_gdb:
+fromUser: cont
+info: MainLoopState::ReadUser
+toGdb: cont
+fromGdb: \nBreakpoint 3, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:109\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:109:2627:beg:0x100001313\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: \nBreakpoint 2, main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:109\n\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:109:2627:beg:0x100001313\n\b>>>>>>cb_gdb:
+fromUser: info locals
+info: MainLoopState::ReadUser
+toGdb: info locals
+fromGdb: No locals.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No locals.\n\b>>>>>>cb_gdb:
+fromUser: info args
+info: MainLoopState::ReadUser
+toGdb: info args
+fromGdb: No arguments.\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: No arguments.\n\b>>>>>>cb_gdb:
+fromUser: bt 30
+info: MainLoopState::ReadUser
+toGdb: bt 30
+fromGdb: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:109\n\b>>>>>>cb_gdb:
+info: MainLoopState::ReadGdb
+toUser: #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:109\n\b>>>>>>cb_gdb:
+fromUser: cont
+info: MainLoopState::ReadUser
 toGdb: cont
 fromGdb: \nProgram exited normally.\n\b>>>>>>cb_gdb:
-
+info: MainLoopState::ReadGdb
 toUser: \nProgram exited normally.\n\b>>>>>>cb_gdb:
 fromUser: quit
-
+info: MainLoopState::ReadUser
 toGdb: quit
 

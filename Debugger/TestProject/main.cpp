@@ -47,10 +47,10 @@ int io_debugger_set_breakpoint(void *io_state, int breakpoint_number, const char
 {
     cerr << "Io setting breakpoint " << io_state << ", " << breakpoint_number << ", \"" << file_name << "\", " << line_number << endl;
 
-    if (breakpoint_number >= (int)breakpoints.size())
-        breakpoints.resize(breakpoint_number);
+    //if (breakpoint_number >= (int)breakpoints.size())
+    //    breakpoints.resize(breakpoint_number+1);
 
-    breakpoints[breakpoint_number] = {file_name, line_number};
+    //breakpoints[breakpoint_number] = {file_name, line_number};
 
     return breakpoint_number;
 }
@@ -77,17 +77,22 @@ void run_io()
         IoObject locals;
         IoMessage m;
 
-        auto it = find(breakpoints.begin(), breakpoints.end(), Breakpoint { file_name, line });
+        io_debugger_break_here(
+            &self, &locals, &m,
+            1, file_name.c_str(), line
+        );
 
-        if (it != breakpoints.end())
-        {
-            int breakpoint_number = it - breakpoints.begin();
+        //auto it = find(breakpoints.begin(), breakpoints.end(), Breakpoint { file_name, line });
 
-            io_debugger_break_here(
-                &self, &locals, &m,
-                breakpoint_number, file_name.c_str(), line
-            );
-        }
+        //if (it != breakpoints.end())
+        //{
+        //    int breakpoint_number = it - breakpoints.begin();
+//
+         //   io_debugger_break_here(
+         //       &self, &locals, &m,
+        //        breakpoint_number, file_name.c_str(), line
+        //    );
+        //}
     }
 }
 

@@ -13,57 +13,6 @@ using namespace std;
 BreakpointManager::BreakpointManager(MainChannels const& channels_)
     : channels(channels_), gdb_prompt("(gdb) ")
 {
-    BreakpointMap bktest;
-
-    GdbBreakpoint gb_our_1 = { 101 };
-    GdbBreakpoint gb_our_2 = { 102 };
-    GdbBreakpoint gb_our_3 = { 103 };
-    GdbBreakpoint gb_usr_1 = { 201 };
-    GdbBreakpoint gb_usr_2 = { 202 };
-
-    IoBreakpoint ib_our_1 = { 301 };
-    IoBreakpoint ib_our_2 = { 302 };
-    IoBreakpoint ib_usr_1 = { 401 };
-    IoBreakpoint ib_usr_2 = { 402 };
-
-    OurBreakpoint ob_gdb_1 = bktest.get_user_breakpoint<OurBreakpoint>(gb_our_1);   // 101 -> 1
-    OurBreakpoint ob_gdb_2 = bktest.get_user_breakpoint<OurBreakpoint>(gb_our_2);   // 102 -> 2
-    OurBreakpoint ob_gdb_3 = bktest.get_user_breakpoint<OurBreakpoint>(gb_our_3);   // 103 -> 3
-    UserBreakpoint ub_gdb_1 = bktest.get_user_breakpoint<UserBreakpoint>(gb_usr_1); // 201 -> 1
-    UserBreakpoint ub_gdb_2 = bktest.get_user_breakpoint<UserBreakpoint>(gb_usr_2); // 202 -> 2
-
-    OurBreakpoint ob_iob_1 = bktest.get_user_breakpoint<OurBreakpoint>(ib_our_1);   // 301 -> 4
-    OurBreakpoint ob_iob_2 = bktest.get_user_breakpoint<OurBreakpoint>(ib_our_2);   // 302 -> 5
-    UserBreakpoint ub_iob_1 = bktest.get_user_breakpoint<UserBreakpoint>(ib_usr_1); // 401 -> 3
-    UserBreakpoint ub_iob_2 = bktest.get_user_breakpoint<UserBreakpoint>(ib_usr_2); // 402 -> 4
-
-    // Test that we get the same result
-
-    OurBreakpoint ob_gdb_1x = bktest.get_user_breakpoint<OurBreakpoint>(gb_our_1);   // 101 -> 1
-    OurBreakpoint ob_gdb_2x = bktest.get_user_breakpoint<OurBreakpoint>(gb_our_2);   // 102 -> 2
-    OurBreakpoint ob_gdb_3x = bktest.get_user_breakpoint<OurBreakpoint>(gb_our_3);   // 103 -> 3
-    UserBreakpoint ub_gdb_1x = bktest.get_user_breakpoint<UserBreakpoint>(gb_usr_1); // 201 -> 1
-    UserBreakpoint ub_gdb_2x = bktest.get_user_breakpoint<UserBreakpoint>(gb_usr_2); // 202 -> 2
-
-    OurBreakpoint ob_iob_1x = bktest.get_user_breakpoint<OurBreakpoint>(ib_our_1);   // 301 -> 4
-    OurBreakpoint ob_iob_2x = bktest.get_user_breakpoint<OurBreakpoint>(ib_our_2);   // 302 -> 5
-    UserBreakpoint ub_iob_1x = bktest.get_user_breakpoint<UserBreakpoint>(ib_usr_1); // 401 -> 3
-    UserBreakpoint ub_iob_2x = bktest.get_user_breakpoint<UserBreakpoint>(ib_usr_2); // 402 -> 4
-
-    // Test that we can get the provider breakpoints too
-
-    GdbBreakpoint gb_our_1x = bktest.get_provider_breakpoint<GdbBreakpoint>(ob_gdb_1); // { 101 };
-    GdbBreakpoint gb_our_2x = bktest.get_provider_breakpoint<GdbBreakpoint>(ob_gdb_2); // { 102 };
-    GdbBreakpoint gb_our_3x = bktest.get_provider_breakpoint<GdbBreakpoint>(ob_gdb_3); // { 103 };
-    GdbBreakpoint gb_usr_1x = bktest.get_provider_breakpoint<GdbBreakpoint>(ub_gdb_1); // { 201 };
-    GdbBreakpoint gb_usr_2x = bktest.get_provider_breakpoint<GdbBreakpoint>(ub_gdb_2); // { 202 };
-
-    IoBreakpoint ib_our_1x = bktest.get_provider_breakpoint<IoBreakpoint>(ob_iob_1); // { 301 };
-    IoBreakpoint ib_our_2x = bktest.get_provider_breakpoint<IoBreakpoint>(ob_iob_2); // { 302 };
-    IoBreakpoint ib_usr_1x = bktest.get_provider_breakpoint<IoBreakpoint>(ub_iob_1); // { 401 };
-    IoBreakpoint ib_usr_2x = bktest.get_provider_breakpoint<IoBreakpoint>(ub_iob_2); // { 402 };
-
-    cerr << "Done" << endl;
 }
 
 void BreakpointManager::setPrompt(std::string new_prompt)
@@ -150,8 +99,8 @@ IoBreakpoint BreakpointManager::setIoBreakpoint(UserCmds::SetBreakpoint const& s
 
     IoBreakpoint ib;
     ib.file_name = stbk.file_name;
-    ib.file_name = stbk.line_number;
-    ib.number = deferred_breakpoints.size();
+    ib.line_number = stbk.line_number;
+    ib.number = deferred_breakpoints.size()+1;
     deferred_breakpoints.push_back(ib);
 
     return ib;
