@@ -9,10 +9,48 @@ using namespace std;
 
 #include <stdlib.h>
 
+struct BreakpointResponseVisitor
+{
+    // TODO:  Record whether breakpoint hit was regular gdb or our breakpoint,
+    // and then dispatch in cursor position accordingly.
+
+    template <typename T>
+    GdbResponseType GdbResponseHandler::operator()(const T& t)
+    {
+        return t;
+    }
+
+    GdbResponseType operator()(const GdbResponses::BreakpointSet& t)
+    {
+        return gdbBreakpointSet(t);
+    }
+
+    GdbResponseType operator()(const GdbResponses::BreakpointHit& t)
+    {
+        return gdbBreakpointHit(t);
+    }
+
+    GdbResponseType operator()(const GdbResponses::CursorPos& t)
+    {
+        return gdbCursorPos(t);
+    }
+};
 
 BreakpointManager::BreakpointManager(MainChannels const& channels_)
     : channels(channels_), gdb_prompt("(gdb) ")
 {
+}
+
+void BreakpointManager::handle(GdbResponse const& response)
+{
+    std::vector<GdbResponseType> output;
+    for (auto line_item : response.values)
+        output.push_back(boost::apply_visitor(*this, line_item));
+
+    GdbResponse munged;
+    munged.prompt = response.prompt;
+    munged.values = output;
+    channels.toUser.WriteData(munged);
 }
 
 void BreakpointManager::setPrompt(std::string new_prompt)
@@ -335,4 +373,11 @@ GdbResponseType BreakpointManager::gdbBreakpointHit(const GdbResponses::Breakpoi
         bh.breakpoint_number = brkpts.get_user_breakpoint<UserBreakpoint>(gb).number;
         return bh;
     }
+}
+
+GdbResponseType BreakpointManager::gdbCursorPos(const GdbResponses::CursorPos& t)
+{
+    // We return empty here because we are going to generate the
+    // cursor position manually from the breakpoint information.
+    return GdbResponses::Empty();
 }

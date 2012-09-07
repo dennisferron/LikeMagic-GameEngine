@@ -6,16 +6,33 @@ using namespace Iocaste::Debugger;
 GdbResponseHandler::GdbResponseHandler(MainChannels const& channels_, BreakpointManager& brkpt_mgr_)
     : channels(channels_), brkpt_mgr(brkpt_mgr_) {}
 
+template <typename T>
+bool hasResponseType(std::vector<GdbResponseType> items)
+{
+    for (auto line_item : items)
+        if (boost::get<T>(&line_item))
+            return true;
+
+    return false;
+}
+
 void GdbResponseHandler::handle(GdbResponse const& response)
 {
-    std::vector<GdbResponseType> output;
-    for (auto line_item : response.values)
-        output.push_back(boost::apply_visitor(*this, line_item));
+    if (hasResponseType<GdbResponses::BreakpointHit>(response))
+    {
+        brkpt_mgr.handle(response);
+    }
+    else
+    {
+        std::vector<GdbResponseType> output;
+        for (auto line_item : response.values)
+            output.push_back(boost::apply_visitor(*this, line_item));
 
-    GdbResponse munged;
-    munged.prompt = response.prompt;
-    munged.values = output;
-    channels.toUser.WriteData(munged);
+        GdbResponse munged;
+        munged.prompt = response.prompt;
+        munged.values = output;
+        channels.toUser.WriteData(munged);
+    }
 }
 
 template <typename T>
@@ -28,16 +45,6 @@ GdbResponseType GdbResponseHandler::operator()(const GdbResponses::Uninitialized
 {
     raiseError(ParseException("GdbResponseHandler was passed uninitialized variant in GdbResponse object."));
     return GdbResponses::Empty();
-}
-
-GdbResponseType GdbResponseHandler::operator()(const GdbResponses::BreakpointSet& t)
-{
-    return brkpt_mgr.gdbBreakpointSet(t);
-}
-
-GdbResponseType GdbResponseHandler::operator()(const GdbResponses::BreakpointHit& t)
-{
-    return brkpt_mgr.gdbBreakpointHit(t);
 }
 
 /*

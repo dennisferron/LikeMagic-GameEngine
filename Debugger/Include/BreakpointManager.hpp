@@ -18,6 +18,8 @@ private:
     std::vector<IoBreakpoint> deferred_breakpoints;
     std::string gdb_prompt;
 
+    friend struct BreakpointResponseVisitor;
+
     void toGdb(UserCmd const& cmd) const;
     void toUser(GdbResponse const& response) const;
     OurBreakpoint setIoDebuggerBreakpoint(std::string function_name);
@@ -36,14 +38,16 @@ private:
     int getInt(FunctionArgs args, std::string arg_name);
     std::string getValueAsString(FunctionArgs args, std::string arg_name);
     SharedTypes::GdbAddress getPointer(FunctionArgs args, std::string arg_name);
+    GdbResponseType gdbBreakpointHit(const GdbResponses::BreakpointHit& t);
+    GdbResponseType gdbBreakpointSet(const GdbResponses::BreakpointSet& t);
+    GdbResponseType gdbCursorPos(const GdbResponses::CursorPos& t);
 
 public:
 
     BreakpointManager(MainChannels const& channels_);
     void userSetBreakpoint(const UserCmds::SetBreakpoint& t);
-    GdbResponseType gdbBreakpointHit(const GdbResponses::BreakpointHit& t);
-    GdbResponseType gdbBreakpointSet(const GdbResponses::BreakpointSet& t);
     void setPrompt(std::string new_prompt);
+    void handle(GdbResponse const& response);
 };
 
 }}
