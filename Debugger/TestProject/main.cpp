@@ -5,6 +5,7 @@ using namespace std;
 
 struct Breakpoint
 {
+    int breakpoint_number;
     std::string file_name;
     int line_number;
 
@@ -32,6 +33,8 @@ extern "C"
 
 void io_debugger_init(void *io_state)
 {
+    cerr << "Io debugger init " << io_state << endl;
+
     // Add some assembly lines to discourage the complier from optimizing away this function.
     asm ("nop;");
 }
@@ -47,10 +50,13 @@ int io_debugger_set_breakpoint(void *io_state, int breakpoint_number, const char
 {
     cerr << "Io setting breakpoint " << io_state << ", " << breakpoint_number << ", \"" << file_name << "\", " << line_number << endl;
 
-    //if (breakpoint_number >= (int)breakpoints.size())
-    //    breakpoints.resize(breakpoint_number+1);
+    if (breakpoint_number >= (int)breakpoints.size())
+        breakpoints.resize(breakpoint_number);
 
-    //breakpoints[breakpoint_number] = {file_name, line_number};
+    breakpoints[breakpoint_number-1] = { breakpoint_number, file_name, line_number};
+
+    for (Breakpoint bk : breakpoints)
+        cerr << "Breakpoint " << bk.breakpoint_number << " " << bk.file_name << ":" << bk.line_number << endl;
 
     return breakpoint_number;
 }
@@ -71,6 +77,21 @@ void run_io()
     IoState io_state;
     io_debugger_init(&io_state);
 
+    for (Breakpoint bk : breakpoints)
+    {
+        cerr << "Playing back breakpoint " << bk.breakpoint_number << " " << bk.file_name << ":" << bk.line_number << endl;
+
+        IoObject self;
+        IoObject locals;
+        IoMessage m;
+
+        io_debugger_break_here(
+            &self, &locals, &m,
+            bk.breakpoint_number, bk.file_name.c_str(), bk.line_number
+        );
+    }
+
+/*
     for (int line=1; line <= 3; ++line)
     {
         IoObject self;
@@ -82,18 +103,8 @@ void run_io()
             3, file_name.c_str(), line
         );
 
-        //auto it = find(breakpoints.begin(), breakpoints.end(), Breakpoint { file_name, line });
-
-        //if (it != breakpoints.end())
-        //{
-        //    int breakpoint_number = it - breakpoints.begin();
-        //
-         //   io_debugger_break_here(
-         //       &self, &locals, &m,
-        //        breakpoint_number, file_name.c_str(), line
-        //    );
-        //}
     }
+*/
 }
 
 int main()
