@@ -33,7 +33,7 @@
 			<Add option="-fexceptions" />
 			<Add option="--std=c++0x" />
 		</Compiler>
-		<Unit filename="Test.io" />
+		<Unit filename="Test.io.inl" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
