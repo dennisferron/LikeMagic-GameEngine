@@ -4,6 +4,7 @@
 	<Project>
 		<Option title="Iocaste" />
 		<Option pch_mode="2" />
+		<Option default_target="Debug Linux" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug Mac">
@@ -30,6 +31,7 @@
 				<Option object_output="obj/Debug-Linux/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
+				<Option parameters="Debugger/TestProject/Test.io.inl" />
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-Wall" />
@@ -80,6 +82,7 @@
 		<Unit filename="Include/Iocaste/CShims/IoObjectImpl.h" />
 		<Unit filename="Include/Iocaste/CShims/Stack.h" />
 		<Unit filename="Include/Iocaste/CShims/Stack_inline.h" />
+		<Unit filename="Include/Iocaste/DebugAPI.hpp" />
 		<Unit filename="Include/Iocaste/Exception.hpp" />
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/API_Io.hpp" />
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/API_Io_Impl.hpp" />
@@ -96,6 +99,7 @@
 		<Unit filename="Source/API_Io.cpp" />
 		<Unit filename="Source/API_Io_from_script.cpp" />
 		<Unit filename="Source/API_Io_to_script.cpp" />
+		<Unit filename="Source/DebugAPI.cpp" />
 		<Unit filename="Source/Exception.cpp" />
 		<Unit filename="Source/IoBlock.cpp" />
 		<Unit filename="Source/IoObjectExpr.cpp" />
@@ -390,6 +394,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoObject_flow.h" />
+		<Unit filename="iovm/source/IoObject_inline.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="iovm/source/IoObject_inline.h" />
 		<Unit filename="iovm/source/IoObject_struct.h" />
 		<Unit filename="iovm/source/IoProfiler.c">

@@ -33,8 +33,9 @@
 			<Add option="-fexceptions" />
 			<Add option="--std=c++0x" />
 		</Compiler>
-		<Unit filename="Test.io" />
+		<Unit filename="Test.io.inl" />
 		<Unit filename="main.cpp" />
+		<Unit filename="../../Include/Iocaste/DebugAPI.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
