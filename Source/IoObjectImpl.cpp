@@ -18,8 +18,6 @@ extern "C" IO_METHOD(IoObject, doFile)
 	pathString is relative to the current working directory.
 	*/
 
-    //IoState_error_(self, IONIL, "TODO:  Convert IO_METHOD(IoObject, doFile) to a C++ function and catch compile error.");
-
     std::string pathString = "<<Error getting file path>>";
 
     try
