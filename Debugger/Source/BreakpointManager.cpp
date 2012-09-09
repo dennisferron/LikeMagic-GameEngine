@@ -361,7 +361,7 @@ bool BreakpointManager::isIoBreakpoint(string file_name) const
 {
     return
         boost::algorithm::ends_with(file_name, ".io") ||
-        boost::algorithm::ends_with(file_name, "inl.io");
+        boost::algorithm::ends_with(file_name, "io.inl");
 }
 
 void BreakpointManager::userSetBreakpoint(const UserCmds::SetBreakpoint& t)

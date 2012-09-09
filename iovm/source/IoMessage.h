@@ -47,6 +47,7 @@ typedef struct
 	//int charNumber;
 	int lineNumber;
 	IoSymbol *label;
+	void* breakpoint;
 } IoMessageData;
 
 #define IOMESSAGEDATA(self) ((IoMessageData *)IoObject_dataPointer(self))
