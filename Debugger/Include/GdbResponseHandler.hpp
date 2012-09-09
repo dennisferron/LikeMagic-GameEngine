@@ -15,8 +15,6 @@ public:
     void handle(GdbResponse const& response);
     template <typename T> GdbResponseType operator()(const T& t);
     GdbResponseType operator()(const GdbResponses::UninitializedVariant& t);
-    GdbResponseType operator()(const GdbResponses::BreakpointSet& t);
-    GdbResponseType operator()(const GdbResponses::BreakpointHit& t);
 
 };
 

@@ -7,6 +7,8 @@
 
 namespace Iocaste { namespace Debugger {
 
+struct BreakpointResponseVisitor;
+
 class BreakpointManager
 {
 private:
@@ -38,9 +40,10 @@ private:
     int getInt(FunctionArgs args, std::string arg_name);
     std::string getValueAsString(FunctionArgs args, std::string arg_name);
     SharedTypes::GdbAddress getPointer(FunctionArgs args, std::string arg_name);
-    GdbResponseType gdbBreakpointHit(const GdbResponses::BreakpointHit& t);
+    GdbResponseType gdbBreakpointHit(const GdbResponses::BreakpointHit& t, bool& is_our_breakpoint);
     GdbResponseType gdbBreakpointSet(const GdbResponses::BreakpointSet& t);
-    GdbResponseType gdbCursorPos(const GdbResponses::CursorPos& t);
+    GdbResponseType gdbCursorPos(const GdbResponses::CursorPos& t, bool is_our_breakpoint);
+    bool isIoBreakpoint(std::string file_name) const;
 
 public:
 

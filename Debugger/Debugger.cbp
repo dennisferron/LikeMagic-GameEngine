@@ -53,9 +53,9 @@
 		</Compiler>
 		<Linker>
 			<Add library="../../Common/boost_1_49_0/build-gcc/libboost_thread.a" />
-			<Add library="../../Common/boost_1_49_0/build-gcc/libboost_filesystem.a" />
 			<Add library="../../Common/boost_1_49_0/build-gcc/libboost_system.a" />
 			<Add library="../../Common/boost_1_49_0/build-gcc/libboost_exception.a" />
+			<Add library="../../Common/boost_1_49_0/build-gcc/libboost_filesystem.a" />
 		</Linker>
 		<Unit filename="Include/AbstractAdapter.hpp" />
 		<Unit filename="Include/AbstractInput.hpp" />

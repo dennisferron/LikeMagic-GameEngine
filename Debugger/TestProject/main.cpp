@@ -60,9 +60,9 @@ int io_debugger_set_breakpoint(void *io_state, int breakpoint_number, const char
 
 std::string file_name =
 #ifdef __linux__
-    "/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io"
+    "/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl"
 #else // mac os
-    "/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/test.io"
+    "/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl"
 #endif
 ;
 
@@ -71,7 +71,7 @@ void run_io()
     IoState io_state;
     io_debugger_init(&io_state);
 
-    for (int line=0; line < 10; ++line)
+    for (int line=1; line <= 3; ++line)
     {
         IoObject self;
         IoObject locals;
@@ -79,7 +79,7 @@ void run_io()
 
         io_debugger_break_here(
             &self, &locals, &m,
-            1, file_name.c_str(), line
+            3, file_name.c_str(), line
         );
 
         //auto it = find(breakpoints.begin(), breakpoints.end(), Breakpoint { file_name, line });
@@ -87,7 +87,7 @@ void run_io()
         //if (it != breakpoints.end())
         //{
         //    int breakpoint_number = it - breakpoints.begin();
-//
+        //
          //   io_debugger_break_here(
          //       &self, &locals, &m,
         //        breakpoint_number, file_name.c_str(), line
@@ -107,5 +107,6 @@ int main()
     cout << "Finished running io code" << endl;
 
     cout << "Goodbye, cruel world!" << endl;
+
     return 0;
 }

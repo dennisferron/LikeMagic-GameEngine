@@ -18,7 +18,7 @@ bool hasResponseType(std::vector<GdbResponseType> items)
 
 void GdbResponseHandler::handle(GdbResponse const& response)
 {
-    if (hasResponseType<GdbResponses::BreakpointHit>(response))
+    if (hasResponseType<GdbResponses::BreakpointHit>(response.values))
     {
         brkpt_mgr.handle(response);
     }

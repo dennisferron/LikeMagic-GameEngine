@@ -68,6 +68,8 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
 
         breakpoint_set = qi::lit("Breakpoint ") >> qi::int_ >> " at " >> address >> ": file " >> file_name >> "," >> " line " >> qi::int_ >> ".";
 
+        //breakpoint_pending = qi::lit("Breakpoint ") >> qi::int_ >> " (" >> file_name >> ":" >> qi::int_ >> ") pending.";
+
         //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
         cursor_pos = qi::lit("\x1A\x1A") >> file_name >> ":" >> qi::int_ >> ":" >> qi::int_ >> ":" >> *qi::alpha >> ":" >> address;
 
