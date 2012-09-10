@@ -328,12 +328,12 @@ void IoMessage_rawSetLineNumber_(IoMessage *self, int n)
 
 void IoMessage_rawSetCharNumber_(IoMessage *self, int n)
 {
-	//DATA(self)->charNumber = n;
+	DATA(self)->charNumber = n;
 }
 
 int IoMessage_rawCharNumber(IoMessage *self)
 {
-	return 0; //DATA(self)->charNumber;
+	return DATA(self)->charNumber;
 }
 
 List *IoMessage_rawArgList(IoMessage *self)

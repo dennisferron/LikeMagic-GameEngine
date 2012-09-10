@@ -42,7 +42,7 @@
 				<Option external_deps="libIoCaste-Linux.a;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="../../wayup/Engine/Startup.io" />
+				<Option parameters="Debugger/TestProject/Test.io.inl" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-Wextra" />
@@ -52,9 +52,11 @@
 				<Linker>
 					<Add option="-ldl" />
 					<Add option="-lpthread" />
-					<Add library="../LikeMagic/StdBindings/libStdBindings-Linux.a" />
-					<Add library="../LikeMagic/libLikeMagic-Linux.a" />
-					<Add library="libIocaste-Linux.a" />
+					<Add option="-Xlinker --start-group" />
+					<Add option="../LikeMagic/StdBindings/libStdBindings-Linux.a" />
+					<Add option="../LikeMagic/libLikeMagic-Linux.a" />
+					<Add option="libIocaste-Linux.a" />
+					<Add option="-Xlinker --end-group" />
 				</Linker>
 			</Target>
 			<Target title="Debug Windows">

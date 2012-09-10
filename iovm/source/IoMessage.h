@@ -44,7 +44,7 @@ typedef struct
 	IoObject *cachedResult;
 
 	// debugging info
-	//int charNumber;
+	int charNumber;
 	int lineNumber;
 	IoSymbol *label;
 	void* breakpoint;

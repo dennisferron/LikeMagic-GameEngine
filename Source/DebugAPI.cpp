@@ -62,5 +62,25 @@ int io_debugger_set_breakpoint(void *io_state, int breakpoint_number, const char
 }
 
 #pragma GCC pop_options
+
+}
+
+extern "C"
+{
+void iovm_set_breakpoints(IoMessage *self) /* sets label for children too */
+{
+    IoState* state = get_io_state(self);
+    iovm = reinterpret_cast<IoVM*>(state->callbackContext);
+    iovm->setPendingBreakpoints(self);
+
+    DATA(self)->breakpoint = findBreakpoint(DATA(self)->label, DATA(self)->lineNumber, DATA(self)->charNumber));
+
+	List_do_with_(DATA(self)->args, (ListDoWithCallback *)IoMessage_label_, ioSymbol);
+
+	if (DATA(self)->next)
+	{
+		IoMessage_label_(DATA(self)->next, ioSymbol);
+	}
+}
 }
 

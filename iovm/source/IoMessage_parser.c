@@ -84,13 +84,20 @@ IoMessage *IoMessage_newFromText_labelSymbol_(void *state, const char *text, IoS
 	IoLexer_string_(lexer, text);
 	IoLexer_lex(lexer);
 
+    // This also applies line numbers.
 	msg = IoMessage_newParse(state, lexer);
+
 	IoMessage_opShuffle_(msg);
+
 	IoMessage_label_(msg, label);
+
+	// DLF:  Check for pending breakpoint on this message.
+    io_debugger_apply_breakpoints(msg);
+
 	IoLexer_free(lexer);
-	
+
 	IoState_popCollectorPause(state);
-	
+
 	return msg;
 }
 
