@@ -43,6 +43,7 @@ But the cost to performance seems to outweigh the need to cover this case for no
 #include <stdarg.h>
 #include "IoMessage_parser.h"
 #include "IoMessage_opShuffle.h"
+#include "IoVMCpp.h"
 
 #define DATA(self) ((IoMessageData *)IoObject_dataPointer(self))
 
@@ -506,6 +507,13 @@ IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObjec
 		//printf("M:%s:%s:%i\n", CSTRING(IoMessage_name(m)), CSTRING(IoMessage_rawLabel(m)), IoMessage_rawLineNumber(m));
 
 		md = DATA(m);
+
+		if (md->breakpoint)
+		{
+		    iovm_hit_breakpoint(
+                md->breakpoint,
+                self, locals, m);
+		}
 
 		if(md->name == state->semicolonSymbol)
 		{

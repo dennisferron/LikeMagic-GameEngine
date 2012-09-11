@@ -3,17 +3,10 @@
 #include <algorithm>
 using namespace std;
 
+#include "Iocaste/DebugAPI.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 using namespace Iocaste;
 using namespace Iocaste::LikeMagicAdapters;
-
-extern "C"
-{
-    struct CollectorMarker {};
-    typedef struct CollectorMarker IoObject;
-    typedef IoObject IoMessage;
-    struct IoState {};
-}
 
 extern "C"
 {
@@ -27,10 +20,20 @@ void io_debugger_init(void *io_state)
 
     // Add some assembly lines to discourage the complier from optimizing away this function.
     asm ("nop;");
+
+/*
+    // Testing
+    io_debugger_set_breakpoint(
+        io_state,
+        1,
+        "Debugger/TestProject/Test.io.inl",
+        2
+    );
+*/
 }
 
 void io_debugger_break_here(void *self, void *locals, void *m,
-    int breakpoint_number, const char *file_name, int line_number)
+    int breakpoint_number, const char *file_name, int line_number, int char_number)
 {
     // Add some assembly lines to discourage the complier from optimizing away this function.
     asm ("nop;");

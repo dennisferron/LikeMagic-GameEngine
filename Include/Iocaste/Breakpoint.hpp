@@ -1,3 +1,4 @@
+#pragma once
 
 #include <string>
 
@@ -14,16 +15,12 @@ typedef IoObject IoMessage;
 
 namespace Iocaste {
 
-class Breakpoint
+struct Breakpoint
 {
-private:
-
     int breakpoint_number;
     std::string file_name;
     int line_number;
     int char_number;
-
-public:
 
     Breakpoint(
         int breakpoint_number_,
@@ -33,6 +30,7 @@ public:
     );
 
     bool match(IoMessage* m);
+    bool match(std::string file_name, int line_number, int char_number);
 };
 
 }

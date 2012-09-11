@@ -44,6 +44,8 @@ struct GdbResponseWriteGrammar
 
         gdb_struct = karma::lit("{") << karma::string << "}";
 
+        square_bracket_msg = karma::lit("[") << karma::string << "]";
+
         breakpoint_set = karma::lit("Breakpoint ") << karma::int_ << " at " << address << ": file " << file_name << ", line " << karma::int_ << ".";
         empty = karma::lit("") << -dummy;
 
@@ -92,7 +94,8 @@ struct GdbResponseWriteGrammar
         test_str1 = karma::string;
         test_str2 = karma::string;
 
-        response_item = (locals_info | test_str1 | backtrace_line | banner | reading_symbols | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited | raw_str | empty) << "\n";
+        response_item = (locals_info | test_str1 | backtrace_line | banner | reading_symbols | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited
+                         | square_bracket_msg | raw_str | empty) << "\n";
         start = *response_item;
     }
 
@@ -129,6 +132,7 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, GdbResponses::TestStr1()> test_str1;
     karma::rule<OutputIterator, GdbResponses::TestStr2()> test_str2;
     karma::rule<OutputIterator, GdbResponses::RawStr()> raw_str;
+    karma::rule<OutputIterator, GdbResponses::SquareBracketMsg()> square_bracket_msg;
     karma::rule<OutputIterator, GdbResponseType()> response_item;
     karma::rule<OutputIterator, vector<GdbResponseType>()> start;
 };
@@ -148,6 +152,11 @@ struct GdbResponsePrinter : public SharedTypesPrinter
     void operator()(const RawStr& t) const
     {
         cerr << "RawStr is " << t.value << endl;
+    }
+
+    void operator()(const SquareBracketMsg& t) const
+    {
+        cerr << "SquareBracketMsg is " << t.msg << endl;
     }
 
     void operator()(const UninitializedVariant& t) const

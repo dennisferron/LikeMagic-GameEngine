@@ -20,6 +20,8 @@
 #include "boost/unordered_map.hpp"
 #include "boost/unordered_set.hpp"
 
+#include "IoState.h"
+
 extern "C"
 {
     typedef void (CollectorFreeFunc)(void *);
@@ -28,7 +30,7 @@ extern "C"
 namespace Iocaste { namespace LikeMagicAdapters {
 
 
-class IoVM : public LikeMagic::ITypeSystemObserver, public LikeMagic::MarkableObjGraph
+class IoVM : public IoState, public LikeMagic::ITypeSystemObserver, public LikeMagic::MarkableObjGraph
 {
 private:
     LikeMagic::RuntimeTypeSystem& type_system;
@@ -120,8 +122,8 @@ public:
 
     void set_breakpoint(int breakpoint_number, const char *file_name, int line_number);
     void set_pending_breakpoints(IoMessage* m);
-    void find_pending_breakpoint(std::string file_name, int line_number, int char_number);
-    void find_pending_breakpoint(IoMessage* m);
+    Breakpoint* find_pending_breakpoint(std::string file_name, int line_number, int char_number);
+    Breakpoint* find_pending_breakpoint(IoMessage* m);
 
     static IoVM* get(IoState* state);
     static IoVM* get(IoMessage* m);

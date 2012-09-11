@@ -16,6 +16,8 @@
 #include "IoLexer.h"
 #include <ctype.h>
 
+#include "IoVMCpp.h"
+
 #define DATA(self) ((IoMessageData *)IoObject_dataPointer(self))
 
 void IoMessage_parseName(IoMessage *self, IoLexer *lexer);
@@ -92,7 +94,7 @@ IoMessage *IoMessage_newFromText_labelSymbol_(void *state, const char *text, IoS
 	IoMessage_label_(msg, label);
 
 	// DLF:  Check for pending breakpoint on this message.
-    io_debugger_apply_breakpoints(msg);
+    iovm_set_pending_breakpoints(msg);
 
 	IoLexer_free(lexer);
 

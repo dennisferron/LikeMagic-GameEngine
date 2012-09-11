@@ -13,6 +13,8 @@
 #include "Iocaste/LikeMagicAdapters/ToIoObjectExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp"
 #include "Iocaste/Exception.hpp"
+#include "Iocaste/Breakpoint.hpp"
+#include "Iocaste/DebugAPI.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 
 #include "LikeMagic/SFMO/ExprProxy.hpp"
@@ -42,18 +44,33 @@ using namespace std;
 using namespace LikeMagic;
 using namespace LikeMagic::Marshaling;
 using namespace LikeMagic::SFMO;
+using namespace Iocaste;
 using namespace Iocaste::LikeMagicAdapters;
 using namespace LikeMagic::Utility;
 
-// CShims function
-extern "C" void iovm_set_pending_breakpoints(IoMessage *self)
+// CShims functions
+extern "C" {
+
+void iovm_set_pending_breakpoints(IoMessage *self)
 {
     IoVM::get(self)->set_pending_breakpoints(self);
 }
 
+void iovm_hit_breakpoint(void* bp,
+    void *self, void *locals, void *m)
+{
+    Breakpoint& bkpt = *reinterpret_cast<Breakpoint*>(bp);
+    io_debugger_break_here(self, locals, m,
+        bkpt.breakpoint_number, bkpt.file_name.c_str(),
+            bkpt.line_number, bkpt.char_number);
+}
+
+}
+
 IoVM* IoVM::get(IoState* state)
 {
-    return reinterpret_cast<IoVM*>(state->callbackContext);
+    //return reinterpret_cast<IoVM*>(state->callbackContext);
+    return static_cast<IoVM*>(state);
 }
 
 IoVM* IoVM::get(IoMessage* m)
@@ -67,7 +84,7 @@ void IoVM::set_pending_breakpoints(IoMessage* m)
 
     data->breakpoint = find_pending_breakpoint(m);
 
-	List_do_(data->args, (ListDoWithCallback *)iovm_set_breakpoints);
+	List_do_(data->args, (ListDoCallback *)iovm_set_pending_breakpoints);
 
 	if (data->next)
 	{
@@ -80,25 +97,26 @@ void IoVM::set_breakpoint(int breakpoint_number, const char *file_name, int line
     breakpoints.push_back(Breakpoint(breakpoint_number, file_name, line_number, -1));
 }
 
-void IoVM::find_pending_breakpoint(std::string file_name, int line_number, int char_number)
+Breakpoint* IoVM::find_pending_breakpoint(std::string file_name, int line_number, int char_number)
 {
-    for (Breakpoint bp : breakpoints)
+    for (Breakpoint& bp : breakpoints)
     {
         // TODO:  Some situations may call for just lowest char number
         // TODO:  Use "m" or use separate args?
         if (bp.match(file_name, line_number, char_number))
-
+            return &bp;
     }
+
+    return NULL;
 }
 
-void IoVM::find_pending_breakpoint(IoMessage* m)
+Breakpoint* IoVM::find_pending_breakpoint(IoMessage* m)
 {
     IoMessageData* data = reinterpret_cast<IoMessageData*>(IoObject_dataPointer(m));
     return find_pending_breakpoint(
         string(CSTRING(data->label)),
         data->lineNumber,
         data->charNumber);
-
 }
 
 // The difference between this and a no-change or implicit conv is this evals in context to return IoObject* directly.
@@ -143,9 +161,17 @@ void IoVM::setShowAllMessages(bool value)
 
 IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys), last_exception(0)
 {
-    state = IoState_new();
+    state = this;
+
+    // It's very important you static_cast here, if you use
+    // reinterpret_cast or allow conversion to void* which
+    // is the function arg, you get a different pointer!
+    IoState_new_atAddress(static_cast<IoState*>(this));
+
     IoState_init(state);
     state->callbackContext = reinterpret_cast<void*>(this);
+
+    io_debugger_init(state);
 
     IoState_exceptionCallback_(state, &io_exception);
 
@@ -246,7 +272,10 @@ void IoVM::register_class(LikeMagic::Marshaling::AbstractClass const* class_)
 
 IoVM::~IoVM()
 {
-    IoState_free(state);
+    IoState_done(state);
+
+    // Don't free; we're derived from it!
+    //IoState_free(state);
 }
 
 IoObject* IoVM::castToIoObjectPointer(void* p)

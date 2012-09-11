@@ -125,6 +125,11 @@ struct ValueHistory
     SharedTypes::GdbValue value;
 };
 
+struct SquareBracketMsg
+{
+    std::string msg;
+};
+
 struct TestStr1
 {
     std::string value;
@@ -163,6 +168,7 @@ typedef  boost::variant
     GdbResponses::ValueHistory,
     GdbResponses::RawStr,
     GdbResponses::ProgramExited,
+    GdbResponses::SquareBracketMsg,
     GdbResponses::Empty
 > GdbResponseType;
 
