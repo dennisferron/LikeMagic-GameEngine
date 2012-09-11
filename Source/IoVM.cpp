@@ -45,6 +45,61 @@ using namespace LikeMagic::SFMO;
 using namespace Iocaste::LikeMagicAdapters;
 using namespace LikeMagic::Utility;
 
+// CShims function
+extern "C" void iovm_set_pending_breakpoints(IoMessage *self)
+{
+    IoVM::get(self)->set_pending_breakpoints(self);
+}
+
+IoVM* IoVM::get(IoState* state)
+{
+    return reinterpret_cast<IoVM*>(state->callbackContext);
+}
+
+IoVM* IoVM::get(IoMessage* m)
+{
+    return get(get_io_state(m));
+}
+
+void IoVM::set_pending_breakpoints(IoMessage* m)
+{
+    IoMessageData* data = reinterpret_cast<IoMessageData*>(IoObject_dataPointer(m));
+
+    data->breakpoint = find_pending_breakpoint(m);
+
+	List_do_(data->args, (ListDoWithCallback *)iovm_set_breakpoints);
+
+	if (data->next)
+	{
+		set_pending_breakpoints(data->next);
+	}
+}
+
+void IoVM::set_breakpoint(int breakpoint_number, const char *file_name, int line_number)
+{
+    breakpoints.push_back(Breakpoint(breakpoint_number, file_name, line_number, -1));
+}
+
+void IoVM::find_pending_breakpoint(std::string file_name, int line_number, int char_number)
+{
+    for (Breakpoint bp : breakpoints)
+    {
+        // TODO:  Some situations may call for just lowest char number
+        // TODO:  Use "m" or use separate args?
+        if (bp.match(file_name, line_number, char_number))
+
+    }
+}
+
+void IoVM::find_pending_breakpoint(IoMessage* m)
+{
+    IoMessageData* data = reinterpret_cast<IoMessageData*>(IoObject_dataPointer(m));
+    return find_pending_breakpoint(
+        string(CSTRING(data->label)),
+        data->lineNumber,
+        data->charNumber);
+
+}
 
 // The difference between this and a no-change or implicit conv is this evals in context to return IoObject* directly.
 struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter

@@ -15,6 +15,8 @@
 #include "LikeMagic/ITypeSystemObserver.hpp"
 #include "LikeMagic/MarkableObjGraph.hpp"
 
+#include "Iocaste/Breakpoint.hpp"
+
 #include "boost/unordered_map.hpp"
 #include "boost/unordered_set.hpp"
 
@@ -34,8 +36,8 @@ private:
     std::set<TypeIndex> registered_classes;
     boost::unordered_map<TypeIndex, IoObject*> class_protos;
     CollectorFreeFunc* original_free_func;
-
     mutable IoObject* last_exception;
+    std::vector<Breakpoint> breakpoints;
 
     ExprPtr get_abs_expr(std::string io_code) const;
 
@@ -115,6 +117,14 @@ public:
     virtual void mark() const;
 
     virtual void setShowAllMessages(bool value);
+
+    void set_breakpoint(int breakpoint_number, const char *file_name, int line_number);
+    void set_pending_breakpoints(IoMessage* m);
+    void find_pending_breakpoint(std::string file_name, int line_number, int char_number);
+    void find_pending_breakpoint(IoMessage* m);
+
+    static IoVM* get(IoState* state);
+    static IoVM* get(IoMessage* m);
 };
 
 

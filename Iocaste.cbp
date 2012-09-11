@@ -78,8 +78,10 @@
 			<Add directory="../Common/boost" />
 			<Add directory="../LikeMagic/Include" />
 		</Compiler>
+		<Unit filename="Include/Iocaste/Breakpoint.hpp" />
 		<Unit filename="Include/Iocaste/CShims/Exception.h" />
 		<Unit filename="Include/Iocaste/CShims/IoObjectImpl.h" />
+		<Unit filename="Include/Iocaste/CShims/IoVMCpp.h" />
 		<Unit filename="Include/Iocaste/CShims/Stack.h" />
 		<Unit filename="Include/Iocaste/CShims/Stack_inline.h" />
 		<Unit filename="Include/Iocaste/DebugAPI.hpp" />
@@ -102,6 +104,7 @@
 		<Unit filename="Source/API_Io.cpp" />
 		<Unit filename="Source/API_Io_from_script.cpp" />
 		<Unit filename="Source/API_Io_to_script.cpp" />
+		<Unit filename="Source/Breakpoint.cpp" />
 		<Unit filename="Source/DebugAPI.cpp" />
 		<Unit filename="Source/Exception.cpp" />
 		<Unit filename="Source/IoBlock.cpp" />

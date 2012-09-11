@@ -3,19 +3,9 @@
 #include <algorithm>
 using namespace std;
 
-struct Breakpoint
-{
-    int breakpoint_number;
-    std::string file_name;
-    int line_number;
-
-    bool operator ==(Breakpoint const& that) const
-    {
-        return this->file_name == that.file_name && this->line_number == that.line_number;
-    }
-};
-
-std::vector<Breakpoint> breakpoints;
+#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+using namespace Iocaste;
+using namespace Iocaste::LikeMagicAdapters;
 
 extern "C"
 {
@@ -50,37 +40,13 @@ int io_debugger_set_breakpoint(void *io_state, int breakpoint_number, const char
 {
     cerr << "Io setting breakpoint " << io_state << ", " << breakpoint_number << ", \"" << file_name << "\", " << line_number << endl;
 
-    if (breakpoint_number >= (int)breakpoints.size())
-        breakpoints.resize(breakpoint_number);
-
-    breakpoints[breakpoint_number-1] = { breakpoint_number, file_name, line_number};
-
-    for (Breakpoint bk : breakpoints)
-        cerr << "Breakpoint " << bk.breakpoint_number << " " << bk.file_name << ":" << bk.line_number << endl;
+    IoVM::get((IoState*)io_state)->set_breakpoint(
+          breakpoint_number, file_name, line_number);
 
     return breakpoint_number;
 }
 
 #pragma GCC pop_options
 
-}
-
-extern "C"
-{
-void iovm_set_breakpoints(IoMessage *self) /* sets label for children too */
-{
-    IoState* state = get_io_state(self);
-    iovm = reinterpret_cast<IoVM*>(state->callbackContext);
-    iovm->setPendingBreakpoints(self);
-
-    DATA(self)->breakpoint = findBreakpoint(DATA(self)->label, DATA(self)->lineNumber, DATA(self)->charNumber));
-
-	List_do_with_(DATA(self)->args, (ListDoWithCallback *)IoMessage_label_, ioSymbol);
-
-	if (DATA(self)->next)
-	{
-		IoMessage_label_(DATA(self)->next, ioSymbol);
-	}
-}
 }
 
