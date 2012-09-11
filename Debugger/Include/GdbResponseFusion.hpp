@@ -51,6 +51,11 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::SignalReceived,
+    (std::string, msg)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::BreakpointSet,
     (int, breakpoint_number)
     (SharedTypes::GdbAddress, address)

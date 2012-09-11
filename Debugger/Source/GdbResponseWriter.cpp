@@ -94,8 +94,11 @@ struct GdbResponseWriteGrammar
         test_str1 = karma::string;
         test_str2 = karma::string;
 
+        // Program received signal EXC_BAD_ACCESS, Could not access memory.
+        signal_received = karma::lit("Program received signal ") << karma::string;
+
         response_item = (locals_info | test_str1 | backtrace_line | banner | reading_symbols | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited
-                         | square_bracket_msg | raw_str | empty) << "\n";
+                         | square_bracket_msg | signal_received | raw_str | empty) << "\n";
         start = *response_item;
     }
 
@@ -133,6 +136,7 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, GdbResponses::TestStr2()> test_str2;
     karma::rule<OutputIterator, GdbResponses::RawStr()> raw_str;
     karma::rule<OutputIterator, GdbResponses::SquareBracketMsg()> square_bracket_msg;
+    karma::rule<OutputIterator, GdbResponses::SignalReceived()> signal_received;
     karma::rule<OutputIterator, GdbResponseType()> response_item;
     karma::rule<OutputIterator, vector<GdbResponseType>()> start;
 };
@@ -157,6 +161,11 @@ struct GdbResponsePrinter : public SharedTypesPrinter
     void operator()(const SquareBracketMsg& t) const
     {
         cerr << "SquareBracketMsg is " << t.msg << endl;
+    }
+
+    void operator()(const SignalReceived& t) const
+    {
+        cerr << "SignalReceived is " << t.msg << endl;
     }
 
     void operator()(const UninitializedVariant& t) const

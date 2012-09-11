@@ -136,7 +136,11 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
 
         value_history = qi::lit('$') >> qi::int_ >> equals >> gdb_value;
 
-        start = reading_symbols | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function | backtrace_line | value_history | program_exited | square_bracket_msg
+        // Program received signal EXC_BAD_ACCESS, Could not access memory.
+        signal_received = qi::lit("Program received signal ") > +qi::char_;
+
+        start = reading_symbols | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function
+                | backtrace_line | value_history | program_exited | square_bracket_msg | signal_received
         #ifdef PARSE_RAW_STRING
             | raw_str
         #endif
@@ -169,6 +173,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, SharedTypes::GdbResponseFunction()> gdb_function;
     qi::rule<Iterator, SharedTypes::GdbValue()> gdb_value;
     qi::rule<Iterator, GdbResponses::SquareBracketMsg()> square_bracket_msg;
+    qi::rule<Iterator, GdbResponses::SignalReceived()> signal_received;
     qi::rule<Iterator, GdbResponses::ProgramExited()> program_exited;
     qi::rule<Iterator, GdbResponses::ValueHistory()> value_history;
     qi::rule<Iterator, GdbResponses::TestStr1()> test_str1;

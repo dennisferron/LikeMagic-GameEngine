@@ -130,6 +130,11 @@ struct SquareBracketMsg
     std::string msg;
 };
 
+struct SignalReceived
+{
+    std::string msg;
+};
+
 struct TestStr1
 {
     std::string value;
@@ -169,6 +174,7 @@ typedef  boost::variant
     GdbResponses::RawStr,
     GdbResponses::ProgramExited,
     GdbResponses::SquareBracketMsg,
+    GdbResponses::SignalReceived,
     GdbResponses::Empty
 > GdbResponseType;
 
