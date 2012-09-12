@@ -20,6 +20,8 @@ using namespace std;
 
 #include "ActivityLogLine.hpp"
 #include "Exception.hpp"
+#include "StringUnescapeParser.hpp"
+#include "StringEscapeWriter.hpp"
 
 using namespace Iocaste::Debugger;
 
@@ -40,29 +42,15 @@ struct ActivityLogParser : qi::grammar<Iterator, ActivityLogLine()>
 {
     ActivityLogParser() : ActivityLogParser::base_type(start)
     {
-        using qi::int_;
-        using qi::lit;
-        using qi::double_;
-        using qi::lexeme;
-        using ascii::char_;
-
-        unesc_char.add("\\a", '\a')("\\b", '\b')("\\f", '\f')("\\n", '\n')
-                      ("\\r", '\r')("\\t", '\t')("\\v", '\v')("\\\\", '\\')
-                      ("\\\'", '\'')("\\\"", '\"')("\\0", '\0')("\\z", 26)
-            ;
-
-        unesc_str = *(unesc_char | (qi::print - '\\') | "\\x" >> qi::hex >> ";");
-
         label %=  +qi::alnum;
-        content %= unesc_str;
+        content %= unesc_grammar;
         start %= label >> ":" >> (" " >> content | qi::eoi);
     }
 
     qi::rule<Iterator, std::string()> label;
     qi::rule<Iterator, std::string()> content;
     qi::rule<Iterator, ActivityLogLine()> start;
-    qi::rule<Iterator, std::string()> unesc_str;
-    qi::symbols<char const, char const> unesc_char;
+    StringUnescapeParser<Iterator> unesc_grammar;
 };
 
 
@@ -104,23 +92,15 @@ struct ActivityLogWriter
     ActivityLogWriter()
       : ActivityLogWriter::base_type(start)
     {
-        esc_char.add('\a', "\\a")('\b', "\\b")('\f', "\\f")('\n', "\\n")
-                    ('\r', "\\r")('\t', "\\t")('\v', "\\v")('\\', "\\\\")
-                    ('\'', "\\\'")('\"', "\\\"")('\0', "\\0")(26, "\\z")
-            ;
-
-        esc_str = *(esc_char | karma::print | "\\x" << karma::hex << ';' );
-
         label %= +karma::print;
-        content %= esc_str;
+        content %= esc_grammar;
         start %= label << ": " << content;
     }
 
     karma::rule<OutputIterator, std::string()> label;
     karma::rule<OutputIterator, std::string()> content;
     karma::rule<OutputIterator, ActivityLogLine()> start;
-    karma::rule<OutputIterator, std::string()> esc_str;
-    karma::symbols<char, char const*> esc_char;
+    StringEscapeWriter<OutputIterator> esc_grammar;
 };
 
 void ActivityLogLine::Write(std::string& generated) const

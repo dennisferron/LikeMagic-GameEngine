@@ -19,6 +19,11 @@ struct SharedTypesPrinter : boost::static_visitor<>
         std::cerr << "int " << t;
     }
 
+    void operator()(const SharedTypes::ValueElided& t) const
+    {
+        std::cerr << "ValueElided " << t.text;
+    }
+
     void operator()(SharedTypes::GdbResponseFunctionArg const& t) const
     {
         std::cerr << "Arg: " << t.name << t.equals;

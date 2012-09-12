@@ -39,7 +39,17 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    SharedTypes::ValueElided,
+    (std::string, text)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     SharedTypes::NoLocals,
+    (std::string, text)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    SharedTypes::ValueAsFunctionPtr,
     (std::string, text)
 )
 
@@ -49,6 +59,9 @@ BOOST_FUSION_ADAPT_STRUCT(
     (boost::optional<
         SharedTypes::ValueAsString
     >, value_as_string)
+    (boost::optional<
+        SharedTypes::ValueAsFunctionPtr
+    >, value_as_function_ptr)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(

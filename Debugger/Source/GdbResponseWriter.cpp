@@ -16,10 +16,10 @@ using namespace Iocaste::Debugger;
 #include <string>
 using namespace std;
 
+#include "StringEscapeWriter.hpp"
+
 #include "GdbResponseFusion.hpp"
 using namespace Iocaste::Debugger::GdbResponses;
-
-namespace karma = boost::spirit::karma;
 
 template <typename OutputIterator>
 struct GdbResponseWriteGrammar
@@ -62,7 +62,7 @@ struct GdbResponseWriteGrammar
         // #0  0x0000000100000e20 in start ()
         // #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
         //backtrace_line = karma::int_ << -karma::string << karma::string << karma::string << -karma::string << -karma::string << -karma::int_;
-        backtrace_line = karma::lit("#") << karma::int_ << karma::lit("  ")
+        backtrace_line = karma::lit("#") << karma::int_ << karma::string
             << -address_in
             << gdb_function
             << -from_module
@@ -80,19 +80,22 @@ struct GdbResponseWriteGrammar
         no_locals = no_locals_str;
         variable_equals = ident << equals << -type_cast << gdb_value;
         type_cast = karma::string;
-        gdb_value = (address | karma::int_ | quoted_string | gdb_struct)
-            << -value_as_string;
+        gdb_value = (address | karma::int_ | quoted_string | gdb_struct | value_elided)
+            << -value_as_string << -value_as_function_ptr;
         value_as_string = karma::lit(" ") << quoted_string;
+        value_as_function_ptr = karma::lit(" <") << karma::string << ">";
 
         value_history = karma::lit('$') << karma::int_ << equals << gdb_value;
 
         // 0x0000000100000e20 in start ()
         address_in_function = address_in << gdb_function;
 
-        quoted_string = karma::lit("\"") << karma::string << "\"";
+        quoted_string = karma::lit("\"") << esc_grammar << "\"";
 
         test_str1 = karma::string;
         test_str2 = karma::string;
+
+        value_elided = karma::string;
 
         // Program received signal EXC_BAD_ACCESS, Could not access memory.
         signal_received = karma::lit("Program received signal ") << karma::string;
@@ -102,6 +105,7 @@ struct GdbResponseWriteGrammar
         start = *response_item;
     }
 
+    StringEscapeWriter<OutputIterator> esc_grammar;
     karma::rule<OutputIterator, string()> dummy;
     karma::rule<OutputIterator, string()> quoted_string;
     karma::rule<OutputIterator, string()> function_name;
@@ -118,8 +122,10 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, SharedTypes::ValueAsString()> value_as_string;
     karma::rule<OutputIterator, SharedTypes::TypeCast()> type_cast;
     karma::rule<OutputIterator, SharedTypes::GdbValue()> gdb_value;
+    karma::rule<OutputIterator, SharedTypes::ValueElided()> value_elided;
     karma::rule<OutputIterator, SharedTypes::VariableEquals()> variable_equals;
     karma::rule<OutputIterator, SharedTypes::GdbResponseFunction()> gdb_function;
+    karma::rule<OutputIterator, SharedTypes::ValueAsFunctionPtr()> value_as_function_ptr;
     karma::rule<OutputIterator, SharedTypes::GdbResponseFunctionArg()> function_arg;
     karma::rule<OutputIterator, GdbResponses::ProgramExited()> program_exited;
     karma::rule<OutputIterator, GdbResponses::Banner()> banner;

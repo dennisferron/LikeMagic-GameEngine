@@ -92,6 +92,8 @@ struct BacktraceLine
 {
     int backtrace_number;
 
+    std::string spaces;
+
     boost::optional<
         SharedTypes::AddressIn
     > address_in;

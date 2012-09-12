@@ -34,7 +34,7 @@ namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
 #include "GdbResponseFusion.hpp"
-
+#include "StringUnescapeParser.hpp"
 
 // Uncomment to pass otherwise unknown commands un-parsed
 //#define PARSE_RAW_STRING
@@ -103,7 +103,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
 
         gdb_struct = qi::lit('{') >> *(qi::char_ - qi::char_('}')) > qi::lit('}');
 
-        quoted_string = qi::lit('"') >> *(qi::char_ - qi::char_('"')) >> qi::lit('"');
+        quoted_string = qi::lit('"') >> /* *(qi::char_ - qi::char_('"')) */ unesc_grammar >> qi::lit('"');
 
         square_bracket_msg = qi::lit('[') >> *(qi::char_ - qi::char_(']')) >> qi::lit(']');
 
@@ -116,12 +116,13 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         // #0  main () at /Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7
         // #0  0x0000000100000e20 in start ()
         // -(address in) (function|?? (args)) ((at file:line)(from module))
-        backtrace_line = qi::lit("#") >> qi::int_ >> "  "
-            >> -address_in
-            >> gdb_function
-            >> -from_module
-            >> -at_file
-            >> -(qi::lit(":") >> qi::int_);
+        // #10 0x000000000050b85b in IoObject_doString (self=0x86c760, locals=0x86c760, m=0x93ed20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:1849
+        backtrace_line = qi::lit("#") > qi::int_ > +qi::space
+            > -address_in
+            > gdb_function
+            > -from_module
+            > -at_file
+            > -(qi::lit(":") > qi::int_);
 
         address_in = address >> " in ";
         from_module = qi::lit(" from ") >> file_name;
@@ -131,8 +132,11 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         raw_str = raw_str_value;
         //test_str1 = qi::lit("#0  ") >> raw_str_value;
 
-        gdb_value = (address | qi::int_ | quoted_string | gdb_struct) >> -value_as_string;
+        gdb_value = (address | qi::int_ | quoted_string | gdb_struct | value_elided) >> -value_as_string >> -value_as_function_ptr;
+        value_elided = elipses;
+        elipses = qi::string("...");
         value_as_string = qi::lit(" ") >> quoted_string;
+        value_as_function_ptr = qi::lit(" <") > +(qi::char_-'>') > ">";
 
         value_history = qi::lit('$') >> qi::int_ >> equals >> gdb_value;
 
@@ -147,7 +151,9 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
         ;
     }
 
+    StringUnescapeParser<Iterator> unesc_grammar;
     qi::rule<Iterator, std::string()> ident;
+    qi::rule<Iterator, std::string()> elipses;
     qi::rule<Iterator, std::string()> value;
     qi::rule<Iterator, std::string()> dummy;
     qi::rule<Iterator, std::string()> file_name;
@@ -158,6 +164,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, std::string()> no_locals_str;
     qi::rule<Iterator, std::string()> type_cast_str;
     qi::rule<Iterator, std::string()> program_exited_str;
+    qi::rule<Iterator, SharedTypes::ValueElided()> value_elided;
     qi::rule<Iterator, SharedTypes::GdbStruct()> gdb_struct;
     qi::rule<Iterator, SharedTypes::ValueAsString()> value_as_string;
     qi::rule<Iterator, SharedTypes::AtFile()> at_file;
@@ -171,6 +178,7 @@ struct GdbResponseGrammar : qi::grammar<Iterator, GdbResponseType()>
     qi::rule<Iterator, SharedTypes::VariableEquals()> variable_equals;
     qi::rule<Iterator, SharedTypes::GdbResponseFunctionArg()> function_arg;
     qi::rule<Iterator, SharedTypes::GdbResponseFunction()> gdb_function;
+    qi::rule<Iterator, SharedTypes::ValueAsFunctionPtr()> value_as_function_ptr;
     qi::rule<Iterator, SharedTypes::GdbValue()> gdb_value;
     qi::rule<Iterator, GdbResponses::SquareBracketMsg()> square_bracket_msg;
     qi::rule<Iterator, GdbResponses::SignalReceived()> signal_received;
@@ -316,7 +324,8 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                 }
                 catch (boost::spirit::qi::expectation_failure<iterator_type> const& exc)
                 {
-                    cerr << "Parse error on gdb response: " << exc.what() << " at " << std::string(exc.first, exc.last) << endl;
+                    stringstream ss;
+                    ss << "While parsing ->" << line << "<- in string ->" << input << "<- got expectation failure: " << exc.what() << " at " << std::string(exc.first, exc.last) << endl;
                     raiseError(exc);
                 }
             }

@@ -2,6 +2,8 @@
 #include "AbstractOutput.hpp"
 using namespace Iocaste::Debugger;
 
+#include "boost/thread.hpp"
+
 #include <cxxabi.h>
 #include <string>
 
@@ -31,6 +33,14 @@ void Iocaste::Debugger::logException(std::type_info const& exception_type, std::
 {
     if (exception_log)
     {
+        // Pause a short while so that our message doesn't mixed up with the other thread's
+        // error message during cerr output (which can happen).
+        cerr << flush;
+        boost::this_thread::sleep(
+            boost::posix_time::milliseconds(100)
+          );
+        cerr << flush;
+
         exception_log->WriteData(
             std::string("About to throw exception of type ")
                 + demangle_name(exception_type.name())

@@ -42,15 +42,28 @@ struct GdbStruct
     std::string contents;
 };
 
+struct ValueElided
+{
+    std::string text;
+};
+
+struct ValueAsFunctionPtr
+{
+    std::string text;
+};
+
 struct GdbValue
 {
     typedef boost::variant<
-        int, std::string, GdbAddress, GdbStruct
+        int, std::string, GdbAddress, GdbStruct, ValueElided
     > value_type;
     value_type value;
     boost::optional<
         ValueAsString
     > value_as_string;
+    boost::optional<
+        ValueAsFunctionPtr
+    > value_as_function_ptr;
 };
 
 struct GdbResponseFunctionArg
