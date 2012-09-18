@@ -39,6 +39,7 @@
 // Debugging (to raise breakpoint signal for gdb)
 //#include <signal.h>
 
+#include "Iocaste/CShims/IoVMCpp.h"
 
 using namespace std;
 using namespace LikeMagic;

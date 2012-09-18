@@ -14,7 +14,7 @@
 #include "CHash.h"
 #include "MainArgs.h"
 #include "IoObject_struct.h"
-#include "RandomGen.h" 
+#include "RandomGen.h"
 #define COLLECTOROBJECTTYPE IoObjectData
 
 #include "Collector.h"
@@ -120,6 +120,7 @@ struct IoState
 
 	// current execution state
 
+    int stepMode;
 	int stopStatus;
 	void *returnValue;
 
@@ -149,10 +150,10 @@ struct IoState
 
 	int shouldExit;
 	int exitResult;
-	
+
 	int receivedSignal;
 	int showAllMessages;
-	
+
 	//CHash *profiler;
 };
 
