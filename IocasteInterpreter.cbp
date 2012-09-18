@@ -13,7 +13,7 @@
 				<Option external_deps="libIoCaste-Mac.a;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl" />
+				<Option parameters="/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-Wextra" />
