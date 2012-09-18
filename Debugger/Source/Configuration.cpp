@@ -209,7 +209,7 @@ public:
 
 boost::shared_ptr<Configuration> Iocaste::Debugger::getConfiguration(int argc, char* argv[])
 {
-    //return boost::shared_ptr<Configuration>(new ReplayConfiguration());
-    return boost::shared_ptr<Configuration>(new NormalConfiguration(argc, argv));
+    return boost::shared_ptr<Configuration>(new ReplayConfiguration());
+    //return boost::shared_ptr<Configuration>(new NormalConfiguration(argc, argv));
 }
 

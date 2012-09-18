@@ -5,6 +5,7 @@ using namespace std;
 
 #include "Iocaste/DebugAPI.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+#include "Iocaste/CShims/IoVMCpp.hpp"
 using namespace Iocaste;
 using namespace Iocaste::LikeMagicAdapters;
 
@@ -32,11 +33,15 @@ void io_debugger_init(void *io_state)
 */
 }
 
-void io_debugger_break_here(void *self, void *locals, void *m,
+int io_debugger_break_here(void *self, void *locals, void *m,
     int breakpoint_number, const char *file_name, int line_number, int char_number)
 {
     // Add some assembly lines to discourage the complier from optimizing away this function.
     asm ("nop;");
+
+    // The Iocaste debugger will use gdb to change the return value
+    // of the function to a different value if necessary.
+    return StepMode_Run;
 }
 
 int io_debugger_set_breakpoint(void *io_state, int breakpoint_number, const char *file_name, int line_number)

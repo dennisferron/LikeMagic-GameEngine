@@ -19,6 +19,8 @@ using namespace std;
 #include "UserCmdFusion.hpp"
 using namespace Iocaste::Debugger::UserCmds;
 
+#include "WriteGrammars.hpp"
+
 namespace karma = boost::spirit::karma;
 
 template <typename OutputIterator>
@@ -26,15 +28,13 @@ struct UserCmdWriteGrammar
   : karma::grammar<OutputIterator, UserCmd()>
 {
     UserCmdWriteGrammar()
-      : UserCmdWriteGrammar::base_type(start)
+      : UserCmdWriteGrammar::base_type(start),
+            gdb_value(gdb_value_write_grammar())
     {
         raw_str = karma::string;
         cont = karma::string;
 
-        gdb_value = (address | karma::int_ | quoted_string | gdb_struct)
-            << -value_as_string;
-
-        gdb_value_list = -(gdb_value % ", ");
+        gdb_value_list = -(*gdb_value % ", ");
 
         value_as_string = karma::lit(" ") << quoted_string;
         quoted_string = karma::lit("\"") << karma::string << "\"";
@@ -55,14 +55,18 @@ struct UserCmdWriteGrammar
         finish = karma::lit("finish") << -karma::string;
         quit = karma::lit("quit") << -karma::string;
         empty = karma::lit("") << -karma::string;
+        return_ = karma::lit("return") << -(karma::lit(" ") << *gdb_value);
 
         print_function = karma::lit("print ") << karma::string << karma::lit("(") << gdb_value_list << ")";
         set_breakpoint_on_function = karma::lit("break ") << karma::string;
         start = print_function | raw_str | set_option | show_option | set_breakpoint | set_breakpoint_on_function | source | directory | tty | run | info | backtrace | next | step | finish | cont | quit | empty;
     }
 
+    unique_ptr<
+        karma::grammar<OutputIterator, SharedTypes::GdbValue()>
+    > gdb_value;
+
     karma::rule<OutputIterator, std::vector<SharedTypes::GdbValue>()> gdb_value_list;
-    karma::rule<OutputIterator, SharedTypes::GdbValue()> gdb_value;
     karma::rule<OutputIterator, SharedTypes::TypeCast()> type_cast;
     karma::rule<OutputIterator, SharedTypes::ValueAsString()> value_as_string;
     karma::rule<OutputIterator, string()> quoted_string;
@@ -85,6 +89,7 @@ struct UserCmdWriteGrammar
     karma::rule<OutputIterator, UserCmds::Next()> next;
     karma::rule<OutputIterator, UserCmds::Step()> step;
     karma::rule<OutputIterator, UserCmds::Finish()> finish;
+    karma::rule<OutputIterator, UserCmds::Return()> return_;
     karma::rule<OutputIterator, UserCmds::Quit()> quit;
     karma::rule<OutputIterator, UserCmds::Empty()> empty;
     karma::rule<OutputIterator, UserCmd()> start;
@@ -102,6 +107,11 @@ struct UserCmdPrinter : SharedTypesPrinter
     void operator()(const RawString& t) const
     {
         cerr << "raw string is " << t.value << endl;
+    }
+
+    void operator()(const Return& t) const
+    {
+        cerr << "return is " << (t.value? "GdbValue" : "void") << endl;
     }
 
     void operator()(const SetOption& t) const
