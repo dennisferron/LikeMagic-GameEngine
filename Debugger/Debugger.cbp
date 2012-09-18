@@ -59,6 +59,7 @@
 		</Linker>
 		<Unit filename="Include/AbstractAdapter.hpp" />
 		<Unit filename="Include/AbstractInput.hpp" />
+		<Unit filename="Include/AbstractInputOutput.hpp" />
 		<Unit filename="Include/AbstractOutput.hpp" />
 		<Unit filename="Include/ActivityLog.hpp" />
 		<Unit filename="Include/ActivityLogLine.hpp" />
@@ -81,6 +82,7 @@
 		<Unit filename="Include/LogChannelWithPrompt.hpp" />
 		<Unit filename="Include/LookForPrompt.hpp" />
 		<Unit filename="Include/MainChannels.hpp" />
+		<Unit filename="Include/ParseGrammars.hpp" />
 		<Unit filename="Include/Queue.hpp" />
 		<Unit filename="Include/RecombinePrompt.hpp" />
 		<Unit filename="Include/SharedTypes.hpp" />
@@ -100,6 +102,7 @@
 		<Unit filename="Include/UserCmdParser.hpp" />
 		<Unit filename="Include/UserCmdWriter.hpp" />
 		<Unit filename="Include/Worker.hpp" />
+		<Unit filename="Include/WriteGrammars.hpp" />
 		<Unit filename="Include/what_is_the_attr.hpp" />
 		<Unit filename="Source/ActivityLog.cpp" />
 		<Unit filename="Source/ActivityLogLine.cpp">
@@ -109,19 +112,27 @@
 		<Unit filename="Source/CharInput.cpp" />
 		<Unit filename="Source/Configuration.cpp" />
 		<Unit filename="Source/Exception.cpp" />
+		<Unit filename="Source/GdbBannerParseGrammar.cpp" />
 		<Unit filename="Source/GdbResponseHandler.cpp" />
+		<Unit filename="Source/GdbResponseParseGrammar.cpp" />
 		<Unit filename="Source/GdbResponseParser.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -s -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>
+		<Unit filename="Source/GdbResponseWriteGrammar.cpp" />
 		<Unit filename="Source/GdbResponseWriter.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>
+		<Unit filename="Source/GdbValueParseGrammar.cpp" />
+		<Unit filename="Source/GdbValueWriteGrammar.cpp" />
 		<Unit filename="Source/LineInput.cpp" />
 		<Unit filename="Source/LogChannel.cpp" />
 		<Unit filename="Source/LogChannelWithPrompt.cpp" />
 		<Unit filename="Source/LookForPrompt.cpp" />
 		<Unit filename="Source/RecombinePrompt.cpp" />
 		<Unit filename="Source/StreamOutput.cpp" />
+		<Unit filename="Source/StringEscapeWriter.cpp" />
+		<Unit filename="Source/StringUnescapeParser.cpp" />
+		<Unit filename="Source/TestCompile.cpp" />
 		<Unit filename="Source/TestPlan.cpp" />
 		<Unit filename="Source/UserCmdHandler.cpp" />
 		<Unit filename="Source/UserCmdParser.cpp">

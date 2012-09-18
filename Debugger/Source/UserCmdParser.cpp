@@ -24,7 +24,7 @@ namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
 #include "UserCmdFusion.hpp"
-
+#include "ParseGrammars.hpp"
 
 // Uncomment to pass otherwise unknown commands un-parsed
 //#define PARSE_RAW_STRING
@@ -35,7 +35,8 @@ namespace Iocaste {
 template <typename Iterator>
 struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
 {
-    UserCmdParseGrammar() : UserCmdParseGrammar::base_type(start)
+    UserCmdParseGrammar() : UserCmdParseGrammar::base_type(start),
+        gdb_value(gdb_value_parse_grammar())
     {
         raw_str = +qi::print;
         ident = +(qi::alpha | qi::char_('-'));
@@ -58,14 +59,16 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
         finish = qi::lit("finish") >> -value;
         quit = qi::lit("quit") >> -value;
         cont = qi::lit("") >> qi::string("cont");
+        return_ = qi::lit("return") >> -qi::lit(" ") >> -*gdb_value;
         empty = qi::eps >> -value >> qi::eoi;
-        start = set_option | show_option | set_breakpoint | source | directory | tty | run | info | backtrace | next | step | finish | cont | quit | empty
+        start = set_option | show_option | set_breakpoint | source | directory | tty | run | info | backtrace | next | step | finish | cont | quit | return_ |empty
         #ifdef PARSE_RAW_STRING
             | raw_str
         #endif
         ;
     }
 
+    unique_ptr<qi::grammar<Iterator, SharedTypes::GdbValue()>> gdb_value;
     qi::rule<Iterator, std::string()> raw_str;
     qi::rule<Iterator, std::string()> ident;
     qi::rule<Iterator, std::string()> value;
@@ -87,6 +90,7 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
     qi::rule<Iterator, UserCmds::Finish(), ascii::space_type> finish;
     qi::rule<Iterator, UserCmds::Cont(), ascii::space_type> cont;
     qi::rule<Iterator, UserCmds::Quit(), ascii::space_type> quit;
+    qi::rule<Iterator, UserCmds::Return(), ascii::space_type> return_;
     qi::rule<Iterator, UserCmds::Empty(), ascii::space_type> empty;
     qi::rule<Iterator, UserCmd(), ascii::space_type> start;
 };

@@ -124,6 +124,14 @@ namespace UserCmds
         boost::optional<std::string> dummy;
     };
 
+    struct Return
+    {
+        // GdbValue might not be the most appropriate type
+        // (need something called GdbExpression perhaps)
+        // but it's a usable shortcut for now.
+        boost::optional<SharedTypes::GdbValue> value;
+    };
+
     struct Empty
     {
         boost::optional<std::string> dummy;
@@ -149,6 +157,7 @@ typedef  boost::variant
     UserCmds::Finish,
     UserCmds::Quit,
     UserCmds::Cont,
+    UserCmds::Return,
     UserCmds::Empty
 > UserCmd;
 

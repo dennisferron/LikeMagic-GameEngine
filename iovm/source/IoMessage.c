@@ -492,8 +492,8 @@ IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObjec
 	IoObject *result = target;          // The value that this function will return
 	IoObject *cachedTarget = target;    // The original target
 	IoMessageData *md;                  // Data for the message being processed
-    bool hereStepOut = false;           // Step out from this invocation of IoMessage_locals_performOn_
-    bool hereStepNext = false;          // Step next in this invocation of IoMessage_locals_performOn_
+    int hereStepOut = 0;            // Step out from this invocation of IoMessage_locals_performOn_
+    int hereStepNext = 0;           // Step next in this invocation of IoMessage_locals_performOn_
 
     /*
 	if (state->receivedSignal)
@@ -506,7 +506,7 @@ IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObjec
     // handle it like a step in on the first message.
     if (state->stepMode == StepMode_StepNext)
     {
-        state->stepMode == StepMode_StopOnAnyMessage;
+        state->stepMode = StepMode_StopOnAnyMessage;
     }
 
 	do
@@ -528,20 +528,20 @@ IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObjec
             if (mode == StepMode_StepOut)
             {
                 state->stepMode = StepMode_RunOut;
-                hereStepOut = true;
-                hereStepNext = false;
+                hereStepOut = 1;
+                hereStepNext = 0;
             }
-            else if (*mode == StepMode_StepNext)
+            else if (mode == StepMode_StepNext)
             {
                 state->stepMode = StepMode_RunNext;
-                hereStepNext = true;
-                hereStepOut = false;
+                hereStepNext = 1;
+                hereStepOut = 0;
             }
             else
             {
                 state->stepMode = mode;
-                hereStepNext = false;
-                hereStepOut = false;
+                hereStepNext = 0;
+                hereStepOut = 0;
             }
 		}
 
@@ -555,7 +555,7 @@ IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObjec
 
             // If we were running over a step next from this level,
             // convert that to a stop on the very next message.
-			if (hereStepNext && state->stepMode == StepMode_RunToNext)
+			if (hereStepNext && state->stepMode == StepMode_RunNext)
 			{
                 state->stepMode = StepMode_StopOnAnyMessage;
 			}

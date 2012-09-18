@@ -15,7 +15,7 @@ extern "C" {
 // lower down led to a change in the user command
 // to not step next or step out.
 typedef enum {
-    StepMode_Run,
+    StepMode_Run=0,
     StepMode_StopOnAnyMessage,
     StepMode_StepNext,
     StepMode_RunNext,

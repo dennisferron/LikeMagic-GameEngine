@@ -5,7 +5,7 @@ extern "C" {
 
 void io_debugger_init(void *io_state);
 
-void io_debugger_break_here(void *self, void *locals, void *m,
+int io_debugger_break_here(void *self, void *locals, void *m,
     int breakpoint_number, const char *file_name,
     int line_number, int char_number);
 
