@@ -36,7 +36,6 @@ namespace ascii = boost::spirit::ascii;
 namespace Iocaste {
     namespace Debugger {
 
-
 vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
 {
     using boost::spirit::ascii::space;
@@ -60,7 +59,9 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
     catch (boost::spirit::qi::expectation_failure<iterator_type> const& exc)
     {
         cerr << "While checking for gdb banner, got parse error: " << exc.what() << " at ->" << std::string(exc.first, exc.last) << "<-" << endl;
-        raiseError(exc);
+        logError(exc);
+        result.push_back(GdbResponses::RawStr {input});
+        return result;
     }
 
     if (is_banner)
@@ -85,12 +86,6 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
 
         for (string line : lines)
         {
-            // Debugging
-            //if (boost::algorithm::starts_with(line, "self = (IoObject *)"))
-            //{
-            //    cerr << "break here";
-            //}
-
             if (line.size() == 0)
             {
                 result.push_back(GdbResponses::Empty());
@@ -113,7 +108,8 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                         stringstream ss;
                         ss << "GdbResponse failed to parse ->" << line << "<- in string ->" << input << "<-" << std::endl;
                         cerr << endl << ss.str() << endl;
-                        raiseError(ParseException(ss.str()));
+                        logError(ParseException(ss.str()));
+                        result.push_back(GdbResponses::RawStr {line});
                     }
                     else if (iter != end)
                     {
@@ -127,7 +123,8 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                         stringstream ss;
                         ss << "Not all of the line was parsed: " << std::string(iter, end) << std::endl;
                         cerr << endl << ss.str() << endl;
-                        raiseError(ParseException(ss.str()));
+                        logError(ParseException(ss.str()));
+                        result.push_back(GdbResponses::RawStr {line});
                     }
                     else
                     {
@@ -145,7 +142,8 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                 {
                     stringstream ss;
                     ss << "While parsing ->" << line << "<- in string ->" << input << "<- got expectation failure: " << exc.what() << " at " << std::string(exc.first, exc.last) << endl;
-                    raiseError(exc);
+                    logError(exc);
+                    result.push_back(GdbResponses::RawStr {line});
                 }
             }
         }

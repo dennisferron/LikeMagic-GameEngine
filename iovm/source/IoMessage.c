@@ -484,44 +484,89 @@ IO_METHOD(IoMessage, doInContext)
 
 //#define IO_DEBUG_STACK
 
+
 IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObject *target)
 {
 	IoState *state = IOSTATE;
-	IoMessage *m = self;
-	IoObject *result = target;
-	IoObject *cachedTarget = target;
-	//IoObject *semicolonSymbol = state->semicolonSymbol;
-	//IoMessageData *md;
-	IoMessageData *md;
+	IoMessage *m = self;                // The message being processed
+	IoObject *result = target;          // The value that this function will return
+	IoObject *cachedTarget = target;    // The original target
+	IoMessageData *md;                  // Data for the message being processed
+    bool hereStepOut = false;           // Step out from this invocation of IoMessage_locals_performOn_
+    bool hereStepNext = false;          // Step next in this invocation of IoMessage_locals_performOn_
 
+    /*
 	if (state->receivedSignal)
 	{
 		IoState_callUserInterruptHandler(IOSTATE);
 	}
+	*/
+
+    // Catch step next into first line of this block of code,
+    // handle it like a step in on the first message.
+    if (state->stepMode == StepMode_StepNext)
+    {
+        state->stepMode == StepMode_StopOnAnyMessage;
+    }
 
 	do
 	{
-		//md = DATA(m);
+		md = DATA(m);
 		//printf("%s %i\n", CSTRING(IoMessage_name(m)), state->stopStatus);
 		//if(state->showAllMessages)
 		//printf("M:%s:%s:%i\n", CSTRING(IoMessage_name(m)), CSTRING(IoMessage_rawLabel(m)), IoMessage_rawLineNumber(m));
 
-		md = DATA(m);
-
-		if (md->breakpoint)
+		if (md->breakpoint || state->stepMode == StepMode_StopOnAnyMessage)
 		{
-		    iovm_hit_breakpoint(
-                md->breakpoint,
-                self, locals, m);
+		    StepMode_t mode;
+
+		    if (md->breakpoint)
+                mode = iovm_hit_breakpoint(md->breakpoint, target, locals, m);
+		    else
+                mode = iovm_step_stop(target, locals, m);
+
+            if (mode == StepMode_StepOut)
+            {
+                state->stepMode = StepMode_RunOut;
+                hereStepOut = true;
+                hereStepNext = false;
+            }
+            else if (*mode == StepMode_StepNext)
+            {
+                state->stepMode = StepMode_RunNext;
+                hereStepNext = true;
+                hereStepOut = false;
+            }
+            else
+            {
+                state->stepMode = mode;
+                hereStepNext = false;
+                hereStepOut = false;
+            }
 		}
 
+        // Here we're checking if the current message is an end-of-line or semicolon.
 		if(md->name == state->semicolonSymbol)
 		{
+		    // What we are doing here is reseting the environment so that we
+		    // process the next line with the same target (such as locals)
+		    // as we previously used to process the beginning of the line that is ending.
 			target = cachedTarget;
+
+            // If we were running over a step next from this level,
+            // convert that to a stop on the very next message.
+			if (hereStepNext && state->stepMode == StepMode_RunToNext)
+			{
+                state->stepMode = StepMode_StopOnAnyMessage;
+			}
 		}
 		else
 		{
+		    // OK not the end of a line so process a message in the chain.
+
+		    // If there's a cached result in this component, use it.
 			result = md->cachedResult; // put it on the stack?
+
 			/*
 			if(state->debugOn)
 			{
@@ -534,10 +579,19 @@ IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObjec
 			}
 			*/
 
+            // Check if there wasn't a cached result
 			if (!result)
 			{
+			    // There was not a cached result so perform the message.
+
+			    // Is the stack frame pushed here?
 				IoState_pushRetainPool(state);
+
 #ifdef IOMESSAGE_INLINE_PERFORM
+
+                // Here is where we actually perform the message.
+                // Step-in would have to break in new copy of this function.
+
 				if(IoObject_tag(target)->performFunc == NULL)
 				{
 					result = IoObject_perform(target, locals, m);
@@ -546,32 +600,41 @@ IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObjec
 				{
 					result = IoObject_tag(target)->performFunc(target, locals, m);
 				}
+
 #else
 				result = IoObject_tag(target)->performFunc(target, locals, m);
 #endif
+
+                // Don't collect the result object
 				IoState_popRetainPoolExceptFor_(state, result);
 			}
 
 			//IoObject_freeIfUnreferenced(target);
+
+			// Here we are saying use the result from the chain so far as the
+			// target on the next iteration.  So for instance if you said
+			// a b c() we're going to use the result of (a b) as target for c().
 			target = result;
 
+            // STOP_STATUS_NORMAL means we are going forward as normal,
+            // and not breaking, continuing, returning, etc.
+            // So stopStatus != normal means exit the loop.
 			if (state->stopStatus != MESSAGE_STOP_STATUS_NORMAL)
 			{
-					return state->returnValue;
-					/*
-					result = state->returnValue;
+			    if (state->stopStatus == MESSAGE_STOP_STATUS_RETURN &&
+                    hereStepOut && state->stepMode == StepMode_RunOut)
+                    state->stepMode = StepMode_StopOnAnyMessage;
 
-					if (result)
-					{
-						//IoState_stackRetain_(state, result);
-						return result;
-					}
-					printf("IoBlock no result!\n");
-					return state->ioNil;
-					*/
+                return state->returnValue;
 			}
 		}
+
 	} while ((m = md->next));
+
+    // Finished with block of lines, exiting the expression
+    // by reaching the ending ")" or last line.
+    if (hereStepOut && state->stepMode == StepMode_RunOut)
+        state->stepMode = StepMode_StopOnAnyMessage;
 
 	return result;
 }

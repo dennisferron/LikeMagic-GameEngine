@@ -81,4 +81,10 @@ void raiseError(T const& e)
     throw boost::enable_current_exception(e);
 }
 
+template <typename T>
+void logError(T const& e)
+{
+    logException(typeid(T), e.what());
+}
+
 }}

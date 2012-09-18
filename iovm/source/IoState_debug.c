@@ -77,7 +77,7 @@ void IoState_updateDebuggingMode(IoState *self)
 static IoState *stateToReceiveControlC = NULL;
 static int multipleIoStates = 0;
 
-void IoState_UserInterruptHandler(int sig) 
+void IoState_UserInterruptHandler(int sig)
 {
 	printf("\nIOVM:\n");
 
@@ -92,8 +92,8 @@ void IoState_UserInterruptHandler(int sig)
 	else
 	{
 		IoState *self = stateToReceiveControlC;
-		
-		if (self->receivedSignal) 
+
+		if (self->receivedSignal)
 		{
 			printf("	Second signal received before first was handled. \n");
 			printf("	Assuming control is stuck in a C call and isn't returning\n");
@@ -103,7 +103,7 @@ void IoState_UserInterruptHandler(int sig)
 		else
 		{
 			self->receivedSignal = 1;
-			
+
 			/*
 			IoObject *system = IoState_protoWithName_(self, "System");
 			if (system)
@@ -118,29 +118,38 @@ void IoState_UserInterruptHandler(int sig)
 
 			printf("	Received signal. Setting interrupt flag.\n");
 		}
-	}	
+	}
 }
+
 
 void IoState_callUserInterruptHandler(IoState *self)
 {
+    /*
 	self->receivedSignal = 0;
 
-	{
-		IoObject *system = IoState_doCString_(self, "System");
-		IoMessage *m = IoMessage_newWithName_(self, SIOSYMBOL("userInterruptHandler"));
-		IoMessage_locals_performOn_(m, system, system);
-	}
+    IoObject *system = IoState_doCString_(self, "System");
+
+    // DLF:  When a signal occurs early enough in startup process,
+    // it might occur before the userInterruptHandler slot exists.
+    if (system && IoObject_rawGetSlot_(system, IOSYMBOL("userInterruptHandler")))
+    {
+        IoMessage *m = IoMessage_newWithName_(self, SIOSYMBOL("userInterruptHandler"));
+        IoMessage_locals_performOn_(m, system, system);
+    }
+    */
 }
 
 
 void IoState_setupUserInterruptHandler(IoState *self)
 {
-	if(stateToReceiveControlC) 
-	{ 
+    /*
+	if(stateToReceiveControlC)
+	{
 		multipleIoStates = 1;
 	}
-	
+
 	stateToReceiveControlC = self;
 	signal(SIGINT, IoState_UserInterruptHandler);
 	signal(SIGTERM, IoState_UserInterruptHandler);
+	*/
 }

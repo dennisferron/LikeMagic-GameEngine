@@ -80,16 +80,25 @@ std::string ScriptException::getErrorText(IoObject* self)
 
 std::string ScriptException::getBackTraceString(IoObject* self)
 {
-    IoObject* msg = IoState_on_doCString_withLabel_(IOSTATE, self, "coroutine backTraceString", "[Exception.cpp]");
+    IoObject* coro = IoState_on_doCString_withLabel_(IOSTATE, self, "coroutine", "[Exception.cpp]");
+	IoObject *backt = coro? IoObject_rawGetSlot_(coro, IOSYMBOL("backTraceString")) : NULL;
 
-	if (!msg)
-        return "<<Failed to get back trace string>>";
+	if (!backt)
+	{
+	    return "Error getting backtrace.";
+	}
+	else
+	{
+        IoObject* msg = IoState_on_doCString_withLabel_(IOSTATE, self, "coroutine backTraceString", "[Exception.cpp]");
 
-	if (!ISSEQ(msg))
-        return "<<Back trace 'string' is not a string>>";
+        if (!msg)
+            return "<<Failed to get back trace string>>";
 
-    return CSTRING(msg);
+        if (!ISSEQ(msg))
+            return "<<Back trace 'string' is not a string>>";
 
+        return CSTRING(msg);
+	}
 }
 
 int ScriptException::getLineNumber(IoObject* self)
