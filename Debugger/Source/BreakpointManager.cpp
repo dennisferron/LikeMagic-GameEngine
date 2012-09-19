@@ -48,7 +48,7 @@ BreakpointManager::BreakpointManager(MainChannels const& channels_)
 {
 }
 
-void BreakpointManager::handle(GdbResponse const& response)
+bool BreakpointManager::handle(GdbResponse const& response)
 {
     BreakpointResponseVisitor visitor(*this);
 
@@ -68,6 +68,8 @@ void BreakpointManager::handle(GdbResponse const& response)
         munged.values = output;
         channels.toUser.WriteData(munged);
     }
+
+    return visitor.hit_io_breakpoint;
 }
 
 void BreakpointManager::setPrompt(std::string new_prompt)

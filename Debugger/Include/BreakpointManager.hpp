@@ -50,7 +50,7 @@ public:
     BreakpointManager(MainChannels const& channels_);
     void userSetBreakpoint(const UserCmds::SetBreakpoint& t);
     void setPrompt(std::string new_prompt);
-    void handle(GdbResponse const& response);
+    bool handle(GdbResponse const& response);
 };
 
 }}

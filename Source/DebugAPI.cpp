@@ -5,7 +5,7 @@ using namespace std;
 
 #include "Iocaste/DebugAPI.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
-#include "Iocaste/CShims/IoVMCpp.hpp"
+#include "Iocaste/CShims/IoVMCpp.h"
 using namespace Iocaste;
 using namespace Iocaste::LikeMagicAdapters;
 
@@ -22,15 +22,14 @@ void io_debugger_init(void *io_state)
     // Add some assembly lines to discourage the complier from optimizing away this function.
     asm ("nop;");
 
-/*
     // Testing
     io_debugger_set_breakpoint(
         io_state,
         1,
-        "Debugger/TestProject/Test.io.inl",
+        "/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl",
         2
     );
-*/
+
 }
 
 int io_debugger_break_here(void *self, void *locals, void *m,

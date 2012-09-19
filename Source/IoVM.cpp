@@ -62,7 +62,7 @@ StepMode_t iovm_hit_breakpoint(void* bp,
 {
     Breakpoint& bkpt = *reinterpret_cast<Breakpoint*>(bp);
 
-    return io_debugger_break_here(self, locals, m,
+    return (StepMode_t)io_debugger_break_here(self, locals, m,
         bkpt.breakpoint_number, bkpt.file_name.c_str(),
             bkpt.line_number, bkpt.char_number);
 }
@@ -76,7 +76,7 @@ StepMode_t iovm_step_stop(
     int line_number = data->lineNumber;
     int char_number = data->charNumber;
 
-    return io_debugger_break_here(self, locals, m,
+    return (StepMode_t)io_debugger_break_here(self, locals, m,
         -1,
         file_name,
         line_number,

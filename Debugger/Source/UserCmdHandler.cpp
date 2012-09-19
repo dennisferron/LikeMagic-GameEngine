@@ -33,3 +33,8 @@ void UserCmdHandler::operator()(const UserCmds::SetBreakpoint& t) const
 {
     brkpt_mgr.userSetBreakpoint(t);
 }
+
+void UserCmdHandler::operator()(const UserCmds::StepNext& t) const
+{
+    channels.toGdb.WriteData(t);
+}

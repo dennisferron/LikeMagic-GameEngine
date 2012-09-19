@@ -126,10 +126,8 @@ namespace UserCmds
 
     struct Return
     {
-        // GdbValue might not be the most appropriate type
         // (need something called GdbExpression perhaps)
-        // but it's a usable shortcut for now.
-        boost::optional<SharedTypes::GdbValue> value;
+        boost::optional<std::string> value;
     };
 
     struct Empty

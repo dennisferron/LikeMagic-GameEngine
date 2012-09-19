@@ -9,7 +9,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 BOOST_FUSION_ADAPT_STRUCT(
     UserCmds::Return,
-    (std::string, value)
+    (boost::optional<std::string>, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
