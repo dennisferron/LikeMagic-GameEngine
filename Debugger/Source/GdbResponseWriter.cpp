@@ -91,6 +91,14 @@ struct GdbResponsePrinter : public SharedTypesPrinter
         << endl;
     }
 
+    void operator()(const BreakpointPending& t) const
+    {
+        cerr << "breakpoint pending is "
+        << t.breakpoint_number << " "
+        << t.func_name
+        << endl;
+    }
+
     void operator()(const CursorPos& t) const
     {
         cerr << "cursor pos is"

@@ -2,8 +2,9 @@
 
 using namespace Iocaste::Debugger;
 
-UserCmdHandler::UserCmdHandler(MainChannels const& channels_, BreakpointManager& brkpt_mgr_)
-    : channels(channels_), brkpt_mgr(brkpt_mgr_) {}
+UserCmdHandler::UserCmdHandler(MainChannels const& channels_,
+    BreakpointManager& brkpt_mgr_, StepStateManager& step_mgr_)
+        : channels(channels_), brkpt_mgr(brkpt_mgr_), step_mgr(step_mgr_) {}
 
 void UserCmdHandler::handle(UserCmd const& cmd)
 {
@@ -34,7 +35,22 @@ void UserCmdHandler::operator()(const UserCmds::SetBreakpoint& t) const
     brkpt_mgr.userSetBreakpoint(t);
 }
 
-void UserCmdHandler::operator()(const UserCmds::StepNext& t) const
+void UserCmdHandler::operator()(const UserCmds::Next& t) const
 {
-    channels.toGdb.WriteData(t);
+    step_mgr.handle(t);
+}
+
+void UserCmdHandler::operator()(const UserCmds::Step& t) const
+{
+    step_mgr.handle(t);
+}
+
+void UserCmdHandler::operator()(const UserCmds::Finish& t) const
+{
+    step_mgr.handle(t);
+}
+
+void UserCmdHandler::operator()(const UserCmds::Cont& t) const
+{
+    step_mgr.handle(t);
 }

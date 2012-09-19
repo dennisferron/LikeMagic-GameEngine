@@ -68,7 +68,7 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
 
         breakpoint_set = qi::lit("Breakpoint ") >> qi::int_ >> " at " >> address >> ": file " >> file_name >> "," >> " line " >> qi::int_ >> ".";
 
-        //breakpoint_pending = qi::lit("Breakpoint ") >> qi::int_ >> " (" >> file_name >> ":" >> qi::int_ >> ") pending.";
+        breakpoint_pending = qi::lit("Breakpoint ") >> qi::int_ >> " (" >> *(qi::char_ - qi::char_(')')) >> ") pending.";
 
         //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46
         cursor_pos = qi::lit("\x1A\x1A") >> file_name >> ":" >> qi::int_ >> ":" >> qi::int_ >> ":" >> *qi::alpha >> ":" >> address;
@@ -129,7 +129,7 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
         // Program received signal EXC_BAD_ACCESS, Could not access memory.
         signal_received = qi::lit("Program received signal ") > +qi::char_;
 
-        start = reading_symbols | breakpoint_set | cursor_pos | breakpoint_hit | locals_info | address_in_function
+        start = reading_symbols | breakpoint_set | breakpoint_pending | cursor_pos | breakpoint_hit | locals_info | address_in_function
                 | backtrace_line | value_history | program_exited | square_bracket_msg | signal_received
         ;
     }
@@ -162,6 +162,7 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
     qi::rule<Iterator, GdbResponses::LocalsInfo()> locals_info;
     qi::rule<Iterator, GdbResponses::ReadingSymbols()> reading_symbols;
     qi::rule<Iterator, GdbResponses::BreakpointSet()> breakpoint_set;
+    qi::rule<Iterator, GdbResponses::BreakpointPending()> breakpoint_pending;
     qi::rule<Iterator, GdbResponses::BreakpointHit()> breakpoint_hit;
     qi::rule<Iterator, GdbResponses::BacktraceLine()> backtrace_line;
     qi::rule<Iterator, GdbResponses::AddressInFunction()> address_in_function;

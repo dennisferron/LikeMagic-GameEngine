@@ -72,6 +72,12 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::BreakpointPending,
+    (int, breakpoint_number)
+    (std::string, func_name)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::AddressInFunction,
     (SharedTypes::AddressIn, address_in)
     (SharedTypes::GdbResponseFunction, function)

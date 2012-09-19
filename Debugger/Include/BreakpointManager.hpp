@@ -42,6 +42,7 @@ private:
     SharedTypes::GdbAddress getPointer(FunctionArgs args, std::string arg_name);
     GdbResponseType gdbBreakpointHit(const GdbResponses::BreakpointHit& t, bool& is_our_breakpoint);
     GdbResponseType gdbBreakpointSet(const GdbResponses::BreakpointSet& t);
+    GdbResponseType gdbBreakpointPending(const GdbResponses::BreakpointPending& t);
     GdbResponseType gdbCursorPos(const GdbResponses::CursorPos& t, bool is_our_breakpoint);
     bool isIoBreakpoint(std::string file_name) const;
 

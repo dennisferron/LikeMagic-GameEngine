@@ -59,7 +59,7 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
         finish = qi::lit("finish") >> -value;
         quit = qi::lit("quit") >> -value;
         cont = qi::lit("") >> qi::string("cont");
-        return_ = qi::lit("return") >> -qi::lit(" ") >> -*gdb_value;
+        return_ = qi::lit("return") >> -qi::lit(" ") >> -*qi::char_;
         empty = qi::eps >> -value >> qi::eoi;
         start = set_option | show_option | set_breakpoint | source | directory | tty | run | info | backtrace | next | step | finish | cont | quit | return_ |empty
         #ifdef PARSE_RAW_STRING

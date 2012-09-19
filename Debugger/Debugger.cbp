@@ -67,6 +67,7 @@
 		<Unit filename="Include/BreakpointMap.hpp" />
 		<Unit filename="Include/ChainBuilder.hpp" />
 		<Unit filename="Include/ChainPolicy.hpp" />
+		<Unit filename="Include/ChainPolicy.hpp.cbTemp" />
 		<Unit filename="Include/CharInput.hpp" />
 		<Unit filename="Include/Configuration.hpp" />
 		<Unit filename="Include/Exception.hpp" />
@@ -89,6 +90,7 @@
 		<Unit filename="Include/SharedTypesFusion.hpp" />
 		<Unit filename="Include/SharedTypesPrinter.hpp" />
 		<Unit filename="Include/StaticFuture.hpp" />
+		<Unit filename="Include/StepStateManager.hpp" />
 		<Unit filename="Include/StreamOutput.hpp" />
 		<Unit filename="Include/StringEscapeWriter.hpp" />
 		<Unit filename="Include/StringEscaper.hpp" />
@@ -129,6 +131,7 @@
 		<Unit filename="Source/LogChannelWithPrompt.cpp" />
 		<Unit filename="Source/LookForPrompt.cpp" />
 		<Unit filename="Source/RecombinePrompt.cpp" />
+		<Unit filename="Source/StepStateManager.cpp" />
 		<Unit filename="Source/StreamOutput.cpp" />
 		<Unit filename="Source/StringEscapeWriter.cpp" />
 		<Unit filename="Source/StringUnescapeParser.cpp" />
@@ -141,6 +144,7 @@
 		<Unit filename="Source/UserCmdWriter.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>
+		<Unit filename="Source/UserCmdWriter.cpp.cbTemp" />
 		<Unit filename="Source/Worker.cpp" />
 		<Unit filename="Source/main.cpp" />
 		<Extensions>

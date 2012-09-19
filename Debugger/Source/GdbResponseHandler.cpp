@@ -3,8 +3,8 @@
 using namespace Iocaste::Debugger;
 
 
-GdbResponseHandler::GdbResponseHandler(MainChannels const& channels_, BreakpointManager& brkpt_mgr_)
-    : channels(channels_), brkpt_mgr(brkpt_mgr_) {}
+GdbResponseHandler::GdbResponseHandler(MainChannels const& channels_, BreakpointManager& brkpt_mgr_, StepStateManager& step_mgr_)
+    : channels(channels_), brkpt_mgr(brkpt_mgr_), step_mgr(step_mgr_) {}
 
 template <typename T>
 bool hasResponseType(std::vector<GdbResponseType> items)
@@ -20,7 +20,9 @@ void GdbResponseHandler::handle(GdbResponse const& response)
 {
     if (hasResponseType<GdbResponses::BreakpointHit>(response.values))
     {
-        brkpt_mgr.handle(response);
+        bool at_script_breakpoint = brkpt_mgr.handle(response);
+        channels.info.WriteData(std::string("at_script_breakpoint = ") + (at_script_breakpoint? "true" : "false"));
+        step_mgr.atScriptBreakpoint(at_script_breakpoint);
     }
     else
     {

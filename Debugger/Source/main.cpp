@@ -102,8 +102,9 @@ Main Loop
 void mainLoop(MainChannels channels)
 {
     BreakpointManager brkpt_mgr(channels);
-    UserCmdHandler cmd_handler(channels, brkpt_mgr);
-    GdbResponseHandler resp_handler(channels, brkpt_mgr);
+    StepStateManager step_mgr(channels);
+    UserCmdHandler cmd_handler(channels, brkpt_mgr, step_mgr);
+    GdbResponseHandler resp_handler(channels, brkpt_mgr, step_mgr);
 
     while (true)
     {

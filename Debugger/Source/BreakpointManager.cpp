@@ -30,6 +30,11 @@ struct BreakpointResponseVisitor : boost::static_visitor<GdbResponseType>
         return bkpt_mgr.gdbBreakpointSet(t);
     }
 
+    GdbResponseType operator()(const GdbResponses::BreakpointPending& t)
+    {
+        return bkpt_mgr.gdbBreakpointPending(t);
+    }
+
     GdbResponseType operator()(const GdbResponses::BreakpointHit& t)
     {
         return bkpt_mgr.gdbBreakpointHit(t, hit_io_breakpoint);
@@ -380,6 +385,14 @@ GdbResponseType BreakpointManager::gdbBreakpointSet(const GdbResponses::Breakpoi
     GdbBreakpoint gb = {t.breakpoint_number};
     bs.breakpoint_number = brkpts.get_user_breakpoint<UserBreakpoint>(gb).number;
     return bs;
+}
+
+GdbResponseType BreakpointManager::gdbBreakpointPending(const GdbResponses::BreakpointPending& t)
+{
+    GdbResponses::BreakpointPending bp(t);
+    GdbBreakpoint gb = {t.breakpoint_number};
+    bp.breakpoint_number = brkpts.get_user_breakpoint<UserBreakpoint>(gb).number;
+    return bp;
 }
 
 GdbResponseType BreakpointManager::gdbBreakpointHit(const GdbResponses::BreakpointHit& t, bool& is_our_breakpoint)

@@ -36,6 +36,12 @@ struct BreakpointSet
     int line_number;
 };
 
+struct BreakpointPending
+{
+    int breakpoint_number;
+    std::string func_name;
+};
+
 struct CursorPos
 {
     std::string file_name;
@@ -167,6 +173,7 @@ typedef  boost::variant
     GdbResponses::BreakpointSet,
     GdbResponses::CursorPos,
     GdbResponses::BreakpointHit,
+    GdbResponses::BreakpointPending,
     GdbResponses::LocalsInfo,
     GdbResponses::BacktraceLine,
     GdbResponses::AddressInFunction,

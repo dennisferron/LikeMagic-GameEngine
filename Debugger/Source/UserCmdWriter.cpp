@@ -55,11 +55,11 @@ struct UserCmdWriteGrammar
         finish = karma::lit("finish") << -karma::string;
         quit = karma::lit("quit") << -karma::string;
         empty = karma::lit("") << -karma::string;
-        return_ = karma::lit("return") << -(karma::lit(" ") << *gdb_value);
+        return_ = karma::lit("return") << -(karma::lit(" ") << karma::string);
 
         print_function = karma::lit("print ") << karma::string << karma::lit("(") << gdb_value_list << ")";
         set_breakpoint_on_function = karma::lit("break ") << karma::string;
-        start = print_function | raw_str | set_option | show_option | set_breakpoint | set_breakpoint_on_function | source | directory | tty | run | info | backtrace | next | step | finish | cont | quit | empty;
+        start = print_function | raw_str | set_option | show_option | set_breakpoint | set_breakpoint_on_function | source | directory | tty | run | info | backtrace | next | step | finish | cont | quit | return_ | empty;
     }
 
     unique_ptr<
@@ -111,7 +111,7 @@ struct UserCmdPrinter : SharedTypesPrinter
 
     void operator()(const Return& t) const
     {
-        cerr << "return is " << (t.value? "GdbValue" : "void") << endl;
+        cerr << "return is " << (t.value? *t.value : "nothing") << endl;
     }
 
     void operator()(const SetOption& t) const
