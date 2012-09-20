@@ -16,8 +16,8 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    GdbResponses::TestStr1,
-    (std::string, value)
+    GdbResponses::WorkingDirectory,
+    (std::string, directory)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(

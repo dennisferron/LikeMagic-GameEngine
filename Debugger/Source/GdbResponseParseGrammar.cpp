@@ -129,8 +129,12 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
         // Program received signal EXC_BAD_ACCESS, Could not access memory.
         signal_received = qi::lit("Program received signal ") > +qi::char_;
 
+        // Working directory /Users/dennisferron/code/LikeMagic-All/Iocaste.
+        working_directory = qi::lit("Working directory ") > up_to_last_period > '.';
+        up_to_last_period = *( qi::char_ - ( qi::lit('.')>>qi::eoi ) );
+
         start = reading_symbols | breakpoint_set | breakpoint_pending | cursor_pos | breakpoint_hit | locals_info | address_in_function
-                | backtrace_line | value_history | program_exited | square_bracket_msg | signal_received
+                | backtrace_line | value_history | program_exited | square_bracket_msg | signal_received | working_directory
         ;
     }
 
@@ -146,6 +150,7 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
     qi::rule<Iterator, std::string()> no_locals_str;
     qi::rule<Iterator, std::string()> type_cast_str;
     qi::rule<Iterator, std::string()> program_exited_str;
+    qi::rule<Iterator, std::string()> up_to_last_period;
     qi::rule<Iterator, SharedTypes::AtFile()> at_file;
     qi::rule<Iterator, SharedTypes::FromModule()> from_module;
     qi::rule<Iterator, SharedTypes::GdbAddress()> address;
@@ -165,6 +170,7 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
     qi::rule<Iterator, GdbResponses::BreakpointPending()> breakpoint_pending;
     qi::rule<Iterator, GdbResponses::BreakpointHit()> breakpoint_hit;
     qi::rule<Iterator, GdbResponses::BacktraceLine()> backtrace_line;
+    qi::rule<Iterator, GdbResponses::WorkingDirectory()> working_directory;
     qi::rule<Iterator, GdbResponses::AddressInFunction()> address_in_function;
     qi::rule<Iterator, GdbResponses::CursorPos()> cursor_pos;
     qi::rule<Iterator, GdbResponseType()> start;

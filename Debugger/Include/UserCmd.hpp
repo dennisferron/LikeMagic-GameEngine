@@ -145,6 +145,11 @@ namespace UserCmds
         boost::optional<std::string> value;
     };
 
+    struct PrintWorkingDirectory
+    {
+        boost::optional<std::string> dummy;
+    };
+
     struct Empty
     {
         boost::optional<std::string> dummy;
@@ -171,6 +176,7 @@ typedef  boost::variant
     UserCmds::Quit,
     UserCmds::Cont,
     UserCmds::Return,
+    UserCmds::PrintWorkingDirectory,
     UserCmds::Empty
 > UserCmd;
 

@@ -90,8 +90,11 @@ struct GdbResponseWriteGrammar
         // Program received signal EXC_BAD_ACCESS, Could not access memory.
         signal_received = karma::lit("Program received signal ") << karma::string;
 
+        // Working directory /Users/dennisferron/code/LikeMagic-All/Iocaste.
+        working_directory = karma::lit("Working directory ") << karma::string << ".";
+
         response_item = (locals_info | backtrace_line | banner | reading_symbols | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited
-                         | square_bracket_msg | signal_received | raw_str | empty) << "\n";
+                         | square_bracket_msg | signal_received | working_directory | raw_str | empty) << "\n";
         start = *response_item;
     }
 
@@ -128,6 +131,7 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, GdbResponses::RawStr()> raw_str;
     karma::rule<OutputIterator, GdbResponses::SquareBracketMsg()> square_bracket_msg;
     karma::rule<OutputIterator, GdbResponses::SignalReceived()> signal_received;
+    karma::rule<OutputIterator, GdbResponses::WorkingDirectory()> working_directory;
     karma::rule<OutputIterator, GdbResponseType()> response_item;
     karma::rule<OutputIterator, vector<GdbResponseType>()> start;
 };

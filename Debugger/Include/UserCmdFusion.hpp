@@ -105,6 +105,11 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    UserCmds::PrintWorkingDirectory,
+    (boost::optional<std::string>, dummy)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     UserCmds::Empty,
     (boost::optional<std::string>, dummy)
 )

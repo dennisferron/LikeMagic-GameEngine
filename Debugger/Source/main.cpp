@@ -178,6 +178,12 @@ int main(int argc, char* argv[])
 
     info.head().WriteData("Built input chains.");
 
+    stringstream args;
+    args << "Program args:";
+    for (int i=0; i<argc; ++i)
+        args << " " << argv[i];
+    info.head().WriteData(args.str());
+
     mainLoop(MainChannels(fromUser.tail(), toUser.head(), fromGdb.tail(), toGdb.head(), info.head(), error_queue, end_marker_queue));
 
     // This doesn't do much good if they are blocked waiting on stream input.

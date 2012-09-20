@@ -163,6 +163,11 @@ struct ProgramExited
     std::string how;
 };
 
+struct WorkingDirectory
+{
+    std::string directory;
+};
+
 }
 
 
@@ -176,13 +181,14 @@ typedef  boost::variant
     GdbResponses::BreakpointPending,
     GdbResponses::LocalsInfo,
     GdbResponses::BacktraceLine,
-    GdbResponses::AddressInFunction,
     GdbResponses::Banner,
     GdbResponses::ValueHistory,
     GdbResponses::RawStr,
     GdbResponses::ProgramExited,
     GdbResponses::SquareBracketMsg,
     GdbResponses::SignalReceived,
+    GdbResponses::AddressInFunction,
+    GdbResponses::WorkingDirectory,
     GdbResponses::Empty
 > GdbResponseType;
 

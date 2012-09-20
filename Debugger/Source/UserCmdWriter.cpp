@@ -56,10 +56,11 @@ struct UserCmdWriteGrammar
         quit = karma::lit("quit") << -karma::string;
         empty = karma::lit("") << -karma::string;
         return_ = karma::lit("return") << -(karma::lit(" ") << karma::string);
+        pwd = karma::lit("pwd") << -karma::string;
 
         print_function = karma::lit("print ") << karma::string << karma::lit("(") << gdb_value_list << ")";
         set_breakpoint_on_function = karma::lit("break ") << karma::string;
-        start = print_function | raw_str | set_option | show_option | set_breakpoint | set_breakpoint_on_function | source | directory | tty | run | info | backtrace | next | step | finish | cont | quit | return_ | empty;
+        start = print_function | raw_str | set_option | show_option | set_breakpoint | set_breakpoint_on_function | source | directory | tty | run | info | backtrace | next | step | finish | cont | quit | return_ | pwd | empty;
     }
 
     unique_ptr<
@@ -91,6 +92,7 @@ struct UserCmdWriteGrammar
     karma::rule<OutputIterator, UserCmds::Finish()> finish;
     karma::rule<OutputIterator, UserCmds::Return()> return_;
     karma::rule<OutputIterator, UserCmds::Quit()> quit;
+    karma::rule<OutputIterator, UserCmds::PrintWorkingDirectory()> pwd;
     karma::rule<OutputIterator, UserCmds::Empty()> empty;
     karma::rule<OutputIterator, UserCmd()> start;
 };
@@ -182,6 +184,11 @@ struct UserCmdPrinter : SharedTypesPrinter
     void operator()(const Quit& t) const
     {
         cerr << "quit is (no members)" << endl;
+    }
+
+    void operator()(const PrintWorkingDirectory& t) const
+    {
+        cerr << "PrintWorkingDirectory is (no members)" << endl;
     }
 
     void operator()(const Cont& t) const

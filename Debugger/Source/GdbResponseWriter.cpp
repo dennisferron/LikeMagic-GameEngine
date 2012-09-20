@@ -74,6 +74,11 @@ struct GdbResponsePrinter : public SharedTypesPrinter
         cerr << "reading libs is " << t.message << endl;
     }
 
+    void operator()(const WorkingDirectory& t) const
+    {
+        cerr << "WorkingDirectory is " << t.directory << endl;
+    }
+
     void operator()(const LocalsInfo& t) const
     {
         cerr << "LocalsInfo is ";
