@@ -136,28 +136,28 @@ info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory basekit/source
 info: MainLoopState::ReadUser
-toGdb: set directory basekit /source
+toGdb: directory basekit/source
 fromGdbErr: No symbol \"directory\" in current context.
 fromGdb: \b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory coroutine/source
 info: MainLoopState::ReadUser
-toGdb: set directory coroutine /source
+toGdb: directory coroutine/source
 fromGdbErr: No symbol \"directory\" in current context.
 fromGdb: \b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory garbagecollector/source
 info: MainLoopState::ReadUser
-toGdb: set directory garbagecollector /source
+toGdb: directory garbagecollector/source
 fromGdbErr: No symbol \"directory\" in current context.
 fromGdb: \b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory iovm/source
 info: MainLoopState::ReadUser
-toGdb: set directory iovm /source
+toGdb: directory iovm/source
 fromGdbErr: No symbol \"directory\" in current context.
 fromGdb: \b>>>>>>cb_gdb:
 info: MainLoopState::ReadGdb

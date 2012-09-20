@@ -22,6 +22,7 @@ void io_debugger_init(void *io_state)
     // Add some assembly lines to discourage the complier from optimizing away this function.
     asm ("nop;");
 
+    /*
     // Testing
     io_debugger_set_breakpoint(
         io_state,
@@ -29,7 +30,7 @@ void io_debugger_init(void *io_state)
         "/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl",
         2
     );
-
+    */
 }
 
 int io_debugger_break_here(void *self, void *locals, void *m,

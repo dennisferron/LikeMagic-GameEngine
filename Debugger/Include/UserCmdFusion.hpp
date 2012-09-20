@@ -13,16 +13,23 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::SetOption,
+    UserCmds::SetOptionWithModifier,
     (std::string, name)
-    (boost::optional<std::string>, modifier)
+    (std::string, modifier)
     (std::string, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::SetOption::Pair,
-    (string, first)
-    (string, second)
+    UserCmds::SetOptionNoModifier,
+    (std::string, name)
+    (std::string, value)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    UserCmds::SetOption,
+    (std::string, name)
+    (boost::optional<std::string>, modifier)
+    (std::string, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(

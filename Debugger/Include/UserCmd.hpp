@@ -33,6 +33,19 @@ namespace UserCmds
         std::vector<SharedTypes::GdbValue> args;
     };
 
+    struct SetOptionWithModifier
+    {
+        std::string name;
+        std::string modifier;
+        std::string value;
+    };
+
+    struct SetOptionNoModifier
+    {
+        std::string name;
+        std::string value;
+    };
+
     struct SetOption
     {
         std::string name;
@@ -41,12 +54,14 @@ namespace UserCmds
 
         SetOption() {}
 
-        // This enables initializing SetOption without a modifier in the qi rule.
-        typedef std::pair<std::string, std::string> Pair;
-        SetOption(Pair p)
-            : name(p.first), value(p.second) {}
-    };
+        SetOption(SetOptionWithModifier that) :
+            name(that.name), modifier(that.modifier),
+                value(that.value) {}
 
+        SetOption(SetOptionNoModifier that) :
+            name(that.name),
+                value(that.value) {}
+    };
 
     struct ShowOption
     {

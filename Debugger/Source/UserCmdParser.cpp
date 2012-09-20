@@ -43,9 +43,9 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
         file_name = +(qi::print -  qi::char_(':'));
         device_name = +(qi::print); // for tty
         value = +qi::char_;
-        set_option = qi::lit("set") >> set_option_no_modifier | set_option_with_modifier;
-        set_option_no_modifier = ident >> value >> qi::eoi;
-        set_option_with_modifier = ident >> ident >> value >> qi::eoi;
+        set_option = set_option_with_modifier | set_option_no_modifier;
+        set_option_no_modifier = qi::lit("set") >> ident >> value >> qi::eoi;
+        set_option_with_modifier = qi::lit("set") >> ident >> ident >> value >> qi::eoi;
         show_option = qi::lit("show") >> ident >> -ident;
         set_breakpoint = qi::lit("break") >> "\"" >> file_name >> ":" >> qi::int_ >> "\"";
         source = qi::lit("source") >> file_name;
@@ -74,8 +74,8 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
     qi::rule<Iterator, std::string()> value;
     qi::rule<Iterator, std::string()> file_name;
     qi::rule<Iterator, std::string()> device_name;
-    qi::rule<Iterator, UserCmds::SetOption(), ascii::space_type> set_option_with_modifier;
-    qi::rule<Iterator, UserCmds::SetOption::Pair(), ascii::space_type> set_option_no_modifier;
+    qi::rule<Iterator, UserCmds::SetOptionWithModifier(), ascii::space_type> set_option_with_modifier;
+    qi::rule<Iterator, UserCmds::SetOptionNoModifier(), ascii::space_type> set_option_no_modifier;
     qi::rule<Iterator, UserCmds::SetOption(), ascii::space_type> set_option;
     qi::rule<Iterator, UserCmds::ShowOption(), ascii::space_type> show_option;
     qi::rule<Iterator, UserCmds::SetBreakpoint(), ascii::space_type> set_breakpoint;

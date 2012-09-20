@@ -112,7 +112,6 @@ void mainLoop(MainChannels channels)
 
         if (channels.fromUser.HasData())
         {
-            channels.info.WriteData("MainLoopState::ReadUser");
             UserCmd cmd = channels.fromUser.ReadData();
             cmd_handler.handle(cmd);
         }
@@ -121,7 +120,6 @@ void mainLoop(MainChannels channels)
 
         if (channels.fromGdb.HasData())
         {
-            channels.info.WriteData("MainLoopState::ReadGdb");
             GdbResponse response = channels.fromGdb.ReadData();
             resp_handler.handle(response);
         }

@@ -20,7 +20,7 @@ void doInitFile(IoState* state, IoObject* context, char const* file_path, char c
     string file_content = buffer.str();
 
     //cout << "Loaded file: " << file_name << endl << file_content << endl;
-    IoState_rawOn_doCString_withLabel_(state, context, file_content.c_str(), file_name);
+    IoState_rawOn_doCString_withLabel_(state, context, file_content.c_str(), file_path);
 }
 
 extern "C" void IoVMCodeInit(IoObject *context)
