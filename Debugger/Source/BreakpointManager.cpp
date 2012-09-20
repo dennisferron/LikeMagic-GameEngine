@@ -5,6 +5,9 @@ using namespace Iocaste::Debugger;
 #include "boost/algorithm/string/predicate.hpp"
 #include "boost/lexical_cast.hpp"
 
+#include "boost/filesystem.hpp"
+namespace fs = boost::filesystem;
+
 using namespace std;
 
 #include <stdlib.h>
@@ -16,8 +19,8 @@ struct BreakpointResponseVisitor : boost::static_visitor<GdbResponseType>
     bool hit_io_breakpoint;
     BreakpointManager& bkpt_mgr;
 
-    BreakpointResponseVisitor(BreakpointManager& bkpt_mgr_)
-        : hit_io_breakpoint(false), bkpt_mgr(bkpt_mgr_) {}
+    BreakpointResponseVisitor(BreakpointManager& bkpt_mgr_, WatchManager& watch_mgr_)
+        : hit_io_breakpoint(false), bkpt_mgr(bkpt_mgr_), watch_mgr(watch_mgr_) {}
 
     template <typename T>
     GdbResponseType operator()(const T& t)
@@ -338,16 +341,22 @@ GdbResponseType BreakpointManager::ioDebuggerIoBreakpoint(const GdbResponses::Br
     std::string file_name = getValueAsString(args, "file_name");
     int line_number = getInt(args, "line_number");
 
-    // TODO:  Save self,locals,m to use when evaluating watches on Io code
+    fs::path p(file_name);
+    //fs::path full_p = fs::complete(p); // complete == absolute
+    fs::path full_p = fs::absolute(p /*, WorkingDirectory*/);
+
+    // TODO:  Create ScriptContext and WatchManager.
+    ScriptContext context = { self, locals, m };
+    watch_mgr.setScriptContext(context);
 
     GdbResponses::BreakpointHit bh_spoof;
     bh_spoof.breakpoint_number = breakpoint_number;
     // bh_spoof.function = {}; TODO:  Get message name and argument names.
-    bh_spoof.file_name = file_name;
+    bh_spoof.file_name = full_p.string();
     bh_spoof.line_number = line_number;
 
     GdbResponses::CursorPos cp_spoof;
-    cp_spoof.file_name = file_name;
+    cp_spoof.file_name = full_p.string();
     cp_spoof.line_number = line_number;
     cp_spoof.char_number = 1;
     cp_spoof.unknown = "beg";

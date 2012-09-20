@@ -36,7 +36,7 @@ extern "C" void IoVMCodeInit(IoObject *context)
 	doInitFile(self, context, BOOTSTRAP_FILE_PATH "A4_Exception.io", "A4_Exception.io");
 	doInitFile(self, context, BOOTSTRAP_FILE_PATH "Actor.io", "Actor.io");
 	doInitFile(self, context, BOOTSTRAP_FILE_PATH "AddonLoader.io", "AddonLoader.io");
-	doInitFile(self, context, BOOTSTRAP_FILE_PATH "B_Sequence.io", "B_Sequence.io");
+	doInitFile(self, context, BOOTSTRAP_FILE_PATH "B_Sequence.io.inl", "B_Sequence.io.inl");
 	doInitFile(self, context, BOOTSTRAP_FILE_PATH "Block.io", "Block.io");
 	doInitFile(self, context, BOOTSTRAP_FILE_PATH "CFunction.io", "CFunction.io");
 	doInitFile(self, context, BOOTSTRAP_FILE_PATH "Date.io", "Date.io");
