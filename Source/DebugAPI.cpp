@@ -54,6 +54,14 @@ int io_debugger_set_breakpoint(void *io_state, int breakpoint_number, const char
     return breakpoint_number;
 }
 
+char const* io_debugger_eval(void *self, void *target, const char *s)
+{
+    // TODO: Create an Io object to safely eval watches using similar code to Z_CLI.io
+    //IoObject *result = IoState_on_doCString_withLabel_((IoState *)self, (IoObject *)target, s, null);
+    return "not implemented";
+}
+
+
 #pragma GCC pop_options
 
 }
