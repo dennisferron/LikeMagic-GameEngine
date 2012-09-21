@@ -103,6 +103,7 @@
 		<Unit filename="Include/UserCmdHandler.hpp" />
 		<Unit filename="Include/UserCmdParser.hpp" />
 		<Unit filename="Include/UserCmdWriter.hpp" />
+		<Unit filename="Include/WatchManager.hpp" />
 		<Unit filename="Include/Worker.hpp" />
 		<Unit filename="Include/WriteGrammars.hpp" />
 		<Unit filename="Include/what_is_the_attr.hpp" />
@@ -145,6 +146,7 @@
 			<Option compiler="gcc" use="0" buildCommand="$compiler -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>
 		<Unit filename="Source/UserCmdWriter.cpp.cbTemp" />
+		<Unit filename="Source/WatchManager.cpp" />
 		<Unit filename="Source/Worker.cpp" />
 		<Unit filename="Source/main.cpp" />
 		<Extensions>

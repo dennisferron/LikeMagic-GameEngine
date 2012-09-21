@@ -2,6 +2,7 @@
 
 #include "MainChannels.hpp"
 #include "BreakpointMap.hpp"
+#include "WatchManager.hpp"
 
 #include <vector>
 
@@ -14,6 +15,7 @@ class BreakpointManager
 private:
 
     MainChannels channels;
+    WatchManager& watch_mgr;
     BreakpointMap brkpts;
     boost::optional<OurBreakpoint> io_debugger_breakpoint;
     boost::optional<OurBreakpoint> io_init_breakpoint;
@@ -48,7 +50,7 @@ private:
 
 public:
 
-    BreakpointManager(MainChannels const& channels_);
+    BreakpointManager(MainChannels const& channels_, WatchManager& watch_mgr_);
     void userSetBreakpoint(const UserCmds::SetBreakpoint& t);
     void setPrompt(std::string new_prompt);
     bool handle(GdbResponse const& response);

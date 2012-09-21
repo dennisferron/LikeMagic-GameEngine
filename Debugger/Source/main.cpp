@@ -53,6 +53,17 @@ void checkErrors(MainChannels channels)
 
 /*
 
+This is out of date - the current architecture is more complex
+and involves managers, but basically what happens is the handlers
+in the diagram below either route commands to the managers or they
+route them to GDB if there isn't a manager for that command.
+
+I considered making the managers / handlers relationship generic
+(for instance the observer pattern) but that would add complexity
+without being any more useful than the current setup in which
+the handler knows which managers are which.  At least the managers
+don't have to know about the handlers.
+
 Execution diagram
 
     main loop           user cmd handler
@@ -101,10 +112,13 @@ Main Loop
 
 void mainLoop(MainChannels channels)
 {
-    BreakpointManager brkpt_mgr(channels);
+    WatchManager watch_mgr(channels);
+    BreakpointManager brkpt_mgr(channels, watch_mgr);
     StepStateManager step_mgr(channels);
-    UserCmdHandler cmd_handler(channels, brkpt_mgr, step_mgr);
-    GdbResponseHandler resp_handler(channels, brkpt_mgr, step_mgr);
+
+    UserCmdHandler cmd_handler(channels, brkpt_mgr, step_mgr, watch_mgr);
+    GdbResponseHandler resp_handler(channels, brkpt_mgr, step_mgr, watch_mgr);
+
 
     while (true)
     {

@@ -1,4 +1,5 @@
 #include "BreakpointManager.hpp"
+#include "WatchManager.hpp"
 
 using namespace Iocaste::Debugger;
 
@@ -18,6 +19,7 @@ struct BreakpointResponseVisitor : boost::static_visitor<GdbResponseType>
 {
     bool hit_io_breakpoint;
     BreakpointManager& bkpt_mgr;
+    WatchManager& watch_mgr;
 
     BreakpointResponseVisitor(BreakpointManager& bkpt_mgr_, WatchManager& watch_mgr_)
         : hit_io_breakpoint(false), bkpt_mgr(bkpt_mgr_), watch_mgr(watch_mgr_) {}
@@ -51,14 +53,14 @@ struct BreakpointResponseVisitor : boost::static_visitor<GdbResponseType>
 
 }}
 
-BreakpointManager::BreakpointManager(MainChannels const& channels_)
-    : channels(channels_), gdb_prompt("(gdb) ")
+BreakpointManager::BreakpointManager(MainChannels const& channels_, WatchManager& watch_mgr_)
+    : channels(channels_), watch_mgr(watch_mgr_), gdb_prompt("(gdb) ")
 {
 }
 
 bool BreakpointManager::handle(GdbResponse const& response)
 {
-    BreakpointResponseVisitor visitor(*this);
+    BreakpointResponseVisitor visitor(*this, watch_mgr);
 
     std::vector<GdbResponseType> output;
     for (auto line_item : response.values)
@@ -345,7 +347,6 @@ GdbResponseType BreakpointManager::ioDebuggerIoBreakpoint(const GdbResponses::Br
     //fs::path full_p = fs::complete(p); // complete == absolute
     fs::path full_p = fs::absolute(p /*, WorkingDirectory*/);
 
-    // TODO:  Create ScriptContext and WatchManager.
     ScriptContext context = { self, locals, m };
     watch_mgr.setScriptContext(context);
 
