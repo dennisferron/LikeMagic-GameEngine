@@ -13,6 +13,11 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    UserCmds::WhatIs,
+    (boost::optional<std::string>, expr)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     UserCmds::SetOptionWithModifier,
     (std::string, name)
     (std::string, modifier)
@@ -80,27 +85,12 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::Next,
-    (boost::optional<std::string>, dummy)
-)
-
-BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::Step,
-    (boost::optional<std::string>, dummy)
-)
-
-BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::Finish,
-    (boost::optional<std::string>, dummy)
-)
-
-BOOST_FUSION_ADAPT_STRUCT(
     UserCmds::Quit,
     (boost::optional<std::string>, dummy)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::Cont,
+    UserCmds::StepMode,
     (std::string, cmd)
 )
 

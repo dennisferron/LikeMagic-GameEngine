@@ -32,7 +32,6 @@ struct UserCmdWriteGrammar
             gdb_value(gdb_value_write_grammar())
     {
         raw_str = karma::string;
-        cont = karma::string;
 
         gdb_value_list = -(*gdb_value % ", ");
 
@@ -50,17 +49,17 @@ struct UserCmdWriteGrammar
         run = karma::lit("run") << -karma::string;
         info = karma::lit("info") << " " << karma::string;
         backtrace = karma::lit("bt") << " " << karma::int_;
-        next = karma::lit("next") << -karma::string;
-        step = karma::lit("step") << -karma::string;
-        finish = karma::lit("finish") << -karma::string;
+        step_mode = karma::string;
         quit = karma::lit("quit") << -karma::string;
         empty = karma::lit("") << -karma::string;
         return_ = karma::lit("return") << -(karma::lit(" ") << karma::string);
         pwd = karma::lit("pwd") << -karma::string;
+        what_is = karma::lit("whatis") << " " << -karma::string;
 
         print_function = karma::lit("print ") << karma::string << karma::lit("(") << gdb_value_list << ")";
         set_breakpoint_on_function = karma::lit("break ") << karma::string;
-        start = print_function | raw_str | set_option | show_option | set_breakpoint | set_breakpoint_on_function | source | directory | tty | run | info | backtrace | next | step | finish | cont | quit | return_ | pwd | empty;
+        start = print_function | raw_str | set_option | show_option | set_breakpoint | set_breakpoint_on_function
+            | source | directory | tty | run | info | backtrace | step_mode | quit | return_ | pwd | what_is | empty;
     }
 
     unique_ptr<
@@ -73,7 +72,6 @@ struct UserCmdWriteGrammar
     karma::rule<OutputIterator, string()> quoted_string;
     karma::rule<OutputIterator, SharedTypes::GdbAddress()> address;
     karma::rule<OutputIterator, SharedTypes::GdbStruct()> gdb_struct;
-
     karma::rule<OutputIterator, UserCmds::PrintFunction()> print_function;
     karma::rule<OutputIterator, UserCmds::RawString()> raw_str;
     karma::rule<OutputIterator, UserCmds::SetOption()> set_option;
@@ -84,15 +82,13 @@ struct UserCmdWriteGrammar
     karma::rule<OutputIterator, UserCmds::Directory()> directory;
     karma::rule<OutputIterator, UserCmds::TTY()> tty;
     karma::rule<OutputIterator, UserCmds::Run()> run;
-    karma::rule<OutputIterator, UserCmds::Cont()> cont;
+    karma::rule<OutputIterator, UserCmds::StepMode()> step_mode;
     karma::rule<OutputIterator, UserCmds::Info()> info;
     karma::rule<OutputIterator, UserCmds::Backtrace()> backtrace;
-    karma::rule<OutputIterator, UserCmds::Next()> next;
-    karma::rule<OutputIterator, UserCmds::Step()> step;
-    karma::rule<OutputIterator, UserCmds::Finish()> finish;
     karma::rule<OutputIterator, UserCmds::Return()> return_;
     karma::rule<OutputIterator, UserCmds::Quit()> quit;
     karma::rule<OutputIterator, UserCmds::PrintWorkingDirectory()> pwd;
+    karma::rule<OutputIterator, UserCmds::WhatIs()> what_is;
     karma::rule<OutputIterator, UserCmds::Empty()> empty;
     karma::rule<OutputIterator, UserCmd()> start;
 };
@@ -166,19 +162,9 @@ struct UserCmdPrinter : SharedTypesPrinter
         cerr << "bt is " << t.num_frames << endl;
     }
 
-    void operator()(const Next& t) const
+    void operator()(const StepMode& t) const
     {
-        cerr << "next is (no members)" << endl;
-    }
-
-    void operator()(const Step& t) const
-    {
-        cerr << "step is (no members)" << endl;
-    }
-
-    void operator()(const Finish& t) const
-    {
-        cerr << "finish is (no members)" << endl;
+        cerr << "step mode is " << t.cmd << endl;
     }
 
     void operator()(const Quit& t) const
@@ -191,14 +177,14 @@ struct UserCmdPrinter : SharedTypesPrinter
         cerr << "PrintWorkingDirectory is (no members)" << endl;
     }
 
-    void operator()(const Cont& t) const
-    {
-        cerr << "cont is " << t.cmd << endl;
-    }
-
     void operator()(const Empty& t) const
     {
         cerr << "empty is (no members)" << endl;
+    }
+
+    void operator()(const WhatIs& t) const
+    {
+        cerr << "WhatIs is " << (t.expr? *t.expr : "nothing") << endl;
     }
 };
 

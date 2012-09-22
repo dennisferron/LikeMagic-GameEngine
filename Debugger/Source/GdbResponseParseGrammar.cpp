@@ -133,9 +133,16 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
         working_directory = qi::lit("Working directory ") > up_to_last_period > '.';
         up_to_last_period = *( qi::char_ - ( qi::lit('.')>>qi::eoi ) );
 
-        start = reading_symbols | breakpoint_set | breakpoint_pending | cursor_pos | breakpoint_hit | locals_info | address_in_function
-                | backtrace_line | value_history | program_exited | square_bracket_msg | signal_received | working_directory
-        ;
+        type_equals = qi::lit("type = ") > +qi::char_;
+
+        empty = qi::lit("") >> -*qi::char_('`') >> qi::eoi;
+
+        actionable =  breakpoint_set | breakpoint_pending | cursor_pos | breakpoint_hit | locals_info | address_in_function
+                | backtrace_line | value_history | program_exited | working_directory | type_equals | empty;
+
+        unactionable = reading_symbols | square_bracket_msg | signal_received;
+
+        start = actionable | unactionable;
     }
 
     unique_ptr<qi::grammar<Iterator, SharedTypes::GdbValue()>> gdb_value;
@@ -173,6 +180,10 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
     qi::rule<Iterator, GdbResponses::WorkingDirectory()> working_directory;
     qi::rule<Iterator, GdbResponses::AddressInFunction()> address_in_function;
     qi::rule<Iterator, GdbResponses::CursorPos()> cursor_pos;
+    qi::rule<Iterator, GdbResponses::TypeEquals()> type_equals;
+    qi::rule<Iterator, GdbResponses::Empty()> empty;
+    qi::rule<Iterator, GdbActionable()> actionable;
+    qi::rule<Iterator, GdbUnactionable()> unactionable;
     qi::rule<Iterator, GdbResponseType()> start;
 };
 

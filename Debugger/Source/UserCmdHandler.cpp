@@ -35,22 +35,7 @@ void UserCmdHandler::operator()(const UserCmds::SetBreakpoint& t) const
     brkpt_mgr.userSetBreakpoint(t);
 }
 
-void UserCmdHandler::operator()(const UserCmds::Next& t) const
-{
-    step_mgr.handle(t);
-}
-
-void UserCmdHandler::operator()(const UserCmds::Step& t) const
-{
-    step_mgr.handle(t);
-}
-
-void UserCmdHandler::operator()(const UserCmds::Finish& t) const
-{
-    step_mgr.handle(t);
-}
-
-void UserCmdHandler::operator()(const UserCmds::Cont& t) const
+void UserCmdHandler::operator()(const UserCmds::StepMode& t) const
 {
     step_mgr.handle(t);
 }

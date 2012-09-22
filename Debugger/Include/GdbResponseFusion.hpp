@@ -21,23 +21,18 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    GdbResponses::TestStr2,
-    (std::string, value)
-)
-
-BOOST_FUSION_ADAPT_STRUCT(
-    GdbResponses::UninitializedVariant,
-    (double, dummy)
-)
-
-BOOST_FUSION_ADAPT_STRUCT(
-    GdbResponses::Empty,
-    (boost::optional<std::string>, dummy)
+    GdbResponses::TypeEquals,
+    (std::string, type)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::RawStr,
     (std::string, value)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::Empty,
+    (boost::optional<std::string>, dummy)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
@@ -131,3 +126,12 @@ BOOST_FUSION_ADAPT_STRUCT(
     (SharedTypes::GdbValue, value)
 )
 
+BOOST_FUSION_ADAPT_STRUCT(
+    GdbActionable,
+    (GdbActionableType, value)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    GdbUnactionable,
+    (GdbUnactionableType, value)
+)

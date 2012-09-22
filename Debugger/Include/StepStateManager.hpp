@@ -23,10 +23,7 @@ public:
 
     StepStateManager(MainChannels const& channels_);
     void atScriptBreakpoint(bool value);
-    void handle(UserCmds::Step const& cmd);
-    void handle(UserCmds::Next const& cmd);
-    void handle(UserCmds::Finish const& cmd);
-    void handle(UserCmds::Cont const& cmd);
+    void handle(UserCmds::StepMode const& cmd);
 };
 
 }}

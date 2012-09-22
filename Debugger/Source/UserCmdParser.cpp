@@ -54,15 +54,21 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
         run = qi::lit("run") >> -value;
         info = qi::lit("info") >> value;
         backtrace = (qi::lit("bt")|qi::lit("backtrace")) >> qi::int_;
-        next = qi::lit("next") >> -value;
-        step = qi::lit("step") >> -value;
-        finish = qi::lit("finish") >> -value;
+
+        step_mode = step_str | next_str | finish_str | cont_str;
+
+        step_str = qi::string("step");
+        next_str = qi::string("next");
+        finish_str = qi::string("finish");
+        cont_str = qi::string("cont");
+
         quit = qi::lit("quit") >> -value;
-        cont = qi::lit("") >> qi::string("cont");
         return_ = qi::lit("return") >> -qi::lit(" ") >> -*qi::char_;
         pwd = qi::lit("pwd") >> -*qi::char_;
+        what_is = qi::lit("whatis") >> -*qi::char_;
         empty = qi::eps >> -value >> qi::eoi;
-        start = set_option | show_option | set_breakpoint | source | directory | tty | run | info | backtrace | next | step | finish | cont | quit | return_ | pwd |empty
+        start = set_option | show_option | set_breakpoint | source | directory | tty | run | info | backtrace
+            | step_mode | quit | return_ | pwd | what_is | empty
         #ifdef PARSE_RAW_STRING
             | raw_str
         #endif
@@ -75,6 +81,10 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
     qi::rule<Iterator, std::string()> value;
     qi::rule<Iterator, std::string()> file_name;
     qi::rule<Iterator, std::string()> device_name;
+    qi::rule<Iterator, std::string()> step_str;
+    qi::rule<Iterator, std::string()> next_str;
+    qi::rule<Iterator, std::string()> finish_str;
+    qi::rule<Iterator, std::string()> cont_str;
     qi::rule<Iterator, UserCmds::SetOptionWithModifier(), ascii::space_type> set_option_with_modifier;
     qi::rule<Iterator, UserCmds::SetOptionNoModifier(), ascii::space_type> set_option_no_modifier;
     qi::rule<Iterator, UserCmds::SetOption(), ascii::space_type> set_option;
@@ -86,13 +96,11 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
     qi::rule<Iterator, UserCmds::Run(), ascii::space_type> run;
     qi::rule<Iterator, UserCmds::Info(), ascii::space_type> info;
     qi::rule<Iterator, UserCmds::Backtrace(), ascii::space_type> backtrace;
-    qi::rule<Iterator, UserCmds::Next(), ascii::space_type> next;
-    qi::rule<Iterator, UserCmds::Step(), ascii::space_type> step;
-    qi::rule<Iterator, UserCmds::Finish(), ascii::space_type> finish;
-    qi::rule<Iterator, UserCmds::Cont(), ascii::space_type> cont;
+    qi::rule<Iterator, UserCmds::StepMode(), ascii::space_type> step_mode;
     qi::rule<Iterator, UserCmds::Quit(), ascii::space_type> quit;
     qi::rule<Iterator, UserCmds::PrintWorkingDirectory(), ascii::space_type> pwd;
     qi::rule<Iterator, UserCmds::Return(), ascii::space_type> return_;
+    qi::rule<Iterator, UserCmds::WhatIs(), ascii::space_type> what_is;
     qi::rule<Iterator, UserCmds::Empty(), ascii::space_type> empty;
     qi::rule<Iterator, UserCmd(), ascii::space_type> start;
 };

@@ -60,7 +60,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
     {
         cerr << "While checking for gdb banner, got parse error: " << exc.what() << " at ->" << std::string(exc.first, exc.last) << "<-" << endl;
         logError(exc);
-        result.push_back(GdbResponses::RawStr {input});
+        result.push_back(GdbUnactionable {GdbResponses::RawStr {input}});
         return result;
     }
 
@@ -69,7 +69,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
         while (banner.msg.size() > 0 && *banner.msg.rbegin() == '\n')
             banner.msg.resize(banner.msg.size()-1);
 
-        result.push_back(banner);
+        result.push_back(GdbUnactionable {banner});
         return result;
     }
     else
@@ -88,7 +88,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
         {
             if (line.size() == 0)
             {
-                result.push_back(GdbResponses::Empty());
+                result.push_back(GdbActionable {GdbResponses::Empty()});
             }
             else
             {
@@ -109,32 +109,19 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                         ss << "GdbResponse failed to parse ->" << line << "<- in string ->" << input << "<-" << std::endl;
                         cerr << endl << ss.str() << endl;
                         logError(ParseException(ss.str()));
-                        result.push_back(GdbResponses::RawStr {line});
+                        result.push_back(GdbUnactionable { GdbResponses::RawStr {line}});
                     }
                     else if (iter != end)
                     {
-                        if (boost::get<GdbResponses::UninitializedVariant>(&line_item))
-                            cerr << "Uninitialized after parse, success was " << success << " line was " << line << endl;
-                        else if (auto* p = boost::get<GdbResponses::TestStr1>(&line_item))
-                        {
-                            cerr << "Got " << p->value << endl;
-                        }
-
                         stringstream ss;
-                        ss << "Not all of the line was parsed: " << std::string(iter, end) << std::endl;
+                        ss << "Not all of the line was parsed. Part not parsed: ->" << std::string(iter, end) << "<-" << std::endl
+                            << "from input ->" << line << "<-" << endl;
                         cerr << endl << ss.str() << endl;
                         logError(ParseException(ss.str()));
-                        result.push_back(GdbResponses::RawStr {line});
+                        result.push_back(GdbUnactionable { GdbResponses::RawStr {line}});
                     }
                     else
                     {
-                        if (boost::get<GdbResponses::UninitializedVariant>(&line_item))
-                            cerr << "Uninitialized after parse, success was " << success << " line was " << line << endl;
-                        else if (auto* p = boost::get<GdbResponses::TestStr1>(&line_item))
-                        {
-                            cerr << "Got " << p->value << endl;
-                        }
-
                         result.push_back(line_item);
                     }
                 }
@@ -143,7 +130,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                     stringstream ss;
                     ss << "While parsing ->" << line << "<- in string ->" << input << "<- got expectation failure: " << exc.what() << " at " << std::string(exc.first, exc.last) << endl;
                     logError(exc);
-                    result.push_back(GdbResponses::RawStr {line});
+                    result.push_back(GdbUnactionable { GdbResponses::RawStr {line} });
                 }
             }
         }

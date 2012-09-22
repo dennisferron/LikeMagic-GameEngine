@@ -20,10 +20,7 @@ public:
     template <typename T> void operator()(const T& t) const;
     void operator()(const UserCmds::SetOption& t) const;
     void operator()(const UserCmds::SetBreakpoint& t) const;
-    void operator()(const UserCmds::Next& t) const;
-    void operator()(const UserCmds::Step& t) const;
-    void operator()(const UserCmds::Finish& t) const;
-    void operator()(const UserCmds::Cont& t) const;
+    void operator()(const UserCmds::StepMode& t) const;
     void operator()(const UserCmds::Info& t) const;
 
 };

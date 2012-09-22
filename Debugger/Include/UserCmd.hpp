@@ -22,11 +22,6 @@ namespace UserCmds
         std::string value;
     };
 
-    struct Cont
-    {
-        std::string cmd;
-    };
-
     struct PrintFunction
     {
         std::string function_name;
@@ -117,21 +112,9 @@ namespace UserCmds
     };
 
 
-    struct Next
+    struct StepMode
     {
-        boost::optional<std::string> dummy;
-    };
-
-
-    struct Step
-    {
-        boost::optional<std::string> dummy;
-    };
-
-
-    struct Finish
-    {
-        boost::optional<std::string> dummy;
+        std::string cmd;
     };
 
     struct Quit
@@ -148,6 +131,11 @@ namespace UserCmds
     struct PrintWorkingDirectory
     {
         boost::optional<std::string> dummy;
+    };
+
+    struct WhatIs
+    {
+        boost::optional<std::string> expr;
     };
 
     struct Empty
@@ -170,13 +158,11 @@ typedef  boost::variant
     UserCmds::Run,
     UserCmds::Info,
     UserCmds::Backtrace,
-    UserCmds::Next,
-    UserCmds::Step,
-    UserCmds::Finish,
+    UserCmds::StepMode,
     UserCmds::Quit,
-    UserCmds::Cont,
     UserCmds::Return,
     UserCmds::PrintWorkingDirectory,
+    UserCmds::WhatIs,
     UserCmds::Empty
 > UserCmd;
 

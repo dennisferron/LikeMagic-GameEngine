@@ -33,6 +33,11 @@ struct GdbResponsePrinter : public SharedTypesPrinter
         cerr << "Value history is $" << t.number << endl;
     }
 
+    void operator()(const TypeEquals& t) const
+    {
+        cerr << "Type equals is " << t.type << endl;
+    }
+
     void operator()(const RawStr& t) const
     {
         cerr << "RawStr is " << t.value << endl;
@@ -46,22 +51,6 @@ struct GdbResponsePrinter : public SharedTypesPrinter
     void operator()(const SignalReceived& t) const
     {
         cerr << "SignalReceived is " << t.msg << endl;
-    }
-
-    void operator()(const UninitializedVariant& t) const
-    {
-        cerr << "got uninitialized variant" << endl;
-        //raiseError(GeneratorException("Generator was passed uninitialized variant in GdbResponse object."));
-    }
-
-    void operator()(const TestStr1& t) const
-    {
-        cerr << "got test string1 ->" << t.value << "<-" << endl;
-    }
-
-    void operator()(const TestStr2& t) const
-    {
-        cerr << "got test string2 ->" << t.value << "<-" << endl;
     }
 
     void operator()(const Banner& t) const
@@ -179,8 +168,9 @@ string GdbResponseWriter::Write(vector<GdbResponseType> const& response) const
     typedef std::back_insert_iterator<std::string> sink_type;
 
     // For debugging
+    GdbResponsePrinter printer;
     for (auto element : response)
-        boost::apply_visitor(GdbResponsePrinter(), element);
+        visitAll(printer, element);
 
     std::string result;
     sink_type sink(result);

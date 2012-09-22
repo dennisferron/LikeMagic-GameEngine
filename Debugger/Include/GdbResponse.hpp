@@ -13,14 +13,21 @@ struct Banner
     std::string msg;
 };
 
-struct Empty
+struct TypeEquals
 {
-    boost::optional<std::string> dummy;
+    std::string type;
 };
 
 struct RawStr
 {
     std::string value;
+};
+
+struct Empty
+{
+    boost::optional<
+        std::string
+    > dummy;
 };
 
 struct ReadingSymbols
@@ -143,21 +150,6 @@ struct SignalReceived
     std::string msg;
 };
 
-struct TestStr1
-{
-    std::string value;
-};
-
-struct TestStr2
-{
-    std::string value;
-};
-
-struct UninitializedVariant
-{
-    double dummy;
-};
-
 struct ProgramExited
 {
     std::string how;
@@ -170,33 +162,96 @@ struct WorkingDirectory
 
 }
 
+typedef boost::variant
+<
+    GdbResponses::ReadingSymbols,
+    GdbResponses::Banner,
+    GdbResponses::SquareBracketMsg,
+    GdbResponses::SignalReceived,
+    GdbResponses::RawStr
+> GdbUnactionableType;
+
+struct GdbUnactionable
+{
+    GdbUnactionableType value;
+};
 
 typedef  boost::variant
 <
-    GdbResponses::UninitializedVariant,
-    GdbResponses::ReadingSymbols,
+    GdbResponses::Empty,
     GdbResponses::BreakpointSet,
     GdbResponses::CursorPos,
     GdbResponses::BreakpointHit,
     GdbResponses::BreakpointPending,
     GdbResponses::LocalsInfo,
     GdbResponses::BacktraceLine,
-    GdbResponses::Banner,
     GdbResponses::ValueHistory,
-    GdbResponses::RawStr,
     GdbResponses::ProgramExited,
-    GdbResponses::SquareBracketMsg,
-    GdbResponses::SignalReceived,
     GdbResponses::AddressInFunction,
     GdbResponses::WorkingDirectory,
-    GdbResponses::Empty
-> GdbResponseType;
+    GdbResponses::TypeEquals
+> GdbActionableType;
 
+struct GdbActionable
+{
+    GdbActionableType value;
+};
+
+typedef boost::variant
+<
+    GdbUnactionable,
+    GdbActionable
+> GdbResponseType;
 
 struct GdbResponse
 {
     std::vector<GdbResponseType> values;
     std::string prompt;
+
+    void pushActionable(GdbActionableType t)
+    {
+        values.push_back(GdbActionable {t});
+    }
 };
+
+template <typename Visitor>
+GdbResponseType visitIfActionable(Visitor& v, GdbResponseType t)
+{
+    if (auto a = boost::get<GdbActionable>(&t))
+        return {boost::apply_visitor(v, a->value)};
+    else
+        return t;
+}
+
+template <typename Visitor>
+void visitAll(Visitor& v, GdbResponseType t)
+{
+    if (auto a = boost::get<GdbActionable>(&t))
+        boost::apply_visitor(v, a->value);
+    else
+    {
+        auto u = boost::get<GdbUnactionable>(&t);
+        boost::apply_visitor(v, u->value);
+    }
+}
+
+template <typename T>
+T* getActionable(GdbResponseType* r)
+{
+    if (auto a = boost::get<GdbActionable>(r))
+        if (auto t = boost::get<T>(&(a->value)))
+            return t;
+    return NULL;
+}
+
+template <typename T>
+bool hasActionable(std::vector<GdbResponseType> items)
+{
+    for (auto line_item : items)
+        if (getActionable<T>(&line_item))
+            return true;
+
+    return false;
+}
 
 }}

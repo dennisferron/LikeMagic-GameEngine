@@ -93,11 +93,17 @@ struct GdbResponseWriteGrammar
         // Working directory /Users/dennisferron/code/LikeMagic-All/Iocaste.
         working_directory = karma::lit("Working directory ") << karma::string << ".";
 
-        response_item = (locals_info | backtrace_line | banner | reading_symbols | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited
-                         | square_bracket_msg | signal_received | working_directory | raw_str | empty) << "\n";
+        type_equals = karma::lit("type = ") << karma::string;
+
+        actionable = locals_info | backtrace_line | banner | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited
+                         | working_directory | type_equals | empty;
+
+        unactionable = banner | reading_symbols | square_bracket_msg | signal_received | raw_str;
+
+        response_item = (actionable | unactionable) << "\n";
+
         start = *response_item;
     }
-
 
     unique_ptr<
         karma::grammar<OutputIterator, SharedTypes::GdbValue()>
@@ -127,11 +133,14 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, GdbResponses::LocalsInfo()> locals_info;
     karma::rule<OutputIterator, GdbResponses::BacktraceLine()> backtrace_line;
     karma::rule<OutputIterator, GdbResponses::AddressInFunction()> address_in_function;
-    karma::rule<OutputIterator, GdbResponses::Empty()> empty;
+    karma::rule<OutputIterator, GdbResponses::TypeEquals()> type_equals;
     karma::rule<OutputIterator, GdbResponses::RawStr()> raw_str;
+    karma::rule<OutputIterator, GdbResponses::Empty()> empty;
     karma::rule<OutputIterator, GdbResponses::SquareBracketMsg()> square_bracket_msg;
     karma::rule<OutputIterator, GdbResponses::SignalReceived()> signal_received;
     karma::rule<OutputIterator, GdbResponses::WorkingDirectory()> working_directory;
+    karma::rule<OutputIterator, GdbActionable()> actionable;
+    karma::rule<OutputIterator, GdbUnactionable()> unactionable;
     karma::rule<OutputIterator, GdbResponseType()> response_item;
     karma::rule<OutputIterator, vector<GdbResponseType>()> start;
 };
