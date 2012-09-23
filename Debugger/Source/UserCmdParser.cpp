@@ -65,7 +65,7 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
         quit = qi::lit("quit") >> -value;
         return_ = qi::lit("return") >> -qi::lit(" ") >> -*qi::char_;
         pwd = qi::lit("pwd") >> -*qi::char_;
-        what_is = qi::lit("whatis") >> -*qi::char_;
+        what_is = (qi::string("whatis")|qi::string("output")) >> -*qi::char_;
         empty = qi::eps >> -value >> qi::eoi;
         start = set_option | show_option | set_breakpoint | source | directory | tty | run | info | backtrace
             | step_mode | quit | return_ | pwd | what_is | empty

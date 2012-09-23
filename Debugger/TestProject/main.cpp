@@ -109,6 +109,11 @@ void run_io()
 
 int main()
 {
+    int myVar = 0;
+
+    ++myVar;
+    ++myVar;
+
     cout << "Hello world!" << endl;
     cout << "Another line" << endl;
     cout << "Another line" << endl;

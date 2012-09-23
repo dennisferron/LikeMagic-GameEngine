@@ -135,6 +135,7 @@ namespace UserCmds
 
     struct WhatIs
     {
+        std::string cmd;
         boost::optional<std::string> expr;
     };
 

@@ -54,7 +54,7 @@ struct UserCmdWriteGrammar
         empty = karma::lit("") << -karma::string;
         return_ = karma::lit("return") << -(karma::lit(" ") << karma::string);
         pwd = karma::lit("pwd") << -karma::string;
-        what_is = karma::lit("whatis") << " " << -karma::string;
+        what_is = karma::string << " " << -karma::string;
 
         print_function = karma::lit("print ") << karma::string << karma::lit("(") << gdb_value_list << ")";
         set_breakpoint_on_function = karma::lit("break ") << karma::string;
@@ -184,7 +184,7 @@ struct UserCmdPrinter : SharedTypesPrinter
 
     void operator()(const WhatIs& t) const
     {
-        cerr << "WhatIs is " << (t.expr? *t.expr : "nothing") << endl;
+        cerr << "WhatIs is " << t.cmd << " " << (t.expr? *t.expr : "nothing") << endl;
     }
 };
 

@@ -1,250 +1,210 @@
 info: Built input chains.
+info: Program args: /home/dennis/code/LikeMagic-All/Iocaste/Debugger/bin/Debug/Debugger -nx -fullname -quiet -args TestProject
+fromGdb: Reading symbols from /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/TestProject...done.\n\b(gdb) 
+toUser: Reading symbols from /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/TestProject...done.\n\b(gdb) 
 fromUser: set prompt >>>>>>cb_gdb:
-info: MainLoopState::ReadUser
 toGdb: set prompt >>>>>>cb_gdb:
-fromUser: show version
-info: MainLoopState::ReadUser
-toGdb: show version
-fromGdb: Reading symbols from /home/dennis/code/LikeMagic-All/Iocaste/bin/Debug-Linux/IocasteDebugBuild..\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 fromGdb: \b>>>>>>cb_gdb:
-toUser: Reading symbols from /home/dennis/code/LikeMagic-All/Iocaste/bin/Debug-Linux/IocasteDebugBuild..\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
-fromGdb: GNU gdb (Ubuntu/Linaro 7.2-1ubuntu11) 7.2\nCopyright (C) 2010 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.  Type \"show copying\"\nand \"show warranty\" for details.\nThis GDB was configured as \"x86_64-linux-gnu\".\nFor bug reporting instructions, please see:\n<http://www.gnu.org/software/gdb/bugs/>.\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-toUser: GNU gdb (Ubuntu/Linaro7.2-1ubuntu11) 7.2\nCopyright (C) 2010 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.  Type \"show copying\"\nand \"show warranty\" for details.\nThis GDB was configured as \"x86_64-linux-gnu\".\nFor bug reporting instructions, please see:\n<http://www.gnu.org/software/gdb/bugs/>.\n\b>>>>>>cb_gdb:
+fromUser: show version
+toGdb: show version
 fromUser: set confirm off
-info: MainLoopState::ReadUser
 toGdb: set confirm off
+fromGdb: GNU gdb (Ubuntu/Linaro 7.2-1ubuntu11) 7.2\nCopyright (C) 2010 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.  Type \"show copying\"\nand \"show warranty\" for details.\nThis GDB was configured as \"x86_64-linux-gnu\".\nFor bug reporting instructions, please see:\n<http://www.gnu.org/software/gdb/bugs/>.\n\b>>>>>>cb_gdb:
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
+toUser: GNU gdb (Ubuntu/Linaro7.2-1ubuntu11) 7.2\nCopyright (C) 2010 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.  Type \"show copying\"\nand \"show warranty\" for details.\nThis GDB was configured as \"x86_64-linux-gnu\".\nFor bug reporting instructions, please see:\n<http://www.gnu.org/software/gdb/bugs/>.\n\b>>>>>>cb_gdb:
 toUser: \b>>>>>>cb_gdb:
 fromUser: set width 0
-info: MainLoopState::ReadUser
 toGdb: set width 0
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: set height 0
-info: MainLoopState::ReadUser
 toGdb: set height 0
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: set breakpoint pending on
-info: MainLoopState::ReadUser
 toGdb: set breakpoint pending on
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: set print asm-demangle on
-info: MainLoopState::ReadUser
 toGdb: set print asm-demangle on
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: set unwindonsignal on
-info: MainLoopState::ReadUser
 toGdb: set unwindonsignal on
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: set disassembly-flavor intel
-info: MainLoopState::ReadUser
 toGdb: set disassembly-flavor intel
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: source /usr/share/codeblocks/scripts/stl-views-1.0.3.gdb
-info: MainLoopState::ReadUser
 toGdb: source /usr/share/codeblocks/scripts/stl-views-1.0.3.gdb
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-toUser: \b>>>>>>cb_gdb:
-fromUser: cd ./
-info: MainLoopState::ReadUser
-toGdb: cd ./
-fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory /home/dennis/code/LikeMagic-All/GameBindings/
-info: MainLoopState::ReadUser
 toGdb: directory /home/dennis/code/LikeMagic-All/GameBindings/
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory /home/dennis/code/LikeMagic-All/desteer/bindings/
-info: MainLoopState::ReadUser
 toGdb: directory /home/dennis/code/LikeMagic-All/desteer/bindings/
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory /home/dennis/code/LikeMagic-All/desteer/
-info: MainLoopState::ReadUser
 toGdb: directory /home/dennis/code/LikeMagic-All/desteer/
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory /home/dennis/code/wayup/
-info: MainLoopState::ReadUser
 toGdb: directory /home/dennis/code/wayup/
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory /home/dennis/code/LikeMagic-All/Interpreter/
-info: MainLoopState::ReadUser
 toGdb: directory /home/dennis/code/LikeMagic-All/Interpreter/
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory /home/dennis/code/LikeMagic-All/
-info: MainLoopState::ReadUser
 toGdb: directory /home/dennis/code/LikeMagic-All/
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory /home/dennis/code/LikeMagic-All/LikeMagic/StdBindings/
-info: MainLoopState::ReadUser
 toGdb: directory /home/dennis/code/LikeMagic-All/LikeMagic/StdBindings/
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory /home/dennis/code/LikeMagic-All/LikeMagic/
-info: MainLoopState::ReadUser
 toGdb: directory /home/dennis/code/LikeMagic-All/LikeMagic/
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory /home/dennis/code/LikeMagic-All/Iocaste/
-info: MainLoopState::ReadUser
 toGdb: directory /home/dennis/code/LikeMagic-All/Iocaste/
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory /home/dennis/code/LikeMagic-All/Iocaste/Debugger/
-info: MainLoopState::ReadUser
 toGdb: directory /home/dennis/code/LikeMagic-All/Iocaste/Debugger/
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: directory /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/
-info: MainLoopState::ReadUser
 toGdb: directory /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
-fromUser: directory basekit/source
-info: MainLoopState::ReadUser
-toGdb: directory basekit/source
-fromGdbErr: No symbol \"directory\" in current context.
-fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-toUser: \b>>>>>>cb_gdb:
-fromUser: directory coroutine/source
-info: MainLoopState::ReadUser
-toGdb: directory coroutine/source
-fromGdbErr: No symbol \"directory\" in current context.
-fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-toUser: \b>>>>>>cb_gdb:
-fromUser: directory garbagecollector/source
-info: MainLoopState::ReadUser
-toGdb: directory garbagecollector/source
-fromGdbErr: No symbol \"directory\" in current context.
-fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-toUser: \b>>>>>>cb_gdb:
-fromUser: directory iovm/source
-info: MainLoopState::ReadUser
-toGdb: directory iovm/source
-fromGdbErr: No symbol \"directory\" in current context.
-fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-toUser: \b>>>>>>cb_gdb:
-fromUser: set args /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl
-info: MainLoopState::ReadUser
-toGdb: set args /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl
-fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-toUser: \b>>>>>>cb_gdb:
-fromUser: break \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl:5\"
-info: MainLoopState::ReadUser
-toGdb: break io_debugger_init
-fromGdb: Breakpoint 1 at 0x52d994: file /home/dennis/code/LikeMagic-All/Iocaste/Source/DebugAPI.cpp, line 19.\n\b>>>>>>cb_gdb:
-info: Mapped gdb breakpoint #1 to our breakpoint #1
-toGdb: break io_debugger_break_here
-fromGdb: Breakpoint 2 at 0x52d9dd: file /home/dennis/code/LikeMagic-All/Iocaste/Source/DebugAPI.cpp, line 39.\n\b>>>>>>cb_gdb:
-info: Mapped gdb breakpoint #2 to our breakpoint #2
-toUser: Breakpoint 1 at 0x00000000: file /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl, line 5.\n\b>>>>>>cb_gdb:
-fromUser: break \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl:2\"
-info: MainLoopState::ReadUser
-toUser: Breakpoint 2 at 0x00000000: file /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl, line 2.\n\b>>>>>>cb_gdb:
+fromUser: break \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:114\"
+toGdb: break \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:114\"
+fromGdb: Breakpoint 1 at 0x4013bd: file /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 114.\n\b>>>>>>cb_gdb:
+toUser: Breakpoint 1 at 0x4013bd: file /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp, line 114.\n\b>>>>>>cb_gdb:
 fromUser: tty /dev/pts/1
-info: MainLoopState::ReadUser
 toGdb: tty /dev/pts/1
 fromGdb: \b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
 toUser: \b>>>>>>cb_gdb:
 fromUser: run
-info: MainLoopState::ReadUser
 toGdb: run
-fromGdb: [Thread debugging using libthread_db enabled]\n\nBreakpoint 1, io_debugger_init (io_state=0x845b38) at /home/dennis/code/LikeMagic-All/Iocaste/Source/DebugAPI.cpp:19\n\z\z/home/dennis/code/LikeMagic-All/Iocaste/Source/DebugAPI.cpp:19:345:beg:0x52d994\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-info: Mapped gdb breakpoint 1 to our breakpoint 1
-toGdb: print io_debugger_set_breakpoint(0x845b38, 1, \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\", 5)
-fromGdb: $1 = 1\n\b>>>>>>cb_gdb:
-toGdb: print io_debugger_set_breakpoint(0x845b38, 2, \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\", 2)
-fromGdb: $2 = 2\n\b>>>>>>cb_gdb:
-toGdb: cont
-toUser: [Thread debugging using libthread_db enabled]\n\n\n\n\b>>>>>>cb_gdb:
-fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0xa32e30, locals=0x86c760, m=0xa86d50, breakpoint_number=2, file_name=0x8d0428 \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\", line_number=2, char_number=-1) at /home/dennis/code/LikeMagic-All/Iocaste/Source/DebugAPI.cpp:39\n\z\z/home/dennis/code/LikeMagic-All/Iocaste/Source/DebugAPI.cpp:39:906:beg:0x52d9dd\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-info: Mapped gdb breakpoint 2 to our breakpoint 2
-toUser: \nBreakpoint 2,  () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl:2\n\z\z/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl:2:1:beg:0x00000000\n\b>>>>>>cb_gdb:
+fromGdb: \nBreakpoint 1, main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:114\n\z\z/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:114:2698:beg:0x4013bd\n\b>>>>>>cb_gdb:
+toUser: \nBreakpoint 1, main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:114\n\z\z/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:114:2698:beg:0x4013bd\n\b>>>>>>cb_gdb:
+info: at_script_breakpoint = false
 fromUser: info locals
-info: MainLoopState::ReadUser
 toGdb: info locals
-fromGdb: No locals.\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-toUser: No locals.\n\b>>>>>>cb_gdb:
+fromGdb: myVar = 0\n\b>>>>>>cb_gdb:
+toUser: myVar = 0\n\b>>>>>>cb_gdb:
 fromUser: info args
-info: MainLoopState::ReadUser
 toGdb: info args
-fromGdb: self = 0xa32e30\nlocals = 0x86c760\nm = 0xa86d50\nbreakpoint_number = 2\nfile_name = 0x8d0428 \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\"\nline_number = 2\nchar_number = -1\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-toUser: self = 0xa32e30\nlocals = 0x86c760\nm = 0xa86d50\nbreakpoint_number = 2\nfile_name = 0x8d0428 \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\"\nline_number = 2\nchar_number = -1\n\b>>>>>>cb_gdb:
+fromGdb: No arguments.\n\b>>>>>>cb_gdb:
+toUser: No arguments.\n\b>>>>>>cb_gdb:
 fromUser: bt 30
-info: MainLoopState::ReadUser
 toGdb: bt 30
-fromGdb: #0  io_debugger_break_here (self=0xa32e30, locals=0x86c760, m=0xa86d50, breakpoint_number=2, file_name=0x8d0428 \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\", line_number=2, char_number=-1) at /home/dennis/code/LikeMagic-All/Iocaste/Source/DebugAPI.cpp:39\n#1  0x00000000004432cd in iovm_hit_breakpoint (bp=0x8d5598, self=0xa32e30, locals=0x86c760, m=0xa86d50) at /home/dennis/code/LikeMagic-All/Iocaste/Source/IoVM.cpp:65\n#2  0x0000000000503079 in IoMessage_locals_performOn_ (self=0xa32e30, locals=0x86c760, target=0x86c760) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.c:513\n#3  0x000000000050b6fb in IoObject_rawDoString_label_ (self=0x86c760, string=0x9800c0, label=0x958810) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:1802\n#4  0x000000000052e81e in IoObject_doFile (self=0x86c760, locals=0x86c760, m=0xc21af0) at /home/dennis/code/LikeMagic-All/Iocaste/Source/IoObjectImpl.cpp:34\n#5  0x00000000005434fc in IoCFunction_activate (self=0x8575b0, target=0x86c760, locals=0x86c760, m=0xc21af0, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCFunction.c:191\n#6  0x0000000000508e34 in IoObject_activate (self=0x8575b0, target=0x86c760, locals=0x86c760, m=0xc21af0, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:411\n#7  0x0000000000508f5f in IoObject_perform (self=0x86c760, locals=0x86c760, m=0xc21af0) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:448\n#8  0x00000000005030e5 in IoMessage_locals_performOn_ (self=0xc21af0, locals=0x86c760, target=0x86c760) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.c:543\n#9  0x000000000050b6fb in IoObject_rawDoString_label_ (self=0x86c760, string=0x93e540, label=0xb6ca20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:1802\n#10 0x000000000050b85b in IoObject_doString (self=0x86c760, locals=0x86c760, m=0x93ed20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:1849\n#11 0x00000000005434fc in IoCFunction_activate (self=0x857400, target=0x86c760, locals=0x86c760, m=0x93ed20, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCFunction.c:191\n#12 0x0000000000508e34 in IoObject_activate (self=0x857400, target=0x86c760, locals=0x86c760, m=0x93ed20, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:411\n#13 0x0000000000508f5f in IoObject_perform (self=0x86c760, locals=0x86c760, m=0x93ed20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:448\n#14 0x00000000005030e5 in IoMessage_locals_performOn_ (self=0x93ed20, locals=0x86c760, target=0x86c760) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.c:543\n#15 0x0000000000518a9b in IoState_tryToPerform (self=0x845b38, target=0x86c760, locals=0x86c760, m=0x93ed20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c:15\n#16 0x0000000000518bf1 in IoState_on_doCString_withLabel_ (self=0x845b38, target=0x86c760, s=0xae14f8 \"doFile(\\\"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\\\")\", label=0x6a1331 \"IoState_doCString\") at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c:68\n#17 0x0000000000518c43 in IoState_doCString_ (self=0x845b38, s=0xae14f8 \"doFile(\\\"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\\\")\") at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c:78\n#18 0x000000000044517f in Iocaste::LikeMagicAdapters::IoVM::do_string (this=0x845b30, io_code=...) at /home/dennis/code/LikeMagic-All/Iocaste/Source/IoVM.cpp:311\n#19 0x0000000000440bd6 in do_file (vm=..., file_name=...) at /home/dennis/code/LikeMagic-All/Iocaste/Source/Run.cpp:78\n#20 0x0000000000440dd0 in Iocaste::run (argc=2, argv=0x7fffffffed48, add_bindings=0x406374 <Interpreter::add_bindings(LikeMagic::RuntimeTypeSystem&)>) at /home/dennis/code/LikeMagic-All/Iocaste/Source/Run.cpp:109\n#21 0x0000000000406a25 in main (argc=2, argv=0x7fffffffed48) at /home/dennis/code/LikeMagic-All/Iocaste/main.cpp:7\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-toUser: #0  io_debugger_break_here (self=0xa32e30, locals=0x86c760, m=0xa86d50, breakpoint_number=2, file_name=0x8d0428 \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\", line_number=2, char_number=-1) at /home/dennis/code/LikeMagic-All/Iocaste/Source/DebugAPI.cpp:39\n#1  0x00000000004432cd in iovm_hit_breakpoint (bp=0x8d5598, self=0xa32e30, locals=0x86c760, m=0xa86d50) at /home/dennis/code/LikeMagic-All/Iocaste/Source/IoVM.cpp:65\n#2  0x0000000000503079 in IoMessage_locals_performOn_ (self=0xa32e30, locals=0x86c760, target=0x86c760) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.c:513\n#3  0x000000000050b6fb in IoObject_rawDoString_label_ (self=0x86c760, string=0x9800c0, label=0x958810) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:1802\n#4  0x000000000052e81e in IoObject_doFile (self=0x86c760, locals=0x86c760, m=0xc21af0) at /home/dennis/code/LikeMagic-All/Iocaste/Source/IoObjectImpl.cpp:34\n#5  0x00000000005434fc in IoCFunction_activate (self=0x8575b0, target=0x86c760, locals=0x86c760, m=0xc21af0, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCFunction.c:191\n#6  0x0000000000508e34 in IoObject_activate (self=0x8575b0, target=0x86c760, locals=0x86c760, m=0xc21af0, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:411\n#7  0x0000000000508f5f in IoObject_perform (self=0x86c760, locals=0x86c760, m=0xc21af0) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:448\n#8  0x00000000005030e5 in IoMessage_locals_performOn_ (self=0xc21af0, locals=0x86c760, target=0x86c760) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.c:543\n#9  0x000000000050b6fb in IoObject_rawDoString_label_ (self=0x86c760, string=0x93e540, label=0xb6ca20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:1802\n#10 0x000000000050b85b in IoObject_doString (self=0x86c760, locals=0x86c760, m=0x93ed20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:1849\n#11 0x00000000005434fc in IoCFunction_activate (self=0x857400, target=0x86c760, locals=0x86c760, m=0x93ed20, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCFunction.c:191\n#12 0x0000000000508e34 in IoObject_activate (self=0x857400, target=0x86c760, locals=0x86c760, m=0x93ed20, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:411\n#13 0x0000000000508f5f in IoObject_perform (self=0x86c760, locals=0x86c760, m=0x93ed20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:448\n#14 0x00000000005030e5 in IoMessage_locals_performOn_ (self=0x93ed20, locals=0x86c760, target=0x86c760) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.c:543\n#15 0x0000000000518a9b in IoState_tryToPerform (self=0x845b38, target=0x86c760, locals=0x86c760, m=0x93ed20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c:15\n#16 0x0000000000518bf1 in IoState_on_doCString_withLabel_ (self=0x845b38, target=0x86c760, s=0xae14f8 \"doFile(\\\"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\\\")\", label=0x6a1331 \"IoState_doCString\") at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c:68\n#17 0x0000000000518c43 in IoState_doCString_ (self=0x845b38, s=0xae14f8 \"doFile(\\\"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\\\")\") at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c:78\n#18 0x000000000044517f in Iocaste::LikeMagicAdapters::IoVM::do_string (this=0x845b30, io_code=...) at /home/dennis/code/LikeMagic-All/Iocaste/Source/IoVM.cpp:311\n#19 0x0000000000440bd6 in do_file (vm=..., file_name=...) at /home/dennis/code/LikeMagic-All/Iocaste/Source/Run.cpp:78\n#20 0x0000000000440dd0 in Iocaste::run (argc=2, argv=0x7fffffffed48, add_bindings=0x406374 <Interpreter::add_bindings(LikeMagic::RuntimeTypeSystem&)>) at /home/dennis/code/LikeMagic-All/Iocaste/Source/Run.cpp:109\n#21 0x0000000000406a25 in main (argc=2, argv=0x7fffffffed48) at /home/dennis/code/LikeMagic-All/Iocaste/main.cpp:7\n\b>>>>>>cb_gdb:
-fromUser: cont
-info: MainLoopState::ReadUser
-toGdb: cont
-fromGdb: \nBreakpoint 2, io_debugger_break_here (self=0xa32e30, locals=0x86c760, m=0xb1d5e0, breakpoint_number=1, file_name=0x8be2f8 \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\", line_number=5, char_number=-1) at /home/dennis/code/LikeMagic-All/Iocaste/Source/DebugAPI.cpp:39\n\z\z/home/dennis/code/LikeMagic-All/Iocaste/Source/DebugAPI.cpp:39:906:beg:0x52d9dd\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-info: Mapped gdb breakpoint 2 to our breakpoint 2
-toUser: \nBreakpoint 1,  () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl:5\n\z\z/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl:5:1:beg:0x00000000\n\b>>>>>>cb_gdb:
+fromGdb: #0  main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:114\n\b>>>>>>cb_gdb:
+toUser: #0  main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:114\n\b>>>>>>cb_gdb:
 fromUser: info locals
-info: MainLoopState::ReadUser
 toGdb: info locals
-fromGdb: No locals.\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-toUser: No locals.\n\b>>>>>>cb_gdb:
+fromGdb: myVar = 0\n\b>>>>>>cb_gdb:
+toUser: myVar = 0\n\b>>>>>>cb_gdb:
 fromUser: info args
-info: MainLoopState::ReadUser
 toGdb: info args
-fromGdb: self = 0xa32e30\nlocals = 0x86c760\nm = 0xb1d5e0\nbreakpoint_number = 1\nfile_name = 0x8be2f8 \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\"\nline_number = 5\nchar_number = -1\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-toUser: self = 0xa32e30\nlocals = 0x86c760\nm = 0xb1d5e0\nbreakpoint_number = 1\nfile_name = 0x8be2f8 \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\"\nline_number = 5\nchar_number = -1\n\b>>>>>>cb_gdb:
+fromGdb: No arguments.\n\b>>>>>>cb_gdb:
+toUser: No arguments.\n\b>>>>>>cb_gdb:
+fromUser: whatis myVar
+toGdb: whatis myVar
+fromGdb: type = int\n\b>>>>>>cb_gdb:
+toUser: type = int\n\b>>>>>>cb_gdb:
+fromUser: output myVar
+toGdb: output myVar
+fromGdb: 0\b>>>>>>cb_gdb:
+exception: About to throw exception of type Iocaste::Debugger::ParseException message is GdbResponse failed to parse ->0<- in string ->0<-\n
+toUser: \b>>>>>>cb_gdb:
+fromUser: next
+toGdb: next
+fromGdb: \z\z/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:115:2711:beg:0x4013c1\n\b>>>>>>cb_gdb:
+toUser: \z\z/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:115:2711:beg:0x4013c1\n\b>>>>>>cb_gdb:
+fromUser: info locals
+toGdb: info locals
+fromGdb: myVar = 1\n\b>>>>>>cb_gdb:
+toUser: myVar = 1\n\b>>>>>>cb_gdb:
+fromUser: info args
+toGdb: info args
+fromGdb: No arguments.\n\b>>>>>>cb_gdb:
+toUser: No arguments.\n\b>>>>>>cb_gdb:
+fromUser: whatis myVar
+toGdb: whatis myVar
+fromGdb: type = int\n\b>>>>>>cb_gdb:
+toUser: type = int\n\b>>>>>>cb_gdb:
+fromUser: output myVar
+toGdb: output myVar
+fromGdb: 1\b>>>>>>cb_gdb:
+exception: About to throw exception of type Iocaste::Debugger::ParseException message is GdbResponse failed to parse ->1<- in string ->1<-\n
+toUser: \b>>>>>>cb_gdb:
 fromUser: bt 30
-info: MainLoopState::ReadUser
 toGdb: bt 30
-fromGdb: #0  io_debugger_break_here (self=0xa32e30, locals=0x86c760, m=0xb1d5e0, breakpoint_number=1, file_name=0x8be2f8 \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\", line_number=5, char_number=-1) at /home/dennis/code/LikeMagic-All/Iocaste/Source/DebugAPI.cpp:39\n#1  0x00000000004432cd in iovm_hit_breakpoint (bp=0x8d5580, self=0xa32e30, locals=0x86c760, m=0xb1d5e0) at /home/dennis/code/LikeMagic-All/Iocaste/Source/IoVM.cpp:65\n#2  0x0000000000503079 in IoMessage_locals_performOn_ (self=0xa32e30, locals=0x86c760, target=0x86c760) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.c:513\n#3  0x000000000050b6fb in IoObject_rawDoString_label_ (self=0x86c760, string=0x9800c0, label=0x958810) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:1802\n#4  0x000000000052e81e in IoObject_doFile (self=0x86c760, locals=0x86c760, m=0xc21af0) at /home/dennis/code/LikeMagic-All/Iocaste/Source/IoObjectImpl.cpp:34\n#5  0x00000000005434fc in IoCFunction_activate (self=0x8575b0, target=0x86c760, locals=0x86c760, m=0xc21af0, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCFunction.c:191\n#6  0x0000000000508e34 in IoObject_activate (self=0x8575b0, target=0x86c760, locals=0x86c760, m=0xc21af0, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:411\n#7  0x0000000000508f5f in IoObject_perform (self=0x86c760, locals=0x86c760, m=0xc21af0) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:448\n#8  0x00000000005030e5 in IoMessage_locals_performOn_ (self=0xc21af0, locals=0x86c760, target=0x86c760) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.c:543\n#9  0x000000000050b6fb in IoObject_rawDoString_label_ (self=0x86c760, string=0x93e540, label=0xb6ca20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:1802\n#10 0x000000000050b85b in IoObject_doString (self=0x86c760, locals=0x86c760, m=0x93ed20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:1849\n#11 0x00000000005434fc in IoCFunction_activate (self=0x857400, target=0x86c760, locals=0x86c760, m=0x93ed20, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCFunction.c:191\n#12 0x0000000000508e34 in IoObject_activate (self=0x857400, target=0x86c760, locals=0x86c760, m=0x93ed20, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:411\n#13 0x0000000000508f5f in IoObject_perform (self=0x86c760, locals=0x86c760, m=0x93ed20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:448\n#14 0x00000000005030e5 in IoMessage_locals_performOn_ (self=0x93ed20, locals=0x86c760, target=0x86c760) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.c:543\n#15 0x0000000000518a9b in IoState_tryToPerform (self=0x845b38, target=0x86c760, locals=0x86c760, m=0x93ed20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c:15\n#16 0x0000000000518bf1 in IoState_on_doCString_withLabel_ (self=0x845b38, target=0x86c760, s=0xae14f8 \"doFile(\\\"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\\\")\", label=0x6a1331 \"IoState_doCString\") at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c:68\n#17 0x0000000000518c43 in IoState_doCString_ (self=0x845b38, s=0xae14f8 \"doFile(\\\"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\\\")\") at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c:78\n#18 0x000000000044517f in Iocaste::LikeMagicAdapters::IoVM::do_string (this=0x845b30, io_code=...) at /home/dennis/code/LikeMagic-All/Iocaste/Source/IoVM.cpp:311\n#19 0x0000000000440bd6 in do_file (vm=..., file_name=...) at /home/dennis/code/LikeMagic-All/Iocaste/Source/Run.cpp:78\n#20 0x0000000000440dd0 in Iocaste::run (argc=2, argv=0x7fffffffed48, add_bindings=0x406374 <Interpreter::add_bindings(LikeMagic::RuntimeTypeSystem&)>) at /home/dennis/code/LikeMagic-All/Iocaste/Source/Run.cpp:109\n#21 0x0000000000406a25 in main (argc=2, argv=0x7fffffffed48) at /home/dennis/code/LikeMagic-All/Iocaste/main.cpp:7\n\b>>>>>>cb_gdb:
-info: MainLoopState::ReadGdb
-toUser: #0  io_debugger_break_here (self=0xa32e30, locals=0x86c760, m=0xb1d5e0, breakpoint_number=1, file_name=0x8be2f8 \"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\", line_number=5, char_number=-1) at /home/dennis/code/LikeMagic-All/Iocaste/Source/DebugAPI.cpp:39\n#1  0x00000000004432cd in iovm_hit_breakpoint (bp=0x8d5580, self=0xa32e30, locals=0x86c760, m=0xb1d5e0) at /home/dennis/code/LikeMagic-All/Iocaste/Source/IoVM.cpp:65\n#2  0x0000000000503079 in IoMessage_locals_performOn_ (self=0xa32e30, locals=0x86c760, target=0x86c760) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.c:513\n#3  0x000000000050b6fb in IoObject_rawDoString_label_ (self=0x86c760, string=0x9800c0, label=0x958810) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:1802\n#4  0x000000000052e81e in IoObject_doFile (self=0x86c760, locals=0x86c760, m=0xc21af0) at /home/dennis/code/LikeMagic-All/Iocaste/Source/IoObjectImpl.cpp:34\n#5  0x00000000005434fc in IoCFunction_activate (self=0x8575b0, target=0x86c760, locals=0x86c760, m=0xc21af0, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCFunction.c:191\n#6  0x0000000000508e34 in IoObject_activate (self=0x8575b0, target=0x86c760, locals=0x86c760, m=0xc21af0, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:411\n#7  0x0000000000508f5f in IoObject_perform (self=0x86c760, locals=0x86c760, m=0xc21af0) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:448\n#8  0x00000000005030e5 in IoMessage_locals_performOn_ (self=0xc21af0, locals=0x86c760, target=0x86c760) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.c:543\n#9  0x000000000050b6fb in IoObject_rawDoString_label_ (self=0x86c760, string=0x93e540, label=0xb6ca20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:1802\n#10 0x000000000050b85b in IoObject_doString (self=0x86c760, locals=0x86c760, m=0x93ed20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:1849\n#11 0x00000000005434fc in IoCFunction_activate (self=0x857400, target=0x86c760, locals=0x86c760, m=0x93ed20, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoCFunction.c:191\n#12 0x0000000000508e34 in IoObject_activate (self=0x857400, target=0x86c760, locals=0x86c760, m=0x93ed20, slotContext=0x847570) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:411\n#13 0x0000000000508f5f in IoObject_perform (self=0x86c760, locals=0x86c760, m=0x93ed20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoObject.c:448\n#14 0x00000000005030e5 in IoMessage_locals_performOn_ (self=0x93ed20, locals=0x86c760, target=0x86c760) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoMessage.c:543\n#15 0x0000000000518a9b in IoState_tryToPerform (self=0x845b38, target=0x86c760, locals=0x86c760, m=0x93ed20) at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c:15\n#16 0x0000000000518bf1 in IoState_on_doCString_withLabel_ (self=0x845b38, target=0x86c760, s=0xae14f8 \"doFile(\\\"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\\\")\", label=0x6a1331 \"IoState_doCString\") at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c:68\n#17 0x0000000000518c43 in IoState_doCString_ (self=0x845b38, s=0xae14f8 \"doFile(\\\"/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/Test.io.inl\\\")\") at /home/dennis/code/LikeMagic-All/Iocaste/iovm/source/IoState_eval.c:78\n#18 0x000000000044517f in Iocaste::LikeMagicAdapters::IoVM::do_string (this=0x845b30, io_code=...) at /home/dennis/code/LikeMagic-All/Iocaste/Source/IoVM.cpp:311\n#19 0x0000000000440bd6 in do_file (vm=..., file_name=...) at /home/dennis/code/LikeMagic-All/Iocaste/Source/Run.cpp:78\n#20 0x0000000000440dd0 in Iocaste::run (argc=2, argv=0x7fffffffed48, add_bindings=0x406374 <Interpreter::add_bindings(LikeMagic::RuntimeTypeSystem&)>) at /home/dennis/code/LikeMagic-All/Iocaste/Source/Run.cpp:109\n#21 0x0000000000406a25 in main (argc=2, argv=0x7fffffffed48) at /home/dennis/code/LikeMagic-All/Iocaste/main.cpp:7\n\b>>>>>>cb_gdb:
-fromUser: cont
-info: MainLoopState::ReadUser
-toGdb: cont
+fromGdb: #0  main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:115\n\b>>>>>>cb_gdb:
+toUser: #0  main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:115\n\b>>>>>>cb_gdb:
+fromUser: next
+toGdb: next
+fromGdb: \z\z/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:117:2726:beg:0x4013c5\n\b>>>>>>cb_gdb:
+toUser: \z\z/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:117:2726:beg:0x4013c5\n\b>>>>>>cb_gdb:
+fromUser: info locals
+toGdb: info locals
+fromGdb: myVar = 2\n\b>>>>>>cb_gdb:
+toUser: myVar = 2\n\b>>>>>>cb_gdb:
+fromUser: info args
+toGdb: info args
+fromGdb: No arguments.\n\b>>>>>>cb_gdb:
+toUser: No arguments.\n\b>>>>>>cb_gdb:
+fromUser: whatis myVar
+toGdb: whatis myVar
+fromGdb: type = int\n\b>>>>>>cb_gdb:
+toUser: type = int\n\b>>>>>>cb_gdb:
+fromUser: output myVar
+toGdb: output myVar
+fromGdb: 2\b>>>>>>cb_gdb:
+exception: About to throw exception of type Iocaste::Debugger::ParseException message is GdbResponse failed to parse ->2<- in string ->2<-\n
+toUser: \b>>>>>>cb_gdb:
+fromUser: bt 30
+toGdb: bt 30
+fromGdb: #0  main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:117\n\b>>>>>>cb_gdb:
+toUser: #0  main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:117\n\b>>>>>>cb_gdb:
+fromUser: next
+toGdb: next
+fromGdb: \z\z/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:118:2762:beg:0x4013e1\n\b>>>>>>cb_gdb:
+toUser: \z\z/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:118:2762:beg:0x4013e1\n\b>>>>>>cb_gdb:
+fromUser: info locals
+toGdb: info locals
+fromGdb: myVar = 2\n\b>>>>>>cb_gdb:
+toUser: myVar = 2\n\b>>>>>>cb_gdb:
+fromUser: info args
+toGdb: info args
+fromGdb: No arguments.\n\b>>>>>>cb_gdb:
+toUser: No arguments.\n\b>>>>>>cb_gdb:
+fromUser: whatis myVar
+toGdb: whatis myVar
+fromGdb: type = int\n\b>>>>>>cb_gdb:
+toUser: type = int\n\b>>>>>>cb_gdb:
+fromUser: output myVar
+toGdb: output myVar
+fromGdb: 2\b>>>>>>cb_gdb:
+exception: About to throw exception of type Iocaste::Debugger::ParseException message is GdbResponse failed to parse ->2<- in string ->2<-\n
+toUser: \b>>>>>>cb_gdb:
+fromUser: bt 30
+toGdb: bt 30
+fromGdb: #0  main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:118\n\b>>>>>>cb_gdb:
+toUser: #0  main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:118\n\b>>>>>>cb_gdb:
+fromUser: quit
+fromUser: 
+toGdb: quit
+toGdb: 
+fromGdbErr: 

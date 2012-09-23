@@ -14,6 +14,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 BOOST_FUSION_ADAPT_STRUCT(
     UserCmds::WhatIs,
+    (std::string, cmd)
     (boost::optional<std::string>, expr)
 )
 

@@ -114,7 +114,7 @@ OurBreakpoint BreakpointManager::setIoDebuggerBreakpoint(std::string function_na
 
     GdbResponse resp = channels.fromGdb.ReadData();
 
-    if (auto* bs = boost::get<GdbResponses::BreakpointSet>(&resp.values.at(0)))
+    if (auto* bs = getActionable<GdbResponses::BreakpointSet>(&resp.values.at(0)))
     {
         GdbBreakpoint gb = { bs->breakpoint_number };
         OurBreakpoint result = brkpts.get_user_breakpoint<OurBreakpoint>(gb);
@@ -143,7 +143,7 @@ void BreakpointManager::loadDeferredBreakpoint(SharedTypes::GdbAddress io_state,
 
     GdbResponse resp = channels.fromGdb.ReadData();
 
-    if (auto* vh = boost::get<GdbResponses::ValueHistory>(&resp.values.at(0)))
+    if (auto* vh = getActionable<GdbResponses::ValueHistory>(&resp.values.at(0)))
     {
         if (auto* breakpt_num = boost::get<int>(&(vh->value.value)))
         {

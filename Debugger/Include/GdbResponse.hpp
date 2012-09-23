@@ -160,6 +160,11 @@ struct WorkingDirectory
     std::string directory;
 };
 
+struct VariableValue
+{
+    SharedTypes::GdbValue value;
+};
+
 }
 
 typedef boost::variant
@@ -199,8 +204,19 @@ struct GdbActionable
 
 typedef boost::variant
 <
+    GdbResponses::VariableValue
+> GdbContextSensitiveType;
+
+struct GdbContextSensitive
+{
+    GdbContextSensitiveType value;
+};
+
+typedef boost::variant
+<
     GdbUnactionable,
-    GdbActionable
+    GdbActionable,
+    GdbContextSensitive
 > GdbResponseType;
 
 struct GdbResponse

@@ -95,10 +95,12 @@ struct GdbResponseWriteGrammar
 
         type_equals = karma::lit("type = ") << karma::string;
 
-        actionable = locals_info | backtrace_line | banner | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited
+        actionable_variant = locals_info | backtrace_line | banner | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited
                          | working_directory | type_equals | empty;
+        actionable = actionable_variant;
 
-        unactionable = banner | reading_symbols | square_bracket_msg | signal_received | raw_str;
+        unactionable_variant = banner | reading_symbols | square_bracket_msg | signal_received | raw_str;
+        unactionable = unactionable_variant;
 
         response_item = (actionable | unactionable) << "\n";
 
@@ -136,9 +138,12 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, GdbResponses::TypeEquals()> type_equals;
     karma::rule<OutputIterator, GdbResponses::RawStr()> raw_str;
     karma::rule<OutputIterator, GdbResponses::Empty()> empty;
+
     karma::rule<OutputIterator, GdbResponses::SquareBracketMsg()> square_bracket_msg;
     karma::rule<OutputIterator, GdbResponses::SignalReceived()> signal_received;
     karma::rule<OutputIterator, GdbResponses::WorkingDirectory()> working_directory;
+    karma::rule<OutputIterator, GdbActionableType()> actionable_variant;
+    karma::rule<OutputIterator, GdbUnactionableType()> unactionable_variant;
     karma::rule<OutputIterator, GdbActionable()> actionable;
     karma::rule<OutputIterator, GdbUnactionable()> unactionable;
     karma::rule<OutputIterator, GdbResponseType()> response_item;
