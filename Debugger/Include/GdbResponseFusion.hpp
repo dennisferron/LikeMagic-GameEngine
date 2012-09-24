@@ -127,6 +127,11 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::OutputValue,
+    (SharedTypes::GdbValue, value)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     GdbActionable,
     (GdbActionableType, value)
 )
@@ -134,4 +139,9 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT(
     GdbUnactionable,
     (GdbUnactionableType, value)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
+    GdbContextSensitive,
+    (GdbContextSensitiveType, value)
 )

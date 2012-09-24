@@ -94,7 +94,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
             {
                 unique_ptr<
                     qi::grammar<iterator_type, GdbResponseType()>
-                > g(response_parse_grammar()); // Our grammar
+                > g(response_parse_grammar(use_alt_parser)); // Our grammar
                 iterator_type iter = line.begin();
                 iterator_type end = line.end();
 
@@ -145,9 +145,18 @@ GdbResponseParser::GdbResponseParser(AbstractOutput<GdbResponse>& sink_)
 {
 }
 
+void GdbResponseParser::expectAltInput()
+{
+    use_alt_parser = true;
+}
+
 void GdbResponseParser::WriteData(StringWithPrompt const& input)
 {
     GdbResponse response = { Parse(input.content), input.prompt };
+
+    if (use_alt_parser)
+        use_alt_parser = false;
+
     sink.WriteData(response);
 }
 

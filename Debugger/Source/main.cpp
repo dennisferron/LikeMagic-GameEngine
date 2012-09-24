@@ -110,13 +110,13 @@ Main Loop
 */
 
 
-void mainLoop(MainChannels channels)
+void mainLoop(MainChannels channels, GdbResponseParser& resp_parser)
 {
     WatchManager watch_mgr(channels);
     BreakpointManager brkpt_mgr(channels, watch_mgr);
     StepStateManager step_mgr(channels);
 
-    UserCmdHandler cmd_handler(channels, brkpt_mgr, step_mgr, watch_mgr);
+    UserCmdHandler cmd_handler(channels, brkpt_mgr, step_mgr, watch_mgr, resp_parser);
     GdbResponseHandler resp_handler(channels, brkpt_mgr, step_mgr, watch_mgr);
 
 
@@ -198,7 +198,9 @@ int main(int argc, char* argv[])
         args << " " << argv[i];
     info.head().WriteData(args.str());
 
-    mainLoop(MainChannels(fromUser.tail(), toUser.head(), fromGdb.tail(), toGdb.head(), info.head(), error_queue, end_marker_queue));
+    GdbResponseParser& resp_parser = fromGdb.at<GdbResponseParser>(0);
+
+    mainLoop(MainChannels(fromUser.tail(), toUser.head(), fromGdb.tail(), toGdb.head(), info.head(), error_queue, end_marker_queue), resp_parser);
 
     // This doesn't do much good if they are blocked waiting on stream input.
     fromUser.at<Worker>(0).stop_thread_soon();

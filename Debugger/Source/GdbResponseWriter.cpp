@@ -23,6 +23,11 @@ namespace Iocaste { namespace Debugger {
 
 struct GdbResponsePrinter : public SharedTypesPrinter
 {
+    void operator()(const OutputValue& t) const
+    {
+        cerr << "OutputValue is GdbValue" << endl;
+    }
+
     void operator()(const ProgramExited& t) const
     {
         cerr << "Program exited, how: " << t.how << endl;

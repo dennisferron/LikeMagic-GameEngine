@@ -1,5 +1,7 @@
 #pragma once
 
+//#include "Exception.hpp"
+
 #include "SharedTypes.hpp"
 
 namespace Iocaste { namespace Debugger {
@@ -160,7 +162,7 @@ struct WorkingDirectory
     std::string directory;
 };
 
-struct VariableValue
+struct OutputValue
 {
     SharedTypes::GdbValue value;
 };
@@ -204,7 +206,7 @@ struct GdbActionable
 
 typedef boost::variant
 <
-    GdbResponses::VariableValue
+    GdbResponses::OutputValue
 > GdbContextSensitiveType;
 
 struct GdbContextSensitive
@@ -244,11 +246,12 @@ void visitAll(Visitor& v, GdbResponseType t)
 {
     if (auto a = boost::get<GdbActionable>(&t))
         boost::apply_visitor(v, a->value);
-    else
-    {
-        auto u = boost::get<GdbUnactionable>(&t);
+    else if (auto u = boost::get<GdbUnactionable>(&t))
         boost::apply_visitor(v, u->value);
-    }
+    else if (auto c = boost::get<GdbContextSensitive>(&t))
+        boost::apply_visitor(v, c->value);
+    //else
+    //    raiseError(LogicError("Unhandled response type"));
 }
 
 template <typename T>

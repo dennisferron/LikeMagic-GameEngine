@@ -1,7 +1,7 @@
 info: Built input chains.
 info: Program args: /home/dennis/code/LikeMagic-All/Iocaste/Debugger/bin/Debug/Debugger -nx -fullname -quiet -args TestProject
-fromGdb: Reading symbols from /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/TestProject...done.\n\b(gdb) 
-toUser: Reading symbols from /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/TestProject...done.\n\b(gdb) 
+fromGdb: Reading symbols from /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/TestProject...done.\n\b(gdb)
+toUser: Reading symbols from /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/TestProject...done.\n\b(gdb)
 fromUser: set prompt >>>>>>cb_gdb:
 toGdb: set prompt >>>>>>cb_gdb:
 fromGdb: \b>>>>>>cb_gdb:
@@ -127,7 +127,7 @@ fromUser: output myVar
 toGdb: output myVar
 fromGdb: 0\b>>>>>>cb_gdb:
 exception: About to throw exception of type Iocaste::Debugger::ParseException message is GdbResponse failed to parse ->0<- in string ->0<-\n
-toUser: \b>>>>>>cb_gdb:
+toUser: 0\b>>>>>>cb_gdb:
 fromUser: next
 toGdb: next
 fromGdb: \z\z/home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:115:2711:beg:0x4013c1\n\b>>>>>>cb_gdb:
@@ -148,7 +148,7 @@ fromUser: output myVar
 toGdb: output myVar
 fromGdb: 1\b>>>>>>cb_gdb:
 exception: About to throw exception of type Iocaste::Debugger::ParseException message is GdbResponse failed to parse ->1<- in string ->1<-\n
-toUser: \b>>>>>>cb_gdb:
+toUser: 1\b>>>>>>cb_gdb:
 fromUser: bt 30
 toGdb: bt 30
 fromGdb: #0  main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:115\n\b>>>>>>cb_gdb:
@@ -173,7 +173,7 @@ fromUser: output myVar
 toGdb: output myVar
 fromGdb: 2\b>>>>>>cb_gdb:
 exception: About to throw exception of type Iocaste::Debugger::ParseException message is GdbResponse failed to parse ->2<- in string ->2<-\n
-toUser: \b>>>>>>cb_gdb:
+toUser: 2\b>>>>>>cb_gdb:
 fromUser: bt 30
 toGdb: bt 30
 fromGdb: #0  main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:117\n\b>>>>>>cb_gdb:
@@ -198,13 +198,13 @@ fromUser: output myVar
 toGdb: output myVar
 fromGdb: 2\b>>>>>>cb_gdb:
 exception: About to throw exception of type Iocaste::Debugger::ParseException message is GdbResponse failed to parse ->2<- in string ->2<-\n
-toUser: \b>>>>>>cb_gdb:
+toUser: 2\b>>>>>>cb_gdb:
 fromUser: bt 30
 toGdb: bt 30
 fromGdb: #0  main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:118\n\b>>>>>>cb_gdb:
 toUser: #0  main () at /home/dennis/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:118\n\b>>>>>>cb_gdb:
 fromUser: quit
-fromUser: 
+fromUser:
 toGdb: quit
-toGdb: 
-fromGdbErr: 
+toGdb:
+fromGdbErr:

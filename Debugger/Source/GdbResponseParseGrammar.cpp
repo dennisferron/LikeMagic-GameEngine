@@ -45,7 +45,9 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
 {
     typedef std::string::const_iterator Iterator;
 
-    GdbResponseParseGrammar() : GdbResponseParseGrammar::base_type(start), gdb_value(gdb_value_parse_grammar())
+    GdbResponseParseGrammar(bool use_alt_parser) :
+        GdbResponseParseGrammar::base_type(use_alt_parser? alt_start : start),
+            gdb_value(gdb_value_parse_grammar())
     {
         ident = +(qi::alpha | qi::char_('-') | qi::char_('_'));
 
@@ -137,12 +139,17 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
 
         empty = qi::lit("") >> -*qi::char_('`') >> qi::eoi;
 
+        output_value = *gdb_value;
+
         actionable =  breakpoint_set | breakpoint_pending | cursor_pos | breakpoint_hit | locals_info | address_in_function
                 | backtrace_line | value_history | program_exited | working_directory | type_equals | empty;
 
         unactionable = reading_symbols | square_bracket_msg | signal_received;
 
+        context_sens = output_value;
+
         start = actionable | unactionable;
+        alt_start = context_sens;
     }
 
     unique_ptr<qi::grammar<Iterator, SharedTypes::GdbValue()>> gdb_value;
@@ -181,15 +188,18 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
     qi::rule<Iterator, GdbResponses::AddressInFunction()> address_in_function;
     qi::rule<Iterator, GdbResponses::CursorPos()> cursor_pos;
     qi::rule<Iterator, GdbResponses::TypeEquals()> type_equals;
+    qi::rule<Iterator, GdbResponses::OutputValue()> output_value;
     qi::rule<Iterator, GdbResponses::Empty()> empty;
     qi::rule<Iterator, GdbActionable()> actionable;
     qi::rule<Iterator, GdbUnactionable()> unactionable;
+    qi::rule<Iterator, GdbContextSensitive()> context_sens;
     qi::rule<Iterator, GdbResponseType()> start;
+    qi::rule<Iterator, GdbResponseType()> alt_start;
 };
 
-boost::spirit::qi::grammar<std::string::const_iterator, GdbResponseType()>* response_parse_grammar()
+boost::spirit::qi::grammar<std::string::const_iterator, GdbResponseType()>* response_parse_grammar(bool use_alt_parser)
 {
-    return new GdbResponseParseGrammar();
+    return new GdbResponseParseGrammar(use_alt_parser);
 }
 
     }

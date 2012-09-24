@@ -6,17 +6,17 @@
 
 namespace Iocaste { namespace Debugger {
 
-class GdbResponseParser : public AbstractAdapter<StringWithPrompt>
+class GdbContextSensitiveParser : public AbstractAdapter<StringWithPrompt>
 {
 private:
-    AbstractOutput<GdbResponse>& sink;
-    bool use_alt_parser;
+    AbstractOutput<GdbResponseType>& sink;
     std::vector<GdbResponseType> Parse(std::string const& str) const;
 
 public:
-    GdbResponseParser(AbstractOutput<GdbResponse>& sink_);
+    GdbContextSensitiveParser(AbstractOutput<GdbResponse>& sink_);
     virtual void WriteData(StringWithPrompt const& input);
-    void expectAltInput();
+    void expect(std::vector<GdbResponseType> responses);
 };
 
 }}
+>

@@ -97,12 +97,16 @@ struct GdbResponseWriteGrammar
 
         actionable_variant = locals_info | backtrace_line | banner | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited
                          | working_directory | type_equals | empty;
-        actionable = actionable_variant;
+        actionable = actionable_variant << karma::lit("\n");
 
         unactionable_variant = banner | reading_symbols | square_bracket_msg | signal_received | raw_str;
-        unactionable = unactionable_variant;
+        unactionable = unactionable_variant << karma::lit("\n");
 
-        response_item = (actionable | unactionable) << "\n";
+        output_value = *gdb_value;
+        context_sens_variant = output_value | output_value;
+        context_sens = context_sens_variant;
+
+        response_item = actionable | unactionable | context_sens;
 
         start = *response_item;
     }
@@ -138,14 +142,16 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, GdbResponses::TypeEquals()> type_equals;
     karma::rule<OutputIterator, GdbResponses::RawStr()> raw_str;
     karma::rule<OutputIterator, GdbResponses::Empty()> empty;
-
+    karma::rule<OutputIterator, GdbResponses::OutputValue()> output_value;
     karma::rule<OutputIterator, GdbResponses::SquareBracketMsg()> square_bracket_msg;
     karma::rule<OutputIterator, GdbResponses::SignalReceived()> signal_received;
     karma::rule<OutputIterator, GdbResponses::WorkingDirectory()> working_directory;
     karma::rule<OutputIterator, GdbActionableType()> actionable_variant;
     karma::rule<OutputIterator, GdbUnactionableType()> unactionable_variant;
+    karma::rule<OutputIterator, GdbContextSensitiveType()> context_sens_variant;
     karma::rule<OutputIterator, GdbActionable()> actionable;
     karma::rule<OutputIterator, GdbUnactionable()> unactionable;
+    karma::rule<OutputIterator, GdbContextSensitive()> context_sens;
     karma::rule<OutputIterator, GdbResponseType()> response_item;
     karma::rule<OutputIterator, vector<GdbResponseType>()> start;
 };
