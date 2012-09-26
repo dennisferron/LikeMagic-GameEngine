@@ -141,7 +141,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
 
 
 GdbResponseParser::GdbResponseParser(AbstractOutput<GdbResponse>& sink_)
-    : sink(sink_)
+    : sink(sink_), use_alt_parser(false)
 {
 }
 
