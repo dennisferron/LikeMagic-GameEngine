@@ -18,16 +18,50 @@ void WatchManager::setScriptContext(ScriptContext context_)
     context = context_;
 }
 
+void WatchManager::writeResp(GdbActionableType msg)
+{
+            GdbResponse resp;
+
+            GdbResponses::TypeEquals te;
+            te.type = "To be implemented";
+
+            resp.values.push_back(
+                GdbActionable {
+                    te
+                }
+            );
+
+            channels.toUser.WriteData(resp);
+}
+
+void WatchManager::writeResp(GdbContextSensitiveType msg)
+{
+        GdbResponse resp;
+
+        GdbResponses::TypeEquals te;
+        te.type = "To be implemented";
+
+        resp.values.push_back(
+            GdbActionable {
+                te
+            }
+        );
+
+        channels.toUser.WriteData(resp);
+
+}
 
 void WatchManager::handle(UserCmds::Info const& cmd)
 {
+    GdbResponses::LocalsInfo info;
+
     if (at_script_breakpoint && cmd.value == "locals")
     {
-
+        channels.toUser.WriteData();
     }
     else if (at_script_breakpoint && cmd.value == "args")
     {
-
+        channels.toUser.WriteData();
     }
     else
     {

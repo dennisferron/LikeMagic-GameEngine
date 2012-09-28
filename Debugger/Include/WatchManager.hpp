@@ -25,6 +25,9 @@ private:
     std::string gdb_prompt;
     GdbResponseParser& resp_parser;
 
+    void writeResp(GdbActionableType msg);
+    void writeResp(GdbContextSensitiveType msg);
+
 public:
 
     WatchManager(MainChannels const& channels_, GdbResponseParser& resp_parser_);
