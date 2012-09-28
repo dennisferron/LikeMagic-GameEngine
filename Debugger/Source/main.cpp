@@ -112,11 +112,11 @@ Main Loop
 
 void mainLoop(MainChannels channels, GdbResponseParser& resp_parser)
 {
-    WatchManager watch_mgr(channels);
+    WatchManager watch_mgr(channels, resp_parser);
     BreakpointManager brkpt_mgr(channels, watch_mgr);
     StepStateManager step_mgr(channels);
 
-    UserCmdHandler cmd_handler(channels, brkpt_mgr, step_mgr, watch_mgr, resp_parser);
+    UserCmdHandler cmd_handler(channels, brkpt_mgr, step_mgr, watch_mgr);
     GdbResponseHandler resp_handler(channels, brkpt_mgr, step_mgr, watch_mgr);
 
 

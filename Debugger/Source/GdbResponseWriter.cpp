@@ -196,8 +196,11 @@ GdbResponseWriter::GdbResponseWriter(AbstractOutput<StringWithPrompt>& sink_)
 
 void GdbResponseWriter::WriteData(GdbResponse const& input)
 {
+    if (input.prompt)
+        last_prompt = *input.prompt;
+
     string result = Write(input.values);
-    sink.WriteData({result, input.prompt});
+    sink.WriteData({result, last_prompt});
 }
 
 }}

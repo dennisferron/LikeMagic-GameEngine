@@ -2,6 +2,7 @@
 
 #include "MainChannels.hpp"
 #include "SharedTypes.hpp"
+#include "GdbResponseParser.hpp"
 
 #include <vector>
 
@@ -21,13 +22,17 @@ private:
     MainChannels channels;
     bool at_script_breakpoint;
     ScriptContext context;
+    std::string gdb_prompt;
+    GdbResponseParser& resp_parser;
 
 public:
 
-    WatchManager(MainChannels const& channels_);
+    WatchManager(MainChannels const& channels_, GdbResponseParser& resp_parser_);
+    void setPrompt(std::string new_prompt);
     void setScriptContext(ScriptContext context);
     void atScriptBreakpoint(bool value);
     void handle(UserCmds::Info const& cmd);
+    void handle(UserCmds::WhatIs const& cmd);
 };
 
 }}

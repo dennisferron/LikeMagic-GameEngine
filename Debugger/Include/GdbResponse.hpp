@@ -224,7 +224,7 @@ typedef boost::variant
 struct GdbResponse
 {
     std::vector<GdbResponseType> values;
-    std::string prompt;
+    boost::optional<std::string> prompt;
 
     void pushActionable(GdbActionableType t)
     {

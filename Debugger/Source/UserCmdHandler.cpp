@@ -7,9 +7,9 @@ using namespace Iocaste::Debugger;
 
 UserCmdHandler::UserCmdHandler(MainChannels const& channels_,
     BreakpointManager& brkpt_mgr_, StepStateManager& step_mgr_,
-        WatchManager& watch_mgr_, GdbResponseParser& resp_parser_)
+        WatchManager& watch_mgr_)
         : channels(channels_), brkpt_mgr(brkpt_mgr_), step_mgr(step_mgr_),
-            watch_mgr(watch_mgr_), resp_parser(resp_parser_) {}
+            watch_mgr(watch_mgr_) {}
 
 void UserCmdHandler::handle(UserCmd const& cmd)
 {
@@ -52,8 +52,5 @@ void UserCmdHandler::operator()(const UserCmds::Info& t) const
 
 void UserCmdHandler::operator()(const UserCmds::WhatIs& t) const
 {
-    if (t.cmd == string("output"))
-        resp_parser.expectAltInput();
-
-    channels.toGdb.WriteData(t);
+    watch_mgr.handle(t);
 }
