@@ -1,10 +1,11 @@
 
 #include "WatchManager.hpp"
+#include "Exception.hpp"
 
 namespace Iocaste { namespace Debugger {
 
 WatchManager::WatchManager(MainChannels const& channels_, GdbResponseParser& resp_parser_)
-    : channels(channels_), at_script_breakpoint(false), resp_parser(resp_parser_)
+    : channels(channels_), at_script_breakpoint(false), has_script_context(false), resp_parser(resp_parser_)
 {
 }
 
@@ -15,53 +16,44 @@ void WatchManager::atScriptBreakpoint(bool value)
 
 void WatchManager::setScriptContext(ScriptContext context_)
 {
+    channels.info.WriteData("Set script context");
+    has_script_context = true;
     context = context_;
 }
 
-void WatchManager::writeResp(GdbActionableType msg)
+void WatchManager::respActionable(GdbActionableType msg)
 {
-            GdbResponse resp;
+    GdbResponse resp;
 
-            GdbResponses::TypeEquals te;
-            te.type = "To be implemented";
+    resp.values.push_back(
+        GdbActionable { msg }
+    );
 
-            resp.values.push_back(
-                GdbActionable {
-                    te
-                }
-            );
-
-            channels.toUser.WriteData(resp);
+    channels.toUser.WriteData(resp);
 }
 
-void WatchManager::writeResp(GdbContextSensitiveType msg)
+void WatchManager::respContextSens(GdbContextSensitiveType msg)
 {
-        GdbResponse resp;
+    GdbResponse resp;
 
-        GdbResponses::TypeEquals te;
-        te.type = "To be implemented";
+    resp.values.push_back(
+        GdbContextSensitive { msg }
+    );
 
-        resp.values.push_back(
-            GdbActionable {
-                te
-            }
-        );
-
-        channels.toUser.WriteData(resp);
-
+    channels.toUser.WriteData(resp);
 }
 
 void WatchManager::handle(UserCmds::Info const& cmd)
 {
-    GdbResponses::LocalsInfo info;
+    GdbResponses::LocalsInfo no_info = { SharedTypes::NoLocals { "Not implemented" } };
 
-    if (at_script_breakpoint && cmd.value == "locals")
+    if (at_script_breakpoint && has_script_context && cmd.value == "locals")
     {
-        channels.toUser.WriteData();
+        respActionable(no_info);
     }
-    else if (at_script_breakpoint && cmd.value == "args")
+    else if (at_script_breakpoint && has_script_context && cmd.value == "args")
     {
-        channels.toUser.WriteData();
+        respActionable(no_info);
     }
     else
     {
@@ -71,36 +63,43 @@ void WatchManager::handle(UserCmds::Info const& cmd)
 
 void WatchManager::handle(UserCmds::WhatIs const& cmd)
 {
-    if (at_script_breakpoint && cmd.cmd == "whatis")
+    if (at_script_breakpoint && has_script_context && cmd.cmd == "whatis")
     {
-        GdbResponse resp;
+        UserCmds::PrintFunction print;
+        print.function_name = "io_debugger_watch_type";
+        print.args.push_back( { context.locals } );
+        print.args.push_back( { *(cmd.expr) } );
+        channels.toGdb.WriteData(print);
 
-        GdbResponses::TypeEquals te;
-        te.type = "To be implemented";
+        GdbResponse resp = channels.fromGdb.ReadData();
 
-        resp.values.push_back(
-            GdbActionable {
-                te
+        if (auto* vh = getActionable<GdbResponses::ValueHistory>(&resp.values.at(0)))
+        {
+            if (vh->value.value_as_string)
+            {
+                GdbResponses::TypeEquals te;
+                te.type = vh->value.value_as_string->text;
+                respActionable(te);
             }
-        );
-
-        channels.toUser.WriteData(resp);
+            else
+            {
+                raiseError(BadResponseError("Did not get expected function return type from gdb when calling io_debugger_watch_type."));
+            }
+        }
+        else
+        {
+            raiseError(BadResponseError("Did not get expected gdb response type from gdb when calling io_debugger_watch_type."));
+        }
     }
-    else if (at_script_breakpoint && cmd.cmd == "output")
+    else if (at_script_breakpoint && has_script_context && cmd.cmd == "output")
     {
-        GdbResponse resp;
-
-        resp.values.push_back(
-            GdbContextSensitive {
-                GdbResponses::OutputValue {
-                    SharedTypes::GdbValue {
-                        "Not implemented"
-                    }
+        respContextSens(
+            GdbResponses::OutputValue {
+                SharedTypes::GdbValue {
+                    "Not implemented"
                 }
             }
         );
-
-        channels.toUser.WriteData(resp);
     }
     else
     {

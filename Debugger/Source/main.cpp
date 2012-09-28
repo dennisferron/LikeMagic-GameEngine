@@ -137,6 +137,8 @@ void mainLoop(MainChannels channels, GdbResponseParser& resp_parser)
             GdbResponse response = channels.fromGdb.ReadData();
             resp_handler.handle(response);
         }
+
+        boost::this_thread::sleep(boost::posix_time::milliseconds(5));
     }
 }
 

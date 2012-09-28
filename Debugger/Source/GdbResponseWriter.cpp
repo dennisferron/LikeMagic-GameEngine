@@ -173,9 +173,9 @@ string GdbResponseWriter::Write(vector<GdbResponseType> const& response) const
     typedef std::back_insert_iterator<std::string> sink_type;
 
     // For debugging
-    GdbResponsePrinter printer;
-    for (auto element : response)
-        visitAll(printer, element);
+    //GdbResponsePrinter printer;
+    //for (auto element : response)
+    //    visitAll(printer, element);
 
     std::string result;
     sink_type sink(result);

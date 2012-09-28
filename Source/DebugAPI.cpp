@@ -3,6 +3,8 @@
 #include <algorithm>
 using namespace std;
 
+#include "IoObject.h"
+
 #include "Iocaste/DebugAPI.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 #include "Iocaste/CShims/IoVMCpp.h"
@@ -56,16 +58,28 @@ int io_debugger_set_breakpoint(void *io_state, int breakpoint_number, const char
 }
 
 
-const char *io_debugger_watch_type(IoObject *context, const char *slot)
+const char *io_debugger_watch_type(void *context, const char *slot)
 {
+    IoObject* self = (IoObject*)context;
+
+    cout << "context = " << context << " slot = " << slot << endl;
+
     try
     {
         if (slot == NULL)
-            return IoObject_name(context);
+        {
+            return IoObject_name(self);
+        }
         else
         {
-            IoObject* variable = IoObject_rawGetSlot_(context, IOSYMBOL(slot));
-            return IoObject_name(variable);
+            IoObject* variable = IoObject_rawGetSlot_(self, IOSYMBOL(slot));
+
+            cout << "variable = " << (void*)variable << endl;
+
+            if (variable)
+                return IoObject_name(variable);
+            else
+                return "Slot not found";
         }
     }
     catch (...)

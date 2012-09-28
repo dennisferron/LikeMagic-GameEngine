@@ -1,4 +1,8 @@
 
+testA := "AAA"
+testB := 2
+testC := Object clone
+
 m := method(
     writeln("in method 1")
     writeln("in method 2")

@@ -21,12 +21,13 @@ private:
 
     MainChannels channels;
     bool at_script_breakpoint;
+    bool has_script_context;
     ScriptContext context;
     std::string gdb_prompt;
     GdbResponseParser& resp_parser;
 
-    void writeResp(GdbActionableType msg);
-    void writeResp(GdbContextSensitiveType msg);
+    void respActionable(GdbActionableType msg);
+    void respContextSens(GdbContextSensitiveType msg);
 
 public:
 
