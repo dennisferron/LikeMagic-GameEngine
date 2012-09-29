@@ -27,6 +27,7 @@ private:
     GdbResponseParser& resp_parser;
 
     void respActionable(GdbActionableType msg);
+    void respUnactionable(GdbUnactionableType msg);
     void respContextSens(GdbContextSensitiveType msg);
 
 public:

@@ -48,7 +48,7 @@ void Worker::run_loop()
             }
             else
             {
-                boost::this_thread::sleep(boost::posix_time::milliseconds(5));
+                boost::this_thread::sleep(boost::posix_time::milliseconds(1));
             }
 
             if (stop)

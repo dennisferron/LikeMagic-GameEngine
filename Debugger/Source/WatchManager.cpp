@@ -43,17 +43,26 @@ void WatchManager::respContextSens(GdbContextSensitiveType msg)
     channels.toUser.WriteData(resp);
 }
 
+void WatchManager::respUnactionable(GdbUnactionableType msg)
+{
+    GdbResponse resp;
+
+    resp.values.push_back(
+        GdbUnactionable { msg }
+    );
+
+    channels.toUser.WriteData(resp);
+}
+
 void WatchManager::handle(UserCmds::Info const& cmd)
 {
-    GdbResponses::LocalsInfo no_info = { SharedTypes::NoLocals { "Not implemented" } };
-
     if (at_script_breakpoint && has_script_context && cmd.value == "locals")
     {
-        respActionable(no_info);
+        respActionable(GdbResponses::LocalsInfo { SharedTypes::NoLocals {"No locals."} });
     }
     else if (at_script_breakpoint && has_script_context && cmd.value == "args")
     {
-        respActionable(no_info);
+        respActionable(GdbResponses::LocalsInfo { SharedTypes::NoLocals {"No arguments."} });
     }
     else
     {
@@ -64,6 +73,12 @@ void WatchManager::handle(UserCmds::Info const& cmd)
 void WatchManager::handle(UserCmds::WhatIs const& cmd)
 {
     if (at_script_breakpoint && has_script_context && cmd.cmd == "whatis")
+    {
+        GdbResponses::TypeEquals te;
+        te.type = "IoObject";
+        respActionable(te);
+    }
+    else if (at_script_breakpoint && has_script_context && cmd.cmd == "output")
     {
         UserCmds::PrintFunction print;
         print.function_name = "io_debugger_watch_type";
@@ -77,9 +92,9 @@ void WatchManager::handle(UserCmds::WhatIs const& cmd)
         {
             if (vh->value.value_as_string)
             {
-                GdbResponses::TypeEquals te;
-                te.type = vh->value.value_as_string->text;
-                respActionable(te);
+                GdbResponses::RawStr rs;
+                rs.value = vh->value.value_as_string->text;
+                respUnactionable(rs);
             }
             else
             {
@@ -90,16 +105,6 @@ void WatchManager::handle(UserCmds::WhatIs const& cmd)
         {
             raiseError(BadResponseError("Did not get expected gdb response type from gdb when calling io_debugger_watch_type."));
         }
-    }
-    else if (at_script_breakpoint && has_script_context && cmd.cmd == "output")
-    {
-        respContextSens(
-            GdbResponses::OutputValue {
-                SharedTypes::GdbValue {
-                    "Not implemented"
-                }
-            }
-        );
     }
     else
     {

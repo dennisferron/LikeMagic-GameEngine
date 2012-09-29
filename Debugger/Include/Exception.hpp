@@ -70,6 +70,17 @@ public:
     virtual char const* what() const throw();
 };
 
+class ConcurrencyError : public Exception
+{
+private:
+    std::string msg;
+
+public:
+    ConcurrencyError(std::string msg_);
+    ~ConcurrencyError() throw();
+    virtual char const* what() const throw();
+};
+
 template <typename T> class AbstractOutput;
 void setExceptionLog(AbstractOutput<std::string>* log_output_);
 void logException(std::type_info const& exception_type, std::string msg);

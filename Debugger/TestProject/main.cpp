@@ -107,12 +107,13 @@ void run_io()
 */
 }
 
+struct Dummy { };
+
 int main()
 {
-    int myVar = 0;
-
-    ++myVar;
-    ++myVar;
+    std::string aString = "hello";
+    char const* aChar = "ahoy";
+    Dummy d;
 
     cout << "Hello world!" << endl;
     cout << "Another line" << endl;

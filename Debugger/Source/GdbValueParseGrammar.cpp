@@ -18,6 +18,7 @@ struct GdbValueParseGrammar : qi::grammar<std::string::const_iterator, SharedTyp
         start = (address | qi::int_ | quoted_string | gdb_struct | value_elided) >> -value_as_string >> -value_as_function_ptr;
         address = qi::lit("0x") > +qi::alnum;
         quoted_string = qi::lit('"') >> *unesc_grammar >> qi::lit('"');
+        gdb_struct = qi::lit("{") > *(qi::char_-'}') > "}";
         elipses = qi::string("...");
         value_elided = elipses;
         value_as_string = qi::lit(" ") >> quoted_string;

@@ -191,11 +191,14 @@ string GdbResponseWriter::Write(vector<GdbResponseType> const& response) const
 }
 
 
-GdbResponseWriter::GdbResponseWriter(AbstractOutput<StringWithPrompt>& sink_)
-    : sink(sink_) {}
+GdbResponseWriter::GdbResponseWriter(AbstractOutput<StringWithPrompt>& sink_, AbstractInput<UserCmd>& fromUser_)
+    : sink(sink_), fromUser(fromUser_) {}
 
 void GdbResponseWriter::WriteData(GdbResponse const& input)
 {
+    if (fromUser.HasData())
+        raiseError(ConcurrencyError("GdbResponseWriter detected new user command came in before response to last command could be printed."));
+
     if (input.prompt)
         last_prompt = *input.prompt;
 

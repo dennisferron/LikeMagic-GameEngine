@@ -194,7 +194,7 @@ string UserCmdWriter::Write(UserCmd const& cmd) const
     typedef std::back_insert_iterator<std::string> sink_type;
 
     // For debugging
-    boost::apply_visitor(UserCmdPrinter(), cmd);
+    //boost::apply_visitor(UserCmdPrinter(), cmd);
 
     std::string result;
     sink_type sink(result);

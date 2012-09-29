@@ -122,23 +122,39 @@ void mainLoop(MainChannels channels, GdbResponseParser& resp_parser)
 
     while (true)
     {
-        checkErrors(channels);
-
-        if (channels.fromUser.HasData())
+        try
         {
-            UserCmd cmd = channels.fromUser.ReadData();
-            cmd_handler.handle(cmd);
+            checkErrors(channels);
+
+            if (channels.fromUser.HasData())
+            {
+                UserCmd cmd = channels.fromUser.ReadData();
+
+                // When the user sends us commands faster than we can process,
+                // drop old ones on the floor and process only the most recent.
+                if (channels.fromUser.HasData())
+                {
+                    raiseError(ConcurrencyError("Main loop can't keep up with user commands, dropping previous command."));
+                    continue;
+                }
+
+                cmd_handler.handle(cmd);
+            }
+
+            checkErrors(channels);
+
+            if (channels.fromGdb.HasData())
+            {
+                GdbResponse response = channels.fromGdb.ReadData();
+                resp_handler.handle(response);
+            }
+
+            boost::this_thread::sleep(boost::posix_time::milliseconds(1));
         }
-
-        checkErrors(channels);
-
-        if (channels.fromGdb.HasData())
+        catch (ConcurrencyError const& e)
         {
-            GdbResponse response = channels.fromGdb.ReadData();
-            resp_handler.handle(response);
+            // Don't stop for concurrency errors, just try to recover.
         }
-
-        boost::this_thread::sleep(boost::posix_time::milliseconds(5));
     }
 }
 
@@ -184,7 +200,7 @@ int main(int argc, char* argv[])
 
     // CharInput does not eat newlines, and look-for-prompt looks for a prompt string not a newline, so newlines are NOT eaten
     // therefore fromGdb -> toUser does not need to re-add a newline.
-    auto toUser = InputChain().to<GdbResponseWriter>().to<LogChannelWithPrompt>(log, "toUser").to<RecombinePrompt>()
+    auto toUser = InputChain().to<GdbResponseWriter>(fromUser.tail()).to<LogChannelWithPrompt>(log, "toUser").to<RecombinePrompt>()
         .to<StreamOutput>(config->get_to_user(), false).complete();
 
     auto errChannel = InputChain().to<LineInput>(config->get_from_gdb_err()).to<Worker>("fromGdbErr", error_queue)

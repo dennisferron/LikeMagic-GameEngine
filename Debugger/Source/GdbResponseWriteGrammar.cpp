@@ -52,6 +52,8 @@ struct GdbResponseWriteGrammar
         breakpoint_set = karma::lit("Breakpoint ") << karma::int_ << " at " << address << ": file " << file_name << ", line " << karma::int_ << ".";
         empty = karma::lit("") << -dummy;
 
+        raw_str = karma::string;
+
         program_exited = karma::lit("Program exited ") << karma::string;
 
         //\z\z/Users/dennisferron/code/LikeMagic-All/Iocaste/Debugger/TestProject/main.cpp:7:62:beg:0x100000e46

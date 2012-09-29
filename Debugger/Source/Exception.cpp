@@ -110,3 +110,15 @@ char const* BadResponseError::what() const throw()
 {
     return msg.c_str();
 }
+
+ConcurrencyError::ConcurrencyError(std::string msg_)
+    : msg(msg_)
+{
+}
+
+ConcurrencyError::~ConcurrencyError() throw() {}
+
+char const* ConcurrencyError::what() const throw()
+{
+    return msg.c_str();
+}
