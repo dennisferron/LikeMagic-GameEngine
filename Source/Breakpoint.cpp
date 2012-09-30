@@ -33,8 +33,8 @@ bool Breakpoint::match(IoMessage* m)
 
 bool Breakpoint::match(std::string file_name_, int line_number_, int char_number_)
 {
-    cout << "Breakpoint::match(\"" << file_name_ << "\", " << line_number_ << ", " << char_number_ << ")" << endl;
-    cout << "Breakpoint fields: \"" << file_name << "\", " << line_number << ", " << char_number << endl;
+    //cout << "Breakpoint::match(\"" << file_name_ << "\", " << line_number_ << ", " << char_number_ << ")" << endl;
+    //cout << "Breakpoint fields: \"" << file_name << "\", " << line_number << ", " << char_number << endl;
 
     bool result =
         file_name_ == file_name &&
