@@ -13,8 +13,8 @@ namespace LikeMagic { class RuntimeTypeSystem; }
 
 namespace LikeMagic { namespace StdBindings {
 
-// You don't call this directly; you call RuntimeTypeSystem::create and it calls this.
-// Static member function RuntimeTypeSystem::create is DLL_PUBLIC instead of this function.
+// You don't call this directly; you call create_typesystem and it calls this.
+// Static member function create_typesystem is DLL_PUBLIC instead of this function.
 void add_bindings(LikeMagic::RuntimeTypeSystem& type_sys);
 
 }}

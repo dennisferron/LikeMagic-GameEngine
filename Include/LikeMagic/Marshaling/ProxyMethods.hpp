@@ -14,7 +14,7 @@
 #include "LikeMagic/Marshaling/DummyClass.hpp"
 
 // Used in friend declaration.
-namespace LikeMagic { class RuntimeTypeSystem; }
+namespace LikeMagic { namespace StdBindings { class TypeSystemInstance; }}
 
 namespace LikeMagic { namespace Marshaling {
 
@@ -28,7 +28,7 @@ private:
     ProxyMethods(ProxyMethods const&);
     ProxyMethods& operator=(ProxyMethods const&);
 
-    friend class LikeMagic::RuntimeTypeSystem;
+    friend class LikeMagic::StdBindings::TypeSystemInstance;
     ProxyMethods(TypeIndex type_, std::string name_, AbstractTypeSystem& type_system_, NamespacePath const namespace_);
 
 public:

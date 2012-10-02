@@ -42,3 +42,6 @@ StaticMethods& RuntimeTypeSystem::register_functions(NamespacePath const ns)
     }
 }
 
+RuntimeTypeSystem::RuntimeTypeSystem()
+{
+}

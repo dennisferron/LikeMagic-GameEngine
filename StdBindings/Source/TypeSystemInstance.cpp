@@ -7,8 +7,8 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/StdBindings/StdBindings.hpp"
+#include "LikeMagic/StdBindings/TypeSystemInstance.hpp"
 
-#include "LikeMagic/RuntimeTypeSystem.hpp"
 #include "LikeMagic/NamespacePath.hpp"
 
 #include "LikeMagic/TypeConv/StringConv.hpp"
@@ -44,20 +44,21 @@ add_conv<type const&, double const&, NumberConv>();
 #define add_all_num_conv(SEQ) BOOST_PP_SEQ_FOR_EACH(add_all_num_conv_impl,, SEQ)
 
 using namespace LikeMagic;
+using namespace LikeMagic::StdBindings;
 using namespace LikeMagic::SFMO;
 using namespace LikeMagic::TypeConv;
 using namespace LikeMagic::Utility;
 
 using namespace std;
 
+namespace LikeMagic { namespace StdBindings {
 
-DLL_PUBLIC_RUNTIME_TYPE_SYSTEM RuntimeTypeSystem* RuntimeTypeSystem::create()
+DLL_PUBLIC_RUNTIME_TYPE_SYSTEM RuntimeTypeSystem* create_typesystem()
 {
-    auto* result = new RuntimeTypeSystem();
+    auto* result = new TypeSystemInstance();
     LikeMagic::StdBindings::add_bindings(*result);
     return result;
 }
-
 
 // Vector helper.  Assignment in Io cannot (?) be overloaded; it creates new
 // slots rather than copying values.  This allows us to assign values to vector elements.
@@ -67,7 +68,7 @@ void at_put(vector<T>& target, size_t pos, T const& value)
     target.at(pos) = value;
 }
 
-RuntimeTypeSystem::RuntimeTypeSystem()
+TypeSystemInstance::TypeSystemInstance()
 {
     // The runtime type system creates the type info cache.
     // In order to get the DLLs using the same static TypeInfo instance we have to "smuggle" in a pointer to it via this object.
@@ -114,3 +115,4 @@ RuntimeTypeSystem::RuntimeTypeSystem()
     this->unknown_class = unknown_class;
 }
 
+}}

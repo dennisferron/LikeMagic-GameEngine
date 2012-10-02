@@ -69,7 +69,7 @@ using LikeMagic::Utility::EnumHelper;
 
 class RuntimeTypeSystem : public AbstractTypeSystem
 {
-private:
+protected:
 
     TypeInfoCache* dll_shared_typeinfo;
 
@@ -123,16 +123,14 @@ private:
         return *result;
     }
 
+protected:
+
     RuntimeTypeSystem();
 
 public:
 
     // Important:  you must set the type info cache instances in all your DLLs to this pointer.
     TypeInfoCache* get_typeinfo_cache() { return dll_shared_typeinfo; }
-
-    // Use this function to create the RuntimeTypesystem object.  I put it in the StdBindings project
-    // to reduce the size of the LikeMagic static library when using DLL-based build.
-    DLL_PUBLIC_RUNTIME_TYPE_SYSTEM static RuntimeTypeSystem* create();
 
     template <typename T, bool is_copyable=!boost::is_abstract<T>::value, bool add_deref_ptr_conv=true>
     Class<T, is_copyable>& register_class(std::string name, NamespacePath const ns=NamespacePath::global())
