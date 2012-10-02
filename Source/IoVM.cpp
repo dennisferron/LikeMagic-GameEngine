@@ -188,13 +188,20 @@ void IoVM::setShowAllMessages(bool value)
 
 IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys), last_exception(0)
 {
-    state = this;
-
     // It's very important you static_cast here, if you use
     // reinterpret_cast or allow conversion to void* which
     // is the function arg, you get a different pointer!
-    IoState_new_atAddress(static_cast<IoState*>(this));
+    state = static_cast<IoState*>(this);
 
+    // IoState_new_atAddress assumes the allocator zeroed the memory already,
+    // but this is a C++ class derived from IoState, and the C++ allocator didn't zero us.
+    // We have to manually zero-out the IoState part of ourself.
+    memset(state, 0, sizeof(IoState));
+
+    // "Constructs" the IoState part of us.
+    IoState_new_atAddress(state);
+
+    state->bindingsInitCallback = NULL;
     IoState_init(state);
     state->callbackContext = reinterpret_cast<void*>(this);
 

@@ -6,6 +6,6 @@ namespace LikeMagic
 
 namespace Iocaste
 {
-    int run(int argc, const char *argv[], void (*addBindings)(LikeMagic::RuntimeTypeSystem&));
+    int run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::RuntimeTypeSystem&), LikeMagic::RuntimeTypeSystem* type_sys);
 }
 
