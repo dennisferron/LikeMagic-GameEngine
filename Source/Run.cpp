@@ -79,7 +79,7 @@ void do_file(IoVM& vm, string file_name)
 }
 
 
-int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::RuntimeTypeSystem&))
+int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::RuntimeTypeSystem&), RuntimeTypeSystem* type_sys)
 {
  #ifdef USE_DMALLOC
     // Starting LikeMagic in codeblocks debug mode doesn't propagate the dmalloc environment settings.  I don't know why.
@@ -92,11 +92,9 @@ int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::R
         // printing the error message or the stack.  Should maybe create with new and/or
         // use an intrusive_ptr to track references to the IoVM object.
         IoVM* vm=NULL;
-        RuntimeTypeSystem* type_sys=NULL;
 
     try
     {
-        type_sys = RuntimeTypeSystem::create();
         (*add_bindings)(*type_sys);
         vm = new IoVM(*type_sys);
 
