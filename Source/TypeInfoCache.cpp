@@ -37,7 +37,7 @@ void TypeInfoCache::set_instance(TypeInfoCache* instance_)
 TypeInfoCache* TypeInfoCache::get_instance()
 {
     if (!instance)
-        throw std::logic_error("Error:  TypeInfoCache instance has not been created yet!");
+        throw std::logic_error("Error:  TypeInfoCache instance has not been created yet!  Use the user macro LM_SET_TYPE_INFO to set the type info object once in each DLL.");
 
     return instance;
 }
