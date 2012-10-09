@@ -104,6 +104,7 @@
 			<Add directory="../GameBindings/bullet/src" />
 			<Add directory="../GameBindings/irrlicht/include" />
 			<Add directory="Include/Iocaste/CShims" />
+			<Add directory="../LikeMagic/StdBindings/Include" />
 		</Compiler>
 		<Linker>
 			<Add directory="../Iocaste" />

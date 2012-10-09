@@ -47,6 +47,8 @@ But the cost to performance seems to outweigh the need to cover this case for no
 
 #define DATA(self) ((IoMessageData *)IoObject_dataPointer(self))
 
+static const char *protoId = "Message";
+
 /*
 void IoMessage_writeToStream_(IoMessage *self, BStream *stream)
 {
@@ -1397,5 +1399,3 @@ IoMessage *IoMessage_asMessageWithEvaluatedArgs(IoMessage *self, IoObject *local
 
 	return sendMessage;
 }
-
-static const char *protoId = "Message";

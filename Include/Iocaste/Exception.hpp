@@ -11,10 +11,16 @@ typedef CollectorMarker IoObject;
 typedef IoObject IoMessage;
 typedef IoObject IoError;
 
+extern "C" IoObject *IocasteException_proto(void *state);
+
 namespace Iocaste
 {
     class Exception : public boost::exception, public std::exception
     {
+    private:
+        friend IoObject* ::IocasteException_proto(void *state);
+        static char const* protoId;
+
     public:
         typedef boost::error_info<struct tag_file_name, std::vector<std::string>> file_name_info;
         virtual char const* what() const throw();

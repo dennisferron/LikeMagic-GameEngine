@@ -13,6 +13,85 @@
 #define END_TIMER
 #endif
 
+// BEGIN Collector_inline
+
+//metadoc Collector copyright Steve Dekorte 2002
+//metadoc Collector license BSD revised
+
+#include "Common_inline.h"
+
+// inspecting markers -------------------
+
+int Collector_markerIsWhite_(Collector *self, CollectorMarker *m)
+{
+	return (self->whites->color == m->color);
+}
+
+int Collector_markerIsGray_(Collector *self, CollectorMarker *m)
+{
+	return (COLLECTOR_GRAY == m->color);
+}
+
+int Collector_markerIsBlack_(Collector *self, CollectorMarker *m)
+{
+	return (self->blacks->color == m->color);
+}
+
+// changing marker colors -------------------
+
+void Collector_makeFree_(Collector *self, CollectorMarker *v)
+{
+	#ifdef COLLECTOR_RECYCLE_FREED
+		CollectorMarker_removeAndInsertAfter_((CollectorMarker *)v, self->freed);
+	#else
+		CollectorMarker_remove(v);
+		CollectorMarker_free(v);
+	#endif
+}
+
+void Collector_makeWhite_(Collector *self, CollectorMarker *v)
+{
+	CollectorMarker_removeAndInsertAfter_((CollectorMarker *)v, self->whites);
+}
+
+void Collector_makeGray_(Collector *self, CollectorMarker *v)
+{
+	CollectorMarker_removeAndInsertAfter_((CollectorMarker *)v, self->grays);
+}
+
+void Collector_makeBlack_(Collector *self, CollectorMarker *v)
+{
+	CollectorMarker_removeAndInsertAfter_((CollectorMarker *)v, self->blacks);
+}
+
+void Collector_makeGrayIfWhite_(Collector *self, void *v)
+{
+	if (Collector_markerIsWhite_(self, (CollectorMarker *)v))
+	{
+		Collector_makeGray_(self, (CollectorMarker *) v);
+	}
+}
+
+/*
+void Collector_makeFreed_(Collector *self, void *v)
+{
+	CollectorMarker_removeAndInsertAfter_(v, self->freed);
+}
+*/
+
+void *XIMPLX_Collector_value_addingRefTo_(Collector *self, void *v, void *ref)
+{
+	if (Collector_markerIsBlack_(self, (CollectorMarker *)v) && Collector_markerIsWhite_(self, (CollectorMarker *)ref))
+	//if (self->safeMode || (Collector_markerIsBlack_(self, (CollectorMarker *)v) && Collector_markerIsWhite_(self, (CollectorMarker *)ref)))
+	{
+		Collector_makeGray_(self, (CollectorMarker *) ref);
+	}
+
+	return ref;
+}
+
+// END Collector_inline
+
 Collector *Collector_new(void)
 {
 	Collector *self = (Collector *)io_calloc(1, sizeof(Collector));
@@ -34,18 +113,18 @@ Collector *Collector_new(void)
 	CollectorMarker_setColor_(self->blacks, COLLECTOR_INITIAL_BLACK);
 	CollectorMarker_setColor_(self->grays,  COLLECTOR_GRAY);
 	CollectorMarker_setColor_(self->freed,  COLLECTOR_FREE);
-	
+
 	Collector_setSafeModeOn_(self, 1);
 	self->allocated = 0;
 
 	self->allocatedSweepLevel = 3000;
 	self->allocatedStep = 1.1f;
 	self->marksPerAlloc = 2;
-	
+
 #ifdef COLLECTOR_USE_NONINCREMENTAL_MARK_SWEEP
 	self->allocsPerSweep = 10000;
 #endif
-	
+
 	self->clocksUsed = 0;
 
 	Collector_check(self);
@@ -74,19 +153,19 @@ void Collector_check(Collector *self)
 
 size_t CollectorMarker_checkObjectPointer(CollectorMarker *marker)
 {
-	if (marker->object == NULL) 
+	if (marker->object == NULL)
 	{
 		printf("WARNING: Collector found a null object pointer on marker %p! Memory is likely hosed.\n", (void *)marker);
 		exit(-1);
 		return 1;
-	} 
-	else 
-	{ 
+	}
+	else
+	{
 		// read a word of memory to check for bad pointers
 		uintptr_t p = *(uintptr_t *)(marker->object);
 		return p-p; // so compiler doesn't complain about unused variable
 	}
-	
+
 	return 0;
 }
 
@@ -210,14 +289,14 @@ void Collector_popPause(Collector *self)
 
 	//printf("collect newMarkerCount %i\n", self->newMarkerCount);
 #ifdef COLLECTOR_USE_NONINCREMENTAL_MARK_SWEEP
-	if (self->pauseCount == 0 && self->newMarkerCount > self->allocsPerSweep) 
+	if (self->pauseCount == 0 && self->newMarkerCount > self->allocsPerSweep)
 	{
 		//printf("collect newMarkerCount %i\n", self->newMarkerCount);
 		if(self->debugOn)
 		{
 			printf("\n  newMarkerCount %i\n", (int)self->newMarkerCount);
 		}
-		
+
 		self->newMarkerCount = 0;
 		Collector_collect(self);
 	}
@@ -397,7 +476,7 @@ void Collector_markPhase(Collector *self)
 size_t Collector_sweep(Collector *self)
 {
 	size_t freedCount = Collector_sweepPhase(self);
-	
+
 	/*
 	if (self->debugOn)
 	{
@@ -405,7 +484,7 @@ size_t Collector_sweep(Collector *self)
 		return freedCount + freedCount2;
 	}
 	*/
-	
+
 	return freedCount;
 }
 
@@ -414,7 +493,7 @@ size_t Collector_sweepPhase(Collector *self)
 	size_t freedCount = 0;
 
 	self->newMarkerCount = 0;
-	
+
 	if (self->debugOn)
 	{
 		printf("Collector_sweepPhase()\n");

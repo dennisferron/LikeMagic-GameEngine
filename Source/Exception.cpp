@@ -9,6 +9,8 @@
 
 #include "boost/lexical_cast.hpp"
 
+char const* Iocaste::Exception::protoId = "IocasteException";
+
 extern "C" {
 intptr_t Stack_pushMarkPoint(Stack *self);
 int Stack_popMarkPoint_(Stack *self, intptr_t mark);
@@ -137,7 +139,7 @@ extern "C" IoObject *IocasteException_proto(void *state)
 	IoTag_cloneFunc_(tag, (IoTagCloneFunc *)IoObject_rawClone);
 	IoObject_tag_(self, tag);
 
-	IoState_registerProtoWithFunc_((IoState*)state, self, IocasteException_proto);
+	IoState_registerProtoWithId_((IoState *)state, self, Iocaste::Exception::protoId);
 
 	{
 		IoMethodTable methodTable[] = {

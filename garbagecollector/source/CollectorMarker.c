@@ -4,6 +4,77 @@
 
 #include <assert.h>
 
+// BEGIN CollectorMarker_inline
+
+void CollectorMarker_clear(CollectorMarker *self)
+{
+	self->prev = NULL;
+	self->next = NULL;
+}
+
+void CollectorMarker_insertAfter_(CollectorMarker *self, CollectorMarker *other)
+{
+	self->color = other->color;
+
+	self->prev = other;
+	self->next = other->next;
+
+	other->next->prev = self;
+	other->next = self;
+}
+
+/*
+void CollectorMarker_insertBefore_(CollectorMarker *self, CollectorMarker *other)
+{
+	self->color = other->color;
+
+	self->prev = other->prev;
+	self->next = other;
+
+	other->prev->next = self;
+	other->prev = self;
+}
+*/
+
+void CollectorMarker_remove(CollectorMarker *self)
+{
+	self->prev->next = self->next;
+	self->next->prev = self->prev;
+	//self->next = NULL; // temp
+	//self->prev = NULL; // temp
+}
+
+void CollectorMarker_removeAndInsertAfter_(CollectorMarker *self, CollectorMarker *other)
+{
+	CollectorMarker_remove(self);
+	CollectorMarker_insertAfter_(self, other);
+}
+
+/*
+void CollectorMarker_removeAndInsertBefore_(CollectorMarker *self, CollectorMarker *other)
+{
+	CollectorMarker_remove(self);
+	CollectorMarker_insertBefore_(self, other);
+}
+*/
+
+void CollectorMarker_removeIfNeededAndInsertAfter_(CollectorMarker *self, CollectorMarker *other)
+{
+	if (self->prev)
+	{
+		CollectorMarker_remove(self);
+	}
+
+	CollectorMarker_insertAfter_(self, other);
+}
+
+int CollectorMarker_isEmpty(CollectorMarker *self)
+{
+	return (self->color != self->next->color);
+}
+
+// END CollectorMarker_inline
+
 void CollectorMarker_check(CollectorMarker *self)
 {
 	CollectorMarker *v = self;

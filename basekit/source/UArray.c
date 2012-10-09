@@ -502,7 +502,7 @@ void UArray_copyItems_(UArray *self, const UArray *other)
 	{
 		DUARRAY_OP(UARRAY_BASICOP_TYPES, =, self, other);
 	}
-	
+
 	UArray_changed(self);
 }
 
@@ -1243,6 +1243,7 @@ int UArray_isSignedType(const UArray *self)
 		case CTYPE_int64_t:   return 1;
 		case CTYPE_float32_t: return 1;
 		case CTYPE_float64_t: return 1;
+		case CTYPE_uintptr_t: return 0;
 		default:
             UArray_error_(self, "UArray_at_putPointer_ not supported with this type");
 	}
@@ -1335,5 +1336,3 @@ void UArray_sortBy_(UArray *self, UArraySortCallback *cmp)
 	}
 }
 
-
-		case CTYPE_uintptr_t: return 0;

@@ -447,6 +447,7 @@ BASEKIT_API void UArray_sortBy_(UArray *self, UArraySortCallback *cmp);
 		case CTYPE_int64_t:   UARRAY_FOREACHTYPEASSIGN(self, i, v, code, int64_t);   break;\
 		case CTYPE_float32_t: UARRAY_FOREACHTYPEASSIGN(self, i, v, code, float32_t); break;\
 		case CTYPE_float64_t: UARRAY_FOREACHTYPEASSIGN(self, i, v, code, float64_t); break;\
+		case CTYPE_uintptr_t: UARRAY_FOREACHTYPEASSIGN(self, i, v, code, uintptr_t); break;\
 		default:  printf("Unhandled type '%d' in UARRAY_FOREACHASSIGN", self->itemType); exit(1); \
 	}
 
@@ -472,6 +473,7 @@ BASEKIT_API void UArray_sortBy_(UArray *self, UArraySortCallback *cmp);
 		case CTYPE_int64_t:   UARRAY_FOREACHTYPEASSIGN_VALUE_UNUSED(self, i, code, int64_t);   break;\
 		case CTYPE_float32_t: UARRAY_FOREACHTYPEASSIGN_VALUE_UNUSED(self, i, code, float32_t); break;\
 		case CTYPE_float64_t: UARRAY_FOREACHTYPEASSIGN_VALUE_UNUSED(self, i, code, float64_t); break;\
+		case CTYPE_uintptr_t: UARRAY_FOREACHTYPEASSIGN_VALUE_UNUSED(self, i, code, uintptr_t); break;\
 		default:  printf("Unhandled type '%d' in UARRAY_FOREACHASSIGN_VALUE_UNUSED", self->itemType); exit(1); \
 	}
 
@@ -489,5 +491,3 @@ BASEKIT_API void UArray_sortBy_(UArray *self, UArraySortCallback *cmp);
 }
 #endif
 #endif
-		case CTYPE_uintptr_t: UARRAY_FOREACHTYPEASSIGN(self, i, v, code, uintptr_t); break;\
-		case CTYPE_uintptr_t: UARRAY_FOREACHTYPEASSIGN_VALUE_UNUSED(self, i, code, uintptr_t); break;\

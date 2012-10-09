@@ -21,6 +21,8 @@
 
 using namespace LikeMagic::Utility;
 
+static char const* LikeMagic_protoId = "LikeMagic";
+
 namespace Iocaste { namespace LikeMagicAdapters {
 
 std::string get_type_name(IoObject* io_obj)
@@ -189,7 +191,7 @@ IoObject *API_io_proto(IoState* state)
 
     IoObject_tag_(self, tag);
 
-    IoState_registerProtoWithFunc_(state, self, (IoStateProtoFunc*)&API_io_proto);
+	IoState_registerProtoWithId_(state, self, LikeMagic_protoId);
 
     return self;
 }

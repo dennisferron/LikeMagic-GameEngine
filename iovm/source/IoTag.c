@@ -10,6 +10,161 @@
 #include "IoState.h"
 #include <string.h>
 
+// BEGIN IoTag_inline
+
+// state
+
+void IoTag_state_(IoTag *self, void *state)
+{
+	self->state = state;
+}
+
+void *IoTag_state(IoTag *self)
+{
+	return self->state;
+}
+
+// activate
+
+void IoTag_activateFunc_(IoTag *self, IoTagActivateFunc *func)
+{
+	self->activateFunc = func;
+}
+
+IoTagActivateFunc *IoTag_activateFunc(IoTag *self)
+{
+	return self->activateFunc;
+}
+
+// clone
+
+void IoTag_cloneFunc_(IoTag *self, IoTagCloneFunc *func)
+{
+	self->cloneFunc = func;
+}
+
+IoTagCloneFunc *IoTag_cloneFunc(IoTag *self)
+{
+	return self->cloneFunc;
+}
+
+// cleanup
+
+void IoTag_cleanupFunc_(IoTag *self, IoTagFreeFunc *func)
+{
+	self->tagCleanupFunc = func;
+}
+
+IoTagCleanupFunc *IoTag_cleanupFunc(IoTag *self)
+{
+	return self->tagCleanupFunc;
+}
+
+// io_free
+
+void IoTag_freeFunc_(IoTag *self, IoTagFreeFunc *func)
+{
+	if(func == free)
+	{
+		printf("IoTag_freeFunc_ called free\n");
+		exit(-1);
+	}
+
+	self->freeFunc = func;
+}
+
+IoTagFreeFunc *IoTag_freeFunc(IoTag *self)
+{
+	return self->freeFunc;
+}
+
+// mark
+
+void IoTag_markFunc_(IoTag *self, IoTagMarkFunc *func)
+{
+	self->markFunc = func;
+}
+
+IoTagMarkFunc *IoTag_markFunc(IoTag *self)
+{
+	return self->markFunc;
+}
+
+// compare
+
+void IoTag_compareFunc_(IoTag *self, IoTagCompareFunc *func)
+{
+	self->compareFunc = func;
+}
+
+IoTagCompareFunc *IoTag_compareFunc(IoTag *self)
+{
+	return self->compareFunc;
+}
+
+// stream write
+
+void IoTag_writeToStreamFunc_(IoTag *self, IoTagWriteToStreamFunc *func)
+{
+	self->writeToStreamFunc = func;
+}
+
+IoTagWriteToStreamFunc *IoTag_writeToStreamFunc(IoTag *self)
+{
+	return self->writeToStreamFunc;
+}
+
+// stream alloc
+
+void IoTag_allocFromStreamFunc_(IoTag *self, IoTagAllocFromStreamFunc *func)
+{
+	self->allocFromStreamFunc = func;
+}
+
+IoTagAllocFromStreamFunc *IoTag_allocFromStreamFunc(IoTag *self)
+{
+	return self->allocFromStreamFunc;
+}
+
+// stream alloc
+
+void IoTag_readFromStreamFunc_(IoTag *self, IoTagReadFromStreamFunc *func)
+{
+	self->readFromStreamFunc = func;
+}
+
+IoTagReadFromStreamFunc *IoTag_readFromStreamFunc(IoTag *self)
+{
+	return self->readFromStreamFunc;
+}
+
+// notification
+
+void IoTag_notificationFunc_(IoTag *self, IoTagNotificationFunc *func)
+{
+	self->notificationFunc = func;
+}
+
+IoTagNotificationFunc *IoTag_notificationFunc(IoTag *self)
+{
+	return self->notificationFunc;
+}
+
+// perform
+
+void IoTag_performFunc_(IoTag *self, IoTagPerformFunc *func)
+{
+	self->performFunc = func;
+}
+
+IoTagPerformFunc *IoTag_performFunc(IoTag *self)
+{
+	return self->performFunc;
+}
+
+// END IoTag_inline
+
+
 IoTag *IoTag_new(void)
 {
 	IoTag *self = (IoTag *)io_calloc(1, sizeof(IoTag));

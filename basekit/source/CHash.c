@@ -12,6 +12,123 @@
 #include <string.h>
 #include <assert.h>
 
+// BEGIN CHash_inline
+
+CHashRecord *CHash_record1_(CHash *self, void *k)
+{
+	// the ~ | 0x1 before the mask ensures an even pos
+	size_t pos = self->hash1(k) & self->mask;
+	//printf("pos1 %i/%i\n", pos, self->size);
+	return CRecords_recordAt_(self->records, pos);
+}
+
+CHashRecord *CHash_record2_(CHash *self, void *k)
+{
+	// the | 0x1 before the mask ensures an odd pos
+	size_t pos = self->hash2(k) & self->mask;
+	//printf("pos2 %i/%i\n", pos, self->size);
+	return CRecords_recordAt_(self->records, pos);
+}
+
+void *CHash_at_(CHash *self, void *k)
+{
+	CHashRecord *r;
+
+	 r = CHash_record1_(self, k);
+
+	if(r->k && self->equals(k, r->k))
+	{
+		return r->v;
+	}
+
+	r = CHash_record2_(self, k);
+
+	if(r->k && self->equals(k, r->k))
+	{
+		return r->v;
+	}
+
+	return 0x0;
+}
+
+size_t CHash_count(CHash *self)
+{
+	return self->keyCount;
+}
+
+int CHashKey_hasKey_(CHash *self, void *key)
+{
+	return CHash_at_(self, key) != NULL;
+}
+
+int CHash_at_put_(CHash *self, void *k, void *v)
+{
+	CHashRecord *r;
+
+	r = CHash_record1_(self, k);
+
+	if(!r->k)
+	{
+		r->k = k;
+		r->v = v;
+		self->keyCount ++;
+		return 0;
+	}
+
+	if(k == r->k || self->equals(k, r->k))
+	{
+		r->v = v;
+		return 0;
+	}
+
+	r = CHash_record2_(self, k);
+
+	if(!r->k)
+	{
+		r->k = k;
+		r->v = v;
+		self->keyCount ++;
+		return 0;
+	}
+
+	if(k == r->k || self->equals(k, r->k))
+	{
+		r->v = v;
+		return 0;
+	}
+
+
+	{
+		CHashRecord x;
+		x.k = k;
+		x.v = v;
+		return CHash_insert_(self, &x);
+	}
+}
+
+void CHash_shrinkIfNeeded(CHash *self)
+{
+	if(self->keyCount < self->size/5)
+	{
+		CHash_shrink(self);
+	}
+}
+
+void CHashRecord_swapWith_(CHashRecord *self, CHashRecord *other)
+{
+	CHashRecord tmp = *self;
+	*self = *other;
+	*other = tmp;
+}
+
+void CHash_clean(CHash *self)
+{
+	memset(self->records, 0, sizeof(CHashRecord) * self->size);
+	self->keyCount = 0;
+}
+
+// END CHash_inline
+
 CHash *CHash_new(void)
 {
 	CHash *self = (CHash *)io_calloc(1, sizeof(CHash));

@@ -38,6 +38,288 @@
 
 #include <stdlib.h>
 
+// BEGIN IoState_inline
+
+IoObject *IOTRUE(IoObject *self)
+{
+	return IOSTATE->ioTrue;
+}
+
+int ISTRUE(IoObject *self)
+{
+	return self != IOSTATE->ioNil && self != IOSTATE->ioFalse;
+}
+
+IoObject *IOFALSE(IoObject *self)
+{
+	return IOSTATE->ioFalse;
+}
+
+int ISFALSE(IoObject *self)
+{
+	return self == IOSTATE->ioNil || self == IOSTATE->ioFalse;
+}
+
+IoObject *IOBOOL(IoObject *self, int b)
+{
+	return b ? IOTRUE(self) : IOFALSE(self);
+}
+
+// collector --------------------------------------------------------
+
+IoObject *IoState_retain_(IoState *self, IoObject *v)
+{
+	IoObject_isReferenced_(v, 1);
+	Collector_retain_(self->collector, v);
+	return v;
+}
+
+void IoState_stopRetaining_(IoState *self, IoObject *v)
+{
+	Collector_stopRetaining_(self->collector, v);
+}
+
+void *IoState_unreferencedStackRetain_(IoState *self, IoObject *v)
+{
+	if (self->currentCoroutine)
+	{
+		Collector_value_addingRefTo_(self->collector, self->currentCoroutine, v);
+	}
+
+	Stack_push_(self->currentIoStack, v);
+	return v;
+}
+
+void *IoState_stackRetain_(IoState *self, IoObject *v)
+{
+	IoObject_isReferenced_(v, 1);
+	IoState_unreferencedStackRetain_(self, v);
+	return v;
+}
+
+void IoState_addValue_(IoState *self, IoObject *v)
+{
+	Collector_addValue_(self->collector, v);
+	IoState_unreferencedStackRetain_(self, v);
+}
+
+void IoState_addValueIfNecessary_(IoState *self, IoObject *v)
+{
+	if (v->prev)
+	{
+		Collector_addValue_(self->collector, v);
+	}
+	IoState_unreferencedStackRetain_(self, v);
+}
+
+void IoState_pushCollectorPause(IoState *self)
+{
+	Collector_pushPause(self->collector);
+}
+
+void IoState_popCollectorPause(IoState *self)
+{
+	Collector_popPause(self->collector);
+}
+
+void IoState_clearRetainStack(IoState *self)
+{
+	Stack_clear(((IoState *)self)->currentIoStack);
+}
+
+uintptr_t IoState_pushRetainPool(void *self)
+{
+	uintptr_t m = Stack_pushMarkPoint(((IoState *)self)->currentIoStack);
+	return m;
+}
+
+void IoState_clearTopPool(void *self)
+{
+	Stack *stack = ((IoState *)self)->currentIoStack;
+	//Stack_popMark(stack);
+	//Stack_pushMark(stack);
+	Stack_clearTop(stack);
+}
+
+void IoState_popRetainPool(void *self)
+{
+	Stack *stack = ((IoState *)self)->currentIoStack;
+	Stack_popMark(stack);
+}
+
+void IoState_popRetainPool_(void *self, uintptr_t mark)
+{
+	Stack *stack = ((IoState *)self)->currentIoStack;
+	Stack_popMarkPoint_(stack, mark);
+}
+
+void IoState_popRetainPoolExceptFor_(void *state, void *obj)
+{
+	IoState *self = (IoState *)state;
+#ifdef STACK_POP_CALLBACK
+	IoObject_isReferenced_(((IoObject *)obj), 1);
+#endif
+	IoState_popRetainPool(self);
+	IoState_stackRetain_(self, (IoObject *)obj);
+}
+
+IoObject *IoMessage_locals_quickValueArgAt_(IoMessage *self, IoObject *locals, int n)
+{
+	IoMessage *m = (IoMessage *)List_at_(IOMESSAGEDATA(self)->args, n);
+
+	if (m)
+	{
+		IoMessageData *md = IOMESSAGEDATA(m);
+		IoObject *v = md->cachedResult;
+
+		if (v && !md->next)
+		{
+			return v;
+		}
+
+		return IoMessage_locals_performOn_(m, locals, locals);
+	}
+
+	return IOSTATE->ioNil;
+}
+
+IoObject *IoMessage_locals_valueArgAt_(IoMessage *self, IoObject *locals, int n)
+{
+	return IoMessage_locals_quickValueArgAt_(self, locals, n);
+	/*
+	List *args = IOMESSAGEDATA(self)->args;
+	IoMessage *m = (IoMessage *)List_at_(args, n);
+
+	if (m)
+	{
+		return IoMessage_locals_performOn_(m, locals, locals);
+	}
+
+	return IOSTATE->ioNil;
+	*/
+}
+
+IoObject *IoMessage_locals_firstStringArg(IoMessage *self, IoObject *locals)
+{
+	// special case this, since it's used for setSlot()
+	List *args = IOMESSAGEDATA(self)->args;
+
+	if (List_size(args))
+	{
+		IoMessage *m = (IoMessage *)List_rawAt_(args, 0);
+
+		if (m)
+		{
+			IoMessageData *md = IOMESSAGEDATA(m);
+			IoObject *v = md->cachedResult;
+
+			// avoid calling IoMessage_locals, if possible
+
+			if (v && IoObject_isSymbol(v) && (md->next == NULL))
+			{
+				return v;
+			}
+		}
+	}
+
+	return IoMessage_locals_symbolArgAt_(self, locals, 0);
+}
+
+// --------------------------
+
+void IoState_break(IoState *self, IoObject *v)
+{
+	self->stopStatus = MESSAGE_STOP_STATUS_BREAK;
+	self->returnValue = v;
+}
+
+void IoState_continue(IoState *self)
+{
+	self->stopStatus = MESSAGE_STOP_STATUS_CONTINUE;
+}
+
+void IoState_eol(IoState *self)
+{
+	self->stopStatus = MESSAGE_STOP_STATUS_EOL;
+}
+
+void IoState_return(IoState *self, IoObject *v)
+{
+	self->stopStatus = MESSAGE_STOP_STATUS_RETURN;
+	self->returnValue = v;
+}
+
+void IoState_resetStopStatus(IoState *self)
+{
+	self->stopStatus = MESSAGE_STOP_STATUS_NORMAL;
+}
+
+int IoState_handleStatus(IoState *self)
+{
+	switch (self->stopStatus)
+	{
+		case MESSAGE_STOP_STATUS_RETURN:
+			return 1;
+
+		case MESSAGE_STOP_STATUS_BREAK:
+			IoState_resetStopStatus(self);
+			return 1;
+
+		case MESSAGE_STOP_STATUS_CONTINUE:
+			IoState_resetStopStatus(self);
+			return 0;
+
+		default:
+			return 0;
+	}
+}
+
+IoObject *IoState_stopStatusObject(IoState *self, int stopStatus)
+{
+	switch(stopStatus)
+	{
+		case MESSAGE_STOP_STATUS_NORMAL:
+			return self->ioNormal;
+
+		case MESSAGE_STOP_STATUS_BREAK:
+			return self->ioBreak;
+
+		case MESSAGE_STOP_STATUS_CONTINUE:
+			return self->ioContinue;
+
+		case MESSAGE_STOP_STATUS_RETURN:
+			return self->ioReturn;
+
+		case MESSAGE_STOP_STATUS_EOL:
+			return self->ioEol;
+
+		default:
+			return self->ioNormal;
+	}
+}
+
+int IoState_stopStatusNumber(IoState *self, IoObject *obj)
+{
+	if (obj == self->ioNormal)
+		return MESSAGE_STOP_STATUS_NORMAL;
+
+	if (obj == self->ioBreak)
+		return MESSAGE_STOP_STATUS_BREAK;
+
+	if (obj == self->ioContinue)
+		return MESSAGE_STOP_STATUS_CONTINUE;
+
+	if (obj == self->ioReturn)
+		return MESSAGE_STOP_STATUS_RETURN;
+
+	if (obj == self->ioEol)
+		return MESSAGE_STOP_STATUS_EOL;
+
+	return MESSAGE_STOP_STATUS_NORMAL;
+}
+
+// END IoState_inline
+
 void IoVMCodeInit(IoObject *context);
 
 void IoState_new_atAddress(void *address)
@@ -385,7 +667,7 @@ void IoState_registerProtoWithNamed_(IoState *self, IoObject *proto, const char 
 		printf("Error registering proto: %s\n", IoObject_name(proto));
 		IoState_fatalError_(self, "IoState_registerProtoWithFunc_() Error: attempt to add the same proto twice");
 	}
-	
+
 	IoState_retain_(self, proto);
 	PointerHash_at_put_(self->primitives, (void *)func, proto);
 	//printf("registered %s\n", IoObject_name(proto));
