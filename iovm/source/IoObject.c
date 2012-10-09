@@ -28,6 +28,8 @@ When cloned, an Object will call its init slot (with no arguments).
 #include <string.h>
 #include <stddef.h>
 
+static const char *protoId = "Object";
+
 #include "IoObjectImpl.h"
 
 
@@ -507,7 +509,7 @@ IoObject *IoObject_proto(void *state)
 	IoObject_slots_(self, PHash_new());
 	IoObject_ownsSlots_(self, 1);
 	//IoObject_state_(self, state);
-	IoState_registerProtoWithFunc_((IoState *)state, self, IoObject_proto);
+	IoState_registerProtoWithFunc_((IoState *)state, self, protoId);
 	return self;
 }
 
@@ -654,7 +656,7 @@ IoObject *IoObject_protoFinish(void *state)
 	{NULL, NULL},
 	};
 
-	IoObject *self = IoState_protoWithInitFunction_((IoState *)state, IoObject_proto);
+	IoObject *self = IoState_protoWithInitFunction_((IoState *)state, protoId);
 
 	IoObject_addTaglessMethodTable_(self, methodTable);
 	return self;
@@ -724,7 +726,7 @@ void IoObject_addTaglessMethodTable_(IoObject *self, IoMethodTable *methodTable)
 
 IoObject *IoObject_new(void *state)
 {
-	IoObject *proto = IoState_protoWithInitFunction_((IoState *)state, IoObject_proto);
+	IoObject *proto = IoState_protoWithInitFunction_((IoState *)state, protoId);
 	return IOCLONE(proto);
 }
 
@@ -825,7 +827,7 @@ int IoObject_hasProtos(IoObject *self)
 int IoObject_rawProtosCount(IoObject *self)
 {
 	int count = 0;
-	IOOBJECT_FOREACHPROTO(self, proto, count ++);
+	IOOBJECT_FOREACHPROTO(self, proto, if(proto) count ++);
 	return count;
 }
 
@@ -1410,7 +1412,7 @@ IO_METHOD(IoObject, protoPerformWithArgList)
 	if (v)
 	{
 		IoMessage *newMessage = IoMessage_newWithName_(IOSTATE, slotName);
-		int i, max = List_size(argList);
+		size_t i, max = List_size(argList);
 
 		for (i = 0; i < max; i ++)
 		{
@@ -2292,7 +2294,7 @@ IO_METHOD(IoObject, setIsActivatableMethod)
 	*/
 
 	IoObject *v = IoMessage_locals_valueArgAt_(m, locals, 0);
-	IoObject *objectProto = IoState_protoWithInitFunction_(IOSTATE, (IoStateProtoFunc *)IoObject_proto);
+	IoObject *objectProto = IoState_protoWithInitFunction_(IOSTATE, protoId);
 
 	IoTag_activateFunc_(IoObject_tag(objectProto), (IoTagActivateFunc *)IoObject_activateFunc);
 

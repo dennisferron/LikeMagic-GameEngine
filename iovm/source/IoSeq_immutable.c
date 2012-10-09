@@ -485,7 +485,7 @@ IO_METHOD(IoSeq, findSeqs)
 	List *delims = IoList_rawList(others);
 	long f = 0;
 	long firstIndex = -1;
-	int match = 0;
+	size_t match = 0;
 
 	if (IoMessage_argCount(m) > 1)
 	{
@@ -493,7 +493,7 @@ IO_METHOD(IoSeq, findSeqs)
 	}
 
 	{
-		int index;
+		size_t index;
 
 		LIST_FOREACH(delims, i, s,
 			if (!ISSEQ((IoSeq *)s))
@@ -503,7 +503,11 @@ IO_METHOD(IoSeq, findSeqs)
 
 			index = UArray_find_from_(DATA(self), DATA(((IoSeq *)s)), f);
 
-			if(index != -1 && (firstIndex == -1 || index < firstIndex)) { firstIndex = index; match = i; }
+			if(index != -1 && (firstIndex == -1 || index < firstIndex)) 
+			{ 
+				firstIndex = (long)index; 
+				match = i; 
+			}
 		);
 	}
 
@@ -1199,7 +1203,7 @@ IO_METHOD(IoSeq, asCapitalized)
 
 	/* need to fix for multi-byte characters */
 
-	int firstChar = UArray_firstLong(DATA(self));
+	int firstChar = (int)UArray_firstLong(DATA(self));
 	int upperChar = toupper(firstChar);
 
 	if (ISSYMBOL(self) && (firstChar == upperChar))
@@ -1423,7 +1427,7 @@ The output pointStructSeq would contain 2 raw 32 bit floats.
 	List *members = IoList_rawList(IoMessage_locals_listArgAt_(m, locals, 0));
 	int memberIndex;
 	size_t maxSize = List_size(members) * 8;
-	IoSeq *s = IoSeq_newWithData_length_(IOSTATE, malloc(maxSize), maxSize);
+	IoSeq *s = IoSeq_newWithData_length_(IOSTATE, (unsigned char *)malloc(maxSize), maxSize);
 	unsigned char *data = IoSeq_rawBytes(s);
 	size_t offset = 0;
 

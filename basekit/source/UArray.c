@@ -145,15 +145,15 @@ size_t UArray_sizeRequiredToContain_(const UArray *self, const UArray *other)
 
 void UArray_rawSetItemType_(UArray *self, CTYPE type)
 {
-	size_t itemSize = CTYPE_size(type);
+	int itemSize = (int)CTYPE_size(type);
 	self->itemType = type;
 	self->itemSize = itemSize;
 }
 
 void UArray_setItemType_(UArray *self, CTYPE type)
 {
-	size_t itemSize = CTYPE_size(type);
-	div_t q = div(UArray_sizeInBytes(self), itemSize);
+	int itemSize = (int)CTYPE_size(type);
+	div_t q = div((int)UArray_sizeInBytes(self), (int)itemSize);
 
 	if (q.rem != 0)
 	{
@@ -315,7 +315,7 @@ UArray UArray_stackAllocedWithData_type_size_(void *data, CTYPE type, size_t siz
 #endif
 
 	self.itemType = type;
-	self.itemSize = CTYPE_size(type);
+	self.itemSize = (int)CTYPE_size(type);
 	self.size = size;
 	self.data = data;
 	return self;
@@ -502,6 +502,7 @@ void UArray_copyItems_(UArray *self, const UArray *other)
 	{
 		DUARRAY_OP(UARRAY_BASICOP_TYPES, =, self, other);
 	}
+	
 	UArray_changed(self);
 }
 
@@ -774,7 +775,7 @@ void UArray_at_putLong_(UArray *self, size_t pos, long v)
 
 	//if(UArray_longAt_(self, pos) != v)
 	{
-		UARRAY_RAWAT_PUT_(self, pos, v);
+		UARRAY_RAWAT_PUT_(self, pos, (uint32_t)v);
 		UArray_changed(self);
 	}
 }
@@ -1335,3 +1336,4 @@ void UArray_sortBy_(UArray *self, UArraySortCallback *cmp)
 }
 
 
+		case CTYPE_uintptr_t: return 0;

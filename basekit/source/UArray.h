@@ -73,7 +73,7 @@ typedef struct
 	uint8_t *data;  // memory for items
 	size_t size;    // number of items
 	CTYPE itemType;
-	size_t itemSize;
+	int itemSize;
 	uintptr_t oddHash;
 	uintptr_t evenHash;
 	uint8_t encoding;
@@ -395,7 +395,7 @@ BASEKIT_API void UArray_sortBy_(UArray *self, UArraySortCallback *cmp);
 
 #define UARRAY_RFOREACHTYPE(self, i, v, code, TYPE)\
 	{\
-	long i;\
+	size_t i;\
 	for(i = self->size - 1; i > -1; i --)\
 	{\
 		TYPE v = ((TYPE *)self->data)[i];\
@@ -489,3 +489,5 @@ BASEKIT_API void UArray_sortBy_(UArray *self, UArraySortCallback *cmp);
 }
 #endif
 #endif
+		case CTYPE_uintptr_t: UARRAY_FOREACHTYPEASSIGN(self, i, v, code, uintptr_t); break;\
+		case CTYPE_uintptr_t: UARRAY_FOREACHTYPEASSIGN_VALUE_UNUSED(self, i, code, uintptr_t); break;\
