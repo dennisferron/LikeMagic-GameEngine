@@ -143,7 +143,7 @@ IoFile *IoFile_proto(void *state)
 	DATA(self)->path  = IOSYMBOL("");
 	DATA(self)->mode  = IOSYMBOL("r+");
 	DATA(self)->flags = IOFILE_FLAGS_NONE;
-	IoState_registerProtoWithFunc_((IoState *)state, self, protoId);
+	IoState_registerProtoWithId_((IoState *)state, self, protoId);
 
 	IoObject_addMethodTable_(self, methodTable);
 	IoFile_statInit(self);
@@ -162,7 +162,7 @@ IoFile *IoFile_rawClone(IoFile *proto)
 
 IoFile *IoFile_new(void *state)
 {
-	IoObject *proto = IoState_protoWithInitFunction_((IoState *)state, protoId);
+	IoObject *proto = IoState_protoWithId_((IoState *)state, protoId);
 	return IOCLONE(proto);
 }
 
