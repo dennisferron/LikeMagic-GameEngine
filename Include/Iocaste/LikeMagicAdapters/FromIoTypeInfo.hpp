@@ -37,7 +37,7 @@ protected:
 
     virtual std::string get_system() const
     {
-        return "Io (from)";
+        return "Iocaste";
     }
 
     virtual bool less(const AbstractTypeInfo& other) const

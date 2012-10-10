@@ -98,6 +98,7 @@
 		<Unit filename="Include\Iocaste\LikeMagicAdapters\IoVectorSTL.hpp" />
 		<Unit filename="Include\Iocaste\LikeMagicAdapters\ToIoObjectExpr.hpp" />
 		<Unit filename="Include\Iocaste\LikeMagicAdapters\ToIoTypeInfo.hpp" />
+		<Unit filename="Include\Iocaste\Primitives.hpp" />
 		<Unit filename="Include\Iocaste\Run.hpp" />
 		<Unit filename="Include\Iocaste\Stack.hpp" />
 		<Unit filename="Iocaste.cbp" />
@@ -112,6 +113,7 @@
 		<Unit filename="Source\IoObjectImpl.cpp" />
 		<Unit filename="Source\IoVM.cpp" />
 		<Unit filename="Source\IoVMInit.cpp" />
+		<Unit filename="Source\Primitives.cpp" />
 		<Unit filename="Source\Run.cpp" />
 		<Unit filename="Source\Stack.cpp" />
 		<Unit filename="basekit\source\BStream.c">
@@ -428,7 +430,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm\source\IoSeq_vector.h" />
-		<Unit filename="iovm\source\IoState.c">
+		<Unit filename="iovm\source\IoState.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm\source\IoState.h" />
