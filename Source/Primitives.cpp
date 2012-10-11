@@ -16,7 +16,7 @@ Primitives::~Primitives()
     for (auto item : this->toList())
     {
        	//io_free(item->records);
-        io_free(item);
+        //io_free(item);
     }
 }
 

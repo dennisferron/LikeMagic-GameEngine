@@ -704,7 +704,7 @@ IOVM_API void IoState_registerProtoWithId_(IoState *self, IoObject *proto, const
 
 	IoState_retain_(self, proto);
 	primitives.add(index, proto);
-	cout << "Registered proto " << IoObject_name(proto) << " with TypeIndex " << index.get_id() << endl;
+	cout << "Registered proto " << v << " with TypeIndex " << index.get_id() << endl;
 }
 
 IoObject *IoState_protoWithName_(IoState *self, const char *name)
