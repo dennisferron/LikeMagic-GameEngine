@@ -15,6 +15,7 @@ class ScriptedContactResultCallback : public IMarkable, public btCollisionWorld:
 {
 public:
     ScriptedContactResultCallback(IoBlock onAddSingleResult_, IoBlock onNeedsCollision);
+    virtual ~ScriptedContactResultCallback();
 
     virtual void mark() const;
     bool baseNeedsCollision(btBroadphaseProxy* proxy) const;

@@ -3,9 +3,9 @@
 using namespace Bindings::Bullet;
 
 
-
 ScriptedWorldManager::ScriptedWorldManager() {}
 
+ScriptedWorldManager::~ScriptedWorldManager() {}
 
 void ScriptedWorldManager::setOnTick(btDynamicsWorld& world, IoBlock onTick_)
 {

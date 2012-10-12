@@ -7,6 +7,10 @@ ScriptedContactResultCallback::ScriptedContactResultCallback(IoBlock onAddSingle
 {
 }
 
+ScriptedContactResultCallback::~ScriptedContactResultCallback()
+{
+}
+
 void ScriptedContactResultCallback::mark() const
 {
     onAddSingleResult.mark();

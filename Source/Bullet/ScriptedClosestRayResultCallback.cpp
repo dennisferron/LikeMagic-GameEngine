@@ -8,6 +8,10 @@ ScriptedClosestRayResultCallback::ScriptedClosestRayResultCallback(IoBlock onAdd
 {
 }
 
+ScriptedClosestRayResultCallback::~ScriptedClosestRayResultCallback()
+{
+}
+
 btScalar ScriptedClosestRayResultCallback::addSingleResult(btCollisionWorld::LocalRayResult& rayResult, bool normalInWorldSpace)
 {
     return onAddSingleResult.eval<btScalar>(rayResult, normalInWorldSpace);

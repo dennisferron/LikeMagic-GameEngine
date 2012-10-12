@@ -15,6 +15,7 @@ class ScriptedClosestRayResultCallback : public IMarkable, public btCollisionWor
 {
 public:
     ScriptedClosestRayResultCallback(IoBlock onAddSingleResult_);
+    virtual ~ScriptedClosestRayResultCallback();
 
     virtual void mark() const;
     virtual btScalar addSingleResult(btCollisionWorld::LocalRayResult& rayResult, bool normalInWorldSpace);

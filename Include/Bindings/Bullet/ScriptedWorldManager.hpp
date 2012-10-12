@@ -15,6 +15,7 @@ class ScriptedWorldManager : public IMarkable
 {
 public:
     ScriptedWorldManager();
+    virtual ~ScriptedWorldManager();
     virtual void mark() const;
 
     void setOnTick(btDynamicsWorld& world, IoBlock onTick_);

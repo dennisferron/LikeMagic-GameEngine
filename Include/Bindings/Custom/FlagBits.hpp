@@ -6,9 +6,15 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-
+// forward declaration
+namespace irr { namespace scene {
+    class ISceneNode;
+}}
 
 namespace Bindings { namespace Custom {
+
+int  flag_bits_get_value(irr::scene::ISceneNode* node);
+void flag_bits_set_value(irr::scene::ISceneNode* node, int value);
 
 // Because Io uses double internally for Number, it has trouble
 // with bit-twiddling operations on nominal integers.  Not all the bits
