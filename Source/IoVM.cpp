@@ -613,5 +613,3 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
         return clone;
     }
 }
-
-

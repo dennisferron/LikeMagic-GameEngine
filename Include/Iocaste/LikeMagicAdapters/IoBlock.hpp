@@ -62,7 +62,7 @@ public:
     IoBlock();
     IoBlock(AbstractTypeSystem const* type_sys_, IoVM* iovm_, IoObject* io_block_, IoObject* io_target_);
     IoBlock(IoBlock const& other);
-    ~IoBlock();
+    virtual ~IoBlock();
 
     template <typename... Args>
     void operator()(Args... args) const
