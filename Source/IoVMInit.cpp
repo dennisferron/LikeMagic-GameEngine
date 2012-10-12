@@ -10,17 +10,23 @@ using namespace std;
 #include "IoObject.h"
 #include "IoFile.h"
 
-#define BOOTSTRAP_FILE_PATH "../Iocaste/iovm/io/"
+#if defined(__APPLE__) && defined(__MACH__)
+    #define BOOTSTRAP_FILE_PATH "/Users/dennisferron/code/LikeMagic-All/Iocaste/iovm/io/"
+#else
+    #define BOOTSTRAP_FILE_PATH "../Iocaste/iovm/io/"
+#endif
 
 void doInitFile(IoState* state, IoObject* context, char const* file_path, char const* file_name)
 {
-    std::ifstream input_stream(file_path);
-    std::stringstream buffer;
-    buffer << input_stream.rdbuf();
-    string file_content = buffer.str();
-
-    //cout << "Loaded file: " << file_name << endl << file_content << endl;
-    IoState_rawOn_doCString_withLabel_(state, context, file_content.c_str(), file_path);
+    try
+    {
+        IoState_doFile_(state, file_path);
+    }
+    catch (...)
+    {
+        cerr << "Exception opening/reading Io initialization file " << file_path << endl;
+        throw;
+    }
 }
 
 extern "C" void IoVMCodeInit(IoObject *context)

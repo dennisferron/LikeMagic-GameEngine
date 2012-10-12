@@ -38,6 +38,17 @@
 
 #include <stdlib.h>
 
+#include <iostream>
+using namespace std;
+
+#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+using namespace Iocaste;
+using namespace Iocaste::LikeMagicAdapters;
+
+extern "C" IoDirectory *IoDirectory_proto(void *state);
+
+extern "C" {
+
 // BEGIN IoState_inline
 
 IoObject *IOTRUE(IoObject *self)
@@ -462,7 +473,7 @@ void IoState_new_atAddress(void *address)
 		IoObject_setSlot_to_(core, SIOSYMBOL("Coroutine"),  self->mainCoroutine);
 		IoObject_setSlot_to_(core, SIOSYMBOL("Error"),      IoError_proto(self));
 		IoObject_setSlot_to_(core, SIOSYMBOL("File"),       IoFile_proto(self));
-		IoObject_setSlot_to_(core, SIOSYMBOL("Directory"),  IoDirectory_proto(self));
+		IoObject_setSlot_to_(core, SIOSYMBOL("Directory"),  ::IoDirectory_proto(self));
 		IoObject_setSlot_to_(core, SIOSYMBOL("Date"),       IoDate_proto(self));
 		IoObject_setSlot_to_(core, SIOSYMBOL("Duration"),   IoDuration_proto(self));
 		IoObject_setSlot_to_(core, SIOSYMBOL("WeakLink"),   IoWeakLink_proto(self));
@@ -681,26 +692,35 @@ void IoState_registerProtoWithFunc_(IoState *self, IoObject *proto, const char *
 
 IOVM_API void IoState_registerProtoWithId_(IoState *self, IoObject *proto, const char *v)
 {
-	if (PointerHash_at_(self->primitives, (void *)v))
+    IoVM* vm = static_cast<IoVM*>(self);
+    Primitives& primitives = vm->primitives;
+    TypeIndex index = primitives.indexOf(string(v));
+
+    if (primitives.get(index))
 	{
 		printf("Error registering proto: %s\n", IoObject_name(proto));
 		IoState_fatalError_(self, "IoState_registerProtoWithFunc_() Error: attempt to add the same proto twice");
 	}
 
 	IoState_retain_(self, proto);
-	PointerHash_at_put_(self->primitives, (void *)v, proto);
-	//printf("registered %s\n", IoObject_name(proto));
+	primitives.add(index, proto);
+	cout << "Registered proto " << v << " with TypeIndex " << index.get_id() << endl;
 }
 
 IoObject *IoState_protoWithName_(IoState *self, const char *name)
 {
-	POINTERHASH_FOREACH(self->primitives, key, proto, if (!strcmp(IoObject_name(proto), name)) { return proto; });
-	return NULL;
+    IoVM* vm = static_cast<IoVM*>(self);
+    Primitives& primitives = vm->primitives;
+    TypeIndex index = primitives.indexOf(string(name));
+    return primitives.get(index);
 }
 
 List *IoState_tagList(IoState *self) // caller must io_free returned List
 {
-	List *tags = List_new();
+    IoVM* vm = static_cast<IoVM*>(self);
+    Primitives& primitives = vm->primitives;
+    std::vector<IoObject*> objs = primitives.toList();
+    List *tags = List_new();
 	POINTERHASH_FOREACH(self->primitives, k, proto, List_append_(tags, IoObject_tag((IoObject *)proto)));
 	return tags;
 }
@@ -722,7 +742,17 @@ void IoState_done(IoState *self)
 	PointerHash_free(self->primitives);
 	CHash_free(self->symbols);
 
-	LIST_DO_(self->recycledObjects, IoObject_dealloc); // this does not work now that objects and marks are separate
+	//LIST_DO_(self->recycledObjects, IoObject_dealloc); // Old comment: "this does not work now that objects and marks are separate"
+	{
+        const List *foreachList = self->recycledObjects;
+        size_t index, foreachMax = List_size(foreachList);
+
+        for (index = 0; index < foreachMax; index++)
+        {
+            IoObject_dealloc((IoObject*)List_at_(foreachList, index));
+        }
+    }
+
 	List_free(self->recycledObjects);
 	List_free(self->cachedNumbers);
 
@@ -753,7 +783,7 @@ void MissingProtoError(void)
 
 IoObject *IoState_protoWithId_(IoState *self, const char *v)
 {
-	IoObject *proto = PointerHash_at_(self->primitives, (void *)v);
+	IoObject *proto = IoState_protoWithName_(self, v);
 
 	//printf("IoState_protoWithId_(self, %s)\n", v);
 
@@ -809,7 +839,7 @@ IoObject *IoState_rawOn_doCString_withLabel_(IoState *self,
 void IoState_rawPrompt(IoState *self)
 {
 	int max = 1024 * 16;
-	char *s = io_calloc(1, max);
+	char *s = (char*)io_calloc(1, max);
 	IoObject *result;
 
 	for (;;)
@@ -856,4 +886,4 @@ IOVM_API int IoState_exitResult(IoState *self)
 	return self->exitResult;
 }
 
-
+} // extern "C"

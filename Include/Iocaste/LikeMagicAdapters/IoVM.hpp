@@ -16,6 +16,7 @@
 #include "LikeMagic/MarkableObjGraph.hpp"
 
 #include "Iocaste/Breakpoint.hpp"
+#include "Iocaste/Primitives.hpp"
 
 #include "boost/unordered_map.hpp"
 #include "boost/unordered_set.hpp"
@@ -25,6 +26,7 @@
 extern "C"
 {
     typedef void (CollectorFreeFunc)(void *);
+    List* IoState_tagList(IoState *self);
 }
 
 namespace Iocaste { namespace LikeMagicAdapters {
@@ -33,8 +35,13 @@ namespace Iocaste { namespace LikeMagicAdapters {
 class IoVM : public IoState, public LikeMagic::ITypeSystemObserver, public LikeMagic::MarkableObjGraph
 {
 private:
+    friend IOVM_API void ::IoState_registerProtoWithId_(IoState *self, IoObject *proto, const char *v);
+    friend IOVM_API IoObject* ::IoState_protoWithName_(IoState *self, const char *name);
+    friend List* ::IoState_tagList(IoState *self);
+
     LikeMagic::RuntimeTypeSystem& type_system;
     IoState* state;  // It was dangerous when this was named "self" - Io macros referencing self are defined for an IoObject, not an IoState
+    Primitives primitives;
     std::set<TypeIndex> registered_classes;
     boost::unordered_map<TypeIndex, IoObject*> class_protos;
     CollectorFreeFunc* original_free_func;

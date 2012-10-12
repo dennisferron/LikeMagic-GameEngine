@@ -48,12 +48,12 @@ true do(
 
 	//doc true ifTrue Evaluates the argument and returns self.
 	ifTrue  := Object getSlot("evalArgAndReturnSelf")
-	
+
 	//doc true ifFalse Does not eval argument and returns true.
 	ifFalse := true
-	
+
 	//doc true and Evaluates the argument and returns the result.
-	
+
 	//doc true or Does not eval argument and returns true.
 	setSlot("or", true)
 
@@ -65,7 +65,7 @@ true do(
 
 	//doc true not Does not eval argument and returns false.
 	not := false
-	
+
 	//doc true clone Returns true.
 	clone := true
 )
@@ -85,7 +85,7 @@ false do(
 	setSlot("and", false)
 	//doc false or Evaluates the argument and returns the result.
 	or := method(v, v isTrue)
-  
+
   //doc false type Returns "false".
 	type := "false"
 	//doc false asString Returns "false".
@@ -122,11 +122,11 @@ nil do(
 	isTrue := false
 )
 
-// I think non-local returns can eliminate all this stopStatus stuff 
+// I think non-local returns can eliminate all this stopStatus stuff
 
 Call do(
-  /*doc Call relayStopStatus(arg) 
-  Sets sender's stop status (Normal, Return, 
+  /*doc Call relayStopStatus(arg)
+  Sets sender's stop status (Normal, Return,
   Break, Continue etc.) and returns evaluated argument.
   */
 	relayStopStatus := method(
@@ -135,7 +135,7 @@ Call do(
 		getSlot("r")
 	)
 
-  /*doc Call resetStopStatus(arg) 
+  /*doc Call resetStopStatus(arg)
   Sets stop status to Normal.
   See also <tt>Call setStopStatus</tt>.
   */
@@ -192,7 +192,7 @@ Object do(
 	ifNilEval    := Object getSlot("thisContext")
 	//doc Object or(arg) Returns true.
 	setSlot("or", true)
-	
+
 	//doc Object isTrue Returns true.
 	isTrue := true
 	//doc Object and(arg) Evaluates argument and returns the result.
@@ -200,7 +200,7 @@ Object do(
 )
 
 Sequence do(
-  /*doc Sequence makeFirstCharacterLowercase 
+  /*doc Sequence makeFirstCharacterLowercase
   Receiver must be mutable (see also asMutable). Returns receiver.
   <br/>
   <pre>
@@ -211,7 +211,7 @@ Sequence do(
 	makeFirstCharacterLowercase := method(
 		if(self size > 0, self atPut(0, self at(0) asLowercase))
 	)
-  /*doc Sequence makeFirstCharacterUppercase 
+  /*doc Sequence makeFirstCharacterUppercase
   Receiver must be mutable (see also asMutable). Returns receiver.
   <br/>
   <pre>
@@ -223,8 +223,8 @@ Sequence do(
 		if(self size > 0, self atPut(0, self at(0) asUppercase))
 	)
 
-  /*doc Sequence slicesBetween(startSeq, endSeq) 
-  Returns a list of slices delimited 
+  /*doc Sequence slicesBetween(startSeq, endSeq)
+  Returns a list of slices delimited
   by <tt>startSeq</tt> and <tt>endSeq</tt>.
   <br>
   <pre>
@@ -246,8 +246,8 @@ Sequence do(
 )
 
 Object do(
-  /*doc Object hasSlot(name) 
-  Returns <tt>true</tt> if slot is found somewhere in the inheritance chain 
+  /*doc Object hasSlot(name)
+  Returns <tt>true</tt> if slot is found somewhere in the inheritance chain
   (including receiver itself).
   */
 	hasSlot := method(n,
@@ -261,7 +261,7 @@ Object do(
 	setSlot("..", method(arg, getSlot("self") asString .. arg asString))
 
 	Map addKeysAndValues := method(keys, values, keys foreach(i, k, self atPut(k, values at(i))); self)
-  
+
   /*doc Object slotDescriptionMap
   Returns raw map of slot names and short values' descriptions.
   See also <tt>Object slotSummary</tt>.
@@ -288,7 +288,7 @@ Object do(
 		)
 		nil
 	)
-  /*doc Object slotSummary 
+  /*doc Object slotSummary
   Returns a formatted <tt>slotDescriptionMap</tt>.
   <br/>
   <pre>
@@ -300,26 +300,26 @@ Object do(
     forward          = method(...)
   </pre>
   */
-  
+
 	slotSummary := method(keyword,
 		if(getSlot("self") type == "Block",
 			return getSlot("self") asSimpleString
 		)
-		
+
 		s := Sequence clone
 		s appendSeq(" ", getSlot("self") asSimpleString, ":\n")
 		slotDescriptions := slotDescriptionMap
-		
+
 		if(keyword,
 			slotDescriptions = slotDescriptions select(k, v, k asMutable lowercase containsSeq(keyword))
 		)
-		
+
 		slotDescriptions keys sortInPlace foreach(k,
 			s appendSeq("  ", k alignLeft(16), " = ", slotDescriptions at(k), "\n")
 		)
 		s
 	)
-  
+
   //doc Object asString Same as <tt>slotSummary</tt>.
 	asString := getSlot("slotSummary")
 
@@ -463,7 +463,7 @@ Object do(
 	//doc Object in(aList) Same as: aList contains(self)
 	in := method(aList, aList contains(self))
 
-  /*doc Object uniqueHexId 
+  /*doc Object uniqueHexId
   Returns uniqueId in a hexadecimal form (with a "0x" prefix)
   <pre>
   Io> Object uniqueId
@@ -474,9 +474,9 @@ Object do(
   */
 	uniqueHexId := method("0x" .. getSlot("self") uniqueId asString toBase(16))
 
-  /*doc Object lazySlot(code) 
-  Defines a slot with a lazy initialization code. 
-  Code is run only once: the first time slot is accessed. 
+  /*doc Object lazySlot(code)
+  Defines a slot with a lazy initialization code.
+  Code is run only once: the first time slot is accessed.
   Returned value is stored in a regular slot.
   <br/>
   <pre>
@@ -521,7 +521,7 @@ Object do(
 			nil
 		)
 	)
-  
+
   /*doc Object foreachSlot(slotName, slotValue, code)
   Iterates over all the slots in a receiver. Provides slotValue (non-activated)
   along with slotName. Code is executed in context of sender. <tt>slotName</tt> and <tt>slotValue</tt>
@@ -551,7 +551,7 @@ Object do(
 		)
 	)
 
-	/*doc Object switch(<key1>, <expression1>, <key2>, <expression2>, ...) 
+	/*doc Object switch(<key1>, <expression1>, <key2>, <expression2>, ...)
 	Execute an expression depending on the value of the caller. (This is an equivalent to C switch/case)
 	<code>
 	hour := Date hour switch(
@@ -562,7 +562,7 @@ Object do(
 	)
 	</code>
 	*/
-	
+
 	switch := method(
 		for(couple, 0, call argCount - 2, 2,
 			if(call evalArgAt(couple) == self,
@@ -582,7 +582,7 @@ Object do(
 	)
 
 	/*doc Object doRelativeFile(pathString)
-		Evaluates the File in the context of the receiver. Returns the result. 
+		Evaluates the File in the context of the receiver. Returns the result.
 		pathString is relative to the file calling doRelativeFile. (Duplicate of relativeDoFile)
 	*/
 	doRelativeFile := method(path,
@@ -590,12 +590,12 @@ Object do(
 	)
 
 	/*doc Object relativeDoFile(pathString)
-		Evaluates the File in the context of the receiver. Returns the result. 
+		Evaluates the File in the context of the receiver. Returns the result.
 		pathString is relative to the file calling doRelativeFile. (Duplicate of doRelativeFile)
 	*/
 	relativeDoFile := getSlot("doRelativeFile")
-	
-	/*doc Object deprecatedWarning(optionalNewName) 
+
+	/*doc Object deprecatedWarning(optionalNewName)
 	Prints a warning message that the current method is deprecated.
 	If optionalNewName is supplied, the warning will suggest using that instead.
 	Returns self.
@@ -604,7 +604,7 @@ Object do(
 		writeln("Warning in ", call sender call message label, ": '", call sender call message name, "' is deprecated", if(newName, ".  Use '" .. newName .. "' instead.", " and will be removed from a later version."))
 		self
 	)
-	
+
 	//referenceIdForObject := method(obj, getSlot("obj") unqiueId)
 	//objectForReferenceId := method(id, Collector objectWithUniqueId(id))
 )
