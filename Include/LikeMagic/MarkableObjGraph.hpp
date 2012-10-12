@@ -52,6 +52,7 @@ protected:
 public:
 
     MarkableObjGraph();
+    virtual ~MarkableObjGraph();
 
     template <typename T>
     void add_mark_obj(T const* obj) const
@@ -87,7 +88,6 @@ public:
 
 public:
 
-    ~MarkableObjGraph();
     virtual void mark() const;
 };
 

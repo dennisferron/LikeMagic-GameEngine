@@ -21,6 +21,13 @@ public:
     // the GC from collecting script objects it may be pointing too.
     // Declare your script object as a pointer to a "mutable" script object if you have to.
     virtual void mark() const = 0;
+
+    // IMarkable has no virtual destructor by design.  As it is
+    // an interface and might be applied to lightweight objects,
+    // I didn't want to force virtual destructors on all users of it.
+    // Although the memory cost of the vtable is already paid because of the virtual mark() function,
+    // presence of a virtual destructor would force all derived objects to be
+    // destructed virtually, which might be an unwanted runtime cost.
 };
 
 }

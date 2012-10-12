@@ -22,6 +22,9 @@ using namespace std;
 
 using namespace LikeMagic;
 
+// Stuck here because compiler complains when it is pure virtual:
+ITypeSystemObserver::~ITypeSystemObserver() {}
+
 
 template <typename From, typename To>
 void AbstractTypeSystem::add_nochange_conv(TypeInfoPtr from, TypeInfoPtr to)

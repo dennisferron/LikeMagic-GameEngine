@@ -29,6 +29,7 @@ public:
     virtual void register_class(LikeMagic::Marshaling::AbstractClass const* class_)= 0;
     virtual void register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base) = 0;
     virtual void register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::CallTargets::AbstractCallTargetSelector* method) = 0;
+    virtual ~ITypeSystemObserver();
 };
 
 }

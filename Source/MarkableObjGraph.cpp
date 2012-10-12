@@ -12,7 +12,6 @@ namespace LikeMagic
 MarkableObjGraph::MarkableObjGraph()
     : just_testing(false), has_marked(false)
 {
-
 }
 
 void MarkableObjGraph::mark() const

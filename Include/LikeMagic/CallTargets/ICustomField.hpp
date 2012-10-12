@@ -16,6 +16,8 @@ template <typename ObjType, typename FieldType_>
 class ICustomField
 {
 public:
+    virtual ~ICustomField() {}
+
     typedef FieldType_ FieldType;
 
     virtual FieldType get(ObjType const& obj) const = 0;
