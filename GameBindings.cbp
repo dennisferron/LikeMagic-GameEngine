@@ -89,7 +89,7 @@
 			<Add option="-Wno-unused-parameter" />
 			<Add option="-Wno-deprecated" />
 			<Add option="-Wno-ignored-qualifiers" />
-			<Add directory="..\Common\boost" />
+			<Add directory="..\Common\boost_1_49_0" />
 			<Add directory="Deps\bullet\src" />
 			<Add directory="Deps\raknet\Source" />
 			<Add directory="Include" />
