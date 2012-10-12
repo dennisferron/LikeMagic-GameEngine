@@ -100,7 +100,7 @@
 			<Add directory="Include" />
 			<Add directory="..\Interpreter\Include" />
 			<Add directory="..\LikeMagic\Include" />
-			<Add directory="..\Common\boost" />
+			<Add directory="..\Common\boost_1_49_0" />
 			<Add directory="..\GameBindings\bullet\src" />
 			<Add directory="..\GameBindings\irrlicht\include" />
 			<Add directory="Include\Iocaste\CShims" />
