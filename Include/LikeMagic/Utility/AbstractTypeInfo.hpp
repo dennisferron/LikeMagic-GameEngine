@@ -40,7 +40,8 @@ private:
     mutable std::size_t cached_hash;
 
 protected:
-    AbstractTypeInfo() : ref_count(0), has_cached_hash(false) {}
+    AbstractTypeInfo();
+    virtual ~AbstractTypeInfo();
 
     virtual std::string get_system() const = 0;
     virtual bool less(const AbstractTypeInfo& that) const = 0;

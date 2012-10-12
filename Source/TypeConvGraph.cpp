@@ -27,6 +27,12 @@ using namespace std;
 #include "boost/graph/adjacency_list.hpp"
 #include "boost/graph/graph_utility.hpp"
 
+#if (defined(__MINGW32__) || defined(__MINGW64__)) && (__GNUC__ == 4)
+#include <stddef.h>
+// workaround a mingw bug, http://sourceforge.net/tracker/index.php?func=detail&aid=2373234&group_id=2435&atid=102435
+int swprintf (wchar_t *, size_t, const wchar_t *, ...);
+#endif
+
 #include "boost/lexical_cast.hpp"
 
 #include <assert.h>
@@ -121,7 +127,7 @@ struct FindType
     }
 };
 
-ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, TypeConvGraph::p_chain_t chain) const
+ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, TypeConvGraph::p_chain_t const& chain) const
 {
     auto expr = from_expr;
 
@@ -137,7 +143,7 @@ ExprPtr TypeConvGraph::build_conv_chain(ExprPtr from_expr, TypeConvGraph::p_chai
 
 void TypeConvGraph::print_conv_chain(TypeIndex from, TypeIndex to) const
 {
-    auto chain = search_for_conv(from, to);
+    p_chain_t const& chain = search_for_conv(from, to);
 
     if (!chain)
     {
@@ -151,7 +157,7 @@ void TypeConvGraph::print_conv_chain(TypeIndex from, TypeIndex to) const
 
 }
 
-void TypeConvGraph::print_conv_chain(p_chain_t chain) const
+void TypeConvGraph::print_conv_chain(p_chain_t const& chain) const
 {
     for (size_t i=0; i < chain->size(); i++)
     {
@@ -163,7 +169,7 @@ void TypeConvGraph::print_conv_chain(p_chain_t chain) const
 
 ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to) const
 {
-    auto result = search_for_conv(from, to);
+    p_chain_t const& result = search_for_conv(from, to);
 
     if (!result)
     {
@@ -196,7 +202,7 @@ bool TypeConvGraph::has_conv(TypeIndex from_type, TypeIndex to_type) const
 }
 
 
-TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeIndex from, TypeIndex to) const
+TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, TypeIndex to) const
 {
     // Why was this set if not used?
     //static TypeIndex bot = BetterTypeInfo::create_index<BottomPtrType>();
@@ -278,7 +284,10 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeIndex from, TypeInd
         );
 
         if (!finder.found_conv || pred[dest] == no_vertex)
-            return conv_cache[key] = p_chain_t(); // NULL
+        {
+            conv_cache[key] = std::move(p_chain_t()); // NULL
+            return conv_cache[key];
+        }
         else
         {
             p_chain_t result(new std::vector<p_conv_t>);
@@ -288,7 +297,7 @@ TypeConvGraph::p_chain_t  TypeConvGraph::search_for_conv(TypeIndex from, TypeInd
 
             reverse(result->begin(), result->end());
 
-            conv_cache[key] = result;
+            conv_cache[key] = std::move(result);
         }
     }
 

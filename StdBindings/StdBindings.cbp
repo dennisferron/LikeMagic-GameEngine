@@ -79,7 +79,7 @@
 			<Add option="-DBUILDING_DLL_STD_BINDINGS" />
 			<Add directory="Include" />
 			<Add directory="..\Include" />
-			<Add directory="..\..\Common\boost" />
+			<Add directory="..\..\Common\boost_1_49_0" />
 			<Add directory="..\..\Iocaste\iovm\source" />
 			<Add directory="..\..\Iocaste\basekit\source" />
 			<Add directory="..\..\Iocaste\garbagecollector\source" />

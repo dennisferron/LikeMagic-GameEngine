@@ -21,6 +21,15 @@ void intrusive_ptr_release(AbstractTypeInfo const* p)
         delete p;
 }
 
+AbstractTypeInfo::AbstractTypeInfo() :
+    ref_count(0), has_cached_hash(false)
+{
+}
+
+AbstractTypeInfo::~AbstractTypeInfo()
+{
+}
+
 TypeIndex AbstractTypeInfo::get_index() const
 {
     return TypeInfoCache::get_instance()->get_index(this, this->bare_type());

@@ -69,8 +69,8 @@ private:
 
     bool has_type(TypeIndex type) const;
 
-    ExprPtr build_conv_chain(ExprPtr from_expr, p_chain_t chain) const;
-    p_chain_t search_for_conv(TypeIndex from, TypeIndex to) const;
+    ExprPtr build_conv_chain(ExprPtr from_expr, p_chain_t const& chain) const;
+    p_chain_t const& search_for_conv(TypeIndex from, TypeIndex to) const;
 
     // Don't allow TypeConvGraph to be copied accidently.
     TypeConvGraph(TypeConvGraph const&)=delete;
@@ -89,7 +89,7 @@ public:
     bool has_conv(TypeIndex from_type, TypeIndex to_type) const;
     void print_graph() const;
     void print_conv_chain(TypeIndex from, TypeIndex to) const;
-    void print_conv_chain(p_chain_t chain) const;
+    void print_conv_chain(p_chain_t const& chain) const;
 };
 
 }}

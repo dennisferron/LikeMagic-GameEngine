@@ -82,6 +82,7 @@ void AbstractCppObjProxy::suggest_method(std::string method_name, int num_args) 
 
 void AbstractCppObjProxy::check_magic()
 {
+    /*
     if (!this)
     {
         std::cout << "AbstractCppObjProxy:  'this' was null" << std::endl;
@@ -101,4 +102,5 @@ void AbstractCppObjProxy::check_magic()
             << " this = " << this;
         throw std::logic_error("Object was supposed to be an CppObjProxy, but is not.");
     }
+    */
 }
