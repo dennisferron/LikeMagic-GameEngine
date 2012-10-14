@@ -46,12 +46,17 @@ typedef long long int64_t;
 // this also includes windows.h
 #include <winsock2.h>
 
+#if defined(NO_USE_DLL_BUILD)
+#define BASEKIT_API
+#else
+
 #if defined(BUILDING_BASEKIT_DLL) || defined(BUILDING_IOVMALL_DLL)
 #define BASEKIT_API __declspec(dllexport)
 #else
 #define BASEKIT_API __declspec(dllimport)
 #endif
 
+#endif
 
 #  if !defined __MINGW32__
 /* disable compile warnings which are always treated

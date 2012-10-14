@@ -7,6 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug Mac">
+				<Option platforms="Mac;" />
 				<Option output="bin\Debug-Mac\IocasteDebugBuild" prefix_auto="1" extension_auto="1" />
 				<Option working_dir=".\" />
 				<Option object_output="obj\Debug-Mac\" />
@@ -36,6 +37,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Debug Linux">
+				<Option platforms="Unix;" />
 				<Option output="bin\Debug-Linux\IocasteDebugBuild" prefix_auto="1" extension_auto="1" />
 				<Option working_dir=".\" />
 				<Option object_output="obj\Debug-Linux\" />
@@ -59,7 +61,8 @@
 					<Add option="-Xlinker --end-group" />
 				</Linker>
 			</Target>
-			<Target title="Debug Windows">
+			<Target title="Debug Windows Static">
+				<Option platforms="Windows;" />
 				<Option output="bin\Debug-Windows\IocasteDebugBuild" prefix_auto="1" extension_auto="1" />
 				<Option working_dir=".\" />
 				<Option object_output="obj\Debug-Windows\" />

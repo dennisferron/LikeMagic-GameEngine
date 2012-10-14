@@ -12,6 +12,10 @@
 extern "C" {
 #endif
 
+#if defined NO_USE_DLL_BUILD
+#define COLLECTOR_API
+#else
+
 #if defined(WIN32)
 #if defined(BUILDING_COLLECTOR_DLL) || defined(BUILDING_IOVMALL_DLL)
 #define COLLECTOR_API __declspec(dllexport)
@@ -23,6 +27,8 @@ extern "C" {
 #define COLLECTOR_API
 #endif
 
+#endif
+
 typedef void (CollectorDoFunc)(void *);
 
 typedef struct CollectorMarker CollectorMarker;
@@ -32,7 +38,7 @@ typedef struct CollectorMarker CollectorMarker;
 	CollectorMarker *next; \
 	unsigned int color : 2; \
 	unsigned int hash1; \
-	unsigned int hash2; 
+	unsigned int hash2;
 
 /*
 #if !defined(COLLECTOROBJECTTYPE)

@@ -64,6 +64,8 @@ public:
     IoBlock(IoBlock const& other);
     virtual ~IoBlock();
 
+    IoBlock& operator =(IoBlock const& other);
+
     template <typename... Args>
     void operator()(Args... args) const
     {
