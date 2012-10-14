@@ -1,0 +1,19 @@
+Contents of /Users/dennisferron/code/irrlicht-1.8-unstable/source/Irrlicht/MacOSX/MacOSX_Prefix.pch
+
+-x
+c
+-arch
+x86_64
+-fmessage-length=0
+-fdiagnostics-print-source-range-info
+-fdiagnostics-show-category=id
+-fdiagnostics-parseable-fixits
+-fpascal-strings
+-O0
+-fasm-blocks
+-gdwarf-2
+-I/Users/dennisferron/code/irrlicht-1.8-unstable/source/Irrlicht/MacOSX/build/Debug/include
+-I../../../include
+-F/Users/dennisferron/code/irrlicht-1.8-unstable/source/Irrlicht/MacOSX/build/Debug
+-DMACOSX
+-D_DEBUG
