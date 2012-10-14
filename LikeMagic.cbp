@@ -65,7 +65,7 @@
 					<Add option="-s" />
 				</Linker>
 			</Target>
-			<Target title="Debug Windows">
+			<Target title="Debug Windows Static">
 				<Option platforms="Windows;" />
 				<Option output="libLikeMagic-Windows" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
