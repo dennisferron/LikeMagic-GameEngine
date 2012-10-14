@@ -41,7 +41,6 @@ void add_bindings_btCollisionObject(Namespace const& ns_bullet)
     LM_FUNC_OVERLOAD_BOTH(btCollisionObject, getBroadphaseHandle, btBroadphaseProxy*)
     LM_FUNC_OVERLOAD_BOTH(btCollisionObject, getCollisionShape, btCollisionShape*)
     LM_FUNC_OVERLOAD_BOTH(btCollisionObject, getInterpolationWorldTransform, btTransform&)
-    LM_FUNC_OVERLOAD_BOTH(btCollisionObject, getRootCollisionShape, btCollisionShape*)
     LM_FUNC_OVERLOAD_BOTH(btCollisionObject, getWorldTransform, btTransform&)
 
 

@@ -89,6 +89,8 @@ void add_bindings_btCollisionWorld(Namespace const& ns_bullet)
     LM_FIELD(btCollisionWorld_ContactResultCallback, (m_collisionFilterGroup)(m_collisionFilterMask))
     LM_FUNC(btCollisionWorld_ContactResultCallback, (needsCollision)(addSingleResult))
 
+    ScriptedContactResultCallback* compileMe = new ScriptedContactResultCallback(IoBlock(), IoBlock());
+
     LM_CLASS(ns_bullet, ScriptedContactResultCallback)
     LM_BASE(ScriptedContactResultCallback, btCollisionWorld_ContactResultCallback)
     LM_CONSTR(ScriptedContactResultCallback,, IoBlock, IoBlock)

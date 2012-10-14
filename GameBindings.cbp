@@ -39,8 +39,8 @@
 					<Add option="-s" />
 				</Linker>
 			</Target>
-			<Target title="Debug Windows">
-				<Option platforms="Windows;" />
+			<Target title="Debug Windows Shared Broken">
+				<Option platforms="" />
 				<Option output="GameBindings-Windows" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Debug-Windows\" />
 				<Option type="3" />
@@ -55,6 +55,7 @@
 					<Add directory="Deps\irrlicht\include" />
 				</Compiler>
 				<Linker>
+					<Add option="-shared-libgcc" />
 					<Add library="..\Iocaste\libIocaste-Windows.a" />
 					<Add library="..\LikeMagic\libLikeMagic-Windows.a" />
 					<Add library="Deps\irrlicht\lib\Win32-gcc\libIrrlicht.a" />
@@ -79,6 +80,28 @@
 					<Add directory="..\..\irrlicht-1.8-unstable\include" />
 				</Compiler>
 			</Target>
+			<Target title="Debug Windows Static">
+				<Option platforms="Windows;" />
+				<Option output="libGameBindings-Windows" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj\Debug-Windows\" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-DIRR_1_7" />
+					<Add option="-DNO_USE_DLL_BUILD" />
+					<Add option="-DNO_BUILDING_DLL" />
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D_IRR_STATIC_LIB_" />
+					<Add option="-D_CRT_SECURE_NO_DEPRECATE" />
+					<Add option="-D__GNUWIN32__" />
+					<Add directory="Deps\irrlicht-1.7.3\include" />
+				</Compiler>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-fexceptions" />
@@ -90,8 +113,7 @@
 			<Add option="-Wno-deprecated" />
 			<Add option="-Wno-ignored-qualifiers" />
 			<Add directory="..\Common\boost_1_49_0" />
-			<Add directory="Deps\bullet\src" />
-			<Add directory="Deps\raknet\Source" />
+			<Add directory="Deps\bullet-2.81-rev2613\src" />
 			<Add directory="Include" />
 			<Add directory="..\LikeMagic\Include" />
 			<Add directory="..\Iocaste\Include" />
