@@ -1,0 +1,65 @@
+10-20-2010
+Added submodules for dependencies, working on making them build correctly now.
+
+8-31-2010
+I'd like to make certain commonly called function types such as "float getX()" and "void setX(float x)" perform as fast as possible by
+adding the ability to bypass the general purpose code and call straight to the CFunction that runs it.
+Io calls the CFunctions "blindly" without the ability to
+attach a user-defined data struct (such as by an additional void* parameter in the user method call), so we have to provide a unique
+function entry point for each "fast" function to bind.  This brings us back full circle to the original design, which was to have
+a "template <typename F, F f> bind()" that's parameterized on the address of the bound function.  (Note that passing the function
+address this way, as a template constant parameter, theoretically should produce identical code to a "call-by-name" implementation
+based on C macros.  There is no need to use C macros for this at all except to wrap the top level, to avoid having to type
+the name of the function twice as in "bind<decltype(&f), (&f)>(name)".)
+
+This design requires doing the entire process (including marshalling) totally via templates.  However with the benefit of experience
+we can be smarter about the design this time.  First, we won't try to do all bindings this way; we'll keep the general purpose
+way we have now as a default and focus on only binding the most often used functions with the template/constant address technique.
+
+Second, we can use variadic templates to have it accept a list of policies (or a TypePack, or a tuple) for calls.  (Note:
+I think we can handle call context in the following way:  language agnostic side creates a function that accepts a Policy::CallContext
+type of argument and forwards that object to each Policy::ConvertTo<type> or Policy::ConvertFrom(type) call.
+Return value might well be stored into the context object too.  Each language-specific policy creates a CallContext object
+specific to its implementation. (E.g. for Io it would be IoObject pointers for self, locals, and message (or possibly the args).)
+It would call back into the language-agnostic portion to complete the work.
+
+Third, we will put the optimized bindings into their own separate files by convention (because the template-based system
+will need to pull in nearly all of its implementation via #includes; it trades runtime speed for more compiler work.
+
+A powergoal would be to have the "fast" calls and the FromScript and ToScript type converters use the same code (that is, promote
+the implementation of the ToScript and FromScript converters into the language Policy and change the converters to call it).
+
+A nice-to-have item is to have the ability to parameterize the called functions by function-address-constant or NOT do that and
+only parameterize them by type (for instance, taking the function address from CallContext).  This would allow Policies for some
+languages to only define one instance of a function for all bindings with that signature (for instance these implementations
+might attach the actual function pointer to call as part of the CallContext object).  This might not have much
+effect on executable size though, especially considering Io cannot use this anyway.  Perhaps it should be added when it is needed.
+
+Major limitations of fast call are:
+No type converter chaining can be done for these (or can we do some with metaprogramming?)
+No SFMO on "fast call" functions.  (What is the result of trying? Can we detect it and print an error? Should we/can we try "downgrade"
+the fast call to the general call in SFMO contexts?)
+Also how do we have the instance-based IoVM and RuntimeTypeSystem objects "find" the fast implementations.
+
+Bikeshedding question:  should we put the list of policies into a typepack?  Use a bare list?  Define a macro for the bare list?  Use BOOST_PREPROCESSOR lists?
+Must re-read Alexandrescu book and see if/how he addresses this issue.
+
+Implementation concern:  gcc 4.4.x doesn't allow local classes (those defined inline in a function body) to participate as template types.
+Can the fast call system be implemented using local classes / by function template mapping alone?  Otherwise will need to declare
+these in class scope, or update to gcc 4.5 on all platforms.  It would be nice to be able to add these fast call definitions
+directly to RuntimeTypeSystem/Class objects without them having to "search" for them.  Also if they are namespace-level declared,
+they still need to have a runtime call inside a function somewhere to "activate" them.  We could have them have use singleton-like
+technique of global instance + constructor run before main to register them and have runtime type system look for them, or
+we could require manually adding to runtime type system / class objects.  A possible benefit of manual adding is then you could
+choose whether or not to add fastcall, but downside would be that you might forget, and you'd need to change two different files.
+
+8-13-2010
+After several days' debugging, I have finally tracked down a segfault to a type conv problem (must remember to print out type converter descriptions
+more often in case it's doing a surprising conversion).  In this case the feature of direct conversion from IoNil to a C++ null of any pointer type backfired
+on me, because it was converting nil to a bool* and then dereferencing it.  Unfortunately that's fewer steps (or no more than) the correct conversion.
+
+I've known this problem would strike eventually so I have thought about adding weights to the type conversions and switching to djikstra's algorithm,
+but so far I have always been able to "solve" these problems by adding shortcut conversions - for instance in this case I think it's fair to add
+a shortcut conversion from IoNil to C++ "false".  Anyway using weighted paths could have their own unintended consequences; suppose I set the IoNil
+to pointer conversion with a weight of 1000 to prevent it from being used indiscriminantly; this could lead to the type converter building a
+Rube Goldberg chain out of low-weight converts when I actually do want to do a nil to null pointer conversion.
