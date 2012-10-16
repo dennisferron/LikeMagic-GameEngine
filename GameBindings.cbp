@@ -18,6 +18,8 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-DIRR_1_7" />
+					<Add option="-D_IRR_STATIC_LIB_" />
+					<Add option="-D_DEBUG" />
 					<Add directory="Deps/irrlicht/include" />
 				</Compiler>
 			</Target>
