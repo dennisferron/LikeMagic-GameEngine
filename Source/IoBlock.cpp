@@ -19,7 +19,7 @@ namespace Iocaste { namespace LikeMagicAdapters {
 IoBlock::IoBlock()
     : type_sys(0), iovm(0), io_block(0), io_target(0)
 {
-    cout << "IoBlock " << this << " default constructed, iovm is " << iovm << " block is " << this->io_block << " target is " << this->io_target << endl;
+    //cout << "IoBlock " << this << " default constructed, iovm is " << iovm << " block is " << this->io_block << " target is " << this->io_target << endl;
 }
 
 IoBlock::IoBlock(AbstractTypeSystem const* type_sys_, IoVM* iovm_, IoObject* io_block_, IoObject* io_target_)
@@ -28,32 +28,32 @@ IoBlock::IoBlock(AbstractTypeSystem const* type_sys_, IoVM* iovm_, IoObject* io_
     if (io_target && !io_target_->object)
         throw std::logic_error("Target has no object!");
 
-    cout << "IoBlock " << this << " constructed with target param " << io_target_ << ", iovm is " << iovm << " block is " << this->io_block << " target is " << this->io_target << endl;
+    //cout << "IoBlock " << this << " constructed with target param " << io_target_ << ", iovm is " << iovm << " block is " << this->io_block << " target is " << this->io_target << endl;
 
     //if ((void*)io_target == (void*)0xabababab)
-        cout << "Bad io_target" << endl;
+        //cout << "Bad io_target" << endl;
 }
 
 IoBlock::IoBlock(IoBlock const& other)
     : type_sys(other.type_sys), iovm(other.iovm), io_block(other.io_block), io_target(other.io_target)
 {
-    cout << "IoBlock " << this << " copy constructed from " << &other << ", iovm is " << iovm << " block is " << this->io_block <<" target is " << this->io_target << endl;
+    //cout << "IoBlock " << this << " copy constructed from " << &other << ", iovm is " << iovm << " block is " << this->io_block <<" target is " << this->io_target << endl;
 }
 
 IoBlock& IoBlock::operator =(IoBlock const& other)
 {
-    cout << "IoBlock " << this << " copy assigned from " << &other << ", iovm was " << iovm << " block is " << this->io_block <<" target is " << this->io_target << endl;
+    //cout << "IoBlock " << this << " copy assigned from " << &other << ", iovm was " << iovm << " block is " << this->io_block <<" target is " << this->io_target << endl;
     type_sys = other.type_sys;
     iovm = other.iovm;
     io_block = other.io_block;
     io_target = other.io_target;
-    cout << "Now iovm is " << iovm << " block is " << this->io_block <<" target is " << this->io_target << endl;
+    //cout << "Now iovm is " << iovm << " block is " << this->io_block <<" target is " << this->io_target << endl;
     return *this;
 }
 
 IoBlock::~IoBlock()
 {
-    cout << "IoBlock " << this << " destructed, target was " << this->io_target << endl;
+    //cout << "IoBlock " << this << " destructed, target was " << this->io_target << endl;
     this->io_target = (IoObject*)0xA5A5A5A5;
 }
 
@@ -110,7 +110,7 @@ void IoBlock::mark() const
 
 bool IoBlock::empty() const
 {
-    ////cout << "IoBlock " << this << " func IoBlock::empty(), iovm is " << iovm << " block is " << this->io_block << " target is " << this->io_target << endl;
+    //////cout << "IoBlock " << this << " func IoBlock::empty(), iovm is " << iovm << " block is " << this->io_block << " target is " << this->io_target << endl;
     return !io_block;
 }
 
