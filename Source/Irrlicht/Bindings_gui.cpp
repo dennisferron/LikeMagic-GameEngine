@@ -56,6 +56,7 @@ void add_bindings_gui(RuntimeTypeSystem& type_sys)
 
     typedef SEvent::SGUIEvent SGUIEvent;
     LM_CLASS(ns_irr_gui, SGUIEvent)
+    LM_FIELD(SGUIEvent, (Caller)(Element)(EventType))
 
     typedef SEvent::SMouseInput SMouseInput;
     LM_CLASS(ns_irr_gui, SMouseInput)
@@ -81,7 +82,9 @@ void add_bindings_gui(RuntimeTypeSystem& type_sys)
     LM_CLASS(ns_irr_gui, SUserEvent)
 
     LM_CLASS(ns_irr_gui, IGUIElement)
-    LM_FUNC(IGUIElement, (getText)(setMaxSize)(setMinSize)(setText))
+    LM_FUNC(IGUIElement, (getText)(setMaxSize)(setMinSize)(setText)
+        (getID)(setID)(getParent)(getType)(getTypeName)(hasType)(setVisible)
+    )
 
     LM_CLASS(ns_irr_gui, IGUIToolBar)
     LM_BASE(IGUIToolBar, IGUIElement)

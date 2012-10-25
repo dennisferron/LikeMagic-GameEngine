@@ -81,6 +81,10 @@
 					<Add option="-DIRR_1_8" />
 					<Add directory="Deps/irrlicht-1.8-unstable/include" />
 				</Compiler>
+				<ExtraCommands>
+					<Add before="rm -f libGameBindings-Mac.a" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Debug Windows Static">
 				<Option platforms="Windows;" />
