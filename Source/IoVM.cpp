@@ -511,6 +511,11 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 
 IoObject* IoVM::forward(IoObject *self, IoObject *locals, IoMessage *m)
 {
+    //TODO: Handle cases where forward is called before perform; don't always assert.
+    // When you access an object slot via bare "name" rather than "self name"
+    // from within an Io method attached to a LikeMagic object,
+    // locals forward forwards to this forward; we should look it up and perform it.
+
     std::string method_name = CSTRING(IoMessage_name(m));
     int arg_count = IoMessage_argCount(m);
 
