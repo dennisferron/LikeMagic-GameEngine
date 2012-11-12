@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ThinPlateSpline" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Mac">
+				<Option output="bin/Debug/SplineTest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-ldl" />
+					<Add option="-framework Foundation" />
+					<Add option="-framework AppKit" />
+					<Add option="-framework Cocoa" />
+					<Add option="-framework OpenGL" />
+					<Add option="-framework Carbon" />
+					<Add option="-framework IOKit" />
+					<Add option="-framework GLUT" />
+				</Linker>
+			</Target>
+			<Target title="Demo Mac">
+				<Option output="bin/Debug/SplineTest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-ldl" />
+					<Add option="-framework Foundation" />
+					<Add option="-framework AppKit" />
+					<Add option="-framework Cocoa" />
+					<Add option="-framework OpenGL" />
+					<Add option="-framework Carbon" />
+					<Add option="-framework IOKit" />
+					<Add option="-framework GLUT" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="../gauss-elim.h" />
+		<Unit filename="../gfx/eq1.png" />
+		<Unit filename="../gfx/eq2.png" />
+		<Unit filename="../gfx/eq3.png" />
+		<Unit filename="../gfx/eq4.png" />
+		<Unit filename="../gfx/eq5.png" />
+		<Unit filename="../gfx/tps-formulas.mml" />
+		<Unit filename="../gfx/tpsdemo-small.png" />
+		<Unit filename="../gfx/tpsdemo.png" />
+		<Unit filename="../index.html" />
+		<Unit filename="../linalg3d.h" />
+		<Unit filename="../ludecomposition.h" />
+		<Unit filename="../main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

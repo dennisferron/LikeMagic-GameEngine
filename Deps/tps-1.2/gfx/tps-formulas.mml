@@ -1,0 +1,1042 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE math:math PUBLIC "-//OpenOffice.org//DTD Modified W3C MathML 1.01//EN" "math.dtd">
+<math:math xmlns:math="http://www.w3.org/1998/Math/MathML">
+ <math:semantics>
+  <math:mtable>
+   <math:mtr>
+    <math:mtext>Thin Plate Spline formulas</math:mtext>
+   </math:mtr>
+   <math:mtr>
+    <math:mtext>Given a set C of p 3D control points.... </math:mtext>
+   </math:mtr>
+   <math:mtr>
+    <math:mrow>
+     <math:mfenced math:open="{" math:close="}">
+      <math:mtable>
+       <math:mtr>
+        <math:mrow>
+         <math:msub>
+          <math:mi>c</math:mi>
+          <math:mi math:fontstyle="italic">i1</math:mi>
+         </math:msub>
+         <math:mo math:stretchy="false">=</math:mo>
+         <math:msub>
+          <math:mi>x</math:mi>
+          <math:mi>i</math:mi>
+         </math:msub>
+        </math:mrow>
+       </math:mtr>
+       <math:mtr>
+        <math:mrow>
+         <math:msub>
+          <math:mi>c</math:mi>
+          <math:mi math:fontstyle="italic">i2</math:mi>
+         </math:msub>
+         <math:mo math:stretchy="false">=</math:mo>
+         <math:msub>
+          <math:mi>y</math:mi>
+          <math:mi>i</math:mi>
+         </math:msub>
+        </math:mrow>
+       </math:mtr>
+       <math:mtr>
+        <math:mrow>
+         <math:msub>
+          <math:mi>c</math:mi>
+          <math:mi math:fontstyle="italic">i3</math:mi>
+         </math:msub>
+         <math:mo math:stretchy="false">=</math:mo>
+         <math:msub>
+          <math:mi>z</math:mi>
+          <math:mi>i</math:mi>
+         </math:msub>
+        </math:mrow>
+       </math:mtr>
+      </math:mtable>
+     </math:mfenced>
+     <math:mi>,</math:mi>
+     <math:mrow>
+      <math:mi>i</math:mi>
+      <math:mo math:stretchy="false">∈</math:mo>
+      <math:mrow>
+       <math:mo math:stretchy="false">[</math:mo>
+       <math:mrow>
+        <math:mn>1</math:mn>
+        <math:mo math:stretchy="false"></math:mo>
+        <math:mi>p</math:mi>
+       </math:mrow>
+       <math:mo math:stretchy="false">]</math:mo>
+      </math:mrow>
+     </math:mrow>
+     <math:mrow>
+      <math:mo math:stretchy="false">≡</math:mo>
+     </math:mrow>
+     <math:mrow>
+      <math:msub>
+       <math:mi>C</math:mi>
+       <math:mrow>
+        <math:mi>p</math:mi>
+        <math:mo math:stretchy="false">×</math:mo>
+        <math:mn>3</math:mn>
+       </math:mrow>
+      </math:msub>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:mfenced math:open="[" math:close="]">
+       <math:mtable>
+        <math:mtr>
+         <math:mtd>
+          <math:msub>
+           <math:mi>x</math:mi>
+           <math:mn>1</math:mn>
+          </math:msub>
+         </math:mtd>
+         <math:mtd>
+          <math:msub>
+           <math:mi>y</math:mi>
+           <math:mn>1</math:mn>
+          </math:msub>
+         </math:mtd>
+         <math:mtd>
+          <math:msub>
+           <math:mi>z</math:mi>
+           <math:mn>1</math:mn>
+          </math:msub>
+         </math:mtd>
+        </math:mtr>
+        <math:mtr>
+         <math:mtd>
+          <math:msub>
+           <math:mi>x</math:mi>
+           <math:mn>2</math:mn>
+          </math:msub>
+         </math:mtd>
+         <math:mtd>
+          <math:msub>
+           <math:mi>y</math:mi>
+           <math:mn>2</math:mn>
+          </math:msub>
+         </math:mtd>
+         <math:mtd>
+          <math:msub>
+           <math:mi>z</math:mi>
+           <math:mn>2</math:mn>
+          </math:msub>
+         </math:mtd>
+        </math:mtr>
+        <math:mtr>
+         <math:mtd/>
+         <math:mtd>
+          <math:mo math:stretchy="false">⋮</math:mo>
+         </math:mtd>
+         <math:mtd/>
+        </math:mtr>
+        <math:mtr>
+         <math:mtd>
+          <math:msub>
+           <math:mi>x</math:mi>
+           <math:mi>p</math:mi>
+          </math:msub>
+         </math:mtd>
+         <math:mtd>
+          <math:msub>
+           <math:mi>y</math:mi>
+           <math:mi>p</math:mi>
+          </math:msub>
+         </math:mtd>
+         <math:mtd>
+          <math:msub>
+           <math:mi>z</math:mi>
+           <math:mi>p</math:mi>
+          </math:msub>
+         </math:mtd>
+        </math:mtr>
+       </math:mtable>
+      </math:mfenced>
+     </math:mrow>
+    </math:mrow>
+   </math:mtr>
+   <math:mtr>
+    <math:mtext>...and regularization parameter λ, solve the unknown TPS weights w and a in linear equation system... </math:mtext>
+   </math:mtr>
+   <math:mtr>
+    <math:mrow>
+     <math:mrow>
+      <math:mrow>
+       <math:mfenced math:open="[" math:close="]">
+        <math:mtable>
+         <math:mtr>
+          <math:mtd>
+           <math:mi>K</math:mi>
+          </math:mtd>
+          <math:mtd>
+           <math:mi>P</math:mi>
+          </math:mtd>
+         </math:mtr>
+         <math:mtr>
+          <math:mtd>
+           <math:msup>
+            <math:mi>P</math:mi>
+            <math:mi>T</math:mi>
+           </math:msup>
+          </math:mtd>
+          <math:mtd>
+           <math:mi>O</math:mi>
+          </math:mtd>
+         </math:mtr>
+        </math:mtable>
+       </math:mfenced>
+       <math:mo math:stretchy="false">⋅</math:mo>
+       <math:mfenced math:open="[" math:close="]">
+        <math:mtable>
+         <math:mtr>
+          <math:mtd>
+           <math:msup>
+            <math:mover math:accent="true">
+             <math:mi>w</math:mi>
+             <math:mo math:stretchy="false"></math:mo>
+            </math:mover>
+            <math:mi>?</math:mi>
+           </math:msup>
+          </math:mtd>
+         </math:mtr>
+         <math:mtr>
+          <math:mtd>
+           <math:msup>
+            <math:mover math:accent="true">
+             <math:mi>a</math:mi>
+             <math:mo math:stretchy="false"></math:mo>
+            </math:mover>
+            <math:mi>?</math:mi>
+           </math:msup>
+          </math:mtd>
+         </math:mtr>
+        </math:mtable>
+       </math:mfenced>
+      </math:mrow>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:mfenced math:open="[" math:close="]">
+       <math:mtable>
+        <math:mtr>
+         <math:mtd>
+          <math:mover math:accent="true">
+           <math:mi>v</math:mi>
+           <math:mo math:stretchy="false"></math:mo>
+          </math:mover>
+         </math:mtd>
+        </math:mtr>
+        <math:mtr>
+         <math:mtd>
+          <math:mover math:accent="true">
+           <math:mi>o</math:mi>
+           <math:mo math:stretchy="false"></math:mo>
+          </math:mover>
+         </math:mtd>
+        </math:mtr>
+       </math:mtable>
+      </math:mfenced>
+     </math:mrow>
+     <math:mrow>
+      <math:mo math:stretchy="false">≡</math:mo>
+     </math:mrow>
+     <math:mrow>
+      <math:mrow>
+       <math:msub>
+        <math:mi>L</math:mi>
+        <math:mrow>
+         <math:mrow>
+          <math:mo math:stretchy="false"></math:mo>
+          <math:mrow>
+           <math:mi>p</math:mi>
+           <math:mo math:stretchy="false"></math:mo>
+           <math:mn>3</math:mn>
+          </math:mrow>
+          <math:mo math:stretchy="false"></math:mo>
+         </math:mrow>
+         <math:mo math:stretchy="false">×</math:mo>
+         <math:mrow>
+          <math:mo math:stretchy="false"></math:mo>
+          <math:mrow>
+           <math:mi>p</math:mi>
+           <math:mo math:stretchy="false"></math:mo>
+           <math:mn>3</math:mn>
+          </math:mrow>
+          <math:mo math:stretchy="false"></math:mo>
+         </math:mrow>
+        </math:mrow>
+       </math:msub>
+       <math:mo math:stretchy="false">⋅</math:mo>
+       <math:msub>
+        <math:msup>
+         <math:mover math:accent="true">
+          <math:mi>x</math:mi>
+          <math:mo math:stretchy="false"></math:mo>
+         </math:mover>
+         <math:mi>?</math:mi>
+        </math:msup>
+        <math:mrow>
+         <math:mrow>
+          <math:mo math:stretchy="false"></math:mo>
+          <math:mrow>
+           <math:mi>p</math:mi>
+           <math:mo math:stretchy="false"></math:mo>
+           <math:mn>3</math:mn>
+          </math:mrow>
+          <math:mo math:stretchy="false"></math:mo>
+         </math:mrow>
+         <math:mo math:stretchy="false">×</math:mo>
+         <math:mn>1</math:mn>
+        </math:mrow>
+       </math:msub>
+      </math:mrow>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:msub>
+       <math:mover math:accent="true">
+        <math:mi>b</math:mi>
+        <math:mo math:stretchy="false"></math:mo>
+       </math:mover>
+       <math:mrow>
+        <math:mrow>
+         <math:mo math:stretchy="false"></math:mo>
+         <math:mrow>
+          <math:mi>p</math:mi>
+          <math:mo math:stretchy="false"></math:mo>
+          <math:mn>3</math:mn>
+         </math:mrow>
+         <math:mo math:stretchy="false"></math:mo>
+        </math:mrow>
+        <math:mo math:stretchy="false">×</math:mo>
+        <math:mn>1</math:mn>
+       </math:mrow>
+      </math:msub>
+     </math:mrow>
+    </math:mrow>
+   </math:mtr>
+   <math:mtr>
+    <math:mtext>..., where K, P and O are submatrices and w, a, v and o are subvectors, given by: </math:mtext>
+   </math:mtr>
+   <math:mtr>
+    <math:mrow>
+     <math:mrow>
+      <math:msub>
+       <math:mi>K</math:mi>
+       <math:mi math:fontstyle="italic">ij</math:mi>
+      </math:msub>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:mi>U</math:mi>
+     </math:mrow>
+     <math:mrow>
+      <math:mfenced math:open="" math:close="">
+       <math:mfenced math:open="∣" math:close="∣">
+        <math:mrow>
+         <math:mrow>
+          <math:mfenced math:open="[" math:close="]">
+           <math:mrow>
+            <math:msub>
+             <math:mi>c</math:mi>
+             <math:mi math:fontstyle="italic">i1</math:mi>
+            </math:msub>
+            <math:msub>
+             <math:mi>c</math:mi>
+             <math:mi math:fontstyle="italic">i2</math:mi>
+            </math:msub>
+           </math:mrow>
+          </math:mfenced>
+          <math:mo math:stretchy="false">−</math:mo>
+          <math:mfenced math:open="[" math:close="]">
+           <math:mrow>
+            <math:msub>
+             <math:mi>c</math:mi>
+             <math:mi math:fontstyle="italic">j1</math:mi>
+            </math:msub>
+            <math:msub>
+             <math:mi>c</math:mi>
+             <math:mi math:fontstyle="italic">j2</math:mi>
+            </math:msub>
+           </math:mrow>
+          </math:mfenced>
+         </math:mrow>
+        </math:mrow>
+       </math:mfenced>
+      </math:mfenced>
+      <math:mo math:stretchy="false"></math:mo>
+      <math:mrow>
+       <math:mrow>
+        <math:msub>
+         <math:mi>I</math:mi>
+         <math:mi math:fontstyle="italic">ij</math:mi>
+        </math:msub>
+        <math:mo math:stretchy="false">⋅</math:mo>
+        <math:msup>
+         <math:mo math:stretchy="false"></math:mo>
+         <math:mn>2</math:mn>
+        </math:msup>
+       </math:mrow>
+       <math:mo math:stretchy="false">⋅</math:mo>
+       <math:mo math:stretchy="false"></math:mo>
+      </math:mrow>
+     </math:mrow>
+     <math:mrow>
+      <math:mo math:stretchy="false">∥</math:mo>
+     </math:mrow>
+     <math:mrow>
+      <math:mrow>
+       <math:mi>i</math:mi>
+       <math:mi>,</math:mi>
+       <math:mi>j</math:mi>
+      </math:mrow>
+      <math:mo math:stretchy="false">∈</math:mo>
+      <math:mrow>
+       <math:mo math:stretchy="false">[</math:mo>
+       <math:mrow>
+        <math:mn>1</math:mn>
+        <math:mo math:stretchy="false"></math:mo>
+        <math:mi>p</math:mi>
+       </math:mrow>
+       <math:mo math:stretchy="false">]</math:mo>
+      </math:mrow>
+     </math:mrow>
+     <math:mrow>
+      <math:mo math:stretchy="false">∧</math:mo>
+     </math:mrow>
+     <math:mrow>
+      <math:mo math:stretchy="false"></math:mo>
+      <math:mo math:stretchy="false">≥</math:mo>
+      <math:mn>0</math:mn>
+     </math:mrow>
+    </math:mrow>
+   </math:mtr>
+   <math:mtr>
+    <math:mrow>
+     <math:mi>U</math:mi>
+     <math:mrow>
+      <math:mrow>
+       <math:mo math:stretchy="false"></math:mo>
+       <math:mi>r</math:mi>
+       <math:mo math:stretchy="false"></math:mo>
+      </math:mrow>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:mrow>
+       <math:mo math:stretchy="true">{</math:mo>
+       <math:mtable>
+        <math:mtr>
+         <math:mrow>
+          <math:mrow>
+           <math:msup>
+            <math:mi>r</math:mi>
+            <math:mn>2</math:mn>
+           </math:msup>
+           <math:mo math:stretchy="false">⋅</math:mo>
+           <math:mi>log</math:mi>
+          </math:mrow>
+          <math:mi>r</math:mi>
+          <math:mi>,</math:mi>
+          <math:mrow>
+           <math:mi>r</math:mi>
+           <math:mo math:stretchy="false"></math:mo>
+           <math:mn>0</math:mn>
+          </math:mrow>
+         </math:mrow>
+        </math:mtr>
+        <math:mtr>
+         <math:mrow>
+          <math:mn>0,</math:mn>
+          <math:mrow>
+           <math:mi>r</math:mi>
+           <math:mo math:stretchy="false">=</math:mo>
+           <math:mn>0</math:mn>
+          </math:mrow>
+         </math:mrow>
+        </math:mtr>
+       </math:mtable>
+      </math:mrow>
+     </math:mrow>
+    </math:mrow>
+   </math:mtr>
+   <math:mtr>
+    <math:mrow>
+     <math:mrow>
+      <math:mo math:stretchy="false"></math:mo>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:mfrac>
+       <math:mn>1</math:mn>
+       <math:mi math:fontstyle="italic">p²</math:mi>
+      </math:mfrac>
+     </math:mrow>
+     <math:mrow>
+      <math:munderover>
+       <math:mo math:stretchy="false">∑</math:mo>
+       <math:mrow>
+        <math:mi>i</math:mi>
+        <math:mo math:stretchy="false">=</math:mo>
+        <math:mn>1</math:mn>
+       </math:mrow>
+       <math:mi>p</math:mi>
+      </math:munderover>
+      <math:mrow>
+       <math:munderover>
+        <math:mo math:stretchy="false">∑</math:mo>
+        <math:mrow>
+         <math:mi>j</math:mi>
+         <math:mo math:stretchy="false">=</math:mo>
+         <math:mn>1</math:mn>
+        </math:mrow>
+        <math:mi>p</math:mi>
+       </math:munderover>
+       <math:mfenced math:open="∣" math:close="∣">
+        <math:mrow>
+         <math:mrow>
+          <math:mfenced math:open="[" math:close="]">
+           <math:mrow>
+            <math:msub>
+             <math:mi>c</math:mi>
+             <math:mi math:fontstyle="italic">i1</math:mi>
+            </math:msub>
+            <math:msub>
+             <math:mi>c</math:mi>
+             <math:mi math:fontstyle="italic">i2</math:mi>
+            </math:msub>
+           </math:mrow>
+          </math:mfenced>
+          <math:mo math:stretchy="false">−</math:mo>
+          <math:mfenced math:open="[" math:close="]">
+           <math:mrow>
+            <math:msub>
+             <math:mi>c</math:mi>
+             <math:mi math:fontstyle="italic">j1</math:mi>
+            </math:msub>
+            <math:msub>
+             <math:mi>c</math:mi>
+             <math:mi math:fontstyle="italic">j2</math:mi>
+            </math:msub>
+           </math:mrow>
+          </math:mfenced>
+         </math:mrow>
+        </math:mrow>
+       </math:mfenced>
+      </math:mrow>
+     </math:mrow>
+    </math:mrow>
+   </math:mtr>
+   <math:mtr>
+    <math:mrow>
+     <math:mrow>
+      <math:msub>
+       <math:mi>P</math:mi>
+       <math:mrow>
+        <math:mi>p</math:mi>
+        <math:mo math:stretchy="false">×</math:mo>
+        <math:mn>3</math:mn>
+       </math:mrow>
+      </math:msub>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:mfenced math:open="[" math:close="]">
+       <math:mtable>
+        <math:mtr>
+         <math:mtd>
+          <math:mn>1</math:mn>
+         </math:mtd>
+         <math:mtd>
+          <math:msub>
+           <math:mi>c</math:mi>
+           <math:mn>11</math:mn>
+          </math:msub>
+         </math:mtd>
+         <math:mtd>
+          <math:msub>
+           <math:mi>c</math:mi>
+           <math:mn>12</math:mn>
+          </math:msub>
+         </math:mtd>
+        </math:mtr>
+        <math:mtr>
+         <math:mtd>
+          <math:mn>1</math:mn>
+         </math:mtd>
+         <math:mtd>
+          <math:msub>
+           <math:mi>c</math:mi>
+           <math:mn>21</math:mn>
+          </math:msub>
+         </math:mtd>
+         <math:mtd>
+          <math:msub>
+           <math:mi>c</math:mi>
+           <math:mn>22</math:mn>
+          </math:msub>
+         </math:mtd>
+        </math:mtr>
+        <math:mtr>
+         <math:mtd>
+          <math:mn>1</math:mn>
+         </math:mtd>
+         <math:mtd>
+          <math:mo math:stretchy="false">⋮</math:mo>
+         </math:mtd>
+         <math:mtd>
+          <math:mo math:stretchy="false">⋮</math:mo>
+         </math:mtd>
+        </math:mtr>
+        <math:mtr>
+         <math:mtd>
+          <math:mn>1</math:mn>
+         </math:mtd>
+         <math:mtd>
+          <math:msub>
+           <math:mi>c</math:mi>
+           <math:mi math:fontstyle="italic">p1</math:mi>
+          </math:msub>
+         </math:mtd>
+         <math:mtd>
+          <math:msub>
+           <math:mi>c</math:mi>
+           <math:mi math:fontstyle="italic">p2</math:mi>
+          </math:msub>
+         </math:mtd>
+        </math:mtr>
+       </math:mtable>
+      </math:mfenced>
+     </math:mrow>
+     <math:mi>,</math:mi>
+     <math:mrow>
+      <math:msub>
+       <math:mi>O</math:mi>
+       <math:mrow>
+        <math:mn>3</math:mn>
+        <math:mo math:stretchy="false">×</math:mo>
+        <math:mn>3</math:mn>
+       </math:mrow>
+      </math:msub>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:mfenced math:open="[" math:close="]">
+       <math:mtable>
+        <math:mtr>
+         <math:mtd>
+          <math:mn>0</math:mn>
+         </math:mtd>
+         <math:mtd>
+          <math:mn>0</math:mn>
+         </math:mtd>
+         <math:mtd>
+          <math:mn>0</math:mn>
+         </math:mtd>
+        </math:mtr>
+        <math:mtr>
+         <math:mtd>
+          <math:mn>0</math:mn>
+         </math:mtd>
+         <math:mtd>
+          <math:mn>0</math:mn>
+         </math:mtd>
+         <math:mtd>
+          <math:mn>0</math:mn>
+         </math:mtd>
+        </math:mtr>
+        <math:mtr>
+         <math:mtd>
+          <math:mn>0</math:mn>
+         </math:mtd>
+         <math:mtd>
+          <math:mn>0</math:mn>
+         </math:mtd>
+         <math:mtd>
+          <math:mn>0</math:mn>
+         </math:mtd>
+        </math:mtr>
+       </math:mtable>
+      </math:mfenced>
+     </math:mrow>
+    </math:mrow>
+   </math:mtr>
+   <math:mtr>
+    <math:mrow>
+     <math:mrow>
+      <math:msub>
+       <math:msup>
+        <math:mi>P</math:mi>
+        <math:mi>T</math:mi>
+       </math:msup>
+       <math:mi math:fontstyle="italic">ij</math:mi>
+      </math:msub>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:msub>
+       <math:mi>P</math:mi>
+       <math:mi math:fontstyle="italic">ji</math:mi>
+      </math:msub>
+     </math:mrow>
+     <math:mrow>
+      <math:mo math:stretchy="false">∥</math:mo>
+     </math:mrow>
+     <math:mrow>
+      <math:mi>i</math:mi>
+      <math:mo math:stretchy="false">∈</math:mo>
+      <math:mrow>
+       <math:mo math:stretchy="false">[</math:mo>
+       <math:mrow>
+        <math:mn>1</math:mn>
+        <math:mo math:stretchy="false"></math:mo>
+        <math:mi>p</math:mi>
+       </math:mrow>
+       <math:mo math:stretchy="false">]</math:mo>
+      </math:mrow>
+     </math:mrow>
+     <math:mrow>
+      <math:mo math:stretchy="false">∧</math:mo>
+     </math:mrow>
+     <math:mrow>
+      <math:mi>j</math:mi>
+      <math:mo math:stretchy="false">∈</math:mo>
+      <math:mrow>
+       <math:mo math:stretchy="false">[</math:mo>
+       <math:mrow>
+        <math:mn>1</math:mn>
+        <math:mo math:stretchy="false"></math:mo>
+        <math:mn>3</math:mn>
+       </math:mrow>
+       <math:mo math:stretchy="false">]</math:mo>
+      </math:mrow>
+     </math:mrow>
+    </math:mrow>
+   </math:mtr>
+   <math:mtr>
+    <math:mrow>
+     <math:mrow>
+      <math:msub>
+       <math:mover math:accent="true">
+        <math:mi>v</math:mi>
+        <math:mo math:stretchy="false"></math:mo>
+       </math:mover>
+       <math:mrow>
+        <math:mi>p</math:mi>
+        <math:mo math:stretchy="false">×</math:mo>
+        <math:mn>1</math:mn>
+       </math:mrow>
+      </math:msub>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:mfenced math:open="[" math:close="]">
+       <math:mtable>
+        <math:mtr>
+         <math:msub>
+          <math:mi>c</math:mi>
+          <math:mn>13</math:mn>
+         </math:msub>
+        </math:mtr>
+        <math:mtr>
+         <math:msub>
+          <math:mi>c</math:mi>
+          <math:mn>23</math:mn>
+         </math:msub>
+        </math:mtr>
+        <math:mtr>
+         <math:mo math:stretchy="false">⋮</math:mo>
+        </math:mtr>
+        <math:mtr>
+         <math:msub>
+          <math:mi>c</math:mi>
+          <math:mi math:fontstyle="italic">p3</math:mi>
+         </math:msub>
+        </math:mtr>
+       </math:mtable>
+      </math:mfenced>
+     </math:mrow>
+     <math:mi>,</math:mi>
+     <math:mrow>
+      <math:msub>
+       <math:mover math:accent="true">
+        <math:mi>o</math:mi>
+        <math:mo math:stretchy="false"></math:mo>
+       </math:mover>
+       <math:mrow>
+        <math:mn>3</math:mn>
+        <math:mo math:stretchy="false">×</math:mo>
+        <math:mn>1</math:mn>
+       </math:mrow>
+      </math:msub>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:mfenced math:open="[" math:close="]">
+       <math:mtable>
+        <math:mtr>
+         <math:mn>0</math:mn>
+        </math:mtr>
+        <math:mtr>
+         <math:mn>0</math:mn>
+        </math:mtr>
+        <math:mtr>
+         <math:mn>0</math:mn>
+        </math:mtr>
+       </math:mtable>
+      </math:mfenced>
+     </math:mrow>
+     <math:mrow>
+      <math:msub>
+       <math:msup>
+        <math:mover math:accent="true">
+         <math:mi>w</math:mi>
+         <math:mo math:stretchy="false"></math:mo>
+        </math:mover>
+        <math:mi>?</math:mi>
+       </math:msup>
+       <math:mrow>
+        <math:mi>p</math:mi>
+        <math:mo math:stretchy="false">×</math:mo>
+        <math:mn>1</math:mn>
+       </math:mrow>
+      </math:msub>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:mfenced math:open="[" math:close="]">
+       <math:mtable>
+        <math:mtr>
+         <math:msub>
+          <math:mi>w</math:mi>
+          <math:mn>1</math:mn>
+         </math:msub>
+        </math:mtr>
+        <math:mtr>
+         <math:msub>
+          <math:mi>w</math:mi>
+          <math:mn>2</math:mn>
+         </math:msub>
+        </math:mtr>
+        <math:mtr>
+         <math:mo math:stretchy="false">⋮</math:mo>
+        </math:mtr>
+        <math:mtr>
+         <math:msub>
+          <math:mi>w</math:mi>
+          <math:mi>p</math:mi>
+         </math:msub>
+        </math:mtr>
+       </math:mtable>
+      </math:mfenced>
+     </math:mrow>
+     <math:mi>,</math:mi>
+     <math:mrow>
+      <math:msub>
+       <math:msup>
+        <math:mover math:accent="true">
+         <math:mi>a</math:mi>
+         <math:mo math:stretchy="false"></math:mo>
+        </math:mover>
+        <math:mi>?</math:mi>
+       </math:msup>
+       <math:mrow>
+        <math:mn>3</math:mn>
+        <math:mo math:stretchy="false">×</math:mo>
+        <math:mn>1</math:mn>
+       </math:mrow>
+      </math:msub>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:mfenced math:open="[" math:close="]">
+       <math:mtable>
+        <math:mtr>
+         <math:msub>
+          <math:mi>a</math:mi>
+          <math:mn>1</math:mn>
+         </math:msub>
+        </math:mtr>
+        <math:mtr>
+         <math:msub>
+          <math:mi>a</math:mi>
+          <math:mn>2</math:mn>
+         </math:msub>
+        </math:mtr>
+        <math:mtr>
+         <math:msub>
+          <math:mi>a</math:mi>
+          <math:mn>3</math:mn>
+         </math:msub>
+        </math:mtr>
+       </math:mtable>
+      </math:mfenced>
+     </math:mrow>
+     <math:mi>,</math:mi>
+    </math:mrow>
+   </math:mtr>
+   <math:mtr>
+    <math:mrow>
+     <math:mtext>Note that L, and thus also its submatrix K, is symmetric so you can calculate elements for upper triangle only and copy them to the lower one. Also, </math:mtext>
+     <math:mo math:stretchy="false"></math:mo>
+     <math:mtext> (mean of distances between control points&apos; xy-projections) is a constant only present on the diagonal of K, so you can easily calculate it while filling up the uppert and lower triangles. </math:mtext>
+    </math:mrow>
+   </math:mtr>
+   <math:mtr>
+    <math:mtext>Then, once you know values for w and a, you can interpolate z for arbitrary points (x,y) with :</math:mtext>
+   </math:mtr>
+   <math:mtr>
+    <math:mrow>
+     <math:mover math:accent="true">
+      <math:mi>z</math:mi>
+      <math:mo math:stretchy="false"></math:mo>
+     </math:mover>
+     <math:mrow>
+      <math:mrow>
+       <math:mo math:stretchy="false"></math:mo>
+       <math:mrow>
+        <math:mi>x</math:mi>
+        <math:mi>,</math:mi>
+        <math:mi>y</math:mi>
+       </math:mrow>
+       <math:mo math:stretchy="false"></math:mo>
+      </math:mrow>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:mrow>
+       <math:msub>
+        <math:mi>a</math:mi>
+        <math:mn>1</math:mn>
+       </math:msub>
+       <math:mo math:stretchy="false"></math:mo>
+       <math:msub>
+        <math:mi>a</math:mi>
+        <math:mn>2</math:mn>
+       </math:msub>
+      </math:mrow>
+     </math:mrow>
+     <math:mrow>
+      <math:mi>x</math:mi>
+      <math:mo math:stretchy="false"></math:mo>
+      <math:msub>
+       <math:mi>a</math:mi>
+       <math:mn>3</math:mn>
+      </math:msub>
+     </math:mrow>
+     <math:mrow>
+      <math:mi>y</math:mi>
+      <math:mo math:stretchy="false"></math:mo>
+      <math:mrow>
+       <math:munderover>
+        <math:mo math:stretchy="false">∑</math:mo>
+        <math:mrow>
+         <math:mi>i</math:mi>
+         <math:mo math:stretchy="false">=</math:mo>
+         <math:mn>1</math:mn>
+        </math:mrow>
+        <math:mi>p</math:mi>
+       </math:munderover>
+       <math:msub>
+        <math:mi>w</math:mi>
+        <math:mi>i</math:mi>
+       </math:msub>
+      </math:mrow>
+     </math:mrow>
+     <math:mi>U</math:mi>
+     <math:mfenced math:open="" math:close="">
+      <math:mfenced math:open="∣" math:close="∣">
+       <math:mrow>
+        <math:mrow>
+         <math:mfenced math:open="[" math:close="]">
+          <math:mrow>
+           <math:msub>
+            <math:mi>c</math:mi>
+            <math:mi math:fontstyle="italic">i1</math:mi>
+           </math:msub>
+           <math:msub>
+            <math:mi>c</math:mi>
+            <math:mi math:fontstyle="italic">i2</math:mi>
+           </math:msub>
+          </math:mrow>
+         </math:mfenced>
+         <math:mo math:stretchy="false">−</math:mo>
+         <math:mfenced math:open="[" math:close="]">
+          <math:mrow>
+           <math:mi>x</math:mi>
+           <math:mi>y</math:mi>
+          </math:mrow>
+         </math:mfenced>
+        </math:mrow>
+       </math:mrow>
+      </math:mfenced>
+     </math:mfenced>
+    </math:mrow>
+   </math:mtr>
+   <math:mtr>
+    <math:mtext>Function U, used both in solving the weights and interpolating, is known as the &apos;thin plate spline radial basis function&apos;. Bending energy of a TPS is given by: </math:mtext>
+   </math:mtr>
+   <math:mtr>
+    <math:mrow>
+     <math:mrow>
+      <math:msub>
+       <math:mi>I</math:mi>
+       <math:mi>f</math:mi>
+      </math:msub>
+      <math:mo math:stretchy="false">=</math:mo>
+      <math:msup>
+       <math:mover math:accent="true">
+        <math:mi>w</math:mi>
+        <math:mo math:stretchy="false"></math:mo>
+       </math:mover>
+       <math:mi>T</math:mi>
+      </math:msup>
+     </math:mrow>
+     <math:mi>K</math:mi>
+     <math:mover math:accent="true">
+      <math:mi>w</math:mi>
+      <math:mo math:stretchy="false"></math:mo>
+     </math:mover>
+    </math:mrow>
+   </math:mtr>
+  </math:mtable>
+  <math:annotation math:encoding="StarMath 5.0">&quot;Thin Plate Spline formulas&quot;
+
+newline
+
+
+&quot;Given a set C of p 3D control points.... &quot;
+
+newline
+
+left lbrace stack{c_i1 = x_i # c_i2 = y_i # c_i3 = z_i } right rbrace,  i in [1dotslow p] ~equiv~ C_{p times 3} = left [ matrix{x_1 # y_1 # z_1  ## x_2 # y_2 # z_2  ## ` # dotsvert #  ` ## x_p # y_p # z_p }  right]
+
+newline
+
+&quot;...and regularization parameter λ, solve the unknown TPS weights w and a in linear equation system... &quot;
+
+newline
+
+left [ matrix{ K # P ## P^T # O }   right ] cdot left [ matrix{ {vec w}^? ## {vec a}^? } right ] =left [ matrix{ vec v  ## vec o  }  right ] 
+~equiv~ L_{(p+3) times (p+3)} cdot {{vec x}^?}_{(p+3) times 1}={vec b}_{(p+3) times 1}
+
+newline
+
+&quot;..., where K, P and O are submatrices and w, a, v and o are subvectors, given by: &quot;
+
+newline
+
+K_{ij} = U left (abs{`left[ c_{i1} ` c_{i2} right] - left[ c_{j1} ` c_{j2} right] ` } right ) + I_{ij} cdot %alpha^2 cdot %lambda ~parallel ~ 
+{i,j} in [1 dotslow p] `and` %lambda &gt;=  0
+newline
+U(r)=left lbrace stack{r^2 cdot log r, r&gt;0  #0, r=0 } right none
+newline
+%alpha =  1 over p²  sum from{i=1} to{p} sum from{j=1} to{p} abs{`left[ c_{i1} ` c_{i2} right] - left[ c_{j1} ` c_{j2} right] ` }
+newline
+P_{p times 3} = left[ matrix{ 1 # c_{11} # c_{12} ## 1 # c_{21} # c_{22} ## 1 # dotsvert # dotsvert ## 1 # c_{p1} # c_{p2}} right] ,
+O_{3 times 3}=left[ matrix{ 0#0#0##0#0#0##0#0#0 } right ]
+newline
+{P^T}_{ij} = P_{ji} ~parallel ~ i in [1 dotslow p] `and` j in [1 dotslow 3]
+newline
+{vec v}_{p times 1}=left[ stack{ c_{13} # c_{23} # dotsvert # c_{p3} } right ],
+{vec o}_{3 times 1}=left[ stack{ 0#0#0 } right]
+{{vec w}^?}_{p times 1}=left[ stack{ w_1 # w_2 # dotsvert # w_p } right], 
+{{vec a}^?}_{3 times 1}=left[ stack{ a_1 # a_2 # a_3 } right],
+
+newline
+
+&quot;Note that L, and thus also its submatrix K, is symmetric so you can calculate elements for upper triangle only and copy them to the lower one. Also, &quot;%alpha&quot; (mean of distances between control points&apos; xy-projections) is a constant only present on the diagonal of K, so you can easily calculate it while filling up the uppert and lower triangles. &quot;
+
+newline
+
+&quot;Then, once you know values for w and a, you can interpolate z for arbitrary points (x,y) with :&quot;
+
+newline
+
+{hat z}(x, y) = a_{1} + a_{2}x + a_{3}y + sum from{i=1} to{p} w_{i} 
+U left (abs{`left[ c_{i1} ` c_{i2} right] - left[ x ` y right] ` } right )
+
+newline
+
+&quot;Function U, used both in solving the weights and interpolating, is known as the &apos;thin plate spline radial basis function&apos;. Bending energy of a TPS is given by: &quot;
+
+newline
+
+I_f = {vec w}^T K vec w
+newline</math:annotation>
+ </math:semantics>
+</math:math>

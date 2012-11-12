@@ -63,12 +63,14 @@ public:
 
         // lerps the vertex between two others
         PossibleVertex(irr::video::S3DVertex const& vLeft, irr::video::S3DVertex const& vRight, float scale);
+        PossibleVertex(PsblVertPtr const& pvLeft, PsblVertPtr const& pvRight, float scale);
 
         // Adds the vertex at most once per meshbuffer.
         // Adds an index on each call; 3 calls to add a triangle.
         int addToMeshBuf(irr::scene::SMeshBuffer* meshBuf, irr::core::vector3df offset);
 
         float distSQ(PsblVertPtr other) const;
+        float dist(PsblVertPtr other) const;
 
         // creates a duplicate of this vertex displaced in space by offset
         // the vertex tracks its duplicates and will always return the same copy
@@ -77,6 +79,7 @@ public:
         PsblVertPtr duplicate(irr::core::vector3df offset);
 
         irr::core::vector3df const& getPos() const;
+        void setPos(irr::core::vector3df const& pos);
     };
 
     class LinkSplitter
@@ -93,12 +96,14 @@ public:
     public:
 
         LinkSplitter(irr::scene::IMeshBuffer* oldMeshBuf_, float zCut_);
-        void processLink(std::vector<PsblVertPtr>& left, std::vector<PsblVertPtr>& right, int a, int b);
-        void addQuadOrTriangle(std::vector<PsblVertPtr> const& newShape, irr::scene::SMeshBuffer* newMeshBuf, irr::core::vector3df offset);
+        PsblVertPtr processLink(std::vector<PsblVertPtr>& left, std::vector<PsblVertPtr>& right, int a, int b);
+        void addConvexShape(std::vector<PsblVertPtr> const& newShape, irr::scene::SMeshBuffer* newMeshBuf, irr::core::vector3df offset);
         void addEdgeLinks(std::vector<PsblVertPtr> const& shape, std::set<std::pair<PsblVertPtr,PsblVertPtr>>& links);
         PsblVertPtr getVert(int oldIndex);
         int compareZ(int oldIndex);
         int compareZ(PsblVertPtr vert);
+        std::vector<PsblVertPtr> chopLink(PsblVertPtr left, PsblVertPtr right, int numNewPoints);
+        void insertPoints(std::vector<PsblVertPtr>& shape, PsblVertPtr left, PsblVertPtr right, std::vector<PsblVertPtr> const& source);
     };
 
     static irr::scene::IMesh* createMeshFromSoftBody(btSoftBody* softBody);

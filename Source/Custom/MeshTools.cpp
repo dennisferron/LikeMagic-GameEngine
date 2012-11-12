@@ -65,6 +65,29 @@ MeshTools::PossibleVertex::PossibleVertex(irr::video::S3DVertex const& vLeft, ir
     vert.Color.set(a, r, g, b);
 }
 
+MeshTools::PossibleVertex::PossibleVertex(PsblVertPtr const& pvLeft, PsblVertPtr const& pvRight, float scale)
+    : ref_count(0)
+{
+    auto const& vLeft = pvLeft->vert;
+    auto const& vRight = pvRight->vert;
+
+    vert.TCoords = lerp(vLeft.TCoords, vRight.TCoords, scale);
+
+    // This isn't really going to produce correct results unless
+    // the normals are close to each other already (although, they should be).
+    vert.Normal = lerp(vLeft.Normal, vRight.Normal, scale);
+    vert.Normal.normalize();
+
+    vert.Pos = lerp(vLeft.Pos, vRight.Pos, scale);
+
+    // SColor doesn't define multiplication by a float, bummer.
+    u32 a = lerp(vLeft.Color.getAlpha(), vRight.Color.getAlpha(), scale);
+    u32 r = lerp(vLeft.Color.getRed(),   vRight.Color.getRed(), scale);
+    u32 g = lerp(vLeft.Color.getGreen(), vRight.Color.getGreen(), scale);
+    u32 b = lerp(vLeft.Color.getBlue(),  vRight.Color.getBlue(), scale);
+    vert.Color.set(a, r, g, b);
+}
+
 PsblVertPtr MeshTools::PossibleVertex::duplicate(irr::core::vector3df offset)
 {
     if (duplicates.find(offset) == duplicates.end())
@@ -104,11 +127,20 @@ float MeshTools::PossibleVertex::distSQ(PsblVertPtr other) const
     return vert.Pos.getDistanceFromSQ(other->vert.Pos);
 }
 
+float MeshTools::PossibleVertex::dist(PsblVertPtr other) const
+{
+    return vert.Pos.getDistanceFrom(other->vert.Pos);
+}
+
 vector3df const& MeshTools::PossibleVertex::getPos() const
 {
     return vert.Pos;
 }
 
+void MeshTools::PossibleVertex::setPos(vector3df const& pos)
+{
+    vert.Pos = pos;
+}
 
 IMesh* MeshTools::createMeshFromSoftBody(btSoftBody* softBody)
 {
@@ -222,36 +254,54 @@ MeshTools::LinkSplitter::LinkSplitter(IMeshBuffer* oldMeshBuf_, float zCut_)
 }
 
 // Adds point a, point b, and/or the midpoint between a and b
-void MeshTools::LinkSplitter::processLink(std::vector<PsblVertPtr>& leftInd, std::vector<PsblVertPtr>& rightInd, int a, int b)
+PsblVertPtr MeshTools::LinkSplitter::processLink(std::vector<PsblVertPtr>& leftInd, std::vector<PsblVertPtr>& rightInd, int a, int b)
 {
+    // Smart ptr empty unless the link is split.
+    PsblVertPtr mid;
+
     int whichSideA = compareZ(a);
     int whichSideB = compareZ(b);
 
     // Add a to left side if it is left or in both
     if (whichSideA < 0 || whichSideA == 0)
-        leftInd.push_back(getVert(a));
+    {
+        auto vert = getVert(a);
+        leftInd.push_back(vert);
+
+        if (whichSideA == 0)
+            mid = vert;
+    }
 
     // Add a to right side if it is right or in both
     if (whichSideA > 0 || whichSideA == 0)
-        rightInd.push_back(getVert(a));
+    {
+        auto vert = getVert(a);
+        rightInd.push_back(vert);
+
+        if (whichSideA == 0)
+            mid = vert;
+    }
 
     // Link crosses like this:  a --|--> b
     if (whichSideA < 0 && whichSideB > 0)
     {
-        auto mid = splitLink(a, b);
+        mid = splitLink(a, b);
         leftInd.push_back(mid);
         rightInd.push_back(mid);
     }
     // Link crosses like this: b <--|-- a
     else if (whichSideB < 0 && whichSideA > 0)
     {
-        auto mid = splitLink(b, a);
+        mid = splitLink(b, a);
         leftInd.push_back(mid);
         rightInd.push_back(mid);
     }
 
     // Don't add vertex B here.  Since all 3 sides of the triangle
     // will be processed, eventually B will be passed to the function as A.
+
+    // Return the midpoint of the split link or NULL.
+    return mid;
 }
 
 int MeshTools::LinkSplitter::compareZ(int index)
@@ -309,7 +359,7 @@ PsblVertPtr MeshTools::LinkSplitter::splitLink(int oldIndexLeft, int oldIndexRig
     }
 }
 
-void MeshTools::LinkSplitter::addQuadOrTriangle(vector<PsblVertPtr> const& newShape, SMeshBuffer* newMeshBuf, vector3df offset)
+void MeshTools::LinkSplitter::addConvexShape(vector<PsblVertPtr> const& newShape, SMeshBuffer* newMeshBuf, vector3df offset)
 {
     u32 numCorners = newShape.size();
     switch (numCorners)
@@ -327,31 +377,117 @@ void MeshTools::LinkSplitter::addQuadOrTriangle(vector<PsblVertPtr> const& newSh
             for (int j=0; j<3; ++j)
                 newShape[j]->addToMeshBuf(newMeshBuf, offset);
             break;
-        case 4:  // add quad, need to make two triangles
+//        case 4:  // add quad, need to make two triangles
+//        {
+//            // If you don't have the braces around the variable declarations here, gcc gives the cryptic error "jump to case label".
+//            // The GCC maintainers closed someone's bug report about this problem saying that's expected behavior, you should just know
+//            // that the problem is the variables escape scope to the next label (even though I'm not actually using any of them there).
+//            // Really GCC guys?  Really?  "jump to case label" - you think that's an acceptable error message?  F*** you.
+//            PsblVertPtr A=newShape[0], B=newShape[1], C=newShape[2], D=newShape[3];
+//            PsblVertPtr acTris[] = { A,B,C , A,C,D };
+//            PsblVertPtr bdTris[] = { B,C,D , B,D,A };
+//            PsblVertPtr* twoTris = A->distSQ(C) < B->distSQ(D) ? acTris : bdTris;
+//            for (int j=0; j<6; ++j)
+//            {
+//                twoTris[j]->addToMeshBuf(newMeshBuf, offset);
+//            }
+//
+//            break;
+//        }
+        default:
         {
-            // If you don't have the braces around the variable declarations here, gcc gives the cryptic error "jump to case label".
-            // The GCC maintainers closed someone's bug report about this problem saying that's expected behavior, you should just know
-            // that the problem is the variables escape scope to the next label (even though I'm not actually using any of them there).
-            // Really GCC guys?  Really?  "jump to case label" - you think that's an acceptable error message?  F*** you.
-            PsblVertPtr A=newShape[0], B=newShape[1], C=newShape[2], D=newShape[3];
-            PsblVertPtr acTris[] = { A,B,C , A,C,D };
-            PsblVertPtr bdTris[] = { B,C,D , B,D,A };
-            PsblVertPtr* twoTris = A->distSQ(C) < B->distSQ(D) ? acTris : bdTris;
-            for (int j=0; j<6; ++j)
+            // Naive, greedy, recursive ear clip algorithm.  Inefficient but dead simple:
+            // Clip off narrowest triangle, and recurse until the remaining shape is a 3-gon.
+            // Won't work for the general case, but we know the polygon is not concave.
+
+            unsigned int bestIndex = 0;
+            float bestRatio = 1.99f;
+            for (unsigned int i=0; i < numCorners; ++i)
             {
-                twoTris[j]->addToMeshBuf(newMeshBuf, offset);
+                float a = newShape[i]->dist(newShape[ (i+numCorners-1) % numCorners ]);
+                float b = newShape[i]->dist(newShape[ (i+1) % numCorners ]);
+                float c = newShape[ (i+numCorners-1) % numCorners ]->distSQ(newShape[ (i+1) % numCorners ]);
+
+                float ratio = c / (a+b);
+
+                if (ratio < bestRatio)
+                    bestIndex = i;
             }
 
-            break;
+            newShape[ (bestIndex+numCorners-1) % numCorners]->addToMeshBuf(newMeshBuf, offset);
+            newShape[ bestIndex ]->addToMeshBuf(newMeshBuf, offset);
+            newShape[ (bestIndex+1) % numCorners]->addToMeshBuf(newMeshBuf, offset);
+
+            vector<PsblVertPtr> smallerShape;
+            for (unsigned int i=0; i<numCorners; ++i)
+                if (i != bestIndex)
+                    smallerShape.push_back(newShape[i]);
+
+            addConvexShape(smallerShape, newMeshBuf, offset);
         }
-        default:
-            throw std::logic_error("Something went wrong in splitMeshZ; LinkSplitter::addQuadOrTriangle was passed more than 4 points.");
     }
+}
+
+std::vector<PsblVertPtr> MeshTools::LinkSplitter::chopLink(PsblVertPtr left, PsblVertPtr right, int numNewPoints)
+{
+    std::vector<PsblVertPtr> result;
+
+    for (int i=1; i<=numNewPoints; ++i)
+    {
+        float scale = ((float)i) / (numNewPoints+1.0f);
+        PsblVertPtr pv(new PossibleVertex(left, right, scale));
+        vector3df pos = pv->getPos();
+        //pos.Y += 0.03f*(i+1);
+        pv->setPos(pos);
+        result.push_back(pv);
+    }
+
+    return result;
+}
+
+void print(PsblVertPtr const& pv, PsblVertPtr const& base)
+{
+    vector3df pos = pv->getPos() - base->getPos();
+    cout << "(" << (int)(10*pos.X) << "," << (int)(10*pos.Y) << "," << (int)(10*pos.Z) << ")";
+}
+
+void print(std::vector<PsblVertPtr> const& list)
+{
+    PsblVertPtr base = list[0];
+
+    for (PsblVertPtr pv : list)
+    {
+        cout << " ";
+        print(pv, base);
+    }
+    cout << endl;
+}
+
+void MeshTools::LinkSplitter::insertPoints(std::vector<PsblVertPtr>& shape, PsblVertPtr left, PsblVertPtr right, std::vector<PsblVertPtr> const& source)
+{
+    auto iterL = std::find(shape.begin(), shape.end(), left);
+    auto iterR = std::find(shape.begin(), shape.end(), right);
+
+    bool leftToRight = ((iterR-iterL) == 1) || (iterR == shape.begin() && iterL == (shape.end()-1));
+
+    cout << "Input: "  << (leftToRight? "(left to right)" : "(right to left)") << ": ";
+    print({shape[0], left, right, source[0]});
+
+    cout << "Old shape: ";
+    print(shape);
+
+    if (leftToRight)
+        shape.insert(iterL+1, source.begin(), source.end());
+    else
+        shape.insert(iterR+1, source.rbegin(), source.rend());
+
+    cout << "New shape: ";
+    print(shape);
 }
 
 void MeshTools::LinkSplitter::addEdgeLinks(vector<PsblVertPtr> const& shape, set<pair<PsblVertPtr,PsblVertPtr>>& links)
 {
-    if (shape.size() >= 3)
+    if (shape.size() >= 2)
     {
         for (size_t i=0; i<shape.size(); ++i)
         {
@@ -380,13 +516,17 @@ MeshTools::SplitMeshResult MeshTools::splitMeshZ(IMesh* oldMesh, float zCut, flo
     for (u32 i=0; i < oldMeshBuf->getIndexCount(); i += 3)
     {
         // Calling these shapes instead of triangles because they could be triangle or a quad after slice,
-        // (it could also be a degenerate case of a line or a point - those will be discarded by addQuadOrTriangle)
+        // (it could also be a degenerate case of a line or a point - those will be discarded by addConvexShape)
         vector<PsblVertPtr> leftShape;
         vector<PsblVertPtr> rightShape;
 
         int a = oldInd[i];
         int b = oldInd[i+1];
         int c = oldInd[i+2];
+
+        PsblVertPtr mid1;
+        PsblVertPtr mid2;
+        PsblVertPtr mid3;
 
         // Don't create a copy just for a triangle that is just kissing the edge.  Leave it in the background.
         if (linkSplitter.compareZ(a)==0 && linkSplitter.compareZ(b)==0 && linkSplitter.compareZ(c)==0)
@@ -407,13 +547,56 @@ MeshTools::SplitMeshResult MeshTools::splitMeshZ(IMesh* oldMesh, float zCut, flo
         }
         else
         {
-            linkSplitter.processLink(leftShape, rightShape, a, b);
-            linkSplitter.processLink(leftShape, rightShape, b, c);
-            linkSplitter.processLink(leftShape, rightShape, c, a);
+            // This is something I had to think hard about so I'm writing this comment so I don't
+            // have to think it through again or forget it:
+            //
+            // Both the left shape and the right shape, and both the triangle and the quad, "magically"
+            // come out with correct winding order when the triangle is split.  Here's why:
+            //  Let the original triangle vertices be A-B-C.
+            //  Let the split midpoints be AB' and CA' as A-B is split and C-A are split respectively.
+            // The shapes (ignore which shape is left or right, call them P and Q instead)
+            // will be filled in the following order:
+            //
+            //  round       P   Q       Comment
+            //  1           A   -       A is not in Q at all
+            //  1 cont.     AB' AB'     AB' replaces B in P
+            //  2           -   B       B proper is in Q and not in P
+            //  2 cont.     -   -       Link B-C is not split
+            //  3           -   C       C proper is in Q and not in P
+            //  3 cont.     CA' CA'     CA' replaces C in P
+            //
+            // Now, read the columns P and Q vertically top to bottom to see the resultant vertex order.
+            // The triangle P is trivially still the correct winding order; it is just a smaller triangle now.
+            // The new quad Q retains the old triangle's winding order property for the following reason:
+            //  As you wrapped around a full circle in old triangle A-B-C you would have traversed C-A then A-B.
+            //      The link C-A has been cut and vertex CA' inserted.
+            //      The link A-B has been cut and vertex AB' inserted.
+            //  If you traverse the new shape starting from the _middle_ you follow the following path:
+            //      B-C     C-CA'   CA'-AB'    AB'-B    B-C (again)
+            //  Compare to old triangle:
+            //      B-C          C-A        A-B         B-C (again)
+            //  Even though vertex A has been cut off and replaced with two vertices, the two
+            //  new vertices lie along the path that the old links took and are in the new shape in the right order.
+
+            mid1 = linkSplitter.processLink(leftShape, rightShape, a, b);
+            mid2 = linkSplitter.processLink(leftShape, rightShape, b, c);
+            mid3 = linkSplitter.processLink(leftShape, rightShape, c, a);
         }
 
-        linkSplitter.addQuadOrTriangle(leftShape, leftMeshBuf,   -offset/2);
-        linkSplitter.addQuadOrTriangle(rightShape, rightMeshBuf,  offset/2);
+        // If a triangle was split then two of those three midpoints are inhabited by a vertex.
+        // We want to get them both in mid1 and mid2 AND we need them in correct order.
+        PsblVertPtr cut1 = (mid1 && mid2)? mid1 : mid2;
+        PsblVertPtr cut2 = (mid2 && mid3)? mid3 : mid2;
+
+        if (cut1 && cut2)
+        {
+            vector<PsblVertPtr> chain = linkSplitter.chopLink(cut1, cut2, 1);
+            linkSplitter.insertPoints(leftShape, cut1, cut2, chain);
+            linkSplitter.insertPoints(rightShape, cut1, cut2, chain);
+        }
+
+        linkSplitter.addConvexShape(leftShape, leftMeshBuf,   -offset/2);
+        linkSplitter.addConvexShape(rightShape, rightMeshBuf,  offset/2);
 
         // Add any edges of the left shape that lie along the border.
         linkSplitter.addEdgeLinks(leftShape, leftEdgeLinks);
@@ -462,7 +645,7 @@ MeshTools::SplitMeshResult MeshTools::splitMeshZ(IMesh* oldMesh, float zCut, flo
                 shape[1] = it->first;
                 shape[2] = it->first->duplicate(offset);
                 shape[3] = it->second->duplicate(offset);
-                linkSplitter.addQuadOrTriangle(shape, middleMeshBuf, -offset/2);
+                linkSplitter.addConvexShape(shape, middleMeshBuf, -offset/2);
             }
 
             middleMesh = new SMesh();
