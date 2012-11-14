@@ -15,8 +15,8 @@
  *  It is provided "as is" without express or implied warranty.
  */
 
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include "boost/numeric/ublas/matrix.hpp"
+#include "boost/numeric/ublas/matrix_proxy.hpp"
 
  /*
   *  Solves a linear system A x X = B using Gauss elimination,

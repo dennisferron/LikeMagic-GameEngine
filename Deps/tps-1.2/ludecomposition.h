@@ -12,8 +12,8 @@
  *  It is provided "as is" without express or implied warranty.
  */
 
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include "boost/numeric/ublas/matrix.hpp"
+#include "boost/numeric/ublas/matrix_proxy.hpp"
 
 // Solve a linear equation system a*x=b using inplace LU decomposition.
 //
