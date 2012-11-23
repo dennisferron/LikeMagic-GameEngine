@@ -26,6 +26,7 @@
 
 #include <GL/glut.h>
 #include "boost/numeric/ublas/matrix.hpp"
+#include "boost/intrusive_ptr.hpp"
 
 #include "linalg3d.h"
 #include "ludecomposition.h"
@@ -34,10 +35,51 @@
 #include <cmath>
 #include <cstdio>
 #include <cstring>
+#include <algorithm>
+#include <iostream>
+using namespace std;
 
 using namespace boost::numeric::ublas;
 
 // ========= BEGIN INTERESTING STUFF    =========
+
+
+class ControlPoint;
+void intrusive_ptr_add_ref(ControlPoint const* p);
+void intrusive_ptr_release(ControlPoint const* p);
+
+class ControlPoint
+{
+private:
+    friend void intrusive_ptr_add_ref(ControlPoint const* p);
+    friend void intrusive_ptr_release(ControlPoint const* p);
+
+    mutable int ref_count;
+
+public:
+    ControlPoint(Vec const& pos_);
+
+    Vec pos;
+};
+
+ControlPoint::ControlPoint(Vec const& pos_)
+    : ref_count(0), pos(pos_)
+{
+}
+
+typedef boost::intrusive_ptr<ControlPoint> ControlPointPtr;
+
+void intrusive_ptr_add_ref(ControlPoint const* p)
+{
+    ++(p->ref_count);
+}
+
+void intrusive_ptr_release(ControlPoint const* p)
+{
+    if (!--(p->ref_count))
+        delete p;
+}
+
 
 #define GRID_W 100
 #define GRID_H 100
@@ -61,11 +103,9 @@ private:
     matrix<double> mtx_v;
     matrix<double> mtx_orig_k;
 
-    void calc_matrices();
-    void calc_bending_energy();
+    std::vector< ControlPointPtr > control_points;
 
 public:
-    std::vector< Vec > control_points;
     double regularization;
     double bending_energy;
 
@@ -74,14 +114,39 @@ public:
 
     double height_at(double x, double z);
     void calc_tps();
+    void addControlPoint(ControlPointPtr p);
+    void removeControlPoint(ControlPointPtr p);
+    void clearControlPoints();
+    void calc_matrices();
+    void calc_bending_energy();
 };
+
+//ThinPlateSpline instance;
 
 ThinPlateSpline::ThinPlateSpline() :
     regularization(0.0),  bending_energy(0.0)
 {
 }
 
-ThinPlateSpline instance;
+void ThinPlateSpline::clearControlPoints()
+{
+    control_points.clear();
+}
+
+void ThinPlateSpline::addControlPoint(ControlPointPtr p)
+{
+    control_points.push_back(p);
+}
+
+void ThinPlateSpline::removeControlPoint(ControlPointPtr p)
+{
+    control_points.erase(
+        std::remove_if(control_points.begin(), control_points.end(),
+            [=](ControlPointPtr el) { return p == el; }
+        ),
+        control_points.end()
+    );
+}
 
 void ThinPlateSpline::calc_matrices()
 {
@@ -110,8 +175,8 @@ void ThinPlateSpline::calc_matrices()
     {
         for ( unsigned j=i+1; j<p; ++j )
         {
-            Vec pt_i = control_points[i];
-            Vec pt_j = control_points[j];
+            Vec pt_i = control_points[i]->pos;
+            Vec pt_j = control_points[j]->pos;
             pt_i.y = pt_j.y = 0;
             double elen = (pt_i - pt_j).len();
             mtx_l(i,j) = mtx_l(j,i) =
@@ -131,13 +196,13 @@ void ThinPlateSpline::calc_matrices()
 
         // P (p x 3, upper right)
         mtx_l(i, p+0) = 1.0;
-        mtx_l(i, p+1) = control_points[i].x;
-        mtx_l(i, p+2) = control_points[i].z;
+        mtx_l(i, p+1) = control_points[i]->pos.x;
+        mtx_l(i, p+2) = control_points[i]->pos.z;
 
         // P transposed (3 x p, bottom left)
         mtx_l(p+0, i) = 1.0;
-        mtx_l(p+1, i) = control_points[i].x;
-        mtx_l(p+2, i) = control_points[i].z;
+        mtx_l(p+1, i) = control_points[i]->pos.x;
+        mtx_l(p+2, i) = control_points[i]->pos.z;
     }
     // O (3 x 3, lower right)
     for ( unsigned i=p; i<p+3; ++i )
@@ -146,12 +211,13 @@ void ThinPlateSpline::calc_matrices()
 
     // Fill the right hand vector V
     for ( unsigned i=0; i<p; ++i )
-        mtx_v(i,0) = control_points[i].y;
+        mtx_v(i,0) = control_points[i]->pos.y;
     mtx_v(p+0, 0) = mtx_v(p+1, 0) = mtx_v(p+2, 0) = 0.0;
 
     // Solve the linear system "inplace"
     if (0 != LU_Solve(mtx_l, mtx_v))
     {
+        std::cerr << "Singular matrix! Aborting." << std::endl;
         throw std::runtime_error( "Singular matrix! Aborting." );
     }
 }
@@ -213,7 +279,7 @@ double ThinPlateSpline::height_at(double x, double z)
     Vec pt_i, pt_cur(x,0,z);
     for ( unsigned i=0; i<p; ++i )
     {
-        pt_i = control_points[i];
+        pt_i = control_points[i]->pos;
         pt_i.y = 0;
         h += mtx_v(i,0) * tps_base_func( ( pt_i - pt_cur ).len());
     }
@@ -222,6 +288,226 @@ double ThinPlateSpline::height_at(double x, double z)
 }
 
 
+class ThinPlateQuilt
+{
+private:
+    static int const numRows=3;
+    static int const numCols=3;
+    ThinPlateSpline tiles[numRows][numCols];
+    std::vector<ControlPointPtr> control_points;
+
+    Vec min;
+    Vec max;
+
+    struct TileAt
+    {
+        ThinPlateSpline* plate;
+        double weight;
+    };
+
+    std::vector<TileAt> tilesAt(double x, double z);
+
+public:
+    ThinPlateQuilt(Vec min_, Vec max_);
+    double heightAt(double x, double z);
+    ControlPointPtr addControlPoint(Vec pos);
+    ControlPointPtr getControlPoint(unsigned index) const;
+    unsigned numControlPoints() const;
+    void removeControlPoint(unsigned pos);
+    double getRegularization() const;
+    void addRegularization(double delta);
+    double getBendingEnergy() const;
+    void refresh();
+    void clearControlPoints();
+};
+
+ThinPlateQuilt instance( { -GRID_W/2,0,-GRID_H/2 }, { GRID_W/2-1,0,GRID_H/2-1 } );
+
+ThinPlateQuilt::ThinPlateQuilt(Vec min_, Vec max_)
+    : min(min_), max(max_)
+{
+}
+
+void ThinPlateQuilt::clearControlPoints()
+{
+    for (int x=0; x<numRows; ++x)
+        for (int z=0; z<numCols; ++z)
+            tiles[x][z].clearControlPoints();
+    control_points.clear();
+}
+
+void ThinPlateQuilt::refresh()
+{
+    for (int x=0; x<numRows; ++x)
+        for (int z=0; z<numCols; ++z)
+            tiles[x][z].calc_matrices();
+
+    // Interpolate grid heights
+    for ( int x=-GRID_W/2; x<GRID_W/2; ++x )
+    {
+        for ( int z=-GRID_H/2; z<GRID_H/2; ++z )
+        {
+            grid[x+GRID_W/2][z+GRID_H/2] = heightAt(x,z);
+        }
+    }
+
+    for (int x=0; x<numRows; ++x)
+        for (int z=0; z<numCols; ++z)
+            tiles[x][z].calc_bending_energy();
+}
+
+double ThinPlateQuilt::getRegularization() const
+{
+    return tiles[0][0].regularization;
+}
+
+void ThinPlateQuilt::addRegularization(double delta)
+{
+    tiles[0][0].regularization += delta;
+}
+
+double ThinPlateQuilt::getBendingEnergy() const
+{
+    return tiles[0][0].bending_energy;
+}
+
+void ThinPlateQuilt::removeControlPoint(unsigned pos)
+{
+    for (int x=0; x<numCols; ++x)
+        for (int z=0; z<numRows; ++z)
+            tiles[x][z].removeControlPoint(control_points.at(pos));
+    control_points.erase(control_points.begin() + pos);
+}
+
+ControlPointPtr ThinPlateQuilt::addControlPoint(Vec pos)
+{
+    ControlPointPtr p = new ControlPoint(pos);
+    control_points.push_back(p);
+
+    std::vector<ThinPlateQuilt::TileAt> result;
+
+    double x = pos.x;
+    double z = pos.z;
+
+    Vec quilt_size = (max - min);
+    Vec tile_size = { quilt_size.x / numCols, 0, quilt_size.z / numRows };
+    Vec halo_size = tile_size / 3;
+
+    for (int i=0; i<numRows; ++i)
+        for (int j=0; j<numCols; ++j)
+        {
+            Vec tile_min = min + Vec { i*tile_size.x, 0, j*tile_size.z };
+            Vec tile_max = tile_min + tile_size;
+            Vec halo_min = tile_min - halo_size;
+            Vec halo_max = tile_max + halo_size;
+
+            if (x >= tile_min.x && x <= tile_max.x && z >= tile_min.z && z <= tile_max.z)
+            {
+                tiles[i][j].addControlPoint(p);
+            }
+            else if (x >= halo_min.x && x <= halo_max.x && z >= halo_min.z && z <= halo_max.z)
+            {
+//                double x_from_halo_edge = (x <= tile_min.x)? x-halo_min.x : halo_max.x-x;
+//                double z_from_halo_edge = (z <= tile_min.z)? z-halo_min.z : halo_max.z-z;
+//                double x_weight = x_from_halo_edge / halo_size.x;
+//                double z_weight = z_from_halo_edge / halo_size.z;
+//                double best_weight = (x_weight>z_weight)? x_weight : z_weight;
+
+                tiles[i][j].addControlPoint(p);
+            }
+            // Else the tile does not contribute.
+        }
+
+    return p;
+}
+
+ControlPointPtr ThinPlateQuilt::getControlPoint(unsigned index) const
+{
+    return control_points.at(index);
+}
+
+unsigned ThinPlateQuilt::numControlPoints() const
+{
+    return control_points.size();
+}
+
+std::vector<ThinPlateQuilt::TileAt> ThinPlateQuilt::tilesAt(double x, double z)
+{
+    std::vector<ThinPlateQuilt::TileAt> result;
+
+    Vec quilt_size = (max - min);
+    Vec tile_size = { quilt_size.x / numCols, 0, quilt_size.z / numRows };
+    Vec halo_size = tile_size / 3;
+
+    for (int i=0; i<numCols; ++i)
+        for (int j=0; j<numRows; ++j)
+        {
+            Vec tile_min = min + Vec { i*tile_size.x, 0, j*tile_size.z };
+            Vec tile_max = tile_min + tile_size;
+            Vec halo_min = tile_min - halo_size;
+            Vec halo_max = tile_max + halo_size;
+
+            if (x >= tile_min.x && x <= tile_max.x && z >= tile_min.z && z <= tile_max.z)
+            {
+                result.push_back( { &tiles[i][j], 1.0 } );
+            }
+            else if (x >= halo_min.x && x <= halo_max.x && z >= halo_min.z && z <= halo_max.z)
+            {
+                double x_from_halo_edge = (x <= tile_min.x)? x-halo_min.x : halo_max.x-x;
+                double z_from_halo_edge = (z <= tile_min.z)? z-halo_min.z : halo_max.z-z;
+                double x_weight = x_from_halo_edge / halo_size.x;
+                double z_weight = z_from_halo_edge / halo_size.z;
+
+                if (x >= tile_min.x && x <= tile_max.x)
+                    x_weight = 0.0;
+
+                if (z >= tile_min.z && z <= tile_max.z)
+                    z_weight = 0.0;
+
+                double best_weight = (x_weight>z_weight)? x_weight : z_weight;
+
+                if (tiles[i][j].height_at(x,z) != 0.0)
+                {
+                    cout << endl;
+                    cout << (x >= tile_min.x) << (x <= tile_max.x) << (z >= tile_min.z) << (z <= tile_max.z) << endl;
+                    cout << "i,j " << i << ", " << j << endl;
+                    cout << "x,z " << x << ", " << z << endl;
+                    cout << "tile_min " << tile_min.x << ", " << tile_min.z << endl;
+                    cout << "tile_max " << tile_max.x << ", " << tile_max.z << endl;
+                    cout << "halo_min " << halo_min.x << ", " << halo_min.z << endl;
+                    cout << "halo_max " << halo_max.x << ", " << halo_max.z << endl;
+                    cout << "x_from_halo_edge " <<  x_from_halo_edge << endl;
+                    cout << "z_from_halo_edge " <<  z_from_halo_edge << endl;
+                    cout << "x_weight " <<  x_weight << endl;
+                    cout << "z_weight " <<  z_weight << endl;
+                    cout << "best_weight " <<  best_weight << endl;
+                }
+
+                result.push_back( { &tiles[i][j], best_weight } );
+            }
+            // Else the tile does not contribute.
+        }
+
+    return result;
+}
+
+double ThinPlateQuilt::heightAt(double x, double z)
+{
+    double h = 0.0;
+    double w = 0.0;
+    auto list = tilesAt(x,z);
+
+    for (auto tile : list)
+    {
+        h += tile.weight * tile.plate->height_at(x,z);
+        w += tile.weight;
+    }
+
+    if (w == 0.0)
+        return 0.0;
+    else
+        return h / w;
+}
 
 // ========= END INTERESTING STUFF    =========
 // (The rest is essentially just visualization with OpenGL,
@@ -373,9 +659,9 @@ static void display()
     if ( !mouseState[0] && !mouseState[1] && !mouseState[2] )
         selected_cp = -1;
 
-    for ( int i=0; i < (int)instance.control_points.size(); ++i )
+    for ( int i=0; i < (int)instance.numControlPoints(); ++i )
     {
-        const Vec& cp = instance.control_points[i];
+        const Vec& cp = instance.getControlPoint(i)->pos;
         if ( ( cp - cursor_loc ).len() < 2.0 )
         {
             selected_cp = i;
@@ -434,7 +720,7 @@ static void display()
     glColor3ub( 255, 255, 0 );
     glRasterPos2f (-0.95, -0.95);
     sprintf( tmp_str, "control points: %d, reqularization: %2.3f, bending energy: %4.3f",
-        (int)instance.control_points.size(), instance.regularization, instance.bending_energy );
+        (int)instance.numControlPoints(), instance.getRegularization(), instance.getBendingEnergy() );
     draw_string( tmp_str );
     glEnable( GL_DEPTH_TEST );
 
@@ -461,30 +747,28 @@ static void keyboard( unsigned char key, int, int )
     switch (key)
     {
         case 'a':
-            instance.control_points.push_back( cursor_loc );
-            instance.calc_tps();
+            instance.addControlPoint( cursor_loc );
+            instance.refresh();
             break;
         case 'd':
             if ( selected_cp >= 0 )
             {
-                instance.control_points.erase( instance.control_points.begin() + selected_cp );
+                instance.removeControlPoint( selected_cp );
                 selected_cp = -1;
-                instance.calc_tps();
+                instance.refresh();
             }
             break;
         case 'c':
-            instance.control_points.clear();
+            instance.clearControlPoints();
             clear_grid();
             break;
         case '+':
-            instance.regularization += 0.025;
-            instance.calc_tps();
+            instance.addRegularization(0.025);
+            instance.refresh();
             break;
         case '-':
-            instance.regularization -= 0.025;
-            if (instance.regularization < 0)
-                instance.regularization = 0;
-            instance.calc_tps();
+            instance.addRegularization( -0.025 );
+            instance.refresh();
             break;
         case '/': camZoom -= 1; break;
         case '*': camZoom += 1; break;
@@ -508,7 +792,7 @@ static void mouse( int button, int state, int, int )
     {
         if ( state==GLUT_UP )
         {
-		    instance.calc_tps();
+		    instance.refresh();
             screen_dirty=true;
         }
         else if ( state==GLUT_DOWN && selected_cp<0 )
@@ -521,7 +805,7 @@ static void mouseMotion( int x, int y )
 {
 	if ( mouseState[0] && mouseX != -999 )
         if ( selected_cp >= 0 )
-			 instance.control_points[selected_cp].y += -(y - mouseY)/3;
+			 instance.getControlPoint(selected_cp)->pos.y += -(y - mouseY)/3;
 
 	if ( mouseState[1] && mouseX != -999 )
 	{
