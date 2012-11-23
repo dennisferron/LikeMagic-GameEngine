@@ -48,6 +48,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="--std=c++0x" />
 			<Add directory="../../../../Common/boost_1_49_0" />
 		</Compiler>
 		<Unit filename="../gauss-elim.h" />

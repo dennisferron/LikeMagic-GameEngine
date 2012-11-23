@@ -437,55 +437,28 @@ std::vector<ThinPlateQuilt::TileAt> ThinPlateQuilt::tilesAt(double x, double z)
 
     Vec quilt_size = (max - min);
     Vec tile_size = { quilt_size.x / numCols, 0, quilt_size.z / numRows };
-    Vec halo_size = tile_size / 3;
+    Vec halo_size = 1.3333 * tile_size;
+
+    double dist_limit_sq = halo_size.x*halo_size.x + halo_size.z*halo_size.z;
 
     for (int i=0; i<numCols; ++i)
         for (int j=0; j<numRows; ++j)
         {
-            Vec tile_min = min + Vec { i*tile_size.x, 0, j*tile_size.z };
-            Vec tile_max = tile_min + tile_size;
-            Vec halo_min = tile_min - halo_size;
-            Vec halo_max = tile_max + halo_size;
+            Vec tile_center = min + Vec { i*tile_size.x, 0, j*tile_size.z } + (0.5*tile_size);
 
-            if (x >= tile_min.x && x <= tile_max.x && z >= tile_min.z && z <= tile_max.z)
-            {
-                result.push_back( { &tiles[i][j], 1.0 } );
-            }
-            else if (x >= halo_min.x && x <= halo_max.x && z >= halo_min.z && z <= halo_max.z)
-            {
-                double x_from_halo_edge = (x <= tile_min.x)? x-halo_min.x : halo_max.x-x;
-                double z_from_halo_edge = (z <= tile_min.z)? z-halo_min.z : halo_max.z-z;
-                double x_weight = x_from_halo_edge / halo_size.x;
-                double z_weight = z_from_halo_edge / halo_size.z;
+            double dist_sq = (tile_center.x-x)*(tile_center.x-x) + (tile_center.z-z)*(tile_center.z-z);
 
-                if (x >= tile_min.x && x <= tile_max.x)
-                    x_weight = 0.0;
+            if (dist_sq > dist_limit_sq)
+                continue;
 
-                if (z >= tile_min.z && z <= tile_max.z)
-                    z_weight = 0.0;
+            double weight = 0.0;
 
-                double best_weight = (x_weight>z_weight)? x_weight : z_weight;
+            if (dist_sq > 0.001)
+                weight = 1.0 / (dist_sq*dist_sq);
+            else
+                weight = 1000.0;
 
-                if (tiles[i][j].height_at(x,z) != 0.0)
-                {
-                    cout << endl;
-                    cout << (x >= tile_min.x) << (x <= tile_max.x) << (z >= tile_min.z) << (z <= tile_max.z) << endl;
-                    cout << "i,j " << i << ", " << j << endl;
-                    cout << "x,z " << x << ", " << z << endl;
-                    cout << "tile_min " << tile_min.x << ", " << tile_min.z << endl;
-                    cout << "tile_max " << tile_max.x << ", " << tile_max.z << endl;
-                    cout << "halo_min " << halo_min.x << ", " << halo_min.z << endl;
-                    cout << "halo_max " << halo_max.x << ", " << halo_max.z << endl;
-                    cout << "x_from_halo_edge " <<  x_from_halo_edge << endl;
-                    cout << "z_from_halo_edge " <<  z_from_halo_edge << endl;
-                    cout << "x_weight " <<  x_weight << endl;
-                    cout << "z_weight " <<  z_weight << endl;
-                    cout << "best_weight " <<  best_weight << endl;
-                }
-
-                result.push_back( { &tiles[i][j], best_weight } );
-            }
-            // Else the tile does not contribute.
+            result.push_back( { &tiles[i][j], weight } );
         }
 
     return result;
@@ -495,7 +468,7 @@ double ThinPlateQuilt::heightAt(double x, double z)
 {
     double h = 0.0;
     double w = 0.0;
-    auto list = tilesAt(x,z);
+    std::vector<TileAt> list = tilesAt(x,z);
 
     for (auto tile : list)
     {
