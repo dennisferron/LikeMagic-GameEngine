@@ -50,8 +50,22 @@
 			<Add option="-fexceptions" />
 			<Add option="--std=c++0x" />
 			<Add directory="../../../../Common/boost_1_49_0" />
+			<Add directory="../Include" />
 		</Compiler>
-		<Unit filename="../gauss-elim.h" />
+		<Unit filename="../Include/ControlPoint.hpp" />
+		<Unit filename="../Include/Demo.hpp" />
+		<Unit filename="../Include/ThinPlateQuilt.hpp" />
+		<Unit filename="../Include/ThinPlateSpline.hpp" />
+		<Unit filename="../Include/gauss-elim.h" />
+		<Unit filename="../Include/linalg3d.h" />
+		<Unit filename="../Include/ludecomposition.h" />
+		<Unit filename="../Source/2d-morph.cpp" />
+		<Unit filename="../Source/ControlPoint.cpp" />
+		<Unit filename="../Source/Demo.cpp" />
+		<Unit filename="../Source/ThinPlateQuilt.cpp" />
+		<Unit filename="../Source/ThinPlateSpline.cpp" />
+		<Unit filename="../Source/linalg3d.cpp" />
+		<Unit filename="../Source/main.cpp" />
 		<Unit filename="../gfx/eq1.png" />
 		<Unit filename="../gfx/eq2.png" />
 		<Unit filename="../gfx/eq3.png" />
@@ -61,9 +75,6 @@
 		<Unit filename="../gfx/tpsdemo-small.png" />
 		<Unit filename="../gfx/tpsdemo.png" />
 		<Unit filename="../index.html" />
-		<Unit filename="../linalg3d.h" />
-		<Unit filename="../ludecomposition.h" />
-		<Unit filename="../main.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
