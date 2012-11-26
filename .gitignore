@@ -88,3 +88,4 @@ doxygen/*
 !LikeMagic/LikeMagicManual/*.*
 
 .DS_Store
+Deps/tps-1.2/ThinPlateSpline/bin/Debug/SplineTest
