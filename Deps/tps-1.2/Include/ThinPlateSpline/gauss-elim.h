@@ -18,6 +18,8 @@
 #include "boost/numeric/ublas/matrix.hpp"
 #include "boost/numeric/ublas/matrix_proxy.hpp"
 
+namespace TPS {
+
  /*
   *  Solves a linear system A x X = B using Gauss elimination,
   *  given by Boost uBlas matrices 'a' and 'b'.
@@ -120,4 +122,5 @@ template <class T> bool gauss_solve(
   return true;
 }
 
+}
 #endif

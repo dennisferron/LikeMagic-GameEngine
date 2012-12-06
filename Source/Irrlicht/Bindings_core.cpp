@@ -51,6 +51,10 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
     LM_CONSTR(recti,, int, int, int, int)
     LM_CONSTR(recti, "newWithXYXY", int, int, int, int)
 
+    LM_CLASS(ns_irr_core, rectf)
+    LM_CONSTR(rectf,, float, float, float, float)
+    LM_CONSTR(rectf, "newWithXYXY", float, float, float, float)
+
     LM_CLASS(ns_irr_core, vector2di)
     LM_CONSTR(vector2di,,)
     LM_CONSTR(vector2di, , int, int)

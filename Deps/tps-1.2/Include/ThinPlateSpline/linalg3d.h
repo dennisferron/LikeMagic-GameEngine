@@ -18,6 +18,8 @@
 
 #include <cmath>
 
+namespace TPS {
+
 #define EPSILON 0.00001f
 #define PI 3.1415926
 #define Deg2Rad(Ang) ((float)( Ang * PI / 180.0 ))
@@ -184,4 +186,5 @@ public:
   }
 };
 
+}
 #endif

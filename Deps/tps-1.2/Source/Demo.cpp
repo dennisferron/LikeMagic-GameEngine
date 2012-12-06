@@ -28,16 +28,32 @@
 #include <GL/glut.h>
 #include <cstring>
 
-#include "ThinPlateQuilt.hpp"
+#include "ThinPlateSpline/ThinPlateQuilt.hpp"
 
+using namespace TPS;
 
 #define GRID_W 100
 #define GRID_H 100
 float grid[GRID_W][GRID_H];
 
+ThinPlateQuilt instance( 3, 3, { -GRID_W/2,0,-GRID_H/2 }, { GRID_W/2-1,0,GRID_H/2-1 } );
+
 int selected_cp = -1;
 
-extern ThinPlateQuilt instance;
+
+static void calc_tps()
+{
+    instance.refresh();
+
+    // Interpolate grid heights
+    for ( int x=-GRID_W/2; x<GRID_W/2; ++x )
+    {
+        for ( int z=-GRID_H/2; z<GRID_H/2; ++z )
+        {
+            grid[x+GRID_W/2][z+GRID_H/2] = instance.heightAt(x,z);
+        }
+    }
+}
 
 static int winW = 800, winH = 600;
 static int mouseX = -999, mouseY = -999;
@@ -273,14 +289,14 @@ static void keyboard( unsigned char key, int, int )
     {
         case 'a':
             instance.addControlPoint( cursor_loc );
-            instance.refresh();
+            calc_tps();
             break;
         case 'd':
             if ( selected_cp >= 0 )
             {
                 instance.removeControlPoint( selected_cp );
                 selected_cp = -1;
-                instance.refresh();
+                calc_tps();
             }
             break;
         case 'c':
@@ -289,11 +305,11 @@ static void keyboard( unsigned char key, int, int )
             break;
         case '+':
             instance.addRegularization(0.025);
-            instance.refresh();
+            calc_tps();
             break;
         case '-':
             instance.addRegularization( -0.025 );
-            instance.refresh();
+            calc_tps();
             break;
         case '/': camZoom -= 1; break;
         case '*': camZoom += 1; break;
@@ -317,7 +333,7 @@ static void mouse( int button, int state, int, int )
     {
         if ( state==GLUT_UP )
         {
-		    instance.refresh();
+		    calc_tps();
             screen_dirty=true;
         }
         else if ( state==GLUT_DOWN && selected_cp<0 )
@@ -400,6 +416,8 @@ static void idlefunc()
         glutPostRedisplay();
 }
 
+namespace TPS {
+
 int mainLoop( int argc, char *argv[] )
 {
     glutInit( &argc, argv );
@@ -452,4 +470,6 @@ int mainLoop( int argc, char *argv[] )
     glutMainLoop();
 
     return 0;
+}
+
 }

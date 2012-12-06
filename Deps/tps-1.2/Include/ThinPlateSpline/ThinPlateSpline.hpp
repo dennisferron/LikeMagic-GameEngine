@@ -25,10 +25,14 @@
  *            Methods for Thin Plate Spline Mappings and Principal Warps"
  */
 
-#include "ControlPoint.hpp"
-#include "linalg3d.h"
+#pragma once
+
+#include "ThinPlateSpline/ControlPoint.hpp"
+#include "ThinPlateSpline/linalg3d.h"
 #include "boost/numeric/ublas/matrix.hpp"
 #include <vector>
+
+namespace TPS {
 
 class ThinPlateSpline
 {
@@ -55,3 +59,5 @@ public:
     void calc_matrices();
     void calc_bending_energy();
 };
+
+}

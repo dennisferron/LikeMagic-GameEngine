@@ -101,7 +101,7 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_custom, MeshTools)
     LM_STATIC_MEMBER_FUNC(MeshTools, (getBaseVertex)(createMeshFromSoftBody)(createSoftBodyFromMesh)(splitMeshZ)
-        (createMeshFromHeightmap))
+        (createMeshFromHeightmap)(createHillMesh))
 
     // Needed to be able to access members from the return value of splitMeshZ
     typedef MeshTools::SplitMeshResult SplitMeshResult;

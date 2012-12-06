@@ -13,7 +13,9 @@
  *  It is provided "as is" without express or implied warranty.
  */
 
-#include "linalg3d.h"
+#include "ThinPlateSpline/linalg3d.h"
+
+namespace TPS {
 
 // Creates a scale matrix
 Mtx scale( const Vec &scale )
@@ -123,4 +125,6 @@ Mtx operator * ( const Mtx& a, const Mtx& b )
       ans.data[ bCol + aRow * 4 ] = val;
     }
   return ans;
+}
+
 }

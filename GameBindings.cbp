@@ -127,6 +127,7 @@
 			<Add directory="../Iocaste/garbagecollector/source" />
 			<Add directory="../Iocaste/basekit/source" />
 			<Add directory="../Iocaste/Include/Iocaste/CShims" />
+			<Add directory="Deps/tps-1.2/Include" />
 		</Compiler>
 		<Unit filename="Include/Bindings/Bullet/Bindings.hpp" />
 		<Unit filename="Include/Bindings/Bullet/Protos.hpp" />
@@ -154,6 +155,8 @@
 		<Unit filename="Include/Bindings/Irrlicht/ScriptedDataSerializer.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/ScriptedEventReceiver.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/ScriptedSceneNode.hpp" />
+		<Unit filename="Include/Bindings/ThinPlateSpline/Bindings.hpp" />
+		<Unit filename="Include/Bindings/ThinPlateSpline/Protos.hpp" />
 		<Unit filename="Script/BulletBindings.io" />
 		<Unit filename="Script/CustomBindings.io" />
 		<Unit filename="Script/IrrlichtBindings.io" />
@@ -182,6 +185,7 @@
 		<Unit filename="Source/Bullet/btVector3.cpp" />
 		<Unit filename="Source/Custom/CustomBindings.cpp" />
 		<Unit filename="Source/Custom/GearConstraint.cpp" />
+		<Unit filename="Source/Custom/HillMesh.cpp" />
 		<Unit filename="Source/Custom/IrrlichtBulletDebugDrawer.cpp" />
 		<Unit filename="Source/Custom/KinematicAnimator.cpp" />
 		<Unit filename="Source/Custom/LockAnimator.cpp" />
@@ -207,6 +211,8 @@
 		<Unit filename="Source/Irrlicht/ScriptedDataSerializer.cpp" />
 		<Unit filename="Source/Irrlicht/ScriptedEventReceiver.cpp" />
 		<Unit filename="Source/Irrlicht/ScriptedSceneNode.cpp" />
+		<Unit filename="Source/ThinPlateSpline/TPSBindings.cpp" />
+		<Unit filename="Source/ThinPlateSpline/TPSProtos.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

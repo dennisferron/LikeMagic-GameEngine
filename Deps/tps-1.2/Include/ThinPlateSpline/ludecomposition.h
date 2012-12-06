@@ -15,6 +15,8 @@
 #include "boost/numeric/ublas/matrix.hpp"
 #include "boost/numeric/ublas/matrix_proxy.hpp"
 
+namespace TPS {
+
 // Solve a linear equation system a*x=b using inplace LU decomposition.
 //
 // Stores x in 'b' and overwrites 'a' (with a pivotted LUD).
@@ -168,4 +170,5 @@ template <typename T> int LU_Solve(
   return 0;
 }
 
+}
 #endif // LUDECOMPOSITION_H

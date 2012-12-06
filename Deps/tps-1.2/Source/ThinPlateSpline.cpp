@@ -25,10 +25,11 @@
  *            Methods for Thin Plate Spline Mappings and Principal Warps"
  */
 
-#include "ThinPlateSpline.hpp"
-#include "ludecomposition.h"
+#include "ThinPlateSpline/ThinPlateSpline.hpp"
+#include "ThinPlateSpline/ludecomposition.h"
 
 using namespace boost::numeric::ublas;
+using namespace TPS;
 
 static double tps_base_func(double r)
 {
@@ -132,8 +133,8 @@ void ThinPlateSpline::calc_matrices()
     // Solve the linear system "inplace"
     if (0 != LU_Solve(mtx_l, mtx_v))
     {
-        std::cerr << "Singular matrix! Aborting." << std::endl;
-        throw std::runtime_error( "Singular matrix! Aborting." );
+        std::cerr << "Error singular matrix!" << std::endl;
+        //throw std::runtime_error( "Singular matrix! Aborting." );
     }
 }
 
@@ -190,6 +191,11 @@ double ThinPlateSpline::height_at(double x, double z)
         return 0.0f;
 
     unsigned p = control_points.size();
+
+    if (mtx_orig_k.size1() != p)
+    {
+        throw std::logic_error("Error TPS matrices not sized right for number of control points.  Did you forget to call refresh() and/or calc_matrices()?");
+    }
 
     double h = mtx_v(p+0, 0) + mtx_v(p+1, 0)*x + mtx_v(p+2, 0)*z;
 

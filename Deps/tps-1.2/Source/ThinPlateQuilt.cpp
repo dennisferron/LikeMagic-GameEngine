@@ -1,10 +1,8 @@
-#include "ThinPlateQuilt.hpp"
+#include "ThinPlateSpline/ThinPlateQuilt.hpp"
+using namespace TPS;
 
-#define GRID_W 100
-#define GRID_H 100
-extern float grid[GRID_W][GRID_H];
-
-ThinPlateQuilt instance( 3, 3, { -GRID_W/2,0,-GRID_H/2 }, { GRID_W/2-1,0,GRID_H/2-1 } );
+#include <iostream>
+using namespace std;
 
 ThinPlateQuilt::ThinPlateQuilt(int numCols_, int numRows_, Vec min_, Vec max_)
     : numCols(numCols_), numRows(numRows_), min(min_), max(max_)
@@ -28,38 +26,27 @@ ThinPlateSpline const& ThinPlateQuilt::getTile(int col, int row) const
 
 void ThinPlateQuilt::clearControlPoints()
 {
-    for (int x=0; x<numRows; ++x)
-        for (int z=0; z<numCols; ++z)
+    for (int x=0; x<numCols; ++x)
+        for (int z=0; z<numRows; ++z)
             getTile(x,z).clearControlPoints();
     control_points.clear();
 }
 
 void ThinPlateQuilt::refresh()
 {
-    for (int x=0; x<numRows; ++x)
-        for (int z=0; z<numCols; ++z)
+    cout << "tiles size is " << tiles.size() << " numRows is " << numRows << " numCols is " << numCols << endl;
+
+    for (int x=0; x<numCols; ++x)
+        for (int z=0; z<numRows; ++z)
             getTile(x,z).calc_matrices();
-
-    // Interpolate grid heights
-    for ( int x=-GRID_W/2; x<GRID_W/2; ++x )
-    {
-        for ( int z=-GRID_H/2; z<GRID_H/2; ++z )
-        {
-            grid[x+GRID_W/2][z+GRID_H/2] = heightAt(x,z);
-        }
-    }
-
-    for (int x=0; x<numRows; ++x)
-        for (int z=0; z<numCols; ++z)
-            getTile(x,z).calc_bending_energy();
 }
 
 double ThinPlateQuilt::getRegularization() const
 {
     double total = 0.0;
 
-    for (int x=0; x<numRows; ++x)
-        for (int z=0; z<numCols; ++z)
+    for (int x=0; x<numCols; ++x)
+        for (int z=0; z<numRows; ++z)
             total += getTile(x,z).regularization;
 
     return total / (numRows * numCols);
@@ -67,17 +54,21 @@ double ThinPlateQuilt::getRegularization() const
 
 void ThinPlateQuilt::addRegularization(double delta)
 {
-    for (int x=0; x<numRows; ++x)
-        for (int z=0; z<numCols; ++z)
+    for (int x=0; x<numCols; ++x)
+        for (int z=0; z<numRows; ++z)
             getTile(x,z).regularization += delta;
 }
 
-double ThinPlateQuilt::getBendingEnergy() const
+double ThinPlateQuilt::getBendingEnergy()
 {
     double total = 0.0;
 
-    for (int x=0; x<numRows; ++x)
-        for (int z=0; z<numCols; ++z)
+    for (int x=0; x<numCols; ++x)
+        for (int z=0; z<numRows; ++z)
+            getTile(x,z).calc_bending_energy();
+
+    for (int x=0; x<numCols; ++x)
+        for (int z=0; z<numRows; ++z)
             total += getTile(x,z).bending_energy;
 
     return total / (numRows * numCols);
@@ -105,8 +96,8 @@ ControlPointPtr ThinPlateQuilt::addControlPoint(Vec pos)
     Vec tile_size = { quilt_size.x / numCols, 0, quilt_size.z / numRows };
     Vec halo_size = tile_size / 3;
 
-    for (int i=0; i<numRows; ++i)
-        for (int j=0; j<numCols; ++j)
+    for (int i=0; i<numCols; ++i)
+        for (int j=0; j<numRows; ++j)
         {
             Vec tile_min = min + Vec { i*tile_size.x, 0, j*tile_size.z };
             Vec tile_max = tile_min + tile_size;
@@ -115,6 +106,8 @@ ControlPointPtr ThinPlateQuilt::addControlPoint(Vec pos)
 
             if (x >= tile_min.x && x <= tile_max.x && z >= tile_min.z && z <= tile_max.z)
             {
+                cout << "Add control point at x,z = " << p->pos.x << "," << p->pos.z << " inside tile i,j = " << i << "," << j << " at X,Y,X,Y = "
+                    << tile_min.x << "," << tile_min.z << "," << tile_max.x << "," << tile_max.z << endl;
                 getTile(i,j).addControlPoint(p);
             }
             else if (x >= halo_min.x && x <= halo_max.x && z >= halo_min.z && z <= halo_max.z)
@@ -125,9 +118,16 @@ ControlPointPtr ThinPlateQuilt::addControlPoint(Vec pos)
 //                double z_weight = z_from_halo_edge / halo_size.z;
 //                double best_weight = (x_weight>z_weight)? x_weight : z_weight;
 
+                cout << "Add control point at x,z = " << p->pos.x << "," << p->pos.z << " inside halo i,j = " << i << "," << j << " at X,Y,X,Y = "
+                    << halo_min.x << "," << halo_min.z << "," << halo_max.x << "," << halo_max.z << endl;
+
                 getTile(i,j).addControlPoint(p);
             }
             // Else the tile does not contribute.
+            else
+            {
+
+            }
         }
 
     return p;

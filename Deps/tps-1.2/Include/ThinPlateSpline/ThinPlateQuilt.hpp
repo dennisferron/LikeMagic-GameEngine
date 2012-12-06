@@ -1,5 +1,9 @@
 
-#include "ThinPlateSpline.hpp"
+#pragma once
+
+#include "ThinPlateSpline/ThinPlateSpline.hpp"
+
+namespace TPS {
 
 class ThinPlateQuilt
 {
@@ -33,7 +37,9 @@ public:
     void removeControlPoint(unsigned pos);
     double getRegularization() const;
     void addRegularization(double delta);
-    double getBendingEnergy() const;
+    double getBendingEnergy();
     void refresh();
     void clearControlPoints();
 };
+
+}

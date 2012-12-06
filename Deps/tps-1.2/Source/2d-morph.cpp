@@ -28,13 +28,15 @@
  *  It is provided "as is" without express or implied warranty.
  */
 
-#include "ludecomposition.h"
+#include "ThinPlateSpline/ludecomposition.h"
 
 #include <vector>
 #include <utility>
 
 #include <cassert>
 #include <cmath>
+
+using namespace TPS;
 
 using namespace boost::numeric;
 typedef ublas::matrix<double> Matrix;

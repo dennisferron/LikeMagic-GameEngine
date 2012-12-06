@@ -1,7 +1,11 @@
 
-#include "linalg3d.h"
+#pragma once
+
+#include "ThinPlateSpline/linalg3d.h"
 
 #include "boost/intrusive_ptr.hpp"
+
+namespace TPS {
 
 class ControlPoint;
 void intrusive_ptr_add_ref(ControlPoint const* p);
@@ -22,3 +26,5 @@ public:
 };
 
 typedef boost::intrusive_ptr<ControlPoint> ControlPointPtr;
+
+}

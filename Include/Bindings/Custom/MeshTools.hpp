@@ -9,6 +9,7 @@
 #pragma once
 
 #include "irrlicht.h"
+#include "ThinPlateSpline/ThinPlateQuilt.hpp"
 
 #include "boost/intrusive_ptr.hpp"
 #include <map>
@@ -132,6 +133,8 @@ public:
     // For edge tiles where the image size is not an exact match for the tile size, generates as much of the mesh on the last tile as it can.
     // Returns NULL if the requested tile is outside the image or if the image dimensions leave 0 or 1 rows or columns for the requested tile.
     static irr::scene::IMesh* createMeshFromHeightmap(irr::video::IImage* image, irr::core::dimension2du tileSizeInPixels, irr::core::vector2di tilePosInTiles, bool extraStripsOnEdges);
+
+    static SplitMeshResult createHillMesh(TPS::ThinPlateQuilt& tps, irr::core::rectf region, float gridSize);
 };
 
 void intrusive_ptr_add_ref(MeshTools::PossibleVertex const* p);
