@@ -56,10 +56,12 @@ void* ScriptUtil::get_void_ptr(void* value)
 
 float ScriptUtil::get_random_float(float min, float max)
 {
-    boost::minstd_rand algorithm;
-    boost::uniform_real<float> range(min, max);
-    boost::variate_generator<boost::minstd_rand&, boost::uniform_real<float> > generator(algorithm, range);
-    return generator();
+    static boost::minstd_rand algorithm;
+    static boost::uniform_real<float> range(0.0f, 1.0f);
+    static boost::variate_generator<boost::minstd_rand&, boost::uniform_real<float> > generator(algorithm, range);
+    float result = (max-min)*generator()+min;
+    cout << "get_random_float(" << min << "," << max << ") => " << result << endl;
+    return result;
 }
 
 float* ScriptUtil::get_random_float_array(int width, int height, float min, float max)
