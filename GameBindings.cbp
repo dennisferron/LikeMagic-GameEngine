@@ -140,9 +140,11 @@
 		<Unit filename="Include/Bindings/Custom/GearConstraint.hpp" />
 		<Unit filename="Include/Bindings/Custom/IrrlichtBulletDebugDrawer.hpp" />
 		<Unit filename="Include/Bindings/Custom/KinematicAnimator.hpp" />
+		<Unit filename="Include/Bindings/Custom/LinkSplitter.hpp" />
 		<Unit filename="Include/Bindings/Custom/LockAnimator.hpp" />
 		<Unit filename="Include/Bindings/Custom/MeshTools.hpp" />
 		<Unit filename="Include/Bindings/Custom/PhysicsAnimator.hpp" />
+		<Unit filename="Include/Bindings/Custom/PossibleVertex.hpp" />
 		<Unit filename="Include/Bindings/Custom/Protos.hpp" />
 		<Unit filename="Include/Bindings/Custom/SceneNodePtrTest.hpp" />
 		<Unit filename="Include/Bindings/Custom/ScriptObjAnimator.hpp" />
@@ -188,9 +190,11 @@
 		<Unit filename="Source/Custom/HillMesh.cpp" />
 		<Unit filename="Source/Custom/IrrlichtBulletDebugDrawer.cpp" />
 		<Unit filename="Source/Custom/KinematicAnimator.cpp" />
+		<Unit filename="Source/Custom/LinkSplitter.cpp" />
 		<Unit filename="Source/Custom/LockAnimator.cpp" />
 		<Unit filename="Source/Custom/MeshTools.cpp" />
 		<Unit filename="Source/Custom/PhysicsAnimator.cpp" />
+		<Unit filename="Source/Custom/PossibleVertex.cpp" />
 		<Unit filename="Source/Custom/Protos.cpp" />
 		<Unit filename="Source/Custom/SceneNodePtrTest.cpp" />
 		<Unit filename="Source/Custom/ScriptObjAnimator.cpp" />

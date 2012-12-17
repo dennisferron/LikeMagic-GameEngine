@@ -10,6 +10,7 @@
 #include "irrlicht.h"
 #include "BulletSoftBody/btSoftBodyHelpers.h"
 #include "ThinPlateSpline/ThinPlateSpline.hpp"
+#include "boost/intrusive_ptr.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -28,129 +29,264 @@ using namespace irr::scene;
 
 using namespace TPS;
 
-typedef MeshTools::PsblVertPtr PsblVertPtr;
+class FieldQuadTree;
+typedef boost::intrusive_ptr<FieldQuadTree> QuadTreePtr;
 
 
-MeshTools::SplitMeshResult MeshTools::createHillMesh(ThinPlateQuilt& tps, rectf region, float gridSize)
+class FieldQuadTree
 {
+private:
+    friend void intrusive_ptr_add_ref(FieldQuadTree const* p);
+    friend void intrusive_ptr_release(FieldQuadTree const* p);
+
+    mutable std::size_t ref_count;
+
+    QuadTreePtr child[4];
+    rectf region;
+    ThinPlateQuilt& surface;
+    PsblVertPtr vert;
+
+    // Locate the best position within the cell for a vertex based on
+    // a weighted average the corner positions by their difference from expected height.
+    vector2df locate(double expected_height)
+    {
+        float total_weight = 0.0;
+        vector2df total_pos;
+
+        for (int i=0; i<4; ++i)
+        {
+            vector2df corner_pos(
+                region.getSize().Width * (i&1) + region.UpperLeftCorner.X,
+                region.getSize().Height * ((i>>1)&1) + region.UpperLeftCorner.Y
+            );
+
+            double height = surface.heightAt(corner_pos.X, corner_pos.Y);
+            float inverse_weight = abs(height - expected_height);
+            float adjusted_weight = 1.0f / (inverse_weight + 0.001f);
+
+            total_pos += adjusted_weight * corner_pos;
+            total_weight += adjusted_weight;
+        }
+
+        return total_pos / total_weight;
+    }
+
+    bool isLeaf() const
+    {
+        return child[0] == NULL;
+    }
+
+    bool isOuter(rectf other_region) const
+    {
+        vector2df displacement = other_region.getCenter() - region.getCenter();
+        vector2df twice_displaced = other_region.getCenter() + displacement;
+        return !region.isPointInside(twice_displaced);
+    }
+
+    struct Shell
+    {
+        std::vector<QuadTreePtr> north;
+        std::vector<QuadTreePtr> south;
+        std::vector<QuadTreePtr> east;
+        std::vector<QuadTreePtr> west;
+    };
+
+    std::vector<QuadTreePtr> combine(std::vector<QuadTreePtr> const& first, std::vector<QuadTreePtr> const& second)
+    {
+        std::vector<QuadTreePtr> result;
+        result.insert(result.end(), first.begin(), first.end());
+        result.insert(result.end(), second.begin(), second.end());
+        return result;
+    }
+
+    void addTriangle(std::vector<PsblVertPtr>& triangles, QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c) const
+    {
+        triangles.push_back(a->vert);
+        triangles.push_back(b->vert);
+        triangles.push_back(c->vert);
+
+        triangles.push_back(c->vert);
+        triangles.push_back(b->vert);
+        triangles.push_back(a->vert);
+    }
+
+    void addQuad(std::vector<PsblVertPtr>& triangles, QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c, QuadTreePtr const& d) const
+    {
+        if (a->vert->distSQ(c->vert) < b->vert->distSQ(d->vert))
+        {
+            addTriangle(triangles, a, b, c);
+            addTriangle(triangles, a, c, d);
+        }
+        else
+        {
+            addTriangle(triangles, b, c, d);
+            addTriangle(triangles, b, d, a);
+        }
+    }
+
+    bool isAdjacent(QuadTreePtr const& that) const
+    {
+        float tolerance = 0.001;
+        vector2df displacement = this->region.UpperLeftCorner - that->region.UpperLeftCorner;
+        float dist_x = abs(displacement.X);
+        float dist_y = abs(displacement.Y);
+        dimension2df extent = this->region.getSize() / 2.0f + that->region.getSize() / 2.0f;
+        bool adj_x = dist_x <= extent.Width + tolerance;
+        bool adj_y = dist_y <= extent.Height + tolerance;
+        return adj_x && adj_y;
+    }
+
+    void zip(std::vector<PsblVertPtr>& triangles, std::vector<QuadTreePtr> const& list_a, std::vector<QuadTreePtr> const& list_b)
+    {
+        auto a1 = list_a.begin();
+        auto b1 = list_b.begin();
+
+        bool end_a;
+        bool end_b;
+        do
+        {
+            auto a2 = a1+1;
+            auto b2 = b1+1;
+
+            end_a = (a2==list_a.end());
+            end_b = (b2==list_b.end());
+
+            bool adj_a = !end_a && (*a2)->isAdjacent(*b1);
+            bool adj_b = !end_b && (*b2)->isAdjacent(*a1);
+
+            if (adj_a && !adj_b)
+                addTriangle(triangles, *a1, *a2, *b1);
+            else if (!adj_a && adj_b)
+                addTriangle(triangles, *a1, *b2, *b1);
+            else if (adj_a && adj_b)
+                addQuad(triangles, *a1, *a2, *b2, *b1);
+
+            a1 = end_a? a1 : a2;
+            b1 = end_b? b1 : b2;
+        } while (!(end_a && end_b));
+    }
+
+public:
+
+    Shell triangulate(std::vector<PsblVertPtr>& triangles)
+    {
+        if (isLeaf())
+            return {{this},{this},{this},{this}};
+
+        Shell nw = child[0]->triangulate(triangles);
+        Shell ne = child[1]->triangulate(triangles);
+        Shell sw = child[2]->triangulate(triangles);
+        Shell se = child[3]->triangulate(triangles);
+
+        Shell inner
+        {
+            combine(nw.south, ne.south),  // north
+            combine(sw.north, se.north),  // south
+            combine(ne.west, se.west),    // east
+            combine(nw.east, sw.east)     // west
+        };
+
+        zip(triangles, inner.west, inner.east);
+        zip(triangles, inner.north, inner.south);
+
+        return Shell
+        {
+            combine(nw.north, ne.north),  // north
+            combine(sw.south, se.south),  // south
+            combine(ne.east, se.east),    // east
+            combine(nw.west, sw.west)     // west
+        };
+    }
+
+    void split(int times)
+    {
+        if (times <= 0)
+            return;
+
+        vert = NULL;
+
+        dimension2df size = region.getSize() / 2.0f;
+        for (int i=0; i<4; ++i)
+        {
+            vector2df upper_left(
+                size.Width * (i&1) + region.UpperLeftCorner.X,
+                size.Height * ((i>>1)&1) + region.UpperLeftCorner.Y
+            );
+            rectf quadrant(upper_left, size);
+            child[i] = new FieldQuadTree(quadrant, surface);
+            child[i]->split(times-1);
+        }
+    }
+
+    FieldQuadTree(rectf region_, TPS::ThinPlateQuilt& surface_) :
+        ref_count(0), region(region_), surface(surface_)
+    {
+        irr::video::S3DVertex vtx;
+        vtx.Pos.X = region.getCenter().X;
+        vtx.Pos.Y = region.getCenter().Y;
+        vtx.Pos.Z = surface.heightAt(vtx.Pos.X, vtx.Pos.Y);
+        vert = new PossibleVertex(vtx);
+    }
+
+    void testVertices(rectf& rect)
+    {
+        rect.repair();
+
+        if (isLeaf())
+            rect.addInternalPoint(vert->getPos().X, vert->getPos().Y);
+        else
+            for (int i=0; i<4; ++i)
+                child[i]->testVertices(rect);
+    }
+};
+
+void intrusive_ptr_add_ref(FieldQuadTree const* p)
+{
+    ++(p->ref_count);
+}
+
+void intrusive_ptr_release(FieldQuadTree const* p)
+{
+    if (!--(p->ref_count))
+        delete p;
+}
+
+MeshTools::SplitMeshResult MeshTools::createHillMesh(ThinPlateQuilt& tps, rectf region, int initialSplit)
+{
+    cout << region.UpperLeftCorner.X << "," << region.UpperLeftCorner.Y << " : " << region.LowerRightCorner.X << "," << region.LowerRightCorner.Y << endl;
+
+    std::vector<PsblVertPtr> triangles;
+
+    FieldQuadTree tree(region, tps);
+    tree.split(initialSplit);
+    tree.triangulate(triangles);
+
+    rectf check(region.getCenter(), dimension2df(1.0f,1.0f));
+    tree.testVertices(check);
+    cout << check.UpperLeftCorner.X << "," << check.UpperLeftCorner.Y << " : " << check.LowerRightCorner.X << "," << check.LowerRightCorner.Y << endl;
+
 	SMeshBuffer* buffer = new SMeshBuffer();
 
-	dimension2du regionSize(region.getSize().Width, region.getSize().Height);
+    irr::video::S3DVertex vtx;
+    PsblVertPtr vert;
 
-	// Preallocate vertex buffer to the size we know we'll need.
-	buffer->Vertices.set_used(regionSize.Width*regionSize.Height);
+    vtx.Pos.X = 0.0f;
+    vtx.Pos.Y = 0.0f;
+    vert = new PossibleVertex(vtx);
+    vert->addToMeshBuf(buffer, vector3df());
 
-	// Amount of TCoord per unit of x,y in image.
-    vector2df tCoordsScale(1.0f / regionSize.Width, 1.0f / regionSize.Height);
+    vtx.Pos.X = 1.0f;
+    vtx.Pos.Y = 0.0f;
+    vert = new PossibleVertex(vtx);
+    vert->addToMeshBuf(buffer, vector3df());
 
-    // Whether we put y on the outside or x on the outside, doesn't matter, because we are
-    // using getIndex() to find where x and y map too.  However, I happen to know I made getIndex
-    // put x's together, y in rows, and looping in the same rank order might have better cache performance
-    // because it should access the vertices in the same order they are in the array.
-    for (u32 y=0; y < regionSize.Height; ++y)
-    {
-        for (u32 x=0; x < regionSize.Width; ++x)
-        {
-            u32 index = getIndex(regionSize, x, y);
+    vtx.Pos.X = 1.0f;
+    vtx.Pos.Y = 1.0f;
+    vert = new PossibleVertex(vtx);
+    vert->addToMeshBuf(buffer, vector3df());
 
-            if (index < 0 || index >= buffer->Vertices.size())
-                throw std::logic_error("Index out of range.");
-
-            S3DVertex& vert = buffer->Vertices[index];
-
-            // No special coloration
-            vert.Color = SColor(255,255,255,255);
-
-            // Scale texture to tile.
-            vert.TCoords = vector2df(x,y) * tCoordsScale;
-
-            float thisHeight = tps.heightAt(region.UpperLeftCorner.X+x, region.UpperLeftCorner.Y+y);
-
-            vert.Pos.set(x, y, thisHeight);
-
-            // I'm only averaging normals along the 4 compass directions.  It's
-            // arguable whether diagonals should count; I chose to ignore diagonals.
-            // Ignoring diagonals allows me to assume the "run" in rise/run is always
-            // just one unit; if you add diagonals here you'll also need to change
-            // the slope calculation to use the actual distance instead of assuming 1.
-            vector2di offsetsArray[] = {
-                vector2di( 1, 0),  //  3 o'clock
-                vector2di( 0, 1),  // 12 o'clock
-                vector2di(-1, 0),  //  9 o'clock
-                vector2di( 0,-1)   //  6 o'clock
-            };
-
-            // Calculate the normals of the surrounding slopes.
-            // Uses the image, not just the tile patch size, so it will
-            // calculate correct normals for vertices on tile edges.
-            for (size_t i=-0; i < 4; ++i)
-            {
-                vector2di offset = vector2di(x,y) + offsetsArray[i];
-
-                // Skip this offset if it's outside the image
-                if (offset.X < 0 || offset.Y < 0 || offset.X >= (s32)regionSize.Width || offset.Y >= (s32)regionSize.Height)
-                    continue;
-
-                float otherHeight = tps.heightAt(region.UpperLeftCorner.X+offset.X, region.UpperLeftCorner.Y+offset.Y);
-
-                // The code Irrlicht's in terrain scene node does all kinds of complicated
-                // business with cross products and such - waaay over complicated.  You don't need
-                // all that stuff.  Dude it' s a heightmap: all you need to worray about is
-                // rise over run on unit intervals!  Algebra 1 type stuff, y = mx + c
-
-                // Calculate the rise of the line over the run, taking into account the fact
-                // that the offset could be in either direction.
-                float rise = (offset.X < 0 || offset.Y < 0)? thisHeight - otherHeight : otherHeight - thisHeight;
-
-                // Assuming that run = 1, m = rise / run is just m = rise.
-                float m = rise;
-
-                // The the slope of the normal is just the negative of the reciprocal of the line slope.
-                float n = -1.0f / rise;
-
-                // The X,Y of the normal vector is just going to be the X and Y of the offset
-                // (think about it - obviously the normal of the slope must tilt in the direction of the run)
-                // and the Z of the normal vector is just the slope of the normal over that run.
-                vector3df normVect(offset.X, offset.Y, n);
-
-                //vert.Normal += normVect;
-            }
-
-            //vert.Normal.normalize();
-            vert.Normal.set(0,0,-1.0f);
-        }
-    }
-
-    // Pre-allocate index data to 2*3*Width*Height for triangles.
-    // There is actually 1 less square per count of vertices though,
-    // for instance if you had 2x2 vertices, you only have 1 square.
-    buffer->Indices.set_used(2*3*(regionSize.Width-1)*(regionSize.Height-1));
-
-    // Start with 1 and generate all the triangles from their top right corners.
-    // Like this (A is top right corner at x,y):
-    //
-    //              y=1  B---A
-    //                   | / |
-    //              y=0  C---D
-    //                  x=0 x=1
-    for (u32 dst=0, x=1; x < regionSize.Width; ++x)
-    {
-        for (u32 y=1; y < regionSize.Height; ++y)
-        {
-            u32 A = getIndex(regionSize, x,   y   );
-            u32 B = getIndex(regionSize, x-1, y   );
-            u32 C = getIndex(regionSize, x-1, y-1 );
-            u32 D = getIndex(regionSize, x,   y-1 );
-
-            buffer->Indices[dst++] = C;
-            buffer->Indices[dst++] = B;
-            buffer->Indices[dst++] = A;
-
-            buffer->Indices[dst++] = D;
-            buffer->Indices[dst++] = C;
-            buffer->Indices[dst++] = A;
-        }
-    }
+    for (auto pv : triangles)
+        pv->addToMeshBuf(buffer, vector3df());
 
 	buffer->recalculateBoundingBox();
 	buffer->setHardwareMappingHint(EHM_STATIC);
