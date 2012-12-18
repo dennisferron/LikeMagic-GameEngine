@@ -9,7 +9,7 @@
 #pragma once
 
 #include "irrlicht.h"
-#include "ThinPlateSpline/ThinPlateQuilt.hpp"
+#include "Bindings/Custom/SurfaceQuadTree.hpp"
 #include "Bindings/Custom/LinkSplitter.hpp"
 
 #include <map>
@@ -61,7 +61,7 @@ public:
     // Returns NULL if the requested tile is outside the image or if the image dimensions leave 0 or 1 rows or columns for the requested tile.
     static irr::scene::IMesh* createMeshFromHeightmap(irr::video::IImage* image, irr::core::dimension2du tileSizeInPixels, irr::core::vector2di tilePosInTiles, bool extraStripsOnEdges);
 
-    static SplitMeshResult createHillMesh(TPS::ThinPlateQuilt& tps, irr::core::rectf region, int initialSplit);
+    static SplitMeshResult createHillMesh(SurfaceQuadTree& tree, irr::core::rectf region);
 };
 
 }}

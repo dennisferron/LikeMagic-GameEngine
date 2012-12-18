@@ -149,6 +149,7 @@
 		<Unit filename="Include/Bindings/Custom/SceneNodePtrTest.hpp" />
 		<Unit filename="Include/Bindings/Custom/ScriptObjAnimator.hpp" />
 		<Unit filename="Include/Bindings/Custom/SoftBodyMeshSynchronizer.hpp" />
+		<Unit filename="Include/Bindings/Custom/SurfaceQuadTree.hpp" />
 		<Unit filename="Include/Bindings/IrrKlang/Bindings.hpp" />
 		<Unit filename="Include/Bindings/IrrKlang/Protos.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/Bindings.hpp" />
@@ -199,6 +200,7 @@
 		<Unit filename="Source/Custom/SceneNodePtrTest.cpp" />
 		<Unit filename="Source/Custom/ScriptObjAnimator.cpp" />
 		<Unit filename="Source/Custom/SoftBodyMeshSynchronizer.cpp" />
+		<Unit filename="Source/Custom/SurfaceQuadTree.cpp" />
 		<Unit filename="Source/IrrKlang/IrrKlangBindings.cpp" />
 		<Unit filename="Source/IrrKlang/IrrKlangProtos.cpp" />
 		<Unit filename="Source/Irrlicht/Bindings_OrientationHelperSceneNode.cpp" />

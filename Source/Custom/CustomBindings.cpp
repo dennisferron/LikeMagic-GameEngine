@@ -17,6 +17,7 @@
 #include "Bindings/Custom/SoftBodyMeshSynchronizer.hpp"
 #include "Bindings/Custom/MeshTools.hpp"
 #include "Bindings/Custom/FlagBits.hpp"
+#include "Bindings/Custom/SurfaceQuadTree.hpp"
 
 #include "BulletSoftBody/btSoftBodyHelpers.h"
 
@@ -31,6 +32,7 @@
 using namespace LikeMagic;
 
 using namespace irr;
+using namespace irr::core;
 using namespace irr::scene;
 
 
@@ -111,7 +113,13 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_CLASS(ns_custom, FlagBits_of_ISceneNode)
     LM_CONSTR(FlagBits_of_ISceneNode,, ISceneNode*)
     LM_FUNC(FlagBits_of_ISceneNode, (getBit)(setBit)(extractNumber)(embedNumber))
+
+    typedef SurfaceQuadTree::Shell Shell;
+    LM_CLASS(ns_custom, Shell)
+
+    LM_CLASS(ns_custom, SurfaceQuadTree)
+    LM_CONSTR(SurfaceQuadTree,,rectf, TPS::ThinPlateQuilt&)
+    LM_FUNC(SurfaceQuadTree, (triangulate)(split))
 }
 
 }}
-
