@@ -36,26 +36,32 @@ MeshTools::SplitMeshResult MeshTools::createHillMesh(SurfaceQuadTree& tree, rect
 
 	SMeshBuffer* buffer = new SMeshBuffer();
 
+    for (auto pv : triangles)
+        pv->addToMeshBuf(buffer, vector3df());
+
     irr::video::S3DVertex vtx;
     PsblVertPtr vert;
 
-    vtx.Pos.X = 0.0f;
-    vtx.Pos.Y = 0.0f;
-    vert = new PossibleVertex(vtx);
+    vtx.Pos.X = section.UpperLeftCorner.X;
+    vtx.Pos.Y = section.UpperLeftCorner.Y;
+    auto a = vert = new PossibleVertex(vtx);
     vert->addToMeshBuf(buffer, vector3df());
 
-    vtx.Pos.X = 1.0f;
-    vtx.Pos.Y = 0.0f;
-    vert = new PossibleVertex(vtx);
+    vtx.Pos.X = section.LowerRightCorner.X;
+    vtx.Pos.Y = section.LowerRightCorner.Y;
+    auto b = vert = new PossibleVertex(vtx);
     vert->addToMeshBuf(buffer, vector3df());
 
-    vtx.Pos.X = 1.0f;
-    vtx.Pos.Y = 1.0f;
-    vert = new PossibleVertex(vtx);
+    vtx.Pos.X = section.LowerRightCorner.X;
+    vtx.Pos.Y = section.UpperLeftCorner.Y;
+    auto c = vert = new PossibleVertex(vtx);
     vert->addToMeshBuf(buffer, vector3df());
 
-    for (auto pv : triangles)
-        pv->addToMeshBuf(buffer, vector3df());
+    vtx.Pos.X = section.UpperLeftCorner.X;
+    vtx.Pos.Y = section.LowerRightCorner.Y;
+    auto d = vert = new PossibleVertex(vtx);
+    b->addToMeshBuf(buffer, vector3df());
+    a->addToMeshBuf(buffer, vector3df());
 
 	buffer->recalculateBoundingBox();
 	buffer->setHardwareMappingHint(EHM_STATIC);
