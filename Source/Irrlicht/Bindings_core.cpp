@@ -16,6 +16,8 @@ using namespace LikeMagic;
 using namespace irr::core;
 using namespace irr;
 
+#include <iostream>
+using namespace std;
 
 namespace Bindings { namespace Irrlicht {
 
@@ -55,6 +57,8 @@ void add_bindings_core(RuntimeTypeSystem& type_sys)
     LM_CONSTR(rectf,, float, float, float, float)
     LM_CONSTR(rectf, "newWithXYXY", float, float, float, float)
     LM_CONSTR(rectf, "newPosSize", vector2df const&, dimension2df const&)
+    LM_FIELD(rectf, (UpperLeftCorner)(LowerRightCorner))
+    LM_FUNC(rectf, (getWidth)(getHeight))
 
     LM_CLASS(ns_irr_core, vector2di)
     LM_CONSTR(vector2di,,)
