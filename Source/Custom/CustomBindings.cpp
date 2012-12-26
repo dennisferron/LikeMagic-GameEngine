@@ -118,8 +118,8 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_CLASS(ns_custom, Shell)
 
     LM_CLASS(ns_custom, SurfaceQuadTree)
-    LM_CONSTR(SurfaceQuadTree,,rectf, TPS::ThinPlateQuilt&)
-    LM_FUNC(SurfaceQuadTree, (triangulate)(split))
+    LM_CONSTR(SurfaceQuadTree,,rectf, TPS::ThinPlateQuilt&, std::string)
+    LM_FUNC(SurfaceQuadTree, (triangulate)(split)(fit))
 }
 
 }}

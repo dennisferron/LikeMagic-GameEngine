@@ -31,7 +31,12 @@ public:
         std::vector<QuadTreePtr> west;
     };
 
-private:
+    struct Visitor
+    {
+        virtual void check(QuadTreePtr a1, QuadTreePtr a2, QuadTreePtr b1, QuadTreePtr b2)=0;
+    };
+
+public:
 
     friend void intrusive_ptr_add_ref(SurfaceQuadTree const* p);
     friend void intrusive_ptr_release(SurfaceQuadTree const* p);
@@ -41,6 +46,7 @@ private:
     QuadTreePtr child[4];
     irr::core::rectf region;
     TPS::ThinPlateQuilt& surface;
+    std::string path;
     PsblVertPtr vert;
 
     irr::core::vector2df locate(double expected_height);
@@ -50,16 +56,24 @@ private:
     std::vector<QuadTreePtr> combine(std::vector<QuadTreePtr> const& first, std::vector<QuadTreePtr> const& second);
     void addTriangle(std::vector<PsblVertPtr>& triangles, QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c) const;
     void addQuad(std::vector<PsblVertPtr>& triangles, QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c, QuadTreePtr const& d) const;
-    bool isAdjacent(QuadTreePtr const& that) const;
-    void zip(std::vector<PsblVertPtr>& triangles, std::vector<QuadTreePtr> const& list_a, std::vector<QuadTreePtr> const& list_b);
+    void zip(std::vector<PsblVertPtr>& triangles, std::vector<QuadTreePtr> const& list_a, std::vector<QuadTreePtr> const& list_b, Visitor* visitor);
+
+    bool isBetween(double lesser, double middle, double greater);
+    bool crossesBoundary(double lower_bound, double upper_bound);
 
 public:
 
-    SurfaceQuadTree(irr::core::rectf region_, TPS::ThinPlateQuilt& surface_);
+    SurfaceQuadTree(irr::core::rectf region_, TPS::ThinPlateQuilt& surface_, std::string path_);
 
-    Shell triangulate(std::vector<PsblVertPtr>& triangles, irr::core::rectf const& section);
+    Shell triangulate(std::vector<PsblVertPtr>& triangles, irr::core::rectf const& section, Visitor* visitor=NULL);
+    void sweep(std::vector<PsblVertPtr>& triangles, irr::core::rectf const& section, Visitor* visitor=NULL);
     void split(int times);
+    void fit(irr::core::dimension2df min_size, double lower_bound, double upper_bound);
     void testVertices(irr::core::rectf& rect);
+    bool isAdjacent(QuadTreePtr const& that) const;
+
+    void dumpLeaves(std::vector<QuadTreePtr>& result, irr::core::rectf const& section=irr::core::rectf(-1000000.0f, -10000000.0f, 1000000.0f, 1000000.0f));
+    std::string getPath() const;
 };
 
 void intrusive_ptr_add_ref(SurfaceQuadTree const* p);

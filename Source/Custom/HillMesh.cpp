@@ -32,36 +32,144 @@ using namespace TPS;
 MeshTools::SplitMeshResult MeshTools::createHillMesh(SurfaceQuadTree& tree, rectf section)
 {
     std::vector<PsblVertPtr> triangles;
-    tree.triangulate(triangles, section);
+
+    /*
+    tree.split(1);
+
+    auto ptr = tree.child[1];
+    for (int i=0; i<2; ++i)
+    {
+        ptr->split(1);
+        ptr = ptr->child[3*(i+1)%4];
+    }
+
+    ptr = tree.child[2];
+    for (int i=0; i<5; ++i)
+    {
+        ptr->split(1);
+        ptr = ptr->child[3*(i+1)%4];
+    }
+    */
+
+    struct Visitor : public SurfaceQuadTree::Visitor
+    {
+        vector<pair<QuadTreePtr, QuadTreePtr>> pairs;
+
+        bool has(QuadTreePtr a, QuadTreePtr b) const
+        {
+            return std::find(pairs.begin(), pairs.end(), make_pair(a,b)) != pairs.end()
+                || std::find(pairs.begin(), pairs.end(), make_pair(b,a)) != pairs.end();
+        }
+
+        virtual void check(QuadTreePtr a1, QuadTreePtr a2, QuadTreePtr b1, QuadTreePtr b2)
+        {
+            pairs.push_back(make_pair(a1, b1));
+
+            if (a2)
+            {
+                pairs.push_back(make_pair(a1, a2));
+                pairs.push_back(make_pair(b1, a2));
+            }
+
+            if (b2)
+            {
+                pairs.push_back(make_pair(a1, b2));
+                pairs.push_back(make_pair(b1, b2));
+            }
+
+            if (a2 && b2)
+            {
+                pairs.push_back(make_pair(a2, b2));
+            }
+        }
+    };
+
+    Visitor visitor;
+    //tree.triangulate(triangles, section, &visitor);
+    tree.sweep(triangles, section, &visitor);
+
+    cout << "num triangle points: " << triangles.size() << endl;
+
+    vector<QuadTreePtr> leaves;
+    tree.dumpLeaves(leaves);
+
+    cout << "num leaves: " << leaves.size() << endl;
+
+/*
+    for (QuadTreePtr p1 : leaves)
+        for (QuadTreePtr p2 : leaves)
+            if (p1 != p2)
+                if (p1->isAdjacent(p2))
+                    if (!visitor.has(p1, p2))
+                    {
+                        auto sz1 = p1->region.getSize();
+                        auto sz2 = p2->region.getSize();
+                        auto c1 = p1->region.getCenter();
+                        auto c2 = p2->region.getCenter();
+                        char const* path1 = p1->getPath().c_str();
+                        char const* path2 = p2->getPath().c_str();
+                        cout << path1 << endl;
+                        cout << path2 << endl;
+                        cout << "Missing pair of adjacent vertices." << endl;
+                    }
+
+    float x1 = section.UpperLeftCorner.X;
+    float x2 = section.LowerRightCorner.X;
+    float y1 = section.UpperLeftCorner.Y;
+    float y2 = section.LowerRightCorner.Y;
+*/
+    /*
+        d---c
+        | / |
+        a---b
+    */
+
+    /*
+    S3DVertex sa;
+    sa.Pos = vector3df(x1, y1, 0);
+    PsblVertPtr a = new PossibleVertex(sa);
+
+    S3DVertex sb;
+    sb.Pos = vector3df(x2, y1, 0);
+    PsblVertPtr b = new PossibleVertex(sb);
+
+    S3DVertex sc;
+    sc.Pos = vector3df(x2, y2, 0);
+    PsblVertPtr c = new PossibleVertex(sc);
+
+    S3DVertex sd;
+    sd.Pos = vector3df(x1, y2, 0);
+    PsblVertPtr d = new PossibleVertex(sd);
+
+    // a-b-c
+    // a-c-d
+    triangles.push_back(a);
+    triangles.push_back(b);
+    triangles.push_back(c);
+
+    triangles.push_back(a);
+    triangles.push_back(c);
+    triangles.push_back(d);
+
+    triangles.push_back(c);
+    triangles.push_back(b);
+    triangles.push_back(a);
+
+    triangles.push_back(d);
+    triangles.push_back(c);
+    triangles.push_back(a);
+    */
 
 	SMeshBuffer* buffer = new SMeshBuffer();
 
     for (auto pv : triangles)
         pv->addToMeshBuf(buffer, vector3df());
 
-    irr::video::S3DVertex vtx;
-    PsblVertPtr vert;
+    if (buffer->getIndexCount() % 3 > 0)
+        throw std::logic_error("SurfaceQuadTree triangulation added a 'triangle' with less than 3 vertices in it.");
 
-    vtx.Pos.X = section.UpperLeftCorner.X;
-    vtx.Pos.Y = section.UpperLeftCorner.Y;
-    auto a = vert = new PossibleVertex(vtx);
-    vert->addToMeshBuf(buffer, vector3df());
-
-    vtx.Pos.X = section.LowerRightCorner.X;
-    vtx.Pos.Y = section.LowerRightCorner.Y;
-    auto b = vert = new PossibleVertex(vtx);
-    vert->addToMeshBuf(buffer, vector3df());
-
-    vtx.Pos.X = section.LowerRightCorner.X;
-    vtx.Pos.Y = section.UpperLeftCorner.Y;
-    auto c = vert = new PossibleVertex(vtx);
-    vert->addToMeshBuf(buffer, vector3df());
-
-    vtx.Pos.X = section.UpperLeftCorner.X;
-    vtx.Pos.Y = section.LowerRightCorner.Y;
-    auto d = vert = new PossibleVertex(vtx);
-    b->addToMeshBuf(buffer, vector3df());
-    a->addToMeshBuf(buffer, vector3df());
+    cout << "num vertices " << buffer->getVertexCount() << endl;
+    cout << "num indices " << buffer->getIndexCount() << endl;
 
 	buffer->recalculateBoundingBox();
 	buffer->setHardwareMappingHint(EHM_STATIC);
