@@ -319,16 +319,13 @@ SurfaceQuadTree::Shell SurfaceQuadTree::triangulate(std::vector<PsblVertPtr>& tr
     Shell nw = child[2]->triangulate(triangles, section, visitor);
     Shell ne = child[3]->triangulate(triangles, section, visitor);
 
-    Shell inner
-    {
-        combine(nw.south, ne.south),  // north
-        combine(sw.north, se.north),  // south
-        combine(se.west, ne.west),    // east
-        combine(sw.east, nw.east)     // west
-    };
+    // Zip the north and south sides together in one west-east line.
+    zip(triangles, combine(nw.south, ne.south), combine(sw.north, se.north), visitor);
 
-    zip(triangles, inner.west, inner.east, visitor);
-    zip(triangles, inner.north, inner.south, visitor);
+    // Zip the west and east sides together in two independent south-north runs.
+    // Zipping these two haves separately skips the middle square which was already triangulated.
+    zip(triangles, sw.east, se.west, visitor);
+    zip(triangles, nw.east, ne.west, visitor);
 
     return Shell
     {
