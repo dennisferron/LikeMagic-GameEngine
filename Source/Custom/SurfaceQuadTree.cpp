@@ -68,7 +68,7 @@ void SurfaceQuadTree::sweep(std::vector<PsblVertPtr>& triangles, irr::core::rect
 
         sort(left.begin(), left.end(), on_y);
         sort(right.begin(), right.end(), on_y);
-        zip(triangles, left, right, visitor);
+        zip(triangles, left, right, -10000, 10000, visitor);
     }
 }
 
@@ -92,10 +92,16 @@ bool SurfaceQuadTree::crossesBoundary(vector<double> boundaries)
     vector<double> test_points =
     {
         surface.heightAt(cx, cy),
+
         surface.heightAt(cx, sy),
         surface.heightAt(cx, ny),
         surface.heightAt(wx, cy),
-        surface.heightAt(ex, cy)
+        surface.heightAt(ex, cy),
+
+        surface.heightAt(wx, sy),
+        surface.heightAt(wx, ny),
+        surface.heightAt(ex, sy),
+        surface.heightAt(ex, ny)
     };
 
     for (auto bound : boundaries)
@@ -150,18 +156,35 @@ vector2df SurfaceQuadTree::locate(double expected_height)
     float total_weight = 0.0;
     vector2df total_pos;
 
-    for (int i=0; i<4; ++i)
-    {
-        vector2df corner_pos(
-            region.getSize().Width * (i&1) + region.UpperLeftCorner.X,
-            region.getSize().Height * ((i>>1)&1) + region.UpperLeftCorner.Y
-        );
+    double cx = region.getCenter().X;
+    double cy = region.getCenter().Y;
+    double sy = region.UpperLeftCorner.Y;
+    double ny = region.LowerRightCorner.Y;
+    double wx = region.UpperLeftCorner.X;
+    double ex = region.LowerRightCorner.X;
 
-        double height = surface.heightAt(corner_pos.X, corner_pos.Y);
+    vector<vector2df> test_points =
+    {
+        vector2df(cx, cy),
+
+        vector2df(cx, sy),
+        vector2df(cx, ny),
+        vector2df(wx, cy),
+        vector2df(ex, cy),
+
+        vector2df(wx, sy),
+        vector2df(wx, ny),
+        vector2df(ex, sy),
+        vector2df(ex, ny)
+    };
+
+    for (vector2df p : test_points)
+    {
+        double height = surface.heightAt(p.X, p.Y);
         float inverse_weight = abs(height - expected_height);
         float adjusted_weight = 1.0f / (inverse_weight + 0.001f);
 
-        total_pos += adjusted_weight * corner_pos;
+        total_pos += adjusted_weight * p;
         total_weight += adjusted_weight;
     }
 
@@ -227,9 +250,9 @@ std::vector<QuadTreePtr> SurfaceQuadTree::combine(std::vector<QuadTreePtr> const
     return result;
 }
 
-void SurfaceQuadTree::addTriangle(std::vector<PsblVertPtr>& triangles, QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c, Visitor* visitor) const
+void SurfaceQuadTree::addTriangle(std::vector<PsblVertPtr>& triangles, QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c, double min_height, double max_height, Visitor* visitor) const
 {
-    if (a != b && b != c && c != a)
+    if (a != b && b != c && c != a && isBetween(a, b, c, min_height, max_height))
     {
         triangles.push_back(a->vert);
         triangles.push_back(b->vert);
@@ -244,7 +267,7 @@ void SurfaceQuadTree::addTriangle(std::vector<PsblVertPtr>& triangles, QuadTreeP
     }
 }
 
-void SurfaceQuadTree::addQuad(std::vector<PsblVertPtr>& triangles, QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c, QuadTreePtr const& d, Visitor* visitor) const
+void SurfaceQuadTree::addQuad(std::vector<PsblVertPtr>& triangles, QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c, QuadTreePtr const& d, double min_height, double max_height, Visitor* visitor) const
 {
     /*
     b---c
@@ -254,13 +277,13 @@ void SurfaceQuadTree::addQuad(std::vector<PsblVertPtr>& triangles, QuadTreePtr c
 
     if (a->vert->distSQ(c->vert) < b->vert->distSQ(d->vert))
     {
-        addTriangle(triangles, a, c, b, visitor);
-        addTriangle(triangles, a, d, c, visitor);
+        addTriangle(triangles, a, c, b, min_height, max_height, visitor);
+        addTriangle(triangles, a, d, c, min_height, max_height, visitor);
     }
     else
     {
-        addTriangle(triangles, b, d, c, visitor);
-        addTriangle(triangles, a, d, b, visitor);
+        addTriangle(triangles, b, d, c, min_height, max_height, visitor);
+        addTriangle(triangles, a, d, b, min_height, max_height, visitor);
     }
 }
 
@@ -276,7 +299,20 @@ bool SurfaceQuadTree::isAdjacent(QuadTreePtr const& that) const
     return adj_x && adj_y;
 }
 
-void SurfaceQuadTree::zip(std::vector<PsblVertPtr>& triangles, std::vector<QuadTreePtr> const& list_a, std::vector<QuadTreePtr> const& list_b, Visitor* visitor)
+bool SurfaceQuadTree::isBetween(double min_height, double max_height) const
+{
+    return vert->getPos().Z >= min_height && vert->getPos().Z <= max_height;
+}
+
+bool SurfaceQuadTree::isBetween(QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c, double min_height, double max_height) const
+{
+    return
+        a->isBetween(min_height, max_height) &&
+        b->isBetween(min_height, max_height) &&
+        c->isBetween(min_height, max_height);
+}
+
+void SurfaceQuadTree::zip(std::vector<PsblVertPtr>& triangles, std::vector<QuadTreePtr> const& list_a, std::vector<QuadTreePtr> const& list_b, double min_height, double max_height, Visitor* visitor)
 {
     if (list_a.size() == 0 || list_b.size() == 0 || (list_a.size()+list_b.size()) < 3)
         return;
@@ -331,11 +367,11 @@ void SurfaceQuadTree::zip(std::vector<PsblVertPtr>& triangles, std::vector<QuadT
         bool adj_b = !end_b && (*b2)->isAdjacent(*a1);
 
         if (adj_a && !adj_b)
-            addTriangle(triangles, *a1, *b1, *a2, visitor);
+            addTriangle(triangles, *a1, *b1, *a2, min_height, max_height, visitor);
         else if (!adj_a && adj_b)
-            addTriangle(triangles, *a1, *b1, *b2, visitor);
+            addTriangle(triangles, *a1, *b1, *b2, min_height, max_height, visitor);
         else if (adj_a && adj_b)
-            addQuad(triangles, *a1, *a2, *b2, *b1, visitor);
+            addQuad(triangles, *a1, *a2, *b2, *b1, min_height, max_height, visitor);
 
         if (adj_a)
             a1 = a2;
@@ -352,28 +388,28 @@ void SurfaceQuadTree::zip(std::vector<PsblVertPtr>& triangles, std::vector<QuadT
     }
 }
 
-SurfaceQuadTree::Shell SurfaceQuadTree::triangulate(std::vector<PsblVertPtr>& triangles, rectf const& section, Visitor* visitor)
+SurfaceQuadTree::Shell SurfaceQuadTree::triangulate(std::vector<PsblVertPtr>& triangles, rectf const& section, double min_height, double max_height, Visitor* visitor)
 {
     if (!section.isRectCollided(this->region))
         return {{},{},{},{}};
     else if (isLeaf())
         return {{this},{this},{this},{this}};
 
-    Shell sw = child[0]->triangulate(triangles, section, visitor);
-    Shell se = child[1]->triangulate(triangles, section, visitor);
-    Shell nw = child[2]->triangulate(triangles, section, visitor);
-    Shell ne = child[3]->triangulate(triangles, section, visitor);
+    Shell sw = child[0]->triangulate(triangles, section, min_height, max_height, visitor);
+    Shell se = child[1]->triangulate(triangles, section, min_height, max_height, visitor);
+    Shell nw = child[2]->triangulate(triangles, section, min_height, max_height, visitor);
+    Shell ne = child[3]->triangulate(triangles, section, min_height, max_height, visitor);
 
     // Zip the north and south sides together in one west-east line.
     cout << "zip long north+south halves" << endl;
-    zip(triangles, combine(nw.south, ne.south), combine(sw.north, se.north), visitor);
+    zip(triangles, combine(nw.south, ne.south), combine(sw.north, se.north), min_height, max_height, visitor);
 
     // Zip the west and east sides together in two independent south-north runs.
     // Zipping these two haves separately skips the middle square which was already triangulated.
     cout << "zip short sw+se" << endl;
-    zip(triangles, sw.east, se.west, visitor);
+    zip(triangles, sw.east, se.west, min_height, max_height, visitor);
     cout << "zip short nw+ne" << endl;
-    zip(triangles, nw.east, ne.west, visitor);
+    zip(triangles, nw.east, ne.west, min_height, max_height, visitor);
 
     return Shell
     {

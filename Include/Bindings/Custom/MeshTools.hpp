@@ -61,7 +61,7 @@ public:
     // Returns NULL if the requested tile is outside the image or if the image dimensions leave 0 or 1 rows or columns for the requested tile.
     static irr::scene::IMesh* createMeshFromHeightmap(irr::video::IImage* image, irr::core::dimension2du tileSizeInPixels, irr::core::vector2di tilePosInTiles, bool extraStripsOnEdges);
 
-    static SplitMeshResult createHillMesh(SurfaceQuadTree& tree, irr::core::rectf region);
+    static irr::scene::IMesh* createHillMesh(SurfaceQuadTree& tree, irr::core::rectf region, double min_height, double max_height);
 };
 
 }}

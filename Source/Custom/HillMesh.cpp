@@ -29,7 +29,7 @@ using namespace irr::scene;
 
 using namespace TPS;
 
-MeshTools::SplitMeshResult MeshTools::createHillMesh(SurfaceQuadTree& tree, rectf section)
+irr::scene::IMesh* MeshTools::createHillMesh(SurfaceQuadTree& tree, rectf section, double min_height, double max_height)
 {
     std::vector<PsblVertPtr> triangles;
 
@@ -144,7 +144,7 @@ MeshTools::SplitMeshResult MeshTools::createHillMesh(SurfaceQuadTree& tree, rect
     };
 
     Visitor visitor;
-    tree.triangulate(triangles, section, &visitor);
+    tree.triangulate(triangles, section, min_height, max_height, &visitor);
     //tree.sweep(triangles, section, &visitor);
 
     cout << "num triangle points: " << triangles.size() << endl;
@@ -238,7 +238,5 @@ MeshTools::SplitMeshResult MeshTools::createHillMesh(SurfaceQuadTree& tree, rect
 	mesh->recalculateBoundingBox();
 	buffer->drop();
 
-	SplitMeshResult result;
-	result.middle = mesh;
-	return result;
+	return mesh;
 }
