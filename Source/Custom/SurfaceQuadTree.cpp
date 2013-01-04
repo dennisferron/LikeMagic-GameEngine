@@ -80,7 +80,7 @@ bool SurfaceQuadTree::isBetween(double lesser, double middle, double greater)
         return greater <= middle && middle <= lesser;
 }
 
-bool SurfaceQuadTree::crossesBoundary(vector<double> boundaries)
+int SurfaceQuadTree::boundaryCrossings(vector<double> boundaries)
 {
     double cx = region.getCenter().X;
     double cy = region.getCenter().Y;
@@ -104,12 +104,23 @@ bool SurfaceQuadTree::crossesBoundary(vector<double> boundaries)
         surface.heightAt(ex, ny)
     };
 
-    for (auto bound : boundaries)
+    int crossings = 0;
+
+    for (int b=0; b<boundaries.size(); ++b)
+    {
+        bool crosses = false;
         for (auto t1 : test_points)
             for (auto t2 : test_points)
-                if (isBetween(t1, bound, t2))
-                    return true;
-    return false;
+                if (isBetween(t1, boundaries[b], t2))
+                {
+                    crosses = true;
+                    goto end;
+                }
+    end:
+        if (crosses)
+            ++crossings;
+    }
+    return crossings;
 }
 
 double SurfaceQuadTree::closestHeight(double h, std::vector<double> boundaries)
@@ -125,9 +136,11 @@ void SurfaceQuadTree::fit(dimension2df min_size, vector<double> boundaries)
 {
     if (isLeaf())
     {
-        if (crossesBoundary(boundaries))
+        int crossings = boundaryCrossings(boundaries);
+
+        if (crossings > 0)
         {
-            if (region.getSize().Width/2 >= min_size.Width && region.getSize().Height/2 >= min_size.Height)
+            if (crossings > 1 || (region.getSize().Width/2 >= min_size.Width && region.getSize().Height/2 >= min_size.Height))
             {
                 split(1);
             }

@@ -62,7 +62,7 @@ public:
     void zip(std::vector<PsblVertPtr>& triangles, std::vector<QuadTreePtr> const& list_a, std::vector<QuadTreePtr> const& list_b, double min_height, double max_height, Visitor* visitor);
 
     bool isBetween(double lesser, double middle, double greater);
-    bool crossesBoundary(std::vector<double> boundaries);
+    int boundaryCrossings(std::vector<double> boundaries);
     double closestHeight(double h, std::vector<double> boundaries);
 
 public:
