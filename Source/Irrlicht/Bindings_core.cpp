@@ -191,7 +191,7 @@ bool 	intersectsWithLine (const line3d< T > &line) const
     LM_OP_OVERLOAD(ListOfAnimConstIter, const, +, ListOfAnimConstIter, s32)
     LM_OP_OVERLOAD(ListOfAnimConstIter, const, -, ListOfAnimConstIter, s32)
 
-    typedef array<vector3df> ArrayOfVector3df;
+    typedef irr::core::array<irr::core::vector3df> ArrayOfVector3df;
     LM_CLASS(ns_irr_core, ArrayOfVector3df)
     LM_CONSTR(ArrayOfVector3df,,)
     LM_CONSTR(ArrayOfVector3df, "newWithSize", u32)
