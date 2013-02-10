@@ -34,6 +34,7 @@ public:
     struct Visitor
     {
         virtual void check(QuadTreePtr a1, QuadTreePtr a2, QuadTreePtr b1, QuadTreePtr b2)=0;
+        virtual void addTriangle(QuadTreePtr a, QuadTreePtr b, QuadTreePtr c)=0;
     };
 
 public:
@@ -52,23 +53,26 @@ public:
     irr::core::vector2df locate(double expected_height);
     bool isLeaf() const;
     bool isOuter(irr::core::rectf other_region) const;
+    bool isBetween(double min_height, double max_height) const;
+    bool isBetween(QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c, double min_height, double max_height) const;
 
     std::vector<QuadTreePtr> combine(std::vector<QuadTreePtr> const& first, std::vector<QuadTreePtr> const& second);
-    void addTriangle(std::vector<PsblVertPtr>& triangles, QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c) const;
-    void addQuad(std::vector<PsblVertPtr>& triangles, QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c, QuadTreePtr const& d) const;
-    void zip(std::vector<PsblVertPtr>& triangles, std::vector<QuadTreePtr> const& list_a, std::vector<QuadTreePtr> const& list_b, Visitor* visitor);
+    void addTriangle(std::vector<PsblVertPtr>& triangles, QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c, double min_height, double max_height, Visitor* visitor) const;
+    void addQuad(std::vector<PsblVertPtr>& triangles, QuadTreePtr const& a, QuadTreePtr const& b, QuadTreePtr const& c, QuadTreePtr const& d, double min_height, double max_height, Visitor* visitor) const;
+    void zip(std::vector<PsblVertPtr>& triangles, std::vector<QuadTreePtr> const& list_a, std::vector<QuadTreePtr> const& list_b, double min_height, double max_height, Visitor* visitor);
 
     bool isBetween(double lesser, double middle, double greater);
-    bool crossesBoundary(double lower_bound, double upper_bound);
+    int boundaryCrossings(std::vector<double> boundaries);
+    double closestHeight(double h, std::vector<double> boundaries);
 
 public:
 
     SurfaceQuadTree(irr::core::rectf region_, TPS::ThinPlateQuilt& surface_, std::string path_);
 
-    Shell triangulate(std::vector<PsblVertPtr>& triangles, irr::core::rectf const& section, Visitor* visitor=NULL);
+    Shell triangulate(std::vector<PsblVertPtr>& triangles, irr::core::rectf const& section, double min_height, double max_height, Visitor* visitor=NULL);
     void sweep(std::vector<PsblVertPtr>& triangles, irr::core::rectf const& section, Visitor* visitor=NULL);
     void split(int times);
-    void fit(irr::core::dimension2df min_size, double lower_bound, double upper_bound);
+    void fit(irr::core::dimension2df min_size, std::vector<double> boundaries);
     void testVertices(irr::core::rectf& rect);
     bool isAdjacent(QuadTreePtr const& that) const;
 

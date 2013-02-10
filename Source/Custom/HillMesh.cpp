@@ -29,7 +29,7 @@ using namespace irr::scene;
 
 using namespace TPS;
 
-MeshTools::SplitMeshResult MeshTools::createHillMesh(SurfaceQuadTree& tree, rectf section)
+irr::scene::IMesh* MeshTools::createHillMesh(SurfaceQuadTree& tree, rectf section, double min_height, double max_height)
 {
     std::vector<PsblVertPtr> triangles;
 
@@ -55,38 +55,97 @@ MeshTools::SplitMeshResult MeshTools::createHillMesh(SurfaceQuadTree& tree, rect
     {
         vector<pair<QuadTreePtr, QuadTreePtr>> pairs;
 
-        bool has(QuadTreePtr a, QuadTreePtr b) const
+        typedef tuple<QuadTreePtr, QuadTreePtr> edge;
+
+        typedef vector<edge> triangle;
+        vector<triangle> triangles;
+
+        typedef vector<triangle>::const_iterator triangle_iter;
+        std::map<edge, vector<triangle>> edge_to_triangle;
+
+        bool crosses(edge e1, edge e2)
         {
-            return std::find(pairs.begin(), pairs.end(), make_pair(a,b)) != pairs.end()
-                || std::find(pairs.begin(), pairs.end(), make_pair(b,a)) != pairs.end();
+            // Ignore if the edges share a vertex; that is not a crossing.
+            if (
+                get<0>(e1)->vert == get<0>(e2)->vert ||
+                get<0>(e1)->vert == get<1>(e2)->vert ||
+                get<1>(e1)->vert == get<0>(e2)->vert ||
+                get<1>(e1)->vert == get<1>(e2)->vert
+            )
+                return false;
+
+            // line2d(T xa, T ya, T xb, T yb)
+            vector3df pos1a = get<0>(e1)->vert->getPos();
+            vector3df pos1b = get<1>(e1)->vert->getPos();
+            line2df line1(pos1a.X, pos1a.Y, pos1b.X, pos1b.Y);
+
+            vector3df pos2a = get<0>(e2)->vert->getPos();
+            vector3df pos2b = get<1>(e2)->vert->getPos();
+            line2df line2(pos2a.X, pos2a.Y, pos2b.X, pos2b.Y);
+
+            vector2df out;
+            return line1.intersectWith(line2, out);
+        }
+
+        bool compareEdge(edge e, std::string from, std::string to)
+        {
+            return
+                get<0>(e)->getPath() == from &&
+                get<1>(e)->getPath() == to;
+        }
+
+        bool findEdge(triangle t, std::string from, std::string to)
+        {
+            return compareEdge(t[0], from, to) || compareEdge(t[1], from, to) || compareEdge(t[2], from, to);
+        }
+
+        virtual void addTriangle(QuadTreePtr a, QuadTreePtr b, QuadTreePtr c)
+        {
+            // If a,b,c already in triangles, duplicate triangle error.
+
+            // foreach edge in the new triangle,
+            // find other triangles that share one edge with this one
+            // test the other 2x2 edges for intersection.
+            triangle new_triangle(
+            {
+                make_tuple(a,b), make_tuple(b,c), make_tuple(c,a)
+            });
+
+            //if (findEdge(new_triangle, "Root SW SW SW NW SE", "Root SW SW SW NW NW"))
+            //    cout << "found" << endl;
+
+            //if (findEdge(new_triangle, "Root SW SW SW NW NE", "Root SW SW SW NW SW"))
+            //    cout << "found" << endl;
+
+            for (edge e_same : new_triangle)
+                for (edge e_check : new_triangle)
+                    if (e_same != e_check)
+                        for (triangle contiguous : edge_to_triangle[e_same])
+                            for (edge e_existing : contiguous)
+                                if (e_existing != e_same)
+                                    if (crosses(e_check, e_existing))
+                                    {
+                                        cout << "detected crossing, new is " << get<0>(e_check)->getPath() << "-" << get<1>(e_check)->getPath()
+                                            << " old is " << get<0>(e_existing)->getPath() << "-" << get<1>(e_existing)->getPath() << endl;
+                                    }
+
+            triangles.push_back(new_triangle);
+            edge_to_triangle[make_tuple(a,b)].push_back(new_triangle);
+            edge_to_triangle[make_tuple(b,c)].push_back(new_triangle);
+            edge_to_triangle[make_tuple(c,a)].push_back(new_triangle);
+            edge_to_triangle[make_tuple(b,a)].push_back(new_triangle);
+            edge_to_triangle[make_tuple(c,b)].push_back(new_triangle);
+            edge_to_triangle[make_tuple(a,c)].push_back(new_triangle);
         }
 
         virtual void check(QuadTreePtr a1, QuadTreePtr a2, QuadTreePtr b1, QuadTreePtr b2)
         {
-            pairs.push_back(make_pair(a1, b1));
-
-            if (a2)
-            {
-                pairs.push_back(make_pair(a1, a2));
-                pairs.push_back(make_pair(b1, a2));
-            }
-
-            if (b2)
-            {
-                pairs.push_back(make_pair(a1, b2));
-                pairs.push_back(make_pair(b1, b2));
-            }
-
-            if (a2 && b2)
-            {
-                pairs.push_back(make_pair(a2, b2));
-            }
         }
     };
 
     Visitor visitor;
-    //tree.triangulate(triangles, section, &visitor);
-    tree.sweep(triangles, section, &visitor);
+    tree.triangulate(triangles, section, min_height, max_height, &visitor);
+    //tree.sweep(triangles, section, &visitor);
 
     cout << "num triangle points: " << triangles.size() << endl;
 
@@ -179,7 +238,5 @@ MeshTools::SplitMeshResult MeshTools::createHillMesh(SurfaceQuadTree& tree, rect
 	mesh->recalculateBoundingBox();
 	buffer->drop();
 
-	SplitMeshResult result;
-	result.middle = mesh;
-	return result;
+	return mesh;
 }
