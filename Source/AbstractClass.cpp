@@ -115,6 +115,8 @@ void AbstractClass::suggest_method(std::string method_name, int num_args) const
         bool has_c = methods.find(method_name + "_c") != methods.end();
         bool has_nc = methods.find(method_name + "_nc") != methods.end();
 
+        bool has_get = methods.find("get_" + method_name) != methods.end();
+
         if (has_c || has_nc)
         {
             std::string msg = "Class " + get_class_name() + " does not have a method named " + method_name
@@ -123,6 +125,12 @@ void AbstractClass::suggest_method(std::string method_name, int num_args) const
                     + (has_c && has_nc? " and " : "")
                     + (has_nc? method_name + "_nc which is the non-const version of this method" : "")
                     + ".  (The _c and _nc notation is needed because C++ can overload methods by const-ness which has no direct equivalent in dynamic languages.)";
+            throw std::logic_error(msg);
+        }
+        else if (has_get)
+        {
+            std::string msg ="Class " + get_class_name() + " does not have a method named " + method_name
+                + " but it does have a field by that name. Fields must be called with a prefix of get_, set_, or ref_ such as: get_" + method_name;
             throw std::logic_error(msg);
         }
         else
