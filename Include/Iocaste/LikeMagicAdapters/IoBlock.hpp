@@ -17,6 +17,8 @@
 #include "LikeMagic/IMarkable.hpp"
 #include "LikeMagic/DebugInfo.hpp"
 
+#include "Iocaste/Exception.hpp"
+
 #include <tuple>
 
 namespace Iocaste { namespace LikeMagicAdapters {
@@ -82,22 +84,30 @@ public:
     {
         if (!empty())
         {
+            char const* errorPoint = "before eval";
+            IoMessage* m;
             try
             {
-                IoMessage* m = new_message(io_target, "IoBlock");
+                m = new_message(io_target, "IoBlock");
+                errorPoint = "while adding args";
                 add_args(m, args...);
+                errorPoint = "on activate";
                 IoObject* result = activate(m);
                 static TypeIndex r_type = LikeMagic::Utility::BetterTypeInfo::template create_index<R>();
+                errorPoint = "return value from_script";
                 ExprPtr expr = from_script(io_target, result, *type_sys, r_type);
+                errorPoint = "try_conv return value";
                 return type_sys->try_conv<R>(expr)->eval();
             }
-            catch (std::logic_error le)
+            catch (Iocaste::ScriptException const& exc)
             {
-                throw std::logic_error(std::string() + "Error during eval IoBlock (possibly while converting the return value): " + le.what());
+                // TODO:  assoc addn'l info w/exp.
+                throw;
             }
-            catch (std::exception e)
+            // TODO:  Create LikeMagic exception object.
+            catch (std::exception const& e)
             {
-                throw std::logic_error(std::string() + "Error during eval IoBlock (possibly while converting the return value): " + e.what());
+                throw Iocaste::IoStateError(io_block, std::string() + "Error in IoBlock " + errorPoint + ": " + e.what(), m);
             }
         }
         else
