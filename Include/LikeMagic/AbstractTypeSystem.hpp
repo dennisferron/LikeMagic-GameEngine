@@ -162,6 +162,7 @@ public:
     void register_method(LikeMagic::Marshaling::AbstractClass* class_, std::string method_name, LikeMagic::CallTargets::AbstractCallTargetSelector* method);
     void print_conv_chain(TypeIndex from, TypeIndex to) const;
 
+    void add_ptr_conversions(TypeIndex from_type, bool auto_deref);
 };
 
 }

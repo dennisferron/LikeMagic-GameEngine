@@ -14,6 +14,10 @@
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
 #include "LikeMagic/TypeConv/GenericConv.hpp"
 #include "LikeMagic/TypeConv/ToAbstractExpressionConv.hpp"
+#include "LikeMagic/TypeConv/PtrDerefConv.hpp"
+#include "LikeMagic/TypeConv/AddrOfConv.hpp"
+
+using namespace LikeMagic::TypeConv;
 
 #include <set>
 
@@ -422,4 +426,22 @@ void AbstractTypeSystem::print_conv_chain(TypeIndex from, TypeIndex to) const
     conv_graph.print_conv_chain(from, to);
 }
 
+void AbstractTypeSystem::add_ptr_conversions(TypeIndex from_type, bool auto_deref)
+{
+    auto from_nc = from_type.get_info();
+    auto from_c =  from_type.get_info()->as_const_obj_type();
 
+    // Allow passing the actual object to things that need the pointer to the object.
+    conv_graph.add_conv(from_nc->as_ref()->get_index(), from_nc->as_ptr()->get_index(), new AddrOfConv<AbstractDelegate&, AbstractDelegate*>);
+    conv_graph.add_conv( from_c->as_ref()->get_index(),  from_c->as_ptr()->get_index(), new AddrOfConv<AbstractDelegate&, AbstractDelegate*>);
+
+    // Don't want to do this for types convertible to script types, e.g. int*,
+    // because then you couldn't return an array; instead the first array element
+    // could get converted to a script value if you had this enabled.
+    if (auto_deref)
+    {
+        // Also allow converting pointers back to references.
+        conv_graph.add_conv(from_nc->as_ptr()->get_index(), from_nc->as_ref()->get_index(), new PtrDerefConv<AbstractDelegate*, AbstractDelegate&>);
+        conv_graph.add_conv( from_c->as_ptr()->get_index(),  from_c->as_ref()->get_index(), new PtrDerefConv<AbstractDelegate*, AbstractDelegate&>);
+    }
+}

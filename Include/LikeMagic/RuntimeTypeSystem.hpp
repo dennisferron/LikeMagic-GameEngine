@@ -145,6 +145,8 @@ public:
 
             result->add_base_abstr(proxy_methods);
 
+            /*
+                These are done using AbstractDelegate pointers and references as a surrogate type to avoid extra template instantiations.
             // Allow passing the actual object to things that need the pointer to the object.
             add_conv<T&, T*, AddrOfConv>();
 
@@ -156,6 +158,8 @@ public:
                 // Also allow converting pointers back to references.
                 add_conv<T*, T&, PtrDerefConv>();
             }
+            */
+            add_ptr_conversions(type, add_deref_ptr_conv);
 
             // These conversions should be unnecessary now that I've improved the pointer conversions in AbstractTypeSystem.
             // References to pointers can be converted to pointers.
