@@ -209,6 +209,35 @@ void LikeMagic::StdBindings::add_bindings(RuntimeTypeSystem& type_sys)
     LM_CONSTR(NativeArray_of_float,, size_t, float*)
     LM_FUNC(NativeArray_of_float, (begin_c)(begin_nc)(at_c)(at_nc)(at_put)(size))
 
+
+    typedef vector<double> vector_of_double;
+    LM_CLASS(global_ns, vector_of_double)
+    LM_CONSTR(vector_of_double,,)
+
+    // Although default parameters won't work for functions with LikeMagic,
+    // it is possible to specify constructors that leave some parameters at their defaults.
+    LM_CONSTR(vector_of_double,, size_t)
+
+    LM_FUNC(vector_of_double, (size))
+    LM_FUNC_OVERLOAD_BOTH(vector_of_double, at, double&, vector_of_double::size_type)
+    LM_FUNC_OVERLOAD(vector_of_double, "begin_nc", begin, vector_of_double::iterator)
+    LM_FUNC_OVERLOAD_CONST(vector_of_double, "begin_c", begin, vector_of_double::const_iterator)
+    LM_FUNC_OVERLOAD(vector_of_double, "push_back", push_back, void, vector_of_double::value_type const&)
+    LM_EXTENSION_METHOD_OVERLOAD(vector_of_double, "at_put", at_put, void, vector_of_double&, size_t, double const&)
+
+    // These three lines allow converting a vector iterator to a pointer into the array.
+    typedef vector_of_double::iterator vector_of_double_iterator;
+    LM_CLASS(global_ns, vector_of_double_iterator)
+    type_sys.add_conv<vector_of_double_iterator, double*, IteratorConv>();
+
+    typedef NativeArray<double> NativeArray_of_double;
+    LM_CLASS(global_ns, NativeArray_of_double)
+    LM_CONSTR(NativeArray_of_double,, size_t)
+    LM_CONSTR(NativeArray_of_double,, size_t, double*)
+    LM_FUNC(NativeArray_of_double, (begin_c)(begin_nc)(at_c)(at_nc)(at_put)(size))
+
+
+
     LM_CLASS(global_ns, ScriptUtil)
     LM_CONSTR(ScriptUtil,,)
     LM_FIELD(ScriptUtil, (voidp_field)(charp_field)(ucharp_field)(intp_field)(uintp_field))
