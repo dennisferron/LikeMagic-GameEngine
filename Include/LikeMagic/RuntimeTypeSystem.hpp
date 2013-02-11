@@ -170,8 +170,9 @@ public:
             // enable pointer to value conversions only if class is copyable.
             register_copyable_conv<T, is_copyable>();
 
+            // This is handled in AbstractTypeSystem.cpp so that it doesn't have to be done in a template.
             // Allow the bottom pointer to be converted to a pointer to this class
-            add_conv<BottomPtrType, T*, PtrCastConv>();
+            //add_conv<BottomPtrType, T*, PtrCastConv>();
 
             return *result;
         }
