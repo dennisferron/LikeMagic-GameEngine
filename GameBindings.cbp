@@ -10,7 +10,7 @@
 				<Option platforms="Unix;" />
 				<Option output="libGameBindings-Linux" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/Debug-Linux/" />
+				<Option object_output="obj\Debug-Linux\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -20,14 +20,14 @@
 					<Add option="-DIRR_1_7" />
 					<Add option="-D_IRR_STATIC_LIB_" />
 					<Add option="-D_DEBUG" />
-					<Add directory="Deps/irrlicht/include" />
+					<Add directory="Deps\irrlicht\include" />
 				</Compiler>
 			</Target>
 			<Target title="Release Linux">
 				<Option platforms="Unix;" />
 				<Option output="libGameBindings-Linux" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/Release-Linux/" />
+				<Option object_output="obj\Release-Linux\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -35,43 +35,17 @@
 					<Add option="-O2" />
 					<Add option="-Wall" />
 					<Add option="-DIRR_1_7" />
-					<Add directory="Deps/irrlicht/include" />
+					<Add directory="Deps\irrlicht\include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-				</Linker>
-			</Target>
-			<Target title="Debug Windows Shared Broken">
-				<Option platforms="" />
-				<Option output="GameBindings-Windows" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug-Windows/" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option createStaticLib="1" />
-				<Compiler>
-					<Add option="-Wall" />
-					<Add option="-g" />
-					<Add option="-DIRR_1_7" />
-					<Add option="-DUSE_DLL_BUILD" />
-					<Add option="-DBUILDING_DLL" />
-					<Add directory="Deps/irrlicht/include" />
-				</Compiler>
-				<Linker>
-					<Add option="-shared-libgcc" />
-					<Add library="../Iocaste/libIocaste-Windows.a" />
-					<Add library="../LikeMagic/libLikeMagic-Windows.a" />
-					<Add library="Deps/irrlicht/lib/Win32-gcc/libIrrlicht.a" />
-					<Add library="Deps/bullet/build-gcc-windows/lib/libBulletSoftBody.a" />
-					<Add library="Deps/bullet/build-gcc-windows/lib/libBulletDynamics.a" />
-					<Add library="Deps/bullet/build-gcc-windows/lib/libBulletCollision.a" />
-					<Add library="Deps/bullet/build-gcc-windows/lib/libLinearMath.a" />
 				</Linker>
 			</Target>
 			<Target title="Debug Mac">
 				<Option platforms="Mac;" />
 				<Option output="libGameBindings-Mac" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/Debug-Mac/" />
+				<Option object_output="obj\Debug-Mac\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -79,18 +53,18 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-DIRR_1_8" />
-					<Add directory="Deps/irrlicht-1.8-unstable/include" />
+					<Add directory="Deps\irrlicht-1.8-unstable\include" />
 				</Compiler>
 				<ExtraCommands>
 					<Add before="rm -f libGameBindings-Mac.a" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
-			<Target title="Debug Windows Static">
+			<Target title="Debug Windows">
 				<Option platforms="Windows;" />
 				<Option output="libGameBindings-Windows" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/Debug-Windows/" />
+				<Option object_output="obj\Debug-Windows\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -105,7 +79,7 @@
 					<Add option="-D_IRR_STATIC_LIB_" />
 					<Add option="-D_CRT_SECURE_NO_DEPRECATE" />
 					<Add option="-D__GNUWIN32__" />
-					<Add directory="Deps/irrlicht-1.7.3/include" />
+					<Add directory="Deps\irrlicht-1.7.3\include" />
 				</Compiler>
 			</Target>
 		</Build>
@@ -118,107 +92,107 @@
 			<Add option="-Wno-unused-parameter" />
 			<Add option="-Wno-deprecated" />
 			<Add option="-Wno-ignored-qualifiers" />
-			<Add directory="../Common/boost_1_49_0" />
-			<Add directory="Deps/bullet-2.81-rev2613/src" />
+			<Add directory="..\Common\boost_1_49_0" />
+			<Add directory="Deps\bullet-2.81-rev2613\src" />
 			<Add directory="Include" />
-			<Add directory="../LikeMagic/Include" />
-			<Add directory="../Iocaste/Include" />
-			<Add directory="../Iocaste/iovm/source" />
-			<Add directory="../Iocaste/garbagecollector/source" />
-			<Add directory="../Iocaste/basekit/source" />
-			<Add directory="../Iocaste/Include/Iocaste/CShims" />
-			<Add directory="Deps/tps-1.2/Include" />
+			<Add directory="..\LikeMagic\Include" />
+			<Add directory="..\Iocaste\Include" />
+			<Add directory="..\Iocaste\iovm\source" />
+			<Add directory="..\Iocaste\garbagecollector\source" />
+			<Add directory="..\Iocaste\basekit\source" />
+			<Add directory="..\Iocaste\Include\Iocaste\CShims" />
+			<Add directory="Deps\tps-1.2\Include" />
 		</Compiler>
-		<Unit filename="Include/Bindings/Bullet/Bindings.hpp" />
-		<Unit filename="Include/Bindings/Bullet/Protos.hpp" />
-		<Unit filename="Include/Bindings/Bullet/ScriptedClosestRayResultCallback.hpp" />
-		<Unit filename="Include/Bindings/Bullet/ScriptedContactResultCallback.hpp" />
-		<Unit filename="Include/Bindings/Bullet/ScriptedWorldManager.hpp" />
-		<Unit filename="Include/Bindings/Custom/Bindings.hpp" />
-		<Unit filename="Include/Bindings/Custom/CustomAnimatorTypes.hpp" />
-		<Unit filename="Include/Bindings/Custom/FlagBits.hpp" />
-		<Unit filename="Include/Bindings/Custom/GearConstraint.hpp" />
-		<Unit filename="Include/Bindings/Custom/IrrlichtBulletDebugDrawer.hpp" />
-		<Unit filename="Include/Bindings/Custom/KinematicAnimator.hpp" />
-		<Unit filename="Include/Bindings/Custom/LinkSplitter.hpp" />
-		<Unit filename="Include/Bindings/Custom/LockAnimator.hpp" />
-		<Unit filename="Include/Bindings/Custom/MeshTools.hpp" />
-		<Unit filename="Include/Bindings/Custom/PhysicsAnimator.hpp" />
-		<Unit filename="Include/Bindings/Custom/PossibleVertex.hpp" />
-		<Unit filename="Include/Bindings/Custom/Protos.hpp" />
-		<Unit filename="Include/Bindings/Custom/SceneNodePtrTest.hpp" />
-		<Unit filename="Include/Bindings/Custom/ScriptObjAnimator.hpp" />
-		<Unit filename="Include/Bindings/Custom/SoftBodyMeshSynchronizer.hpp" />
-		<Unit filename="Include/Bindings/Custom/SurfaceQuadTree.hpp" />
-		<Unit filename="Include/Bindings/IrrKlang/Bindings.hpp" />
-		<Unit filename="Include/Bindings/IrrKlang/Protos.hpp" />
-		<Unit filename="Include/Bindings/Irrlicht/Bindings.hpp" />
-		<Unit filename="Include/Bindings/Irrlicht/OrientationHelperSceneNode.hpp" />
-		<Unit filename="Include/Bindings/Irrlicht/Protos.hpp" />
-		<Unit filename="Include/Bindings/Irrlicht/ScriptedDataSerializer.hpp" />
-		<Unit filename="Include/Bindings/Irrlicht/ScriptedEventReceiver.hpp" />
-		<Unit filename="Include/Bindings/Irrlicht/ScriptedSceneNode.hpp" />
-		<Unit filename="Include/Bindings/ThinPlateSpline/Bindings.hpp" />
-		<Unit filename="Include/Bindings/ThinPlateSpline/Protos.hpp" />
-		<Unit filename="Script/BulletBindings.io" />
-		<Unit filename="Script/CustomBindings.io" />
-		<Unit filename="Script/IrrlichtBindings.io" />
-		<Unit filename="Source/Bullet/BulletBindings.cpp" />
-		<Unit filename="Source/Bullet/BulletProtos.cpp" />
-		<Unit filename="Source/Bullet/ScriptedClosestRayResultCallback.cpp" />
-		<Unit filename="Source/Bullet/ScriptedContactResultCallback.cpp" />
-		<Unit filename="Source/Bullet/ScriptedWorldManager.cpp" />
-		<Unit filename="Source/Bullet/btBroadphaseInterface.cpp" />
-		<Unit filename="Source/Bullet/btBroadphaseProxy.cpp" />
-		<Unit filename="Source/Bullet/btCollisionConfiguration.cpp" />
-		<Unit filename="Source/Bullet/btCollisionObject.cpp" />
-		<Unit filename="Source/Bullet/btCollisionShape.cpp" />
-		<Unit filename="Source/Bullet/btCollisionWorld.cpp" />
-		<Unit filename="Source/Bullet/btConcaveShape.cpp" />
-		<Unit filename="Source/Bullet/btConstraintSolver.cpp" />
-		<Unit filename="Source/Bullet/btDispatcher.cpp" />
-		<Unit filename="Source/Bullet/btMatrix3x3.cpp" />
-		<Unit filename="Source/Bullet/btMotionState.cpp" />
-		<Unit filename="Source/Bullet/btOverlappingPairCallback.cpp" />
-		<Unit filename="Source/Bullet/btQuaternion.cpp" />
-		<Unit filename="Source/Bullet/btSoftBody.cpp" />
-		<Unit filename="Source/Bullet/btStridingMeshInterface.cpp" />
-		<Unit filename="Source/Bullet/btTransform.cpp" />
-		<Unit filename="Source/Bullet/btTypedConstraint.cpp" />
-		<Unit filename="Source/Bullet/btVector3.cpp" />
-		<Unit filename="Source/Custom/CustomBindings.cpp" />
-		<Unit filename="Source/Custom/GearConstraint.cpp" />
-		<Unit filename="Source/Custom/HillMesh.cpp" />
-		<Unit filename="Source/Custom/IrrlichtBulletDebugDrawer.cpp" />
-		<Unit filename="Source/Custom/KinematicAnimator.cpp" />
-		<Unit filename="Source/Custom/LinkSplitter.cpp" />
-		<Unit filename="Source/Custom/LockAnimator.cpp" />
-		<Unit filename="Source/Custom/MeshTools.cpp" />
-		<Unit filename="Source/Custom/PhysicsAnimator.cpp" />
-		<Unit filename="Source/Custom/PossibleVertex.cpp" />
-		<Unit filename="Source/Custom/Protos.cpp" />
-		<Unit filename="Source/Custom/SceneNodePtrTest.cpp" />
-		<Unit filename="Source/Custom/ScriptObjAnimator.cpp" />
-		<Unit filename="Source/Custom/SoftBodyMeshSynchronizer.cpp" />
-		<Unit filename="Source/Custom/SurfaceQuadTree.cpp" />
-		<Unit filename="Source/IrrKlang/IrrKlangBindings.cpp" />
-		<Unit filename="Source/IrrKlang/IrrKlangProtos.cpp" />
-		<Unit filename="Source/Irrlicht/Bindings_OrientationHelperSceneNode.cpp" />
-		<Unit filename="Source/Irrlicht/Bindings_core.cpp" />
-		<Unit filename="Source/Irrlicht/Bindings_custom.cpp" />
-		<Unit filename="Source/Irrlicht/Bindings_gui.cpp" />
-		<Unit filename="Source/Irrlicht/Bindings_irr.cpp" />
-		<Unit filename="Source/Irrlicht/Bindings_irr_io.cpp" />
-		<Unit filename="Source/Irrlicht/Bindings_scene.cpp" />
-		<Unit filename="Source/Irrlicht/Bindings_video.cpp" />
-		<Unit filename="Source/Irrlicht/IrrlichtBindings.cpp" />
-		<Unit filename="Source/Irrlicht/IrrlichtProtos.cpp" />
-		<Unit filename="Source/Irrlicht/OrientationHelperSceneNode.cpp" />
-		<Unit filename="Source/Irrlicht/ScriptedDataSerializer.cpp" />
-		<Unit filename="Source/Irrlicht/ScriptedEventReceiver.cpp" />
-		<Unit filename="Source/Irrlicht/ScriptedSceneNode.cpp" />
-		<Unit filename="Source/ThinPlateSpline/TPSBindings.cpp" />
-		<Unit filename="Source/ThinPlateSpline/TPSProtos.cpp" />
+		<Unit filename="Include\Bindings\Bullet\Bindings.hpp" />
+		<Unit filename="Include\Bindings\Bullet\Protos.hpp" />
+		<Unit filename="Include\Bindings\Bullet\ScriptedClosestRayResultCallback.hpp" />
+		<Unit filename="Include\Bindings\Bullet\ScriptedContactResultCallback.hpp" />
+		<Unit filename="Include\Bindings\Bullet\ScriptedWorldManager.hpp" />
+		<Unit filename="Include\Bindings\Custom\Bindings.hpp" />
+		<Unit filename="Include\Bindings\Custom\CustomAnimatorTypes.hpp" />
+		<Unit filename="Include\Bindings\Custom\FlagBits.hpp" />
+		<Unit filename="Include\Bindings\Custom\GearConstraint.hpp" />
+		<Unit filename="Include\Bindings\Custom\IrrlichtBulletDebugDrawer.hpp" />
+		<Unit filename="Include\Bindings\Custom\KinematicAnimator.hpp" />
+		<Unit filename="Include\Bindings\Custom\LinkSplitter.hpp" />
+		<Unit filename="Include\Bindings\Custom\LockAnimator.hpp" />
+		<Unit filename="Include\Bindings\Custom\MeshTools.hpp" />
+		<Unit filename="Include\Bindings\Custom\PhysicsAnimator.hpp" />
+		<Unit filename="Include\Bindings\Custom\PossibleVertex.hpp" />
+		<Unit filename="Include\Bindings\Custom\Protos.hpp" />
+		<Unit filename="Include\Bindings\Custom\SceneNodePtrTest.hpp" />
+		<Unit filename="Include\Bindings\Custom\ScriptObjAnimator.hpp" />
+		<Unit filename="Include\Bindings\Custom\SoftBodyMeshSynchronizer.hpp" />
+		<Unit filename="Include\Bindings\Custom\SurfaceQuadTree.hpp" />
+		<Unit filename="Include\Bindings\IrrKlang\Bindings.hpp" />
+		<Unit filename="Include\Bindings\IrrKlang\Protos.hpp" />
+		<Unit filename="Include\Bindings\Irrlicht\Bindings.hpp" />
+		<Unit filename="Include\Bindings\Irrlicht\OrientationHelperSceneNode.hpp" />
+		<Unit filename="Include\Bindings\Irrlicht\Protos.hpp" />
+		<Unit filename="Include\Bindings\Irrlicht\ScriptedDataSerializer.hpp" />
+		<Unit filename="Include\Bindings\Irrlicht\ScriptedEventReceiver.hpp" />
+		<Unit filename="Include\Bindings\Irrlicht\ScriptedSceneNode.hpp" />
+		<Unit filename="Include\Bindings\ThinPlateSpline\Bindings.hpp" />
+		<Unit filename="Include\Bindings\ThinPlateSpline\Protos.hpp" />
+		<Unit filename="Script\BulletBindings.io" />
+		<Unit filename="Script\CustomBindings.io" />
+		<Unit filename="Script\IrrlichtBindings.io" />
+		<Unit filename="Source\Bullet\BulletBindings.cpp" />
+		<Unit filename="Source\Bullet\BulletProtos.cpp" />
+		<Unit filename="Source\Bullet\ScriptedClosestRayResultCallback.cpp" />
+		<Unit filename="Source\Bullet\ScriptedContactResultCallback.cpp" />
+		<Unit filename="Source\Bullet\ScriptedWorldManager.cpp" />
+		<Unit filename="Source\Bullet\btBroadphaseInterface.cpp" />
+		<Unit filename="Source\Bullet\btBroadphaseProxy.cpp" />
+		<Unit filename="Source\Bullet\btCollisionConfiguration.cpp" />
+		<Unit filename="Source\Bullet\btCollisionObject.cpp" />
+		<Unit filename="Source\Bullet\btCollisionShape.cpp" />
+		<Unit filename="Source\Bullet\btCollisionWorld.cpp" />
+		<Unit filename="Source\Bullet\btConcaveShape.cpp" />
+		<Unit filename="Source\Bullet\btConstraintSolver.cpp" />
+		<Unit filename="Source\Bullet\btDispatcher.cpp" />
+		<Unit filename="Source\Bullet\btMatrix3x3.cpp" />
+		<Unit filename="Source\Bullet\btMotionState.cpp" />
+		<Unit filename="Source\Bullet\btOverlappingPairCallback.cpp" />
+		<Unit filename="Source\Bullet\btQuaternion.cpp" />
+		<Unit filename="Source\Bullet\btSoftBody.cpp" />
+		<Unit filename="Source\Bullet\btStridingMeshInterface.cpp" />
+		<Unit filename="Source\Bullet\btTransform.cpp" />
+		<Unit filename="Source\Bullet\btTypedConstraint.cpp" />
+		<Unit filename="Source\Bullet\btVector3.cpp" />
+		<Unit filename="Source\Custom\CustomBindings.cpp" />
+		<Unit filename="Source\Custom\GearConstraint.cpp" />
+		<Unit filename="Source\Custom\HillMesh.cpp" />
+		<Unit filename="Source\Custom\IrrlichtBulletDebugDrawer.cpp" />
+		<Unit filename="Source\Custom\KinematicAnimator.cpp" />
+		<Unit filename="Source\Custom\LinkSplitter.cpp" />
+		<Unit filename="Source\Custom\LockAnimator.cpp" />
+		<Unit filename="Source\Custom\MeshTools.cpp" />
+		<Unit filename="Source\Custom\PhysicsAnimator.cpp" />
+		<Unit filename="Source\Custom\PossibleVertex.cpp" />
+		<Unit filename="Source\Custom\Protos.cpp" />
+		<Unit filename="Source\Custom\SceneNodePtrTest.cpp" />
+		<Unit filename="Source\Custom\ScriptObjAnimator.cpp" />
+		<Unit filename="Source\Custom\SoftBodyMeshSynchronizer.cpp" />
+		<Unit filename="Source\Custom\SurfaceQuadTree.cpp" />
+		<Unit filename="Source\IrrKlang\IrrKlangBindings.cpp" />
+		<Unit filename="Source\IrrKlang\IrrKlangProtos.cpp" />
+		<Unit filename="Source\Irrlicht\Bindings_OrientationHelperSceneNode.cpp" />
+		<Unit filename="Source\Irrlicht\Bindings_core.cpp" />
+		<Unit filename="Source\Irrlicht\Bindings_custom.cpp" />
+		<Unit filename="Source\Irrlicht\Bindings_gui.cpp" />
+		<Unit filename="Source\Irrlicht\Bindings_irr.cpp" />
+		<Unit filename="Source\Irrlicht\Bindings_irr_io.cpp" />
+		<Unit filename="Source\Irrlicht\Bindings_scene.cpp" />
+		<Unit filename="Source\Irrlicht\Bindings_video.cpp" />
+		<Unit filename="Source\Irrlicht\IrrlichtBindings.cpp" />
+		<Unit filename="Source\Irrlicht\IrrlichtProtos.cpp" />
+		<Unit filename="Source\Irrlicht\OrientationHelperSceneNode.cpp" />
+		<Unit filename="Source\Irrlicht\ScriptedDataSerializer.cpp" />
+		<Unit filename="Source\Irrlicht\ScriptedEventReceiver.cpp" />
+		<Unit filename="Source\Irrlicht\ScriptedSceneNode.cpp" />
+		<Unit filename="Source\ThinPlateSpline\TPSBindings.cpp" />
+		<Unit filename="Source\ThinPlateSpline\TPSProtos.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

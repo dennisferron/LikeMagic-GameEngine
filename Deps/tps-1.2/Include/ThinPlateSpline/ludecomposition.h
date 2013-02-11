@@ -15,6 +15,11 @@
 #include "boost/numeric/ublas/matrix.hpp"
 #include "boost/numeric/ublas/matrix_proxy.hpp"
 
+// Fix missing 'alloca' on Windows/mingw build. --DLF
+#if (defined(__MINGW32__) || defined(__MINGW64__))
+#include <malloc.h>
+#endif
+
 namespace TPS {
 
 // Solve a linear equation system a*x=b using inplace LU decomposition.
