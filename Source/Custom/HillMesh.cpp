@@ -147,12 +147,12 @@ irr::scene::IMesh* MeshTools::createHillMesh(SurfaceQuadTree& tree, rectf sectio
     tree.triangulate(triangles, section, min_height, max_height, &visitor);
     //tree.sweep(triangles, section, &visitor);
 
-    cout << "num triangle points: " << triangles.size() << endl;
+   //cout << "num triangle points: " << triangles.size() << endl;
 
     vector<QuadTreePtr> leaves;
     tree.dumpLeaves(leaves);
 
-    cout << "num leaves: " << leaves.size() << endl;
+    //cout << "num leaves: " << leaves.size() << endl;
 
 /*
     for (QuadTreePtr p1 : leaves)
@@ -227,8 +227,8 @@ irr::scene::IMesh* MeshTools::createHillMesh(SurfaceQuadTree& tree, rectf sectio
     if (buffer->getIndexCount() % 3 > 0)
         throw std::logic_error("SurfaceQuadTree triangulation added a 'triangle' with less than 3 vertices in it.");
 
-    cout << "num vertices " << buffer->getVertexCount() << endl;
-    cout << "num indices " << buffer->getIndexCount() << endl;
+    //cout << "num vertices " << buffer->getVertexCount() << endl;
+    //cout << "num indices " << buffer->getIndexCount() << endl;
 
 	buffer->recalculateBoundingBox();
 	buffer->setHardwareMappingHint(EHM_STATIC);

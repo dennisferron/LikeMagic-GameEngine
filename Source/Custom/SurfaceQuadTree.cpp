@@ -37,7 +37,7 @@ void SurfaceQuadTree::sweep(std::vector<PsblVertPtr>& triangles, irr::core::rect
 
     while (true)
     {
-        cout << sweepline.UpperLeftCorner.X << endl;
+        //cout << sweepline.UpperLeftCorner.X << endl;
 
         auto on_y = [](QuadTreePtr const& a, QuadTreePtr const& b){return a->region.getCenter().Y < b->region.getCenter().Y; };
 
@@ -368,10 +368,10 @@ void SurfaceQuadTree::zip(std::vector<PsblVertPtr>& triangles, std::vector<QuadT
         if (!end_b)
             qb2 = b2->get();
 
-        cout << "a1 = " << qa1->getPath() << "  b1 = " << qb1->getPath();
-        cout << "  a2 = " << (end_a? "NULL" : qa2->getPath());
-        cout << "  b2 = " << (end_b? "NULL" : qb2->getPath());
-        cout << endl;
+        //cout << "a1 = " << qa1->getPath() << "  b1 = " << qb1->getPath();
+        //cout << "  a2 = " << (end_a? "NULL" : qa2->getPath());
+        //cout << "  b2 = " << (end_b? "NULL" : qb2->getPath());
+        //cout << endl;
 
         if (visitor)
             visitor->check(*a1, end_a?NULL:*a2, *b1, end_b?NULL:*b2);
@@ -414,14 +414,14 @@ SurfaceQuadTree::Shell SurfaceQuadTree::triangulate(std::vector<PsblVertPtr>& tr
     Shell ne = child[3]->triangulate(triangles, section, min_height, max_height, visitor);
 
     // Zip the north and south sides together in one west-east line.
-    cout << "zip long north+south halves" << endl;
+    //cout << "zip long north+south halves" << endl;
     zip(triangles, combine(nw.south, ne.south), combine(sw.north, se.north), min_height, max_height, visitor);
 
     // Zip the west and east sides together in two independent south-north runs.
     // Zipping these two haves separately skips the middle square which was already triangulated.
-    cout << "zip short sw+se" << endl;
+    //cout << "zip short sw+se" << endl;
     zip(triangles, sw.east, se.west, min_height, max_height, visitor);
-    cout << "zip short nw+ne" << endl;
+    //cout << "zip short nw+ne" << endl;
     zip(triangles, nw.east, ne.west, min_height, max_height, visitor);
 
     return Shell
