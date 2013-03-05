@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Engine" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="libEngine" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="libEngine" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="Avatar/Camera.io.inl" />
+		<Unit filename="Avatar/Component.io.inl" />
+		<Unit filename="Avatar/Config.io.inl" />
+		<Unit filename="Avatar/KeyInputs.io.inl" />
+		<Unit filename="Avatar/NodeAttribute.io.inl" />
+		<Unit filename="Avatar/PlayerStyle.io.inl" />
+		<Unit filename="Bullet/BodyBuilder.io.inl" />
+		<Unit filename="Bullet/Component.io.inl" />
+		<Unit filename="Bullet/Config.io.inl" />
+		<Unit filename="Bullet/ConstraintBuilder.io.inl" />
+		<Unit filename="Bullet/ConstraintObj.io.inl" />
+		<Unit filename="Bullet/NodeAttribute.io.inl" />
+		<Unit filename="Bullet/PhysicsShapes.io.inl" />
+		<Unit filename="Bullet/Sense.io.inl" />
+		<Unit filename="Bullet/ShapeBuilder.io.inl" />
+		<Unit filename="Bullet/ShapeOffsets.io.inl" />
+		<Unit filename="Config.io.inl" />
+		<Unit filename="Desteer/Config.io.inl" />
+		<Unit filename="Desteer/Steering.io.inl" />
+		<Unit filename="EditorGUI/Component.io.inl" />
+		<Unit filename="EditorGUI/Config.io.inl" />
+		<Unit filename="EditorGUI/Toolbar.io.inl" />
+		<Unit filename="Interactions/Component/AvatarTime.io.inl" />
+		<Unit filename="Interactions/Component/BulletTime.io.inl" />
+		<Unit filename="Interactions/Component/ComponentInteraction.io.inl" />
+		<Unit filename="Interactions/Component/Config.io.inl" />
+		<Unit filename="Interactions/Component/DebugDrawer.io.inl" />
+		<Unit filename="Interactions/Component/IrrlichtKeyInput.io.inl" />
+		<Unit filename="Interactions/Component/IrrlichtTime.io.inl" />
+		<Unit filename="Interactions/Component/LoadEditorGUI.io.inl" />
+		<Unit filename="Interactions/Config.io.inl" />
+		<Unit filename="Interactions/Link/BulletMouseDrag.io.inl" />
+		<Unit filename="Interactions/Link/CameraFollowObject.io.inl" />
+		<Unit filename="Interactions/Link/Config.io.inl" />
+		<Unit filename="Interactions/Link/IrrlichtMouseDrag.io.inl" />
+		<Unit filename="Interactions/Link/LinkInteraction.io.inl" />
+		<Unit filename="Interactions/Link/SelectNode.io.inl" />
+		<Unit filename="Interactions/Node/AddScriptObjAnim.io.inl" />
+		<Unit filename="Interactions/Node/Config.io.inl" />
+		<Unit filename="Interactions/Node/IrrlichtCamera.io.inl" />
+		<Unit filename="Interactions/Node/MotionState.io.inl" />
+		<Unit filename="Interactions/Node/NodeInteraction.io.inl" />
+		<Unit filename="Interactions/Node/PlayerNoPhysSleep.io.inl" />
+		<Unit filename="Interactions/Node/PlayerPhysics.io.inl" />
+		<Unit filename="Irrlicht/Assets.io.inl" />
+		<Unit filename="Irrlicht/Camera.io.inl" />
+		<Unit filename="Irrlicht/Component.io.inl" />
+		<Unit filename="Irrlicht/Config.io.inl" />
+		<Unit filename="Irrlicht/DisplayShapes.io.inl" />
+		<Unit filename="Irrlicht/NodeAttribute.io.inl" />
+		<Unit filename="Irrlicht/SceneNodeBuilder.io.inl" />
+		<Unit filename="Irrlicht/SceneNodes.io.inl" />
+		<Unit filename="Irrlicht/ShapeBuilder.io.inl" />
+		<Unit filename="Irrlicht/UserInterface/Config.io.inl" />
+		<Unit filename="Irrlicht/UserInterface/EventDispatch.io.inl" />
+		<Unit filename="Irrlicht/UserInterface/GuiEvents.io.inl" />
+		<Unit filename="Irrlicht/UserInterface/Keyboard.io.inl" />
+		<Unit filename="Irrlicht/UserInterface/Menu.io.inl" />
+		<Unit filename="Irrlicht/UserInterface/Mouse.io.inl" />
+		<Unit filename="Irrlicht/UserInterface/MouseDragLinkAttribute.io.inl" />
+		<Unit filename="Irrlicht/UserInterface/SceneNodeSelector.io.inl" />
+		<Unit filename="LevelSystem/Config.io.inl" />
+		<Unit filename="LevelSystem/LevelEditor.io.inl" />
+		<Unit filename="LevelSystem/Props.io.inl" />
+		<Unit filename="LevelSystem/Terrain.io.inl" />
+		<Unit filename="LevelSystem/Tile.io.inl" />
+		<Unit filename="LikeMagic/BulletBindings.io.inl" />
+		<Unit filename="LikeMagic/CustomBindings.io.inl" />
+		<Unit filename="LikeMagic/DESteerBindings.io.inl" />
+		<Unit filename="LikeMagic/IrrlichtBindings.io.inl" />
+		<Unit filename="LikeMagic/ThinPlateSplineBindings.io.inl" />
+		<Unit filename="LikeMagic/bootstrap.io.inl" />
+		<Unit filename="Loader.io.inl" />
+		<Unit filename="Model/Config.io.inl" />
+		<Unit filename="Model/Domain.io.inl" />
+		<Unit filename="Model/Graph.io.inl" />
+		<Unit filename="Model/Interaction.io.inl" />
+		<Unit filename="Model/Link.io.inl" />
+		<Unit filename="Model/Node.io.inl" />
+		<Unit filename="Model/Referent.io.inl" />
+		<Unit filename="Model/Structure.io.inl" />
+		<Unit filename="Model/Time.io.inl" />
+		<Unit filename="Module.io.inl" />
+		<Unit filename="Scripts.io.inl" />
+		<Unit filename="SharedTypes/Color.io.inl" />
+		<Unit filename="SharedTypes/Config.io.inl" />
+		<Unit filename="SharedTypes/EnumMap.io.inl" />
+		<Unit filename="SharedTypes/IdMap.io.inl" />
+		<Unit filename="Startup.io.inl" />
+		<Unit filename="Styles/Config.io.inl" />
+		<Unit filename="Styles/ConstraintStyle.io.inl" />
+		<Unit filename="Styles/ConstraintStyles.io.inl" />
+		<Unit filename="Styles/GameObjStyle.io.inl" />
+		<Unit filename="Styles/GameObjStyles.io.inl" />
+		<Unit filename="Styles/LinkStyle.io.inl" />
+		<Unit filename="Styles/LinkStyles.io.inl" />
+		<Unit filename="Styles/MountStyle.io.inl" />
+		<Unit filename="UnitTests/Config.io.inl" />
+		<Unit filename="UnitTests/TestCameraLookAt.io.inl" />
+		<Unit filename="UnitTests/TestScriptObjAnim.io.inl" />
+		<Unit filename="UserInterface/Config.io.inl" />
+		<Unit filename="UserInterface/MainWindow.io.inl" />
+		<Unit filename="UserInterface/Menu.io.inl" />
+		<Unit filename="UserInterface/UserInterfaceRepresentation.io.inl" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
