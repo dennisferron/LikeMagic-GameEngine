@@ -250,10 +250,10 @@ std::vector<QuadTreePtr> SurfaceQuadTree::combine(std::vector<QuadTreePtr> const
                 bool contX = abs(curX-prevX) < 0.1f;
                 bool contY = abs(curY-prevY) < 0.1f;
 
-                if (contX && contY)
-                    cout << "Combined on diagonal" << endl;
-                else if (!contX && !contY)
-                    cout << "Combined nonsequential" << endl;
+                //if (contX && contY)
+                //    cout << "Combined on diagonal" << endl;
+                //else if (!contX && !contY)
+                //sit    cout << "Combined nonsequential" << endl;
             }
 
             prev = cur;

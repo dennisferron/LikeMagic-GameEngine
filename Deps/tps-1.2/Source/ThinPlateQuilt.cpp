@@ -34,7 +34,7 @@ void ThinPlateQuilt::clearControlPoints()
 
 void ThinPlateQuilt::refresh()
 {
-    cout << "tiles size is " << tiles.size() << " numRows is " << numRows << " numCols is " << numCols << endl;
+    //cout << "tiles size is " << tiles.size() << " numRows is " << numRows << " numCols is " << numCols << endl;
 
     for (int x=0; x<numCols; ++x)
         for (int z=0; z<numRows; ++z)
@@ -106,8 +106,8 @@ ControlPointPtr ThinPlateQuilt::addControlPoint(Vec pos)
 
             if (x >= tile_min.x && x <= tile_max.x && z >= tile_min.z && z <= tile_max.z)
             {
-                cout << "Add control point at x,z = " << p->pos.x << "," << p->pos.z << " inside tile i,j = " << i << "," << j << " at X,Y,X,Y = "
-                    << tile_min.x << "," << tile_min.z << "," << tile_max.x << "," << tile_max.z << endl;
+                //cout << "Add control point at x,z = " << p->pos.x << "," << p->pos.z << " inside tile i,j = " << i << "," << j << " at X,Y,X,Y = "
+                //    << tile_min.x << "," << tile_min.z << "," << tile_max.x << "," << tile_max.z << endl;
                 getTile(i,j).addControlPoint(p);
             }
             else if (x >= halo_min.x && x <= halo_max.x && z >= halo_min.z && z <= halo_max.z)
@@ -118,8 +118,8 @@ ControlPointPtr ThinPlateQuilt::addControlPoint(Vec pos)
 //                double z_weight = z_from_halo_edge / halo_size.z;
 //                double best_weight = (x_weight>z_weight)? x_weight : z_weight;
 
-                cout << "Add control point at x,z = " << p->pos.x << "," << p->pos.z << " inside halo i,j = " << i << "," << j << " at X,Y,X,Y = "
-                    << halo_min.x << "," << halo_min.z << "," << halo_max.x << "," << halo_max.z << endl;
+                //cout << "Add control point at x,z = " << p->pos.x << "," << p->pos.z << " inside halo i,j = " << i << "," << j << " at X,Y,X,Y = "
+                //    << halo_min.x << "," << halo_min.z << "," << halo_max.x << "," << halo_max.z << endl;
 
                 getTile(i,j).addControlPoint(p);
             }
