@@ -53,11 +53,12 @@ IoSandbox *IoSandbox_proto(void *state)
 
 IoState *IoSandbox_boxState(IoSandbox *self)
 {
-	if (!DATA(self))
-	{
-		IoObject_setDataPointer_(self, IoState_new());
-		IoSandbox_addPrintCallback(self);
-	}
+    // TODO:  Sandbox requires VM init path.
+//	if (!DATA(self))
+//	{
+//		IoObject_setDataPointer_(self, IoState_new());
+//		IoSandbox_addPrintCallback(self);
+//	}
 
 	return DATA(self);
 }
@@ -106,7 +107,7 @@ void IoSandbox_free(IoSandbox *self)
 IoNumber *IoSandbox_messageCount(IoSandbox *self, IoObject *locals, IoMessage *m)
 {
 	/*doc Sandbox messageCount
-	Returns a number containing the messageCount limit of the Sandbox. 
+	Returns a number containing the messageCount limit of the Sandbox.
 	*/
 
 	IoState *boxState = IoSandbox_boxState(self);
@@ -116,7 +117,7 @@ IoNumber *IoSandbox_messageCount(IoSandbox *self, IoObject *locals, IoMessage *m
 IO_METHOD(IoSandbox, setMessageCount)
 {
 	/*doc Sandbox setMessageCount(anInteger)
-	Sets the messageCount limit of the receiver. 
+	Sets the messageCount limit of the receiver.
 	*/
 
 	IoState *boxState = IoSandbox_boxState(self);
@@ -127,7 +128,7 @@ IO_METHOD(IoSandbox, setMessageCount)
 IoNumber *IoSandbox_timeLimit(IoSandbox *self, IoObject *locals, IoMessage *m)
 {
 	/*doc Sandbox timeLimit
-	Returns a number containing the time limit of calls made to the Sandbox. 
+	Returns a number containing the time limit of calls made to the Sandbox.
 	*/
 
 	IoState *boxState = IoSandbox_boxState(self);
@@ -137,7 +138,7 @@ IoNumber *IoSandbox_timeLimit(IoSandbox *self, IoObject *locals, IoMessage *m)
 IO_METHOD(IoSandbox, setTimeLimit)
 {
 	/*doc Sandbox setTimeLimit(aDouble)
-	Sets the time limit of the Sandbox. 
+	Sets the time limit of the Sandbox.
 	*/
 
 	IoState *boxState = IoSandbox_boxState(self);
@@ -148,7 +149,7 @@ IO_METHOD(IoSandbox, setTimeLimit)
 IO_METHOD(IoSandbox, doSandboxString)
 {
 	/*doc Sandbox doSandboxString(aString)
-	Evaluate aString inside the Sandbox. 
+	Evaluate aString inside the Sandbox.
 	*/
 
 	IoState *boxState = IoSandbox_boxState(self);

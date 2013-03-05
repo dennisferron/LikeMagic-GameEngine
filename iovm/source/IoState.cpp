@@ -331,9 +331,9 @@ int IoState_stopStatusNumber(IoState *self, IoObject *obj)
 
 // END IoState_inline
 
-void IoVMCodeInit(IoObject *context);
+void IoVMCodeInit(IoObject *context, char const * bootstrap_path);
 
-void IoState_new_atAddress(void *address)
+void IoState_new_atAddress(void *address, char const * bootstrap_path)
 {
 	IoState *self = (IoState *)address;
 	IoCFunction *cFunctionProto;
@@ -502,7 +502,7 @@ void IoState_new_atAddress(void *address)
 		//Collector_collect(self->collector);
 
 		//io_show_mem("before IoVMCodeInit");
-		IoVMCodeInit(core);
+		IoVMCodeInit(core, bootstrap_path);
 
 		//io_show_mem("after IoVMCodeInit");
 		//Collector_collect(self->collector);
@@ -516,13 +516,6 @@ void IoState_new_atAddress(void *address)
 		//io_show_mem("after IoState_clearRetainStack and Collector_collect");
 		IoState_setupUserInterruptHandler(self);
 	}
-}
-
-IoState *IoState_new(void)
-{
-	IoState *self = (IoState *)io_calloc(1, sizeof(IoState));
-	IoState_new_atAddress(self);
-	return self;
 }
 
 void IoState_setupQuickAccessSymbols(IoState *self)

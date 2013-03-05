@@ -9,7 +9,7 @@
 
 #include "Iocaste/CShims/Exception.h"
 
-void IoState_fatalError_(IoState *self, char *error)
+void IoState_fatalError_(IoState *self, const char *error)
 {
 	fputs(error, stderr);
 	fputs("\n", stderr);

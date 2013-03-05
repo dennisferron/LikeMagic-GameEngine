@@ -12,6 +12,7 @@ using namespace Iocaste::LikeMagicAdapters;
 #include "boost/algorithm/string/trim.hpp"
 #include "LikeMagic/Utility/UserMacros.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+#include "LikeMagic/ScriptUtil.hpp"
 
 #include "Iocaste/Exception.hpp"
 #include "boost/exception/info.hpp"
@@ -54,7 +55,7 @@ double System_UserTime(void)
 using namespace std;
 
 // Predicate for trimming characters up to a directory marker.
-struct IsNotDir { bool operator()(char c) { return c != '/' && c != '\\'; } };
+struct IsNotDirChar { bool operator()(char c) { return c != '/' && c != '\\'; } };
 
 void do_cli(IoVM& vm)
 {
@@ -70,14 +71,13 @@ void do_cli(IoVM& vm)
 void do_file(IoVM& vm, string file_name)
 {
     std::string scriptPath(file_name);
-    boost::algorithm::trim_right_if(scriptPath, IsNotDir());
-    vm.add_proto("scriptPath", scriptPath, NamespacePath::global(), true);
-
+    boost::algorithm::trim_right_if(scriptPath, IsNotDirChar());
+    //vm.add_proto("scriptPath", scriptPath, NamespacePath::global(), true);
+    ScriptUtil::set_script_path(scriptPath);
     std::stringstream code;
     code << "doFile(\"" << file_name << "\")";
     vm.do_string(code.str());
 }
-
 
 int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::RuntimeTypeSystem&), RuntimeTypeSystem* type_sys)
 {
@@ -86,19 +86,21 @@ int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::R
     dmalloc_debug_setup("check-blank,log=~/dmalloc.log");
 #endif
 
-
-        // If the IoVM object is declared inside the try catch as a stack variable,
-        // it gets destructed when there's an exception and then is unavailable for e.g.
-        // printing the error message or the stack.  Should maybe create with new and/or
-        // use an intrusive_ptr to track references to the IoVM object.
-        IoVM* vm=NULL;
+    // If the IoVM object is declared inside the try catch as a stack variable,
+    // it gets destructed when there's an exception and then is unavailable for e.g.
+    // printing the error message or the stack.  Should maybe create with new and/or
+    // use an intrusive_ptr to track references to the IoVM object.
+    IoVM* vm=NULL;
 
     try
     {
         (*add_bindings)(*type_sys);
-        vm = new IoVM(*type_sys);
 
-        for (int i=1; i<argc; ++i)
+        std::string bootstrap_path(argv[1]);
+        cout << "Loading Io init files at " << bootstrap_path << endl;
+        vm = new IoVM(*type_sys, bootstrap_path);
+
+        for (int i=2; i<argc; ++i)
         {
             cout << flush;
             if (string(argv[i]) == "--runCLI")

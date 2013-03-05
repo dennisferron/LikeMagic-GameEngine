@@ -186,7 +186,7 @@ void IoVM::setShowAllMessages(bool value)
     state->showAllMessages = value;
 }
 
-IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys), last_exception(0)
+IoVM::IoVM(RuntimeTypeSystem& type_sys, std::string bootstrap_path) : type_system(type_sys), last_exception(0)
 {
     // It's very important you static_cast here, if you use
     // reinterpret_cast or allow conversion to void* which
@@ -199,7 +199,7 @@ IoVM::IoVM(RuntimeTypeSystem& type_sys) : type_system(type_sys), last_exception(
     memset(state, 0, sizeof(IoState));
 
     // "Constructs" the IoState part of us.
-    IoState_new_atAddress(state);
+    IoState_new_atAddress(state, bootstrap_path.c_str());
 
     state->bindingsInitCallback = NULL;
     IoState_init(state);

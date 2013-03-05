@@ -66,7 +66,7 @@ private:
     IoObject* proxy_to_io_obj(AbstractCppObjProxy* proxy);
 
 public:
-    IoVM(LikeMagic::RuntimeTypeSystem& type_system_);
+    IoVM(LikeMagic::RuntimeTypeSystem& type_system_, std::string bootstrap_path);
     ~IoVM();
 
     static IoObject* perform(IoObject *self, IoObject *locals, IoMessage *m);
