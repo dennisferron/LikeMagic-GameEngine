@@ -69,6 +69,9 @@ public:
     unsigned char* ucharp_field;
     int* intp_field;
     unsigned int* uintp_field;
+
+    static std::string get_script_path();
+    static void set_script_path(std::string value);
 };
 
 }

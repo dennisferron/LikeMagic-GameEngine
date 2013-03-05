@@ -242,7 +242,8 @@ void LikeMagic::StdBindings::add_bindings(RuntimeTypeSystem& type_sys)
     LM_CONSTR(ScriptUtil,,)
     LM_FIELD(ScriptUtil, (voidp_field)(charp_field)(ucharp_field)(intp_field)(uintp_field))
     LM_STATIC_MEMBER_FUNC(ScriptUtil, (ptr_addr_to_str)(get_null_ptr)(get_test_ptr)(get_true)(get_false)(get_void_ptr)
-    (get_int)(get_double)(get_string)(get_float)(get_random_float)(get_random_float_array)(print_float_array)(is_nan))
+    (get_int)(get_double)(get_string)(get_float)(get_random_float)(get_random_float_array)(print_float_array)(is_nan)
+    (get_script_path)(set_script_path))
 }
 
 
