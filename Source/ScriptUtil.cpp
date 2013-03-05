@@ -60,7 +60,6 @@ float ScriptUtil::get_random_float(float min, float max)
     static boost::uniform_real<float> range(0.0f, 1.0f);
     static boost::variate_generator<boost::minstd_rand&, boost::uniform_real<float> > generator(algorithm, range);
     float result = (max-min)*generator()+min;
-    cout << "get_random_float(" << min << "," << max << ") => " << result << endl;
     return result;
 }
 
