@@ -236,8 +236,6 @@ void LikeMagic::StdBindings::add_bindings(RuntimeTypeSystem& type_sys)
     LM_CONSTR(NativeArray_of_double,, size_t, double*)
     LM_FUNC(NativeArray_of_double, (begin_c)(begin_nc)(at_c)(at_nc)(at_put)(size))
 
-
-
     LM_CLASS(global_ns, ScriptUtil)
     LM_CONSTR(ScriptUtil,,)
     LM_FIELD(ScriptUtil, (voidp_field)(charp_field)(ucharp_field)(intp_field)(uintp_field))
