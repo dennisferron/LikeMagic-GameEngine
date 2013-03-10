@@ -109,7 +109,7 @@ void run_io()
 
 struct Dummy { };
 
-int main2()
+int main()
 {
     std::string aString = "hello";
     char const* aChar = "ahoy";
@@ -127,54 +127,4 @@ int main2()
 
     return 0;
 }
-
-
-
-
-int main()
-{
-    for (auto arg : call(&func))
-    {
-        // do stuff
-    }
-
-    LINQ: employeeList.where(e => e.EmpId == -1).select(e => e.FullName);
-
-    [&employeeList]() {
-        for (auto e : where(employeeList))
-            return e.EmpId == -1
-    }
-
-    [&previousResults]() {
-    for (auto e : previousResults)
-        return e.FullName;
-    }
-
-    ResultGatherer r2(
-        [&]() { for (auto r : r2) cout << r << endl; }
-    );
-
-    FROM(employeeList)
-    WHERE(auto e, e.EmpId == -1)
-    SELECT(auto e, e.FullName)
-    SELECT(auto e, e[0]).to_list<char>();
-
-
-
-    return 0;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
