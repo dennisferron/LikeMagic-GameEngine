@@ -38,18 +38,40 @@
 					<Add directory="../../lib/Win32-gcc/" />
 				</Linker>
 			</Target>
+			<Target title="Debug Mac">
+				<Option platforms="Mac;" />
+				<Option output="../../bin/Mac/HelloWorld" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="../../../irrlicht-1.8-unstable" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-W" />
+					<Add option="-D_IRR_STATIC_LIB_" />
+				</Compiler>
+				<Linker>
+					<Add option="-ldl" />
+					<Add option="-lpthread" />
+					<Add option="-framework AppKit" />
+					<Add option="-framework Cocoa" />
+					<Add option="-framework OpenGL" />
+					<Add option="-framework Carbon" />
+					<Add option="-framework IOKit" />
+					<Add option="-v" />
+					<Add library="../../lib/libIrrlicht-Mac.a" />
+					<Add library="../../lib/libIrrlichtObjFiles-Mac.a" />
+					<Add directory="../../lib/Linux" />
+				</Linker>
+			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="Windows;Linux" />
+			<Add alias="All" targets="Windows;Linux;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-W" />
 			<Add option="-g" />
+			<Add option="-W" />
 			<Add directory="../../include" />
 		</Compiler>
-		<Linker>
-			<Add library="Irrlicht" />
-		</Linker>
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
