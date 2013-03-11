@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Plandipitous" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Demo">
+				<Option output="Plandipitous" prefix_auto="1" extension_auto="1" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+			</Target>
+			<Target title="Debug">
+				<Option output="libPlandipitous" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="libPlandipitous" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="Demo/main.cpp">
+			<Option target="Demo" />
+		</Unit>
+		<Unit filename="Include/GeneralizedEvents.hpp" />
+		<Unit filename="Include/Plandipitous.hpp" />
+		<Unit filename="Source/GeneralizedEvents.cpp" />
+		<Unit filename="Source/Plandipitous.cpp" />
+		<Unit filename="Source/SnowflakeNode.cpp" />
+		<Unit filename="Source/rc_shortest_paths.cpp" />
+		<Unit filename="include/SnowflakeNode.hpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
