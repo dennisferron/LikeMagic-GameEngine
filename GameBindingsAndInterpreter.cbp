@@ -68,19 +68,18 @@
 					<Add option="-framework Carbon" />
 					<Add option="-framework IOKit" />
 					<Add option="-v" />
-					<Add library="..\libGameBindings-Mac.a" />
-					<Add library="..\libBullet-Mac.a" />
-					<Add library="..\Deps\irrlicht-1.8-unstable\lib\libIrrlichtObjFiles-Mac.a" />
-					<Add library="..\Deps\irrlicht-1.8-unstable\lib\libIrrlicht-Mac.a" />
-					<Add library="..\..\desteer\bindings\libDESteerBindings-Mac.a" />
-					<Add library="..\..\LikeMagic\StdBindings\libStdBindings-Mac.a" />
-					<Add library="..\Deps\tps-1.2\ThinPlateSpline\bin\Debug\libThinPlateSpline.a" />
-					<Add library="..\..\desteer\lib\libdesteer.a" />
-					<Add library="..\..\Iocaste\libIocaste-Mac.a" />
-					<Add library="..\..\LikeMagic\libLikeMagic-Mac.a" />
+					<Add library="./libBullet-Mac.a" />
+					<Add library="Deps/irrlicht-1.8-unstable/lib/libIrrlichtObjFiles-Mac.a" />
+					<Add library="Deps/irrlicht-1.8-unstable/lib/libIrrlicht-Mac.a" />
+					<Add library="../desteer/bindings/libDESteerBindings-Mac.a" />
+					<Add library="LikeMagic/StdBindings/libStdBindings-Mac.a" />
+					<Add library="Deps/tps-1.2/ThinPlateSpline/bin/Debug/libThinPlateSpline.a" />
+					<Add library="../desteer/lib/libdesteer.a" />
+					<Add library="Iocaste/libIocaste-Mac.a" />
+					<Add library="LikeMagic/libLikeMagic-Mac.a" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="./delete-if-older.sh bin/Debug/LikeMagicDebugBuild ../desteer/lib/libdesteer.a ../desteer/bindings/libDESteerBindings.a" />
+					<Add before="Interpreter/delete-if-older.sh bin/Debug/LikeMagicDebugBuild ../desteer/lib/libdesteer.a ../desteer/bindings/libDESteerBindings.a" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

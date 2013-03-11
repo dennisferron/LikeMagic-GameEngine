@@ -16,7 +16,7 @@
 #include "Bindings/ThinPlateSpline/Bindings.hpp"
 
 #ifdef IRR_1_8
-#include "Bindings/IrrlichtTest/Bindings.hpp"
+//#include "Bindings/IrrlichtTest/Bindings.hpp"
 #endif
 
 #ifdef USE_IRRKLANG
@@ -41,7 +41,7 @@ void add_bindings(LikeMagic::RuntimeTypeSystem& type_sys)
 
     #ifdef IRR_1_8
     // Debug testing
-    Bindings::IrrlichtTest::add_bindings(type_sys);
+    //Bindings::IrrlichtTest::add_bindings(type_sys);
     #endif
 
     auto ns_bindings = Namespace::global(type_sys).subspace("Bindings");
