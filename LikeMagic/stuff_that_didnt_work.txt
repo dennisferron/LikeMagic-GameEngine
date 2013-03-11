@@ -1,0 +1,29 @@
+Do not try to use template <typename F, F f> to hard-code function pointer addresses.
+Although this does work (it is how the original design worked), there is no way to
+simultaneously make a template function deduce both F and f, unfortunately.
+
+Do not try to refactor out SFMO::Proxy classes to unify them with Expressions.
+It creates circular dependencies among AbstractExpression, Expression, and Term.
+Wasted 1 day on this.
+
+Do not try to support default function arguments by arbitrarily limiting the
+number of type arguments at MakeCall.  By the time MakeCall receives the function
+pointer f, it knows it only by its signature and has no way of knowing that the
+original function that provided the address had default arguments or what the defaults are.
+This could be supported if we went back to a hard-coded template <typename F, F f> design,
+but a far better alternative is to wait for GCC 4.5 to come out, and use lambda
+functions as wrappers for functions that use default args.
+Wasted 1.5 days on this.
+
+Before adding new features to LikeMagic using C++, consider whether the same feature could
+be implemented in script instead.  This might involve giving script more access
+to LikeMagic metadata, which is a Good Thing because it not only enables the current
+feature, but provides building blocks that could be used to implement future features
+entirely in script too.
+(Wasted 0.5 days writing preliminary C++ code for serialization only to realize
+it could be an Io script if the right metadata and API functions are exposed.)
+
+Wasted 5 weeks thinking a memory corruption bug was due to GC problem.  Turned out
+it was a simple scripting error.  Most of the diagnostic code I wrote to try to
+figure it out was a waste of time, except in that it eliminated what could not
+be the problem.
