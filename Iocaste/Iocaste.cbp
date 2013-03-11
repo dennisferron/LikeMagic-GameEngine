@@ -11,7 +11,7 @@
 				<Option platforms="Mac;" />
 				<Option output="libIocaste-Mac" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj\Debug-Mac\" />
+				<Option object_output="obj/Debug-Mac/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -30,7 +30,7 @@
 				<Option platforms="Unix;" />
 				<Option output="libIocaste-Linux" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj\Debug-Linux\" />
+				<Option object_output="obj/Debug-Linux/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option parameters="Debugger/TestProject/Test.io.inl" />
@@ -46,7 +46,7 @@
 				<Option platforms="Windows;" />
 				<Option output="libIocaste-Windows" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj\Debug-Windows\" />
+				<Option object_output="obj/Debug-Windows/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -73,422 +73,422 @@
 			<Add option="-Wno-unused-but-set-variable" />
 			<Add option="--std=c++0x" />
 			<Add directory="Include" />
-			<Add directory="Include\Iocaste\CShims" />
-			<Add directory="basekit\source" />
-			<Add directory="coroutine\source" />
-			<Add directory="garbagecollector\source" />
-			<Add directory="iovm\source" />
-			<Add directory="basekit\source\simd_cph\include" />
-			<Add directory="..\Common\boost_1_49_0" />
-			<Add directory="..\LikeMagic\Include" />
+			<Add directory="Include/Iocaste/CShims" />
+			<Add directory="basekit/source" />
+			<Add directory="coroutine/source" />
+			<Add directory="garbagecollector/source" />
+			<Add directory="iovm/source" />
+			<Add directory="basekit/source/simd_cph/include" />
+			<Add directory="../Common/boost_1_49_0" />
+			<Add directory="../LikeMagic/Include" />
 		</Compiler>
-		<Unit filename="Include\Iocaste\Breakpoint.hpp" />
-		<Unit filename="Include\Iocaste\CShims\Exception.h" />
-		<Unit filename="Include\Iocaste\CShims\IoObjectImpl.h" />
-		<Unit filename="Include\Iocaste\CShims\IoVMCpp.h" />
-		<Unit filename="Include\Iocaste\CShims\Stack.h" />
-		<Unit filename="Include\Iocaste\CShims\Stack_inline.h" />
-		<Unit filename="Include\Iocaste\DebugAPI.hpp" />
-		<Unit filename="Include\Iocaste\Error.hpp" />
-		<Unit filename="Include\Iocaste\Exception.hpp" />
-		<Unit filename="Include\Iocaste\ExceptionSystem.hpp" />
-		<Unit filename="Include\Iocaste\LikeMagicAdapters\API_Io.hpp" />
-		<Unit filename="Include\Iocaste\LikeMagicAdapters\API_Io_Impl.hpp" />
-		<Unit filename="Include\Iocaste\LikeMagicAdapters\FromIoTypeInfo.hpp" />
-		<Unit filename="Include\Iocaste\LikeMagicAdapters\IoBlock.hpp" />
-		<Unit filename="Include\Iocaste\LikeMagicAdapters\IoListSTL.hpp" />
-		<Unit filename="Include\Iocaste\LikeMagicAdapters\IoObjectExpr.hpp" />
-		<Unit filename="Include\Iocaste\LikeMagicAdapters\IoVM.hpp" />
-		<Unit filename="Include\Iocaste\LikeMagicAdapters\IoVectorSTL.hpp" />
-		<Unit filename="Include\Iocaste\LikeMagicAdapters\ToIoObjectExpr.hpp" />
-		<Unit filename="Include\Iocaste\LikeMagicAdapters\ToIoTypeInfo.hpp" />
-		<Unit filename="Include\Iocaste\Primitives.hpp" />
-		<Unit filename="Include\Iocaste\Run.hpp" />
-		<Unit filename="Include\Iocaste\Stack.hpp" />
+		<Unit filename="Include/Iocaste/Breakpoint.hpp" />
+		<Unit filename="Include/Iocaste/CShims/Exception.h" />
+		<Unit filename="Include/Iocaste/CShims/IoObjectImpl.h" />
+		<Unit filename="Include/Iocaste/CShims/IoVMCpp.h" />
+		<Unit filename="Include/Iocaste/CShims/Stack.h" />
+		<Unit filename="Include/Iocaste/CShims/Stack_inline.h" />
+		<Unit filename="Include/Iocaste/DebugAPI.hpp" />
+		<Unit filename="Include/Iocaste/Error.hpp" />
+		<Unit filename="Include/Iocaste/Exception.hpp" />
+		<Unit filename="Include/Iocaste/ExceptionSystem.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/API_Io.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/API_Io_Impl.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoBlock.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoListSTL.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoObjectExpr.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoVM.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoVectorSTL.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/ToIoObjectExpr.hpp" />
+		<Unit filename="Include/Iocaste/LikeMagicAdapters/ToIoTypeInfo.hpp" />
+		<Unit filename="Include/Iocaste/Primitives.hpp" />
+		<Unit filename="Include/Iocaste/Run.hpp" />
+		<Unit filename="Include/Iocaste/Stack.hpp" />
 		<Unit filename="Iocaste.cbp" />
-		<Unit filename="Source\API_Io.cpp" />
-		<Unit filename="Source\API_Io_from_script.cpp" />
-		<Unit filename="Source\API_Io_to_script.cpp" />
-		<Unit filename="Source\Breakpoint.cpp" />
-		<Unit filename="Source\DebugAPI.cpp" />
-		<Unit filename="Source\Exception.cpp" />
-		<Unit filename="Source\IoBlock.cpp" />
-		<Unit filename="Source\IoObjectExpr.cpp" />
-		<Unit filename="Source\IoObjectImpl.cpp" />
-		<Unit filename="Source\IoVM.cpp" />
-		<Unit filename="Source\IoVMInit.cpp" />
-		<Unit filename="Source\Primitives.cpp" />
-		<Unit filename="Source\Run.cpp" />
-		<Unit filename="Source\Stack.cpp" />
-		<Unit filename="basekit\source\BStream.c">
+		<Unit filename="Source/API_Io.cpp" />
+		<Unit filename="Source/API_Io_from_script.cpp" />
+		<Unit filename="Source/API_Io_to_script.cpp" />
+		<Unit filename="Source/Breakpoint.cpp" />
+		<Unit filename="Source/DebugAPI.cpp" />
+		<Unit filename="Source/Exception.cpp" />
+		<Unit filename="Source/IoBlock.cpp" />
+		<Unit filename="Source/IoObjectExpr.cpp" />
+		<Unit filename="Source/IoObjectImpl.cpp" />
+		<Unit filename="Source/IoVM.cpp" />
+		<Unit filename="Source/IoVMInit.cpp" />
+		<Unit filename="Source/Primitives.cpp" />
+		<Unit filename="Source/Run.cpp" />
+		<Unit filename="Source/Stack.cpp" />
+		<Unit filename="basekit/source/BStream.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\BStream.h" />
-		<Unit filename="basekit\source\BStreamTag.c">
+		<Unit filename="basekit/source/BStream.h" />
+		<Unit filename="basekit/source/BStreamTag.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\BStreamTag.h" />
-		<Unit filename="basekit\source\Base.h" />
-		<Unit filename="basekit\source\CHash.c">
+		<Unit filename="basekit/source/BStreamTag.h" />
+		<Unit filename="basekit/source/Base.h" />
+		<Unit filename="basekit/source/CHash.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\CHash.h" />
-		<Unit filename="basekit\source\CHash_inline.h" />
-		<Unit filename="basekit\source\Common.c">
+		<Unit filename="basekit/source/CHash.h" />
+		<Unit filename="basekit/source/CHash_inline.h" />
+		<Unit filename="basekit/source/Common.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\Common.h" />
-		<Unit filename="basekit\source\Common_inline.h" />
-		<Unit filename="basekit\source\Date.c">
+		<Unit filename="basekit/source/Common.h" />
+		<Unit filename="basekit/source/Common_inline.h" />
+		<Unit filename="basekit/source/Date.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\Date.h" />
-		<Unit filename="basekit\source\Duration.c">
+		<Unit filename="basekit/source/Date.h" />
+		<Unit filename="basekit/source/Duration.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\Duration.h" />
-		<Unit filename="basekit\source\DynLib.c">
+		<Unit filename="basekit/source/Duration.h" />
+		<Unit filename="basekit/source/DynLib.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\DynLib.h" />
-		<Unit filename="basekit\source\Hash_fnv.c">
+		<Unit filename="basekit/source/DynLib.h" />
+		<Unit filename="basekit/source/Hash_fnv.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\Hash_fnv.h" />
-		<Unit filename="basekit\source\Hash_murmur.c">
+		<Unit filename="basekit/source/Hash_fnv.h" />
+		<Unit filename="basekit/source/Hash_murmur.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\Hash_murmur.h" />
-		<Unit filename="basekit\source\Hash_superfast.c">
+		<Unit filename="basekit/source/Hash_murmur.h" />
+		<Unit filename="basekit/source/Hash_superfast.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\Hash_superfast.h" />
-		<Unit filename="basekit\source\List.c">
+		<Unit filename="basekit/source/Hash_superfast.h" />
+		<Unit filename="basekit/source/List.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\List.h" />
-		<Unit filename="basekit\source\List_inline.h" />
-		<Unit filename="basekit\source\MainArgs.c">
+		<Unit filename="basekit/source/List.h" />
+		<Unit filename="basekit/source/List_inline.h" />
+		<Unit filename="basekit/source/MainArgs.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\MainArgs.h" />
-		<Unit filename="basekit\source\PointerHash.c">
+		<Unit filename="basekit/source/MainArgs.h" />
+		<Unit filename="basekit/source/PointerHash.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\PointerHash.h" />
-		<Unit filename="basekit\source\PointerHash_inline.h" />
-		<Unit filename="basekit\source\PointerHash_struct.h" />
-		<Unit filename="basekit\source\PortableGettimeofday.c">
+		<Unit filename="basekit/source/PointerHash.h" />
+		<Unit filename="basekit/source/PointerHash_inline.h" />
+		<Unit filename="basekit/source/PointerHash_struct.h" />
+		<Unit filename="basekit/source/PortableGettimeofday.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\PortableGettimeofday.h" />
-		<Unit filename="basekit\source\PortableSnprintf.c">
+		<Unit filename="basekit/source/PortableGettimeofday.h" />
+		<Unit filename="basekit/source/PortableSnprintf.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\PortableSorting.c">
+		<Unit filename="basekit/source/PortableSorting.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\PortableSorting.h" />
-		<Unit filename="basekit\source\PortableStdint.h" />
-		<Unit filename="basekit\source\PortableStrlcpy.c">
+		<Unit filename="basekit/source/PortableSorting.h" />
+		<Unit filename="basekit/source/PortableStdint.h" />
+		<Unit filename="basekit/source/PortableStrlcpy.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\PortableStrlcpy.h" />
-		<Unit filename="basekit\source\PortableStrptime.c">
+		<Unit filename="basekit/source/PortableStrlcpy.h" />
+		<Unit filename="basekit/source/PortableStrptime.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\PortableStrptime.h" />
-		<Unit filename="basekit\source\PortableTruncate.c">
+		<Unit filename="basekit/source/PortableStrptime.h" />
+		<Unit filename="basekit/source/PortableTruncate.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\PortableTruncate.h" />
-		<Unit filename="basekit\source\PortableUsleep.c">
+		<Unit filename="basekit/source/PortableTruncate.h" />
+		<Unit filename="basekit/source/PortableUsleep.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\PortableUsleep.h" />
-		<Unit filename="basekit\source\RandomGen.c">
+		<Unit filename="basekit/source/PortableUsleep.h" />
+		<Unit filename="basekit/source/RandomGen.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\RandomGen.h" />
-		<Unit filename="basekit\source\UArray.c">
+		<Unit filename="basekit/source/RandomGen.h" />
+		<Unit filename="basekit/source/UArray.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\UArray.h" />
-		<Unit filename="basekit\source\UArray_character.c">
+		<Unit filename="basekit/source/UArray.h" />
+		<Unit filename="basekit/source/UArray_character.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\UArray_character.h" />
-		<Unit filename="basekit\source\UArray_format.c">
+		<Unit filename="basekit/source/UArray_character.h" />
+		<Unit filename="basekit/source/UArray_format.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\UArray_format.h" />
-		<Unit filename="basekit\source\UArray_math.c">
+		<Unit filename="basekit/source/UArray_format.h" />
+		<Unit filename="basekit/source/UArray_math.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\UArray_math.h" />
-		<Unit filename="basekit\source\UArray_path.c">
+		<Unit filename="basekit/source/UArray_math.h" />
+		<Unit filename="basekit/source/UArray_path.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\UArray_path.h" />
-		<Unit filename="basekit\source\UArray_stream.c">
+		<Unit filename="basekit/source/UArray_path.h" />
+		<Unit filename="basekit/source/UArray_stream.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\UArray_stream.h" />
-		<Unit filename="basekit\source\UArray_string.c">
+		<Unit filename="basekit/source/UArray_stream.h" />
+		<Unit filename="basekit/source/UArray_string.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\UArray_string.h" />
-		<Unit filename="basekit\source\UArray_utf.c">
+		<Unit filename="basekit/source/UArray_string.h" />
+		<Unit filename="basekit/source/UArray_utf.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\UArray_utf.h" />
-		<Unit filename="basekit\source\cdecode.c">
+		<Unit filename="basekit/source/UArray_utf.h" />
+		<Unit filename="basekit/source/cdecode.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\cdecode.h" />
-		<Unit filename="basekit\source\cencode.c">
+		<Unit filename="basekit/source/cdecode.h" />
+		<Unit filename="basekit/source/cencode.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\cencode.h" />
-		<Unit filename="basekit\source\simd_cph\include\simd_cp.h" />
-		<Unit filename="basekit\source\simd_cph\include\simd_cp_arm-iwmmx.h" />
-		<Unit filename="basekit\source\simd_cph\include\simd_cp_emu.h" />
-		<Unit filename="basekit\source\simd_cph\include\simd_cp_x86.h" />
-		<Unit filename="basekit\source\simd_cph\test\test_simd.c">
+		<Unit filename="basekit/source/cencode.h" />
+		<Unit filename="basekit/source/simd_cph/include/simd_cp.h" />
+		<Unit filename="basekit/source/simd_cph/include/simd_cp_arm-iwmmx.h" />
+		<Unit filename="basekit/source/simd_cph/include/simd_cp_emu.h" />
+		<Unit filename="basekit/source/simd_cph/include/simd_cp_x86.h" />
+		<Unit filename="basekit/source/simd_cph/test/test_simd.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\ucs2.c">
+		<Unit filename="basekit/source/ucs2.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\ucs4.c">
+		<Unit filename="basekit/source/ucs4.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\utf8.c">
+		<Unit filename="basekit/source/utf8.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\utf8.h" />
-		<Unit filename="basekit\source\utf8internal.h" />
-		<Unit filename="basekit\source\utf_convert.c">
+		<Unit filename="basekit/source/utf8.h" />
+		<Unit filename="basekit/source/utf8internal.h" />
+		<Unit filename="basekit/source/utf_convert.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit\source\utf_convert.h" />
-		<Unit filename="garbagecollector\source\Collector.c">
+		<Unit filename="basekit/source/utf_convert.h" />
+		<Unit filename="garbagecollector/source/Collector.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="garbagecollector\source\Collector.h" />
-		<Unit filename="garbagecollector\source\CollectorMarker.c">
+		<Unit filename="garbagecollector/source/Collector.h" />
+		<Unit filename="garbagecollector/source/CollectorMarker.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="garbagecollector\source\CollectorMarker.h" />
-		<Unit filename="garbagecollector\source\CollectorMarker_inline.h" />
-		<Unit filename="garbagecollector\source\Collector_inline.h" />
-		<Unit filename="iovm\io\A0_List.io" />
-		<Unit filename="iovm\io\A1_OperatorTable.io" />
-		<Unit filename="iovm\io\A2_Object.io" />
-		<Unit filename="iovm\io\A3_List.io" />
-		<Unit filename="iovm\io\A4_Exception.io" />
-		<Unit filename="iovm\io\Actor.io" />
-		<Unit filename="iovm\io\AddonLoader.io" />
-		<Unit filename="iovm\io\B_Sequence.io" />
-		<Unit filename="iovm\io\Block.io" />
-		<Unit filename="iovm\io\CFunction.io" />
-		<Unit filename="iovm\io\Date.io" />
-		<Unit filename="iovm\io\Debugger.io" />
-		<Unit filename="iovm\io\Directory.io" />
-		<Unit filename="iovm\io\DynLib.io" />
-		<Unit filename="iovm\io\Error.io" />
-		<Unit filename="iovm\io\File.io" />
-		<Unit filename="iovm\io\List_schwartzian.io" />
-		<Unit filename="iovm\io\Map.io" />
-		<Unit filename="iovm\io\Message.io" />
-		<Unit filename="iovm\io\Number.io" />
-		<Unit filename="iovm\io\Profiler.io" />
-		<Unit filename="iovm\io\Sandbox.io" />
-		<Unit filename="iovm\io\Serialize.io" />
-		<Unit filename="iovm\io\System.io" />
-		<Unit filename="iovm\io\UnitTest.io" />
-		<Unit filename="iovm\io\Vector.io" />
-		<Unit filename="iovm\io\Y_Path.io" />
-		<Unit filename="iovm\io\Z_CLI.io" />
-		<Unit filename="iovm\io\Z_Importer.io" />
-		<Unit filename="iovm\source\IoBlock.c">
+		<Unit filename="garbagecollector/source/CollectorMarker.h" />
+		<Unit filename="garbagecollector/source/CollectorMarker_inline.h" />
+		<Unit filename="garbagecollector/source/Collector_inline.h" />
+		<Unit filename="iovm/io/A0_List.io" />
+		<Unit filename="iovm/io/A1_OperatorTable.io" />
+		<Unit filename="iovm/io/A2_Object.io" />
+		<Unit filename="iovm/io/A3_List.io" />
+		<Unit filename="iovm/io/A4_Exception.io" />
+		<Unit filename="iovm/io/Actor.io" />
+		<Unit filename="iovm/io/AddonLoader.io" />
+		<Unit filename="iovm/io/B_Sequence.io" />
+		<Unit filename="iovm/io/Block.io" />
+		<Unit filename="iovm/io/CFunction.io" />
+		<Unit filename="iovm/io/Date.io" />
+		<Unit filename="iovm/io/Debugger.io" />
+		<Unit filename="iovm/io/Directory.io" />
+		<Unit filename="iovm/io/DynLib.io" />
+		<Unit filename="iovm/io/Error.io" />
+		<Unit filename="iovm/io/File.io" />
+		<Unit filename="iovm/io/List_schwartzian.io" />
+		<Unit filename="iovm/io/Map.io" />
+		<Unit filename="iovm/io/Message.io" />
+		<Unit filename="iovm/io/Number.io" />
+		<Unit filename="iovm/io/Profiler.io" />
+		<Unit filename="iovm/io/Sandbox.io" />
+		<Unit filename="iovm/io/Serialize.io" />
+		<Unit filename="iovm/io/System.io" />
+		<Unit filename="iovm/io/UnitTest.io" />
+		<Unit filename="iovm/io/Vector.io" />
+		<Unit filename="iovm/io/Y_Path.io" />
+		<Unit filename="iovm/io/Z_CLI.io" />
+		<Unit filename="iovm/io/Z_Importer.io" />
+		<Unit filename="iovm/source/IoBlock.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoBlock.h" />
-		<Unit filename="iovm\source\IoCFunction.c">
+		<Unit filename="iovm/source/IoBlock.h" />
+		<Unit filename="iovm/source/IoCFunction.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoCFunction.h" />
-		<Unit filename="iovm\source\IoCall.c">
+		<Unit filename="iovm/source/IoCFunction.h" />
+		<Unit filename="iovm/source/IoCall.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoCall.h" />
-		<Unit filename="iovm\source\IoCollector.c">
+		<Unit filename="iovm/source/IoCall.h" />
+		<Unit filename="iovm/source/IoCollector.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoCollector.h" />
-		<Unit filename="iovm\source\IoCompiler.c">
+		<Unit filename="iovm/source/IoCollector.h" />
+		<Unit filename="iovm/source/IoCompiler.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoCompiler.h" />
-		<Unit filename="iovm\source\IoConfig.h" />
-		<Unit filename="iovm\source\IoContext.h" />
-		<Unit filename="iovm\source\IoCoroutine.c">
+		<Unit filename="iovm/source/IoCompiler.h" />
+		<Unit filename="iovm/source/IoConfig.h" />
+		<Unit filename="iovm/source/IoContext.h" />
+		<Unit filename="iovm/source/IoCoroutine.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoCoroutine.h" />
-		<Unit filename="iovm\source\IoDate.c">
+		<Unit filename="iovm/source/IoCoroutine.h" />
+		<Unit filename="iovm/source/IoDate.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoDate.h" />
-		<Unit filename="iovm\source\IoDebugger.c">
+		<Unit filename="iovm/source/IoDate.h" />
+		<Unit filename="iovm/source/IoDebugger.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoDebugger.h" />
-		<Unit filename="iovm\source\IoDirectory.c">
+		<Unit filename="iovm/source/IoDebugger.h" />
+		<Unit filename="iovm/source/IoDirectory.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoDirectory.h" />
-		<Unit filename="iovm\source\IoDuration.c">
+		<Unit filename="iovm/source/IoDirectory.h" />
+		<Unit filename="iovm/source/IoDuration.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoDuration.h" />
-		<Unit filename="iovm\source\IoDynLib.c">
+		<Unit filename="iovm/source/IoDuration.h" />
+		<Unit filename="iovm/source/IoDynLib.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoDynLib.h" />
-		<Unit filename="iovm\source\IoError.c">
+		<Unit filename="iovm/source/IoDynLib.h" />
+		<Unit filename="iovm/source/IoError.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoError.h" />
-		<Unit filename="iovm\source\IoFile.c">
+		<Unit filename="iovm/source/IoError.h" />
+		<Unit filename="iovm/source/IoFile.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoFile.h" />
-		<Unit filename="iovm\source\IoFile_stat.c">
+		<Unit filename="iovm/source/IoFile.h" />
+		<Unit filename="iovm/source/IoFile_stat.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoFile_stat.h" />
-		<Unit filename="iovm\source\IoInstallPrefix.h" />
-		<Unit filename="iovm\source\IoLexer.c">
+		<Unit filename="iovm/source/IoFile_stat.h" />
+		<Unit filename="iovm/source/IoInstallPrefix.h" />
+		<Unit filename="iovm/source/IoLexer.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoLexer.h" />
-		<Unit filename="iovm\source\IoList.c">
+		<Unit filename="iovm/source/IoLexer.h" />
+		<Unit filename="iovm/source/IoList.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoList.h" />
-		<Unit filename="iovm\source\IoMap.c">
+		<Unit filename="iovm/source/IoList.h" />
+		<Unit filename="iovm/source/IoMap.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoMap.h" />
-		<Unit filename="iovm\source\IoMessage.c">
+		<Unit filename="iovm/source/IoMap.h" />
+		<Unit filename="iovm/source/IoMessage.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoMessage.h" />
-		<Unit filename="iovm\source\IoMessage_inline.h" />
-		<Unit filename="iovm\source\IoMessage_opShuffle.c">
+		<Unit filename="iovm/source/IoMessage.h" />
+		<Unit filename="iovm/source/IoMessage_inline.h" />
+		<Unit filename="iovm/source/IoMessage_opShuffle.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoMessage_opShuffle.h" />
-		<Unit filename="iovm\source\IoMessage_parser.c">
+		<Unit filename="iovm/source/IoMessage_opShuffle.h" />
+		<Unit filename="iovm/source/IoMessage_parser.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoMessage_parser.h" />
-		<Unit filename="iovm\source\IoNumber.c">
+		<Unit filename="iovm/source/IoMessage_parser.h" />
+		<Unit filename="iovm/source/IoNumber.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoNumber.h" />
-		<Unit filename="iovm\source\IoObject.c">
+		<Unit filename="iovm/source/IoNumber.h" />
+		<Unit filename="iovm/source/IoObject.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoObject.h" />
-		<Unit filename="iovm\source\IoObject_flow.c">
+		<Unit filename="iovm/source/IoObject.h" />
+		<Unit filename="iovm/source/IoObject_flow.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoObject_flow.h" />
-		<Unit filename="iovm\source\IoObject_inline.h" />
-		<Unit filename="iovm\source\IoObject_struct.h" />
-		<Unit filename="iovm\source\IoProfiler.c">
+		<Unit filename="iovm/source/IoObject_flow.h" />
+		<Unit filename="iovm/source/IoObject_inline.h" />
+		<Unit filename="iovm/source/IoObject_struct.h" />
+		<Unit filename="iovm/source/IoProfiler.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoProfiler.h" />
-		<Unit filename="iovm\source\IoSandbox.c">
+		<Unit filename="iovm/source/IoProfiler.h" />
+		<Unit filename="iovm/source/IoSandbox.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoSandbox.h" />
-		<Unit filename="iovm\source\IoSeq.c">
+		<Unit filename="iovm/source/IoSandbox.h" />
+		<Unit filename="iovm/source/IoSeq.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoSeq.h" />
-		<Unit filename="iovm\source\IoSeq_immutable.c">
+		<Unit filename="iovm/source/IoSeq.h" />
+		<Unit filename="iovm/source/IoSeq_immutable.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoSeq_immutable.h" />
-		<Unit filename="iovm\source\IoSeq_inline.h" />
-		<Unit filename="iovm\source\IoSeq_mutable.c">
+		<Unit filename="iovm/source/IoSeq_immutable.h" />
+		<Unit filename="iovm/source/IoSeq_inline.h" />
+		<Unit filename="iovm/source/IoSeq_mutable.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoSeq_mutable.h" />
-		<Unit filename="iovm\source\IoSeq_vector.c">
+		<Unit filename="iovm/source/IoSeq_mutable.h" />
+		<Unit filename="iovm/source/IoSeq_vector.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoSeq_vector.h" />
-		<Unit filename="iovm\source\IoState.cpp">
+		<Unit filename="iovm/source/IoSeq_vector.h" />
+		<Unit filename="iovm/source/IoState.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoState.h" />
-		<Unit filename="iovm\source\IoState_callbacks.c">
+		<Unit filename="iovm/source/IoState.h" />
+		<Unit filename="iovm/source/IoState_callbacks.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoState_callbacks.h" />
-		<Unit filename="iovm\source\IoState_coros.c">
+		<Unit filename="iovm/source/IoState_callbacks.h" />
+		<Unit filename="iovm/source/IoState_coros.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoState_coros.h" />
-		<Unit filename="iovm\source\IoState_debug.c">
+		<Unit filename="iovm/source/IoState_coros.h" />
+		<Unit filename="iovm/source/IoState_debug.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoState_debug.h" />
-		<Unit filename="iovm\source\IoState_eval.c">
+		<Unit filename="iovm/source/IoState_debug.h" />
+		<Unit filename="iovm/source/IoState_eval.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoState_eval.h" />
-		<Unit filename="iovm\source\IoState_exceptions.c">
+		<Unit filename="iovm/source/IoState_eval.h" />
+		<Unit filename="iovm/source/IoState_exceptions.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoState_exceptions.h" />
-		<Unit filename="iovm\source\IoState_inline.h" />
-		<Unit filename="iovm\source\IoState_symbols.c">
+		<Unit filename="iovm/source/IoState_exceptions.h" />
+		<Unit filename="iovm/source/IoState_inline.h" />
+		<Unit filename="iovm/source/IoState_symbols.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoState_symbols.h" />
-		<Unit filename="iovm\source\IoSystem.c">
+		<Unit filename="iovm/source/IoState_symbols.h" />
+		<Unit filename="iovm/source/IoSystem.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoSystem.h" />
-		<Unit filename="iovm\source\IoTag.c">
+		<Unit filename="iovm/source/IoSystem.h" />
+		<Unit filename="iovm/source/IoTag.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoTag.h" />
-		<Unit filename="iovm\source\IoTag_inline.h" />
-		<Unit filename="iovm\source\IoToken.c">
+		<Unit filename="iovm/source/IoTag.h" />
+		<Unit filename="iovm/source/IoTag_inline.h" />
+		<Unit filename="iovm/source/IoToken.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoToken.h" />
-		<Unit filename="iovm\source\IoVM.h" />
-		<Unit filename="iovm\source\IoVMApi.h" />
-		<Unit filename="iovm\source\IoVersion.h" />
-		<Unit filename="iovm\source\IoWeakLink.c">
+		<Unit filename="iovm/source/IoToken.h" />
+		<Unit filename="iovm/source/IoVM.h" />
+		<Unit filename="iovm/source/IoVMApi.h" />
+		<Unit filename="iovm/source/IoVersion.h" />
+		<Unit filename="iovm/source/IoWeakLink.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\IoWeakLink.h" />
-		<Unit filename="iovm\source\PHash.c">
+		<Unit filename="iovm/source/IoWeakLink.h" />
+		<Unit filename="iovm/source/PHash.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="iovm\source\PHash.h" />
-		<Unit filename="iovm\source\PHash_inline.h" />
-		<Unit filename="iovm\source\PHash_struct.h" />
+		<Unit filename="iovm/source/PHash.h" />
+		<Unit filename="iovm/source/PHash_inline.h" />
+		<Unit filename="iovm/source/PHash_struct.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
