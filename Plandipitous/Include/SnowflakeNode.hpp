@@ -4,6 +4,15 @@
 
 namespace Plandipitous {
 
+class SnowflakeNode;
+
+template <typename Token>
+struct INodeFactory
+{
+    virtual SnowflakeNode* get(std::string token) = 0;
+};
+
+template <typename Token>
 class SnowflakeNode
 {
 private:
@@ -14,17 +23,71 @@ private:
         double weight;
     };
 
-    typedef boost::unordered_map<std::string, Link> LinkSet;
+    struct Edge
+    {
+        enum EdgeTypes
+        {
+            left_parent = 0,
+            left_chain = 1,
+            left_child = 2,
+            right_child = 3,
+            right_chain = 4,
+            right_parent = 5
+        };
 
-    std::string token;
-    LinkSet edges[6];
+        typedef boost::unordered_map<std::string, Link> LinkSet;
+        LinkSet links;
+        EdgeTypes edge_type;
+        INodeFactory& node_factory;
 
-    static int const left_parent = 0;
-    static int const left_chain = 1;
-    static int const left_child = 2;
-    static int const right_child = 3;
-    static int const right_chain = 4;
-    static int const right_parent = 5;
+        Edge(EdgeTypes edge_type_, INodeFactory& node_factory_)
+            : edge_type(edge_type_), node_factory(node_factory_)
+        {
+        }
+
+        Link& get(Token const& token)
+        {
+            auto this_link = this_link_set.find(token);
+
+            if (this_link == this_link_set.end())
+            {
+                SnowflakeNode* next = node_factory.get(token);
+                this_link[token] = Link { next, weight };
+                next->add(node_factory, node);
+            }
+            else
+            {
+                this_link->weight += weight;
+                this_link->node->add(node_factory, node);
+            }
+        }
+
+        void add(Link const& that_link)
+        {
+            get(that_link.node->token).weight += that_link.weight;
+        }
+
+        void add(Edge const& that_edge)
+        {
+            for (auto const& that_link : that_edge.links)
+                add(that_link);
+        }
+
+        // TODO:  Allow existing learned nodes to create new tree based on existing weights
+        void grow(TokenSource tokens)
+        {
+
+        }
+    };
+
+    Token token;
+    Edge edges[6];
+
+    SnowflakeNode(Token token_)
+        : token(token_), edges({})
+    {
+    }
+
 
     int const chain_dir(int const from_dir)
     {
