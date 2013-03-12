@@ -8,9 +8,9 @@
 		<Build>
 			<Target title="Debug Mac">
 				<Option platforms="Mac;" />
-				<Option output="bin\Debug\libThinPlateSpline" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/libThinPlateSpline" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj\Debug\" />
+				<Option object_output="obj/Debug/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -29,8 +29,8 @@
 			</Target>
 			<Target title="Demo Mac">
 				<Option platforms="Mac;" />
-				<Option output="bin\Debug\SplineTest" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Debug\" />
+				<Option output="bin/Debug/SplineTest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -50,9 +50,9 @@
 			</Target>
 			<Target title="Debug Linux">
 				<Option platforms="Unix;" />
-				<Option output="bin\Debug\libThinPlateSpline" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/libThinPlateSpline" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj\Debug\" />
+				<Option object_output="obj/Debug/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -71,9 +71,9 @@
 			</Target>
 			<Target title="Debug Windows">
 				<Option platforms="Windows;" />
-				<Option output="bin\Debug\libThinPlateSpline" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/libThinPlateSpline" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj\Debug\" />
+				<Option object_output="obj/Debug/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -95,25 +95,25 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="--std=c++0x" />
-			<Add directory="..\..\..\..\Common\boost_1_49_0" />
-			<Add directory="..\Include" />
+			<Add directory="../../../Common/boost_1_49_0" />
+			<Add directory="../Include" />
 		</Compiler>
-		<Unit filename="..\Include\ThinPlateSpline\ControlPoint.hpp" />
-		<Unit filename="..\Include\ThinPlateSpline\Demo.hpp" />
-		<Unit filename="..\Include\ThinPlateSpline\ThinPlateQuilt.hpp" />
-		<Unit filename="..\Include\ThinPlateSpline\ThinPlateSpline.hpp" />
-		<Unit filename="..\Include\ThinPlateSpline\gauss-elim.h" />
-		<Unit filename="..\Include\ThinPlateSpline\linalg3d.h" />
-		<Unit filename="..\Include\ThinPlateSpline\ludecomposition.h" />
-		<Unit filename="..\Source\2d-morph.cpp" />
-		<Unit filename="..\Source\ControlPoint.cpp" />
-		<Unit filename="..\Source\Demo.cpp">
+		<Unit filename="../Include/ThinPlateSpline/ControlPoint.hpp" />
+		<Unit filename="../Include/ThinPlateSpline/Demo.hpp" />
+		<Unit filename="../Include/ThinPlateSpline/ThinPlateQuilt.hpp" />
+		<Unit filename="../Include/ThinPlateSpline/ThinPlateSpline.hpp" />
+		<Unit filename="../Include/ThinPlateSpline/gauss-elim.h" />
+		<Unit filename="../Include/ThinPlateSpline/linalg3d.h" />
+		<Unit filename="../Include/ThinPlateSpline/ludecomposition.h" />
+		<Unit filename="../Source/2d-morph.cpp" />
+		<Unit filename="../Source/ControlPoint.cpp" />
+		<Unit filename="../Source/Demo.cpp">
 			<Option target="Demo Mac" />
 		</Unit>
-		<Unit filename="..\Source\ThinPlateQuilt.cpp" />
-		<Unit filename="..\Source\ThinPlateSpline.cpp" />
-		<Unit filename="..\Source\linalg3d.cpp" />
-		<Unit filename="..\Source\main.cpp">
+		<Unit filename="../Source/ThinPlateQuilt.cpp" />
+		<Unit filename="../Source/ThinPlateSpline.cpp" />
+		<Unit filename="../Source/linalg3d.cpp" />
+		<Unit filename="../Source/main.cpp">
 			<Option target="Demo Mac" />
 		</Unit>
 		<Extensions>
