@@ -27,12 +27,111 @@ private:
     {
         enum EdgeTypes
         {
+            no_direction = -1,
             left_parent = 0,
             left_chain = 1,
             left_child = 2,
             right_child = 3,
             right_chain = 4,
             right_parent = 5
+        };
+
+        struct Tracker
+        {
+            // Tracks which paths are taken and which still open when generating a tree.
+            EdgeTypes const parent;
+            EdgeTypes const child;
+            EdgeTypes const chain;
+
+            bool has_parent() const
+            {
+                return parent != -1;
+            }
+
+            bool has_child() const
+            {
+                return child != -1;
+            }
+
+            bool has_chain() const
+            {
+                return chain != -1;
+            }
+
+            static bool is_parent(EdgeTypes direction)
+            {
+                return direction == left_parent || direction == right_parent;
+            }
+
+            static bool is_child(EdgeTypes direction)
+            {
+                return direction == left_child || direction == right_child;
+            }
+
+            static bool is_chain(EdgeTypes direction)
+            {
+                return direction == left_chain || direction == right_chain;
+            }
+
+            static EdgeTypes opposite(EdgeTypes direction)
+            {
+                switch (direction)
+                {
+                    case left_parent:  return right_child;
+                    case left_chain:   return right_chain;
+                    case left_child:   return right_parent;
+                    case right_child:  return left_parent;
+                    case right_chain:  return left_chain;
+                    case right_parent: return left_child;
+                    default: return no_direction;
+                }
+            }
+
+            bool can_grow(EdgeTypes direction) const
+            {
+                // Don't turn backwards while chaining.
+                if (has_chain() && chain == direction)
+                    return false;
+
+                // Don't try to create multiple roots for the tree.
+                if (has_parent() && is_parent(direction))
+                    return false;
+
+                // Don't turn back down a branch that led up here.
+                if (has_child() && child == direction)
+                    return false;
+
+                return true;
+            }
+
+            Tracker go(EdgeTypes direction) const
+            {
+                // If going from child to parent, only rule is don't come back to same child.
+                // Parent clears because our parent is allowed to find a parent.
+                // Chain clears because our parent is allowed to itself be in its own chain.
+                // Direction is opposite because from point of view of parent, we are child.
+                if (is_parent(direction))
+                    return { no_direction, opposite(direction), no_direction };
+
+                // If going from parent to child, can't go to any parent again that level.
+                // Chain and children reset so the child can visit its own chain and children.
+                if (is_child(direction))
+                    return { opposite(direction), no_direction, no_direction };
+
+                // If chaining, we must not forget the fact if we have a parent or not anywhere in chain.
+                // Otherwise we might try to create a different root when we have one already at other end.
+                // Child state is wiped out though because the child only concerns our chain predecessor.
+                if (is_chain(direction))
+                    return { parent, no_direction, opposite(direction) };
+            }
+
+            Tracker check_parent(Tracker other)
+            {
+                if (other.has_parent())
+                    return { other.parent, child, chain };
+                else
+                    return { parent, child, chain };
+            }
         };
 
         typedef boost::unordered_map<std::string, Link> LinkSet;
@@ -72,12 +171,6 @@ private:
             for (auto const& that_link : that_edge.links)
                 add(that_link);
         }
-
-        // TODO:  Allow existing learned nodes to create new tree based on existing weights
-        void grow(TokenSource tokens)
-        {
-
-        }
     };
 
     Token token;
@@ -87,7 +180,6 @@ private:
         : token(token_), edges({})
     {
     }
-
 
     int const chain_dir(int const from_dir)
     {
@@ -179,6 +271,19 @@ public:
         }
 
         return result;
+    }
+
+    // TODO:  Allow existing learned nodes to create new tree based on existing weights
+    SnowflakeNode* postulate(TokenSource tokens, PathTracker track)
+    {
+        // Sanity check that tokens.peek() == this->token.
+        // Create a new node for the token
+        // Look across the six Edges to guess most likely connection to next.
+        // Add non-zero chance to go to one of the other edges anyway.
+        // Use our NodeFactory to get next node on our side.
+        // Call postulate on that node to get a proposal node.
+        // Attach proposal node to result node on the edge we picked.
+        // Terminate all the other Edges with appropriate termination nodes.
     }
 };
 
