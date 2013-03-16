@@ -13,7 +13,7 @@
 				<Option use_console_runner="0" />
 			</Target>
 			<Target title="Debug">
-				<Option output="libPlandipitous" prefix_auto="1" extension_auto="1" />
+				<Option output="Plandipitous" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
 				<Option type="2" />
@@ -25,7 +25,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="libPlandipitous" prefix_auto="1" extension_auto="1" />
+				<Option output="Plandipitous" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Release/" />
 				<Option type="2" />
@@ -45,11 +45,11 @@
 		</Unit>
 		<Unit filename="Include/GeneralizedEvents.hpp" />
 		<Unit filename="Include/Plandipitous.hpp" />
+		<Unit filename="Include/SnowflakeNode.hpp" />
 		<Unit filename="Source/GeneralizedEvents.cpp" />
 		<Unit filename="Source/Plandipitous.cpp" />
 		<Unit filename="Source/SnowflakeNode.cpp" />
 		<Unit filename="Source/rc_shortest_paths.cpp" />
-		<Unit filename="include/SnowflakeNode.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
