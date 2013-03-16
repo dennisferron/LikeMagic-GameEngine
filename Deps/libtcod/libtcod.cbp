@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="libtcod" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Linux">
+				<Option platforms="Unix;" />
+				<Option output="bin/Debug/tcod" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Debug Windows">
+				<Option platforms="Windows;" />
+				<Option output="bin/Debug/tcod" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Debug Mac">
+				<Option platforms="Mac;" />
+				<Option output="bin/Debug/tcod" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-DLIBTCOD_EXPORTS" />
+			<Add option="-DLIBTCOD_GUI_EXPORTS" />
+			<Add option="-DNO_OPENGL" />
+			<Add directory="include" />
+			<Add directory="include/gui" />
+			<Add directory="dependencies/SDL-1.2.15/include" />
+			<Add directory="dependencies/zlib-1.2.3/include" />
+		</Compiler>
+		<Linker>
+			<Add library="dependencies\zlib-1.2.3\lib\mingw\libz.a" />
+			<Add library="dependencies\SDL-1.2.15\lib\mingw\libSDL.dll.a" />
+		</Linker>
+		<Unit filename="include/bresenham.h" />
+		<Unit filename="include/bresenham.hpp" />
+		<Unit filename="include/bsp.h" />
+		<Unit filename="include/bsp.hpp" />
+		<Unit filename="include/color.h" />
+		<Unit filename="include/color.hpp" />
+		<Unit filename="include/console.h" />
+		<Unit filename="include/console.hpp" />
+		<Unit filename="include/console_types.h" />
+		<Unit filename="include/fov.h" />
+		<Unit filename="include/fov.hpp" />
+		<Unit filename="include/fov_types.h" />
+		<Unit filename="include/gui/button.hpp" />
+		<Unit filename="include/gui/container.hpp" />
+		<Unit filename="include/gui/flatlist.hpp" />
+		<Unit filename="include/gui/gui.hpp" />
+		<Unit filename="include/gui/hbox.hpp" />
+		<Unit filename="include/gui/image.hpp" />
+		<Unit filename="include/gui/label.hpp" />
+		<Unit filename="include/gui/radiobutton.hpp" />
+		<Unit filename="include/gui/slider.hpp" />
+		<Unit filename="include/gui/statusbar.hpp" />
+		<Unit filename="include/gui/textbox.hpp" />
+		<Unit filename="include/gui/togglebutton.hpp" />
+		<Unit filename="include/gui/toolbar.hpp" />
+		<Unit filename="include/gui/vbox.hpp" />
+		<Unit filename="include/gui/widget.hpp" />
+		<Unit filename="include/heightmap.h" />
+		<Unit filename="include/heightmap.hpp" />
+		<Unit filename="include/image.h" />
+		<Unit filename="include/image.hpp" />
+		<Unit filename="include/lex.h" />
+		<Unit filename="include/lex.hpp" />
+		<Unit filename="include/libtcod.h" />
+		<Unit filename="include/libtcod.hpp" />
+		<Unit filename="include/libtcod_int.h" />
+		<Unit filename="include/list.h" />
+		<Unit filename="include/list.hpp" />
+		<Unit filename="include/mersenne.h" />
+		<Unit filename="include/mersenne.hpp" />
+		<Unit filename="include/mersenne_types.h" />
+		<Unit filename="include/mouse.h" />
+		<Unit filename="include/mouse.hpp" />
+		<Unit filename="include/mouse_types.h" />
+		<Unit filename="include/namegen.h" />
+		<Unit filename="include/namegen.hpp" />
+		<Unit filename="include/noise.h" />
+		<Unit filename="include/noise.hpp" />
+		<Unit filename="include/noise_defaults.h" />
+		<Unit filename="include/parser.h" />
+		<Unit filename="include/parser.hpp" />
+		<Unit filename="include/path.h" />
+		<Unit filename="include/path.hpp" />
+		<Unit filename="include/sys.h" />
+		<Unit filename="include/sys.hpp" />
+		<Unit filename="include/tree.h" />
+		<Unit filename="include/tree.hpp" />
+		<Unit filename="include/txtfield.h" />
+		<Unit filename="include/txtfield.hpp" />
+		<Unit filename="include/wrappers.h" />
+		<Unit filename="include/zip.h" />
+		<Unit filename="include/zip.hpp" />
+		<Unit filename="src/bresenham.cpp" />
+		<Unit filename="src/bresenham_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/bsp.cpp" />
+		<Unit filename="src/bsp_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/color.cpp" />
+		<Unit filename="src/color_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/console.cpp" />
+		<Unit filename="src/console_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/fov.cpp" />
+		<Unit filename="src/fov_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/fov_circular_raycasting.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/fov_diamond_raycasting.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/fov_digital.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/fov_permissive.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/fov_permissive2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/fov_recursive_shadowcasting.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/fov_restrictive.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/gui/button.cpp" />
+		<Unit filename="src/gui/container.cpp" />
+		<Unit filename="src/gui/flatlist.cpp" />
+		<Unit filename="src/gui/hbox.cpp" />
+		<Unit filename="src/gui/image.cpp" />
+		<Unit filename="src/gui/label.cpp" />
+		<Unit filename="src/gui/radiobutton.cpp" />
+		<Unit filename="src/gui/slider.cpp" />
+		<Unit filename="src/gui/statusbar.cpp" />
+		<Unit filename="src/gui/textbox.cpp" />
+		<Unit filename="src/gui/togglebutton.cpp" />
+		<Unit filename="src/gui/toolbar.cpp" />
+		<Unit filename="src/gui/vbox.cpp" />
+		<Unit filename="src/gui/widget.cpp" />
+		<Unit filename="src/heightmap.cpp" />
+		<Unit filename="src/heightmap_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/image.cpp" />
+		<Unit filename="src/image_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/lex.cpp" />
+		<Unit filename="src/lex_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/list_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/mersenne.cpp" />
+		<Unit filename="src/mersenne_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/mouse.cpp" />
+		<Unit filename="src/namegen.cpp" />
+		<Unit filename="src/namegen_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/noise.cpp" />
+		<Unit filename="src/noise_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/parser.cpp" />
+		<Unit filename="src/parser_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/path.cpp" />
+		<Unit filename="src/path_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/png/lodepng.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/png/lodepng.h" />
+		<Unit filename="src/sys.cpp" />
+		<Unit filename="src/sys_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/sys_opengl_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/sys_sdl_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/sys_sdl_img_bmp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/sys_sdl_img_png.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/tree_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/txtfield.cpp" />
+		<Unit filename="src/txtfield_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/wrappers.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/zip.cpp" />
+		<Unit filename="src/zip_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

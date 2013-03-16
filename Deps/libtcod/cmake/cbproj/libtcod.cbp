@@ -1,0 +1,846 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="libtcod" />
+		<Option makefile_is_custom="1" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\Programming\;CMake Files\..\..\..\Programming\CMake 2.8\;CMake Files\..\..\..\Programming\CMake 2.8\share\;CMake Files\..\..\..\Programming\CMake 2.8\share\cmake-2.8\;CMake Files\..\..\..\Programming\CMake 2.8\share\cmake-2.8\Modules\;CMake Files\..\..\..\Programming\CMake 2.8\share\cmake-2.8\Modules\Platform\;CMake Files\..\..\..\Programming\CMake 2.8\share\cmake-2.8\Modules\Compiler\;CMake Files\src\;CMake Files\samples\;CMake Files\samples\frost\;CMake Files\samples\navier\;CMake Files\samples\rad\;CMake Files\samples\ripples\;CMake Files\samples\weather\;CMake Files\samples\worldgen\;" />
+		<Build>
+			<Target title="all">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 all' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 edit_cache' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 install' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 install/local' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 install/strip' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 list_install_components' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 rebuild_cache' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="tcod-gui-mingw">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/libtcod-gui-mingw.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include/gui" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 tcod-gui-mingw' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="tcod-gui-mingw/fast">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/libtcod-gui-mingw.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include/gui" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 tcod-gui-mingw/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 tcod-gui-mingw/fast &gt; $(CMD_NULL)' />
+				</MakeCommands>
+			</Target>
+			<Target title="tcod-mingw">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/libtcod-mingw.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include/gui" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 tcod-mingw' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="tcod-mingw/fast">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/libtcod-mingw.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="./" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include/gui" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 tcod-mingw/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/src/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="hmtool.bin">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/hmtool.bin.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 hmtool.bin' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="hmtool.bin/fast">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/hmtool.bin.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 hmtool.bin/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="samples_c">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/samples_c.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 samples_c' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="samples_c/fast">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/samples_c.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 samples_c/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="samples_cpp">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/samples_cpp.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 samples_cpp' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="samples_cpp/fast">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/samples_cpp.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 samples_cpp/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="frost">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/frost/frost.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/frost" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/frost/Makefile&quot;  VERBOSE=1 frost' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/frost/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/frost/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/frost/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="frost/fast">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/frost/frost.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/frost" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/frost/Makefile&quot;  VERBOSE=1 frost/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/frost/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/frost/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/frost/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="navier">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/navier/navier.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/navier" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/navier/Makefile&quot;  VERBOSE=1 navier' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/navier/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/navier/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/navier/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="navier/fast">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/navier/navier.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/navier" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/navier/Makefile&quot;  VERBOSE=1 navier/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/navier/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/navier/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/navier/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="rad">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/rad/rad.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/rad" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/rad/Makefile&quot;  VERBOSE=1 rad' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/rad/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/rad/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/rad/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="rad/fast">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/rad/rad.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/rad" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/rad/Makefile&quot;  VERBOSE=1 rad/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/rad/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/rad/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/rad/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="ripples">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/ripples/ripples.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/ripples" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/ripples/Makefile&quot;  VERBOSE=1 ripples' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/ripples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/ripples/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/ripples/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="ripples/fast">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/ripples/ripples.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/ripples" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/ripples/Makefile&quot;  VERBOSE=1 ripples/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/ripples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/ripples/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/ripples/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="weather">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/weather/weather.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/weather" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/weather/Makefile&quot;  VERBOSE=1 weather' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/weather/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/weather/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/weather/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="weather/fast">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/weather/weather.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/weather" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/weather/Makefile&quot;  VERBOSE=1 weather/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/weather/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/weather/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/weather/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="worldgen">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/worldgen/worldgen.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/worldgen" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/worldgen/Makefile&quot;  VERBOSE=1 worldgen' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/worldgen/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/worldgen/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/worldgen/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="worldgen/fast">
+				<Option output="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/worldgen/worldgen.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/worldgen" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/SDL-1.2.15/include" />
+					<Add directory="D:/Code/dropecho/libtcod-1.5.1/dependencies/zlib-1.2.3/include" />
+				</Compiler>
+				<MakeCommands>
+					<Build command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/worldgen/Makefile&quot;  VERBOSE=1 worldgen/fast' />
+					<CompileFile command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/worldgen/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/worldgen/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='C:/MinGW/bin/mingw32-make.exe -f &quot;D:/Code/dropecho/libtcod-1.5.1/cmake/cbproj/samples/worldgen/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/CMakeCInformation.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/CMakeCXXInformation.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/CMakeCommonLanguageInclude.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/CMakeFindCodeBlocks.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/CMakeGenericSystem.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/CMakeRCInformation.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/CMakeSystemSpecificInformation.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Compiler/GNU-C.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Compiler/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Compiler/GNU-CXX.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Compiler/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Compiler/GNU.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Compiler/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/FindOpenGL.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Platform/Windows-GNU-C.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Platform/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Platform/Windows-GNU-CXX.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Platform/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Platform/Windows-GNU.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Platform/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Platform/Windows-windres.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Platform/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Platform/Windows.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Platform/" />
+		</Unit>
+		<Unit filename="../../../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Platform/WindowsPaths.cmake">
+			<Option virtualFolder="CMake Files/../../../Programming/CMake 2.8/share/cmake-2.8/Modules/Platform/" />
+		</Unit>
+		<Unit filename="../../CMakeLists.txt">
+			<Option virtualFolder="CMake Files/" />
+		</Unit>
+		<Unit filename="../../include/bresenham.h" />
+		<Unit filename="../../include/bresenham.hpp" />
+		<Unit filename="../../include/bsp.h" />
+		<Unit filename="../../include/bsp.hpp" />
+		<Unit filename="../../include/color.h" />
+		<Unit filename="../../include/color.hpp" />
+		<Unit filename="../../include/console.h" />
+		<Unit filename="../../include/console.hpp" />
+		<Unit filename="../../include/console_types.h" />
+		<Unit filename="../../include/fov.h" />
+		<Unit filename="../../include/fov.hpp" />
+		<Unit filename="../../include/fov_types.h" />
+		<Unit filename="../../include/gui/button.hpp" />
+		<Unit filename="../../include/gui/container.hpp" />
+		<Unit filename="../../include/gui/flatlist.hpp" />
+		<Unit filename="../../include/gui/gui.hpp" />
+		<Unit filename="../../include/gui/hbox.hpp" />
+		<Unit filename="../../include/gui/image.hpp" />
+		<Unit filename="../../include/gui/label.hpp" />
+		<Unit filename="../../include/gui/radiobutton.hpp" />
+		<Unit filename="../../include/gui/slider.hpp" />
+		<Unit filename="../../include/gui/statusbar.hpp" />
+		<Unit filename="../../include/gui/textbox.hpp" />
+		<Unit filename="../../include/gui/togglebutton.hpp" />
+		<Unit filename="../../include/gui/toolbar.hpp" />
+		<Unit filename="../../include/gui/vbox.hpp" />
+		<Unit filename="../../include/gui/widget.hpp" />
+		<Unit filename="../../include/heightmap.h" />
+		<Unit filename="../../include/heightmap.hpp" />
+		<Unit filename="../../include/image.h" />
+		<Unit filename="../../include/image.hpp" />
+		<Unit filename="../../include/lex.h" />
+		<Unit filename="../../include/lex.hpp" />
+		<Unit filename="../../include/libtcod.h" />
+		<Unit filename="../../include/libtcod.hpp" />
+		<Unit filename="../../include/libtcod_int.h" />
+		<Unit filename="../../include/list.h" />
+		<Unit filename="../../include/list.hpp" />
+		<Unit filename="../../include/mersenne.h" />
+		<Unit filename="../../include/mersenne.hpp" />
+		<Unit filename="../../include/mersenne_types.h" />
+		<Unit filename="../../include/mouse.h" />
+		<Unit filename="../../include/mouse.hpp" />
+		<Unit filename="../../include/mouse_types.h" />
+		<Unit filename="../../include/namegen.h" />
+		<Unit filename="../../include/namegen.hpp" />
+		<Unit filename="../../include/noise.h" />
+		<Unit filename="../../include/noise.hpp" />
+		<Unit filename="../../include/noise_defaults.h" />
+		<Unit filename="../../include/parser.h" />
+		<Unit filename="../../include/parser.hpp" />
+		<Unit filename="../../include/path.h" />
+		<Unit filename="../../include/path.hpp" />
+		<Unit filename="../../include/sys.h" />
+		<Unit filename="../../include/sys.hpp" />
+		<Unit filename="../../include/tree.h" />
+		<Unit filename="../../include/tree.hpp" />
+		<Unit filename="../../include/txtfield.h" />
+		<Unit filename="../../include/txtfield.hpp" />
+		<Unit filename="../../include/wrappers.h" />
+		<Unit filename="../../include/zip.h" />
+		<Unit filename="../../include/zip.hpp" />
+		<Unit filename="../../samples/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/samples/" />
+		</Unit>
+		<Unit filename="../../samples/frost/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/samples/frost/" />
+		</Unit>
+		<Unit filename="../../samples/frost/frost.cpp" />
+		<Unit filename="../../samples/hmtool/hmtool.cpp" />
+		<Unit filename="../../samples/hmtool/operation.cpp" />
+		<Unit filename="../../samples/hmtool/operation.hpp" />
+		<Unit filename="../../samples/navier/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/samples/navier/" />
+		</Unit>
+		<Unit filename="../../samples/navier/main.cpp" />
+		<Unit filename="../../samples/navier/main.hpp" />
+		<Unit filename="../../samples/rad/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/samples/rad/" />
+		</Unit>
+		<Unit filename="../../samples/rad/bsp_helper.cpp" />
+		<Unit filename="../../samples/rad/bsp_helper.hpp" />
+		<Unit filename="../../samples/rad/main.cpp" />
+		<Unit filename="../../samples/rad/rad_shader.cpp" />
+		<Unit filename="../../samples/rad/rad_shader.hpp" />
+		<Unit filename="../../samples/rad/rad_shader_photon.cpp" />
+		<Unit filename="../../samples/rad/rad_shader_standard.cpp" />
+		<Unit filename="../../samples/ripples/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/samples/ripples/" />
+		</Unit>
+		<Unit filename="../../samples/ripples/main.cpp" />
+		<Unit filename="../../samples/ripples/main.hpp" />
+		<Unit filename="../../samples/ripples/util_ripples.cpp" />
+		<Unit filename="../../samples/ripples/util_ripples.hpp" />
+		<Unit filename="../../samples/samples_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../samples/samples_cpp.cpp" />
+		<Unit filename="../../samples/weather/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/samples/weather/" />
+		</Unit>
+		<Unit filename="../../samples/weather/main.cpp" />
+		<Unit filename="../../samples/weather/main.hpp" />
+		<Unit filename="../../samples/weather/util_weather.cpp" />
+		<Unit filename="../../samples/weather/util_weather.hpp" />
+		<Unit filename="../../samples/worldgen/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/samples/worldgen/" />
+		</Unit>
+		<Unit filename="../../samples/worldgen/main.cpp" />
+		<Unit filename="../../samples/worldgen/main.hpp" />
+		<Unit filename="../../samples/worldgen/util_worldgen.cpp" />
+		<Unit filename="../../samples/worldgen/util_worldgen.hpp" />
+		<Unit filename="../../src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files/src/" />
+		</Unit>
+		<Unit filename="../../src/bresenham.cpp" />
+		<Unit filename="../../src/bresenham_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/bsp.cpp" />
+		<Unit filename="../../src/bsp_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/color.cpp" />
+		<Unit filename="../../src/color_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/console.cpp" />
+		<Unit filename="../../src/console_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fov.cpp" />
+		<Unit filename="../../src/fov_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fov_circular_raycasting.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fov_diamond_raycasting.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fov_permissive.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fov_permissive2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fov_recursive_shadowcasting.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fov_restrictive.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/gui/button.cpp" />
+		<Unit filename="../../src/gui/container.cpp" />
+		<Unit filename="../../src/gui/flatlist.cpp" />
+		<Unit filename="../../src/gui/hbox.cpp" />
+		<Unit filename="../../src/gui/image.cpp" />
+		<Unit filename="../../src/gui/label.cpp" />
+		<Unit filename="../../src/gui/radiobutton.cpp" />
+		<Unit filename="../../src/gui/slider.cpp" />
+		<Unit filename="../../src/gui/statusbar.cpp" />
+		<Unit filename="../../src/gui/textbox.cpp" />
+		<Unit filename="../../src/gui/togglebutton.cpp" />
+		<Unit filename="../../src/gui/toolbar.cpp" />
+		<Unit filename="../../src/gui/vbox.cpp" />
+		<Unit filename="../../src/gui/widget.cpp" />
+		<Unit filename="../../src/heightmap.cpp" />
+		<Unit filename="../../src/heightmap_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/image.cpp" />
+		<Unit filename="../../src/image_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/lex.cpp" />
+		<Unit filename="../../src/lex_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/list_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/mersenne.cpp" />
+		<Unit filename="../../src/mersenne_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/mouse.cpp" />
+		<Unit filename="../../src/namegen.cpp" />
+		<Unit filename="../../src/namegen_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/noise.cpp" />
+		<Unit filename="../../src/noise_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/parser.cpp" />
+		<Unit filename="../../src/parser_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/path.cpp" />
+		<Unit filename="../../src/path_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/png/lodepng.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/png/lodepng.h" />
+		<Unit filename="../../src/sys.cpp" />
+		<Unit filename="../../src/sys_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/sys_opengl_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/sys_sdl_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/sys_sdl_img_bmp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/sys_sdl_img_png.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/tree_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/txtfield.cpp" />
+		<Unit filename="../../src/txtfield_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/wrappers.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/zip.cpp" />
+		<Unit filename="../../src/zip_c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

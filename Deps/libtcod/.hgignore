@@ -1,0 +1,3 @@
+syntax: glob
+cmake/cbproj/*
+cmake/vcproj/*
