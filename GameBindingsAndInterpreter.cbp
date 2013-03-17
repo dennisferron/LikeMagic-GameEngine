@@ -32,14 +32,14 @@
 					<Add option="-ldl" />
 					<Add option="-lpthread" />
 					<Add option="-v" />
-					<Add library="../desteer/bindings/libDESteerBindings.a" />
-					<Add library="../desteer/lib/libdesteer.a" />
-					<Add library="LikeMagic/StdBindings/libStdBindings-Linux.a" />
-					<Add library="LikeMagic/libLikeMagic-Linux.a" />
-					<Add library="Iocaste/libIocaste-Linux.a" />
-					<Add library="Deps/tps-1.2/ThinPlateSpline/bin/Debug/libThinPlateSpline.a" />
-					<Add library="./libBullet-Linux.a" />
-					<Add library="Deps/irrlicht-1.7.3/lib/Linux/libIrrlicht-Linux.a" />
+					<Add library="..\desteer\bindings\libDESteerBindings.a" />
+					<Add library="..\desteer\lib\libdesteer.a" />
+					<Add library="LikeMagic\StdBindings\libStdBindings-Linux.a" />
+					<Add library="LikeMagic\libLikeMagic-Linux.a" />
+					<Add library="Iocaste\libIocaste-Linux.a" />
+					<Add library="Deps\tps-1.2\ThinPlateSpline\bin\Debug\libThinPlateSpline.a" />
+					<Add library=".\libBullet-Linux.a" />
+					<Add library="Deps\irrlicht-1.7.3\lib\Linux\libIrrlicht-Linux.a" />
 					<Add directory="/usr/X11R6/lib" />
 				</Linker>
 			</Target>
@@ -68,15 +68,15 @@
 					<Add option="-framework Carbon" />
 					<Add option="-framework IOKit" />
 					<Add option="-v" />
-					<Add library="./libBullet-Mac.a" />
-					<Add library="Deps/irrlicht-1.8-unstable/lib/libIrrlichtObjFiles-Mac.a" />
-					<Add library="Deps/irrlicht-1.8-unstable/lib/libIrrlicht-Mac.a" />
-					<Add library="../desteer/bindings/libDESteerBindings-Mac.a" />
-					<Add library="LikeMagic/StdBindings/libStdBindings-Mac.a" />
-					<Add library="Deps/tps-1.2/ThinPlateSpline/bin/Debug/libThinPlateSpline.a" />
-					<Add library="../desteer/lib/libdesteer.a" />
-					<Add library="Iocaste/libIocaste-Mac.a" />
-					<Add library="LikeMagic/libLikeMagic-Mac.a" />
+					<Add library=".\libBullet-Mac.a" />
+					<Add library="Deps\irrlicht-1.8-unstable\lib\libIrrlichtObjFiles-Mac.a" />
+					<Add library="Deps\irrlicht-1.8-unstable\lib\libIrrlicht-Mac.a" />
+					<Add library="..\desteer\bindings\libDESteerBindings-Mac.a" />
+					<Add library="LikeMagic\StdBindings\libStdBindings-Mac.a" />
+					<Add library="Deps\tps-1.2\ThinPlateSpline\bin\Debug\libThinPlateSpline.a" />
+					<Add library="..\desteer\lib\libdesteer.a" />
+					<Add library="Iocaste\libIocaste-Mac.a" />
+					<Add library="LikeMagic\libLikeMagic-Mac.a" />
 				</Linker>
 				<ExtraCommands>
 					<Add before="Interpreter/delete-if-older.sh bin/Debug/LikeMagicDebugBuild ../desteer/lib/libdesteer.a ../desteer/bindings/libDESteerBindings.a" />
@@ -93,7 +93,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
-				<Option parameters="Iocaste\iovm\io\ Engine\Startup.io.inl ..\..\wayup\Startup.io.inl" />
+				<Option parameters="Iocaste/iovm/io/ Engine/Startup.io.inl ../../wayup/Startup.io.inl" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DIRR_1_7" />
@@ -109,14 +109,14 @@
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
-					<Add library="../desteer/bindings/libDESteerBindings-Windows.a" />
-					<Add library="LikeMagic/StdBindings/libStdBindings-Windows.a" />
-					<Add library="Iocaste/libIocaste-Windows.a" />
-					<Add library="LikeMagic/libLikeMagic-Windows.a" />
-					<Add library="../desteer/lib/libdesteer.a" />
-					<Add library="Deps/tps-1.2/ThinPlateSpline/bin/Debug/libThinPlateSpline.a" />
-					<Add library="Deps/irrlicht-1.7.3/lib/Win32-gcc/libIrrlicht.a" />
-					<Add library="./libBullet.a" />
+					<Add library="..\desteer\bindings\libDESteerBindings-Windows.a" />
+					<Add library="LikeMagic\StdBindings\libStdBindings-Windows.a" />
+					<Add library="Iocaste\libIocaste-Windows.a" />
+					<Add library="LikeMagic\libLikeMagic-Windows.a" />
+					<Add library="..\desteer\lib\libdesteer.a" />
+					<Add library="Deps\tps-1.2\ThinPlateSpline\bin\Debug\libThinPlateSpline.a" />
+					<Add library="Deps\irrlicht-1.7.3\lib\Win32-gcc\libIrrlicht.a" />
+					<Add library=".\libBullet.a" />
 					<Add library="kernel32" />
 					<Add library="user32" />
 					<Add library="gdi32" />

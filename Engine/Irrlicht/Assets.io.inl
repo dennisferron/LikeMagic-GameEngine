@@ -8,7 +8,7 @@ method(irr_core,
         driver ::= nil
 
         getPath := method(assetFile,
-            assetPath .. "/" .. assetFile
+            assetPath .. assetFile
         )
 
         // Note:  This returns an ITexture, while the other method returns and IImage.
