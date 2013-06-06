@@ -13,6 +13,7 @@ using namespace Iocaste::LikeMagicAdapters;
 #include "LikeMagic/Utility/UserMacros.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 #include "LikeMagic/ScriptUtil.hpp"
+#include "boost/program_options.hpp"
 
 #include "Iocaste/Exception.hpp"
 #include "boost/exception/info.hpp"
@@ -24,6 +25,14 @@ using namespace Iocaste::LikeMagicAdapters;
 
 using namespace std;
 
+
+namespace
+{
+  const size_t ERROR_IN_COMMAND_LINE = 1;
+  const size_t SUCCESS = 0;
+  const size_t ERROR_UNHANDLED_EXCEPTION = 2;
+
+}
 
 #include "IoState.h"
 
@@ -81,7 +90,9 @@ void do_file(IoVM& vm, string file_name)
 
 int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::RuntimeTypeSystem&), RuntimeTypeSystem* type_sys)
 {
- #ifdef USE_DMALLOC
+    namespace po = boost::program_options;
+
+#ifdef USE_DMALLOC
     // Starting LikeMagic in codeblocks debug mode doesn't propagate the dmalloc environment settings.  I don't know why.
     dmalloc_debug_setup("check-blank,log=~/dmalloc.log");
 #endif
@@ -91,14 +102,46 @@ int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::R
     // printing the error message or the stack.  Should maybe create with new and/or
     // use an intrusive_ptr to track references to the IoVM object.
     IoVM* vm=NULL;
+    po::options_description desc("Options");
 
     try
     {
+        std::string bootstrap_path;
+        std::string engine_path;
+        std::string game_path;
+        std::string asset_path;
+
+        desc.add_options()
+            ("help", "Print help message")
+            ("language", po::value<std::string>(&bootstrap_path)->required(), "Path to core Io language scripts.")
+            ("engine", po::value<std::string>(&engine_path)->required(), "Path to Engine scripts.")
+            ("game", po::value<std::string>(&game_path)->required(), "Path to game startup scripts.")
+            ("assets", po::value<std::string>(&asset_path)->required(), "Path to game assets.") ;
+
+        po::variables_map var_map;
+
+        po::store(po::parse_command_line(argc, argv, desc),
+                var_map); // can throw
+
+        /** --help option
+        */
+        if ( var_map.count("help") )
+        {
+            std::cout << "Iocaste interpreter." << std::endl
+                << desc << std::endl;
+            return SUCCESS;
+        }
+
+        po::notify(var_map);    // throws on error, so do after help in case
+                                // there are any problems
+
         (*add_bindings)(*type_sys);
 
-        std::string bootstrap_path(argv[1]);
         cout << "Loading Io init files at " << bootstrap_path << endl;
         vm = new IoVM(*type_sys, bootstrap_path);
+        vm->set_path("engine", engine_path);
+        vm->set_path("game", game_path);
+        vm->set_path("assets", asset_path);
 
         for (int i=2; i<argc; ++i)
         {
@@ -116,47 +159,54 @@ int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::R
 
         cout << "Press enter..." << std::endl;
         std::cin.ignore( 99, '\n' );
-        return 0;
+
+        return SUCCESS;
+    }
+    catch(po::error& e)
+    {
+        std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
+        std::cerr << desc << std::endl;
+        return ERROR_IN_COMMAND_LINE;
     }
     catch (Iocaste::ScriptException const& ex)
     {
-        cout << "main.cpp caught unhandled script exception: " << ex.what() << endl << flush;
+        cerr << "main.cpp caught unhandled script exception: " << ex.what() << endl << flush;
 
         if( auto err=boost::get_error_info<Iocaste::Exception::file_name_info>(ex) )
         {
-            for (int i=0; i<err->size(); ++i)
-                std::cout << std::string(i, '\t')  << "via file: " << (*err)[i] << endl << flush;
+            for (size_t i=0; i<err->size(); ++i)
+                std::cerr << std::string(i, '\t')  << "via file: " << (*err)[i] << endl << flush;
         }
     }
     catch (Iocaste::Exception const& iex)
     {
-        cout << "main.cpp caught unhandled boost exception: " << iex.what() << endl << flush;
+        cerr << "main.cpp caught unhandled boost exception: " << iex.what() << endl << flush;
 
         if( auto err=boost::get_error_info<Iocaste::Exception::file_name_info>(iex) )
         {
-            for (int i=0; i<err->size(); ++i)
-                std::cout << std::string(i, '\t')  << "via file: " << (*err)[i] << endl << flush;
+            for (size_t i=0; i<err->size(); ++i)
+                std::cerr << std::string(i, '\t')  << "via file: " << (*err)[i] << endl << flush;
         }
     }
     catch (std::logic_error const& e)
     {
-        cout << "LikeMagic exited with exception '" << e.what() << "'" << std::endl;
+        cerr << "LikeMagic exited with exception '" << e.what() << "'" << std::endl;
     }
     catch (std::exception const& e)
     {
-        cout << "Exited with exception " << e.what() << std::endl;
+        cerr << "Exited with exception " << e.what() << std::endl;
     }
     catch (...)
     {
-        cout << "main.cpp caught unhandled unknown exception" << endl;
+        cerr << "main.cpp caught unhandled unknown exception" << endl;
     }
 
-    cout << "Exiting with error" << endl;
+    cerr << "Exiting with error" << endl;
 
     delete vm;
     delete type_sys;
 
-    cout << "Press enter..." << std::endl;
+    cerr << "Press enter..." << std::endl;
     std::cin.ignore( 99, '\n' );
-    return -1;
+    return ERROR_UNHANDLED_EXCEPTION;
 }

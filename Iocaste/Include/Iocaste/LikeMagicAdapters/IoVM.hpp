@@ -63,6 +63,8 @@ private:
     IoObject* LM_Proxy;
     IoObject* LM_Protos;
 
+    std::map<std::string, std::string> paths;
+
     IoObject* proxy_to_io_obj(AbstractCppObjProxy* proxy);
 
 public:
@@ -73,6 +75,9 @@ public:
     static IoObject* forward(IoObject *self, IoObject *locals, IoMessage *m);
     static void io_exception(void* context, IoObject* coroutine);
     static void willFree(IoObject *self);
+
+    std::string get_path(std::string path_identifier);
+    void set_path(std::string path_identifier, std::string path_value);
 
     void add_proto(std::string name, AbstractCppObjProxy* proxy, LikeMagic::NamespacePath ns=LikeMagic::NamespacePath::global(), bool conv_to_script=false) const;
 

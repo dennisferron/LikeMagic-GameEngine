@@ -1,6 +1,2 @@
-#include "SnowflakeNode.hpp"
-
-SnowflakeNode::SnowflakeNode()
-{
-}
+//#include "SnowflakeNode.hpp"
 

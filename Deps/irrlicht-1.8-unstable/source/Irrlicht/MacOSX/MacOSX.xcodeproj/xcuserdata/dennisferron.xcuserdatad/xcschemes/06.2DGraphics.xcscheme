@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B81CFDFE097FD9F50057C06F"
-               BuildableName = "2DGraphics_dbg.app"
+               BuildableName = "2DGraphics.app"
                BlueprintName = "06.2DGraphics"
                ReferencedContainer = "container:MacOSX.xcodeproj">
             </BuildableReference>
@@ -34,12 +34,15 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.GDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug">
+      buildConfiguration = "Debug"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      allowLocationSimulation = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B81CFDFE097FD9F50057C06F"
-            BuildableName = "2DGraphics_dbg.app"
+            BuildableName = "2DGraphics.app"
             BlueprintName = "06.2DGraphics"
             ReferencedContainer = "container:MacOSX.xcodeproj">
          </BuildableReference>
@@ -51,12 +54,13 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Release">
+      buildConfiguration = "Release"
+      debugDocumentVersioning = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B81CFDFE097FD9F50057C06F"
-            BuildableName = "2DGraphics_dbg.app"
+            BuildableName = "2DGraphics.app"
             BlueprintName = "06.2DGraphics"
             ReferencedContainer = "container:MacOSX.xcodeproj">
          </BuildableReference>

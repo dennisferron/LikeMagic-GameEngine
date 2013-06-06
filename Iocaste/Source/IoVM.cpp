@@ -94,6 +94,21 @@ StepMode_t iovm_step_stop(
 
 }
 
+std::string IoVM::get_path(std::string path_identifier)
+{
+    auto iter = paths.find(path_identifier);
+
+    if (iter == paths.end())
+        throw std::runtime_error("Invalid path key.");
+
+    return iter->second;
+}
+void IoVM::set_path(std::string path_identifier, std::string path_value)
+{
+    paths[path_identifier] = path_value;
+}
+
+
 IoVM* IoVM::get(IoState* state)
 {
     //return reinterpret_cast<IoVM*>(state->callbackContext);
@@ -188,6 +203,8 @@ void IoVM::setShowAllMessages(bool value)
 
 IoVM::IoVM(RuntimeTypeSystem& type_sys, std::string bootstrap_path) : type_system(type_sys), last_exception(0)
 {
+    set_path("language", bootstrap_path);
+
     // It's very important you static_cast here, if you use
     // reinterpret_cast or allow conversion to void* which
     // is the function arg, you get a different pointer!

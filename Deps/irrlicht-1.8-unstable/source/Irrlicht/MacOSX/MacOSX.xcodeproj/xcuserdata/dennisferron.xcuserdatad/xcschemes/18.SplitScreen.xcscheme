@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "0E2E3CEB1103E294002DE8D7"
-               BuildableName = "SplitScreen_dbg.app"
+               BuildableName = "SplitScreen.app"
                BlueprintName = "18.SplitScreen"
                ReferencedContainer = "container:MacOSX.xcodeproj">
             </BuildableReference>
@@ -34,12 +34,15 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.GDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug">
+      buildConfiguration = "Debug"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      allowLocationSimulation = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0E2E3CEB1103E294002DE8D7"
-            BuildableName = "SplitScreen_dbg.app"
+            BuildableName = "SplitScreen.app"
             BlueprintName = "18.SplitScreen"
             ReferencedContainer = "container:MacOSX.xcodeproj">
          </BuildableReference>
@@ -51,12 +54,13 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Release">
+      buildConfiguration = "Release"
+      debugDocumentVersioning = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0E2E3CEB1103E294002DE8D7"
-            BuildableName = "SplitScreen_dbg.app"
+            BuildableName = "SplitScreen.app"
             BlueprintName = "18.SplitScreen"
             ReferencedContainer = "container:MacOSX.xcodeproj">
          </BuildableReference>

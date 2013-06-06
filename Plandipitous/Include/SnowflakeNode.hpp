@@ -9,29 +9,27 @@
 
 namespace Plandipitous {
 
+typedef int Token;
 class SnowflakeNode;
 
-template <typename Token>
-class SnowflakeNode;
-
-template <typename Token>
 struct INodeFactory
 {
-    virtual SnowflakeNode<Token>* get(Token token) = 0;
-    virtual Token terminator() = 0;
-    virtual Token no_token() = 0;
+    virtual SnowflakeNode* get(Token token) = 0;
 };
 
-template <typename Token>
 struct ITokenSource
 {
-    virtual Token peek() = 0;
     virtual Token take() = 0;
 };
 
-template <typename Token>
 class SnowflakeNode
 {
+
+public:
+
+    static const Token no_token = -1;
+    static const Token terminator = 0;
+
 private:
 
     class Edge
@@ -249,7 +247,19 @@ private:
             }
         }
 
-        Probability rate(SnowflakeNode* other_edge)
+        void rate(Edge* other_edge, Probability& result)
+        {
+            for (auto kv : other_edge.links)
+            {
+                Link& link = get_or_add(kv.first);
+                result.add(link.weight);
+
+                if (kv.first != node_factory->terminator())
+                    link.node->rate(kv.second.node, result);
+            }
+        }
+
+        double weight(Edge* test_edge)
         {
             Probability result;
             for (auto kv : other_edge.links)
@@ -316,7 +326,8 @@ public:
     void rate(SnowflakeNode* other, Probability& result)
     {
         for (int i=Edge::left_parent+1; i < Edge::right_parent; ++i)
-            edges[i].rate(other.edges[i], result);
+            if (!other->edges[i].is_terminated())
+                edges[i].rate(other->edges[i], result);
     }
 
     void add_open_edges(Edge::Tracker path, boost::unordered_set<Edge>& results)

@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B81CFEC2097FDF020057C06F"
-               BuildableName = "TerrainRendering_dbg.app"
+               BuildableName = "TerrainRendering.app"
                BlueprintName = "12.TerrainRendering"
                ReferencedContainer = "container:MacOSX.xcodeproj">
             </BuildableReference>
@@ -34,12 +34,15 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.GDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug">
+      buildConfiguration = "Debug"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      allowLocationSimulation = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B81CFEC2097FDF020057C06F"
-            BuildableName = "TerrainRendering_dbg.app"
+            BuildableName = "TerrainRendering.app"
             BlueprintName = "12.TerrainRendering"
             ReferencedContainer = "container:MacOSX.xcodeproj">
          </BuildableReference>
@@ -51,12 +54,13 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Release">
+      buildConfiguration = "Release"
+      debugDocumentVersioning = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B81CFEC2097FDF020057C06F"
-            BuildableName = "TerrainRendering_dbg.app"
+            BuildableName = "TerrainRendering.app"
             BlueprintName = "12.TerrainRendering"
             ReferencedContainer = "container:MacOSX.xcodeproj">
          </BuildableReference>

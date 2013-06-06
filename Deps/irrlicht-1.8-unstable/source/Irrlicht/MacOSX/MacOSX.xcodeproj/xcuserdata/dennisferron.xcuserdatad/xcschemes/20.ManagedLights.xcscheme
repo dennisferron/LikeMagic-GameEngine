@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "0E2E3D2C1103E3F4002DE8D7"
-               BuildableName = "ManagedLights_dbg.app"
+               BuildableName = "ManagedLights.app"
                BlueprintName = "20.ManagedLights"
                ReferencedContainer = "container:MacOSX.xcodeproj">
             </BuildableReference>
@@ -34,12 +34,15 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.GDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug">
+      buildConfiguration = "Debug"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      allowLocationSimulation = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0E2E3D2C1103E3F4002DE8D7"
-            BuildableName = "ManagedLights_dbg.app"
+            BuildableName = "ManagedLights.app"
             BlueprintName = "20.ManagedLights"
             ReferencedContainer = "container:MacOSX.xcodeproj">
          </BuildableReference>
@@ -51,12 +54,13 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Release">
+      buildConfiguration = "Release"
+      debugDocumentVersioning = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0E2E3D2C1103E3F4002DE8D7"
-            BuildableName = "ManagedLights_dbg.app"
+            BuildableName = "ManagedLights.app"
             BlueprintName = "20.ManagedLights"
             ReferencedContainer = "container:MacOSX.xcodeproj">
          </BuildableReference>
