@@ -2,41 +2,52 @@
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 
+using boost::interprocess;
+
 struct ProcessControlStructure;
 
 struct CallRequest
 {
-    boost::interprocess::offset_ptr<ProcessControlStructure> sender;
-    int call_id;
+    offset_ptr<ProcessControlStructure> sender;
+    int invocation_id;
     int object_handle;
     int method_id;
-    int args[20];
+    int args_count;
+    char args_buffer[1024];
 };
 
 struct CallReturn
 {
-    int call_id;
-    int rvalue;
+    int invocation_id;
+    char rvalue_buffer[512];
+};
+
+template <typename T>
+struct DataRegister
+{
+    interprocess_semaphore available_for_write;
+    interprocess_semaphore writing_in_progress;
+    volatile bool has_data;
+    volatile T data;
+    DataRegister() :
+        available_for_write(1),
+        writing_in_progress(1),
+        has_data(false) {}
 };
 
 struct ProcessControlStructure
 {
-    boost::interprocess::interprocess_semaphore listener;
-    boost::interprocess::interprocess_semaphore args_ready;
-    boost::interprocess::interprocess_semaphore rvalue_ready;
-    bool is_args_ready;
-    bool is_rvalue_ready;
-    CallRequest args_buffer;
-    CallReturn rvalue_buffer;
+    boost::interprocess::interprocess_semaphore action_required;
+    DataRegister<CallRequest> call_request;
+    DataRegister<CallReturn> call_return;
 
     ProcessControlStructure()
-        : listener(0), args_ready(1), rvalue_ready(1)
+        : action_required(0)
             {}
 };
 
 struct SharedMemoryFormat
 {
-
     SharedMemoryFormat()
         {}
 
@@ -53,9 +64,14 @@ private:
     SharedMemoryFormat* data;
     bool is_first;
 
+    int invocation_counter;
+    ProcessControlStructure* pcs;
+
+    ProcessControlStructure* other_pcs;
+
 public:
     RPC(bool is_first_);
     ~RPC();
-    void listen(int org_stack_ptr, char const* purpose, int hintmethod);
-    int call(int method, int arg);
+    void listen(int invocation_id);
+    int call(int object_handle, int method, int arg);
 };
