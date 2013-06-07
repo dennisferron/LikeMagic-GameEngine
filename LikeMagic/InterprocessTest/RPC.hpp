@@ -63,10 +63,10 @@ private:
     boost::interprocess::mapped_region* region;
     SharedMemoryFormat* data;
     bool is_first;
+    boost::unordered_map<int, CallReturn> cached_rvalues;
 
     int invocation_counter;
     ProcessControlStructure* pcs;
-
     ProcessControlStructure* other_pcs;
 
 public:
