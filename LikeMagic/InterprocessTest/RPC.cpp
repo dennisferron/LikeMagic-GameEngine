@@ -5,10 +5,41 @@
 #include "RPC.hpp"
 
 using namespace boost::interprocess;
+using namespace std;
 
 RPC::~RPC()
 {
     shared_memory_object::remove(shared_memory_name);
+}
+
+std::string RPC::get_state_name(ProcessState s) const
+{
+    switch (s)
+    {
+        case ProcessState::NotStarted: return "NotStarted";
+        case ProcessState::WaitForReturn: return "WaitForReturn";
+        case ProcessState::WaitForCommand: return "WaitForCommand";
+        case ProcessState::WaitingToFillCallRequest: return "WaitingToFillCallRequest";
+        case ProcessState::LockingToWriteCallRequest: return "LockingToWriteCallRequest";
+        case ProcessState::LockingToReadCallRequest: return "LockingToReadCallRequest";
+        case ProcessState::WaitingToFillCallReturn: return "WaitingToFillCallReturn";
+        case ProcessState::LockingToWriteCallReturn: return "LockingToWriteCallReturn";
+        case ProcessState::LockingToReadCallReturn: return "LockingToReadCallReturn";
+        case ProcessState::LockAcquired: return "LockAcquired";
+        case ProcessState::LockReleased: return "LockReleased";
+        case ProcessState::WaitFinished: return "WaitFinished";
+        case ProcessState::ExecutingCallRequest: return "ExecutingCallRequest";
+        default: return "<Unknown>";
+    }
+}
+
+void RPC::scan() const
+{
+    for (int i=0; i < 3; ++i)
+    {
+        auto& p = data->processes[i];
+        cout << i << ": " << get_state_name(p.state) << endl;
+    }
 }
 
 RPC::RPC(bool is_first_) : shared_memory_name("MySharedMemory"), is_first(is_first_), invocation_counter(0)
@@ -32,13 +63,12 @@ RPC::RPC(bool is_first_) : shared_memory_name("MySharedMemory"), is_first(is_fir
     other_pcs = &data->processes[(int)!is_first];
 }
 
-void RPC::listen(int wanted_invocation_id, bool wants_rvalue)
+CallReturn RPC::listen(int wanted_invocation_id, bool wants_rvalue)
 {
-    int rvalue_invocation_id;
-    bool has_rvalue = false;
-
     while (true)
     {
+        cout << "Process " << is_first << " listening for invocation_id " << wanted_invocation_id << endl;
+
         // First check if we already have the rvalue that we
         // wish to receive (can happen if one process returned
         // a value while we were busy servicing another process).
@@ -48,30 +78,110 @@ void RPC::listen(int wanted_invocation_id, bool wants_rvalue)
                 = cached_rvalues.find(wanted_invocation_id);
             if (found_rvalue != cached_rvalues.end())
             {
-                return *found_rvalue;
+                return found_rvalue->second;
             }
         }
+
+        if (wants_rvalue)
+            pcs->state = ProcessState::WaitForReturn;
+        else
+            pcs->state = ProcessState::WaitForCommand;
 
         // If we don't have the rvalue we want yet, or if we
         // are only waiting for a method to execute, then wait
         // to be signaled that something is ready for us.
+        cout << "Process " << is_first << " waiting on action_required." << endl;
         this->pcs->action_required.wait();
+        pcs->state = ProcessState::WaitFinished;
 
-        // Next figure out why we were woken.  If it was for
-        // an rvalue, add it to the cache.
+        // Next figure out why we were awoken.
+
+        // If we were awoken for an rvalue, add it to the cache.
+        auto& rval_reg = this->pcs->call_return;
+
         // We wait against the writing_in_progress semaphore in
         // order to not see the DataRegister in inconsistent state.
-        auto& rval_reg = this->pcs->call_return;
+        pcs->state = ProcessState::LockingToReadCallReturn;
         rval_reg.writing_in_progress.wait();
+        pcs->state = ProcessState::LockAcquired;
+
         if (rval_reg.has_data)
-            cached_rvalues[rval_reg.invocation_id] = rval_reg;
-        rval_reg.writing_in_progress.post();
+        {
+            int found_invocation_id = rval_reg.data.invocation_id;
+            cached_rvalues[found_invocation_id] = rval_reg.data;
+            rval_reg.writing_in_progress.post();
+            rval_reg.available_for_write.post();
+            pcs->state = ProcessState::LockReleased;
+            continue;
+        }
+        else
+        {
+            rval_reg.writing_in_progress.post();
+            pcs->state = ProcessState::LockReleased;
 
-        // TODO:  Execute args reg.
+            // If we weren't awoken for an rvalue check
+            // if we were awoken to execute a call command.
+            auto& args_reg = this->pcs->call_request;
+
+            pcs->state = ProcessState::LockingToReadCallRequest;
+            args_reg.writing_in_progress.wait();
+            pcs->state = ProcessState::LockAcquired;
+
+            if (args_reg.has_data)
+            {
+                CallRequest temp = args_reg.data;
+                args_reg.writing_in_progress.post();
+                args_reg.available_for_write.post();
+                pcs->state = ProcessState::LockReleased;
+
+                // Execute the args and enplace the rvalue
+                pcs->state = ProcessState::ExecutingCallRequest;
+                int arg = *(int*)temp.args_buffer;
+                int result = execute(temp.method_id, arg);
+
+                DataRegister<CallReturn>& wrv_reg = temp.sender->call_return;
+
+                pcs->state = ProcessState::WaitingToFillCallReturn;
+                wrv_reg.available_for_write.wait();
+                pcs->state = ProcessState::LockingToWriteCallReturn;
+                wrv_reg.writing_in_progress.wait();
+                pcs->state = ProcessState::LockAcquired;
+
+                CallReturn& wrv_val = wrv_reg.data;
+                wrv_val.invocation_id = temp.invocation_id;
+                *(int*)wrv_val.rvalue_buffer = result;
+                wrv_reg.has_data = true;
+                wrv_reg.writing_in_progress.post();
+                pcs->state = ProcessState::LockReleased;
+                cout << "Process " << is_first << " posting to other process action_required " << endl;
+                temp.sender->action_required.post();
+
+                continue;
+            }
+            else
+            {
+                // Not really sure why we were awoken then;
+                // could be something wrong but what to do?
+                // (If we switch to semaphores with a timeout,
+                // or if we use a post to wake the process to
+                // shut it down, this may not be an error.)
+                cerr << "Something may have gone wrong; process was awoken with nothing to do." << endl;
+                args_reg.writing_in_progress.post();
+                args_reg.available_for_write.post();
+                pcs->state = ProcessState::LockReleased;
+            }
+        }
     }
+}
 
+int RPC::call_int(int method, int arg)
+{
+    CallReturn ret = call(-1, method, arg);
+    int rval = *(int*)ret.rvalue_buffer;
+    return rval;
+}
 
-static int execute(int method, int arg)
+int RPC::execute(int method, int arg)
 {
     int rvalue;
 
@@ -79,26 +189,20 @@ static int execute(int method, int arg)
     switch (method)
     {
         case 0:
-            std::cout << "Before execute: Process " << is_first << " purpose=" << purpose << " method=" << method << " hintmethod=" << hintmethod << " org_depth=" << org_depth << " stack_depth=" << data->stack_depth << std::endl;
-            rvalue = call(1,arg+1)+call(1,arg+2);
-            std::cout << "After execute: Process " << is_first << " purpose=" << purpose << " method=" << method << " hintmethod=" << hintmethod << " org_depth=" << org_depth << " stack_depth=" << data->stack_depth << std::endl;
+            rvalue = 1*arg + call_int(1,arg+1);
             break;
         case 1:
-            std::cout << "Before execute: Process " << is_first << " purpose=" << purpose << " method=" << method << " hintmethod=" <<  hintmethod<< " org_depth=" << org_depth << " stack_depth=" << data->stack_depth << std::endl;
-            rvalue = call(2,arg+10)+call(2,arg+10);
-            std::cout << "After execute: Process " << is_first << " purpose=" << purpose << " method=" << method << " hintmethod=" << hintmethod << " org_depth=" << org_depth << " stack_depth=" << data->stack_depth << std::endl;
+            rvalue = 10*arg + call_int(2,arg+1);
             break;
         case 2: default:
-            std::cout << "Before execute: Process " << is_first << " purpose=" << purpose << " method=" << method << " hintmethod=" << hintmethod << " org_depth=" << org_depth << " stack_depth=" << data->stack_depth << std::endl;
-            rvalue = arg+200;
-            std::cout << "After execute: Process " << is_first << " purpose=" << purpose << " method=" << method << " hintmethod=" << hintmethod << " org_depth=" << org_depth << " stack_depth=" << data->stack_depth << std::endl;
+            rvalue = 100*arg;
             break;
     }
 
     return rvalue;
 }
 
-int RPC::call(int object_handle, int method, int arg)
+CallReturn RPC::call(int object_handle, int method, int arg)
 {
     // We build the request in a temporary local buffer first.
     // It's actually pretty important that we don't lock the
@@ -107,14 +211,14 @@ int RPC::call(int object_handle, int method, int arg)
     // the arguments requires using the same target process?
     CallRequest request_args;
 
-    request_args->sender = this->pcs;
-    request_args->invocation_id = ++invocation_counter;
-    request_args->object_handle = object_handle;
-    request_args->method_id = method;
-    request_args->object_handle =
+    request_args.sender = this->pcs;
+    request_args.invocation_id = ++invocation_counter;
+    request_args.object_handle = object_handle;
+    request_args.method_id = method;
+    request_args.object_handle =
 
     // In this demo there's only a single int arg.
-    request_args->args_count = 1;
+    request_args.args_count = 1;
     *(int*)&request_args.args_buffer[0] = arg;
 
     // Typically would look up other proces using object_handle.
@@ -131,14 +235,19 @@ int RPC::call(int object_handle, int method, int arg)
     //  6.  Signal the waiting target process.
     // (We do not ourselves post the available semaphore.
     //  The target procedure does that itself when ready.)
+    cout << "caller waiting for request register available_for_write" << endl;
+    pcs->state = ProcessState::WaitingToFillCallRequest;
     target_pcs->call_request.available_for_write.wait();
+    pcs->state = ProcessState::LockingToWriteCallRequest;
     target_pcs->call_request.writing_in_progress.wait();
-    target_pcs->data = request_args;
-    target_pcs->has_data = true;
+    pcs->state = ProcessState::LockAcquired;
+    target_pcs->call_request.data = request_args;
+    target_pcs->call_request.has_data = true;
     target_pcs->call_request.writing_in_progress.post();
-    target_pcs->action_required->post();
+    target_pcs->action_required.post();
+    pcs->state = ProcessState::LockReleased;
 
     // listen for rvalue or for a re-entrant call.
-    return listen(request_args->invocation_id);
+    return listen(request_args.invocation_id, true);
 }
 

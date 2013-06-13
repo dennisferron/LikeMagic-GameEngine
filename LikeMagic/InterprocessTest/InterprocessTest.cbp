@@ -35,9 +35,11 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="parent listen" />
 				<Compiler>
 					<Add option="-std=c++0x" />
 					<Add option="-Wall" />
+					<Add option="-g" />
 					<Add option="-fexceptions" />
 					<Add option="-DBOOST_DATE_TIME_NO_LIB" />
 					<Add directory="../../Common/boost_1_49_0" />
@@ -45,6 +47,7 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-std=c++11" />
 			<Add option="-std=c++0x" />
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
@@ -53,6 +56,10 @@
 		</Compiler>
 		<Unit filename="RPC.cpp" />
 		<Unit filename="RPC.hpp" />
+		<Unit filename="WindowsProcess.cpp">
+			<Option target="Debug Windows" />
+		</Unit>
+		<Unit filename="WindowsProcess.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
