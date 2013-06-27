@@ -1,8 +1,9 @@
-
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <iostream>
 #include "RPC.hpp"
+
+using namespace LikeMagic::Interprocess;
 
 using namespace boost::interprocess;
 using namespace std;

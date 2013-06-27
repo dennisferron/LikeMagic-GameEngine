@@ -52,7 +52,7 @@ private:
         if (args.size() != sizeof...(Indices))
             throw std::logic_error("Wrong number of arguments.");
 
-        auto args_tuple = std::make_tuple(type_system.try_conv<Args>(args[Indices])...);
+        auto args_tuple(std::make_tuple(type_system.try_conv<Args>(args[Indices])...));
 
         boost::intrusive_ptr<Expression<R&>> result = Term<R, true>::create(
             (*func_ptr)(std::get<Indices>(args_tuple)->eval()...)

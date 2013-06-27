@@ -53,7 +53,10 @@
 			<Add option="-fexceptions" />
 			<Add option="-DBOOST_DATE_TIME_NO_LIB" />
 			<Add directory="../../Common/boost_1_49_0" />
+			<Add directory="../Include" />
 		</Compiler>
+		<Unit filename="Bindings.cpp" />
+		<Unit filename="Bindings.hpp" />
 		<Unit filename="RPC.cpp" />
 		<Unit filename="RPC.hpp" />
 		<Unit filename="WindowsProcess.cpp">

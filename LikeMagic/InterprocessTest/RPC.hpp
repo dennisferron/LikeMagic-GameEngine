@@ -1,3 +1,5 @@
+#include "LikeMagic/Interprocess/SharedArgTransporter.hpp"
+
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
@@ -7,6 +9,8 @@
 using namespace boost::interprocess;
 
 struct ProcessControlStructure;
+
+namespace LikeMagic { namespace Interprocess {
 
 struct CallRequest
 {
@@ -98,6 +102,8 @@ private:
     int execute(int method, int arg);
     std::string get_state_name(ProcessState s) const;
 
+    SharedArgTransporter transporter;
+
 public:
     RPC(bool is_first_);
     ~RPC();
@@ -106,3 +112,5 @@ public:
     int call_int(int method, int arg);
     void scan() const;
 };
+
+}}
