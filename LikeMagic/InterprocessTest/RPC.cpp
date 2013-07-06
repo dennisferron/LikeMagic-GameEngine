@@ -3,7 +3,13 @@
 #include <iostream>
 #include "RPC.hpp"
 
+#include "LikeMagic/SFMO/Term.hpp"
+#include "LikeMagic/AbstractTypeSystem.hpp"
+
+using namespace LikeMagic;
 using namespace LikeMagic::Interprocess;
+using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Utility;
 
 using namespace boost::interprocess;
 using namespace std;
@@ -43,7 +49,13 @@ void RPC::scan() const
     }
 }
 
-RPC::RPC(bool is_first_) : shared_memory_name("MySharedMemory"), is_first(is_first_), invocation_counter(0)
+RPC::RPC(AbstractTypeSystem& type_system_, bool is_first_)
+    :
+        type_system(type_system_),
+        shared_memory_name("MySharedMemory"),
+        is_first(is_first_),
+        invocation_counter(0),
+        transporter(type_system_)
 {
     if (is_first)
         shared_memory_object::remove(shared_memory_name);
@@ -216,11 +228,44 @@ CallReturn RPC::call(int object_handle, int method, int arg)
     request_args.invocation_id = ++invocation_counter;
     request_args.object_handle = object_handle;
     request_args.method_id = method;
-    request_args.object_handle =
+    request_args.object_handle = 0;
 
     // In this demo there's only a single int arg.
     request_args.args_count = 1;
-    *(int*)&request_args.args_buffer[0] = arg;
+
+    //*(int*)&request_args.args_buffer[0] = arg;
+
+    auto term = Term<int, true>::create(arg);
+    ArgList arg_list;
+    arg_list.push_back(term);
+
+    int temp = term->eval();
+    cout << "Term is " << temp << endl;
+
+    TypeIndex type_index = BetterTypeInfo::create_index<int>();
+    TypeInfoList arg_types;
+    arg_types.push_back(type_index);
+
+    cout << "type_system has_conv<int>(term): " << type_system.has_conv<int>(term) << endl;
+    cout << "type_system has_conv(type_index, type_index): " << type_system.has_conv(type_index, type_index) << endl;
+    auto term2 = type_system.try_conv<int>(term);
+
+    char* buffer = request_args.args_buffer;
+
+    cout << "About to write_args original args=" << arg << " buffer="
+        << (int)buffer[0] << ","
+        << (int)buffer[1] << ","
+        << (int)buffer[2] << ","
+        << (int)buffer[3] << ","
+        << (int)buffer[4] << endl;
+
+    transporter.write_args(arg_types, request_args.args_buffer, arg_list);
+    cout << "original args=" << arg << " buffer="
+        << (int)buffer[0] << ","
+        << (int)buffer[1] << ","
+        << (int)buffer[2] << ","
+        << (int)buffer[3] << ","
+        << (int)buffer[4] << endl;
 
     // Typically would look up other proces using object_handle.
     // (Actually would probably have an object proxy that holds

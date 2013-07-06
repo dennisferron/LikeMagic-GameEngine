@@ -20,7 +20,7 @@ public:
 };
 
 template <typename ContainerType, typename ElementType>
-struct MarshalByStdCopyToArray
+struct MarshalByStdCopyToArray : public AbstractSharedArgMarshaller
 {
     LikeMagic::AbstractTypeSystem const& type_system;
     LikeMagic::Interprocess::SharedMemoryAllocator& allocator;

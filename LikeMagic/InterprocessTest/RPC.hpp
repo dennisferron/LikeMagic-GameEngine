@@ -8,9 +8,9 @@
 
 using namespace boost::interprocess;
 
-struct ProcessControlStructure;
-
 namespace LikeMagic { namespace Interprocess {
+
+struct ProcessControlStructure;
 
 struct CallRequest
 {
@@ -88,6 +88,8 @@ struct SharedMemoryFormat
 class RPC
 {
 private:
+    AbstractTypeSystem& type_system;
+
     char const* shared_memory_name;
     boost::interprocess::shared_memory_object* shm;
     boost::interprocess::mapped_region* region;
@@ -105,7 +107,7 @@ private:
     SharedArgTransporter transporter;
 
 public:
-    RPC(bool is_first_);
+    RPC(AbstractTypeSystem& type_system_, bool is_first_);
     ~RPC();
     CallReturn listen(int invocation_id, bool wants_rvalue);
     CallReturn call(int object_handle, int method, int arg);

@@ -2,11 +2,19 @@
 
 #include "boost/shared_ptr.hpp"
 #include "boost/unordered_map.hpp"
+#include "boost/intrusive_ptr.hpp"
 
 #include "LikeMagic/Interprocess/AbstractSharedArgMarshaller.hpp"
+#include "LikeMagic/Utility/BetterTypeInfo.hpp"
 
-namespace LikeMagic { namespace Utility {
-    class ArgList;
+namespace LikeMagic {
+    class AbstractTypeSystem;
+}
+
+namespace LikeMagic { namespace SFMO {
+    class AbstractExpression;
+    typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
+    typedef std::vector<ExprPtr> ArgList;
 }}
 
 namespace LikeMagic { namespace Interprocess {
@@ -27,12 +35,22 @@ private:
 
 public:
 
+    SharedArgTransporter(LikeMagic::AbstractTypeSystem& type_system_);
+
+    template <template <typename T_> class Marshaller, typename T, typename... Args>
+    void add_marshaller_by_type(Args && ... args)
+    {
+        TypeIndex index = LikeMagic::Utility::BetterTypeInfo::create_index<T>();
+        auto marshaller = ArgMarshaller(new Marshaller<T>(std::forward<Args>(args)...));
+        add_marshaller(index, marshaller);
+    }
+
     void add_marshaller(TypeIndex type, ArgMarshaller marshaller);
 
     // TypeInfoList comes from
     // virtual LikeMagic::Utility::TypeInfoList AbstractCallTargetSelector::get_arg_types() const = 0;
 
-    virtual void write_args(TypeInfoList arg_types, void* buffer, ExprPtr arg);
+    virtual void write_args(TypeInfoList arg_types, void* buffer, ArgList args);
     virtual ArgList read_args(TypeInfoList arg_types, void* buffer);
 };
 

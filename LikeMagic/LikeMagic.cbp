@@ -168,10 +168,12 @@
 		<Unit filename="Source/AbstractClass.cpp" />
 		<Unit filename="Source/AbstractCppObjProxy.cpp" />
 		<Unit filename="Source/AbstractExpression.cpp" />
+		<Unit filename="Source/AbstractSharedArgMarshaller.cpp" />
 		<Unit filename="Source/AbstractTypeConverter.cpp" />
 		<Unit filename="Source/AbstractTypeInfo.cpp" />
 		<Unit filename="Source/AbstractTypeSystem.cpp" />
 		<Unit filename="Source/BetterTypeInfo.cpp" />
+		<Unit filename="Source/CodeTest.cpp" />
 		<Unit filename="Source/ExprProxy.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/Namespace.cpp" />

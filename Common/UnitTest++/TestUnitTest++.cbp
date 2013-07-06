@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="TestUnitTest++" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Windows">
+				<Option output="bin/Debug/TestUnitTest++" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="bin\Debug\libUnitTest++.a" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="src/tests/Main.cpp" />
+		<Unit filename="src/tests/RecordingReporter.h" />
+		<Unit filename="src/tests/ScopedCurrentTest.h" />
+		<Unit filename="src/tests/TestAssertHandler.cpp" />
+		<Unit filename="src/tests/TestCheckMacros.cpp" />
+		<Unit filename="src/tests/TestChecks.cpp" />
+		<Unit filename="src/tests/TestCurrentTest.cpp" />
+		<Unit filename="src/tests/TestDeferredTestReporter.cpp" />
+		<Unit filename="src/tests/TestMemoryOutStream.cpp" />
+		<Unit filename="src/tests/TestTest.cpp" />
+		<Unit filename="src/tests/TestTestList.cpp" />
+		<Unit filename="src/tests/TestTestMacros.cpp" />
+		<Unit filename="src/tests/TestTestResults.cpp" />
+		<Unit filename="src/tests/TestTestRunner.cpp" />
+		<Unit filename="src/tests/TestTestSuite.cpp" />
+		<Unit filename="src/tests/TestTimeConstraint.cpp" />
+		<Unit filename="src/tests/TestTimeConstraintMacro.cpp" />
+		<Unit filename="src/tests/TestUnitTest++.cpp" />
+		<Unit filename="src/tests/TestXmlTestReporter.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

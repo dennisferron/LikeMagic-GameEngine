@@ -35,15 +35,18 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="parent listen" />
+				<Option parameters="parent call" />
 				<Compiler>
 					<Add option="-std=c++0x" />
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-fexceptions" />
 					<Add option="-DBOOST_DATE_TIME_NO_LIB" />
-					<Add directory="../../Common/boost_1_49_0" />
 				</Compiler>
+				<Linker>
+					<Add library="..\StdBindings\libStdBindings-Windows.a" />
+					<Add library="..\libLikeMagic-Windows.a" />
+				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
@@ -54,6 +57,7 @@
 			<Add option="-DBOOST_DATE_TIME_NO_LIB" />
 			<Add directory="../../Common/boost_1_49_0" />
 			<Add directory="../Include" />
+			<Add directory="../StdBindings/Include" />
 		</Compiler>
 		<Unit filename="Bindings.cpp" />
 		<Unit filename="Bindings.hpp" />

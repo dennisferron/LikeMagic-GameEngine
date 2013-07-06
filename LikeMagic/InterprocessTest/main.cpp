@@ -5,8 +5,13 @@
 
 #include "RPC.hpp"
 #include "WindowsProcess.hpp"
+#include "LikeMagic/StdBindings/TypeSystemInstance.hpp"
 
 using namespace std;
+
+using namespace LikeMagic;
+using namespace LikeMagic::Interprocess;
+using namespace LikeMagic::StdBindings;
 
 void do_call(RPC& rpc, string order)
 {
@@ -35,6 +40,8 @@ void do_mode(RPC& rpc, string order, string mode)
 
 int main (int argc, char *argv[])
 {
+    RuntimeTypeSystem* type_system = create_typesystem();
+
     if (argc != 3)
     {
         cerr << "Usage: " << argv[0] << " <parent|child|scan> <call|listen>" << endl;
@@ -46,7 +53,7 @@ int main (int argc, char *argv[])
 
         if (order == "scan")
         {
-            RPC scan_rpc(false);
+            RPC scan_rpc(*type_system, false);
             scan_rpc.scan();
         }
         else if (order == "parent")
@@ -54,7 +61,7 @@ int main (int argc, char *argv[])
             // in parent
 
             std::cout << "Parent starting" << std::endl;
-            RPC rpc0(true);
+            RPC rpc0(*type_system, true);
 
             // launch child
             create_process(string(argv[0]) + " " + "child" + " " +
@@ -69,7 +76,7 @@ int main (int argc, char *argv[])
             // in child
 
             std::cout << "Child starting" << std::endl;
-            RPC rpc1(false);
+            RPC rpc1(*type_system, false);
 
             do_mode(rpc1, order, mode);
 

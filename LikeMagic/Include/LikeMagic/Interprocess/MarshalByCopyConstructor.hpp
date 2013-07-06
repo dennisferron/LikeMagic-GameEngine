@@ -1,18 +1,21 @@
 #pragma once
 
+#include "LikeMagic/AbstractTypeSystem.hpp"
+#include "LikeMagic/SFMO/Term.hpp"
+
 namespace LikeMagic { namespace Interprocess {
 
 template <typename T>
-struct MarshalByCopyConstructor
+struct MarshalByCopyConstructor : public AbstractSharedArgMarshaller
 {
     LikeMagic::AbstractTypeSystem const& type_system;
 
-    MarshalByCopy(LikeMagic::AbstractTypeSystem const& type_system_)
-        : type_system(type_system)
+    MarshalByCopyConstructor(LikeMagic::AbstractTypeSystem const& type_system_)
+        : type_system(type_system) {}
 
     virtual void write(void* location, ExprPtr arg)
     {
-        *(T*)location = type_system.try_conv<T>(arg);
+        *(T*)location = type_system.try_conv<T>(arg)->eval();
     }
 
     virtual ExprPtr read(void* location)
@@ -22,7 +25,7 @@ struct MarshalByCopyConstructor
         // allocating a new term every time.
         // Actually if it is known all of a method's args are copy
         // by value, could we simply memcpy it onto the stack?
-        return Term<T, true>::create(*((T*)location));
+        return LikeMagic::SFMO::Term<T, true>::create(*((T*)location));
     }
 
     virtual size_t size() const
