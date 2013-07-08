@@ -14,10 +14,9 @@
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-g" />
-					<Add directory="../../Common/UnitTest++/src" />
-					<Add directory="../Include" />
 				</Compiler>
 				<Linker>
+					<Add library="..\StdBindings\libStdBindings-Windows.a" />
 					<Add library="..\libLikeMagic-Windows.a" />
 					<Add library="..\..\Common\UnitTest++\bin\Debug\libUnitTest++.a" />
 				</Linker>
@@ -26,7 +25,18 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add directory="Include" />
+			<Add directory="../Include" />
+			<Add directory="../StdBindings/Include" />
+			<Add directory="../../Common/boost_1_49_0" />
+			<Add directory="../../Common/UnitTest++/src" />
 		</Compiler>
+		<Unit filename="Include/UnitTests/ArgListHelpers.hpp" />
+		<Unit filename="Include/UnitTests/TypeSystemInstance.hpp" />
+		<Unit filename="Source/TestArgTransporter.cpp" />
+		<Unit filename="Source/TestMarshalByCopyConstructor.cpp" />
+		<Unit filename="Source/TestTypeSystem.cpp" />
+		<Unit filename="Source/TypeSystemInstance.cpp" />
 		<Unit filename="Source/main.cpp" />
 		<Extensions>
 			<code_completion />

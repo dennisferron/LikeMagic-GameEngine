@@ -8,7 +8,7 @@
 		<Build>
 			<Target title="Debug Linux">
 				<Option platforms="Unix;" />
-				<Option output="libStdBindings-Linux" prefix_auto="1" extension_auto="1" />
+				<Option output="StdBindings-Linux" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug-Linux/" />
 				<Option type="2" />
@@ -21,7 +21,7 @@
 			</Target>
 			<Target title="Release Linux">
 				<Option platforms="Unix;" />
-				<Option output="libStdBindings-Linux" prefix_auto="1" extension_auto="1" />
+				<Option output="StdBindings-Linux" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Release-Linux/" />
 				<Option type="2" />
@@ -37,7 +37,7 @@
 			</Target>
 			<Target title="Debug Mac">
 				<Option platforms="Mac;" />
-				<Option output="libStdBindings-Mac" prefix_auto="1" extension_auto="1" />
+				<Option output="StdBindings-Mac" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug-Mac/" />
 				<Option type="2" />
@@ -54,7 +54,7 @@
 			</Target>
 			<Target title="Debug Windows">
 				<Option platforms="Windows;" />
-				<Option output="libStdBindings-Windows" prefix_auto="1" extension_auto="1" />
+				<Option output="StdBindings-Windows" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug-Windows/" />
 				<Option type="2" />

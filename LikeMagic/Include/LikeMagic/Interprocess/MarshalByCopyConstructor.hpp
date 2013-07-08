@@ -2,6 +2,7 @@
 
 #include "LikeMagic/AbstractTypeSystem.hpp"
 #include "LikeMagic/SFMO/Term.hpp"
+#include "LikeMagic/Interprocess/AbstractSharedArgMarshaller.hpp"
 
 namespace LikeMagic { namespace Interprocess {
 
@@ -11,7 +12,7 @@ struct MarshalByCopyConstructor : public AbstractSharedArgMarshaller
     LikeMagic::AbstractTypeSystem const& type_system;
 
     MarshalByCopyConstructor(LikeMagic::AbstractTypeSystem const& type_system_)
-        : type_system(type_system) {}
+        : type_system(type_system_) {}
 
     virtual void write(void* location, ExprPtr arg)
     {

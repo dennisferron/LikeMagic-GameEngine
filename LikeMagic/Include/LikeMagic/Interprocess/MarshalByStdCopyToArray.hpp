@@ -1,5 +1,8 @@
 #pragma once
 
+#include "LikeMagic/AbstractTypeSystem.hpp"
+#include "LikeMagic/Interprocess/AbstractSharedArgMarshaller.hpp"
+
 namespace LikeMagic { namespace Interprocess {
 
 template <typename T>
@@ -26,7 +29,7 @@ struct MarshalByStdCopyToArray : public AbstractSharedArgMarshaller
     LikeMagic::Interprocess::SharedMemoryAllocator& allocator;
 
     MarshalByCopy(LikeMagic::AbstractTypeSystem const& type_system_, SharedMemoryAllocator allocator)
-        : type_system(type_system) {}
+        : type_system(type_system_) {}
 
     virtual void write(void* location, ExprPtr arg)
     {
