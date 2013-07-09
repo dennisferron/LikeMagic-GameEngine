@@ -19,6 +19,19 @@
 					<Add option="-g" />
 				</Compiler>
 			</Target>
+			<Target title="Debug Mac">
+				<Option output="bin/Debug/UnitTest++" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-DUNITTEST_POSIX" />
+				</Compiler>
+			</Target>
 		</Build>
 		<Unit filename="src/AssertException.cpp" />
 		<Unit filename="src/AssertException.h" />
@@ -35,6 +48,18 @@
 		<Unit filename="src/ExecuteTest.h" />
 		<Unit filename="src/MemoryOutStream.cpp" />
 		<Unit filename="src/MemoryOutStream.h" />
+		<Unit filename="src/Posix/SignalTranslator.cpp">
+			<Option target="Debug Mac" />
+		</Unit>
+		<Unit filename="src/Posix/SignalTranslator.h">
+			<Option target="Debug Mac" />
+		</Unit>
+		<Unit filename="src/Posix/TimeHelpers.cpp">
+			<Option target="Debug Mac" />
+		</Unit>
+		<Unit filename="src/Posix/TimeHelpers.h">
+			<Option target="Debug Mac" />
+		</Unit>
 		<Unit filename="src/ReportAssert.cpp" />
 		<Unit filename="src/ReportAssert.h" />
 		<Unit filename="src/Test.cpp" />
@@ -57,7 +82,9 @@
 		<Unit filename="src/TimeConstraint.h" />
 		<Unit filename="src/TimeHelpers.h" />
 		<Unit filename="src/UnitTest++.h" />
-		<Unit filename="src/Win32/TimeHelpers.cpp" />
+		<Unit filename="src/Win32/TimeHelpers.cpp">
+			<Option target="Debug Windows" />
+		</Unit>
 		<Unit filename="src/Win32/TimeHelpers.h" />
 		<Unit filename="src/XmlTestReporter.cpp" />
 		<Unit filename="src/XmlTestReporter.h" />

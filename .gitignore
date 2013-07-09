@@ -90,3 +90,4 @@ doxygen/*
 
 .DS_Store
 Deps/tps-1.2/ThinPlateSpline/bin/Debug/SplineTest
+Common/UnitTest++/bin/

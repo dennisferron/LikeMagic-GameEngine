@@ -40,6 +40,9 @@
 				</Linker>
 			</Target>
 		</Build>
+		<Compiler>
+			<Add directory="Include" />
+		</Compiler>
 		<Unit filename="Demo/main.cpp">
 			<Option target="Demo" />
 		</Unit>
