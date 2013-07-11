@@ -33,30 +33,39 @@ void SharedArgTransporter::write_args(TypeInfoList arg_types, void* buffer, ArgL
     if (arg_types.size() != args.size())
         throw std::logic_error("Number of args passed does not match number of args of the method.");
 
-    char* location = (char*)buffer;
+    void* location = (char*)buffer;
     for (size_t i=0; i<args.size(); ++i)
     {
         ExprPtr arg = args[i];
         TypeIndex arg_type = arg_types[i];
-        auto& marshaller = get_marshaller(arg_type);
-        marshaller.write(location, arg);
-        location += marshaller.size();
+        location = write_value(arg_type, location, arg);
     }
+}
+
+void* SharedArgTransporter::write_value(TypeIndex arg_type, void* location, ExprPtr arg)
+{
+    auto& marshaller = get_marshaller(arg_type);
+    marshaller.write(location, arg);
+    return marshaller.size() + (char*)location;
 }
 
 ArgList SharedArgTransporter::read_args(TypeInfoList arg_types, void* buffer)
 {
-    ArgList result;
-    char* location = (char*)buffer;
+    ArgList arg_list;
+    void* location = (char*)buffer;
     for (TypeIndex arg_type : arg_types)
     {
-        auto& marshaller = get_marshaller(arg_type);
-        ExprPtr arg_expr = marshaller.read(location);
-        result.push_back(arg_expr);
-        location += marshaller.size();
+        std::pair<ExprPtr, void*> result = read_value(arg_type, location);
+        arg_list.push_back(result.first);
+        location = result.second;
     }
-    return result;
+    return arg_list;
 }
 
+std::pair<ExprPtr, void*> SharedArgTransporter::read_value(TypeIndex arg_type, void* location)
+{
+    auto& marshaller = get_marshaller(arg_type);
+    return std::make_pair(marshaller.read(location), marshaller.size() + (char*)location);
+}
 
 

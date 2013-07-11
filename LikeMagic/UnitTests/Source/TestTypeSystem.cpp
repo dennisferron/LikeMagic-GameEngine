@@ -22,4 +22,16 @@ SUITE(TestTypeSystem)
         ExprPtr term = Term<int, true>::create(1234);
         CHECK_EQUAL(1234, type_sys->try_conv<int>(term)->eval());
     }
+
+    TEST(HasConvIntToDouble)
+    {
+        ExprPtr term = Term<int, true>::create(1234);
+        CHECK(type_sys->has_conv<double>(term));
+    }
+
+    TEST(TryConvIntToDouble)
+    {
+        ExprPtr term = Term<int, true>::create(1234);
+        CHECK_CLOSE(1234.0, type_sys->try_conv<double>(term)->eval(), 0.01);
+    }
 }
