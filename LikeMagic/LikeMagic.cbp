@@ -90,9 +90,17 @@
 		<Unit filename="Include/LikeMagic/IMarkable.hpp" />
 		<Unit filename="Include/LikeMagic/ITypeSystemObserver.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/AbstractSharedArgMarshaller.hpp" />
+		<Unit filename="Include/LikeMagic/Interprocess/DataRegister.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/MarshalByCopyConstructor.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/MarshalByStdCopyToArray.hpp" />
+		<Unit filename="Include/LikeMagic/Interprocess/ProcessControlStructure.hpp" />
+		<Unit filename="Include/LikeMagic/Interprocess/ProcessState.hpp" />
+		<Unit filename="Include/LikeMagic/Interprocess/RemoteClass.hpp" />
+		<Unit filename="Include/LikeMagic/Interprocess/RemoteObject.hpp" />
+		<Unit filename="Include/LikeMagic/Interprocess/RemoteTypeIndex.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/SharedArgTransporter.hpp" />
+		<Unit filename="Include/LikeMagic/Interprocess/SharedMemoryFormat.hpp" />
+		<Unit filename="Include/LikeMagic/Interprocess/SharedObjectRegistry.hpp" />
 		<Unit filename="Include/LikeMagic/MarkableObjGraph.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/AbstractClass.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/Class.hpp" />
