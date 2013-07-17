@@ -50,8 +50,11 @@ public:
     // TypeInfoList comes from
     // virtual LikeMagic::Utility::TypeInfoList AbstractCallTargetSelector::get_arg_types() const = 0;
 
-    virtual void write_args(TypeInfoList arg_types, void* buffer, ArgList args);
-    virtual ArgList read_args(TypeInfoList arg_types, void* buffer);
+    void write_args(TypeInfoList arg_types, void* buffer, ArgList args);
+    void* write_value(TypeIndex arg_type, void* location, ExprPtr arg);
+
+    ArgList read_args(TypeInfoList arg_types, void* buffer);
+    std::pair<ExprPtr, void*> read_value(TypeIndex arg_type, void* location);
 };
 
 }}
