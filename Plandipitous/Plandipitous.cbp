@@ -41,6 +41,7 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-std=c++0x" />
 			<Add directory="Include" />
 		</Compiler>
 		<Unit filename="Demo/main.cpp">
