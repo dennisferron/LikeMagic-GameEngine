@@ -1,8 +1,15 @@
-#include "LikeMagic/Interprocess/RequestBroker.hpp"
+#include "LikeMagic/Interprocess/SharedArgTransporter.hpp"
+
+#include "boost/interprocess/shared_memory_object.hpp"
+#include "boost/interprocess/mapped_region.hpp"
+
+#include "LikeMagic/Interprocess/SharedMemoryFormat.hpp"
+
+using namespace boost::interprocess;
 
 namespace LikeMagic { namespace Interprocess {
 
-class RPC : public RequestBroker
+class RequestBroker
 {
 private:
     AbstractTypeSystem& type_system;
@@ -24,8 +31,8 @@ private:
     SharedArgTransporter transporter;
 
 public:
-    RPC(AbstractTypeSystem& type_system_, bool is_first_);
-    ~RPC();
+    RequestBroker(AbstractTypeSystem& type_system_);
+    ~RequestBroker();
     CallReturn listen(int invocation_id, bool wants_rvalue);
     CallReturn call(int object_handle, int method, int arg);
     int call_int(int method, int arg);

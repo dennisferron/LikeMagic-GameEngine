@@ -1,7 +1,8 @@
-#include <boost/interprocess/shared_memory_object.hpp>
-#include <boost/interprocess/mapped_region.hpp>
+#include "LikeMagic/Interprocess/RequestBroker.hpp"
+
+#include "boost/interprocess/shared_memory_object.hpp"
+#include "boost/interprocess/mapped_region.hpp"
 #include <iostream>
-#include "RPC.hpp"
 
 #include "LikeMagic/SFMO/Term.hpp"
 #include "LikeMagic/AbstractTypeSystem.hpp"
@@ -14,12 +15,12 @@ using namespace LikeMagic::Utility;
 using namespace boost::interprocess;
 using namespace std;
 
-RPC::~RPC()
+RequestBroker::~RequestBroker()
 {
     shared_memory_object::remove(shared_memory_name);
 }
 
-std::string RPC::get_state_name(ProcessState s) const
+std::string RequestBroker::get_state_name(ProcessState s) const
 {
     switch (s)
     {
@@ -40,7 +41,7 @@ std::string RPC::get_state_name(ProcessState s) const
     }
 }
 
-void RPC::scan() const
+void RequestBroker::scan() const
 {
     for (int i=0; i < 3; ++i)
     {
@@ -49,12 +50,10 @@ void RPC::scan() const
     }
 }
 
-RPC::RPC(AbstractTypeSystem& type_system_, bool is_first_)
+RequestBroker::RequestBroker(AbstractTypeSystem& type_system_)
     :
-        RequestBroker(type_system_),
         type_system(type_system_),
         shared_memory_name("MySharedMemory"),
-        is_first(is_first_),
         invocation_counter(0),
         transporter(type_system_)
 {
@@ -77,7 +76,7 @@ RPC::RPC(AbstractTypeSystem& type_system_, bool is_first_)
     other_pcs = &data->processes[(int)!is_first];
 }
 
-CallReturn RPC::listen(int wanted_invocation_id, bool wants_rvalue)
+CallReturn RequestBroker::listen(int wanted_invocation_id, bool wants_rvalue)
 {
     while (true)
     {
@@ -196,7 +195,7 @@ CallReturn RPC::listen(int wanted_invocation_id, bool wants_rvalue)
     }
 }
 
-int RPC::call_int(int method, int arg)
+int RequestBroker::call_int(int method, int arg)
 {
     CallReturn ret = call(-1, method, arg);
     LikeMagic::Utility::TypeIndex ret_type_index
@@ -206,7 +205,7 @@ int RPC::call_int(int method, int arg)
     return rval;
 }
 
-int RPC::execute(int method, int arg)
+int RequestBroker::execute(int method, int arg)
 {
     int rvalue;
 
@@ -227,7 +226,7 @@ int RPC::execute(int method, int arg)
     return rvalue;
 }
 
-CallReturn RPC::call(int object_handle, int method, int arg)
+CallReturn RequestBroker::call(int object_handle, int method, int arg)
 {
     // We build the request in a temporary local buffer first.
     // It's actually pretty important that we don't lock the

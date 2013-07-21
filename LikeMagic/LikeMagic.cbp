@@ -90,6 +90,8 @@
 		<Unit filename="Include/LikeMagic/IMarkable.hpp" />
 		<Unit filename="Include/LikeMagic/ITypeSystemObserver.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/AbstractSharedArgMarshaller.hpp" />
+		<Unit filename="Include/LikeMagic/Interprocess/CallRequest.hpp" />
+		<Unit filename="Include/LikeMagic/Interprocess/CallReturn.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/DataRegister.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/MarshalByCopyConstructor.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/MarshalByStdCopyToArray.hpp" />
@@ -98,6 +100,7 @@
 		<Unit filename="Include/LikeMagic/Interprocess/RemoteClass.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/RemoteObject.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/RemoteTypeIndex.hpp" />
+		<Unit filename="Include/LikeMagic/Interprocess/RequestBroker.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/SharedArgTransporter.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/SharedMemoryFormat.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/SharedObjectRegistry.hpp" />
@@ -188,6 +191,7 @@
 		<Unit filename="Source/NamespacePath.cpp" />
 		<Unit filename="Source/NamespaceProxy.cpp" />
 		<Unit filename="Source/ProxyMethods.cpp" />
+		<Unit filename="Source/RequestBroker.cpp" />
 		<Unit filename="Source/RuntimeTypeSystem.cpp" />
 		<Unit filename="Source/ScriptUtil.cpp" />
 		<Unit filename="Source/SharedArgTransporter.cpp" />
