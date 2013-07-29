@@ -22,6 +22,10 @@ struct ITokenSource
     virtual Token take() = 0;
 };
 
+struct Probability
+{
+};
+
 class SnowflakeNode
 {
 
@@ -73,7 +77,7 @@ private:
             int depth;
 
             Tracker()
-                : parent(no_direction), child(no_direction), chain(no_direction), depth(0), order(0)
+                : parent(no_direction), child(no_direction), chain(no_direction), depth(0)
             {
             }
 
