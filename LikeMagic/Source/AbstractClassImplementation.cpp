@@ -6,7 +6,7 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-#include "LikeMagic/Marshaling/AbstractClass.hpp"
+#include "LikeMagic/Marshaling/AbstractClassImplementation.hpp"
 #include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
 #include "LikeMagic/SFMO/AbstractExpression.hpp"
 #include "LikeMagic/AbstractTypeSystem.hpp"
@@ -24,7 +24,10 @@ using namespace LikeMagic::Marshaling;
 using namespace LikeMagic::CallTargets;
 using namespace std;
 
-AbstractClass::AbstractClass(std::string name_, AbstractTypeSystem& type_system_, NamespacePath namespace_) :
+// For convenience, also define the virtual destructor for the abstract base here.
+AbstractClass::~AbstractClass() {}
+
+AbstractClassImplementation::AbstractClassImplementation(std::string name_, AbstractTypeSystem& type_system_, NamespacePath namespace_) :
     class_name(name_),
     type_system(type_system_),
     ns(namespace_)
@@ -37,7 +40,7 @@ AbstractClass::AbstractClass(std::string name_, AbstractTypeSystem& type_system_
 }
 
 
-AbstractClass::~AbstractClass()
+AbstractClassImplementation::~AbstractClassImplementation()
 {
     for (auto it=methods.begin(); it != methods.end(); it++)
     {
@@ -47,7 +50,7 @@ AbstractClass::~AbstractClass()
     }
 }
 
-std::vector<AbstractClass const*> AbstractClass::get_base_classes() const
+std::vector<AbstractClass const*> AbstractClassImplementation::get_base_classes() const
 {
     std::vector<AbstractClass const*> result;
 
@@ -57,7 +60,7 @@ std::vector<AbstractClass const*> AbstractClass::get_base_classes() const
     return result;
 }
 
-std::vector<AbstractCallTargetSelector*> AbstractClass::get_methods() const
+std::vector<AbstractCallTargetSelector*> AbstractClassImplementation::get_methods() const
 {
     std::vector<AbstractCallTargetSelector*> result;
 
@@ -69,7 +72,7 @@ std::vector<AbstractCallTargetSelector*> AbstractClass::get_methods() const
 }
 
 
-void AbstractClass::add_method(std::string method_name, AbstractCallTargetSelector* method)
+void AbstractClassImplementation::add_method(std::string method_name, AbstractCallTargetSelector* method)
 {
     method->set_debug_name(method_name);
 
@@ -92,7 +95,7 @@ void AbstractClass::add_method(std::string method_name, AbstractCallTargetSelect
     }
 }
 
-AbstractCallTargetSelector* AbstractClass::get_method(std::string method_name, int num_args) const
+AbstractCallTargetSelector* AbstractClassImplementation::get_method(std::string method_name, int num_args) const
 {
     AbstractCallTargetSelector* method =
         try_get_method(method_name, num_args);
@@ -106,7 +109,7 @@ AbstractCallTargetSelector* AbstractClass::get_method(std::string method_name, i
     }
 }
 
-void AbstractClass::suggest_method(std::string method_name, int num_args) const
+void AbstractClassImplementation::suggest_method(std::string method_name, int num_args) const
 {
     auto candidates = methods.find(method_name);
 
@@ -160,7 +163,7 @@ void AbstractClass::suggest_method(std::string method_name, int num_args) const
     }
 }
 
-AbstractCallTargetSelector* AbstractClass::try_get_method(std::string method_name, int num_args, bool in_base_class) const
+AbstractCallTargetSelector* AbstractClassImplementation::try_get_method(std::string method_name, int num_args, bool in_base_class) const
 {
     //cout << "try_get_method " << method_name << " " << num_args << endl;
 
@@ -197,17 +200,17 @@ AbstractCallTargetSelector* AbstractClass::try_get_method(std::string method_nam
     return 0;
 }
 
-TypeInfoList AbstractClass::get_arg_types(std::string method_name, int num_args) const
+TypeInfoList AbstractClassImplementation::get_arg_types(std::string method_name, int num_args) const
 {
     return get_method(method_name, num_args)->get_arg_types();
 }
 
-std::vector<std::string> const& AbstractClass::get_method_names() const
+std::vector<std::string> const& AbstractClassImplementation::get_method_names() const
 {
     return method_names;
 }
 
-bool AbstractClass::has_method(std::string method_name, int num_args) const
+bool AbstractClassImplementation::has_method(std::string method_name, int num_args) const
 {
     auto candidates = methods.find(method_name);
 
@@ -218,7 +221,7 @@ bool AbstractClass::has_method(std::string method_name, int num_args) const
 }
 
 
-bool AbstractClass::has_base(AbstractClass const* base) const
+bool AbstractClassImplementation::has_base(AbstractClass const* base) const
 {
     for (auto it=bases.begin(); it != bases.end(); it++)
         if (it->second == base || it->second->has_base(base))
@@ -228,7 +231,7 @@ bool AbstractClass::has_base(AbstractClass const* base) const
 }
 
 
-void AbstractClass::add_base_abstr(AbstractClass const* base)
+void AbstractClassImplementation::add_base_abstr(AbstractClass const* base)
 {
     if (base == this)
         throw std::logic_error("You tried to add " + get_class_name() + " as a base of itself (not allowed).");
@@ -243,7 +246,7 @@ void AbstractClass::add_base_abstr(AbstractClass const* base)
     type_system.register_base(this, base);
 }
 
-std::vector<std::string> AbstractClass::get_base_names() const
+std::vector<std::string> AbstractClassImplementation::get_base_names() const
 {
     std::vector<std::string> result;
 
@@ -253,12 +256,12 @@ std::vector<std::string> AbstractClass::get_base_names() const
     return result;
 }
 
-std::string AbstractClass::get_class_name() const
+std::string AbstractClassImplementation::get_class_name() const
 {
     return class_name;
 }
 
-AbstractCppObjProxy* AbstractClass::call(AbstractCppObjProxy* target, std::string method_name, std::vector<boost::intrusive_ptr<AbstractExpression>> args) const
+ExprPtr AbstractClassImplementation::call(ExprPtr target, std::string method_name, std::vector<boost::intrusive_ptr<AbstractExpression>> args) const
 {
     return get_method(method_name, args.size())->call(target, args);
 }

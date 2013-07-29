@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "LikeMagic/Marshaling/AbstractClass.hpp"
 #include "LikeMagic/CallTargets/ProxyMethodSelector.hpp"
 #include "LikeMagic/SFMO/ClassExpr.hpp"
 #include "LikeMagic/Marshaling/DummyClass.hpp"
@@ -42,6 +41,8 @@ public:
     }
 
     virtual AbstractCppObjProxy* create_class_proxy() const;
+
+    virtual AbstractCppObjProxy* call(AbstractCppObjProxy* target, std::string method_name, std::vector<boost::intrusive_ptr<AbstractExpression>> args) const;
 };
 
 

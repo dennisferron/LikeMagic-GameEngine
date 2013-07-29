@@ -9,6 +9,7 @@
 #include "LikeMagic/SFMO/AbstractCppObjProxy.hpp"
 #include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
 #include "LikeMagic/Marshaling/AbstractClass.hpp"
+#include "LikeMagic/SFMO/ExprProxy.hpp"
 
 using namespace LikeMagic::Marshaling;
 using namespace LikeMagic::SFMO;
@@ -44,7 +45,9 @@ AbstractCppObjProxy* AbstractCppObjProxy::call(AbstractCallTargetSelector* metho
     if (!method)
         throw std::logic_error("Method is null.");
 
-    return method->call(this, args);
+    return ExprProxy::create(
+        method->call(this->get_expr(), args), type_system);
+
 }
 
 

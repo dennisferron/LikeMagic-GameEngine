@@ -9,34 +9,33 @@ using namespace boost::interprocess;
 
 namespace LikeMagic { namespace Interprocess {
 
+typedef int ObjectHandle;
+typedef int MethodId;
+typedef int InvocationId;
+
+class SharedObjectRegistry;
+
 class RequestBroker
 {
 private:
     AbstractTypeSystem& type_system;
+    SharedObjectRegistry& object_registry;
 
-    char const* shared_memory_name;
-    boost::interprocess::shared_memory_object* shm;
-    boost::interprocess::mapped_region* region;
-    SharedMemoryFormat* data;
-    bool is_first;
-    boost::unordered_map<int, CallReturn> cached_rvalues;
+    boost::unordered_map<InvocationId, CallReturn> cached_rvalues;
 
     int invocation_counter;
     ProcessControlStructure* pcs;
-    ProcessControlStructure* other_pcs;
 
-    int execute(int method, int arg);
     std::string get_state_name(ProcessState s) const;
 
     SharedArgTransporter transporter;
 
 public:
-    RequestBroker(AbstractTypeSystem& type_system_);
+    RequestBroker(AbstractTypeSystem& type_system_, SharedObjectRegistry& object_registry_, ProcessControlStructure* pcs_);
     ~RequestBroker();
-    CallReturn listen(int invocation_id, bool wants_rvalue);
-    CallReturn call(int object_handle, int method, int arg);
-    int call_int(int method, int arg);
-    void scan() const;
+    CallReturn listen(InvocationId invocation_id, bool wants_rvalue);
+    CallReturn call(ProcessControlStructure* target_pcs, ObjectHandle object_handle,
+                               MethodId method_id, TypeInfoList arg_types, ArgList args);
 };
 
 }}

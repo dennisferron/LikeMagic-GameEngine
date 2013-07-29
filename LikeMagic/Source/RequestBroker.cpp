@@ -17,7 +17,6 @@ using namespace std;
 
 RequestBroker::~RequestBroker()
 {
-    shared_memory_object::remove(shared_memory_name);
 }
 
 std::string RequestBroker::get_state_name(ProcessState s) const
@@ -41,47 +40,22 @@ std::string RequestBroker::get_state_name(ProcessState s) const
     }
 }
 
-void RequestBroker::scan() const
-{
-    for (int i=0; i < 3; ++i)
-    {
-        auto& p = data->processes[i];
-        cout << i << ": " << get_state_name(p.state) << endl;
-    }
-}
-
-RequestBroker::RequestBroker(AbstractTypeSystem& type_system_)
+RequestBroker::RequestBroker(AbstractTypeSystem& type_system_, SharedObjectRegistry& object_registry_, ProcessControlStructure* pcs_)
     :
         type_system(type_system_),
-        shared_memory_name("MySharedMemory"),
+        object_registry(object_registry_),
         invocation_counter(0),
+        pcs(pcs_),
         transporter(type_system_)
 {
-    if (is_first)
-        shared_memory_object::remove(shared_memory_name);
-
-    shm = new shared_memory_object( open_or_create, shared_memory_name, read_write);
-
-    shm->truncate(sizeof(SharedMemoryFormat));
-    region = new mapped_region(*shm, read_write);
-
-    void* addr = region->get_address();
-
-    if (is_first)
-        data = new (addr) SharedMemoryFormat;
-    else
-        data = reinterpret_cast<SharedMemoryFormat*>(addr);
-
-    pcs = &data->processes[(int)is_first];
-    other_pcs = &data->processes[(int)!is_first];
 }
 
 CallReturn RequestBroker::listen(int wanted_invocation_id, bool wants_rvalue)
 {
+    return CallReturn();
+    /*
     while (true)
     {
-        cout << "Process " << is_first << " listening for invocation_id " << wanted_invocation_id << endl;
-
         // First check if we already have the rvalue that we
         // wish to receive (can happen if one process returned
         // a value while we were busy servicing another process).
@@ -103,7 +77,6 @@ CallReturn RequestBroker::listen(int wanted_invocation_id, bool wants_rvalue)
         // If we don't have the rvalue we want yet, or if we
         // are only waiting for a method to execute, then wait
         // to be signaled that something is ready for us.
-        cout << "Process " << is_first << " waiting on action_required." << endl;
         this->pcs->action_required.wait();
         pcs->state = ProcessState::WaitFinished;
 
@@ -174,7 +147,6 @@ CallReturn RequestBroker::listen(int wanted_invocation_id, bool wants_rvalue)
                 wrv_reg.has_data = true;
                 wrv_reg.writing_in_progress.post();
                 pcs->state = ProcessState::LockReleased;
-                cout << "Process " << is_first << " posting to other process action_required " << endl;
                 temp.sender->action_required.post();
 
                 continue;
@@ -193,40 +165,11 @@ CallReturn RequestBroker::listen(int wanted_invocation_id, bool wants_rvalue)
             }
         }
     }
+    */
 }
 
-int RequestBroker::call_int(int method, int arg)
-{
-    CallReturn ret = call(-1, method, arg);
-    LikeMagic::Utility::TypeIndex ret_type_index
-        = LikeMagic::Utility::BetterTypeInfo::create_index<int>();
-    std::pair<ExprPtr, void*> result = transporter.read_value(ret_type_index, ret.rvalue_buffer);
-    int rval = type_system.try_conv<int>(result.first)->eval();
-    return rval;
-}
-
-int RequestBroker::execute(int method, int arg)
-{
-    int rvalue;
-
-    // "Do work" and possibly call other proce
-    switch (method)
-    {
-        case 0:
-            rvalue = 1*arg + call_int(1,arg+1);
-            break;
-        case 1:
-            rvalue = 10*arg + call_int(2,arg+1);
-            break;
-        case 2: default:
-            rvalue = 100*arg;
-            break;
-    }
-
-    return rvalue;
-}
-
-CallReturn RequestBroker::call(int object_handle, int method, int arg)
+CallReturn RequestBroker::call(ProcessControlStructure* target_pcs, ObjectHandle object_handle,
+                               MethodId method_id, TypeInfoList arg_types, ArgList args)
 {
     // We build the request in a temporary local buffer first.
     // It's actually pretty important that we don't lock the
@@ -238,50 +181,13 @@ CallReturn RequestBroker::call(int object_handle, int method, int arg)
     request_args.sender = this->pcs;
     request_args.invocation_id = ++invocation_counter;
     request_args.object_handle = object_handle;
-    request_args.method_id = method;
+    request_args.method_id = method_id;
     request_args.object_handle = 0;
 
     // In this demo there's only a single int arg.
-    request_args.args_count = 1;
+    request_args.args_count = args.size();
 
-    //*(int*)&request_args.args_buffer[0] = arg;
-
-    auto term = Term<int, true>::create(arg);
-    ArgList arg_list;
-    arg_list.push_back(term);
-
-    int temp = term->eval();
-    cout << "Term is " << temp << endl;
-
-    TypeIndex type_index = BetterTypeInfo::create_index<int>();
-    TypeInfoList arg_types;
-    arg_types.push_back(type_index);
-
-    cout << "type_system has_conv<int>(term): " << type_system.has_conv<int>(term) << endl;
-    cout << "type_system has_conv(type_index, type_index): " << type_system.has_conv(type_index, type_index) << endl;
-    auto term2 = type_system.try_conv<int>(term);
-
-    char* buffer = request_args.args_buffer;
-
-    cout << "About to write_args original args=" << arg << " buffer="
-        << (int)buffer[0] << ","
-        << (int)buffer[1] << ","
-        << (int)buffer[2] << ","
-        << (int)buffer[3] << ","
-        << (int)buffer[4] << endl;
-
-    transporter.write_args(arg_types, request_args.args_buffer, arg_list);
-    cout << "original args=" << arg << " buffer="
-        << (int)buffer[0] << ","
-        << (int)buffer[1] << ","
-        << (int)buffer[2] << ","
-        << (int)buffer[3] << ","
-        << (int)buffer[4] << endl;
-
-    // Typically would look up other proces using object_handle.
-    // (Actually would probably have an object proxy that holds
-    // both the object handle and the process control pointer.)
-    auto target_pcs = other_pcs;
+    transporter.write_args(arg_types, request_args.args_buffer, args);
 
     // This is the call procedure:
     //  1.  Wait for destination register to be empty.
@@ -292,7 +198,6 @@ CallReturn RequestBroker::call(int object_handle, int method, int arg)
     //  6.  Signal the waiting target process.
     // (We do not ourselves post the available semaphore.
     //  The target procedure does that itself when ready.)
-    cout << "caller waiting for request register available_for_write" << endl;
     pcs->state = ProcessState::WaitingToFillCallRequest;
     target_pcs->call_request.available_for_write.wait();
     pcs->state = ProcessState::LockingToWriteCallRequest;

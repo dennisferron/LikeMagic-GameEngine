@@ -16,7 +16,6 @@
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_void.hpp"
 
-#include "LikeMagic/SFMO/MethodCall.hpp"
 #include "LikeMagic/SFMO/ExprProxy.hpp"
 
 #include "boost/shared_ptr.hpp"
@@ -47,15 +46,13 @@ public:
     // only one of them needs to delete the shared accessor.
     //~CustomFieldGetterTarget() { delete f; }
 
-    virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
+    virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        return ExprProxy::create(
-                Term<FieldType, true>::create(
+        return Term<FieldType, true>::create(
                     f->get(
-                        type_system.try_conv<CallAs>(proxy->get_expr())->eval()
+                        type_system.try_conv<CallAs>(target)->eval()
                     )
-                ), type_system
-        );
+                );
     }
 
     virtual TypeInfoList get_arg_types() const

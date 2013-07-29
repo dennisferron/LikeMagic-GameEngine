@@ -28,9 +28,8 @@ public:
 
     DestructorCallTarget(AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_) {}
 
-   virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
+   virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        ExprPtr target = proxy->get_expr();
         delete type_system.try_conv<ObjT const*>(target)->eval();
         return 0;
     }

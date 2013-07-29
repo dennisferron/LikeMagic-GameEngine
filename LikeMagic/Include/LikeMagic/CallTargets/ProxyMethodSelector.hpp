@@ -17,7 +17,6 @@
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_void.hpp"
 
-#include "LikeMagic/SFMO/MethodCall.hpp"
 #include "LikeMagic/SFMO/ExprProxy.hpp"
 #include "LikeMagic/SFMO/Term.hpp"
 
@@ -42,33 +41,19 @@ private:
     // This calls a function on the proxy object with return type R
     // and creates a new Term to hold it and returns it in a proxy object.
     template<typename R, typename... Args, int... Indices>
-    typename boost::disable_if_c<
-        boost::is_void<R>::value || boost::is_same<R, AbstractCppObjProxy*>::value,
-            AbstractCppObjProxy*>::type
+    typename boost::disable_if<boost::is_void<R>,
+            ExprPtr>::type
     do_proxy_op(AbstractCppObjProxy* proxy, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
     {
-        return ExprProxy::create(
-                Term<R, true>::create(
-                    (proxy->*func_ptr)(type_system.try_conv<Args>(args[Indices])->eval()...)
-                ), type_system
-        );
-    }
-
-    // This calls a function on the proxy which returns a proxy object directly to script.
-    template<typename R, typename... Args, int... Indices>
-    typename boost::enable_if<
-        boost::is_same<R, AbstractCppObjProxy*>,
-            AbstractCppObjProxy*>::type
-    do_proxy_op(AbstractCppObjProxy* proxy, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
-    {
-        return (proxy->*func_ptr)(type_system.try_conv<Args>(args[Indices])->eval()...);
+        return Term<R, true>::create(
+                    (proxy->*func_ptr)(type_system.try_conv<Args>(args[Indices])->eval()...));
     }
 
     // This calls a function on the proxy which returns void.
     template<typename R, typename... Args, int... Indices>
     typename boost::enable_if<
         boost::is_void<R>,
-            AbstractCppObjProxy*>::type
+            ExprPtr>::type
     do_proxy_op(AbstractCppObjProxy* proxy, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
     {
         (proxy->*func_ptr)(type_system.try_conv<Args>(args[Indices])->eval()...);
@@ -79,16 +64,16 @@ public:
 
     ProxyMethodSelector(F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
 
-    virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
+    virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-       return do_proxy_op<typename Traits::R>(proxy, args, TPack(), IPack());
+        AbstractCppObjProxy* proxy = type_system.try_conv<AbstractCppObjProxy*>(target)->eval();
+        return do_proxy_op<typename Traits::R>(proxy, args, TPack(), IPack());
     }
 
     virtual TypeInfoList get_arg_types() const
     {
         return Traits::get_arg_types();
     }
-
 };
 
 }}

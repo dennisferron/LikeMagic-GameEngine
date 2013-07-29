@@ -98,6 +98,7 @@
 		<Unit filename="Include/LikeMagic/Interprocess/ProcessControlStructure.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/ProcessState.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/RemoteClass.hpp" />
+		<Unit filename="Include/LikeMagic/Interprocess/RemoteMethod.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/RemoteObject.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/RemoteTypeIndex.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/RequestBroker.hpp" />
@@ -106,6 +107,7 @@
 		<Unit filename="Include/LikeMagic/Interprocess/SharedObjectRegistry.hpp" />
 		<Unit filename="Include/LikeMagic/MarkableObjGraph.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/AbstractClass.hpp" />
+		<Unit filename="Include/LikeMagic/Marshaling/AbstractClassImplementation.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/Class.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/DummyClass.hpp" />
 		<Unit filename="Include/LikeMagic/Marshaling/NamespaceTypeInfo.hpp" />
@@ -123,12 +125,10 @@
 		<Unit filename="Include/LikeMagic/SFMO/ExprProxy.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/Expression.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/FalseExpr.hpp" />
-		<Unit filename="Include/LikeMagic/SFMO/MethodCall.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/NamespaceProxy.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/NullExpr.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/NumberCachingTrampoline.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/Reference.hpp" />
-		<Unit filename="Include/LikeMagic/SFMO/StaticMethodCall.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/StringCachingTrampoline.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/Term.hpp" />
 		<Unit filename="Include/LikeMagic/SFMO/Trampoline.hpp" />
@@ -176,7 +176,7 @@
 		<Unit filename="Script/Io/bootstrap.io" />
 		<Unit filename="Script/TestScripts/debugtest.io" />
 		<Unit filename="Source/AbstractCallTargetSelector.cpp" />
-		<Unit filename="Source/AbstractClass.cpp" />
+		<Unit filename="Source/AbstractClassImplementation.cpp" />
 		<Unit filename="Source/AbstractCppObjProxy.cpp" />
 		<Unit filename="Source/AbstractExpression.cpp" />
 		<Unit filename="Source/AbstractSharedArgMarshaller.cpp" />

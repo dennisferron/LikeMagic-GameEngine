@@ -117,7 +117,7 @@ public:
     std::string get_class_name(TypeIndex type) const;
     AbstractCppObjProxy* create_class_proxy(TypeIndex type) const;
     std::vector<std::string> const& get_method_names(TypeIndex type) const;
-    AbstractCppObjProxy* call(TypeIndex type, std::string method_name, AbstractCppObjProxy* proxy, std::vector<ExprPtr> args) const;
+    //AbstractCppObjProxy* call(TypeIndex type, std::string method_name, AbstractCppObjProxy* proxy, std::vector<ExprPtr> args) const;
     TypeInfoList get_arg_types(TypeIndex type, std::string method_name, int num_args) const;
     bool has_class(TypeIndex type) const;
     AbstractClass* get_class(TypeIndex type) const;

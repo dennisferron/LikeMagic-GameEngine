@@ -16,6 +16,7 @@
 #include "LikeMagic/TypeConv/ToAbstractExpressionConv.hpp"
 #include "LikeMagic/TypeConv/PtrDerefConv.hpp"
 #include "LikeMagic/TypeConv/AddrOfConv.hpp"
+#include "LikeMagic/SFMO/ExprProxy.hpp"
 
 using namespace LikeMagic::TypeConv;
 
@@ -263,7 +264,7 @@ AbstractCppObjProxy* AbstractTypeSystem::create_class_proxy(TypeIndex type) cons
     return get_class(type)->create_class_proxy();
 }
 
-
+/*
 AbstractCppObjProxy* AbstractTypeSystem::call
 (
     TypeIndex type,
@@ -272,8 +273,9 @@ AbstractCppObjProxy* AbstractTypeSystem::call
     std::vector<ExprPtr> args
 ) const
 {
-    return get_class(type)->call(proxy, method_name, args);
-}
+    return ExprProxy::create(
+        get_class(type)->call(proxy->get_expr(), method_name, args), this);
+}*/
 
 std::vector<std::string> const& AbstractTypeSystem::get_method_names(TypeIndex type) const
 {

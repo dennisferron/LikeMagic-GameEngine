@@ -16,7 +16,6 @@
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_void.hpp"
 
-#include "LikeMagic/SFMO/MethodCall.hpp"
 #include "LikeMagic/SFMO/ExprProxy.hpp"
 
 namespace LikeMagic { namespace CallTargets {
@@ -43,14 +42,14 @@ public:
 
     ArrayFieldSetterTarget(FieldPtr f_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), f_ptr(f_ptr_) {}
 
-    virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
+    virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         if (args.size() != 2)
             throw std::logic_error("Setting an array field requires 2 arguments.");
 
         SetField<CallAs>::setAt(
             type_system.try_conv<size_t>(args[0])->eval(),
-            type_system.try_conv<CallAs>(proxy->get_expr())->eval(),
+            type_system.try_conv<CallAs>(target)->eval(),
             f_ptr,
             type_system.try_conv<ArgType>(args[1]));
         return 0;

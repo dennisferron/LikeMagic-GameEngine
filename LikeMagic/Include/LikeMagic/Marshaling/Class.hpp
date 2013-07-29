@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "LikeMagic/Marshaling/AbstractClass.hpp"
+#include "LikeMagic/Marshaling/AbstractClassImplementation.hpp"
 #include "LikeMagic/Generators/GeneratorFactory.hpp"
 #include "LikeMagic/CallTargets/ConstructorCallTarget.hpp"
 #include "LikeMagic/CallTargets/DestructorCallTarget.hpp"
@@ -50,7 +50,7 @@ with all of next year's problems, not just the one in front of my face.''
 */
 
 template <typename T, bool is_copyable>
-class Class : public AbstractClass
+class Class : public AbstractClassImplementation
 {
 private:
 
@@ -97,7 +97,7 @@ private:
 
 public:
 
-    Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePath namespace_) : AbstractClass(name_, type_system_, namespace_),
+    Class(std::string name_, AbstractTypeSystem& type_system_, NamespacePath namespace_) : AbstractClassImplementation(name_, type_system_, namespace_),
         ref_type(BetterTypeInfo::create_index<T&>()), const_ref_type(BetterTypeInfo::create_index<T const&>()), static_method_type(BetterTypeInfo::create_index<StaticMethod>())
     {
         // Allow the type to be reinterpreted as AbstractDelegate to work with DelegateCallGenerator.

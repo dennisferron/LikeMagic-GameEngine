@@ -9,7 +9,8 @@ using AbstractClass = LikeMagic::SFMO::AbstractClass;
 class RemoteClass : AbstractClass
 {
 private:
-    RemoteTypeIndex
+    RemoteTypeIndex type_index;
+
 };
 
 }}

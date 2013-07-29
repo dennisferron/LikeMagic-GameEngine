@@ -52,11 +52,7 @@ void RPC::scan() const
 RPC::RPC(AbstractTypeSystem& type_system_, bool is_first_)
     :
         RequestBroker(type_system_),
-        type_system(type_system_),
-        shared_memory_name("MySharedMemory"),
-        is_first(is_first_),
-        invocation_counter(0),
-        transporter(type_system_)
+        is_first(is_first_)
 {
     if (is_first)
         shared_memory_object::remove(shared_memory_name);

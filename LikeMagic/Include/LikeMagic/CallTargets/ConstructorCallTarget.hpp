@@ -29,23 +29,21 @@ private:
 
     // This calls the Term::create function that constructs the object based on args.
     template<int... Indices>
-    AbstractCppObjProxy* construct_obj(AbstractCppObjProxy* proxy, ArgList args, IndexPack<Indices...>) const
+    ExprPtr construct_obj(ArgList args, IndexPack<Indices...>) const
     {
-        return ExprProxy::create(
-                Term<ObjT, IsCopyable>::create(
+        return Term<ObjT, IsCopyable>::create(
                     type_system.try_conv<Args>(args[Indices])->eval()...
-                ), type_system
-        );
+                );
     }
 
 public:
 
     ConstructorCallTarget(AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_) {}
 
-    virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
+    virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
-        return construct_obj(proxy, args, IPack());
+        return construct_obj(args, IPack());
     }
 
     virtual TypeInfoList get_arg_types() const
@@ -65,23 +63,21 @@ private:
 
     // This calls the Term::create function that constructs the object based on args.
     template<int... Indices>
-    AbstractCppObjProxy* construct_obj(AbstractCppObjProxy* proxy, ArgList args, IndexPack<Indices...>) const
+    ExprPtr construct_obj(ArgList args, IndexPack<Indices...>) const
     {
-        return ExprProxy::create(
-                Term<ObjT*, IsCopyable>::create(
+        return Term<ObjT*, IsCopyable>::create(
                     new ObjT(type_system.try_conv<Args>(args[Indices])->eval()...)
-                ), type_system
-        );
+                );
     }
 
 public:
 
     ConstructorCallTarget(AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_) {}
 
-    virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
+    virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
-        return construct_obj(proxy, args, IPack());
+        return construct_obj(args, IPack());
     }
 
     virtual TypeInfoList get_arg_types() const
@@ -101,7 +97,7 @@ private:
 
     // This calls the Term::create function that constructs the object based on args.
     template<int... Indices>
-    AbstractCppObjProxy* construct_obj(AbstractCppObjProxy* proxy, ArgList args, IndexPack<Indices...>) const
+    ExprPtr construct_obj(ArgList args, IndexPack<Indices...>) const
     {
         // The Term object will be held onto by an intrusive ptr inside the Reference expression object.
         auto storage_location =
@@ -110,21 +106,17 @@ private:
             )
         ;
 
-        return ExprProxy::create(
-            Reference<ObjT>::create(storage_location->eval(), storage_location)
-        ,
-            type_system
-        );
+        return Reference<ObjT>::create(storage_location->eval(), storage_location);
     }
 
 public:
 
     ConstructorCallTarget(AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_) {}
 
-    virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
+    virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
-        return construct_obj(proxy, args, IPack());
+        return construct_obj(args, IPack());
     }
 
     virtual TypeInfoList get_arg_types() const
@@ -148,7 +140,7 @@ private:
 
     // This calls the Term::create function that constructs the object based on args.
     template<int... Indices>
-    AbstractCppObjProxy* construct_obj(AbstractCppObjProxy* proxy, ArgList args, IndexPack<Indices...>) const
+    ExprPtr construct_obj(ArgList args, IndexPack<Indices...>) const
     {
         StoreT storage_location =
             Term<ObjT*, IsCopyable>::create(
@@ -156,21 +148,17 @@ private:
             )
         ;
 
-        return ExprProxy::create(
-            Reference<ObjT*>::create(storage_location->eval(), storage_location)
-        ,
-            type_system
-        );
+        return Reference<ObjT*>::create(storage_location->eval(), storage_location);
     }
 
 public:
 
     ConstructorCallTarget(AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_) {}
 
-    virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
+    virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
-        return construct_obj(proxy, args, IPack());
+        return construct_obj(args, IPack());
     }
 
     virtual TypeInfoList get_arg_types() const

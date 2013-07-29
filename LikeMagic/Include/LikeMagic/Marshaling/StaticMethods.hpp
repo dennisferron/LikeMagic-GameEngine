@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "LikeMagic/Marshaling/AbstractClass.hpp"
 #include "LikeMagic/Generators/GeneratorFactory.hpp"
 #include "LikeMagic/SFMO/ClassExpr.hpp"
 #include "LikeMagic/Marshaling/DummyClass.hpp"

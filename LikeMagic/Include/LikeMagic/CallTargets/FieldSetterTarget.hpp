@@ -17,7 +17,6 @@
 #include "boost/type_traits/is_void.hpp"
 #include "boost/type_traits/is_base_of.hpp"
 
-#include "LikeMagic/SFMO/MethodCall.hpp"
 #include "LikeMagic/SFMO/ExprProxy.hpp"
 
 namespace LikeMagic { namespace CallTargets {
@@ -41,12 +40,12 @@ public:
 
     FieldSetterTarget(FieldPtr f_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), f_ptr(f_ptr_) {}
 
-    virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
+    virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         static_assert(boost::is_const<typename boost::remove_reference<ArgType>::type>::value, "Argument source must be const &" );
 
         //set_expr_debug_name(args[0]);
-        SetField<CallAs>::set(type_system.try_conv<CallAs>(proxy->get_expr())->eval(), f_ptr,
+        SetField<CallAs>::set(type_system.try_conv<CallAs>(target)->eval(), f_ptr,
             type_system.try_conv<ArgType>(args[0]));
         return 0;
     }

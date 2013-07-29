@@ -75,17 +75,9 @@ public:
 
     ExtensionMethodCallTarget(F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
 
-    virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
+    virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        auto result_proxy = ExprProxy::create
-        (
-            build_method_call
-            (
-                proxy->get_expr(), args, TypePack<R>(), IPack()
-            ),
-            type_system
-        );
-        return result_proxy;
+        return build_method_call(target, args, TypePack<R>(), IPack());
     }
 
     virtual TypeInfoList get_arg_types() const

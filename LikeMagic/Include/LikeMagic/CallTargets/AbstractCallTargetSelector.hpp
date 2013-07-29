@@ -23,6 +23,8 @@ namespace LikeMagic {
 
 namespace LikeMagic { namespace CallTargets {
 
+using ExprPtr = LikeMagic::SFMO::ExprPtr;
+
 class AbstractCallTargetSelector : public LikeMagic::DebugInfo
 {
 protected:
@@ -32,9 +34,9 @@ public:
     AbstractCallTargetSelector(LikeMagic::AbstractTypeSystem const& type_system_);
     virtual ~AbstractCallTargetSelector();
 
-    virtual LikeMagic::SFMO::AbstractCppObjProxy* call
+    virtual ExprPtr call
         (
-            LikeMagic::SFMO::AbstractCppObjProxy* target,
+            ExprPtr target,
             LikeMagic::SFMO::ArgList args
         ) const = 0;
 

@@ -5,9 +5,6 @@ namespace LikeMagic { namespace Interprocess {
 class RPC : public RequestBroker
 {
 private:
-    AbstractTypeSystem& type_system;
-
-    char const* shared_memory_name;
     boost::interprocess::shared_memory_object* shm;
     boost::interprocess::mapped_region* region;
     SharedMemoryFormat* data;

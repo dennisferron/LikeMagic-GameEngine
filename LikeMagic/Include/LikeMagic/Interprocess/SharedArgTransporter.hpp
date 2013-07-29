@@ -47,7 +47,7 @@ public:
 
     void add_marshaller(TypeIndex type, ArgMarshaller marshaller);
 
-    // TypeInfoList comes from
+    // You can get a type info list from AbstractCallTargetSelector
     // virtual LikeMagic::Utility::TypeInfoList AbstractCallTargetSelector::get_arg_types() const = 0;
 
     void write_args(TypeInfoList arg_types, void* buffer, ArgList args);

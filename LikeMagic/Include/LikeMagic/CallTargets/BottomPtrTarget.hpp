@@ -25,12 +25,9 @@ public:
 
     BottomPtrTarget(AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_) {}
 
-    virtual AbstractCppObjProxy* call(AbstractCppObjProxy* proxy, ArgList args) const
+    virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        return ExprProxy::create(
-            BottomPtrExpr::create(type_system.try_conv<void*>(proxy->get_expr().get()))
-          , type_system
-        );
+        return BottomPtrExpr::create(type_system.try_conv<void*>(target.get()));
     }
 
     virtual TypeInfoList get_arg_types() const
