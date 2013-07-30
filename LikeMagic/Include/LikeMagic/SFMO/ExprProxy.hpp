@@ -32,7 +32,7 @@ public:
     static AbstractCppObjProxy* create(ExprPtr expr_, AbstractTypeSystem const& type_system, LikeMagic::Utility::TypeIndex class_id);
 
     virtual void dispose() const;
-    virtual boost::intrusive_ptr<AbstractExpression> get_expr();
+    virtual ExprPtr get_expr();
     virtual bool is_terminal() const;
     virtual std::string describe() const;
     virtual bool disable_to_script_conv() const;
