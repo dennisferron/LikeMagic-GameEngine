@@ -43,10 +43,10 @@ private:
     template<typename R, typename... Args, int... Indices>
     typename boost::disable_if<boost::is_void<R>,
             ExprPtr>::type
-    do_proxy_op(AbstractCppObjProxy* proxy, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
+    do_proxy_op(ExprPtr target, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
     {
         return Term<R, true>::create(
-                    (proxy->*func_ptr)(type_system.try_conv<Args>(args[Indices])->eval()...));
+                    (target->*func_ptr)(type_system.try_conv<Args>(args[Indices])->eval()...));
     }
 
     // This calls a function on the proxy which returns void.
@@ -54,9 +54,9 @@ private:
     typename boost::enable_if<
         boost::is_void<R>,
             ExprPtr>::type
-    do_proxy_op(AbstractCppObjProxy* proxy, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
+    do_proxy_op(ExprPtr target, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
     {
-        (proxy->*func_ptr)(type_system.try_conv<Args>(args[Indices])->eval()...);
+        (target->*func_ptr)(type_system.try_conv<Args>(args[Indices])->eval()...);
         return 0;
     }
 
@@ -66,8 +66,7 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        AbstractCppObjProxy* proxy = type_system.try_conv<AbstractCppObjProxy*>(target)->eval();
-        return do_proxy_op<typename Traits::R>(proxy, args, TPack(), IPack());
+        return do_proxy_op<typename Traits::R>(target, args, TPack(), IPack());
     }
 
     virtual TypeInfoList get_arg_types() const
