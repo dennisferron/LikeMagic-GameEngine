@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -7,8 +7,8 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
-#include "LikeMagic/SFMO/Term.hpp"
-#include "LikeMagic/SFMO/NullExpr.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
+#include "LikeMagic/Exprs/NullExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 #include "Iocaste/LikeMagicAdapters/ToIoObjectExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/IoObjectExpr.hpp"
@@ -17,7 +17,7 @@
 using namespace LikeMagic;
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::TypeConv;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 
 namespace Iocaste { namespace LikeMagicAdapters {
 
@@ -65,7 +65,7 @@ struct To##name : public AbstractTypeConverter \
 }; \
 
 #define ADD_CONV(name, type) \
-type_sys.add_converter_simple(BetterTypeInfo::create_index<type>(), ToIoTypeInfo::create_index(), new To##name);
+type_system->add_converter_simple(BetterTypeInfo::create_index<type>(), ToIoTypeInfo::create_index(), new To##name);
 
 DECL_CONV(Number, double, IONUMBER(value))
 DECL_CONV(Bool, bool, value? IOTRUE(self) : IOFALSE(self))
@@ -93,9 +93,9 @@ struct ToNumberFromT : public AbstractTypeConverter
 
     virtual std::string describe() const { return "To Number from " + BetterTypeInfo::create_index<T>().describe() + " Conv"; }
 
-    static void add_conv(AbstractTypeSystem& type_sys)
+    static void add_conv()
     {
-        type_sys.add_converter_simple(BetterTypeInfo::create_index<T>(), ToIoTypeInfo::create_index(), new ToNumberFromT<T>());
+        type_system->add_converter_simple(BetterTypeInfo::create_index<T>(), ToIoTypeInfo::create_index(), new ToNumberFromT<T>());
     }
 };
 
@@ -133,7 +133,7 @@ struct ToIoNil : public AbstractTypeConverter
     virtual std::string describe() const { return "To nil Conv"; } \
 };
 
-void add_convs_to_script(AbstractTypeSystem& type_sys, IoVM* iovm)
+void add_convs_to_script(IoVM* iovm)
 {
     //ADD_CONV(Number, double)
     //ADD_CONV(Number, float)
@@ -143,10 +143,10 @@ void add_convs_to_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     ADD_CONV(Vector_of_Int, std::vector<int> const&)
     ADD_CONV(Vector_of_UInt, std::vector<unsigned int> const&)
 
-    type_sys.add_converter_simple(BetterTypeInfo::create_index<void>(), ToIoTypeInfo::create_index(), new ToIoNil);
+    type_system->add_converter_simple(BetterTypeInfo::create_index<void>(), ToIoTypeInfo::create_index(), new ToIoNil);
 
-    ToNumberFromT<double>::add_conv(type_sys);
-    ToNumberFromT<float>::add_conv(type_sys);
+    ToNumberFromT<double>::add_conv();
+    ToNumberFromT<float>::add_conv();
 }
 
 }}

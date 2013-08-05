@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -15,7 +15,7 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace LikeMagic { namespace SFMO {
+namespace LikeMagic { namespace Exprs {
 
 // "LikeMagic classes" protos do not have a C++ object attached because they
 // represent C++ classes, not instances, yet there has to be a proxy in order

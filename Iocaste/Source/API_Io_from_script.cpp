@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -7,9 +7,9 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
-#include "LikeMagic/SFMO/Term.hpp"
-#include "LikeMagic/SFMO/NullExpr.hpp"
-#include "LikeMagic/SFMO/FalseExpr.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
+#include "LikeMagic/Exprs/NullExpr.hpp"
+#include "LikeMagic/Exprs/FalseExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 #include "Iocaste/LikeMagicAdapters/IoObjectExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp"
@@ -66,7 +66,7 @@ std::vector<T> from_list(IoObject* io_obj)
 
 
 
-#define MKCONV(type_sys, scriptType, cppType, ioFunc) \
+#define MKCONV(scriptType, cppType, ioFunc) \
 {\
     struct From##scriptType : public AbstractTypeConverter \
     { \
@@ -79,7 +79,7 @@ std::vector<T> from_list(IoObject* io_obj)
         virtual std::string describe() const { return "From " #scriptType " Conv"; } \
     }; \
 \
-    type_sys.add_converter_simple(FromIoTypeInfo::create_index(#scriptType), BetterTypeInfo::create_index<cppType&>(), new From##scriptType); \
+    type_system->add_converter_simple(FromIoTypeInfo::create_index(#scriptType), BetterTypeInfo::create_index<cppType&>(), new From##scriptType); \
 }
 
 void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
@@ -99,9 +99,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     static auto from_type(FromIoTypeInfo::create_index(name2));
     auto to_type = FromNil().wrap_expr(0)->get_type();
     auto conv = new FromNil;
-    type_sys.add_converter_simple(from_type, to_type, conv);
-    //type_sys.print_conv_chain(from_type, to_type);
-    //type_sys.print_conv_chain(from_type, BetterTypeInfo::create_index<char*>());
+    type_system->add_converter_simple(from_type, to_type, conv);
 
     // Interpret nil as false in bool contexts.
     struct FromNilToFalse : public AbstractTypeConverter
@@ -113,7 +111,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
 
         virtual std::string describe() const { return "From Nil to 'false' Conv"; }
     };
-    type_sys.add_converter_simple(FromIoTypeInfo::create_index("Nil"), BetterTypeInfo::create_index<bool>(), new FromNilToFalse);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), BetterTypeInfo::create_index<bool>(), new FromNilToFalse);
 
     // Allow nil to convert to void (for IoBlock eval<void>)
     struct FromNilToVoid : public AbstractTypeConverter
@@ -125,36 +123,35 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
 
         virtual std::string describe() const { return "From Nil to void Conv"; }
     };
-    type_sys.add_converter_simple(FromIoTypeInfo::create_index("Nil"), BetterTypeInfo::create_index<void>(), new FromNilToVoid);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), BetterTypeInfo::create_index<void>(), new FromNilToVoid);
 
 
     // IoBlock requires an extra argument (type_sys)
     struct FromIoBlock : public AbstractTypeConverter
     {
-        AbstractTypeSystem const& type_sys;
         IoVM* iovm;
-        FromIoBlock(AbstractTypeSystem const& type_sys_, IoVM* iovm_) : type_sys(type_sys_), iovm(iovm_) {}
+        FromIoBlock(IoVM* iovm_) : iovm(iovm_) {}
 
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
             boost::intrusive_ptr<IoObjectExpr> io_expr = static_cast<IoObjectExpr*>(expr.get());
             IoObject* io_obj = io_expr->eval();
-            return Term<IoBlock, true>::create(&type_sys, iovm, io_obj, io_obj);
+            return Term<IoBlock, true>::create(iovm, io_obj, io_obj);
         }
 
         virtual std::string describe() const { return "From Block Conv"; }
     };
 
-    type_sys.add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoBlock&>(), new FromIoBlock(type_sys, iovm));
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoBlock&>(), new FromIoBlock(type_sys, iovm));
 
-    MKCONV(type_sys, Number, double, IoNumber_asDouble)
-    MKCONV(type_sys, Number, int, IoNumber_asInt)
-    MKCONV(type_sys, Number, unsigned int, IoNumber_asInt)
-    MKCONV(type_sys, Number, short, (short)IoNumber_asInt)
-    MKCONV(type_sys, Number, unsigned char, (unsigned char)IoNumber_asInt)
-    MKCONV(type_sys, Number, float, IoNumber_asFloat)
-    MKCONV(type_sys, Sequence, std::string, IoSeq_asCString)
-    //MKCONV(type_sys, Bool, bool, ISTRUE)
+    MKCONV(Number, double, IoNumber_asDouble)
+    MKCONV(Number, int, IoNumber_asInt)
+    MKCONV(Number, unsigned int, IoNumber_asInt)
+    MKCONV(Number, short, (short)IoNumber_asInt)
+    MKCONV(Number, unsigned char, (unsigned char)IoNumber_asInt)
+    MKCONV(Number, float, IoNumber_asFloat)
+    MKCONV(Sequence, std::string, IoSeq_asCString)
+    //MKCONV(Bool, bool, ISTRUE)
 
     struct FromBool : public AbstractTypeConverter
     {
@@ -169,44 +166,44 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
         virtual std::string describe() const { return "From Bool Conv"; }
     };
 
-    type_sys.add_converter_simple(FromIoTypeInfo::create_index("Bool"), BetterTypeInfo::create_index<bool&>(), new FromBool);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Bool"), BetterTypeInfo::create_index<bool&>(), new FromBool);
 
 
-    //MKCONV(type_sys, Vector, std::vector<long double>, from_vector<long double>)
-    MKCONV(type_sys, Vector, std::vector<double>, from_vector<double>)
-    //MKCONV(type_sys, Vector, std::vector<float>, from_vector<float>)
-    //MKCONV(type_sys, Vector, std::vector<long long>, from_vector<long long>)
-    MKCONV(type_sys, Vector, std::vector<long>, from_vector<long>)
-    MKCONV(type_sys, Vector, std::vector<short>, from_vector<short>)
-    //MKCONV(type_sys, Vector, std::vector<signed char>, from_vector<signed char>)
-    //MKCONV(type_sys, Vector, std::vector<unsigned long long>, from_vector<unsigned long long>)
-    MKCONV(type_sys, Vector, std::vector<unsigned long>, from_vector<unsigned long>)
-    MKCONV(type_sys, Vector, std::vector<unsigned short>, from_vector<unsigned short>)
-    //MKCONV(type_sys, Vector, std::vector<unsigned char>, from_vector<unsigned char>)
+    //MKCONV(Vector, std::vector<long double>, from_vector<long double>)
+    MKCONV(Vector, std::vector<double>, from_vector<double>)
+    //MKCONV(Vector, std::vector<float>, from_vector<float>)
+    //MKCONV(Vector, std::vector<long long>, from_vector<long long>)
+    MKCONV(Vector, std::vector<long>, from_vector<long>)
+    MKCONV(Vector, std::vector<short>, from_vector<short>)
+    //MKCONV(Vector, std::vector<signed char>, from_vector<signed char>)
+    //MKCONV(Vector, std::vector<unsigned long long>, from_vector<unsigned long long>)
+    MKCONV(Vector, std::vector<unsigned long>, from_vector<unsigned long>)
+    MKCONV(Vector, std::vector<unsigned short>, from_vector<unsigned short>)
+    //MKCONV(Vector, std::vector<unsigned char>, from_vector<unsigned char>)
 
 
     // List elements have to be converted one-by-one.  There's a class, IoListSTL, that does this
     // but only double is implemented.  This strategy needs to be rethought so we can apply
     // a try_conv to all the list elements, but IoList isn't really being used at the moment anyway.
 
-    //MKCONV(type_sys, List, std::vector<long double>, from_list<long double>)
-    MKCONV(type_sys, List, std::vector<double>, from_list<double>)
-    //MKCONV(type_sys, List, std::vector<float>, from_list<float>)
-    //MKCONV(type_sys, List, std::vector<long long>, from_list<long long>)
-    //MKCONV(type_sys, List, std::vector<long>, from_list<long>)
-    //MKCONV(type_sys, List, std::vector<short>, from_list<short>)
-    //MKCONV(type_sys, List, std::vector<signed char>, from_list<signed char>)
-    //MKCONV(type_sys, List, std::vector<unsigned long long>, from_list<unsigned long long>)
-    //MKCONV(type_sys, List, std::vector<unsigned long>, from_list<unsigned long>)
-    //MKCONV(type_sys, List, std::vector<unsigned short>, from_list<unsigned short>)
-    //MKCONV(type_sys, List, std::vector<unsigned char>, from_list<unsigned char>)
+    //MKCONV(List, std::vector<long double>, from_list<long double>)
+    MKCONV(List, std::vector<double>, from_list<double>)
+    //MKCONV(List, std::vector<float>, from_list<float>)
+    //MKCONV(List, std::vector<long long>, from_list<long long>)
+    //MKCONV(List, std::vector<long>, from_list<long>)
+    //MKCONV(List, std::vector<short>, from_list<short>)
+    //MKCONV(List, std::vector<signed char>, from_list<signed char>)
+    //MKCONV(List, std::vector<unsigned long long>, from_list<unsigned long long>)
+    //MKCONV(List, std::vector<unsigned long>, from_list<unsigned long>)
+    //MKCONV(List, std::vector<unsigned short>, from_list<unsigned short>)
+    //MKCONV(List, std::vector<unsigned char>, from_list<unsigned char>)
 }
 
-ExprPtr from_script(IoObject* self, IoObject* io_obj, AbstractTypeSystem const& type_sys, TypeIndex to_type)
+ExprPtr from_script(IoObject* self, IoObject* io_obj, TypeIndex to_type)
 {
     static TypeIndex wants_io_obj = BetterTypeInfo::create_index<IoObject*>();
 
-    if (is_sfmo_obj(io_obj) && !(to_type == wants_io_obj))
+    if (is_Exprs_obj(io_obj) && !(to_type == wants_io_obj))
     {
         AbstractCppObjProxy* proxy(
                 reinterpret_cast<AbstractCppObjProxy*>

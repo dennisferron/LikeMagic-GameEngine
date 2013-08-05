@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -8,26 +8,25 @@
 
 #pragma once
 
-#include "LikeMagic/SFMO/BottomPtrExpr.hpp"
-#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
-#include "LikeMagic/SFMO/ExprProxy.hpp"
-#include "LikeMagic/SFMO/BottomPtrExpr.hpp"
-#include "LikeMagic/SFMO/NullExpr.hpp"
+#include "LikeMagic/Exprs/BottomPtrExpr.hpp"
+#include "LikeMagic/CallTargets/AbstractMethod.hpp"
+#include "LikeMagic/Exprs/BottomPtrExpr.hpp"
+#include "LikeMagic/Exprs/NullExpr.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 
-class BottomPtrTarget : public AbstractCallTargetSelector
+class BottomPtrTarget : public AbstractMethod
 {
 public:
 
-    BottomPtrTarget(AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_) {}
+    BottomPtrTarget() {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        return BottomPtrExpr::create(type_system.try_conv<void*>(target.get()));
+        return BottomPtrExpr::create(type_system->try_conv<void*>(target.get()));
     }
 
     virtual TypeInfoList get_arg_types() const

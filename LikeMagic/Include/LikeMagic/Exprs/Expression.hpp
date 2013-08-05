@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -19,7 +19,7 @@
 #include <iostream>
 
 
-namespace LikeMagic { namespace SFMO {
+namespace LikeMagic { namespace Exprs {
 
 using LikeMagic::Utility::BetterTypeInfo;
 using LikeMagic::Utility::TypeIndex;
@@ -42,6 +42,9 @@ public:
     virtual boost::intrusive_ptr<Expression<T>> clone() const = 0;
     typedef T ReturnType;
     virtual TypeIndex get_type() const { return BetterTypeInfo::create_index<T>(); }
+    virtual TypeIndex get_class_type() const { return get_type().class_type(); }
+    virtual bool is_null() const { return false; }
+    virtual bool disable_to_script_conv() const { return false; }
 };
 
 }}

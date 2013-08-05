@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -10,13 +10,11 @@
 
 #include "LikeMagic/Utility/StripModifiers.hpp"
 
-#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
+#include "LikeMagic/CallTargets/AbstractMethod.hpp"
 
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_void.hpp"
-
-#include "LikeMagic/SFMO/ExprProxy.hpp"
 
 #include "boost/shared_ptr.hpp"
 
@@ -25,10 +23,10 @@
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 
 template <typename CallAs, typename FieldAccessor>
-class CustomFieldGetterTarget : public AbstractCallTargetSelector
+class CustomFieldGetterTarget : public AbstractMethod
 {
 private:
     typedef StripModifiers<CallAs> stripped;
@@ -40,7 +38,7 @@ public:
 
     static bool const is_const_func = true;
 
-    CustomFieldGetterTarget(FieldAccessor f_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), f(f_) {}
+    CustomFieldGetterTarget(FieldAccessor f_) : f(f_) {}
 
     // Both the set and get target have a pointer to the same field accessor object;
     // only one of them needs to delete the shared accessor.
@@ -50,7 +48,7 @@ public:
     {
         return Term<FieldType, true>::create(
                     f->get(
-                        type_system.try_conv<CallAs>(target)->eval()
+                        type_system->try_conv<CallAs>(target)->eval()
                     )
                 );
     }

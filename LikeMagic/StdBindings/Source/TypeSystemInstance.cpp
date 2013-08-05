@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -45,7 +45,7 @@ add_conv<type const&, double const&, NumberConv>();
 
 using namespace LikeMagic;
 using namespace LikeMagic::StdBindings;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::TypeConv;
 using namespace LikeMagic::Utility;
 
@@ -84,9 +84,8 @@ TypeSystemInstance::TypeSystemInstance()
     add_class(proxy_methods_type, proxy_methods);
     proxy_methods->bind_method("get_class", &AbstractCppObjProxy::get_class);
     proxy_methods->bind_method("get_type", &AbstractCppObjProxy::get_type);
-    proxy_methods->bind_method("lm_get_type", &AbstractCppObjProxy::get_type);  // Added this because AbstractClass class_proxy also has a get_type we don't want to call
+    proxy_methods->bind_method("lm_get_type", &AbstractCppObjProxy::get_type);  // Added this because TypeMirror class_proxy also has a get_type we don't want to call
     proxy_methods->bind_method("describe", &AbstractCppObjProxy::describe);
-    proxy_methods->bind_method("get_base_names", &AbstractCppObjProxy::get_base_names);
 
     // Allow conversions from nil to any pointer.
     static TypeIndex nil_expr_type = BetterTypeInfo::create_index<BottomPtrType>();

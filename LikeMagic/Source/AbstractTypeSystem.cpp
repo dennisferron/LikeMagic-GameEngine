@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -8,7 +8,7 @@
 
 
 #include "LikeMagic/AbstractTypeSystem.hpp"
-#include "LikeMagic/Marshaling/AbstractClass.hpp"
+#include "LikeMagic/Marshaling/TypeMirror.hpp"
 
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
@@ -16,7 +16,6 @@
 #include "LikeMagic/TypeConv/ToAbstractExpressionConv.hpp"
 #include "LikeMagic/TypeConv/PtrDerefConv.hpp"
 #include "LikeMagic/TypeConv/AddrOfConv.hpp"
-#include "LikeMagic/SFMO/ExprProxy.hpp"
 
 using namespace LikeMagic::TypeConv;
 
@@ -27,9 +26,7 @@ using namespace std;
 
 using namespace LikeMagic;
 
-// Stuck here because compiler complains when it is pure virtual:
-ITypeSystemObserver::~ITypeSystemObserver() {}
-
+AbstractTypeSystem* type_system = NULL;
 
 template <typename From, typename To>
 void AbstractTypeSystem::add_nochange_conv(TypeInfoPtr from, TypeInfoPtr to)
@@ -114,75 +111,19 @@ void AbstractTypeSystem::add_conv_track(TypeInfoPtr type)
     add_nochange_conv<T* , T const* >(as_ptr_val, as_ptr_val->as_const_obj_type());
 }
 
-// Missing AbstractTypeSystem:: here is not a mistake - it's a helper function for this cpp file, not a member function.
-void add_class_to_observer(ITypeSystemObserver* observer, AbstractClass const* class_, set<TypeIndex>& already_registered)
-{
-    if (already_registered.find(class_->get_type()) == already_registered.end())
-    {
-        already_registered.insert(class_->get_type());
-
-        // Have to register the bases before you register the derived classes.
-        auto bases = class_->get_base_classes();
-        for (auto base=bases.begin(); base != bases.end(); base++)
-            add_class_to_observer(observer, *base, already_registered);
-
-        observer->register_class(class_);
-    }
-}
-
-void AbstractTypeSystem::add_type_system_observer(ITypeSystemObserver* observer)
-{
-    // For debugging
-    if (observer == NULL)
-        return;
-
-    // If this is the first time adding the observer, catch them up on what has been set up.
-    if (observers.find(observer) == observers.end())
-    {
-        auto types = get_registered_types();
-        set<TypeIndex> already_registered;
-
-        // Register all the classes
-        for (auto it=types.begin(); it != types.end(); it++)
-        {
-            auto class_ = get_class(*it);
-
-            if (!(*it == class_->get_type()))
-            {
-                cout << "Class name is " << class_->get_class_name() << " and ts class name is " << get_class_name(*it) << endl;
-                cout << "Error!  ts type " << it->get_id() << " != " << " class type " << class_->get_type().get_id() << endl;
-                cout << endl;
-            }
-
-            //cout << class_->get_class_name() << " ts iterator num methods is " << get_method_names(*it).size() << endl;
-            //cout << "class " << class_->get_class_name() << " num methods is " << class_->get_method_names().size() << endl;
-            //cout << class_->get_class_name() << " ts get type num methods is " << get_method_names(class_->get_type()).size() << endl;
-
-            add_class_to_observer(observer, class_, already_registered);
-
-            // Observer will register the methods itself -?
-            //auto methods = class_->get_method_names();
-            //for (auto method = methods.begin(); method != methods.end(); ++method)
-            //    observer->register_method(class_, *method, NULL);
-        }
-    }
-
-    observers.insert(observer);
-}
-
-void AbstractTypeSystem::register_base(LikeMagic::Marshaling::AbstractClass* class_, LikeMagic::Marshaling::AbstractClass const* base)
+void AbstractTypeSystem::register_base(LikeMagic::Marshaling::TypeMirror* class_, LikeMagic::Marshaling::TypeMirror const* base)
 {
     for (auto it=observers.begin(); it!=observers.end(); ++it)
         (*it)->register_base(class_, base);
 }
 
-void AbstractTypeSystem::register_method(LikeMagic::Marshaling::AbstractClass* class_, std::string method_name, LikeMagic::Marshaling::AbstractCallTargetSelector* method)
+void AbstractTypeSystem::register_method(LikeMagic::Marshaling::TypeMirror* class_, std::string method_name, LikeMagic::Marshaling::AbstractMethod* method)
 {
     for (auto it=observers.begin(); it!=observers.end(); ++it)
         (*it)->register_method(class_, method_name, method);
 }
 
-void AbstractTypeSystem::add_class(TypeIndex index, AbstractClass* class_ptr)
+void AbstractTypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr)
 {
     if (!index.is_class_type())
         throw std::logic_error("add_class type index has to be a class type!");
@@ -259,9 +200,9 @@ void AbstractTypeSystem::set_leak_memory(bool flag)
     leak_memory_flag = flag;
 }
 
-AbstractCppObjProxy* AbstractTypeSystem::create_class_proxy(TypeIndex type) const
+ExprPtr AbstractTypeSystem::create_class_expr(TypeIndex type) const
 {
-    return get_class(type)->create_class_proxy();
+    return get_class(type)->create_class_expr();
 }
 
 /*
@@ -276,20 +217,6 @@ AbstractCppObjProxy* AbstractTypeSystem::call
     return ExprProxy::create(
         get_class(type)->call(proxy->get_expr(), method_name, args), this);
 }*/
-
-std::vector<std::string> const& AbstractTypeSystem::get_method_names(TypeIndex type) const
-{
-    return get_class(type)->get_method_names();
-}
-
-TypeInfoList AbstractTypeSystem::get_arg_types(
-    TypeIndex type,
-    std::string method_name,
-    int num_args
-) const
-{
-    return get_class(type)->get_arg_types(method_name, num_args);
-}
 
 bool AbstractTypeSystem::has_class(TypeIndex type) const
 {
@@ -314,12 +241,12 @@ bool AbstractTypeSystem::has_class(TypeIndex type) const
     return found2;
 }
 
-AbstractClass* AbstractTypeSystem::get_class(TypeIndex type) const
+TypeMirror* AbstractTypeSystem::get_class(TypeIndex type) const
 {
     if (has_class(type))
     {
-        //AbstractClass* p1 = classes.find(type.class_type())->second;
-        AbstractClass* p2 = classes2[type.get_class_id()];
+        //TypeMirror* p1 = classes.find(type.class_type())->second;
+        TypeMirror* p2 = classes2[type.get_class_id()];
 
         //if (p1 != p2)
         //    throw std::logic_error("get_class problem");

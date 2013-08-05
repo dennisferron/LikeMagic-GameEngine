@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -29,7 +29,7 @@ namespace Bindings { namespace Irrlicht {
 
 DLL_PUBLIC void add_protos(IoVM& vm, RuntimeTypeSystem& type_sys)
 {
-    //LM_STATIC_FUNC(type_sys, Bindings::Irrlicht, add_protos_irr)
+    //LM_STATIC_FUNC(Bindings::Irrlicht, add_protos_irr)
 }
 
 void add_protos_irr(IoVM& vm)

@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -12,7 +12,7 @@
 #include "Iocaste/LikeMagicAdapters/API_Io.hpp"
 
 #include "LikeMagic/AbstractTypeSystem.hpp"
-#include "LikeMagic/SFMO/ExprProxy.hpp"
+#include "LikeMagic/Exprs/ExprProxy.hpp"
 
 #include "LikeMagic/IMarkable.hpp"
 
@@ -23,7 +23,7 @@
 namespace Iocaste { namespace LikeMagicAdapters {
 
 using LikeMagic::AbstractTypeSystem;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Utility;
 
 class FromIoTypeInfo : public AbstractTypeInfo

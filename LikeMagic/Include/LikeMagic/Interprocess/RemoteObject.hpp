@@ -4,6 +4,8 @@
 
 namespace LikeMagic { namespace Interprocess
 
+using TypeIndex = LikeMagic::Utility::TypeIndex;
+
 struct ProcessControlStructure;
 typedef int ObjectHandle;
 
@@ -13,14 +15,14 @@ private:
     ProcessControlStructure* remote_process;
     ObjectHandle remote_object;
 
-    RemoteObject(AbstractTypeSystem const& type_system_, LikeMagic::Utility::TypeIndex class_id, ProcessControlStructure* remote_process_);
+    RemoteObject(TypeIndex class_id, ProcessControlStructure* remote_process_);
 
     virtual ~ExprProxy();
 
 public:
 
-    static AbstractCppObjProxy* create(ExprPtr expr_, AbstractTypeSystem const& type_system);
-    static AbstractCppObjProxy* create(ExprPtr expr_, AbstractTypeSystem const& type_system, LikeMagic::Utility::TypeIndex class_id);
+    static AbstractCppObjProxy* create(ExprPtr expr_);
+    static AbstractCppObjProxy* create(ExprPtr expr_, LikeMagic::Utility::TypeIndex class_id);
 
     virtual void dispose() const;
     virtual boost::intrusive_ptr<AbstractExpression> get_expr();

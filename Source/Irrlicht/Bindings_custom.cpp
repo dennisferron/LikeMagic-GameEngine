@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -24,7 +24,7 @@ void add_bindings_custom(RuntimeTypeSystem& type_sys)
 {
     add_bindings_orientation(type_sys);
 
-    auto ns_irr_custom = Namespace::global(type_sys).subspace("irr").subspace("custom");
+    auto ns_irr_custom = Namespace::global->subspace("irr").subspace("custom");
 
     LM_CLASS(ns_irr_custom, ISceneNode)
 

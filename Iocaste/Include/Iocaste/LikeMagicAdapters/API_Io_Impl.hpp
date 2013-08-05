@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -33,13 +33,13 @@
 #include "IoError.h"
 
 using namespace std;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace Iocaste::LikeMagicAdapters;
 
 extern "C"
 {
     IoObject* API_io_rawClone(IoObject* proto);
-    void API_io_free_proxy(IoObject* self);
+    void API_io_free_expr(IoObject* self);
     void API_io_mark(IoObject* self);
     IoObject* API_io_proto(IoState* state);
     IoObject* API_io_perform(IoObject *self, IoObject *locals, IoMessage *m);
@@ -55,15 +55,15 @@ typedef CollectorMarker IoObject;
 
 namespace Iocaste { namespace LikeMagicAdapters {
 
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Utility;
 
-bool is_sfmo_obj(IoObject* io_obj);
+bool is_Exprs_obj(IoObject* io_obj);
 boost::intrusive_ptr<AbstractExpression> from_script(IoObject* self, IoObject* io_obj, TypeIndex expected_type);
 
 IoMethodTable* make_io_method_table(std::vector<std::string> const& method_names);
 IoObject* get_io_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos);
-ExprPtr get_expr_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos, AbstractTypeSystem const& type_sys, TypeIndex target_type);
+ExprPtr get_expr_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos, TypeIndex target_type);
 
 //IoObject* to_script(IoObject *self, IoObject *locals, IoMessage *m, AbstractCppObjProxy* proxy);
 

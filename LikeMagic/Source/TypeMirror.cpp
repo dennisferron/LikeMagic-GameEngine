@@ -1,14 +1,14 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-#include "LikeMagic/Marshaling/AbstractClassImplementation.hpp"
-#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
-#include "LikeMagic/SFMO/AbstractExpression.hpp"
+#include "LikeMagic/Marshaling/CommonClassImpl.hpp"
+#include "LikeMagic/CallTargets/AbstractMethod.hpp"
+#include "LikeMagic/Exprs/AbstractExpression.hpp"
 #include "LikeMagic/AbstractTypeSystem.hpp"
 #include "LikeMagic/CallTargets/BottomPtrTarget.hpp"
 
@@ -24,58 +24,40 @@ using namespace LikeMagic::Marshaling;
 using namespace LikeMagic::CallTargets;
 using namespace std;
 
-// For convenience, also define the virtual destructor for the abstract base here.
-AbstractClass::~AbstractClass() {}
+struct TypeMirror::Impl
+{
+    AbstractCppObjProxy* class_proxy;  // Allows you to call constructors without already having C++ object
+    boost::unordered_map<std::string, TypeMirror const*> bases;
+    std::string class_name;
+    boost::unordered_map<std::string, std::map<int, AbstractMethod*>> methods;
+};
 
-AbstractClassImplementation::AbstractClassImplementation(std::string name_, AbstractTypeSystem& type_system_, NamespacePath namespace_) :
+
+TypeMirror::~TypeMirror() {}
+
+CommonClassImpl::CommonClassImpl(std::string name_, NamespacePath namespace_) :
     class_name(name_),
-    type_system(type_system_),
     ns(namespace_)
 {
     if (name_ == "")
         throw std::logic_error("Tried to register class with no name!");
 
-    auto ptr_caster = new BottomPtrTarget(type_system);
+    auto ptr_caster = new BottomPtrTarget();
     add_method("unsafe_ptr_cast", ptr_caster);
 }
 
-
-AbstractClassImplementation::~AbstractClassImplementation()
+CommonClassImpl::~CommonClassImpl()
 {
     for (auto it=methods.begin(); it != methods.end(); it++)
     {
-        std::map<int, AbstractCallTargetSelector*> const& overloads(it->second);
+        std::map<int, AbstractMethod*> const& overloads(it->second);
         for (auto it2=overloads.begin(); it2 != overloads.end(); it2++)
             delete it2->second;
     }
 }
 
-std::vector<AbstractClass const*> AbstractClassImplementation::get_base_classes() const
+void CommonClassImpl::add_method(std::string method_name, AbstractMethod* method)
 {
-    std::vector<AbstractClass const*> result;
-
-    for (auto it = bases.begin(); it != bases.end(); ++it)
-        result.push_back(it->second);
-
-    return result;
-}
-
-std::vector<AbstractCallTargetSelector*> AbstractClassImplementation::get_methods() const
-{
-    std::vector<AbstractCallTargetSelector*> result;
-
-    for (auto overloads = methods.begin(); overloads != methods.end(); ++overloads)
-        for (auto it = overloads->second.begin(); it != overloads->second.end(); ++it)
-            result.push_back(it->second);
-
-    return result;
-}
-
-
-void AbstractClassImplementation::add_method(std::string method_name, AbstractCallTargetSelector* method)
-{
-    method->set_debug_name(method_name);
-
     int num_args = method->get_arg_types().size();
 
     if (has_method(method_name, num_args))
@@ -91,25 +73,11 @@ void AbstractClassImplementation::add_method(std::string method_name, AbstractCa
         // Don't add the same method name if it already has the method.
         method_names.push_back(method_name);
         methods[method_name][num_args] = method;
-        type_system.register_method(this, method_name, method);
+        type_system->register_method(this, method_name, method);
     }
 }
 
-AbstractCallTargetSelector* AbstractClassImplementation::get_method(std::string method_name, int num_args) const
-{
-    AbstractCallTargetSelector* method =
-        try_get_method(method_name, num_args);
-
-    if (method)
-        return method;
-    else
-    {
-        suggest_method(method_name, num_args);
-        return 0;  // never get here
-    }
-}
-
-void AbstractClassImplementation::suggest_method(std::string method_name, int num_args) const
+void CommonClassImpl::suggest_method(std::string method_name, int num_args) const
 {
     auto candidates = methods.find(method_name);
 
@@ -163,7 +131,7 @@ void AbstractClassImplementation::suggest_method(std::string method_name, int nu
     }
 }
 
-AbstractCallTargetSelector* AbstractClassImplementation::try_get_method(std::string method_name, int num_args, bool in_base_class) const
+AbstractMethod* CommonClassImpl::try_get_method(std::string method_name, int num_args, bool in_base_class) const
 {
     //cout << "try_get_method " << method_name << " " << num_args << endl;
 
@@ -175,7 +143,7 @@ AbstractCallTargetSelector* AbstractClassImplementation::try_get_method(std::str
         auto num_iter = overloads.find(num_args);
         if (num_iter != overloads.end())
         {
-            AbstractCallTargetSelector* method = num_iter->second;
+            AbstractMethod* method = num_iter->second;
 
             // Methods that cannot be inherited (like constructors) must not be returned from base class search.
             if (in_base_class && !method->is_inherited())
@@ -191,7 +159,7 @@ AbstractCallTargetSelector* AbstractClassImplementation::try_get_method(std::str
         if (it->second == this)
             throw std::logic_error("The class " + get_class_name() + " is registered as a base of itself!");
 
-        AbstractCallTargetSelector* method = it->second->try_get_method(method_name, num_args, true);
+        AbstractMethod* method = it->second->try_get_method(method_name, num_args, true);
         if (method)
             return method;
     }
@@ -200,28 +168,7 @@ AbstractCallTargetSelector* AbstractClassImplementation::try_get_method(std::str
     return 0;
 }
 
-TypeInfoList AbstractClassImplementation::get_arg_types(std::string method_name, int num_args) const
-{
-    return get_method(method_name, num_args)->get_arg_types();
-}
-
-std::vector<std::string> const& AbstractClassImplementation::get_method_names() const
-{
-    return method_names;
-}
-
-bool AbstractClassImplementation::has_method(std::string method_name, int num_args) const
-{
-    auto candidates = methods.find(method_name);
-
-    return
-        candidates != methods.end()
-    &&
-        candidates->second.find(num_args) != candidates->second.end();
-}
-
-
-bool AbstractClassImplementation::has_base(AbstractClass const* base) const
+bool CommonClassImpl::has_base(TypeMirror const* base) const
 {
     for (auto it=bases.begin(); it != bases.end(); it++)
         if (it->second == base || it->second->has_base(base))
@@ -231,22 +178,13 @@ bool AbstractClassImplementation::has_base(AbstractClass const* base) const
 }
 
 
-void AbstractClassImplementation::add_base_abstr(AbstractClass const* base)
+void CommonClassImpl::add_base(TypeMirror const* base)
 {
-    if (base == this)
-        throw std::logic_error("You tried to add " + get_class_name() + " as a base of itself (not allowed).");
-
-    if (base->has_base(this))
-        throw std::logic_error("Inheritance loop:  you executed " + get_class_name() + "->add_base(" + base->get_class_name()
-            + ") but " + get_class_name() + " is already an ancestor of " + base->get_class_name() +
-            ".  If this add_base is really what you wanted to do then you need to find and remove " + get_class_name() +
-            " from the inheritance tree of " + base->get_class_name() );
-
     bases[base->get_class_name()] = base;
-    type_system.register_base(this, base);
+    type_system->register_base(this, base);
 }
 
-std::vector<std::string> AbstractClassImplementation::get_base_names() const
+std::vector<std::string> CommonClassImpl::get_base_names() const
 {
     std::vector<std::string> result;
 
@@ -256,12 +194,7 @@ std::vector<std::string> AbstractClassImplementation::get_base_names() const
     return result;
 }
 
-std::string AbstractClassImplementation::get_class_name() const
+std::string CommonClassImpl::get_class_name() const
 {
     return class_name;
-}
-
-ExprPtr AbstractClassImplementation::call(ExprPtr target, std::string method_name, std::vector<boost::intrusive_ptr<AbstractExpression>> args) const
-{
-    return get_method(method_name, args.size())->call(target, args);
 }

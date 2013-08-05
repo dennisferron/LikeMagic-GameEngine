@@ -88,7 +88,7 @@ void do_file(IoVM& vm, string file_name)
     vm.do_string(code.str());
 }
 
-int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::RuntimeTypeSystem&), RuntimeTypeSystem* type_sys)
+int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::RuntimeTypeSystem&))
 {
     namespace po = boost::program_options;
 
@@ -135,10 +135,10 @@ int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::R
         po::notify(var_map);    // throws on error, so do after help in case
                                 // there are any problems
 
-        (*add_bindings)(*type_sys);
+        (*add_bindings)();
 
         cout << "Loading Io init files at " << bootstrap_path << endl;
-        vm = new IoVM(*type_sys, bootstrap_path);
+        vm = new IoVM(bootstrap_path);
         vm->set_path("engine", engine_path);
         vm->set_path("game", game_path);
         vm->set_path("assets", asset_path);
@@ -154,8 +154,8 @@ int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::R
 
         delete vm;
         vm=NULL;
-        delete type_sys;
-        type_sys=NULL;
+        delete type_system;
+        type_system=NULL;
 
         cout << "Press enter..." << std::endl;
         std::cin.ignore( 99, '\n' );
@@ -204,7 +204,7 @@ int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::R
     cerr << "Exiting with error" << endl;
 
     delete vm;
-    delete type_sys;
+    delete type_system;
 
     cerr << "Press enter..." << std::endl;
     std::cin.ignore( 99, '\n' );

@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -9,11 +9,11 @@
 
 #pragma once
 
-#include "LikeMagic/SFMO/Expression.hpp"
+#include "LikeMagic/Exprs/Expression.hpp"
 
 #include "LikeMagic/Utility/TypeDescr.hpp"
 
-namespace LikeMagic { namespace SFMO {
+namespace LikeMagic { namespace Exprs {
 
 // In formal type theory it is often convenient to define a type that is a superclass
 // of all other types.  By convention it is called "Top" in type theory discussions,

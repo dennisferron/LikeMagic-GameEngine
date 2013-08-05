@@ -3,12 +3,12 @@
 #include <iostream>
 #include "RPC.hpp"
 
-#include "LikeMagic/SFMO/Term.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
 #include "LikeMagic/AbstractTypeSystem.hpp"
 
 using namespace LikeMagic;
 using namespace LikeMagic::Interprocess;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Utility;
 
 using namespace boost::interprocess;
@@ -151,7 +151,7 @@ CallReturn RPC::listen(int wanted_invocation_id, bool wants_rvalue)
                 LikeMagic::Utility::TypeInfoList arg_types;
                 arg_types.push_back(arg_type_index);
                 ArgList arg_list = transporter.read_args(arg_types, temp.args_buffer);
-                int arg = type_system.try_conv<int>(arg_list[0])->eval();
+                int arg = type_system->try_conv<int>(arg_list[0])->eval();
                 int result = execute(temp.method_id, arg);
                 auto method_call = Term<int, true>::create(result);
 
@@ -198,7 +198,7 @@ int RPC::call_int(int method, int arg)
     LikeMagic::Utility::TypeIndex ret_type_index
         = LikeMagic::Utility::BetterTypeInfo::create_index<int>();
     std::pair<ExprPtr, void*> result = transporter.read_value(ret_type_index, ret.rvalue_buffer);
-    int rval = type_system.try_conv<int>(result.first)->eval();
+    int rval = type_system->try_conv<int>(result.first)->eval();
     return rval;
 }
 
@@ -254,9 +254,9 @@ CallReturn RPC::call(int object_handle, int method, int arg)
     TypeInfoList arg_types;
     arg_types.push_back(type_index);
 
-    cout << "type_system has_conv<int>(term): " << type_system.has_conv<int>(term) << endl;
-    cout << "type_system has_conv(type_index, type_index): " << type_system.has_conv(type_index, type_index) << endl;
-    auto term2 = type_system.try_conv<int>(term);
+    cout << "type_system has_conv<int>(term): " << type_system->has_conv<int>(term) << endl;
+    cout << "type_system has_conv(type_index, type_index): " << type_system->has_conv(type_index, type_index) << endl;
+    auto term2 = type_system->try_conv<int>(term);
 
     char* buffer = request_args.args_buffer;
 

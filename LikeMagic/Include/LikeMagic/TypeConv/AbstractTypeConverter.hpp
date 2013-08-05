@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -13,7 +13,7 @@
 
 #include "boost/intrusive_ptr.hpp"
 
-namespace LikeMagic { namespace SFMO {
+namespace LikeMagic { namespace Exprs {
 
 class AbstractExpression;
 typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
@@ -25,7 +25,7 @@ typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
 namespace LikeMagic { namespace TypeConv {
 
 using LikeMagic::Utility::BetterTypeInfo;
-using LikeMagic::SFMO::ExprPtr;
+using LikeMagic::Exprs::ExprPtr;
 
 class AbstractTypeConverter;
 void intrusive_ptr_add_ref(AbstractTypeConverter const* p);

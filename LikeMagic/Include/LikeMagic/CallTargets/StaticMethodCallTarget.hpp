@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -9,17 +9,16 @@
 
 #pragma once
 
-#include "LikeMagic/SFMO/Term.hpp"
+#include "LikeMagic/AbstractTypeSystem.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
 
 #include "LikeMagic/Utility/TypeDescr.hpp"
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
 #include "LikeMagic/Utility/MakeCall.hpp"
 
-#include "LikeMagic/SFMO/methodcall_args.hpp"
+#include "LikeMagic/Exprs/methodcall_args.hpp"
 
-#include "LikeMagic/SFMO/ExprProxy.hpp"
-
-#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
+#include "LikeMagic/CallTargets/AbstractMethod.hpp"
 #include "LikeMagic/Generators/MemberKind.hpp"
 
 // When there are no args, args_tuple does not get expanded below and therefore is set but unused.
@@ -28,12 +27,12 @@
 
 namespace LikeMagic { namespace CallTargets {
 
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Generators;
 
 template <typename R, typename... Args>
-class StaticMethodCallTarget : public AbstractCallTargetSelector
+class StaticMethodCallTarget : public AbstractMethod
 {
 public:
     typedef std::tuple<boost::intrusive_ptr<Expression<Args>>...> ArgTuple;
@@ -52,7 +51,7 @@ private:
         if (args.size() != sizeof...(Indices))
             throw std::logic_error("Wrong number of arguments.");
 
-        auto args_tuple(std::make_tuple(type_system.try_conv<Args>(args[Indices])...));
+        auto args_tuple(std::make_tuple(type_system->try_conv<Args>(args[Indices])...));
 
         boost::intrusive_ptr<Expression<R&>> result = Term<R, true>::create(
             (*func_ptr)(std::get<Indices>(args_tuple)->eval()...)
@@ -69,7 +68,7 @@ private:
         if (args.size() != sizeof...(Indices))
             throw std::logic_error("Wrong number of arguments.");
 
-        auto args_tuple = std::make_tuple(type_system.try_conv<Args>(args[Indices])...);
+        auto args_tuple = std::make_tuple(type_system->try_conv<Args>(args[Indices])...);
 
         (*func_ptr)(std::get<Indices>(args_tuple)->eval()...);
 
@@ -78,7 +77,7 @@ private:
 
 public:
 
-    StaticMethodCallTarget(F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
+    StaticMethodCallTarget(F func_ptr_) : func_ptr(func_ptr_) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {

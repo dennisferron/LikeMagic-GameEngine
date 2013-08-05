@@ -4,10 +4,10 @@
 
 using namespace LikeMagic::Interprocess;
 
-SharedArgTransporter::SharedArgTransporter(AbstractTypeSystem& type_system_)
+SharedArgTransporter::SharedArgTransporter()
 {
-    add_marshaller_by_type<MarshalByCopyConstructor, int>(type_system_);
-    add_marshaller_by_type<MarshalByCopyConstructor, float>(type_system_);
+    add_marshaller_by_type<MarshalByCopyConstructor, int>();
+    add_marshaller_by_type<MarshalByCopyConstructor, float>();
 }
 
 AbstractSharedArgMarshaller& SharedArgTransporter::get_marshaller(TypeIndex arg_type) const

@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -9,13 +9,13 @@
 #pragma once
 
 #include "ConvertibleTo.hpp"
-#include "../SFMO/Trampoline.hpp"
+#include "../Exprs/Trampoline.hpp"
 
 #include "boost/type_traits/is_reference.hpp"
 
 namespace LikeMagic { namespace TypeConv {
 
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 
 template <typename From, typename To>
 class AddrOfConv : public ConvertibleTo<To>

@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -15,9 +15,9 @@
 //#include "LikeMagic/Utility/FuncPtrTraits.hpp"
 //#include "LikeMagic/Utility/MakeCall.hpp"
 
-#include "LikeMagic/SFMO/methodcall_args.hpp"
+#include "LikeMagic/Exprs/methodcall_args.hpp"
 
-namespace LikeMagic { namespace SFMO {
+namespace LikeMagic { namespace Exprs {
 
 using namespace LikeMagic::Utility;
 

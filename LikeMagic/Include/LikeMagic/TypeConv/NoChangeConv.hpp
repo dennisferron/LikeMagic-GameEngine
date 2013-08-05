@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -9,11 +9,11 @@
 #pragma once
 
 #include "LikeMagic/TypeConv/ConvertibleTo.hpp"
-#include "LikeMagic/SFMO/Trampoline.hpp"
+#include "LikeMagic/Exprs/Trampoline.hpp"
 
 namespace LikeMagic { namespace TypeConv {
 
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 
 // The difference between implicit conv and no change conv
 // is implicit conversion wraps the expression in a trampoline and

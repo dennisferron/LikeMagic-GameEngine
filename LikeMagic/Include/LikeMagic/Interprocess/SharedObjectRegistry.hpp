@@ -1,12 +1,12 @@
 #pragma once
 
-#include "LikeMagic/SFMO/AbstractExpression.hpp"
+#include "LikeMagic/Exprs/AbstractExpression.hpp"
 
 #include "boost/unordered_map.hpp"
 
 namespace LikeMagic { namespace Interprocess {
 
-using ExprPtr = LikeMagic::SFMO::ExprPtr;
+using ExprPtr = LikeMagic::Exprs::ExprPtr;
 
 typedef int shared_object_handle;
 

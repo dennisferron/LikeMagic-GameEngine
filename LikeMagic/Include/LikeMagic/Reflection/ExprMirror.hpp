@@ -9,17 +9,7 @@
 
 #pragma once
 
-#include "LikeMagic/IMarkable.hpp"
-#include "LikeMagic/SFMO/Expression.hpp"
-#include "LikeMagic/AbstractTypeSystem.hpp"
-
-#include <iostream>
-#include <iomanip>
-#include <stdexcept>
-#include <set>
-#include <vector>
-
-#include <typeinfo>
+#include "LikeMagic/Reflection/Mirror.hpp"
 
 // forward declarations
 namespace LikeMagic { namespace Marshaling {
@@ -32,14 +22,13 @@ namespace LikeMagic { namespace CallTargets {
 namespace LikeMagic { namespace SFMO {
 
 using LikeMagic::Utility::TypeIndex;
-using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeInfoList;
 using LikeMagic::Utility::BetterTypeInfo;
 using LikeMagic::AbstractTypeSystem;
 using LikeMagic::Marshaling::AbstractMethodset;
 using LikeMagic::CallTargets::AbstractCallTargetSelector;
 
-class AbstractCppObjProxy : public IMarkable
+class ExprMirror : public IMarkable
 {
 private:
     // Used to detect when we get fed a bum "this" pointer.

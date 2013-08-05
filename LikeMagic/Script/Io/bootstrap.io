@@ -44,7 +44,7 @@ io_vm set_onRegisterClass(block(abstract_class,
     // but we need to create a specialized proxy instance of the class that allows calling the "new" method.
     class_proto := io_vm proxy_to_io_obj(abstract_class create_class_proxy)
 
-    // Note:  on class_proto can only call new or ProxyMethods.  AbstractClass defines a get_type that overrides the
+    // Note:  on class_proto can only call new or ProxyMethods.  TypeMirror defines a get_type that overrides the
     // proxy method get_type, so we must use lm_get_type instead.
     //writeln("class_proto type = ", class_proto type, " className = ", className)
     //writeln("class_proto LikeMagic type = ", class_proto lm_get_type describe)

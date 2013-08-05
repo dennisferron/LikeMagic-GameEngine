@@ -23,7 +23,7 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     // This needs to be done once in every DLL.
     LM_SET_TYPE_INFO(type_sys)
 
-    auto ns_tps = Namespace::global(type_sys).subspace("TPS");
+    auto ns_tps = Namespace::global->subspace("TPS");
 
     LM_CLASS(ns_tps, Vec)
     LM_FIELD(Vec, (x)(y)(z))

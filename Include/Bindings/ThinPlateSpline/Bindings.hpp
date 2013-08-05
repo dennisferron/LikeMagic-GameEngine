@@ -14,6 +14,6 @@
 
 namespace Bindings { namespace ThinPlateSpline {
 
-DLL_PUBLIC void add_bindings(LikeMagic::RuntimeTypeSystem& type_sys);
+DLL_PUBLIC void add_bindings();
 
 }}

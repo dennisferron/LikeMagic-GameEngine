@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -13,12 +13,12 @@
 
 #include <iostream>
 
-namespace LikeMagic { namespace SFMO {
+namespace LikeMagic { namespace Exprs {
 
 using namespace LikeMagic::Utility;
 
 // Adapts an expression of one type so that it can be used as another type.
-// Numeric casts to references are unsafe in SFMO expressions unless the intermediate result is stored away somewhere
+// Numeric casts to references are unsafe in Exprs expressions unless the intermediate result is stored away somewhere
 // for the reference to have something durable to refer to.
 // I think this is because C++ reuses the same static or temporary memory location for all the type casts.
 // This class should probably not be used for other kind of casts.

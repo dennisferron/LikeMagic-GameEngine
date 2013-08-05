@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -9,24 +9,22 @@
 #pragma once
 
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
-
-
-#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
+#include "LikeMagic/AbstractTypeSystem.hpp"
+#include "LikeMagic/CallTargets/AbstractMethod.hpp"
 
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_void.hpp"
 
-#include "LikeMagic/SFMO/ExprProxy.hpp"
-#include "LikeMagic/SFMO/Term.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 
 template <typename F>
-class ProxyMethodSelector : public AbstractCallTargetSelector
+class ProxyMethodSelector : public AbstractMethod
 {
 private:
     F func_ptr;
@@ -46,7 +44,7 @@ private:
     do_proxy_op(ExprPtr target, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
     {
         return Term<R, true>::create(
-                    (target->*func_ptr)(type_system.try_conv<Args>(args[Indices])->eval()...));
+                    (target->*func_ptr)(type_system->try_conv<Args>(args[Indices])->eval()...));
     }
 
     // This calls a function on the proxy which returns void.
@@ -56,13 +54,13 @@ private:
             ExprPtr>::type
     do_proxy_op(ExprPtr target, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
     {
-        (target->*func_ptr)(type_system.try_conv<Args>(args[Indices])->eval()...);
+        (target->*func_ptr)(type_system->try_conv<Args>(args[Indices])->eval()...);
         return 0;
     }
 
 public:
 
-    ProxyMethodSelector(F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
+    ProxyMethodSelector(F func_ptr_) : func_ptr(func_ptr_) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {

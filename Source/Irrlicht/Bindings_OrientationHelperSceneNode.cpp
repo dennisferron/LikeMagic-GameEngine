@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -20,10 +20,10 @@ namespace Bindings { namespace Irrlicht {
 
 void add_bindings_orientation(RuntimeTypeSystem& type_sys)
 {
-    auto ns_irr_scene = Namespace::global(type_sys).subspace("irr").subspace("scene");
+    auto ns_irr_scene = Namespace::global->subspace("irr").subspace("scene");
     LM_CLASS(ns_irr_scene, ISceneNode)
 
-    auto ns_irr_custom = Namespace::global(type_sys).subspace("irr").subspace("custom");
+    auto ns_irr_custom = Namespace::global->subspace("irr").subspace("custom");
 
     LM_CLASS(ns_irr_custom, OrientationHelperSceneNode)
     LM_BASE(OrientationHelperSceneNode, ISceneNode)

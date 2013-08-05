@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -9,31 +9,29 @@
 
 #pragma once
 
-#include "LikeMagic/SFMO/Term.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
 
 #include "LikeMagic/Utility/TypeDescr.hpp"
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
 #include "LikeMagic/Utility/MakeCall.hpp"
 
-#include "LikeMagic/SFMO/methodcall_args.hpp"
+#include "LikeMagic/Exprs/methodcall_args.hpp"
 
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_void.hpp"
 
-#include "LikeMagic/SFMO/ExprProxy.hpp"
-
-#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
+#include "LikeMagic/CallTargets/AbstractMethod.hpp"
 #include "LikeMagic/Generators/MemberKind.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Generators;
 
 template <MemberKind K, typename R, typename... Args>
-class DelegateCallTarget : public AbstractCallTargetSelector
+class DelegateCallTarget : public AbstractMethod
 {
 public:
     typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
@@ -59,11 +57,11 @@ private:
         if (args.size() != sizeof...(Indices))
             throw std::logic_error("Wrong number of arguments.");
 
-        auto target_check = type_system.try_conv(target, actual_type);
-        CallAs& target_obj = type_system.try_conv<CallAs>(target_check)->eval();
+        auto target_check = type_system->try_conv(target, actual_type);
+        CallAs& target_obj = type_system->try_conv<CallAs>(target_check)->eval();
 
         boost::intrusive_ptr<Expression<R&>> result = Term<R, true>::create(
-            (target_obj.*func_ptr)(type_system.try_conv<Args>(args[Indices])->eval()...)
+            (target_obj.*func_ptr)(type_system->try_conv<Args>(args[Indices])->eval()...)
         );
 
         return result;
@@ -77,18 +75,18 @@ private:
         if (args.size() != sizeof...(Indices))
             throw std::logic_error("Wrong number of arguments.");
 
-        auto target_check = type_system.try_conv(target, actual_type);
-        CallAs& target_obj = type_system.try_conv<CallAs>(target_check)->eval();
+        auto target_check = type_system->try_conv(target, actual_type);
+        CallAs& target_obj = type_system->try_conv<CallAs>(target_check)->eval();
 
-        (target_obj.*func_ptr)(type_system.try_conv<Args>(args[Indices])->eval()...);
+        (target_obj.*func_ptr)(type_system->try_conv<Args>(args[Indices])->eval()...);
 
         return Term<void, true>::create();
     }
 
 public:
 
-    DelegateCallTarget(TypeIndex ref_type_, TypeIndex const_ref_type_, F func_ptr_, AbstractTypeSystem const& type_system_)
-        : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_), actual_type(K == MemberKind::member_const? const_ref_type_ : ref_type_ ) {}
+    DelegateCallTarget(TypeIndex ref_type_, TypeIndex const_ref_type_, F func_ptr_)
+        : func_ptr(func_ptr_), actual_type(K == MemberKind::member_const? const_ref_type_ : ref_type_ ) {}
 
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const

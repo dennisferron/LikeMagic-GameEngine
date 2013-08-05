@@ -1,10 +1,10 @@
 #pragma once
 
-#include "LikeMagic/SFMO/AbstractExpression.hpp"
+#include "LikeMagic/Exprs/AbstractExpression.hpp"
 
 namespace LikeMagic { namespace Interprocess {
 
-using ExprPtr = LikeMagic::SFMO::ExprPtr;
+using ExprPtr = LikeMagic::Exprs::ExprPtr;
 
 struct AbstractSharedArgMarshaller
 {

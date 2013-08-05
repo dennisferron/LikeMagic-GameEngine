@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -11,11 +11,11 @@
 #include "LikeMagic/Utility/TupleForEach.hpp"
 #include "LikeMagic/Utility/IndexPack.hpp"
 
-#include "LikeMagic/SFMO/Expression.hpp"
+#include "LikeMagic/Exprs/Expression.hpp"
 
 #include <string>
 
-namespace LikeMagic { namespace SFMO { namespace methodcall_args {
+namespace LikeMagic { namespace Exprs { namespace methodcall_args {
 
 using namespace LikeMagic::Utility;
 

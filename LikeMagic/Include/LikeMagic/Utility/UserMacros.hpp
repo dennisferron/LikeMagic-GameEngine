@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -41,11 +41,11 @@
 #define LM_ADD_VECTORS_IMPL(r, data, elem) LM_ADD_VECTOR(data, elem)
 #define LM_ADD_VECTORS(vm_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ADD_VECTORS_IMPL, vm_name, SEQ)
 
-#define LM_CLASS(type_sys, class_name) auto& class_name##_LM = (type_sys).register_class<class_name>(#class_name);
+#define LM_CLASS(class_name) auto& class_name##_LM = type_system->register_class<class_name>(#class_name);
 
-#define LM_CLASS_NO_COPY(type_sys, class_name) auto& class_name##_LM = (type_sys).register_class<class_name, false>(#class_name);
+#define LM_CLASS_NO_COPY(class_name) auto& class_name##_LM = type_system->register_class<class_name, false>(#class_name);
 
-#define LM_ENUM(type_sys, class_name) auto& class_name##_LM = (type_sys).register_enum<class_name>(#class_name);
+#define LM_ENUM(class_name) auto& class_name##_LM = type_system->register_enum<class_name>(#class_name);
 
 // Your LikeMagic Class object must be named with the class name followed by "_LM" (do not provide the _LM to the macro)
 #define LM_FUNC_IMPL(r, data, elem) data##_LM.bind_method(BOOST_PP_STRINGIZE(elem), &data::elem);
@@ -94,9 +94,9 @@ template <typename T> struct LM_InsertConst<T&> { typedef T const& type; };
 #define LM_ARRAY_FIELD_IMPL(r, data, elem) data##_LM.bind_array_field(BOOST_PP_STRINGIZE(elem), &data::elem);
 #define LM_ARRAY_FIELD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ARRAY_FIELD_IMPL, class_name, SEQ)
 
-#define LM_STATIC_FUNC(type_sys, class_name, func_name) type_sys.register_functions().bind_method(#func_name, class_name::func_name);
-#define LM_STATIC_FUNC_NAME(type_sys, class_name, given_func_name, actual_func) type_sys.register_functions().bind_method(given_func_name, class_name::actual_func);
-#define LM_STATIC_FUNC_OVERLOAD(type_sys, class_name, given_func_name, actual_func, ret_type, ...) type_sys.register_functions().bind_method(given_func_name, static_cast<ret_type (*)(__VA_ARGS__)>(&class_name::actual_func));
+#define LM_STATIC_FUNC(class_name, func_name) type_system->register_functions().bind_method(#func_name, class_name::func_name);
+#define LM_STATIC_FUNC_NAME(class_name, given_func_name, actual_func) type_system->register_functions().bind_method(given_func_name, class_name::actual_func);
+#define LM_STATIC_FUNC_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) type_system->register_functions().bind_method(given_func_name, static_cast<ret_type (*)(__VA_ARGS__)>(&class_name::actual_func));
 
 #include "LikeMagic/CallTargets/ICustomField.hpp"
 
@@ -128,5 +128,5 @@ template <typename T> struct LM_InsertConst<T&> { typedef T const& type; };
 
 // This needs to be done once in every DLL to set the type info cache singleton to a shared value.
 #define LM_SET_TYPE_INFO(type_sys) \
-LikeMagic::Utility::TypeInfoCache::set_instance(type_sys.get_typeinfo_cache());
+LikeMagic::Utility::TypeInfoCache::set_instance(type_system->get_typeinfo_cache());
 

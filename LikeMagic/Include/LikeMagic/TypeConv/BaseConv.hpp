@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -9,11 +9,11 @@
 #pragma once
 
 #include "ConvertibleTo.hpp"
-#include "../SFMO/Trampoline.hpp"
+#include "../Exprs/Trampoline.hpp"
 
 namespace LikeMagic { namespace TypeConv {
 
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 
 template <typename From, typename To>
 class BaseConv : public ConvertibleTo<To>
@@ -27,9 +27,9 @@ public:
         // (which would be unsafe if it were so);
         // it is merely converting the ExprPtr to its actual _FROM_ type.
         // The to-base _TO_ type conversion work is done implicitly by do_conv above.
-        return LikeMagic::SFMO::Trampoline<From, To, BaseConv>::create(
-            boost::intrusive_ptr<LikeMagic::SFMO::Expression<From>>(
-                reinterpret_cast<LikeMagic::SFMO::Expression<From>*>(expr.get())));
+        return LikeMagic::Exprs::Trampoline<From, To, BaseConv>::create(
+            boost::intrusive_ptr<LikeMagic::Exprs::Expression<From>>(
+                reinterpret_cast<LikeMagic::Exprs::Expression<From>*>(expr.get())));
     }
 
     virtual std::string describe() const { return describe_converter<From, To>("BaseConv"); }

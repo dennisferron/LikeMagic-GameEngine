@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -10,27 +10,25 @@
 
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
 
-#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
-
-#include "LikeMagic/SFMO/ExprProxy.hpp"
+#include "LikeMagic/CallTargets/AbstractMethod.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 
 template <typename ObjT>
-class DestructorCallTarget : public AbstractCallTargetSelector
+class DestructorCallTarget : public AbstractMethod
 {
 private:
 
 public:
 
-    DestructorCallTarget(AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_) {}
+    DestructorCallTarget() {}
 
    virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        delete type_system.try_conv<ObjT const*>(target)->eval();
+        delete type_system->try_conv<ObjT const*>(target)->eval();
         return 0;
     }
 

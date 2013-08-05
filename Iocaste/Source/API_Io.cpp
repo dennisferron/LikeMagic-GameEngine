@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -8,8 +8,8 @@
 
 
 #include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
-#include "LikeMagic/SFMO/Term.hpp"
-#include "LikeMagic/SFMO/NullExpr.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
+#include "LikeMagic/Exprs/NullExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 
@@ -80,7 +80,7 @@ IoObject* get_io_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos)
     return arg;
 }
 
-bool is_sfmo_obj(IoObject* io_obj)
+bool is_Exprs_obj(IoObject* io_obj)
 {
     return
         IoObject_dataPointer(io_obj)
@@ -107,10 +107,10 @@ IoMessage* new_message(IoObject* self, std::string name)
 }
 
 // Gets the script object argument at a certain position.
-ExprPtr get_expr_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos, AbstractTypeSystem const& type_sys, TypeIndex target_type)
+ExprPtr get_expr_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos, TypeIndex target_type)
 {
     //std::cout << "Arg " << pos << " = " << IoObject_tag(self)->name << std::endl;
-    return from_script(self, get_io_arg_at(self, locals, m, pos), type_sys, target_type);
+    return from_script(self, get_io_arg_at(self, locals, m, pos), target_type);
 }
 
 
@@ -135,29 +135,28 @@ IoObject* API_io_rawClone(IoObject* proto)
     return clone;
 }
 
-void API_io_free_proxy(IoObject* self)
+void API_io_free_expr(IoObject* self)
 {
     IoObject* io_obj = reinterpret_cast<IoObject*>(self);
 
     if (ISNUMBER(io_obj))
-        throw std::logic_error("free sfmo proxy passed an IoNumber instead!");
+        throw std::logic_error("free Exprs proxy passed an IoNumber instead!");
     else if (ISSEQ(io_obj))
-        throw std::logic_error("free sfmo proxy passed an IoSeq instead!");
+        throw std::logic_error("free Exprs proxy passed an IoSeq instead!");
     else if (IoObject_dataPointer(self))
     {
-        if (is_sfmo_obj(io_obj))
+        if (is_Exprs_obj(io_obj))
         {
-            //std::cout << "free sfmo proxy passed sfmo object with tag " << IoObject_tag(io_obj)->name << std::endl;
+            //std::cout << "free Exprs proxy passed Exprs object with tag " << IoObject_tag(io_obj)->name << std::endl;
         }
         else
         {
-            //std::cout << "free sfmo proxy passed a NON-sfmo object with tag " << IoObject_tag(io_obj)->name << std::endl;
-            throw std::logic_error("free sfmo proxy passed a NON-sfmo object");
+            //std::cout << "free Exprs proxy passed a NON-Exprs object with tag " << IoObject_tag(io_obj)->name << std::endl;
+            throw std::logic_error("free Exprs proxy passed a NON-Exprs object");
         }
 
-        auto proxy = reinterpret_cast<LikeMagic::SFMO::AbstractCppObjProxy*>(IoObject_dataPointer(self));
-        proxy->check_magic();
-        proxy->dispose();
+        auto expr = reinterpret_cast<ExprPtr>(IoObject_dataPointer(self));
+        intrusive_ptr_release(expr);
         IoObject_setDataPointer_(self, 0);
     }
 }
@@ -180,7 +179,7 @@ IoObject *API_io_proto(IoState* state)
 
     IoTag* tag = IoTag_newWithName_("LikeMagic");
     IoTag_state_(tag, state);
-    IoTag_freeFunc_(tag, (IoTagFreeFunc*)API_io_free_proxy);
+    IoTag_freeFunc_(tag, (IoTagFreeFunc*)API_io_free_expr);
     IoTag_cloneFunc_(tag, (IoTagCloneFunc*)API_io_rawClone);
     IoTag_markFunc_(tag, (IoTagMarkFunc*)API_io_mark);
 

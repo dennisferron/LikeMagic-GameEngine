@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -9,8 +9,8 @@
 #pragma once
 
 #include "ConvertibleTo.hpp"
-#include "LikeMagic/SFMO/Trampoline.hpp"
-#include "LikeMagic/SFMO/StringCachingTrampoline.hpp"
+#include "LikeMagic/Exprs/Trampoline.hpp"
+#include "LikeMagic/Exprs/StringCachingTrampoline.hpp"
 
 #include "boost/type_traits.hpp"
 
@@ -19,7 +19,7 @@
 
 namespace LikeMagic { namespace TypeConv {
 
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 
 template <typename T> struct IsString { enum { value = false }; };
 

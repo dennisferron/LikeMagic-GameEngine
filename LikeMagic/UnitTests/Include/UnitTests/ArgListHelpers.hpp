@@ -1,22 +1,22 @@
 
-#include "LikeMagic/SFMO/Term.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
 
 template <typename T>
-LikeMagic::SFMO::ArgList make_arg_list(T value)
+LikeMagic::Exprs::ArgList make_arg_list(T value)
 {
-    LikeMagic::SFMO::ExprPtr term = LikeMagic::SFMO::Term<T, true>::create(value);
-    LikeMagic::SFMO::ArgList arg_list;
+    LikeMagic::Exprs::ExprPtr term = LikeMagic::Exprs::Term<T, true>::create(value);
+    LikeMagic::Exprs::ArgList arg_list;
     arg_list.push_back(term);
     return arg_list;
 }
 
 template <typename T, typename U>
-LikeMagic::SFMO::ArgList make_arg_list(T value, U other_value)
+LikeMagic::Exprs::ArgList make_arg_list(T value, U other_value)
 {
-    LikeMagic::SFMO::ExprPtr term = LikeMagic::SFMO::Term<T, true>::create(value);
-    LikeMagic::SFMO::ExprPtr other_term = LikeMagic::SFMO::Term<T, true>::create(other_value);
-    LikeMagic::SFMO::ArgList arg_list;
+    LikeMagic::Exprs::ExprPtr term = LikeMagic::Exprs::Term<T, true>::create(value);
+    LikeMagic::Exprs::ExprPtr other_term = LikeMagic::Exprs::Term<T, true>::create(other_value);
+    LikeMagic::Exprs::ArgList arg_list;
     arg_list.push_back(term);
     arg_list.push_back(other_term);
     return arg_list;

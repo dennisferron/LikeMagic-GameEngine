@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -7,6 +7,8 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #pragma once
+
+#include "LikeMagic/Utility/FuncPtrTraits.hpp"
 
 namespace LikeMagic { namespace Generators {
 
@@ -19,8 +21,6 @@ enum class MemberKind
     field_nonconst,
     field_const
 };
-
-
 
 template <MemberKind K, typename ObjT>
 struct CallAs
@@ -43,7 +43,7 @@ struct CallAs<MemberKind::field_const, ObjT>
 template <typename ObjT>
 struct CallAs<MemberKind::static_method, ObjT>
 {
-    typedef StaticMethod type;
+    typedef LikeMagic::Utility::StaticMethod type;
 };
 
 

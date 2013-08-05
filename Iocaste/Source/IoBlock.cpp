@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -17,33 +17,25 @@
 namespace Iocaste { namespace LikeMagicAdapters {
 
 IoBlock::IoBlock()
-    : type_sys(0), iovm(0), io_block(0), io_target(0)
+    : iovm(0), io_block(0), io_target(0)
 {
-    //cout << "IoBlock " << this << " default constructed, iovm is " << iovm << " block is " << this->io_block << " target is " << this->io_target << endl;
 }
 
-IoBlock::IoBlock(AbstractTypeSystem const* type_sys_, IoVM* iovm_, IoObject* io_block_, IoObject* io_target_)
-    : type_sys(type_sys_), iovm(iovm_), io_block(io_block_), io_target(io_target_)
+IoBlock::IoBlock(IoVM* iovm_, IoObject* io_block_, IoObject* io_target_)
+    : iovm(iovm_), io_block(io_block_), io_target(io_target_)
 {
     if (io_target && !io_target_->object)
         throw std::logic_error("Target has no object!");
-
-    //cout << "IoBlock " << this << " constructed with target param " << io_target_ << ", iovm is " << iovm << " block is " << this->io_block << " target is " << this->io_target << endl;
-
-    //if ((void*)io_target == (void*)0xabababab)
-        //cout << "Bad io_target" << endl;
 }
 
 IoBlock::IoBlock(IoBlock const& other)
-    : type_sys(other.type_sys), iovm(other.iovm), io_block(other.io_block), io_target(other.io_target)
+    : iovm(other.iovm), io_block(other.io_block), io_target(other.io_target)
 {
-    //cout << "IoBlock " << this << " copy constructed from " << &other << ", iovm is " << iovm << " block is " << this->io_block <<" target is " << this->io_target << endl;
 }
 
 IoBlock& IoBlock::operator =(IoBlock const& other)
 {
     //cout << "IoBlock " << this << " copy assigned from " << &other << ", iovm was " << iovm << " block is " << this->io_block <<" target is " << this->io_target << endl;
-    type_sys = other.type_sys;
     iovm = other.iovm;
     io_block = other.io_block;
     io_target = other.io_target;
@@ -59,12 +51,12 @@ IoBlock::~IoBlock()
 
 #define DATA(self) ((IoBlockData *)IoObject_dataPointer(self))
 
-void IoBlock::add_arg(IoMessage* m, AbstractCppObjProxy* proxy) const
+void IoBlock::add_arg(IoMessage* m, ExprPtr expr) const
 {
     if (!m->object)
         throw std::logic_error("Invalid message target; message object is null");
 
-    IoMessage_addCachedArg_(m, iovm->to_script(io_block, io_block, m, proxy));
+    IoMessage_addCachedArg_(m, iovm->to_script(io_block, io_block, m, expr));
 }
 
 IoObject* IoBlock::activate(IoMessage* m) const
@@ -110,7 +102,6 @@ void IoBlock::mark() const
 
 bool IoBlock::empty() const
 {
-    //////cout << "IoBlock " << this << " func IoBlock::empty(), iovm is " << iovm << " block is " << this->io_block << " target is " << this->io_target << endl;
     return !io_block;
 }
 

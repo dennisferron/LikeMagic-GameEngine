@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -9,31 +9,29 @@
 
 #pragma once
 
-#include "LikeMagic/SFMO/Term.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
 
 #include "LikeMagic/Utility/TypeDescr.hpp"
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
 #include "LikeMagic/Utility/MakeCall.hpp"
 
-#include "LikeMagic/SFMO/methodcall_args.hpp"
+#include "LikeMagic/Exprs/methodcall_args.hpp"
 
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_void.hpp"
 
-#include "LikeMagic/SFMO/ExprProxy.hpp"
-
-#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
+#include "LikeMagic/CallTargets/AbstractMethod.hpp"
 #include "LikeMagic/Generators/MemberKind.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Generators;
 
 template <typename R, typename FirstArg, typename... Args>
-class ExtensionMethodCallTarget : public AbstractCallTargetSelector
+class ExtensionMethodCallTarget : public AbstractMethod
 {
 public:
     typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
@@ -52,7 +50,7 @@ private:
             throw std::logic_error("Wrong number of arguments.");
 
         boost::intrusive_ptr<Expression<R&>> result = Term<R, true>::create(
-            (*func_ptr)(type_system.try_conv<FirstArg>(target)->eval(), type_system.try_conv<Args>(args[Indices])->eval()...)
+            (*func_ptr)(type_system->try_conv<FirstArg>(target)->eval(), type_system->try_conv<Args>(args[Indices])->eval()...)
         );
 
         return result;
@@ -66,14 +64,14 @@ private:
         if (args.size() != sizeof...(Indices))
             throw std::logic_error("Wrong number of arguments.");
 
-        (*func_ptr)(type_system.try_conv<FirstArg>(target)->eval(), type_system.try_conv<Args>(args[Indices])->eval()...);
+        (*func_ptr)(type_system->try_conv<FirstArg>(target)->eval(), type_system->try_conv<Args>(args[Indices])->eval()...);
 
         return Term<void, true>::create();
     }
 
 public:
 
-    ExtensionMethodCallTarget(F func_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), func_ptr(func_ptr_) {}
+    ExtensionMethodCallTarget(F func_ptr_) : func_ptr(func_ptr_) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {

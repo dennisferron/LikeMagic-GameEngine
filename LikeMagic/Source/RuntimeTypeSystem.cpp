@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -20,7 +20,7 @@
 #include <sstream>
 
 using namespace LikeMagic;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::TypeConv;
 using namespace LikeMagic::Utility;
 
@@ -35,7 +35,7 @@ StaticMethods& RuntimeTypeSystem::register_functions(NamespacePath const ns)
         return cast_existing_class<StaticMethods>(type, true);
     else
     {
-        StaticMethods* result = new StaticMethods(*this, ns);
+        StaticMethods* result = new StaticMethods(ns);
         add_class(result->get_type(), result);
         result->add_base_abstr(proxy_methods);
         return *result;

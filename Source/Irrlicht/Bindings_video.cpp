@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -34,7 +34,7 @@ public:
 
 void add_bindings_video(RuntimeTypeSystem& type_sys)
 {
-    auto ns_irr_video = Namespace::global(type_sys).subspace("irr").subspace("video");
+    auto ns_irr_video = Namespace::global->subspace("irr").subspace("video");
 
     // enums
     LM_ENUM(ns_irr_video, E_DRIVER_TYPE)

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "LikeMagic/SFMO/AbstractClass.hpp"
+#include "LikeMagic/Exprs/TypeMirror.hpp"
 
 namespace LikeMagic { namespace Interprocess {
 
-using AbstractClass = LikeMagic::SFMO::AbstractClass;
+using TypeMirror = LikeMagic::Exprs::TypeMirror;
 
-class RemoteClass : AbstractClass
+class RemoteClass : TypeMirror
 {
 private:
     RemoteTypeIndex type_index;

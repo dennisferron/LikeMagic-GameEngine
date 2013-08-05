@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -11,8 +11,8 @@
 #include "List.h"
 
 #include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
-#include "LikeMagic/SFMO/Term.hpp"
-#include "LikeMagic/SFMO/NullExpr.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
+#include "LikeMagic/Exprs/NullExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 
 #include <iterator>

@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -9,9 +9,9 @@
 
 #pragma once
 
-#include "LikeMagic/SFMO/BottomPtrExpr.hpp"
+#include "LikeMagic/Exprs/BottomPtrExpr.hpp"
 
-namespace LikeMagic { namespace SFMO {
+namespace LikeMagic { namespace Exprs {
 
 // When IoNil is encountered, it is marshaled as a NullExpr object.
 // The type can be converted to any other pointer in TypeConvGraph.

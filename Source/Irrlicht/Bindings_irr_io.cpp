@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -21,7 +21,7 @@ namespace Bindings { namespace Irrlicht {
 
 void add_bindings_irr_io(RuntimeTypeSystem& type_sys)
 {
-    auto ns_irr_io = Namespace::global(type_sys).subspace("irr").subspace("io");
+    auto ns_irr_io = Namespace::global->subspace("irr").subspace("io");
 
     LM_CLASS(ns_irr_io, IAttributes)
 

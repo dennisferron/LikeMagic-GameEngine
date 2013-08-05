@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -9,11 +9,11 @@
 #pragma once
 
 #include "ConvertibleTo.hpp"
-#include "../SFMO/Term.hpp"
+#include "../Exprs/Term.hpp"
 
 namespace LikeMagic { namespace TypeConv {
 
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 
 // This type converter allows bound functions to get ahold of the outer expression object,
 // rather than what is inside the expression object.  It allows you to write functions that

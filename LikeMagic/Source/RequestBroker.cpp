@@ -4,12 +4,12 @@
 #include "boost/interprocess/mapped_region.hpp"
 #include <iostream>
 
-#include "LikeMagic/SFMO/Term.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
 #include "LikeMagic/AbstractTypeSystem.hpp"
 
 using namespace LikeMagic;
 using namespace LikeMagic::Interprocess;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Utility;
 
 using namespace boost::interprocess;
@@ -40,13 +40,12 @@ std::string RequestBroker::get_state_name(ProcessState s) const
     }
 }
 
-RequestBroker::RequestBroker(AbstractTypeSystem& type_system_, SharedObjectRegistry& object_registry_, ProcessControlStructure* pcs_)
+RequestBroker::RequestBroker(SharedObjectRegistry& object_registry_, ProcessControlStructure* pcs_)
     :
-        type_system(type_system_),
         object_registry(object_registry_),
         invocation_counter(0),
         pcs(pcs_),
-        transporter(type_system_)
+        transporter()
 {
 }
 
@@ -127,7 +126,7 @@ CallReturn RequestBroker::listen(int wanted_invocation_id, bool wants_rvalue)
                 LikeMagic::Utility::TypeInfoList arg_types;
                 arg_types.push_back(arg_type_index);
                 ArgList arg_list = transporter.read_args(arg_types, temp.args_buffer);
-                int arg = type_system.try_conv<int>(arg_list[0])->eval();
+                int arg = type_system->try_conv<int>(arg_list[0])->eval();
                 int result = execute(temp.method_id, arg);
                 auto method_call = Term<int, true>::create(result);
 

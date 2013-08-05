@@ -4,13 +4,13 @@
 #include "UnitTests/ArgListHelpers.hpp"
 
 #include "LikeMagic/RuntimeTypeSystem.hpp"
-#include "LikeMagic/SFMO/Term.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
 #include "LikeMagic/Interprocess/SharedArgTransporter.hpp"
 
 using namespace std;
 
 using namespace LikeMagic;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Interprocess;
 
 SUITE(TestArgTransporter)

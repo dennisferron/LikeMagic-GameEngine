@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -26,20 +26,14 @@ class Namespace
 {
 private:
 
-    RuntimeTypeSystem& type_system;
     NamespacePath const path;
 
-    Namespace(RuntimeTypeSystem& type_system_);
-    Namespace(RuntimeTypeSystem& type_system_, NamespacePath const path_);
+    Namespace();
+    Namespace(NamespacePath const path_);
 
 public:
 
-    RuntimeTypeSystem& get_type_system() const;
-
-    // Important:  you must set the type info cache instances in all your DLLs to this pointer.
-    TypeInfoCache* get_typeinfo_cache() const;
-
-    static Namespace const global(RuntimeTypeSystem& type_system_);
+    static Namespace const global();
     Namespace const subspace(std::string name) const;
 
     Namespace const get_parent() const;
@@ -50,13 +44,13 @@ public:
     template <typename T, bool is_copyable=!boost::is_abstract<T>::value>
     Class<T, is_copyable>& register_class(std::string name) const
     {
-        return type_system.register_class<T, is_copyable>(name, path);
+        return type_system->register_class<T, is_copyable>(name, path);
     }
 
     template <typename T>
     Class<T, true>& register_enum(std::string name) const
     {
-        return type_system.register_enum<T>(name, path);
+        return type_system->register_enum<T>(name, path);
     }
 
     StaticMethods& register_functions() const;

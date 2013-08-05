@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -28,11 +28,11 @@ namespace Bindings { namespace IrrKlang {
 
 void add_bindings(Namespace const& type_sys)
 {
-    LM_STATIC_FUNC(type_sys, irrklang, createIrrKlangDevice)
+    LM_STATIC_FUNC(irrklang, createIrrKlangDevice)
 
-    LM_CLASS(type_sys, ISound)
+    LM_CLASS(ISound)
 
-    LM_CLASS(type_sys, ISoundEngine)
+    LM_CLASS(ISoundEngine)
     LM_FUNC(ISoundEngine, (drop))
 
     LM_FUNC_OVERLOAD(ISoundEngine, "play2D", play2D,
@@ -54,13 +54,13 @@ void add_bindings(Namespace const& type_sys)
         bool
     )
 
-    LM_CLASS(type_sys, E_SOUND_ENGINE_OPTIONS)
-    type_sys.add_conv<E_SOUND_ENGINE_OPTIONS, int>();
+    LM_CLASS(E_SOUND_ENGINE_OPTIONS)
+    type_system->add_conv<E_SOUND_ENGINE_OPTIONS, int>();
 
-    LM_CLASS(type_sys, E_SOUND_OUTPUT_DRIVER)
-    type_sys.add_conv<E_SOUND_OUTPUT_DRIVER, int>();
+    LM_CLASS(E_SOUND_OUTPUT_DRIVER)
+    type_system->add_conv<E_SOUND_OUTPUT_DRIVER, int>();
 
-    LM_CLASS(type_sys, E_STREAM_MODE)
+    LM_CLASS(E_STREAM_MODE)
 }
 
 }}

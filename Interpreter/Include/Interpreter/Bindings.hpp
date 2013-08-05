@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -12,6 +12,6 @@
 #include "LikeMagic/RuntimeTypeSystem.hpp"
 
 namespace Interpreter {
-    void add_bindings(LikeMagic::RuntimeTypeSystem& type_sys);
+    void add_bindings();
 }
 

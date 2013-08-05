@@ -18,7 +18,6 @@ class SharedObjectRegistry;
 class RequestBroker
 {
 private:
-    AbstractTypeSystem& type_system;
     SharedObjectRegistry& object_registry;
 
     boost::unordered_map<InvocationId, CallReturn> cached_rvalues;
@@ -31,7 +30,7 @@ private:
     SharedArgTransporter transporter;
 
 public:
-    RequestBroker(AbstractTypeSystem& type_system_, SharedObjectRegistry& object_registry_, ProcessControlStructure* pcs_);
+    RequestBroker(SharedObjectRegistry& object_registry_, ProcessControlStructure* pcs_);
     ~RequestBroker();
     CallReturn listen(InvocationId invocation_id, bool wants_rvalue);
     CallReturn call(ProcessControlStructure* target_pcs, ObjectHandle object_handle,

@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -12,15 +12,14 @@
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
 #include "LikeMagic/TypeConv/GenericConv.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
-#include "LikeMagic/SFMO/NullExpr.hpp"
+#include "LikeMagic/Exprs/NullExpr.hpp"
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
 #include "LikeMagic/Utility/IsIterator.hpp"
-#include "LikeMagic/SFMO/Trampoline.hpp"
+#include "LikeMagic/Exprs/Trampoline.hpp"
 
 #include "LikeMagic/Utility/TupleForEach.hpp"
 
 #include "LikeMagic/Utility/KeyWrapper.hpp"
-#include "LikeMagic/ITypeSystemObserver.hpp"
 
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits.hpp"
@@ -33,23 +32,23 @@
 
 namespace LikeMagic {
 
-namespace SFMO {
+namespace Exprs {
     class AbstractCppObjProxy;
 }
 
 namespace Marshaling {
     class AbstractMethodset;
-    class AbstractClass;
+    class TypeMirror;
 }
 
 using LikeMagic::Marshaling::AbstractMethodset;
-using LikeMagic::Marshaling::AbstractClass;
+using LikeMagic::Marshaling::TypeMirror;
 using LikeMagic::Utility::BetterTypeInfo;
 using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeInfoList;
 using namespace LikeMagic::TypeConv;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Utility;
 
 
@@ -60,7 +59,7 @@ using namespace LikeMagic::Utility;
 // One way to break the dependency is to make Class use the abstract
 // interface instead of giving it direct access to RuntimeTypeSystem.
 // The Factory Pattern is no help here because RuntimeTypeSystem must
-// create concrete Class instantiations, not AbstractClass, so it
+// create concrete Class instantiations, not TypeMirror, so it
 // would still have needed to include Class.hpp even if it used a factory.
 
 
@@ -70,8 +69,8 @@ private:
     // This is used for debugging.
     bool leak_memory_flag;
 
-    //boost::unordered_map<TypeIndex, AbstractClass*> classes;
-    std::vector<AbstractClass*> classes2;
+    //boost::unordered_map<TypeIndex, TypeMirror*> classes;
+    std::vector<TypeMirror*> classes2;
 
     // Don't allow accidently making copies of this class
     AbstractTypeSystem(AbstractTypeSystem const&) = delete;
@@ -93,11 +92,9 @@ protected:
 
     AbstractTypeSystem();
 
-    AbstractClass* unknown_class;
+    TypeMirror* unknown_class;
 
     TypeConvGraph conv_graph;
-
-    std::set<ITypeSystemObserver*> observers;
 
 public:
 
@@ -115,13 +112,12 @@ public:
     TypeInfoList get_registered_types() const;
     std::vector<std::string> get_base_names(TypeIndex type) const;
     std::string get_class_name(TypeIndex type) const;
-    AbstractCppObjProxy* create_class_proxy(TypeIndex type) const;
+    ExprPtr create_class_expr(TypeIndex type) const;
     std::vector<std::string> const& get_method_names(TypeIndex type) const;
-    //AbstractCppObjProxy* call(TypeIndex type, std::string method_name, AbstractCppObjProxy* proxy, std::vector<ExprPtr> args) const;
     TypeInfoList get_arg_types(TypeIndex type, std::string method_name, int num_args) const;
     bool has_class(TypeIndex type) const;
-    AbstractClass* get_class(TypeIndex type) const;
-    void add_class(TypeIndex index, AbstractClass* class_ptr);
+    TypeMirror* get_class(TypeIndex type) const;
+    void add_class(TypeIndex index, TypeMirror* class_ptr);
 
     void add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv);
     void add_converter_simple(TypeIndex from, TypeIndex to, p_conv_t conv);
@@ -157,12 +153,19 @@ public:
         return static_cast<Expression<To>*>(try_conv(from, BetterTypeInfo::create_index<To>()).get());
     }
 
-    void add_type_system_observer(ITypeSystemObserver* observer);
-    void register_base(LikeMagic::Marshaling::AbstractClass* class_, LikeMagic::Marshaling::AbstractClass const* base);
-    void register_method(LikeMagic::Marshaling::AbstractClass* class_, std::string method_name, LikeMagic::CallTargets::AbstractCallTargetSelector* method);
+    void register_base(LikeMagic::Marshaling::TypeMirror* class_, LikeMagic::Marshaling::TypeMirror const* base);
+    void register_method(LikeMagic::Marshaling::TypeMirror* class_, std::string method_name, LikeMagic::CallTargets::AbstractMethod* method);
     void print_conv_chain(TypeIndex from, TypeIndex to) const;
 
     void add_ptr_conversions(TypeIndex from_type, bool auto_deref);
 };
 
+// The global type_system variable needs to be a pointer (not a reference)
+// so that in situations where linking doesn't properly resolve the symbol
+// to the same location (this can happen, e.g., with DLLs on Windows)
+// then we can use an assignment to the pointer to reconcile the two.
+// Or, at worst, the uninitialized copy of the pointer variable will
+// be null, which is a problem much easier to diagnose than a situation
+// in which two different copies of the actual object exist by accident.
+extern AbstractTypeSystem* type_system;
 }

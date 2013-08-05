@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -8,7 +8,7 @@
 
 #include "LikeMagic/TypeConv/TypeConvGraph.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
-#include "LikeMagic/SFMO/BottomPtrExpr.hpp"
+#include "LikeMagic/Exprs/BottomPtrExpr.hpp"
 
 //#include "boost/graph/breadth_first_search.hpp"
 #include "boost/graph/dijkstra_shortest_paths.hpp"
@@ -39,7 +39,7 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 
 using namespace boost;
 
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Utility;
 
 namespace LikeMagic { namespace TypeConv {

@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -19,7 +19,7 @@
 #include "boost/unordered_map.hpp"
 
 #include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
-#include "LikeMagic/SFMO/AbstractExpression.hpp"
+#include "LikeMagic/Exprs/AbstractExpression.hpp"
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 #include "LikeMagic/Utility/KeyWrapper.hpp"

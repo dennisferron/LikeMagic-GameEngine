@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -11,8 +11,8 @@
 #include "Iocaste/LikeMagicAdapters/API_Io.hpp"
 
 #include "LikeMagic/AbstractTypeSystem.hpp"
-#include "LikeMagic/SFMO/ExprProxy.hpp"
-#include "LikeMagic/SFMO/Term.hpp"
+#include "LikeMagic/Exprs/ExprProxy.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
 
 #include "LikeMagic/IMarkable.hpp"
 #include "LikeMagic/DebugInfo.hpp"
@@ -24,14 +24,13 @@
 namespace Iocaste { namespace LikeMagicAdapters {
 
 using LikeMagic::AbstractTypeSystem;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 
 class IoVM;
 
 class IoBlock : public LikeMagic::IMarkable, public LikeMagic::DebugInfo
 {
 private:
-    AbstractTypeSystem const* type_sys;
     IoVM* iovm;
     friend class IoVM;
 
@@ -42,9 +41,9 @@ private:
     IoObject* io_target;
 
     template <typename T>
-    AbstractCppObjProxy* make_proxy(T t) const
+    ExprPtr make_proxy(T t) const
     {
-        return ExprProxy::create(Term<T, true>::create(t), *type_sys);
+        return Term<T, true>::create(t);
     }
 
     void add_arg(IoMessage* m, AbstractCppObjProxy* proxy) const;
@@ -62,7 +61,7 @@ private:
 
 public:
     IoBlock();
-    IoBlock(AbstractTypeSystem const* type_sys_, IoVM* iovm_, IoObject* io_block_, IoObject* io_target_);
+    IoBlock(IoVM* iovm_, IoObject* io_block_, IoObject* io_target_);
     IoBlock(IoBlock const& other);
     virtual ~IoBlock();
 
@@ -71,7 +70,7 @@ public:
     template <typename... Args>
     void operator()(Args... args) const
     {
-        if (type_sys && io_block && io_target)
+        if (io_block && io_target)
         {
             IoMessage* m = new_message(io_target, "IoBlock");
             add_args(m, args...);
@@ -95,9 +94,9 @@ public:
                 IoObject* result = activate(m);
                 static TypeIndex r_type = LikeMagic::Utility::BetterTypeInfo::template create_index<R>();
                 errorPoint = "return value from_script";
-                ExprPtr expr = from_script(io_target, result, *type_sys, r_type);
+                ExprPtr expr = from_script(io_target, result, r_type);
                 errorPoint = "try_conv return value";
-                return type_sys->try_conv<R>(expr)->eval();
+                return type_system->try_conv<R>(expr)->eval();
             }
             catch (Iocaste::ScriptException const& exc)
             {

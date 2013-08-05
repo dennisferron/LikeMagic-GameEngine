@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -10,22 +10,20 @@
 
 #include "LikeMagic/Utility/SetField.hpp"
 
-#include "LikeMagic/CallTargets/AbstractCallTargetSelector.hpp"
+#include "LikeMagic/CallTargets/AbstractMethod.hpp"
 
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_void.hpp"
 
-#include "LikeMagic/SFMO/ExprProxy.hpp"
-
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Marshaling;
 
 template <typename T, typename FieldPtr>
-class ArrayFieldSetterTarget : public AbstractCallTargetSelector
+class ArrayFieldSetterTarget : public AbstractMethod
 {
 private:
     typedef T& CallAs;
@@ -40,7 +38,7 @@ public:
 
     static bool const is_const_func = false;
 
-    ArrayFieldSetterTarget(FieldPtr f_ptr_, AbstractTypeSystem const& type_system_) : AbstractCallTargetSelector(type_system_), f_ptr(f_ptr_) {}
+    ArrayFieldSetterTarget(FieldPtr f_ptr_) : f_ptr(f_ptr_) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
@@ -48,10 +46,10 @@ public:
             throw std::logic_error("Setting an array field requires 2 arguments.");
 
         SetField<CallAs>::setAt(
-            type_system.try_conv<size_t>(args[0])->eval(),
-            type_system.try_conv<CallAs>(target)->eval(),
+            type_system->try_conv<size_t>(args[0])->eval(),
+            type_system->try_conv<CallAs>(target)->eval(),
             f_ptr,
-            type_system.try_conv<ArgType>(args[1]));
+            type_system->try_conv<ArgType>(args[1]));
         return 0;
     }
 

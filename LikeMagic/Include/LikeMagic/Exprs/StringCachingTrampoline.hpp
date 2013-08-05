@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -13,13 +13,13 @@
 
 #include <iostream>
 
-namespace LikeMagic { namespace SFMO {
+namespace LikeMagic { namespace Exprs {
 
 using namespace LikeMagic::Utility;
 
-// When converting strings to char* or references, the conversion is unsafe in SFMO expressions if a new string has to be generated
+// When converting strings to char* or references, the conversion is unsafe in Exprs expressions if a new string has to be generated
 // unless this temporary string is stored away somewhere for the pointer to have
-// something durable to refer to while the SFMO expression exists.
+// something durable to refer to while the Exprs expression exists.
 // This class should probably not be used for other kind of casts.
 template <typename From, typename To, typename Converter>
 class StringCachingTrampoline : public Expression<To>

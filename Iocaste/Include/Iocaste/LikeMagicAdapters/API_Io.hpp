@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "LikeMagic/SFMO/AbstractCppObjProxy.hpp"
+#include "LikeMagic/Exprs/AbstractExpression.hpp"
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
 
 // Using forward declarations here so that user of IoVM class doesn't
@@ -20,15 +20,15 @@ typedef IoObject IoMessage;
 
 namespace Iocaste { namespace LikeMagicAdapters {
 
-using namespace LikeMagic::SFMO;
+using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Utility;
 
 class IoVM;
 
-bool is_sfmo_obj(IoObject* io_obj);
-boost::intrusive_ptr<AbstractExpression> from_script(IoObject* self, IoObject* io_obj, AbstractTypeSystem const& type_sys, TypeIndex to_type);
-void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm);
-void add_convs_to_script(AbstractTypeSystem& type_sys, IoVM* iovm);
+bool is_Exprs_obj(IoObject* io_obj);
+ExprPtr from_script(IoObject* self, IoObject* io_obj, TypeIndex to_type);
+void add_convs_from_script(IoVM* iovm);
+void add_convs_to_script(IoVM* iovm);
 std::string get_type_name(IoObject* io_obj);
 
 IoMessage* new_message(IoObject* self, std::string name);

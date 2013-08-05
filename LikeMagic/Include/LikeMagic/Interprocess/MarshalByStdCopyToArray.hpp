@@ -25,15 +25,13 @@ public:
 template <typename ContainerType, typename ElementType>
 struct MarshalByStdCopyToArray : public AbstractSharedArgMarshaller
 {
-    LikeMagic::AbstractTypeSystem const& type_system;
     LikeMagic::Interprocess::SharedMemoryAllocator& allocator;
 
-    MarshalByCopy(LikeMagic::AbstractTypeSystem const& type_system_, SharedMemoryAllocator allocator)
-        : type_system(type_system_) {}
+    MarshalByCopy(SharedMemoryAllocator& allocator_) : allocator(allocator_) {}
 
     virtual void write(void* location, ExprPtr arg)
     {
-        Container container = type_system.try_conv<T>(arg);
+        Container container = type_system->try_conv<T>(arg);
         size_t size = container.size();
         offset_ptr<T> buffer = allocator.allocate_buffer<ElementType>(size);
         std::copy(container.begin(), container.end(), buffer.data);
@@ -55,7 +53,7 @@ struct MarshalByStdCopyToArray : public AbstractSharedArgMarshaller
 
     virtual void release(ExprPtr expr)
     {
-        ReferenceToSharedArray<ElementType> buffer = type_system.try_conv<T>(arg);
+        ReferenceToSharedArray<ElementType> buffer = type_system->try_conv<T>(arg);
         allocator.release(buffer);
     }
 };

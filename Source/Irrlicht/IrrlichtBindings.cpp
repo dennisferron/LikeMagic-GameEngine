@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -19,7 +19,7 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     // This needs to be done once in every DLL.
     LM_SET_TYPE_INFO(type_sys)
 
-    auto ns_irrlicht = Namespace::global(type_sys).subspace("Bindings").subspace("Irrlicht");
+    auto ns_irrlicht = Namespace::global->subspace("Bindings").subspace("Irrlicht");
 
     LM_STATIC_FUNC(ns_irrlicht, Bindings::Irrlicht, add_bindings_irr)
     LM_STATIC_FUNC(ns_irrlicht, Bindings::Irrlicht, add_bindings_gui)

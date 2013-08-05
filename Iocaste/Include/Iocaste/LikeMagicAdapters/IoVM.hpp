@@ -1,5 +1,5 @@
 // LikeMagic C++ Binding Library
-// Copyright 2008-2011 Dennis Ferron
+// Copyright 2008-2013 Dennis Ferron
 // Co-founder DropEcho Studios, LLC.
 // Visit our website at dropecho.com.
 //
@@ -11,8 +11,7 @@
 #include "LikeMagic/RuntimeTypeSystem.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 #include "Iocaste/LikeMagicAdapters/API_Io.hpp"
-#include "LikeMagic/SFMO/ExprProxy.hpp"
-#include "LikeMagic/ITypeSystemObserver.hpp"
+#include "LikeMagic/Exprs/ExprProxy.hpp"
 #include "LikeMagic/MarkableObjGraph.hpp"
 
 #include "Iocaste/Breakpoint.hpp"
@@ -32,14 +31,13 @@ extern "C"
 namespace Iocaste { namespace LikeMagicAdapters {
 
 
-class IoVM : public IoState, public LikeMagic::ITypeSystemObserver, public LikeMagic::MarkableObjGraph
+class IoVM : public IoState, public LikeMagic::MarkableObjGraph
 {
 private:
     friend IOVM_API void ::IoState_registerProtoWithId_(IoState *self, IoObject *proto, const char *v);
     friend IOVM_API IoObject* ::IoState_protoWithName_(IoState *self, const char *name);
     friend List* ::IoState_tagList(IoState *self);
 
-    LikeMagic::RuntimeTypeSystem& type_system;
     IoState* state;  // It was dangerous when this was named "self" - Io macros referencing self are defined for an IoObject, not an IoState
     Primitives primitives;
     std::set<TypeIndex> registered_classes;
@@ -68,7 +66,7 @@ private:
     IoObject* proxy_to_io_obj(AbstractCppObjProxy* proxy);
 
 public:
-    IoVM(LikeMagic::RuntimeTypeSystem& type_system_, std::string bootstrap_path);
+    IoVM(std::string bootstrap_path);
     ~IoVM();
 
     static IoObject* perform(IoObject *self, IoObject *locals, IoMessage *m);
@@ -92,8 +90,7 @@ public:
                 Term<T, true>::create
                 (
                     obj
-                ),
-                type_system
+                )
             ),
             ns,
             to_script
@@ -107,7 +104,7 @@ public:
     boost::intrusive_ptr<Expression<T>> get_expr(std::string io_code) const
     {
         auto abs_expr = get_abs_expr(io_code);
-        return type_system.try_conv<T>(abs_expr);
+        return type_system->try_conv<T>(abs_expr);
     }
 
     // This is intended for pointers but I used "T" instead of "T*" so that you can specify a smart pointer instead.
@@ -126,7 +123,7 @@ public:
 
     virtual void register_class(LikeMagic::Marshaling::AbstractClass const* class_);
     virtual void register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base);
-    virtual void register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::CallTargets::AbstractCallTargetSelector* method);
+    virtual void register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::CallTargets::AbstractMethod* method);
 
     virtual void mark() const;
 
