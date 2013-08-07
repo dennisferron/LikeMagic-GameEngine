@@ -10,7 +10,7 @@
 
 #include "LikeMagic/Utility/StripModifiers.hpp"
 
-#include "LikeMagic/CallTargets/AbstractMethod.hpp"
+#include "LikeMagic/CallTargets/CallTarget.hpp"
 
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits/is_same.hpp"
@@ -26,7 +26,7 @@ using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
 
 template <typename CallAs, typename FieldAccessor>
-class CustomFieldGetterTarget : public AbstractMethod
+class CustomFieldGetterTarget : public CallTarget
 {
 private:
     typedef StripModifiers<CallAs> stripped;

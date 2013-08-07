@@ -10,7 +10,7 @@
 
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
 
-#include "LikeMagic/CallTargets/AbstractMethod.hpp"
+#include "LikeMagic/CallTargets/CallTarget.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
@@ -18,7 +18,7 @@ using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
 
 template <typename ObjT>
-class DestructorCallTarget : public AbstractMethod
+class DestructorCallTarget : public CallTarget
 {
 private:
 

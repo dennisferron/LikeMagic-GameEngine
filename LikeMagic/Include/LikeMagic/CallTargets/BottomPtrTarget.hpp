@@ -9,7 +9,7 @@
 #pragma once
 
 #include "LikeMagic/Exprs/BottomPtrExpr.hpp"
-#include "LikeMagic/CallTargets/AbstractMethod.hpp"
+#include "LikeMagic/CallTargets/CallTarget.hpp"
 #include "LikeMagic/Exprs/BottomPtrExpr.hpp"
 #include "LikeMagic/Exprs/NullExpr.hpp"
 
@@ -18,7 +18,7 @@ namespace LikeMagic { namespace CallTargets {
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
 
-class BottomPtrTarget : public AbstractMethod
+class BottomPtrTarget : public CallTarget
 {
 public:
 

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "LikeMagic/Marshaling/AbstractMethod.hpp"
+#include "LikeMagic/Marshaling/CallTarget.hpp"
 
 namespace LikeMagic { namespace Interprocess {
 
 class RequestBroker;
 
-class RemoteMethod : public AbstractMethod
+class RemoteMethod : public CallTarget
 {
 private:
     RequestBroker& broker;

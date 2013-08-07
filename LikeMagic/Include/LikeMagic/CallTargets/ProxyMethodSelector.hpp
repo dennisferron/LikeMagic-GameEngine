@@ -9,8 +9,8 @@
 #pragma once
 
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
-#include "LikeMagic/AbstractTypeSystem.hpp"
-#include "LikeMagic/CallTargets/AbstractMethod.hpp"
+#include "LikeMagic/TypeSystem.hpp"
+#include "LikeMagic/CallTargets/CallTarget.hpp"
 
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits/is_same.hpp"
@@ -24,7 +24,7 @@ using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
 
 template <typename F>
-class ProxyMethodSelector : public AbstractMethod
+class ProxyMethodSelector : public CallTarget
 {
 private:
     F func_ptr;

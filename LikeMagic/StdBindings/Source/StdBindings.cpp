@@ -14,7 +14,7 @@
 
 #include "IoObject.h"
 
-#include "LikeMagic/RuntimeTypeSystem.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/NamespacePath.hpp"
 
 #include "LikeMagic/TypeConv/StringConv.hpp"
@@ -83,7 +83,7 @@ void at_put(vector<T>& target, size_t pos, T const& value)
     target.at(pos) = value;
 }
 
-void LikeMagic::StdBindings::add_bindings(RuntimeTypeSystem& type_sys)
+void LikeMagic::StdBindings::add_bindings(TypeSystem& type_sys)
 {
     // This needs to be done once in every DLL.
     LM_SET_TYPE_INFO(type_sys)
@@ -98,12 +98,12 @@ void LikeMagic::StdBindings::add_bindings(RuntimeTypeSystem& type_sys)
     Namespace global_ns = Namespace::global(type_sys);
 
     // Add the abstract type system itself as a class.
-    LM_CLASS_NO_COPY(global_ns, AbstractTypeSystem)
-    LM_FUNC(AbstractTypeSystem, (set_leak_memory)(leak_memory)(add_type_system_observer))
+    LM_CLASS_NO_COPY(global_ns, TypeSystem)
+    LM_FUNC(TypeSystem, (set_leak_memory)(leak_memory)(add_type_system_observer))
 
     LM_CLASS_NO_COPY(global_ns, AbstractCppObjProxy)
 
-    LM_CLASS_NO_COPY(global_ns, AbstractMethod)
+    LM_CLASS_NO_COPY(global_ns, CallTarget)
 
     LM_CLASS_NO_COPY(global_ns, TypeMirror)
     LM_FUNC(TypeMirror, (get_class_name)(get_type)(create_class_proxy)(get_namespace)(get_method_names)(get_size))

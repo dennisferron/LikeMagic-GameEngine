@@ -16,7 +16,7 @@ using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
 
 template <typename T>
-class ClassExprTarget : public AbstractMethod
+class ClassExprTarget : public CallTarget
 {
 public:
     virtual ExprPtr call(ExprPtr target, ArgList args) const

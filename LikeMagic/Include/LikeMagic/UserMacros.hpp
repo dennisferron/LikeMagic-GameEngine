@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "LikeMagic/RuntimeTypeSystem.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Namespace.hpp"
 
 #include "boost/preprocessor/seq/for_each.hpp"

@@ -6,11 +6,12 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-#include "LikeMagic/Marshaling/CommonClassImpl.hpp"
-#include "LikeMagic/CallTargets/AbstractMethod.hpp"
+#include "LikeMagic/Mirrors/TypeMirror.hpp"
+#include "LikeMagic/Mirrors/CallTarget.hpp"
 #include "LikeMagic/Exprs/AbstractExpression.hpp"
-#include "LikeMagic/AbstractTypeSystem.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/CallTargets/BottomPtrTarget.hpp"
+#include "boost/unordered_map.hpp"
 
 #if (defined(__MINGW32__) || defined(__MINGW64__)) && (__GNUC__ == 4)
 #include <stddef.h>
@@ -20,68 +21,64 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 
 #include "boost/lexical_cast.hpp"
 
-using namespace LikeMagic::Marshaling;
+using namespace LikeMagic::Mirrors;
 using namespace LikeMagic::CallTargets;
 using namespace std;
 
 struct TypeMirror::Impl
 {
-    AbstractCppObjProxy* class_proxy;  // Allows you to call constructors without already having C++ object
     boost::unordered_map<std::string, TypeMirror const*> bases;
-    std::string class_name;
-    boost::unordered_map<std::string, std::map<int, AbstractMethod*>> methods;
+    std::string name;
+    boost::unordered_map<std::string, std::map<int, CallTarget*>> methods;
 };
-
 
 TypeMirror::~TypeMirror() {}
 
-CommonClassImpl::CommonClassImpl(std::string name_, NamespacePath namespace_) :
-    class_name(name_),
-    ns(namespace_)
+TypeMirror::TypeMirror(std::string name_)
+    : impl(new TypeMirror::Impl)
 {
     if (name_ == "")
         throw std::logic_error("Tried to register class with no name!");
+
+    impl->name(name_);
 
     auto ptr_caster = new BottomPtrTarget();
     add_method("unsafe_ptr_cast", ptr_caster);
 }
 
-CommonClassImpl::~CommonClassImpl()
+TypeMirror::~TypeMirror()
 {
-    for (auto it=methods.begin(); it != methods.end(); it++)
+    for (auto it=impl->methods.begin(); it != impl->methods.end(); it++)
     {
-        std::map<int, AbstractMethod*> const& overloads(it->second);
+        std::map<int, CallTarget*> const& overloads(it->second);
         for (auto it2=overloads.begin(); it2 != overloads.end(); it2++)
             delete it2->second;
     }
 }
 
-void CommonClassImpl::add_method(std::string method_name, AbstractMethod* method)
+void TypeMirror::add_method(std::string method_name, CallTarget* method)
 {
     int num_args = method->get_arg_types().size();
 
-    if (has_method(method_name, num_args))
+    if (get_method(method_name, num_args))
     {
         std::cout <<
-                class_name + "::" + method_name + " taking " + boost::lexical_cast<std::string>(num_args) + " arguments"
+                impl->name + "::" + method_name + " taking " + boost::lexical_cast<std::string>(num_args) + " arguments"
                 + " has previously been registered."
                 + " (Method names can be overloaded, but only if they have different arg counts. You will have to give one"
                 + " of the methods a different name.)" << std::endl;
     }
     else
     {
-        // Don't add the same method name if it already has the method.
-        method_names.push_back(method_name);
-        methods[method_name][num_args] = method;
-        type_system->register_method(this, method_name, method);
-    }
+        impl->methods[method_name][num_args] = method;
+   }
 }
 
-void CommonClassImpl::suggest_method(std::string method_name, int num_args) const
+void TypeMirror::suggest_method(std::string method_name, int num_args) const
 {
-    auto candidates = methods.find(method_name);
+    auto candidates = impl->methods.find(method_name);
 
-    if (candidates == methods.end())
+    if (candidates == impl->methods.end())
     {
         bool has_c = methods.find(method_name + "_c") != methods.end();
         bool has_nc = methods.find(method_name + "_nc") != methods.end();
@@ -131,19 +128,17 @@ void CommonClassImpl::suggest_method(std::string method_name, int num_args) cons
     }
 }
 
-AbstractMethod* CommonClassImpl::try_get_method(std::string method_name, int num_args, bool in_base_class) const
+CallTarget* TypeMirror::get_method(std::string method_name, int num_args, bool in_base_class) const
 {
-    //cout << "try_get_method " << method_name << " " << num_args << endl;
-
     // First try to find the name and arg number method in this class.
-    auto name_iter = methods.find(method_name);
-    if (name_iter != methods.end())
+    auto name_iter = impl->methods.find(method_name);
+    if (name_iter != impl->methods.end())
     {
         auto overloads = name_iter->second;
         auto num_iter = overloads.find(num_args);
         if (num_iter != overloads.end())
         {
-            AbstractMethod* method = num_iter->second;
+            CallTarget* method = num_iter->second;
 
             // Methods that cannot be inherited (like constructors) must not be returned from base class search.
             if (in_base_class && !method->is_inherited())
@@ -154,12 +149,12 @@ AbstractMethod* CommonClassImpl::try_get_method(std::string method_name, int num
     }
 
     // Second try to find it in the bases.
-    for (auto it=bases.begin(); it != bases.end(); it++)
+    for (auto it=impl->bases.begin(); it != impl->bases.end(); it++)
     {
         if (it->second == this)
             throw std::logic_error("The class " + get_class_name() + " is registered as a base of itself!");
 
-        AbstractMethod* method = it->second->try_get_method(method_name, num_args, true);
+        CallTarget* method = it->second->get_method(method_name, num_args, true);
         if (method)
             return method;
     }
@@ -168,33 +163,31 @@ AbstractMethod* CommonClassImpl::try_get_method(std::string method_name, int num
     return 0;
 }
 
-bool CommonClassImpl::has_base(TypeMirror const* base) const
+bool TypeMirror::has_base(TypeMirror const* base) const
 {
-    for (auto it=bases.begin(); it != bases.end(); it++)
+    for (auto it=impl->bases.begin(); it != impl->bases.end(); it++)
         if (it->second == base || it->second->has_base(base))
             return true;
 
     return false;
 }
 
-
-void CommonClassImpl::add_base(TypeMirror const* base)
+void TypeMirror::add_base(TypeMirror const* base)
 {
-    bases[base->get_class_name()] = base;
-    type_system->register_base(this, base);
-}
+    impl->bases[base->get_class_name()] = base;
 
-std::vector<std::string> CommonClassImpl::get_base_names() const
+
+std::vector<std::string> TypeMirror::get_base_names() const
 {
     std::vector<std::string> result;
 
-    for (auto it=bases.begin(); it != bases.end(); it++)
+    for (auto it=impl->bases.begin(); it != impl->bases.end(); it++)
         result.push_back(it->first);
 
     return result;
 }
 
-std::string CommonClassImpl::get_class_name() const
+std::string TypeMirror::get_class_name() const
 {
-    return class_name;
+    return impl->name;
 }

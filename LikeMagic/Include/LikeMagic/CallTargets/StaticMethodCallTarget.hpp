@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "LikeMagic/AbstractTypeSystem.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
 
 #include "LikeMagic/Utility/TypeDescr.hpp"
@@ -18,7 +18,7 @@
 
 #include "LikeMagic/Exprs/methodcall_args.hpp"
 
-#include "LikeMagic/CallTargets/AbstractMethod.hpp"
+#include "LikeMagic/CallTargets/CallTarget.hpp"
 #include "LikeMagic/Generators/MemberKind.hpp"
 
 // When there are no args, args_tuple does not get expanded below and therefore is set but unused.
@@ -32,7 +32,7 @@ using namespace LikeMagic::Utility;
 using namespace LikeMagic::Generators;
 
 template <typename R, typename... Args>
-class StaticMethodCallTarget : public AbstractMethod
+class StaticMethodCallTarget : public CallTarget
 {
 public:
     typedef std::tuple<boost::intrusive_ptr<Expression<Args>>...> ArgTuple;

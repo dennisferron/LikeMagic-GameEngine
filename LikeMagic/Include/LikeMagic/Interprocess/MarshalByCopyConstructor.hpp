@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LikeMagic/AbstractTypeSystem.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
 #include "LikeMagic/Interprocess/AbstractSharedArgMarshaller.hpp"
 

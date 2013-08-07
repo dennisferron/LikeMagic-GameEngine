@@ -8,21 +8,13 @@
 
 #pragma once
 
-#include <string>
-#include <stdexcept>
-#include <typeinfo>
-#include <map>
-#include <vector>
-
-#include "boost/intrusive_ptr.hpp"
-#include "boost/unordered_map.hpp"
+#include "boost/shared_ptr.hpp"
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 #include "LikeMagic/Exprs/AbstractExpression.hpp"
-#include "LikeMagic/NamespacePath.hpp"
 
 namespace LikeMagic {
-    class AbstractTypeSystem;
+    class TypeSystem;
 }
 
 namespace LikeMagic { namespace Exprs {
@@ -31,7 +23,7 @@ namespace LikeMagic { namespace Exprs {
 }}
 
 namespace LikeMagic { namespace CallTargets {
-    class AbstractMethod;
+    class CallTarget;
 }}
 
 namespace LikeMagic { namespace Marshaling {
@@ -40,12 +32,10 @@ using LikeMagic::Exprs::AbstractCppObjProxy;
 using LikeMagic::Exprs::AbstractExpression;
 using LikeMagic::Exprs::ExprPtr;
 using LikeMagic::Exprs::ArgList;
-using LikeMagic::AbstractTypeSystem;
-using LikeMagic::Utility::TypeIndex;
+using LikeMagic::TypeSystem;
 using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeInfoList;
-using LikeMagic::NamespacePath;
-using LikeMagic::CallTargets::AbstractMethod;
+using LikeMagic::Mirrors::CallTarget;
 
 class TypeMirror
 {
@@ -60,16 +50,18 @@ public:
     TypeMirror();
     virtual ~TypeMirror();
 
-    virtual std::string get_type_name() const;
-    virtual TypeMirror const* get_namespace() const ;
+    virtual std::string get_name() const;
 
-    virtual AbstractMethod* get_method(std::string method_name, int num_args, bool in_base_class=false) const;
-    virtual void add_method(std::string method_name, AbstractMethod* method);
+    virtual CallTarget* get_method(std::string method_name, int num_args, bool in_base_class=false) const;
+    virtual void add_method(std::string method_name, CallTarget* method);
 
     // support inheritance
     virtual void add_base(TypeMirror const* base);
     virtual bool has_base(TypeMirror const* base) const;
+
     virtual TypeIndex get_type() const;
+    virtual TypeIndex get_const_type() const;
+    virtual TypeIndex get_ref_type() const;
 
     virtual size_t get_size() const;
 };

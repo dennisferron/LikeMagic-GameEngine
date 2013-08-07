@@ -10,7 +10,7 @@
 
 #include "LikeMagic/Utility/SetField.hpp"
 
-#include "AbstractMethod.hpp"
+#include "CallTarget.hpp"
 
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits/is_same.hpp"
@@ -22,7 +22,7 @@ using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
 
 template <typename T, typename FieldPtr>
-class FieldGetterTarget : public AbstractMethod
+class FieldGetterTarget : public CallTarget
 {
 private:
     typedef T const& CallAs;

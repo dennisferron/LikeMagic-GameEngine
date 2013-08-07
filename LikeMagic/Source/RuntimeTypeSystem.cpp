@@ -7,7 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 
-#include "LikeMagic/RuntimeTypeSystem.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/NamespacePath.hpp"
 
 #include "LikeMagic/TypeConv/StringConv.hpp"
@@ -26,7 +26,7 @@ using namespace LikeMagic::Utility;
 
 using namespace std;
 
-StaticMethods& RuntimeTypeSystem::register_functions(NamespacePath const ns)
+StaticMethods& TypeSystem::register_functions(NamespacePath const ns)
 {
     TypeIndex type = ns.get_type();
     //cout << "Register functions type index = " << type.get_id() << " " << type.describe() << endl;
@@ -42,6 +42,6 @@ StaticMethods& RuntimeTypeSystem::register_functions(NamespacePath const ns)
     }
 }
 
-RuntimeTypeSystem::RuntimeTypeSystem()
+TypeSystem::TypeSystem()
 {
 }

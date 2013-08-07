@@ -9,8 +9,8 @@
 #pragma once
 
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
-#include "LikeMagic/AbstractTypeSystem.hpp"
-#include "LikeMagic/CallTargets/AbstractMethod.hpp"
+#include "LikeMagic/TypeSystem.hpp"
+#include "LikeMagic/CallTargets/CallTarget.hpp"
 
 #include "LikeMagic/Exprs/Term.hpp"
 #include "LikeMagic/Exprs/Reference.hpp"
@@ -22,7 +22,7 @@ using namespace LikeMagic::Exprs;
 
 // Create as temporary value object.
 template <typename ObjT, bool IsCopyable, typename... Args>
-class ConstructorCallTarget : public AbstractMethod
+class ConstructorCallTarget : public CallTarget
 {
 private:
 
@@ -56,7 +56,7 @@ public:
 
 // Create by pointer.
 template <typename ObjT, bool IsCopyable, typename... Args>
-class ConstructorCallTarget<ObjT*, IsCopyable, Args...> : public AbstractMethod
+class ConstructorCallTarget<ObjT*, IsCopyable, Args...> : public CallTarget
 {
 private:
 
@@ -90,7 +90,7 @@ public:
 
 // Create by reference.  This is basically the same as create by value, but wraps the Term in a Reference to disable ToScript conversion.
 template <typename ObjT, bool IsCopyable, typename... Args>
-class ConstructorCallTarget<ObjT&, IsCopyable, Args...> : public AbstractMethod
+class ConstructorCallTarget<ObjT&, IsCopyable, Args...> : public CallTarget
 {
 private:
 
@@ -129,7 +129,7 @@ public:
 
 // Create an empty pointer.  This allows you to declare pointer objects suitable for passing to functions that require a ref-to-pointer that they'll store a result in.
 template <typename ObjT, bool IsCopyable, typename... Args>
-class ConstructorCallTarget<ObjT*&, IsCopyable, Args...> : public AbstractMethod
+class ConstructorCallTarget<ObjT*&, IsCopyable, Args...> : public CallTarget
 {
 private:
 

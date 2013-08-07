@@ -10,7 +10,6 @@
 #pragma once
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
-#include "LikeMagic/DebugInfo.hpp"
 #include "LikeMagic/Exprs/AbstractExpression.hpp"
 
 namespace LikeMagic { namespace Exprs {
@@ -18,18 +17,18 @@ namespace LikeMagic { namespace Exprs {
 }}
 
 namespace LikeMagic {
-    class AbstractTypeSystem;
+    class TypeSystem;
 }
 
-namespace LikeMagic { namespace CallTargets {
+namespace LikeMagic { namespace Mirrors {
 
 using ExprPtr = LikeMagic::Exprs::ExprPtr;
 using ArgList = LikeMagic::Exprs::ArgList;
 
-class AbstractMethod
+class CallTarget
 {
 public:
-    virtual ~AbstractMethod() = 0;
+    virtual ~CallTarget() = 0;
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const = 0;
     virtual LikeMagic::Utility::TypeInfoList get_arg_types() const = 0;

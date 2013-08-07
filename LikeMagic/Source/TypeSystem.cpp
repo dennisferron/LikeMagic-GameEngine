@@ -6,10 +6,18 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-
-#include "LikeMagic/AbstractTypeSystem.hpp"
-#include "LikeMagic/Marshaling/TypeMirror.hpp"
-
+#include "LikeMagic/TypeSystem.hpp"
+#include "LikeMagic/Mirrors/TypeMirror.hpp"
+#include "LikeMagic/TypeConv/TypeConvGraph.hpp"
+#include "LikeMagic/TypeConv/ImplicitConv.hpp"
+#include "LikeMagic/TypeConv/GenericConv.hpp"
+#include "LikeMagic/TypeConv/NoChangeConv.hpp"
+#include "LikeMagic/Exprs/NullExpr.hpp"
+#include "LikeMagic/Utility/FuncPtrTraits.hpp"
+#include "LikeMagic/Utility/IsIterator.hpp"
+#include "LikeMagic/Exprs/Trampoline.hpp"
+#include "LikeMagic/Utility/TupleForEach.hpp"
+#include "LikeMagic/Utility/KeyWrapper.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
 #include "LikeMagic/TypeConv/GenericConv.hpp"
@@ -17,28 +25,54 @@
 #include "LikeMagic/TypeConv/PtrDerefConv.hpp"
 #include "LikeMagic/TypeConv/AddrOfConv.hpp"
 
-using namespace LikeMagic::TypeConv;
-
 #include <set>
-
+#include <map>
+#include <stdexcept>
+#include <string>
 #include <iostream>
 using namespace std;
 
 using namespace LikeMagic;
+using namespace LikeMagic::TypeConv;
 
-AbstractTypeSystem* type_system = NULL;
+TypeSystem* type_system = NULL;
 
-template <typename From, typename To>
-void AbstractTypeSystem::add_nochange_conv(TypeInfoPtr from, TypeInfoPtr to)
+struct TypeSystem::Impl
 {
-    if (!(from->get_index() == to->get_index()))
-        conv_graph.add_conv(from->get_index(), to->get_index(), new NoChangeConv<From, To>());
+    boost::unordered_map<TypeIndex, TypeMirror*> classes;
+    TypeMirror* unknown_class;
+    TypeConvGraph conv_graph;
+    TypeInfoCache* dll_shared_typeinfo;
+
+    void add_ptr_convs(TypeIndex index);
+
+    template <typename From, typename To>
+    void add_nochange_conv(TypeInfoPtr from, TypeInfoPtr to);
+
+    template <typename From, typename To>
+    void add_generic_conv(TypeInfoPtr from, TypeInfoPtr to);
+
+    // handles const object or nonconst object.  T is either const void or just void.
+    template <typename T>
+    void add_conv_track(TypeInfoPtr type);
+};
+
+TypeSystem::TypeSystem()
+    : impl(new TypeSystem::Impl)
+{
 }
 
 template <typename From, typename To>
-void AbstractTypeSystem::add_generic_conv(TypeInfoPtr from, TypeInfoPtr to)
+void TypeSystem::add_nochange_conv(TypeInfoPtr from, TypeInfoPtr to)
 {
-    conv_graph.add_conv(from->get_index(), to->get_index(), new GenericConv<From, To>(from, to));
+    if (!(from->get_index() == to->get_index()))
+        impl->conv_graph.add_conv(from->get_index(), to->get_index(), new NoChangeConv<From, To>());
+}
+
+template <typename From, typename To>
+void TypeSystem::add_generic_conv(TypeInfoPtr from, TypeInfoPtr to)
+{
+    impl->conv_graph.add_conv(from->get_index(), to->get_index(), new GenericConv<From, To>(from, to));
 }
 
 
@@ -85,7 +119,7 @@ Key:  --> NoChangeConv                      |
 
 // handles const object or nonconst object.  T is either const void or just void.
 template <typename T>
-void AbstractTypeSystem::add_conv_track(TypeInfoPtr type)
+void TypeSystem::add_conv_track(TypeInfoPtr type)
 {
     auto as_ptr_ref = type->as_ptr()->as_ref();
     auto as_ptr_const_ref = type->as_ptr()->as_const_ptr_type()->as_ref();
@@ -111,19 +145,7 @@ void AbstractTypeSystem::add_conv_track(TypeInfoPtr type)
     add_nochange_conv<T* , T const* >(as_ptr_val, as_ptr_val->as_const_obj_type());
 }
 
-void AbstractTypeSystem::register_base(LikeMagic::Marshaling::TypeMirror* class_, LikeMagic::Marshaling::TypeMirror const* base)
-{
-    for (auto it=observers.begin(); it!=observers.end(); ++it)
-        (*it)->register_base(class_, base);
-}
-
-void AbstractTypeSystem::register_method(LikeMagic::Marshaling::TypeMirror* class_, std::string method_name, LikeMagic::Marshaling::AbstractMethod* method)
-{
-    for (auto it=observers.begin(); it!=observers.end(); ++it)
-        (*it)->register_method(class_, method_name, method);
-}
-
-void AbstractTypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr)
+void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr)
 {
     if (!index.is_class_type())
         throw std::logic_error("add_class type index has to be a class type!");
@@ -146,24 +168,15 @@ void AbstractTypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr)
         (*it)->register_class(class_ptr);
 }
 
-
-AbstractTypeSystem::~AbstractTypeSystem()
+TypeSystem::~TypeSystem()
 {
-    //std::cout << "Typesystem destructed" << std::endl;
-
-    //for (auto it=classes.begin(); it != classes.end(); it++)
-    //{
-    //    delete it->second;
-    //}
-
     for (auto it=classes2.begin(); it != classes2.end(); it++)
     {
         delete *it;
     }
 }
 
-
-ExprPtr AbstractTypeSystem::try_conv(ExprPtr from_expr, TypeIndex to_type) const
+ExprPtr TypeSystem::try_conv(ExprPtr from_expr, TypeIndex to_type) const
 {
     try
     {
@@ -175,38 +188,33 @@ ExprPtr AbstractTypeSystem::try_conv(ExprPtr from_expr, TypeIndex to_type) const
     }
 }
 
-bool AbstractTypeSystem::has_conv(TypeIndex from_type, TypeIndex to_type) const
+bool TypeSystem::has_conv(TypeIndex from_type, TypeIndex to_type) const
 {
     return conv_graph.has_conv(from_type, to_type);
 }
 
-
-AbstractTypeSystem::AbstractTypeSystem() : leak_memory_flag(false)
-{
-}
-
-void AbstractTypeSystem::print_type_graph() const
+void TypeSystem::print_type_graph() const
 {
     conv_graph.print_graph();
 }
 
-bool AbstractTypeSystem::leak_memory() const
+bool TypeSystem::leak_memory() const
 {
     return leak_memory_flag;
 }
 
-void AbstractTypeSystem::set_leak_memory(bool flag)
+void TypeSystem::set_leak_memory(bool flag)
 {
     leak_memory_flag = flag;
 }
 
-ExprPtr AbstractTypeSystem::create_class_expr(TypeIndex type) const
+ExprPtr TypeSystem::create_class_expr(TypeIndex type) const
 {
     return get_class(type)->create_class_expr();
 }
 
 /*
-AbstractCppObjProxy* AbstractTypeSystem::call
+AbstractCppObjProxy* TypeSystem::call
 (
     TypeIndex type,
     std::string method_name,
@@ -218,7 +226,7 @@ AbstractCppObjProxy* AbstractTypeSystem::call
         get_class(type)->call(proxy->get_expr(), method_name, args), this);
 }*/
 
-bool AbstractTypeSystem::has_class(TypeIndex type) const
+bool TypeSystem::has_class(TypeIndex type) const
 {
     //char const* descr = type.describe().c_str();
 
@@ -241,7 +249,7 @@ bool AbstractTypeSystem::has_class(TypeIndex type) const
     return found2;
 }
 
-TypeMirror* AbstractTypeSystem::get_class(TypeIndex type) const
+TypeMirror* TypeSystem::get_class(TypeIndex type) const
 {
     if (has_class(type))
     {
@@ -260,7 +268,7 @@ TypeMirror* AbstractTypeSystem::get_class(TypeIndex type) const
     }
 }
 
-TypeInfoList AbstractTypeSystem::get_registered_types() const
+TypeInfoList TypeSystem::get_registered_types() const
 {
     TypeInfoList list;
 
@@ -275,12 +283,12 @@ TypeInfoList AbstractTypeSystem::get_registered_types() const
 }
 
 std::vector<std::string>
-    AbstractTypeSystem::get_base_names(TypeIndex type) const
+    TypeSystem::get_base_names(TypeIndex type) const
 {
     return get_class(type)->get_base_names();
 }
 
-std::string AbstractTypeSystem::get_class_name(TypeIndex type) const
+std::string TypeSystem::get_class_name(TypeIndex type) const
 {
     std::string name = "";
 
@@ -297,13 +305,13 @@ std::string AbstractTypeSystem::get_class_name(TypeIndex type) const
     return name;
 }
 
-void AbstractTypeSystem::add_converter_simple(TypeIndex from, TypeIndex to, p_conv_t conv)
+void TypeSystem::add_converter_simple(TypeIndex from, TypeIndex to, p_conv_t conv)
 {
     conv_graph.add_conv(from, to, conv);
 }
 
 
-void AbstractTypeSystem::add_ptr_convs(TypeIndex index)
+void TypeSystem::add_ptr_convs(TypeIndex index)
 {
     TypeInfoPtr bare = index.get_info()->bare_type();
     add_conv_track<void>(bare);
@@ -320,7 +328,7 @@ void AbstractTypeSystem::add_ptr_convs(TypeIndex index)
     add_nochange_conv<void const*, void const*>(bare->as_ptr()->as_const_obj_type(), BetterTypeInfo::create_index<void const*>().get_info());
 }
 
-void AbstractTypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv)
+void TypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv)
 {
     conv_graph.add_conv(from, to, conv);
 
@@ -350,12 +358,12 @@ void AbstractTypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, 
 }
 
 
-void AbstractTypeSystem::print_conv_chain(TypeIndex from, TypeIndex to) const
+void TypeSystem::print_conv_chain(TypeIndex from, TypeIndex to) const
 {
     conv_graph.print_conv_chain(from, to);
 }
 
-void AbstractTypeSystem::add_ptr_conversions(TypeIndex from_type, bool auto_deref)
+void TypeSystem::add_ptr_conversions(TypeIndex from_type, bool auto_deref)
 {
     auto from_nc = from_type.get_info();
     auto from_c =  from_type.get_info()->as_const_obj_type();

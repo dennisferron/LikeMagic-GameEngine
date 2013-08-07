@@ -8,7 +8,7 @@
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
 
 namespace LikeMagic {
-    class AbstractTypeSystem;
+    class TypeSystem;
 }
 
 namespace LikeMagic { namespace Exprs {
@@ -47,8 +47,8 @@ public:
 
     void add_marshaller(TypeIndex type, ArgMarshaller marshaller);
 
-    // You can get a type info list from AbstractMethod
-    // virtual LikeMagic::Utility::TypeInfoList AbstractMethod::get_arg_types() const = 0;
+    // You can get a type info list from CallTarget
+    // virtual LikeMagic::Utility::TypeInfoList CallTarget::get_arg_types() const = 0;
 
     void write_args(TypeInfoList arg_types, void* buffer, ArgList args);
     void* write_value(TypeIndex arg_type, void* location, ExprPtr arg);

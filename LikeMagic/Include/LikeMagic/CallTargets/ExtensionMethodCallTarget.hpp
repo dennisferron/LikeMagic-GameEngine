@@ -21,7 +21,7 @@
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_void.hpp"
 
-#include "LikeMagic/CallTargets/AbstractMethod.hpp"
+#include "LikeMagic/CallTargets/CallTarget.hpp"
 #include "LikeMagic/Generators/MemberKind.hpp"
 
 namespace LikeMagic { namespace CallTargets {
@@ -31,7 +31,7 @@ using namespace LikeMagic::Utility;
 using namespace LikeMagic::Generators;
 
 template <typename R, typename FirstArg, typename... Args>
-class ExtensionMethodCallTarget : public AbstractMethod
+class ExtensionMethodCallTarget : public CallTarget
 {
 public:
     typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;

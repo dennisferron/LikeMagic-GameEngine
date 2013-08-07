@@ -8,7 +8,13 @@
 
 #pragma once
 
-namespace LikeMagic { namespace Marshaling {
+#include "TypeSystem.hpp"
+
+#include "boost/unordered_map.hpp"
+#include "boost/utility/enable_if.hpp"
+#include "boost/type_traits.hpp"
+
+namespace LikeMagic {
 
 std::string create_constructor_name(std::string prefix, std::string method_name)
 {
@@ -129,4 +135,72 @@ void bind_custom_field(TypeMirror& class_, std::string field_name, FieldAccessor
     class_.add_method("get_" + field_name, getter);
 }
 
-}}
+template <typename From, typename To, template <typename From, typename To> class Converter=ImplicitConv>
+void add_conv()
+{
+    type_system->add_converter_variations(
+        BetterTypeInfo::create_index<From>(),
+        BetterTypeInfo::create_index<To>(),
+            new Converter<From, To>);
+}
+
+template <typename To>
+boost::intrusive_ptr<Expression<To>> try_conv(ExprPtr from) const
+{
+    return static_cast<Expression<To>*>(type_system->try_conv(from, BetterTypeInfo::create_index<To>()).get());
+}
+
+template <typename To>
+bool has_conv(ExprPtr from) const
+{
+    return has_conv(from->get_type(), BetterTypeInfo::create_index<To>());
+}
+
+template <typename T, bool is_copyable>
+typename boost::enable_if_c<is_copyable>::type
+register_copyable_conv()
+{
+    add_conv<T const&, T>();
+}
+
+template <typename T, bool is_copyable>
+typename boost::disable_if_c<is_copyable>::type
+register_copyable_conv()
+{
+}
+
+template <typename T, bool is_copyable=!boost::is_abstract<T>::value, bool add_deref_ptr_conv=true>
+TypeMirror& register_class(std::string name, TypeMirror& namespace_)
+{
+    static TypeIndex type(BetterTypeInfo::create_index<T>());
+    namespace_.add_method(name, new ClassExprTarget<T>());
+    if (type_system->get_class(type))
+    {
+        return *(type_system->get_class(type));
+    }
+    else
+    {
+        auto result = new LikeMagic::Mirrors::TypeMirror(name, *this, ns);
+        type_system->add_class(type, result);
+        result->add_base_abstr(proxy_methods);
+        type_system->add_ptr_conversions(type, add_deref_ptr_conv);
+        register_copyable_conv<T, is_copyable>();
+        bind_built_in_operations<T>(*result);
+        add_delegate_conv<T>();
+        return *result;
+    }
+}
+
+template <typename T>
+TypeMirror& register_enum(std::string name, TypeMirror& namespace_)
+{
+    auto& result = register_class<T, true>(name, ns);
+    result.bind_nonmember_op("==",    &EnumHelper<T>::equals);
+    result.bind_nonmember_op("!=",    &EnumHelper<T>::not_equals);
+    result.bind_nonmember_op("value", &EnumHelper<T>::value);
+    result.bind_nonmember_op("asString", &EnumHelper<T>::asString);
+    namespace_.add_method(name, new ClassExprTarget<T>());
+    return result;
+}
+
+}

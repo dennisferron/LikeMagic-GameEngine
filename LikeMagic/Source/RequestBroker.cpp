@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "LikeMagic/Exprs/Term.hpp"
-#include "LikeMagic/AbstractTypeSystem.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 
 using namespace LikeMagic;
 using namespace LikeMagic::Interprocess;

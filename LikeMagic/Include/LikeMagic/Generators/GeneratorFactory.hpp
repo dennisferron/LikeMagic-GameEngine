@@ -22,7 +22,7 @@ template <MemberKind K, typename R, typename ObjT, typename... Args>
 struct GeneratorFactory
 {
     typedef typename MemberPointer<K, R, ObjT, Args...>::type F;
-    static AbstractMethod* create(TypeIndex ref_type_, TypeIndex const_ref_type_, F func_ptr_)
+    static CallTarget* create(TypeIndex ref_type_, TypeIndex const_ref_type_, F func_ptr_)
     {
         typedef typename MemberPointer<K, R, AbstractDelegate, Args...>::type F_cast;
         return new DelegateCallTarget<K, R, Args...>(ref_type_, const_ref_type_, reinterpret_cast<F_cast>(func_ptr_));
@@ -33,7 +33,7 @@ template <typename R, typename... Args>
 struct GeneratorFactory<MemberKind::static_method, R, StaticMethod, Args...>
 {
     typedef R (*F)(Args...);
-    static AbstractMethod* create(TypeIndex ref_type_, TypeIndex const_ref_type_, F func_ptr_)
+    static CallTarget* create(TypeIndex ref_type_, TypeIndex const_ref_type_, F func_ptr_)
     {
         return new StaticMethodCallTarget<R, Args...>(func_ptr_);
     }
@@ -43,7 +43,7 @@ template <typename R, typename FirstArg, typename... Args>
 struct GeneratorFactory<MemberKind::nonmember_op, R, StaticMethod, FirstArg, Args...>
 {
     typedef R (*F)(FirstArg, Args...);
-    static AbstractMethod* create(TypeIndex ref_type_, TypeIndex const_ref_type_, F func_ptr_)
+    static CallTarget* create(TypeIndex ref_type_, TypeIndex const_ref_type_, F func_ptr_)
     {
         return new ExtensionMethodCallTarget<R, FirstArg, Args...>(func_ptr_);
     }

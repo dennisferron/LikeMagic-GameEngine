@@ -53,7 +53,7 @@ using namespace std;
 
 namespace LikeMagic { namespace StdBindings {
 
-DLL_PUBLIC_RUNTIME_TYPE_SYSTEM RuntimeTypeSystem* create_typesystem()
+DLL_PUBLIC_RUNTIME_TYPE_SYSTEM TypeSystem* create_typesystem()
 {
     auto* result = new TypeSystemInstance();
     LikeMagic::StdBindings::add_bindings(*result);
