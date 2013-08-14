@@ -48,8 +48,6 @@ public:
         return cached_number;
     }
 
-    virtual boost::intrusive_ptr<Expression<To>> clone() const { return new NumberCachingTrampoline(from_expr); }
-
     virtual bool is_terminal() const { return false; }
 
     virtual std::string description() const

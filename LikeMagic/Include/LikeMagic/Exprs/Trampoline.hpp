@@ -35,8 +35,6 @@ public:
         return Converter::do_conv(from_expr->eval());
     }
 
-    virtual boost::intrusive_ptr<Expression<To>> clone() const { return new Trampoline(from_expr); }
-
     virtual bool is_terminal() const { return false; }
 
     virtual std::string description() const

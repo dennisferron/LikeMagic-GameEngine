@@ -81,7 +81,6 @@ public:
         return value;
     }
 
-    virtual boost::intrusive_ptr<Expression<T&>> clone() const { return new Reference<T>(value, storage_location); }
     virtual bool disable_to_script_conv() const { return true; }
 };
 

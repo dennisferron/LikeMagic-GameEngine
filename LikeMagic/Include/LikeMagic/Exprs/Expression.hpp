@@ -15,19 +15,12 @@
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits.hpp"
 
-
-#include <iostream>
-
-
 namespace LikeMagic { namespace Exprs {
 
 using LikeMagic::Utility::BetterTypeInfo;
 using LikeMagic::Utility::TypeIndex;
 
-class AbstractCppObjProxy;
-class ExprProxy;
-
-template <typename T, bool IsCopyable>
+template <typename T>
 class Expression : public AbstractExpression
 {
 private:
@@ -39,7 +32,6 @@ protected:
 public:
     virtual ~Expression() {}
     virtual T eval() = 0;
-    virtual boost::intrusive_ptr<Expression<T>> clone() const = 0;
     typedef T ReturnType;
     virtual TypeIndex get_type() const { return BetterTypeInfo::create_index<T>(); }
     virtual TypeIndex get_class_type() const { return get_type().class_type(); }

@@ -1,7 +1,5 @@
 #include "UnitTest++.h"
-
-#include "UnitTests/TypeSystemInstance.hpp"
-#include "LikeMagic/RuntimeTypeSystem.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
 
 using namespace std;

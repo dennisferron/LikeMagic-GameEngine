@@ -9,21 +9,14 @@
 #pragma once
 
 #include "LikeMagic/Utility/StripModifiers.hpp"
-
 #include "LikeMagic/CallTargets/CallTarget.hpp"
-
-#include "boost/utility/enable_if.hpp"
-#include "boost/type_traits/is_same.hpp"
-#include "boost/type_traits/is_void.hpp"
-
-#include "boost/shared_ptr.hpp"
-
 #include "LikeMagic/CallTargets/ICustomField.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
+using namespace LikeMagic::Mirrors;
 
 template <typename CallAs, typename FieldAccessor>
 class CustomFieldGetterTarget : public CallTarget
@@ -48,7 +41,7 @@ public:
     {
         return Term<FieldType, true>::create(
                     f->get(
-                        type_system->try_conv<CallAs>(target)->eval()
+                        try_conv<CallAs>(target)->eval()
                     )
                 );
     }

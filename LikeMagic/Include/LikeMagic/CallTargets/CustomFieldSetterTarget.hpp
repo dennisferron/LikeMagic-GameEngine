@@ -9,21 +9,14 @@
 #pragma once
 
 #include "LikeMagic/Utility/StripModifiers.hpp"
-
 #include "LikeMagic/CallTargets/CallTarget.hpp"
-
-#include "boost/utility/enable_if.hpp"
-#include "boost/type_traits/is_same.hpp"
-#include "boost/type_traits/is_void.hpp"
-
 #include "LikeMagic/CallTargets/ICustomField.hpp"
-
-#include "boost/shared_ptr.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
+using namespace LikeMagic::Mirrors;
 
 template <typename CallAs, typename FieldAccessor>
 class CustomFieldSetterTarget : public CallTarget
@@ -47,8 +40,8 @@ public:
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         f->set(
-            type_system->try_conv<CallAs>(target)->eval(),
-            type_system->try_conv<FieldType>(args[0])->eval()
+            try_conv<CallAs>(target)->eval(),
+            try_conv<FieldType>(args[0])->eval()
         );
         return 0;
     }

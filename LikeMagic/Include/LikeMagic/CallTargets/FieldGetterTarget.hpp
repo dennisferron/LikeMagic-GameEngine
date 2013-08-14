@@ -9,17 +9,13 @@
 #pragma once
 
 #include "LikeMagic/Utility/SetField.hpp"
-
-#include "CallTarget.hpp"
-
-#include "boost/utility/enable_if.hpp"
-#include "boost/type_traits/is_same.hpp"
-#include "boost/type_traits/is_void.hpp"
+#include "LikeMagic/Mirrors/CallTarget.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
+using namespace LikeMagic::Mirrors;
 
 template <typename T, typename FieldPtr>
 class FieldGetterTarget : public CallTarget
@@ -42,7 +38,7 @@ public:
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         return Term<RType, true>::create(
-            SetField<CallAs>::get(type_system->try_conv<CallAs>(target)->eval(), f_ptr));
+            SetField<CallAs>::get(try_conv<CallAs>(target)->eval(), f_ptr));
     }
 
     virtual TypeInfoList get_arg_types() const

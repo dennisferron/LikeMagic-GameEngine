@@ -26,7 +26,6 @@ public:
     static boost::intrusive_ptr<Expression<bool>> create() { return new FalseExpr(); }
 
     inline virtual bool eval() { return false; }
-    virtual boost::intrusive_ptr<Expression<bool>> clone() const { return new FalseExpr(); }
     virtual bool is_terminal() const { return true; }
 
     virtual std::string description() const

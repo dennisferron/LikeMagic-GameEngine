@@ -8,12 +8,14 @@
 
 #pragma once
 
+#include "LikeMagic/Mirrors/CallTarget.hpp"
 #include "LikeMagic/Exprs/ClassExprTarget.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
+using namespace LikeMagic::Mirrors;
 
 template <typename T>
 class ClassExprTarget : public CallTarget

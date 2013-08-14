@@ -86,7 +86,6 @@
 		<Unit filename="Include/LikeMagic/Exprs/BottomPtrExpr.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/ClassExpr.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/CommonExprImpl.hpp" />
-		<Unit filename="Include/LikeMagic/Exprs/DelegateMethodCall.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/Expression.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/FalseExpr.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/NamespaceExpr.hpp" />
@@ -97,8 +96,6 @@
 		<Unit filename="Include/LikeMagic/Exprs/Term.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/Trampoline.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/methodcall_args.hpp" />
-		<Unit filename="Include/LikeMagic/Generators/GeneratorFactory.hpp" />
-		<Unit filename="Include/LikeMagic/Generators/MemberKind.hpp" />
 		<Unit filename="Include/LikeMagic/IMarkable.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/AbstractSharedArgMarshaller.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/CallRequest.hpp" />
@@ -142,10 +139,8 @@
 		<Unit filename="Include/LikeMagic/Utility/AbstractTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/BetterTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/DLLHelper.hpp" />
-		<Unit filename="Include/LikeMagic/Utility/DelegateFunc.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/EnumHelper.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/FieldPtrTraits.hpp" />
-		<Unit filename="Include/LikeMagic/Utility/FuncPtrTraits.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/GetField.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/ICanHasMemberFunc.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/IndexPack.hpp" />
@@ -161,6 +156,7 @@
 		<Unit filename="Include/LikeMagic/Utility/TypeIndex.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeInfoCache.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypePack.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/make_arg_list.hpp" />
 		<Unit filename="Include/LikeMagic/binding_functions.hpp" />
 		<Unit filename="Script/Io/bootstrap.io" />
 		<Unit filename="Script/TestScripts/debugtest.io" />
@@ -168,7 +164,6 @@
 		<Unit filename="Source/AbstractSharedArgMarshaller.cpp" />
 		<Unit filename="Source/AbstractTypeConverter.cpp" />
 		<Unit filename="Source/AbstractTypeInfo.cpp" />
-		<Unit filename="Source/AbstractTypeSystem.cpp" />
 		<Unit filename="Source/BetterTypeInfo.cpp" />
 		<Unit filename="Source/CallTarget.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />
@@ -180,6 +175,7 @@
 		<Unit filename="Source/TypeDescr.cpp" />
 		<Unit filename="Source/TypeInfoCache.cpp" />
 		<Unit filename="Source/TypeMirror.cpp" />
+		<Unit filename="Source/TypeSystem.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

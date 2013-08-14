@@ -22,13 +22,12 @@ namespace LikeMagic { namespace Exprs {
     class AbstractExpression;
 }}
 
-namespace LikeMagic { namespace CallTargets {
+namespace LikeMagic { namespace Mirrors {
     class CallTarget;
 }}
 
 namespace LikeMagic { namespace Marshaling {
 
-using LikeMagic::Exprs::AbstractCppObjProxy;
 using LikeMagic::Exprs::AbstractExpression;
 using LikeMagic::Exprs::ExprPtr;
 using LikeMagic::Exprs::ArgList;
@@ -66,6 +65,6 @@ public:
     virtual size_t get_size() const;
 };
 
-void suggest_method(TypeMirror& type_, std::string method_name, int num_args) const;
+void suggest_method(TypeMirror& type_, std::string method_name, int num_args);
 
 }}

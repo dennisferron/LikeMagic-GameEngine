@@ -3,6 +3,7 @@
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
 #include "LikeMagic/Interprocess/AbstractSharedArgMarshaller.hpp"
+#include "LikeMagic/binding_functions.hpp"
 
 namespace LikeMagic { namespace Interprocess {
 
@@ -13,7 +14,7 @@ struct MarshalByCopyConstructor : public AbstractSharedArgMarshaller
 
     virtual void write(void* location, ExprPtr arg)
     {
-        *(T*)location = type_system->try_conv<T>(arg)->eval();
+        *(T*)location = try_conv<T>(arg)->eval();
     }
 
     virtual ExprPtr read(void* location)

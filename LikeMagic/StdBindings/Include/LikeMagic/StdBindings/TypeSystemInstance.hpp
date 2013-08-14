@@ -14,7 +14,7 @@ namespace LikeMagic { namespace StdBindings {
 
 // Use this function to create the RuntimeTypesystem object.  I put it in the StdBindings project
 // to reduce the size of the LikeMagic static library when using DLL-based build.
-DLL_PUBLIC_RUNTIME_TYPE_SYSTEM TypeSystem* create_typesystem();
+TypeSystem* create_typesystem();
 
 // I extended the inheritance hierarchy of TypeSystem->TypeSystem to TypeSystemInstance
 // just to break the circular dependency between the LikeMagic core library and StdBindings.

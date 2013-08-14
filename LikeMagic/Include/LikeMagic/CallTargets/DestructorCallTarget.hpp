@@ -8,14 +8,14 @@
 
 #pragma once
 
-#include "LikeMagic/Utility/FuncPtrTraits.hpp"
-
-#include "LikeMagic/CallTargets/CallTarget.hpp"
+#include "LikeMagic/Mirrors/CallTarget.hpp"
+#include "LikeMagic/Utility/make_arg_list.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
+using namespace LikeMagic::Mirrors;
 
 template <typename ObjT>
 class DestructorCallTarget : public CallTarget
@@ -28,7 +28,7 @@ public:
 
    virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        delete type_system->try_conv<ObjT const*>(target)->eval();
+        delete try_conv<ObjT const*>(target)->eval();
         return 0;
     }
 

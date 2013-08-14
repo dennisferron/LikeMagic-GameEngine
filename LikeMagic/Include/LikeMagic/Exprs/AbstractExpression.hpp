@@ -41,9 +41,6 @@ class AbstractExpression;
 void intrusive_ptr_add_ref(AbstractExpression* p);
 void intrusive_ptr_release(AbstractExpression* p);
 
-
-template <typename T, bool IsCopyable=true> class Expression;
-
 class AbstractExpression : public LikeMagic::IMarkable
 {
 private:

@@ -11,7 +11,7 @@
 #pragma once
 
 #include "LikeMagic/TypeSystem.hpp"
-#include "LikeMagic/Namespace.hpp"
+#include "LikeMagic/binding_functions.hpp"
 
 #include "boost/preprocessor/seq/for_each.hpp"
 #include "boost/preprocessor/stringize.hpp"
@@ -41,7 +41,7 @@
 #define LM_ADD_VECTORS_IMPL(r, data, elem) LM_ADD_VECTOR(data, elem)
 #define LM_ADD_VECTORS(vm_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ADD_VECTORS_IMPL, vm_name, SEQ)
 
-#define LM_CLASS(class_name) auto& class_name##_LM = type_system->register_class<class_name>(#class_name);
+#define LM_CLASS(class_name) auto& class_name##_LM = register_class<class_name>(#class_name);
 
 #define LM_CLASS_NO_COPY(class_name) auto& class_name##_LM = type_system->register_class<class_name, false>(#class_name);
 

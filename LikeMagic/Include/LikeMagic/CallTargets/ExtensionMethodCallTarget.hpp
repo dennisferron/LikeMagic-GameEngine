@@ -6,29 +6,19 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-
 #pragma once
 
+#include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
-
-#include "LikeMagic/Utility/TypeDescr.hpp"
-#include "LikeMagic/Utility/FuncPtrTraits.hpp"
-#include "LikeMagic/Utility/MakeCall.hpp"
-
 #include "LikeMagic/Exprs/methodcall_args.hpp"
-
-#include "boost/utility/enable_if.hpp"
-#include "boost/type_traits/is_same.hpp"
-#include "boost/type_traits/is_void.hpp"
-
-#include "LikeMagic/CallTargets/CallTarget.hpp"
-#include "LikeMagic/Generators/MemberKind.hpp"
+#include "LikeMagic/Mirrors/CallTarget.hpp"
+#include "LikeMagic/Utility/IndexPack.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
-using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Utility;
-using namespace LikeMagic::Generators;
+using namespace LikeMagic::Exprs;
+using namespace LikeMagic::Mirrors;
 
 template <typename R, typename FirstArg, typename... Args>
 class ExtensionMethodCallTarget : public CallTarget
@@ -50,7 +40,7 @@ private:
             throw std::logic_error("Wrong number of arguments.");
 
         boost::intrusive_ptr<Expression<R&>> result = Term<R, true>::create(
-            (*func_ptr)(type_system->try_conv<FirstArg>(target)->eval(), type_system->try_conv<Args>(args[Indices])->eval()...)
+            (*func_ptr)(try_conv<FirstArg>(target)->eval(), try_conv<Args>(args[Indices])->eval()...)
         );
 
         return result;
@@ -64,7 +54,7 @@ private:
         if (args.size() != sizeof...(Indices))
             throw std::logic_error("Wrong number of arguments.");
 
-        (*func_ptr)(type_system->try_conv<FirstArg>(target)->eval(), type_system->try_conv<Args>(args[Indices])->eval()...);
+        (*func_ptr)(try_conv<FirstArg>(target)->eval(), try_conv<Args>(args[Indices])->eval()...);
 
         return Term<void, true>::create();
     }

@@ -8,22 +8,34 @@
 
 #pragma once
 
+#include "boost/intrusive_ptr.hpp"
+#include "LikeMagic/Utility/TypeIndex.hpp"
+#include "LikeMagic/Exprs/Expression.hpp"
+
 namespace LikeMagic {
 
 namespace Exprs {
-    class AbstractCppObjProxy;
+    class AbstractExpression;
+    typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
 }
 
-namespace Marshaling {
-    class CallTargetset;
+namespace Mirrors {
+    class CallTarget;
     class TypeMirror;
 }
 
-using LikeMagic::Marshaling::CallTargetset;
+namespace TypeConv {
+    class AbstractTypeConverter;
+    typedef boost::intrusive_ptr<AbstractTypeConverter const> p_conv_t;
+}
+
+using LikeMagic::TypeConv::p_conv_t;
+using LikeMagic::Mirrors::CallTarget;
 using LikeMagic::Mirrors::TypeMirror;
-using LikeMagic::Utility::BetterTypeInfo;
 using LikeMagic::Utility::TypeIndex;
 using LikeMagic::Utility::TypeInfoList;
+using LikeMagic::Exprs::AbstractExpression;
+using LikeMagic::Exprs::ExprPtr;
 
 class TypeSystem
 {
@@ -55,5 +67,20 @@ public:
 };
 
 extern TypeSystem* type_system;
+
+template <typename To>
+boost::intrusive_ptr<LikeMagic::Exprs::Expression<To>> try_conv(ExprPtr from)
+{
+    return static_cast<LikeMagic::Exprs::Expression<To>*>(
+          type_system->try_conv(
+            from, LikeMagic::Utility::BetterTypeInfo::create_index<To>()).get());
+}
+
+template <typename To>
+bool has_conv(LikeMagic::Exprs::ExprPtr from)
+{
+    return type_system->has_conv(from->get_type(),
+         LikeMagic::Utility::BetterTypeInfo::create_index<To>());
+}
 
 }

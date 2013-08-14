@@ -34,7 +34,7 @@ public:
     virtual LikeMagic::Utility::TypeInfoList get_arg_types() const = 0;
 
     // Some methods (like constructors) should not be inherited.
-    virtual bool is_inherited() const { return true; }
+    virtual bool is_inherited() const;
 };
 
 }}

@@ -47,10 +47,9 @@ template <> struct TermStoreAs<bool&> { typedef bool type; };
 
 template <typename T, bool IsCopyable>
 class Term :
-    public Expression<T&, IsCopyable>
+    public Expression<T&>
 {
 private:
-    char debug_padding[13];
 
     typename TermStoreAs<T>::type value;
 
@@ -118,8 +117,6 @@ public:
         return value;
     }
 
-    virtual boost::intrusive_ptr<Expression<T&>> clone() const { return new Term<T, IsCopyable>(value); }
-
     virtual bool is_terminal() const { return true; }
 
     virtual std::string description() const
@@ -140,7 +137,6 @@ class Term<T, false> :
     public Expression<T&>
 {
 private:
-    char debug_padding[13];
 
     T value;
 
@@ -234,7 +230,6 @@ class Term<T*, true> :
     public Expression<T*&>
 {
 private:
-    char debug_padding[13];
 
     T* value;
 
@@ -311,7 +306,6 @@ class Term<T*, false> :
     public Expression<T*&>
 {
 private:
-    char debug_padding[13];
 
     T* value;
 
@@ -393,7 +387,6 @@ private:
     }
 
 public:
-    //static boost::intrusive_ptr<Expression<void>> create() { return new Term(); }
 
     template <typename... Args>
     static boost::intrusive_ptr<Expression<void>> create(Args... args) { return new Term(); }

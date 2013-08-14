@@ -9,7 +9,7 @@
 #pragma once
 
 #include "LikeMagic/Exprs/BottomPtrExpr.hpp"
-#include "LikeMagic/CallTargets/CallTarget.hpp"
+#include "LikeMagic/Mirrors/CallTarget.hpp"
 #include "LikeMagic/Exprs/BottomPtrExpr.hpp"
 #include "LikeMagic/Exprs/NullExpr.hpp"
 
@@ -17,6 +17,7 @@ namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
+using namespace LikeMagic::Mirrors;
 
 class BottomPtrTarget : public CallTarget
 {
@@ -26,7 +27,7 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        return BottomPtrExpr::create(type_system->try_conv<void*>(target.get()));
+        return BottomPtrExpr::create(try_conv<void*>(target.get()));
     }
 
     virtual TypeInfoList get_arg_types() const

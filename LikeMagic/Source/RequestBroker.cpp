@@ -126,7 +126,7 @@ CallReturn RequestBroker::listen(int wanted_invocation_id, bool wants_rvalue)
                 LikeMagic::Utility::TypeInfoList arg_types;
                 arg_types.push_back(arg_type_index);
                 ArgList arg_list = transporter.read_args(arg_types, temp.args_buffer);
-                int arg = type_system->try_conv<int>(arg_list[0])->eval();
+                int arg = try_conv<int>(arg_list[0])->eval();
                 int result = execute(temp.method_id, arg);
                 auto method_call = Term<int, true>::create(result);
 

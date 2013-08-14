@@ -8,12 +8,11 @@
 
 
 #include "LikeMagic/TypeSystem.hpp"
-#include "LikeMagic/NamespacePath.hpp"
 
 #include "LikeMagic/TypeConv/StringConv.hpp"
 #include "LikeMagic/TypeConv/IteratorConv.hpp"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/UserMacros.hpp"
 
 #include "LikeMagic/ScriptUtil.hpp"
 
@@ -25,22 +24,6 @@ using namespace LikeMagic::TypeConv;
 using namespace LikeMagic::Utility;
 
 using namespace std;
-
-StaticMethods& TypeSystem::register_functions(NamespacePath const ns)
-{
-    TypeIndex type = ns.get_type();
-    //cout << "Register functions type index = " << type.get_id() << " " << type.describe() << endl;
-
-    if (has_class(type))
-        return cast_existing_class<StaticMethods>(type, true);
-    else
-    {
-        StaticMethods* result = new StaticMethods(ns);
-        add_class(result->get_type(), result);
-        result->add_base_abstr(proxy_methods);
-        return *result;
-    }
-}
 
 TypeSystem::TypeSystem()
 {

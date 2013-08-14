@@ -9,18 +9,13 @@
 #pragma once
 
 #include "LikeMagic/Utility/SetField.hpp"
-
 #include "LikeMagic/CallTargets/CallTarget.hpp"
-
-#include "boost/utility/enable_if.hpp"
-#include "boost/type_traits/is_same.hpp"
-#include "boost/type_traits/is_void.hpp"
-#include "boost/type_traits/is_base_of.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
+using namespace LikeMagic::Mirrors;
 
 template <typename T, typename FieldPtr>
 class FieldSetterTarget : public CallTarget
@@ -43,8 +38,8 @@ public:
         static_assert(boost::is_const<typename boost::remove_reference<ArgType>::type>::value, "Argument source must be const &" );
 
         //set_expr_debug_name(args[0]);
-        SetField<CallAs>::set(type_system->try_conv<CallAs>(target)->eval(), f_ptr,
-            type_system->try_conv<ArgType>(args[0]));
+        SetField<CallAs>::set(try_conv<CallAs>(target)->eval(), f_ptr,
+            try_conv<ArgType>(args[0]));
         return 0;
     }
 
@@ -52,7 +47,6 @@ public:
     {
         return make_arg_list(TypePack<ArgType>());
     }
-
 };
 
 }}

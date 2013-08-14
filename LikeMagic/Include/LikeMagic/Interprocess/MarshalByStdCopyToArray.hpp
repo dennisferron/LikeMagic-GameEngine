@@ -31,7 +31,7 @@ struct MarshalByStdCopyToArray : public AbstractSharedArgMarshaller
 
     virtual void write(void* location, ExprPtr arg)
     {
-        Container container = type_system->try_conv<T>(arg);
+        Container container = try_conv<T>(arg);
         size_t size = container.size();
         offset_ptr<T> buffer = allocator.allocate_buffer<ElementType>(size);
         std::copy(container.begin(), container.end(), buffer.data);
@@ -53,7 +53,7 @@ struct MarshalByStdCopyToArray : public AbstractSharedArgMarshaller
 
     virtual void release(ExprPtr expr)
     {
-        ReferenceToSharedArray<ElementType> buffer = type_system->try_conv<T>(arg);
+        ReferenceToSharedArray<ElementType> buffer = try_conv<T>(arg);
         allocator.release(buffer);
     }
 };

@@ -63,8 +63,6 @@ public:
 //        return *p;
     }
 
-    virtual boost::intrusive_ptr<Expression<To>> clone() const { return new StringCachingTrampoline(from_expr); }
-
     virtual bool is_terminal() const { return false; }
 
     virtual std::string description() const

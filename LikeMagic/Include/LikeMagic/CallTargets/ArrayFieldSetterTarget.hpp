@@ -9,18 +9,13 @@
 #pragma once
 
 #include "LikeMagic/Utility/SetField.hpp"
-
-#include "LikeMagic/CallTargets/CallTarget.hpp"
-
-#include "boost/utility/enable_if.hpp"
-#include "boost/type_traits/is_same.hpp"
-#include "boost/type_traits/is_void.hpp"
+#include "LikeMagic/Mirrors/CallTarget.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Marshaling;
+using namespace LikeMagic::Mirrors;
 
 template <typename T, typename FieldPtr>
 class ArrayFieldSetterTarget : public CallTarget
@@ -46,10 +41,10 @@ public:
             throw std::logic_error("Setting an array field requires 2 arguments.");
 
         SetField<CallAs>::setAt(
-            type_system->try_conv<size_t>(args[0])->eval(),
-            type_system->try_conv<CallAs>(target)->eval(),
+            try_conv<size_t>(args[0])->eval(),
+            try_conv<CallAs>(target)->eval(),
             f_ptr,
-            type_system->try_conv<ArgType>(args[1]));
+            try_conv<ArgType>(args[1]));
         return 0;
     }
 

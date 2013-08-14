@@ -10,16 +10,18 @@
 
 #include <stdexcept>
 
-namespace LikeMagic { namespace Marshaling {
+namespace LikeMagic { namespace CallTargets {
+
+using namespace LikeMagic::Utility;
+using namespace LikeMagic::Exprs;
+using namespace LikeMagic::Mirrors;
 
 template <typename ObjType, typename FieldType_>
 class ICustomField
 {
 public:
     virtual ~ICustomField() {}
-
     typedef FieldType_ FieldType;
-
     virtual FieldType get(ObjType const& obj) const = 0;
 
     // A wrapper for the reference form of accessing an object.

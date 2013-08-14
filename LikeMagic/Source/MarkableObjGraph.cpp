@@ -16,9 +16,6 @@ MarkableObjGraph::MarkableObjGraph()
 
 void MarkableObjGraph::mark() const
 {
-    if (get_debug_name() == "DebugBreak")
-        cout << "mark: DebugBreak" << endl;
-
     if (!is_just_testing())
         for (auto it=children.begin(); it!=children.end(); ++it)
             (*it)->mark();

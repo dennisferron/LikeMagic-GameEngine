@@ -18,11 +18,6 @@
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 
-namespace LikeMagic { namespace Exprs {
-    // Why is this here?
-    template <typename T, bool IsCopyable> class Expression;
-}}
-
 namespace LikeMagic { namespace Utility {
 
 class BetterTypeInfo : public AbstractTypeInfo

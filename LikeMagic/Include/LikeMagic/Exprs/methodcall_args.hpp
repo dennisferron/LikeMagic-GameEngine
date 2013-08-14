@@ -42,12 +42,6 @@ struct MarkArgs
     }
 };
 
-template <typename ArgTuple, int... Indices>
-ArgTuple clone_args(ArgTuple args, IndexPack<Indices...>)
-{
-    return ArgTuple(std::get<Indices>(args)->clone()...);
-}
-
 template <typename T, typename ArgTuple>
 std::string description(T target, ArgTuple args)
 {

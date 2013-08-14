@@ -9,19 +9,15 @@
 #pragma once
 
 #include "LikeMagic/Utility/SetField.hpp"
-
-#include "LikeMagic/CallTargets/CallTarget.hpp"
-
-#include "boost/utility/enable_if.hpp"
-#include "boost/type_traits/is_same.hpp"
-#include "boost/type_traits/is_void.hpp"
-
+#include "LikeMagic/Mirrors/CallTarget.hpp"
 #include "LikeMagic/Exprs/Reference.hpp"
+
 
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
+using namespace LikeMagic::Mirrors;
 
 template <typename T, typename FieldPtr>
 class ArrayFieldReferenceTarget : public CallTarget
@@ -37,16 +33,14 @@ private:
 
 public:
 
-    //static bool const is_const_func = true;
-
     ArrayFieldReferenceTarget(FieldPtr f_ptr_) : f_ptr(f_ptr_) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         return Reference<RType>::create(
                     SetField<CallAs>::getAt(
-                        type_system->try_conv<size_t>(args[0])->eval(),
-                        type_system->try_conv<CallAs>(target)->eval(),
+                        try_conv<size_t>(args[0])->eval(),
+                        try_conv<CallAs>(target)->eval(),
                         f_ptr
                     )
                 );

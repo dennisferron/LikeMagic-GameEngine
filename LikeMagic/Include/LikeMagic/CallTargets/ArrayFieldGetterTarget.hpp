@@ -44,8 +44,8 @@ public:
     {
         return Term<RType, true>::create(
                     SetField<CallAs>::getAt(
-                        type_system->try_conv<size_t>(args[0])->eval(),
-                        type_system->try_conv<CallAs>(target)->eval(),
+                        try_conv<size_t>(args[0])->eval(),
+                        try_conv<CallAs>(target)->eval(),
                         f_ptr
                     )
                 );

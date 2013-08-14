@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "LikeMagic/Utility/FuncPtrTraits.hpp"
 #include "LikeMagic/TypeSystem.hpp"
-#include "LikeMagic/CallTargets/CallTarget.hpp"
-
+#include "LikeMagic/Mirrors/CallTarget.hpp"
+#include "LikeMagic/Utility/IndexPack.hpp"
+#include "LikeMagic/Utility/TypePack.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
 #include "LikeMagic/Exprs/Reference.hpp"
 
@@ -19,10 +19,11 @@ namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
+using namespace LikeMagic::Mirrors;
 
 // Create as temporary value object.
 template <typename ObjT, bool IsCopyable, typename... Args>
-class ConstructorCallTarget : public CallTarget
+class ConstructorCallTarget : public LikeMagic::Mirrors::CallTarget
 {
 private:
 
@@ -30,9 +31,7 @@ private:
     template<int... Indices>
     ExprPtr construct_obj(ArgList args, IndexPack<Indices...>) const
     {
-        return Term<ObjT, IsCopyable>::create(
-                    type_system->try_conv<Args>(args[Indices])->eval()...
-                );
+        return Term<ObjT, IsCopyable>::create(try_conv<Args>(args[Indices])->eval()...);
     }
 
 public:
@@ -64,9 +63,7 @@ private:
     template<int... Indices>
     ExprPtr construct_obj(ArgList args, IndexPack<Indices...>) const
     {
-        return Term<ObjT*, IsCopyable>::create(
-                    new ObjT(type_system->try_conv<Args>(args[Indices])->eval()...)
-                );
+        return Term<ObjT*, IsCopyable>::create(new ObjT(try_conv<Args>(args[Indices])->eval()...));
     }
 
 public:
@@ -99,12 +96,7 @@ private:
     ExprPtr construct_obj(ArgList args, IndexPack<Indices...>) const
     {
         // The Term object will be held onto by an intrusive ptr inside the Reference expression object.
-        auto storage_location =
-            Term<ObjT, IsCopyable>::create(
-                type_system->try_conv<Args>(args[Indices])->eval()...
-            )
-        ;
-
+        auto storage_location = Term<ObjT, IsCopyable>::create(try_conv<Args>(args[Indices])->eval()...);
         return Reference<ObjT>::create(storage_location->eval(), storage_location);
     }
 

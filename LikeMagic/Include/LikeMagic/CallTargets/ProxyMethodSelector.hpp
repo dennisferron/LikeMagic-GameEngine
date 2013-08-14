@@ -11,17 +11,13 @@
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/CallTargets/CallTarget.hpp"
-
-#include "boost/utility/enable_if.hpp"
-#include "boost/type_traits/is_same.hpp"
-#include "boost/type_traits/is_void.hpp"
-
 #include "LikeMagic/Exprs/Term.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
+using namespace LikeMagic::Mirrors;
 
 template <typename F>
 class ProxyMethodSelector : public CallTarget
@@ -44,7 +40,7 @@ private:
     do_proxy_op(ExprPtr target, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
     {
         return Term<R, true>::create(
-                    (target->*func_ptr)(type_system->try_conv<Args>(args[Indices])->eval()...));
+                    (target->*func_ptr)(try_conv<Args>(args[Indices])->eval()...));
     }
 
     // This calls a function on the proxy which returns void.
@@ -54,7 +50,7 @@ private:
             ExprPtr>::type
     do_proxy_op(ExprPtr target, ArgList args, TypePack<Args...>, IndexPack<Indices...>) const
     {
-        (target->*func_ptr)(type_system->try_conv<Args>(args[Indices])->eval()...);
+        (target->*func_ptr)(try_conv<Args>(args[Indices])->eval()...);
         return 0;
     }
 
