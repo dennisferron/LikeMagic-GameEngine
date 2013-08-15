@@ -20,7 +20,6 @@ namespace LikeMagic { namespace CallTargets {
 
 using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Marshaling;
 
 template <typename T, typename FieldPtr>
 class ArrayFieldGetterTarget : public CallTarget

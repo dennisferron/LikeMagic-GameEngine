@@ -65,21 +65,20 @@
 			<Add directory="../Iocaste/Include" />
 			<Add directory="Include" />
 		</Compiler>
+		<Unit filename="Include/LikeMagic/BindingMacros.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldGetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldReferenceTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldSetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/BottomPtrTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ClassExprTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ConstructorCallTarget.hpp" />
-		<Unit filename="Include/LikeMagic/CallTargets/CustomFieldGetterTarget.hpp" />
-		<Unit filename="Include/LikeMagic/CallTargets/CustomFieldSetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/Delegate.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/DelegateCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/DestructorCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ExtensionMethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldGetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldReferenceTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldSetterTarget.hpp" />
-		<Unit filename="Include/LikeMagic/CallTargets/ICustomField.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ProxyMethodSelector.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/StaticMethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/AbstractExpression.hpp" />
@@ -135,7 +134,6 @@
 		<Unit filename="Include/LikeMagic/TypeConv/TypeConvGraph.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/VectorConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeSystem.hpp" />
-		<Unit filename="Include/LikeMagic/UserMacros.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/AbstractTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/BetterTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/DLLHelper.hpp" />

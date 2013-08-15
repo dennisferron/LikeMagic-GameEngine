@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ConvertibleTo.hpp"
-#include "../Exprs/Trampoline.hpp"
+#include "LikeMagic/Exprs/Trampoline.hpp"
 
 #include "boost/type_traits/is_reference.hpp"
 

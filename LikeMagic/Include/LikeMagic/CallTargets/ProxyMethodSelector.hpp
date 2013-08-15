@@ -10,7 +10,7 @@
 
 #include "LikeMagic/Utility/FuncPtrTraits.hpp"
 #include "LikeMagic/TypeSystem.hpp"
-#include "LikeMagic/CallTargets/CallTarget.hpp"
+#include "LikeMagic/Mirrors/CallTarget.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
 
 namespace LikeMagic { namespace CallTargets {

@@ -11,8 +11,12 @@
 
 #include "LikeMagic/Utility/FieldPtrTraits.hpp"
 #include "LikeMagic/MarkableObjGraph.hpp"
+#include "LikeMagic/Exprs/Expression.hpp"
 
 namespace LikeMagic { namespace Utility {
+
+using namespace LikeMagic::Utility;
+using namespace LikeMagic::Exprs;
 
 // TODO:  Need to trap const fields and either not generate set function
 //          or throw an exception.  Const static/namespace level variables

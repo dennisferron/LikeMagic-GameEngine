@@ -16,9 +16,9 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="../StdBindings/libStdBindings-Windows.a" />
-					<Add library="../libLikeMagic-Windows.a" />
-					<Add library="../../Common/UnitTest++/bin/Debug/libUnitTest++.a" />
+					<Add library="..\StdBindings\libStdBindings-Windows.a" />
+					<Add library="..\libLikeMagic-Windows.a" />
+					<Add library="..\..\Common\UnitTest++\bin\Debug\libUnitTest++.a" />
 				</Linker>
 			</Target>
 			<Target title="Debug Mac">
@@ -31,9 +31,9 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="../StdBindings/libStdBindings-Mac.a" />
-					<Add library="../libLikeMagic-Mac.a" />
-					<Add library="../../Common/UnitTest++/bin/Debug/libUnitTest++.a" />
+					<Add library="..\StdBindings\libStdBindings-Mac.a" />
+					<Add library="..\libLikeMagic-Mac.a" />
+					<Add library="..\..\Common\UnitTest++\bin\Debug\libUnitTest++.a" />
 				</Linker>
 			</Target>
 		</Build>
@@ -47,11 +47,10 @@
 			<Add directory="../../Common/UnitTest++/src" />
 		</Compiler>
 		<Unit filename="Include/UnitTests/ArgListHelpers.hpp" />
-		<Unit filename="Include/UnitTests/TypeSystemInstance.hpp" />
 		<Unit filename="Source/TestArgTransporter.cpp" />
+		<Unit filename="Source/TestBinding.cpp" />
 		<Unit filename="Source/TestMarshalByCopyConstructor.cpp" />
 		<Unit filename="Source/TestTypeSystem.cpp" />
-		<Unit filename="Source/TypeSystemInstance.cpp" />
 		<Unit filename="Source/main.cpp" />
 		<Extensions>
 			<code_completion />

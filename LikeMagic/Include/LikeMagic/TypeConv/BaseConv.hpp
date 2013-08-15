@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ConvertibleTo.hpp"
-#include "../Exprs/Trampoline.hpp"
+#include "LikeMagic/Exprs/Trampoline.hpp"
 
 namespace LikeMagic { namespace TypeConv {
 

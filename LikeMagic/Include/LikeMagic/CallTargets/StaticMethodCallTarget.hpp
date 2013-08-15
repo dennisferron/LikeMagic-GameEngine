@@ -44,7 +44,7 @@ private:
 
 public:
 
-    StaticMethodCallTarget(F func_ptr_) : func_ptr(func_ptr_) {}
+    StaticMethodCallTarget_void(F func_ptr_) : func_ptr(func_ptr_) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
@@ -52,7 +52,7 @@ public:
             throw std::logic_error("Wrong number of arguments.");
 
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
-        build_method_call(args, TypePack<R>(), IPack());
+        build_method_call(args, IPack());
         return Term<void, true>::create();
     }
 
@@ -79,7 +79,7 @@ private:
 
 public:
 
-    StaticMethodCallTarget(F func_ptr_) : func_ptr(func_ptr_) {}
+    StaticMethodCallTarget_R(F func_ptr_) : func_ptr(func_ptr_) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
@@ -87,7 +87,7 @@ public:
             throw std::logic_error("Wrong number of arguments.");
 
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
-        return build_method_call(args, TypePack<R>(), IPack());
+        return build_method_call(args, IPack());
     }
 
     virtual TypeInfoList get_arg_types() const { return make_arg_list(TypePack<Args...>()); }

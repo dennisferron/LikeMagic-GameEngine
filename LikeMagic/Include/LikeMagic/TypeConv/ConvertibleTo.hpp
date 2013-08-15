@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "AbstractTypeConverter.hpp"
+#include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
 #include "boost/intrusive_ptr.hpp"
 
 // Forward declarations.

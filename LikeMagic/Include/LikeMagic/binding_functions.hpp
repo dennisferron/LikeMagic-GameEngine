@@ -20,10 +20,16 @@
 #include "LikeMagic/CallTargets/DelegateCallTarget.hpp"
 #include "LikeMagic/CallTargets/ExtensionMethodCallTarget.hpp"
 #include "LikeMagic/CallTargets/StaticMethodCallTarget.hpp"
+#include "LikeMagic/CallTargets/FieldSetterTarget.hpp"
+#include "LikeMagic/CallTargets/FieldGetterTarget.hpp"
+#include "LikeMagic/CallTargets/FieldReferenceTarget.hpp"
+#include "LikeMagic/CallTargets/ArrayFieldSetterTarget.hpp"
+#include "LikeMagic/CallTargets/ArrayFieldGetterTarget.hpp"
+#include "LikeMagic/CallTargets/ArrayFieldReferenceTarget.hpp"
 
-// TODO:  Add virtual type index static_method_type(), ref_type(), and const_ref_type()
-// to TypeMirror, and replace calls to generator factory with code that just uses these.
-//#include "LikeMagic/Generators/GeneratorFactory.hpp"
+#include "LikeMagic/TypeConv/ImplicitConv.hpp"
+#include "LikeMagic/TypeConv/NoChangeConv.hpp"
+#include "LikeMagic/TypeConv/BaseConv.hpp"
 
 namespace LikeMagic {
 
@@ -40,6 +46,17 @@ std::string create_constructor_name(std::string prefix, std::string method_name)
         return prefix + method_name.substr(3);
     else
         return prefix + "_" + method_name;
+}
+
+template <typename From, typename To,
+    template <typename From, typename To>
+        class Converter = LikeMagic::TypeConv::ImplicitConv>
+void add_conv()
+{
+    type_system->add_converter_variations(
+        LikeMagic::Utility::BetterTypeInfo::create_index<From>(),
+        LikeMagic::Utility::BetterTypeInfo::create_index<To>(),
+            new Converter<From, To>);
 }
 
 template <typename T, bool is_copyable, typename... Args>
@@ -68,11 +85,10 @@ T* operator_remove_const(T const * ptr)
 
 // Also useful for defining "extension methods".
 template <typename R, typename FirstArg, typename... Args>
-void bind_nonmember_op(TypeMirror& class_, std::string method_name, R (*f)(Args...))
+void bind_nonmember_op(LikeMagic::Mirrors::TypeMirror& class_, std::string method_name, R (*f)(FirstArg, Args...))
 {
     class_.add_method(method_name,
-        new LikeMagic::CallTargets::ExtensionMethodCallTarget<R, FirstArg, Args...>(
-            reinterpret_cast<Target::F>(f)));
+        new LikeMagic::CallTargets::ExtensionMethodCallTarget<R, FirstArg, Args...>(f));
 }
 
 template <typename T>
@@ -83,79 +99,80 @@ void bind_built_in_operations(TypeMirror& class_)
     add_method("delete", deleter);
 
     // const cast
-    bind_nonmember_op("remove_const", &operator_remove_const);
+    bind_nonmember_op("remove_const", &operator_remove_const<T>);
 }
 
 template <typename T>
 void add_delegate_conv()
 {
-    // Allow the type to be reinterpreted as AbstractDelegate to work with DelegateCallGenerator.
-    add_conv<T&, AbstractDelegate&, NoChangeConv>();
+    // Allow the type to be reinterpreted as Delegate to work with DelegateCallGenerator.
+    add_conv<T&, LikeMagic::CallTargets::Delegate&, LikeMagic::TypeConv::NoChangeConv>();
 }
 
-template <typename T, typename Base, template <typename From, typename To> class Converter=BaseConv>
+template <typename T, typename Base, template <typename From, typename To>
+    class Converter=LikeMagic::TypeConv::BaseConv>
 void add_base(TypeMirror& class_, TypeMirror const& base_class)
 {
-    class_.add_base_abstr(&base_class);
+    class_.add_base(&base_class);
     add_conv<T*, Base*, Converter>();
 }
 
 template <typename R, typename ObjT, typename... Args>
 void bind_method(TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...))
 {
-    typedef DelegateCallTarget_R_nonconst<R, Args...> Target;
+    typedef LikeMagic::CallTargets::DelegateCallTarget_R_nonconst<R, Args...> Target;
     class_.add_method(
         method_name,
         new Target(
-           reinterpret_cast<Target::F>(f),
-           BetterTypeInfo::create_index<ObjT&>()));
+           reinterpret_cast<typename Target::F>(f),
+           LikeMagic::Utility::BetterTypeInfo::create_index<ObjT&>()));
 }
 
 template <typename ObjT, typename... Args>
 void bind_method(TypeMirror& class_, std::string method_name, void (ObjT::*f)(Args...))
 {
-    typedef DelegateCallTarget_void_nonconst<Args...> Target;
+    typedef LikeMagic::CallTargets::DelegateCallTarget_void_nonconst<Args...> Target;
     class_.add_method(
         method_name,
         new Target(
-           reinterpret_cast<Target::F>(f),
-           BetterTypeInfo::create_index<ObjT&>()));
+           reinterpret_cast<typename Target::F>(f),
+           LikeMagic::Utility::BetterTypeInfo::create_index<ObjT&>()));
 }
 
 template <typename R, typename ObjT, typename... Args>
 void bind_method(TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...) const)
 {
-    typedef DelegateCallTarget_R_const<R, Args...> Target;
+    typedef LikeMagic::CallTargets::DelegateCallTarget_R_const<R, Args...> Target;
     class_.add_method(
         method_name,
         new Target(
-           reinterpret_cast<Target::F>(f),
-           BetterTypeInfo::create_index<ObjT const&>()));
+           reinterpret_cast<typename Target::F>(f),
+           LikeMagic::Utility::BetterTypeInfo::create_index<ObjT const&>()));
 }
 
 template <typename ObjT, typename... Args>
 void bind_method(TypeMirror& class_, std::string method_name, void (ObjT::*f)(Args...) const)
 {
-    typedef DelegateCallTarget_void_const<Args...> Target;
+    typedef LikeMagic::CallTargets::DelegateCallTarget_void_const<Args...> Target;
     class_.add_method(
         method_name,
         new Target(
-           reinterpret_cast<Target::F>(f),
-           BetterTypeInfo::create_index<ObjT const&>()));
+           reinterpret_cast<typename Target::F>(f),
+           LikeMagic::Utility::BetterTypeInfo::create_index<ObjT const&>()));
 }
 
 template <typename R, typename... Args>
 void bind_static_method(TypeMirror& class_, std::string method_name, R (*f)(Args...))
 {
-    typedef StaticMethodCallTarget_R<R, Args...> Target;
-    class_.add_method(method_name, new Target(reinterpret_cast<Target::F>(f)));
+    typedef LikeMagic::CallTargets::StaticMethodCallTarget_R<R, Args...> Target;
+    class_.add_method(method_name, new Target(f));
 }
 
 template <typename... Args>
 void bind_static_method(TypeMirror& class_, std::string method_name, void (*f)(Args...))
 {
-    typedef StaticMethodCallTarget_void<Args...> Target;
-    class_.add_method(method_name, new Target(reinterpret_cast<Target::F>(f)));
+    typedef LikeMagic::CallTargets::StaticMethodCallTarget_void<Args...> Target;
+    class_.add_method(method_name, new Target(f));
 }
 
 template <typename F>
@@ -187,17 +204,6 @@ void bind_custom_field(TypeMirror& class_, std::string field_name, FieldAccessor
     class_.add_method("set_" + field_name, setter);
     auto getter = new LikeMagic::CallTargets::CustomFieldGetterTarget<T const&, FieldAccessor>(f);
     class_.add_method("get_" + field_name, getter);
-}
-
-template <typename From, typename To,
-    template <typename From, typename To>
-        class Converter = LikeMagic::TypeConv::ImplicitConv>
-void add_conv()
-{
-    type_system->add_converter_variations(
-        BetterTypeInfo::create_index<From>(),
-        BetterTypeInfo::create_index<To>(),
-            new Converter<From, To>);
 }
 
 template <typename T, bool is_copyable>

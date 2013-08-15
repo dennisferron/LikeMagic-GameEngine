@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "LikeMagic/Utility/SetField.hpp"
 #include "LikeMagic/Mirrors/CallTarget.hpp"
+#include "LikeMagic/CallTargets/Delegate.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
@@ -17,28 +17,26 @@ using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Mirrors;
 
-template <typename T, typename FieldPtr>
+template <typename R>
 class FieldGetterTarget : public CallTarget
 {
+public:
+    typedef R (Delegate::*F);
+
 private:
-    typedef T const& CallAs;
-
-    FieldPtr f_ptr;
-
-    typedef FieldPtrTraits<FieldPtr, CallAs> Traits;
-
-    typedef typename Traits::R& RType;
+    F const f_ptr;
+    TypeIndex const actual_type;
 
 public:
 
-    //static bool const is_const_func = true;
-
-    FieldGetterTarget(FieldPtr f_ptr_) : f_ptr(f_ptr_) {}
+    FieldGetterTarget(FieldPtr f_ptr_, TypeIndex actual_type_)
+        : f_ptr(f_ptr_), actual_type(actual_type_) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        return Term<RType, true>::create(
-            SetField<CallAs>::get(try_conv<CallAs>(target)->eval(), f_ptr));
+        auto target_check = type_system->try_conv(target, actual_type);
+        Delegate& target_obj = try_conv<Delegate&>(target_check)->eval();
+        return Term<R, true>::create(target_obj.*f_ptr);
     }
 
     virtual TypeInfoList get_arg_types() const

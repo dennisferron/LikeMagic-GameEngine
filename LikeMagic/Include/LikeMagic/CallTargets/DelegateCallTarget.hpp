@@ -12,6 +12,7 @@
 #include "LikeMagic/Exprs/Term.hpp"
 #include "LikeMagic/Mirrors/CallTarget.hpp"
 #include "LikeMagic/Utility/IndexPack.hpp"
+#include "LikeMagic/CallTargets/Delegate.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 
@@ -27,7 +28,7 @@ public:
 
 private:
 
-    F func_ptr;
+    F const func_ptr;
     TypeIndex const actual_type;
 
     // Handle functions that do not return a value
@@ -65,7 +66,7 @@ public:
 
 private:
 
-    F func_ptr;
+    F const func_ptr;
     TypeIndex const actual_type;
 
     // Handle functions that do not return a value
@@ -84,7 +85,7 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        if (args.size() != sizeof...(Indices))
+        if (args.size() != sizeof...(Args))
             throw std::logic_error("Wrong number of arguments.");
 
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
@@ -102,7 +103,7 @@ public:
     typedef R (Delegate::*F)(Args...);
 
 private:
-    F func_ptr;
+    F const func_ptr;
     TypeIndex const actual_type;
 
     // Handle functions that return a value
@@ -121,7 +122,7 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        if (args.size() != sizeof...(Indices))
+        if (args.size() != sizeof...(Args))
             throw std::logic_error("Wrong number of arguments.");
 
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
@@ -138,7 +139,7 @@ public:
     typedef R (Delegate::*F)(Args...) const;
 
 private:
-    F func_ptr;
+    F const func_ptr;
     TypeIndex const actual_type;
 
     // Handle functions that return a value

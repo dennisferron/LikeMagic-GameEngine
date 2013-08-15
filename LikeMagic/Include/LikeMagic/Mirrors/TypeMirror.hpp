@@ -26,7 +26,7 @@ namespace LikeMagic { namespace Mirrors {
     class CallTarget;
 }}
 
-namespace LikeMagic { namespace Marshaling {
+namespace LikeMagic { namespace Mirrors {
 
 using LikeMagic::Exprs::AbstractExpression;
 using LikeMagic::Exprs::ExprPtr;

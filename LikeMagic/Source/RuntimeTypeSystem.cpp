@@ -12,7 +12,7 @@
 #include "LikeMagic/TypeConv/StringConv.hpp"
 #include "LikeMagic/TypeConv/IteratorConv.hpp"
 
-#include "LikeMagic/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 #include "LikeMagic/ScriptUtil.hpp"
 
