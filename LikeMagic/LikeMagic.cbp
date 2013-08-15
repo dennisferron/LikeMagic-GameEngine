@@ -139,7 +139,6 @@
 		<Unit filename="Include/LikeMagic/Utility/DLLHelper.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/EnumHelper.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/FieldPtrTraits.hpp" />
-		<Unit filename="Include/LikeMagic/Utility/GetField.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/ICanHasMemberFunc.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/IndexPack.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/IsContainer.hpp" />
@@ -147,7 +146,6 @@
 		<Unit filename="Include/LikeMagic/Utility/KeyWrapper.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/MakeCall.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/ScriptFunc.hpp" />
-		<Unit filename="Include/LikeMagic/Utility/SetField.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/StripModifiers.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TupleForEach.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeDescr.hpp" />

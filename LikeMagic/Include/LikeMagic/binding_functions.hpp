@@ -15,6 +15,7 @@
 #include "boost/utility/enable_if.hpp"
 #include "boost/type_traits.hpp"
 
+#include "LikeMagic/CallTargets/ClassExprTarget.hpp"
 #include "LikeMagic/CallTargets/ConstructorCallTarget.hpp"
 #include "LikeMagic/CallTargets/DestructorCallTarget.hpp"
 #include "LikeMagic/CallTargets/DelegateCallTarget.hpp"
@@ -30,6 +31,8 @@
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 #include "LikeMagic/TypeConv/BaseConv.hpp"
+
+#include "LikeMagic/Utility/EnumHelper.hpp"
 
 namespace LikeMagic {
 
@@ -175,35 +178,26 @@ void bind_static_method(TypeMirror& class_, std::string method_name, void (*f)(A
     class_.add_method(method_name, new Target(f));
 }
 
-template <typename F>
-void bind_field(TypeMirror& class_, std::string field_name, F f)
+template <typename T, typename R>
+void bind_field(TypeMirror& class_, std::string field_name, R(T::*f))
 {
-    auto setter = new LikeMagic::CallTargets::FieldSetterTarget<T, F>(f);
+    auto setter = new LikeMagic::CallTargets::FieldSetterTarget<R>(f, class_.get_const_ref_type());
     class_.add_method("set_" + field_name, setter);
-    auto getter = new LikeMagic::CallTargets::FieldGetterTarget<T, F>(f);
+    auto getter = new LikeMagic::CallTargets::FieldGetterTarget<R>(f, class_.get_ref_type());
     class_.add_method("get_" + field_name, getter);
-    auto reffer = new LikeMagic::CallTargets::FieldReferenceTarget<T, F>(f);
+    auto reffer = new LikeMagic::CallTargets::FieldReferenceTarget<R>(f, class_.get_ref_type());
     class_.add_method("ref_" + field_name, reffer);
 }
 
-template <typename F>
-void bind_array_field(TypeMirror& class_, std::string field_name, F f)
+template <typename T, typename R, int N>
+void bind_array_field(TypeMirror& class_, std::string field_name, R(T::*f)[N])
 {
-    auto setter = new LikeMagic::CallTargets::ArrayFieldSetterTarget<T, F>(f);
+    auto setter = new LikeMagic::CallTargets::ArrayFieldSetterTarget<R>(f, class_.get_const_ref_type());
     class_.add_method("set_" + field_name, setter);
-    auto getter = new LikeMagic::CallTargets::ArrayFieldGetterTarget<T, F>(f);
+    auto getter = new LikeMagic::CallTargets::ArrayFieldGetterTarget<R>(f, class_.get_ref_type());
     class_.add_method("get_" + field_name, getter);
-    auto reffer = new LikeMagic::CallTargets::ArrayFieldReferenceTarget<T, F>(f);
+    auto reffer = new LikeMagic::CallTargets::ArrayFieldReferenceTarget<R>(f, class_.get_ref_type());
     class_.add_method("ref_" + field_name, reffer);
-}
-
-template <typename FieldAccessor>
-void bind_custom_field(TypeMirror& class_, std::string field_name, FieldAccessor f)
-{
-    auto setter = new LikeMagic::CallTargets::CustomFieldSetterTarget<T&, FieldAccessor>(f);
-    class_.add_method("set_" + field_name, setter);
-    auto getter = new LikeMagic::CallTargets::CustomFieldGetterTarget<T const&, FieldAccessor>(f);
-    class_.add_method("get_" + field_name, getter);
 }
 
 template <typename T, bool is_copyable>
@@ -222,18 +216,21 @@ register_copyable_conv()
 template <typename T, bool is_copyable=!boost::is_abstract<T>::value, bool add_deref_ptr_conv=true>
 BindingTarget<is_copyable> register_class(std::string name, TypeMirror& namespace_)
 {
-    static TypeIndex type(BetterTypeInfo::create_index<T>());
+    static const TypeIndex class_type(LikeMagic::Utility::BetterTypeInfo::create_index<T>());
+    static const TypeIndex ref_type(LikeMagic::Utility::BetterTypeInfo::create_index<T&>());
+    static const TypeIndex const_ref_type(LikeMagic::Utility::BetterTypeInfo::create_index<T const&>());
+
     namespace_.add_method(name, new LikeMagic::CallTargets::ClassExprTarget<T>());
-    if (type_system->get_class(type))
+    if (type_system->get_class(class_type))
     {
-        return *(type_system->get_class(type));
+        return *(type_system->get_class(class_type));
     }
     else
     {
-        auto result = new LikeMagic::Mirrors::TypeMirror(name, *this, ns);
-        type_system->add_class(type, result);
-        result->add_base_abstr(proxy_methods);
-        type_system->add_ptr_conversions(type, add_deref_ptr_conv);
+        auto result = new LikeMagic::Mirrors::TypeMirror(name, sizeof(T), class_type, ref_type, const_ref_type);
+        type_system->add_class(class_type, result);
+        //result->add_base(proxy_methods);
+        type_system->add_ptr_conversions(class_type, add_deref_ptr_conv);
         register_copyable_conv<T, is_copyable>();
         bind_built_in_operations<T>(*result);
         add_delegate_conv<T>();
@@ -244,12 +241,11 @@ BindingTarget<is_copyable> register_class(std::string name, TypeMirror& namespac
 template <typename T>
 BindingTarget<true> register_enum(std::string name, TypeMirror& namespace_)
 {
-    auto& result = register_class<T, true>(name, ns);
-    result.bind_nonmember_op("==",    &EnumHelper<T>::equals);
-    result.bind_nonmember_op("!=",    &EnumHelper<T>::not_equals);
-    result.bind_nonmember_op("value", &EnumHelper<T>::value);
-    result.bind_nonmember_op("asString", &EnumHelper<T>::asString);
-    namespace_.add_method(name, new LikeMagic::CallTargets::ClassExprTarget<T>());
+    auto& result = register_class<T, true>(name, namespace_);
+    result.bind_nonmember_op("==",    &LikeMagic::Utility::EnumHelper<T>::equals);
+    result.bind_nonmember_op("!=",    &LikeMagic::Utility::EnumHelper<T>::not_equals);
+    result.bind_nonmember_op("value", &LikeMagic::Utility::EnumHelper<T>::value);
+    result.bind_nonmember_op("asString", &LikeMagic::Utility::EnumHelper<T>::asString);
     return result;
 }
 

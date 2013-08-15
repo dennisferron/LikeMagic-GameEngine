@@ -63,7 +63,6 @@ public:
     virtual TypeMirror* global_namespace() const;
     virtual ExprPtr try_conv(ExprPtr from_expr, TypeIndex to_type) const;
     virtual bool has_conv(TypeIndex  from_type, TypeIndex to_type) const;
-    virtual void print_conv_chain(TypeIndex from, TypeIndex to) const;
 };
 
 extern TypeSystem* type_system;

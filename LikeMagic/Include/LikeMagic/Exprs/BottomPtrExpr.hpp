@@ -54,7 +54,6 @@ public:
     static boost::intrusive_ptr<Expression<BottomPtrType>> create(boost::intrusive_ptr<Expression<void*>> inner) { return new BottomPtrExpr(inner); }
 
     inline virtual BottomPtrType eval() { return reinterpret_cast<BottomPtrType>(inner->eval()); }
-    virtual boost::intrusive_ptr<Expression<BottomPtrType>> clone() const { return new BottomPtrExpr(inner->clone()); }
     virtual bool is_terminal() const { return inner->is_terminal(); }
 
     virtual std::string description() const

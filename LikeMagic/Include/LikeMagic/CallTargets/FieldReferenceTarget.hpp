@@ -32,7 +32,7 @@ private:
 
 public:
 
-    FieldReferenceTarget(FieldPtr f_ptr_, TypeIndex actual_type_)
+    FieldReferenceTarget(F f_ptr_, TypeIndex actual_type_)
         : f_ptr(f_ptr_), actual_type(actual_type_) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const

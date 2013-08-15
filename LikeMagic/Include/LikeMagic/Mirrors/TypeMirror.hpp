@@ -45,11 +45,13 @@ private:
     TypeMirror(TypeMirror const&) = delete;
     TypeMirror& operator =(TypeMirror const&) = delete;
 
+    friend void suggest_method(TypeMirror& type_, std::string method_name, int num_args);
+
 public:
-    TypeMirror();
+    TypeMirror(std::string class_name, size_t instance_size, TypeIndex class_type, TypeIndex ref_type, TypeIndex const_ref_type);
     virtual ~TypeMirror();
 
-    virtual std::string get_name() const;
+    virtual std::string get_class_name() const;
 
     virtual CallTarget* get_method(std::string method_name, int num_args, bool in_base_class=false) const;
     virtual void add_method(std::string method_name, CallTarget* method);
@@ -58,13 +60,13 @@ public:
     virtual void add_base(TypeMirror const* base);
     virtual bool has_base(TypeMirror const* base) const;
 
-    virtual TypeIndex get_type() const;
-    virtual TypeIndex get_const_type() const;
+    virtual TypeIndex get_class_type() const;
     virtual TypeIndex get_ref_type() const;
+    virtual TypeIndex get_const_ref_type() const;
 
-    virtual size_t get_size() const;
+    virtual size_t get_instance_size() const;
+
+    virtual void suggest_method(std::string method_name, int num_args) const;
 };
-
-void suggest_method(TypeMirror& type_, std::string method_name, int num_args);
 
 }}

@@ -9,7 +9,9 @@
 #pragma once
 
 #include "LikeMagic/Mirrors/CallTarget.hpp"
-#include "LikeMagic/Exprs/ClassExprTarget.hpp"
+#include "LikeMagic/Exprs/ClassExpr.hpp"
+#include "LikeMagic/Utility/TypePack.hpp"
+#include "LikeMagic/Utility/make_arg_list.hpp"
 
 namespace LikeMagic { namespace CallTargets {
 

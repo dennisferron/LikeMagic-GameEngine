@@ -98,35 +98,3 @@ template <typename T> struct LM_InsertConst<T&> { typedef T const& type; };
 #define LM_STATIC_FUNC_NAME(class_name, given_func_name, actual_func) type_system->register_functions().bind_method(given_func_name, class_name::actual_func);
 #define LM_STATIC_FUNC_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) type_system->register_functions().bind_method(given_func_name, static_cast<ret_type (*)(__VA_ARGS__)>(&class_name::actual_func));
 
-#include "LikeMagic/CallTargets/ICustomField.hpp"
-
-#define LM_BIT_FIELD(class_name, field_name) \
-{ \
-    typedef class_name* objp; \
-    typedef decltype(objp(0)->field_name) FieldType;\
-    \
-    class BitField \
-        : public ICustomField<class_name, FieldType> \
-    { \
-    public: \
-    \
-        virtual void set(class_name& obj, FieldType value) const \
-        { \
-            obj.field_name = value; \
-        } \
-        \
-        virtual FieldType get(class_name const& obj) const \
-        { \
-            return obj.field_name; \
-        } \
-    }; \
-    \
-    typedef ICustomField<class_name, FieldType>* FieldAccessor; \
-    FieldAccessor f(new BitField); \
-    class_name##_LM.bind_custom_field<FieldAccessor>(#field_name, f); \
-}
-
-// This needs to be done once in every DLL to set the type info cache singleton to a shared value.
-#define LM_SET_TYPE_INFO(type_sys) \
-LikeMagic::Utility::TypeInfoCache::set_instance(type_system->get_typeinfo_cache());
-

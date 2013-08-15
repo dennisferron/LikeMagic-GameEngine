@@ -30,17 +30,23 @@ struct TypeMirror::Impl
     boost::unordered_map<std::string, TypeMirror const*> bases;
     std::string name;
     boost::unordered_map<std::string, std::map<int, CallTarget*>> methods;
+    TypeIndex class_type;
+    TypeIndex ref_type;
+    TypeIndex const_ref_type;
+    size_t instance_size;
 };
 
-TypeMirror::~TypeMirror() {}
-
-TypeMirror::TypeMirror(std::string name_)
+TypeMirror::TypeMirror(std::string name, size_t instance_size, TypeIndex class_type, TypeIndex ref_type, TypeIndex const_ref_type)
     : impl(new TypeMirror::Impl)
 {
-    if (name_ == "")
+    if (name == "")
         throw std::logic_error("Tried to register class with no name!");
 
-    impl->name(name_);
+    impl->name = name;
+    impl->class_type = class_type;
+    impl->ref_type = ref_type;
+    impl->const_ref_type = const_ref_type;
+    impl->instance_size = instance_size;
 
     auto ptr_caster = new BottomPtrTarget();
     add_method("unsafe_ptr_cast", ptr_caster);
@@ -80,10 +86,10 @@ void TypeMirror::suggest_method(std::string method_name, int num_args) const
 
     if (candidates == impl->methods.end())
     {
-        bool has_c = methods.find(method_name + "_c") != methods.end();
-        bool has_nc = methods.find(method_name + "_nc") != methods.end();
+        bool has_c = impl->methods.find(method_name + "_c") != impl->methods.end();
+        bool has_nc = impl->methods.find(method_name + "_nc") != impl->methods.end();
 
-        bool has_get = methods.find("get_" + method_name) != methods.end();
+        bool has_get = impl->methods.find("get_" + method_name) != impl->methods.end();
 
         if (has_c || has_nc)
         {
@@ -175,19 +181,29 @@ bool TypeMirror::has_base(TypeMirror const* base) const
 void TypeMirror::add_base(TypeMirror const* base)
 {
     impl->bases[base->get_class_name()] = base;
-
-
-std::vector<std::string> TypeMirror::get_base_names() const
-{
-    std::vector<std::string> result;
-
-    for (auto it=impl->bases.begin(); it != impl->bases.end(); it++)
-        result.push_back(it->first);
-
-    return result;
 }
 
 std::string TypeMirror::get_class_name() const
 {
     return impl->name;
+}
+
+size_t TypeMirror::get_instance_size() const
+{
+    return impl->instance_size;
+}
+
+TypeIndex TypeMirror::get_class_type() const
+{
+    return impl->class_type;
+}
+
+TypeIndex TypeMirror::get_ref_type() const
+{
+    return impl->ref_type;
+}
+
+TypeIndex TypeMirror::get_const_ref_type() const
+{
+    return impl->const_ref_type;
 }
