@@ -41,11 +41,11 @@
 #define LM_ADD_VECTORS_IMPL(r, data, elem) LM_ADD_VECTOR(data, elem)
 #define LM_ADD_VECTORS(vm_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ADD_VECTORS_IMPL, vm_name, SEQ)
 
-#define LM_CLASS(class_name) auto& class_name##_LM = register_class<class_name>(#class_name);
+#define LM_CLASS(namespace, class_name) auto& class_name##_LM = register_class<class_name>(#class_name, namespace);
 
-#define LM_CLASS_NO_COPY(class_name) auto& class_name##_LM = type_system->register_class<class_name, false>(#class_name);
+#define LM_CLASS_NO_COPY(namespace, class_name) auto& class_name##_LM = type_system->register_class<class_name, false>(#class_name, namespace);
 
-#define LM_ENUM(class_name) auto& class_name##_LM = type_system->register_enum<class_name>(#class_name);
+#define LM_ENUM(namespace, class_name) auto& class_name##_LM = type_system->register_enum<class_name>(#class_name, namespace);
 
 // Your LikeMagic Class object must be named with the class name followed by "_LM" (do not provide the _LM to the macro)
 #define LM_FUNC_IMPL(r, data, elem) data##_LM.bind_method(BOOST_PP_STRINGIZE(elem), &data::elem);
@@ -98,3 +98,4 @@ template <typename T> struct LM_InsertConst<T&> { typedef T const& type; };
 #define LM_STATIC_FUNC_NAME(class_name, given_func_name, actual_func) type_system->register_functions().bind_method(given_func_name, class_name::actual_func);
 #define LM_STATIC_FUNC_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) type_system->register_functions().bind_method(given_func_name, static_cast<ret_type (*)(__VA_ARGS__)>(&class_name::actual_func));
 
+#define LM_NAMESPACE(parent_ns, child_ns) auto& chlid_ns = register_namespace(#child_ns, parent_ns);

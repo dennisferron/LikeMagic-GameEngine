@@ -38,7 +38,7 @@ IoObject* to_seq(std::vector<T> const& vect, IoState* self)
     else if (to_type == BetterTypeInfo::create_index<unsigned int>())
         uarray = UArray_newWithData_type_encoding_size_copy_(c_buf, CTYPE_uint32_t, CENCODING_NUMBER, vect.size(), 0);
     else
-        throw std::logic_error(std::string("No code implemented yet in LikeMagic for converting to IoSeq from ") + to_type.describe());
+        throw std::logic_error(std::string("No code implemented yet in LikeMagic for converting to IoSeq from ") + to_type.description());
 
     // In this case all iterators are pointers, so the STL algorithm here actually uses memcpy for efficiency.
     copy(vect.begin(), vect.end(), c_buf);
@@ -61,7 +61,7 @@ struct To##name : public AbstractTypeConverter \
         return ToIoObjectExpr<type, To##name>::create(expr); \
     } \
 \
-    virtual std::string describe() const { return "To " #name " Conv"; } \
+    virtual std::string description() const { return "To " #name " Conv"; } \
 }; \
 
 #define ADD_CONV(name, type) \
@@ -81,7 +81,7 @@ struct ToNumberFromT : public AbstractTypeConverter
     {
         IoObject* io_obj = IONUMBER(value);
         //cout <<
-        //    "To Number from " + BetterTypeInfo::create_index<T>().describe() + " Conv"
+        //    "To Number from " + BetterTypeInfo::create_index<T>().description() + " Conv"
         //    << " from value = " << value << " and to io_obj = " << IoNumber_asDouble(io_obj) << endl;
         return io_obj;
     }
@@ -91,7 +91,7 @@ struct ToNumberFromT : public AbstractTypeConverter
         return ToIoObjectExpr<T, ToNumberFromT>::create(expr);
     }
 
-    virtual std::string describe() const { return "To Number from " + BetterTypeInfo::create_index<T>().describe() + " Conv"; }
+    virtual std::string description() const { return "To Number from " + BetterTypeInfo::create_index<T>().description() + " Conv"; }
 
     static void add_conv()
     {
@@ -130,7 +130,7 @@ struct ToIoNil : public AbstractTypeConverter
         return new ToIoNilExpr(expr);
     }
 
-    virtual std::string describe() const { return "To nil Conv"; } \
+    virtual std::string description() const { return "To nil Conv"; } \
 };
 
 void add_convs_to_script(IoVM* iovm)

@@ -9,7 +9,7 @@
 #pragma once
 
 #include "LikeMagic/Mirrors/CallTarget.hpp"
-#include "LikeMagic/Exprs/ClassExpr.hpp"
+#include "LikeMagic/Exprs/NamespaceExpr.hpp"
 #include "LikeMagic/Utility/TypePack.hpp"
 #include "LikeMagic/Utility/make_arg_list.hpp"
 
@@ -19,19 +19,16 @@ using namespace LikeMagic::Utility;
 using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Mirrors;
 
-template <typename T>
-class ClassExprTarget : public CallTarget
+class ExprTarget : public CallTarget
 {
-public:
-    virtual ExprPtr call(ExprPtr target, ArgList args) const
-    {
-        return ClassExpr<T>::create();
-    }
+private:
+    ExprPtr expr;
 
-    virtual TypeInfoList get_arg_types() const
-    {
-        return make_arg_list(TypePack<>());
-    }
+public:
+
+    ExprTarget(ExprPtr expr_);
+    virtual ExprPtr call(ExprPtr target, ArgList args) const;
+    virtual TypeInfoList const& get_arg_types() const;
 };
 
 }}

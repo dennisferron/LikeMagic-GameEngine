@@ -10,22 +10,19 @@
 #pragma once
 
 #include "LikeMagic/Exprs/AbstractExpression.hpp"
-#include "LikeMagic/Marshaling/StaticMethods.hpp"
 
 namespace LikeMagic { namespace Exprs {
 
-// Mostly used for storing static methods that do not have a class object associated,
-// but also can be used when a proxy is needed for another DummyClass such as for the ProxyMethods.
 class NamespaceExpr : public AbstractExpression
 {
 private:
-    TypeMirror const* methods;
-
-    NamespaceExpr(TypeMirror const* methods_);
+    NamespaceExpr(TypeIndex type, TypeIndex class_type);
+    TypeIndex type;
+    TypeIndex class_type;
 
 public:
 
-    static ExprPtr create(TypeMirror const* methods_);
+    static ExprPtr create(TypeIndex type, TypeIndex class_type);
 
     virtual bool is_terminal() const;
     virtual std::string description() const;

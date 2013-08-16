@@ -23,7 +23,8 @@
 #include "LikeMagic/TypeConv/ToAbstractExpressionConv.hpp"
 #include "LikeMagic/TypeConv/PtrDerefConv.hpp"
 #include "LikeMagic/TypeConv/AddrOfConv.hpp"
-
+#include "LikeMagic/Exprs/NamespaceExpr.hpp"
+#include "LikeMagic/Utility/NamespaceTypeInfo.hpp"
 #include "LikeMagic/CallTargets/Delegate.hpp"
 
 #include <set>
@@ -47,6 +48,7 @@ struct TypeSystem::Impl
     TypeMirror* unknown_class;
     TypeConvGraph conv_graph;
     TypeInfoCache* dll_shared_typeinfo;
+    TypeMirror* global_namespace;
 
     void add_ptr_convs(TypeIndex index)
     {
@@ -109,6 +111,13 @@ struct TypeSystem::Impl
 TypeSystem::TypeSystem()
     : impl(new TypeSystem::Impl)
 {
+    TypeIndex ns_type = NamespaceTypeInfo::create_index("namespace");
+    impl->global_namespace = new TypeMirror("namespace", 0, ns_type, ns_type, ns_type);
+}
+
+TypeMirror* TypeSystem::global_namespace() const
+{
+    return impl->global_namespace;
 }
 
 void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr)
@@ -117,7 +126,7 @@ void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr)
         throw std::logic_error("add_class type index has to be a class type!");
 
     if (!(index == class_ptr->get_class_type()))
-        throw std::logic_error("add_class: Index=" + index.describe() + " not the same as class_ptr type=" + class_ptr->get_class_type().describe());
+        throw std::logic_error("add_class: Index=" + index.description() + " not the same as class_ptr type=" + class_ptr->get_class_type().description());
 
     // add_class also called for non-C++ type objects such as "namespace"
     //add_ptr_convs(index);
@@ -160,7 +169,7 @@ TypeMirror* TypeSystem::get_class(TypeIndex type) const
     else
     {
         //return unknown_class;
-        throw std::logic_error("No class registered for type " + type.describe());
+        throw std::logic_error("No class registered for type " + type.description());
     }
 }
 

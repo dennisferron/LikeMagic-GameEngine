@@ -28,7 +28,7 @@ public:
         return Term<ExprPtr, true>::create(expr);
     }
 
-    virtual std::string describe() const { return "ToAbstractExpressionConv"; }
+    virtual std::string description() const { return "ToAbstractExpressionConv"; }
 };
 
 }}

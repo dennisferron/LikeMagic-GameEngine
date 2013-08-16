@@ -56,7 +56,7 @@ class VectorConv<std::vector<F>, T*> : public ConvertibleTo<T*>
 //                reinterpret_cast<Expression<From>*>(expr.get())));
 //    }
 //
-//    virtual std::string describe() const { return describe_converter<From, To>("VectorConv"); }
+//    virtual std::string description() const { return describe_converter<From, To>("VectorConv"); }
 
 };
 
@@ -74,7 +74,7 @@ public:
                 reinterpret_cast<Expression<From>*>(expr.get())));
     }
 
-    virtual std::string describe() const { return describe_converter<From, To>("VectorConv"); }
+    virtual std::string description() const { return describe_converter<From, To>("VectorConv"); }
 
 };
 
@@ -92,7 +92,7 @@ public:
                 reinterpret_cast<Expression<From>*>(expr.get())));
     }
 
-    virtual std::string describe() const { return describe_converter<From, To>("VectorConv"); }
+    virtual std::string description() const { return describe_converter<From, To>("VectorConv"); }
 
 };
 

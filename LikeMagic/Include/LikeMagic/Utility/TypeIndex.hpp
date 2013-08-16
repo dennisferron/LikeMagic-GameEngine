@@ -57,7 +57,7 @@ public:
     inline std::size_t get_class_id() const { return class_id; }
 
     TypeInfoPtr get_info() const;
-    std::string describe() const;
+    std::string description() const;
 };
 
 inline std::size_t hash_value(TypeIndex info)
@@ -66,5 +66,6 @@ inline std::size_t hash_value(TypeIndex info)
 }
 
 typedef std::vector<TypeIndex> TypeInfoList;
+extern const TypeInfoList empty_arg_list;
 
 }}

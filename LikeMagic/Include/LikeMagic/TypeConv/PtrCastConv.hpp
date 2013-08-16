@@ -32,7 +32,7 @@ public:
                 static_cast<Expression<From>*>(expr.get())));
     }
 
-    virtual std::string describe() const { return describe_converter<From, To>("PtrCastConv"); }
+    virtual std::string description() const { return describe_converter<From, To>("PtrCastConv"); }
 
     // Pointer cast is not expensive in terms of CPU cycles, but
     // we don't want to use ptr cast when something else will do.

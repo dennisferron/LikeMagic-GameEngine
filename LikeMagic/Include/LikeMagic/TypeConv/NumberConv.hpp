@@ -53,7 +53,7 @@ public:
                 reinterpret_cast<Expression<From>*>(expr.get())));
     }
 
-    virtual std::string describe() const { return describe_converter<From, To>("NumberConv"); }
+    virtual std::string description() const { return describe_converter<From, To>("NumberConv"); }
 
     virtual float cost() const { return 10.0; }
 };
@@ -76,7 +76,7 @@ public:
                 reinterpret_cast<Expression<From>*>(expr.get())));
     }
 
-    virtual std::string describe() const { return describe_converter<From, To&>("NumberConv"); }
+    virtual std::string description() const { return describe_converter<From, To&>("NumberConv"); }
 
     virtual float cost() const { return 10.0; }
 };

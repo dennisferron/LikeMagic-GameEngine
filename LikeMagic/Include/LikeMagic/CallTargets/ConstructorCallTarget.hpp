@@ -44,9 +44,10 @@ public:
         return construct_obj(args, IPack());
     }
 
-    virtual TypeInfoList get_arg_types() const
+    virtual TypeInfoList const& get_arg_types() const
     {
-        return make_arg_list(TypePack<Args...>());
+        static TypeInfoList arg_types = make_arg_list(TypePack<Args...>());
+        return arg_types;
     }
 
     // Some methods (like constructors) should not be inherited.
@@ -76,9 +77,10 @@ public:
         return construct_obj(args, IPack());
     }
 
-    virtual TypeInfoList get_arg_types() const
+    virtual TypeInfoList const& get_arg_types() const
     {
-        return make_arg_list(TypePack<Args...>());
+        static TypeInfoList arg_types = make_arg_list(TypePack<Args...>());
+        return arg_types;
     }
 
     // Some methods (like constructors) should not be inherited.
@@ -110,9 +112,10 @@ public:
         return construct_obj(args, IPack());
     }
 
-    virtual TypeInfoList get_arg_types() const
+    virtual TypeInfoList const& get_arg_types() const
     {
-        return make_arg_list(TypePack<Args...>());
+        static TypeInfoList arg_types = make_arg_list(TypePack<Args...>());
+        return arg_types;
     }
 
     // Some methods (like constructors) should not be inherited.
@@ -152,9 +155,10 @@ public:
         return construct_obj(args, IPack());
     }
 
-    virtual TypeInfoList get_arg_types() const
+    virtual TypeInfoList const& get_arg_types() const
     {
-        return make_arg_list(TypePack<Args...>());
+        static TypeInfoList arg_types = make_arg_list(TypePack<Args...>());
+        return arg_types;
     }
 
     // Some methods (like constructors) should not be inherited.

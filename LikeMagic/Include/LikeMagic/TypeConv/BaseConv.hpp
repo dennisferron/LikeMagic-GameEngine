@@ -32,7 +32,7 @@ public:
                 reinterpret_cast<LikeMagic::Exprs::Expression<From>*>(expr.get())));
     }
 
-    virtual std::string describe() const { return describe_converter<From, To>("BaseConv"); }
+    virtual std::string description() const { return describe_converter<From, To>("BaseConv"); }
 };
 
 }}

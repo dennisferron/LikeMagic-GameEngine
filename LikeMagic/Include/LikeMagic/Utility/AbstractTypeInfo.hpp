@@ -84,45 +84,45 @@ public:
 
     virtual TypeInfoPtr as_const_obj_type() const
     {
-        throw std::logic_error("Type variation as_const_obj_type undefined on " + describe());
+        throw std::logic_error("Type variation as_const_obj_type undefined on " + description());
     }
 
     virtual TypeInfoPtr as_nonconst_obj_type() const
     {
-        throw std::logic_error("Type variation as_nonconst_obj_type undefined on " + describe());
+        throw std::logic_error("Type variation as_nonconst_obj_type undefined on " + description());
     }
 
     virtual TypeInfoPtr as_const_ptr_type() const
     {
-        throw std::logic_error("Type variation as_const_ptr_type undefined on " + describe());
+        throw std::logic_error("Type variation as_const_ptr_type undefined on " + description());
     }
 
     virtual TypeInfoPtr as_nonconst_ptr_type() const
     {
-        throw std::logic_error("Type variation as_nonconst_ptr_type undefined on " + describe());
+        throw std::logic_error("Type variation as_nonconst_ptr_type undefined on " + description());
     }
 
     virtual TypeInfoPtr remove_reference() const
     {
-        throw std::logic_error("Type variation remove_reference undefined on " + describe());
+        throw std::logic_error("Type variation remove_reference undefined on " + description());
     }
 
     virtual TypeInfoPtr as_ptr() const
     {
-        throw std::logic_error("Type variation as_ptr_type undefined on " + describe());
+        throw std::logic_error("Type variation as_ptr_type undefined on " + description());
     }
 
     virtual TypeInfoPtr as_ref() const
     {
-        throw std::logic_error("Type variation as_ref_type undefined on " + describe());
+        throw std::logic_error("Type variation as_ref_type undefined on " + description());
     }
 
     virtual TypeInfoPtr remove_all_const() const
     {
-        throw std::logic_error("Type variation remove_all_const undefined on " + describe());
+        throw std::logic_error("Type variation remove_all_const undefined on " + description());
     }
 
-    virtual std::string describe() const = 0;
+    virtual std::string description() const = 0;
 
     std::size_t hash_value() const
     {

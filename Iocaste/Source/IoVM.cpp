@@ -174,7 +174,7 @@ struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter
         return ToIoObjectExpr<IoObject*, PtrToIoObjectConv>::create(expr);
     }
 
-    virtual std::string describe() const { return "PtrToIoObjectConv"; }
+    virtual std::string description() const { return "PtrToIoObjectConv"; }
 };
 
 void print_conv(TypeIndex from, TypeIndex to)
@@ -427,7 +427,7 @@ void build_arg_exception(string method_name, TypeInfoList arg_types, int i, int 
     throw std::logic_error(
            std::string() + "In call of method " + method_name +
            ", error converting argument " + boost::lexical_cast<std::string>(i) + " of " + boost::lexical_cast<std::string>(arg_count) +
-           " to type " + arg_types[i].describe() + " exception was: " + e.what());
+           " to type " + arg_types[i].description() + " exception was: " + e.what());
 }
 
 IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
@@ -617,7 +617,7 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
         }
         else
         {
-            cout << "Warning: no class proto registered for type " << type.describe() << endl;
+            cout << "Warning: no class proto registered for type " << type.description() << endl;
             proto = LM_Proxy;
         }
         */

@@ -60,7 +60,7 @@ std::vector<T> from_list(IoObject* io_obj)
 //        return Term<double, true>::create(IoNumber_asDouble(io_expr->eval()));
 //    }
 //
-//    virtual std::string describe() const { return "From Number Conv"; }
+//    virtual std::string description() const { return "From Number Conv"; }
 //};
 
 
@@ -76,7 +76,7 @@ std::vector<T> from_list(IoObject* io_obj)
             return Term<cppType, true>::create(ioFunc(io_expr->eval())); \
         } \
 \
-        virtual std::string describe() const { return "From " #scriptType " Conv"; } \
+        virtual std::string description() const { return "From " #scriptType " Conv"; } \
     }; \
 \
     type_system->add_converter_simple(FromIoTypeInfo::create_index(#scriptType), BetterTypeInfo::create_index<cppType&>(), new From##scriptType); \
@@ -92,7 +92,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
             return NullExpr::create();
         }
 
-        virtual std::string describe() const { return "From Nil Conv"; }
+        virtual std::string description() const { return "From Nil Conv"; }
     };
     static const char* name1 = "Nil";
     static std::string name2(name1);
@@ -106,10 +106,10 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     {
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            return FalseExpr::create();
+            return Term<bool, true>::create(false);
         }
 
-        virtual std::string describe() const { return "From Nil to 'false' Conv"; }
+        virtual std::string description() const { return "From Nil to 'false' Conv"; }
     };
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), BetterTypeInfo::create_index<bool>(), new FromNilToFalse);
 
@@ -121,7 +121,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
             return Term<void, true>::create();
         }
 
-        virtual std::string describe() const { return "From Nil to void Conv"; }
+        virtual std::string description() const { return "From Nil to void Conv"; }
     };
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), BetterTypeInfo::create_index<void>(), new FromNilToVoid);
 
@@ -139,7 +139,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
             return Term<IoBlock, true>::create(iovm, io_obj, io_obj);
         }
 
-        virtual std::string describe() const { return "From Block Conv"; }
+        virtual std::string description() const { return "From Block Conv"; }
     };
 
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoBlock&>(), new FromIoBlock(type_sys, iovm));
@@ -163,7 +163,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
             return result;
         }
 
-        virtual std::string describe() const { return "From Bool Conv"; }
+        virtual std::string description() const { return "From Bool Conv"; }
     };
 
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Bool"), BetterTypeInfo::create_index<bool&>(), new FromBool);

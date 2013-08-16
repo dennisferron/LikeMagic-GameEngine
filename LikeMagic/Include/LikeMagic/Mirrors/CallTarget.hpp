@@ -31,7 +31,7 @@ public:
     virtual ~CallTarget() = 0;
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const = 0;
-    virtual LikeMagic::Utility::TypeInfoList get_arg_types() const = 0;
+    virtual LikeMagic::Utility::TypeInfoList const& get_arg_types() const = 0;
 
     // Some methods (like constructors) should not be inherited.
     virtual bool is_inherited() const;

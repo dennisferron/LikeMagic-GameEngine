@@ -8,19 +8,18 @@
 
 
 #include "LikeMagic/StdBindings/StdBindings.hpp"
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 #include <boost/preprocessor/repetition/repeat.hpp>
 
 #include "IoObject.h"
 
 #include "LikeMagic/TypeSystem.hpp"
-#include "LikeMagic/NamespacePath.hpp"
 
 #include "LikeMagic/TypeConv/StringConv.hpp"
 #include "LikeMagic/TypeConv/IteratorConv.hpp"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 #include "boost/preprocessor/seq/for_each.hpp"
 
@@ -83,11 +82,8 @@ void at_put(vector<T>& target, size_t pos, T const& value)
     target.at(pos) = value;
 }
 
-void LikeMagic::StdBindings::add_bindings(TypeSystem& type_sys)
+void LikeMagic::StdBindings::add_bindings()
 {
-    // This needs to be done once in every DLL.
-    LM_SET_TYPE_INFO(type_sys)
-
     auto ns_std = Namespace::global->subspace("std");
 
     typedef std::map<s32, IoObject*> map_of_s32_IoObject;

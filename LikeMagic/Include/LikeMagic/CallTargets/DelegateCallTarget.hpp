@@ -55,7 +55,11 @@ public:
         return Term<void, true>::create();
     }
 
-    virtual TypeInfoList get_arg_types() const { return make_arg_list(TypePack<Args...>()); }
+    virtual TypeInfoList const& get_arg_types() const
+    {
+        static TypeInfoList arg_types = make_arg_list(TypePack<Args...>());
+        return arg_types;
+    }
 };
 
 template <typename R, typename... Args>
@@ -93,7 +97,11 @@ public:
         return Term<void, true>::create();
     }
 
-    virtual TypeInfoList get_arg_types() const { return make_arg_list(TypePack<Args...>()); }
+    virtual TypeInfoList const& get_arg_types() const
+    {
+        static TypeInfoList arg_types = make_arg_list(TypePack<Args...>());
+        return arg_types;
+    }
 };
 
 template <typename R, typename... Args>
@@ -129,7 +137,11 @@ public:
         return build_method_call(target, args, IPack());
     }
 
-    virtual TypeInfoList get_arg_types() const { return make_arg_list(TypePack<Args...>()); }
+    virtual TypeInfoList const& get_arg_types() const
+    {
+        static TypeInfoList arg_types = make_arg_list(TypePack<Args...>());
+        return arg_types;
+    }
 };
 
 template <typename R, typename... Args>
@@ -165,7 +177,11 @@ public:
         return build_method_call(target, args, IPack());
     }
 
-    virtual TypeInfoList get_arg_types() const { return make_arg_list(TypePack<Args...>()); }
+    virtual TypeInfoList const& get_arg_types() const
+    {
+        static TypeInfoList arg_types = make_arg_list(TypePack<Args...>());
+        return arg_types;
+    }
 };
 
 }}

@@ -28,12 +28,12 @@ public:
     {
     }
 
-    virtual std::string describe() const
+    virtual std::string description() const
     {
         return
             std::string("GenericConv ") +
-            " from " + from_info->describe() +
-            " to " + to_info->describe();
+            " from " + from_info->description() +
+            " to " + to_info->description();
     }
 };
 

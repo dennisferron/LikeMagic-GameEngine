@@ -41,7 +41,7 @@ private:
 public:
     AbstractTypeConverter();
     virtual ~AbstractTypeConverter();
-    virtual std::string describe() const = 0;
+    virtual std::string description() const = 0;
     virtual ExprPtr wrap_expr(ExprPtr expr) const = 0;
 
     // Since the conversions are cached once figured out, there would be little benefit
@@ -56,8 +56,8 @@ std::string describe_converter(std::string converter_name)
 {
     return
             converter_name +
-            " from " + BetterTypeInfo::create_index<From>().describe() +
-            " to " + BetterTypeInfo::create_index<To>().describe();
+            " from " + BetterTypeInfo::create_index<From>().description() +
+            " to " + BetterTypeInfo::create_index<To>().description();
 }
 
 typedef boost::intrusive_ptr<AbstractTypeConverter const> p_conv_t;

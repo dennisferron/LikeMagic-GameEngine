@@ -68,11 +68,10 @@ public:
         return build_method_call(target, args, TypePack<R>(), IPack());
     }
 
-    virtual TypeInfoList get_arg_types() const
+    virtual TypeInfoList const& get_arg_types() const
     {
-        TypeInfoList args = make_arg_list(TypePack<Args...>());
-
-        return args;
+        static TypeInfoList arg_types = make_arg_list(TypePack<Args...>());
+        return arg_types;
     }
 
 };

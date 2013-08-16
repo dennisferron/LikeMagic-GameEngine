@@ -104,7 +104,7 @@ public:
         return *this == BetterTypeInfo::create<T>();
     }
 
-    virtual std::string describe() const;
+    virtual std::string description() const;
 };
 
 

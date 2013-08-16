@@ -40,9 +40,10 @@ public:
             (target_obj.*f_ptr)[try_conv<size_t>(args[0])->eval()]);
     }
 
-    virtual TypeInfoList get_arg_types() const
+    virtual TypeInfoList const& get_arg_types() const
     {
-        return make_arg_list(TypePack<size_t>());
+        static TypeInfoList arg_types = make_arg_list(TypePack<size_t>());
+        return arg_types;
     }
 };
 

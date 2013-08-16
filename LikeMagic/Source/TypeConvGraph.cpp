@@ -147,11 +147,11 @@ void TypeConvGraph::print_conv_chain(TypeIndex from, TypeIndex to) const
 
     if (!chain)
     {
-        cout << "No conversion chain from " << from.describe() << " to " << to.describe() << endl;
+        cout << "No conversion chain from " << from.description() << " to " << to.description() << endl;
     }
     else
     {
-        cout << "Conversion chain from " << from.describe() << " to " << to.describe() << " is ";
+        cout << "Conversion chain from " << from.description() << " to " << to.description() << " is ";
         print_conv_chain(chain);
     }
 
@@ -161,7 +161,7 @@ void TypeConvGraph::print_conv_chain(p_chain_t const& chain) const
 {
     for (size_t i=0; i < chain->size(); i++)
     {
-        cout  << " -> "<< (*chain)[i]->describe();
+        cout  << " -> "<< (*chain)[i]->description();
     }
     cout << endl;
 }
@@ -173,7 +173,7 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to
 
     if (!result)
     {
-        std::string msg  = std::string("No type conversion path from ") + from.describe() + " to " + to.describe() + ".  ";
+        std::string msg  = std::string("No type conversion path from ") + from.description() + " to " + to.description() + ".  ";
 
         try
         {
@@ -220,10 +220,10 @@ TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, T
                 ++count;
 
         if (!has_type(from))
-            throw std::logic_error("From type not found in TypeConvGraph in search_for_conv from " + from.describe() + " to " + to.describe());
+            throw std::logic_error("From type not found in TypeConvGraph in search_for_conv from " + from.description() + " to " + to.description());
 
         if (!has_type(to))
-            throw std::logic_error("To type not found in TypeConvGraph in search_for_conv from " + from.describe() + " to " + to.describe());
+            throw std::logic_error("To type not found in TypeConvGraph in search_for_conv from " + from.description() + " to " + to.description());
 
         vertex_t source = vertex_map[from.get_id()];
         vertex_t dest = vertex_map[to.get_id()];

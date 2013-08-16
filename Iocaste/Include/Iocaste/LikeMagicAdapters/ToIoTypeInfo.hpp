@@ -81,7 +81,7 @@ public:
         );
     }
 
-    virtual std::string describe() const
+    virtual std::string description() const
     {
         return "To Io Type " + type_name;
     }

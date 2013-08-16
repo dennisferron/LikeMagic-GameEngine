@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "LikeMagic/Utility/SetField.hpp"
 #include "LikeMagic/Mirrors/CallTarget.hpp"
 
 #include "LikeMagic/CallTargets/Delegate.hpp"
@@ -42,9 +41,10 @@ public:
         return 0;
     }
 
-    virtual TypeInfoList get_arg_types() const
+    virtual TypeInfoList const& get_arg_types() const
     {
-        return make_arg_list(TypePack<size_t, R const&>());
+        static TypeInfoList arg_types = make_arg_list(TypePack<size_t, R const&>());
+        return arg_types;
     }
 };
 

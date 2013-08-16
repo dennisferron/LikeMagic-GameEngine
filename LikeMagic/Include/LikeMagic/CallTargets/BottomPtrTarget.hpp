@@ -31,9 +31,9 @@ public:
         return BottomPtrExpr::create(try_conv<void*>(target.get()));
     }
 
-    virtual TypeInfoList get_arg_types() const
+    virtual TypeInfoList const& get_arg_types() const
     {
-        return make_arg_list(TypePack<>());
+        return empty_arg_list;
     }
 
 };

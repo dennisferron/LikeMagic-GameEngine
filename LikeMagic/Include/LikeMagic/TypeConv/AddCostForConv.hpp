@@ -45,7 +45,7 @@ public:
 
     TypeIndex get_unique_type_index() const { return unique_index; }
 
-    virtual std::string describe() const { return "Add Conv Cost " + boost::lexical_cast<std::string>(cost); }
+    virtual std::string description() const { return "Add Conv Cost " + boost::lexical_cast<std::string>(cost); }
 };
 
 

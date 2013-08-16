@@ -46,9 +46,9 @@ template <typename F, typename T> struct StringConvImpl
     inline static T do_conv(F obj)
     {
         throw std::logic_error("Error, StringConvImpl:  cannot do string conversion from type "
-                + BetterTypeInfo::create_index<F>().describe()
+                + BetterTypeInfo::create_index<F>().description()
                 + " to type "
-                + BetterTypeInfo::create_index<T>().describe());
+                + BetterTypeInfo::create_index<T>().description());
     }
 
     // Conversion should never be used anyway.
@@ -234,7 +234,7 @@ public:
                 reinterpret_cast<Expression<From>*>(expr.get())));
     }
 
-    virtual std::string describe() const { return describe_converter<From, To>("StringConv"); }
+    virtual std::string description() const { return describe_converter<From, To>("StringConv"); }
 
     virtual float cost() const { return StringConvImpl<From, To>::cost(); }
 };
@@ -254,7 +254,7 @@ public:
                         reinterpret_cast<Expression<std::string>*>(expr.get()))));
     }
 
-    virtual std::string describe() const { return describe_converter<std::string, wchar_t const*>("StringConv"); }
+    virtual std::string description() const { return describe_converter<std::string, wchar_t const*>("StringConv"); }
 
     virtual float cost() const { return 2000.0; }
 };
@@ -273,7 +273,7 @@ public:
                         reinterpret_cast<Expression<std::string&>*>(expr.get()))));
     }
 
-    virtual std::string describe() const { return describe_converter<std::string&, wchar_t const*>("StringConv"); }
+    virtual std::string description() const { return describe_converter<std::string&, wchar_t const*>("StringConv"); }
 
     virtual float cost() const { return 2000.0; }
 };

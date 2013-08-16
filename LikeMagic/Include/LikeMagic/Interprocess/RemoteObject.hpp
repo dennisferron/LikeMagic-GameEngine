@@ -27,7 +27,7 @@ public:
     virtual void dispose() const;
     virtual boost::intrusive_ptr<AbstractExpression> get_expr();
     virtual bool is_terminal() const;
-    virtual std::string describe() const;
+    virtual std::string description() const;
     virtual bool disable_to_script_conv() const;
     virtual void mark() const;
     virtual TypeIndex get_type() const;

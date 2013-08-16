@@ -18,9 +18,9 @@ TypeInfoPtr TypeIndex::get_info() const
     return TypeInfoCache::get_instance()->get_info(*this);
 }
 
-std::string TypeIndex::describe() const
+std::string TypeIndex::description() const
 {
-    return get_info()->describe();
+    return get_info()->description();
 }
 
 void TypeInfoCache::set_instance(TypeInfoCache* instance_)

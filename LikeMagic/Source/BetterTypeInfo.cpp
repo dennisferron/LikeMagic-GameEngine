@@ -118,7 +118,7 @@ TypeInfoPtr BetterTypeInfo::remove_all_const() const
     return TypeInfoPtr(new BetterTypeInfo(info, false, false, is_ref, is_ptr));
 }
 
-std::string BetterTypeInfo::describe() const
+std::string BetterTypeInfo::description() const
 {
     return std::string(demangle_name(info->name()))
             + (obj_is_const? " const" : "")

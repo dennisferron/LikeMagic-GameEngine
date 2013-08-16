@@ -52,7 +52,7 @@ public:
         return result;
     }
 
-    virtual std::string describe() const { return describe_converter<From, To>("ImplicitConv"); }
+    virtual std::string description() const { return describe_converter<From, To>("ImplicitConv"); }
 };
 
 

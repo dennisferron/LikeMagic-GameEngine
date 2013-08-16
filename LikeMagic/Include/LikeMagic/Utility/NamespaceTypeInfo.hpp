@@ -11,9 +11,7 @@
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 
-namespace LikeMagic { namespace Marshaling {
-
-using namespace LikeMagic::Utility;
+namespace LikeMagic { namespace Utility {
 
 class NamespaceTypeInfo : public AbstractTypeInfo
 {
@@ -60,7 +58,7 @@ public:
         );
     }
 
-    virtual std::string describe() const
+    virtual std::string description() const
     {
         return "namespace-typeinfo '" + namespace_name + "'";
     }

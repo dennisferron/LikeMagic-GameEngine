@@ -10,6 +10,8 @@
 
 namespace LikeMagic { namespace Utility {
 
+const TypeInfoList empty_arg_list;
+
 void intrusive_ptr_add_ref(AbstractTypeInfo const* p)
 {
     ++(p->ref_count);

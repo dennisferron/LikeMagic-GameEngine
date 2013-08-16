@@ -11,11 +11,10 @@
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Mirrors/TypeMirror.hpp"
 
-#include "boost/unordered_map.hpp"
-#include "boost/utility/enable_if.hpp"
-#include "boost/type_traits.hpp"
+#include "LikeMagic/Exprs/NamespaceExpr.hpp"
+#include "LikeMagic/Utility/NamespaceTypeInfo.hpp"
 
-#include "LikeMagic/CallTargets/ClassExprTarget.hpp"
+#include "LikeMagic/CallTargets/ExprTarget.hpp"
 #include "LikeMagic/CallTargets/ConstructorCallTarget.hpp"
 #include "LikeMagic/CallTargets/DestructorCallTarget.hpp"
 #include "LikeMagic/CallTargets/DelegateCallTarget.hpp"
@@ -33,6 +32,7 @@
 #include "LikeMagic/TypeConv/BaseConv.hpp"
 
 #include "LikeMagic/Utility/EnumHelper.hpp"
+#include "LikeMagic/Utility/NamespaceTypeInfo.hpp"
 
 namespace LikeMagic {
 
@@ -220,7 +220,17 @@ BindingTarget<is_copyable> register_class(std::string name, TypeMirror& namespac
     static const TypeIndex ref_type(LikeMagic::Utility::BetterTypeInfo::create_index<T&>());
     static const TypeIndex const_ref_type(LikeMagic::Utility::BetterTypeInfo::create_index<T const&>());
 
-    namespace_.add_method(name, new LikeMagic::CallTargets::ClassExprTarget<T>());
+    namespace_.add_method
+    (
+        name, new LikeMagic::CallTargets::ExprTarget
+        (
+            LikeMagic::Exprs::NamespaceExpr::create
+            (
+                LikeMagic::Utility::NamespaceTypeInfo::create_index(name), class_type
+            )
+        )
+    );
+
     if (type_system->get_class(class_type))
     {
         return *(type_system->get_class(class_type));
