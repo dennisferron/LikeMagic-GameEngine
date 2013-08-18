@@ -6,19 +6,6 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-template <int... N>
-struct Test
-{
-    int x;
-};
-
-int main()
-{
-    Test<0> t1;
-    Test<1,2,3> t2;
-    return t2.x;
-}
-
 #include "LikeMagic/Mirrors/CallTarget.hpp"
 
 using namespace LikeMagic::Mirrors;

@@ -8,10 +8,9 @@
 
 #pragma once
 
-#include "LikeMagic/RuntimeTypeSystem.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 #include "Iocaste/LikeMagicAdapters/API_Io.hpp"
-#include "LikeMagic/Exprs/ExprProxy.hpp"
 #include "LikeMagic/MarkableObjGraph.hpp"
 
 #include "Iocaste/Breakpoint.hpp"
@@ -87,7 +86,7 @@ public:
             name,
             ExprProxy::create
             (
-                Term<T, true>::create
+                Term<T>::create
                 (
                     obj
                 )

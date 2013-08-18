@@ -9,6 +9,7 @@ using namespace LikeMagic::Exprs;
 
 class BindingTestClass
 {
+public:
     int FuncInt()
     {
         return 99;
@@ -19,7 +20,8 @@ struct AddBindingsTestFixture
 {
     AddBindingsTestFixture()
     {
-        LM_CLASS(BindingTestClass)
+        auto& global_ns = type_system->global_namespace();
+        LM_CLASS(global_ns, BindingTestClass)
         LM_FUNC(BindingTestClass, (FuncInt))
     }
 };

@@ -37,7 +37,7 @@ public:
     {
         auto target_check = type_system->try_conv(target, actual_type);
         Delegate& target_obj = try_conv<Delegate&>(target_check)->eval();
-        (target_obj.*f_ptr) = try_conv<R const&>(args[0]);
+        (target_obj.*f_ptr) = try_conv<R const&>(args[0])->eval();
         return 0;
     }
 

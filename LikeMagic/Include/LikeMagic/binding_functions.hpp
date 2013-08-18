@@ -15,7 +15,7 @@
 #include "LikeMagic/Utility/NamespaceTypeInfo.hpp"
 
 #include "LikeMagic/CallTargets/ExprTarget.hpp"
-#include "LikeMagic/CallTargets/ConstructorCallTarget.hpp"
+#include "LikeMagic/CallTargets/ConstructorTarget.hpp"
 #include "LikeMagic/CallTargets/DestructorCallTarget.hpp"
 #include "LikeMagic/CallTargets/DelegateCallTarget.hpp"
 #include "LikeMagic/CallTargets/ExtensionMethodCallTarget.hpp"
@@ -36,20 +36,7 @@
 
 namespace LikeMagic {
 
-template <bool is_copyable>
-struct BindingTarget
-{
-    TypeMirror& mirror;
-    BindingTarget(TypeMirror& mirror_) : mirror(mirror_) {}
-};
-
-std::string create_constructor_name(std::string prefix, std::string method_name)
-{
-    if (method_name.substr(0, 3) == "new")
-        return prefix + method_name.substr(3);
-    else
-        return prefix + "_" + method_name;
-}
+std::string create_constructor_name(std::string prefix, std::string method_name);
 
 template <typename From, typename To,
     template <typename From, typename To>
@@ -62,22 +49,16 @@ void add_conv()
             new Converter<From, To>);
 }
 
-template <typename T, bool is_copyable, typename... Args>
-void add_constructor(BindingTarget<is_copyable> class_, std::string prefix, std::string method_name)
-{
-    auto target = new LikeMagic::CallTargets::ConstructorCallTarget<T, is_copyable, Args...>();
-    class_.mirror.add_method(create_constructor_name(prefix, method_name), target);
-}
-
-template <typename T, bool is_copyable, typename... Args>
-void bind_constructor(BindingTarget<is_copyable> class_, std::string method_name="new")
+template <typename T, typename... Args>
+void bind_constructor(LikeMagic::Mirrors::TypeMirror& class_, std::string method_name, LikeMagic::Utility::TypePack<Args...>)
 {
     static_assert(!boost::is_abstract<T>::value, "Cannot declare LikeMagic constructor on abstract class. To construct objects of this type, register a derived, concrete class and register its constructor.");
-    add_constructor<T*, Args...>(class_, "new", method_name);
-    add_constructor<T, Args...>(class_, "tmp", method_name);
-    add_constructor<T&, Args...>(class_, "ref", method_name);
-    if (!has_method(alt_name(class_, "ptr", method_name), 0))
-        add_constructor<T*&>(class_, "ptr", method_name);
+
+    auto target_new = new LikeMagic::CallTargets::ConstructorCallTarget<T, Args...>(false);
+    class_.add_method(create_constructor_name("new", method_name), target_new);
+
+    auto target_tmp = new LikeMagic::CallTargets::ConstructorCallTarget<T, Args...>(true);
+    class_.add_method(create_constructor_name("tmp", method_name), target_tmp);
 }
 
 template <typename T>
@@ -95,14 +76,14 @@ void bind_nonmember_op(LikeMagic::Mirrors::TypeMirror& class_, std::string metho
 }
 
 template <typename T>
-void bind_built_in_operations(TypeMirror& class_)
+void bind_built_in_operations(LikeMagic::Mirrors::TypeMirror& class_)
 {
     // In C++, any type can be deleted.
     auto deleter = new LikeMagic::CallTargets::DestructorCallTarget<T>();
-    add_method("delete", deleter);
+    class_.add_method("delete", deleter);
 
     // const cast
-    bind_nonmember_op("remove_const", &operator_remove_const<T>);
+    bind_nonmember_op(class_, "remove_const", &operator_remove_const<T>);
 }
 
 template <typename T>
@@ -114,14 +95,14 @@ void add_delegate_conv()
 
 template <typename T, typename Base, template <typename From, typename To>
     class Converter=LikeMagic::TypeConv::BaseConv>
-void add_base(TypeMirror& class_, TypeMirror const& base_class)
+void add_base(LikeMagic::Mirrors::TypeMirror& class_, LikeMagic::Mirrors::TypeMirror const& base_class)
 {
     class_.add_base(&base_class);
     add_conv<T*, Base*, Converter>();
 }
 
-template <typename R, typename ObjT, typename... Args>
-void bind_method(TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...))
+template <typename ObjT, typename R, typename... Args>
+void bind_method(LikeMagic::Mirrors::TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...))
 {
     typedef LikeMagic::CallTargets::DelegateCallTarget_R_nonconst<R, Args...> Target;
     class_.add_method(
@@ -142,8 +123,8 @@ void bind_method(TypeMirror& class_, std::string method_name, void (ObjT::*f)(Ar
            LikeMagic::Utility::BetterTypeInfo::create_index<ObjT&>()));
 }
 
-template <typename R, typename ObjT, typename... Args>
-void bind_method(TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...) const)
+template <typename ObjT, typename R, typename... Args>
+void bind_method(LikeMagic::Mirrors::TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...) const)
 {
     typedef LikeMagic::CallTargets::DelegateCallTarget_R_const<R, Args...> Target;
     class_.add_method(
@@ -154,7 +135,7 @@ void bind_method(TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args.
 }
 
 template <typename ObjT, typename... Args>
-void bind_method(TypeMirror& class_, std::string method_name, void (ObjT::*f)(Args...) const)
+void bind_method(LikeMagic::Mirrors::TypeMirror& class_, std::string method_name, void (ObjT::*f)(Args...) const)
 {
     typedef LikeMagic::CallTargets::DelegateCallTarget_void_const<Args...> Target;
     class_.add_method(
@@ -165,38 +146,48 @@ void bind_method(TypeMirror& class_, std::string method_name, void (ObjT::*f)(Ar
 }
 
 template <typename R, typename... Args>
-void bind_static_method(TypeMirror& class_, std::string method_name, R (*f)(Args...))
+void bind_static_method(LikeMagic::Mirrors::TypeMirror& class_, std::string method_name, R (*f)(Args...))
 {
     typedef LikeMagic::CallTargets::StaticMethodCallTarget_R<R, Args...> Target;
     class_.add_method(method_name, new Target(f));
 }
 
 template <typename... Args>
-void bind_static_method(TypeMirror& class_, std::string method_name, void (*f)(Args...))
+void bind_static_method(LikeMagic::Mirrors::TypeMirror& class_, std::string method_name, void (*f)(Args...))
 {
     typedef LikeMagic::CallTargets::StaticMethodCallTarget_void<Args...> Target;
     class_.add_method(method_name, new Target(f));
 }
 
 template <typename T, typename R>
-void bind_field(TypeMirror& class_, std::string field_name, R(T::*f))
+void bind_field(LikeMagic::Mirrors::TypeMirror& class_, std::string field_name, R(T::*f))
 {
-    auto setter = new LikeMagic::CallTargets::FieldSetterTarget<R>(f, class_.get_const_ref_type());
+    typedef LikeMagic::CallTargets::FieldSetterTarget<R> SetterTarget;
+    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), class_.get_const_ref_type());
     class_.add_method("set_" + field_name, setter);
-    auto getter = new LikeMagic::CallTargets::FieldGetterTarget<R>(f, class_.get_ref_type());
+
+    typedef LikeMagic::CallTargets::FieldGetterTarget<R> GetterTarget;
+    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), class_.get_ref_type());
     class_.add_method("get_" + field_name, getter);
-    auto reffer = new LikeMagic::CallTargets::FieldReferenceTarget<R>(f, class_.get_ref_type());
+
+    typedef LikeMagic::CallTargets::FieldReferenceTarget<R> RefferTarget;
+    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), class_.get_ref_type());
     class_.add_method("ref_" + field_name, reffer);
 }
 
 template <typename T, typename R, int N>
-void bind_array_field(TypeMirror& class_, std::string field_name, R(T::*f)[N])
+void bind_array_field(LikeMagic::Mirrors::TypeMirror& class_, std::string field_name, R(T::*f)[N])
 {
-    auto setter = new LikeMagic::CallTargets::ArrayFieldSetterTarget<R>(f, class_.get_const_ref_type());
+    typedef LikeMagic::CallTargets::ArrayFieldSetterTarget<R> SetterTarget;
+    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), class_.get_const_ref_type());
     class_.add_method("set_" + field_name, setter);
-    auto getter = new LikeMagic::CallTargets::ArrayFieldGetterTarget<R>(f, class_.get_ref_type());
+
+    typedef LikeMagic::CallTargets::ArrayFieldGetterTarget<R> GetterTarget;
+    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), class_.get_ref_type());
     class_.add_method("get_" + field_name, getter);
-    auto reffer = new LikeMagic::CallTargets::ArrayFieldReferenceTarget<R>(f, class_.get_ref_type());
+
+    typedef LikeMagic::CallTargets::ArrayFieldReferenceTarget<R> RefferTarget;
+    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), class_.get_ref_type());
     class_.add_method("ref_" + field_name, reffer);
 }
 
@@ -214,7 +205,7 @@ register_copyable_conv()
 }
 
 template <typename T, bool is_copyable=!boost::is_abstract<T>::value, bool add_deref_ptr_conv=true>
-BindingTarget<is_copyable> register_class(std::string name, TypeMirror& namespace_)
+LikeMagic::Mirrors::TypeMirror& register_class(std::string name, TypeMirror& namespace_)
 {
     static const TypeIndex class_type(LikeMagic::Utility::BetterTypeInfo::create_index<T>());
     static const TypeIndex ref_type(LikeMagic::Utility::BetterTypeInfo::create_index<T&>());
@@ -249,7 +240,7 @@ BindingTarget<is_copyable> register_class(std::string name, TypeMirror& namespac
 }
 
 template <typename T>
-BindingTarget<true> register_enum(std::string name, TypeMirror& namespace_)
+LikeMagic::Mirrors::TypeMirror& register_enum(std::string name, TypeMirror& namespace_)
 {
     auto& result = register_class<T, true>(name, namespace_);
     result.bind_nonmember_op("==",    &LikeMagic::Utility::EnumHelper<T>::equals);
@@ -258,5 +249,7 @@ BindingTarget<true> register_enum(std::string name, TypeMirror& namespace_)
     result.bind_nonmember_op("asString", &LikeMagic::Utility::EnumHelper<T>::asString);
     return result;
 }
+
+LikeMagic::Mirrors::TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespace_);
 
 }

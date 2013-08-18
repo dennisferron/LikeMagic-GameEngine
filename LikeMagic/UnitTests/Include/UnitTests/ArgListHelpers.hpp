@@ -5,7 +5,7 @@
 template <typename T>
 LikeMagic::Exprs::ArgList make_arg_list(T value)
 {
-    LikeMagic::Exprs::ExprPtr term = LikeMagic::Exprs::Term<T, true>::create(value);
+    LikeMagic::Exprs::ExprPtr term = LikeMagic::Exprs::Term<T>::create(value);
     LikeMagic::Exprs::ArgList arg_list;
     arg_list.push_back(term);
     return arg_list;
@@ -14,8 +14,8 @@ LikeMagic::Exprs::ArgList make_arg_list(T value)
 template <typename T, typename U>
 LikeMagic::Exprs::ArgList make_arg_list(T value, U other_value)
 {
-    LikeMagic::Exprs::ExprPtr term = LikeMagic::Exprs::Term<T, true>::create(value);
-    LikeMagic::Exprs::ExprPtr other_term = LikeMagic::Exprs::Term<T, true>::create(other_value);
+    LikeMagic::Exprs::ExprPtr term = LikeMagic::Exprs::Term<T>::create(value);
+    LikeMagic::Exprs::ExprPtr other_term = LikeMagic::Exprs::Term<T>::create(other_value);
     LikeMagic::Exprs::ArgList arg_list;
     arg_list.push_back(term);
     arg_list.push_back(other_term);

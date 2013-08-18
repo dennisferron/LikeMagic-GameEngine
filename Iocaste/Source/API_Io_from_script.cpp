@@ -73,7 +73,7 @@ std::vector<T> from_list(IoObject* io_obj)
         virtual ExprPtr wrap_expr(ExprPtr expr) const \
         { \
             boost::intrusive_ptr<IoObjectExpr> io_expr = static_cast<IoObjectExpr*>(expr.get()); \
-            return Term<cppType, true>::create(ioFunc(io_expr->eval())); \
+            return Term<cppType>::create(ioFunc(io_expr->eval())); \
         } \
 \
         virtual std::string description() const { return "From " #scriptType " Conv"; } \
@@ -106,7 +106,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     {
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            return Term<bool, true>::create(false);
+            return Term<bool>::create(false);
         }
 
         virtual std::string description() const { return "From Nil to 'false' Conv"; }
@@ -118,7 +118,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
     {
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            return Term<void, true>::create();
+            return 0;
         }
 
         virtual std::string description() const { return "From Nil to void Conv"; }
@@ -136,7 +136,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
         {
             boost::intrusive_ptr<IoObjectExpr> io_expr = static_cast<IoObjectExpr*>(expr.get());
             IoObject* io_obj = io_expr->eval();
-            return Term<IoBlock, true>::create(iovm, io_obj, io_obj);
+            return Term<IoBlock>::create(iovm, io_obj, io_obj);
         }
 
         virtual std::string description() const { return "From Block Conv"; }
@@ -159,7 +159,7 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
         {
             boost::intrusive_ptr<IoObjectExpr> io_expr = static_cast<IoObjectExpr*>(expr.get());
             bool value = ISTRUE(io_expr->eval());
-            boost::intrusive_ptr<Expression<bool&>> result = Term<bool, true>::create(value);
+            boost::intrusive_ptr<Expression<bool&>> result = Term<bool>::create(value);
             return result;
         }
 

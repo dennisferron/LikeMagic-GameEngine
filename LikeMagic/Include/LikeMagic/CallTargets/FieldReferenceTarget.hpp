@@ -41,7 +41,7 @@ public:
         return Reference<R>::create(target_obj.*f_ptr);
     }
 
-    virtual TypeInfoList get_arg_types() const
+    virtual TypeInfoList const& get_arg_types() const
     {
         return empty_arg_list;
     }

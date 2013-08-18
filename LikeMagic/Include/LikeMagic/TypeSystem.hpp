@@ -62,7 +62,7 @@ public:
     virtual void add_ptr_conversions(TypeIndex from_type, bool auto_deref);
     virtual ExprPtr try_conv(ExprPtr from_expr, TypeIndex to_type) const;
     virtual bool has_conv(TypeIndex  from_type, TypeIndex to_type) const;
-    virtual TypeMirror* global_namespace() const;
+    virtual TypeMirror& global_namespace() const;
 };
 
 extern TypeSystem* type_system;

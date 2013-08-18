@@ -39,7 +39,7 @@ private:
         if (args.size() != sizeof...(Indices))
             throw std::logic_error("Wrong number of arguments.");
 
-        boost::intrusive_ptr<Expression<R&>> result = Term<R, true>::create(
+        boost::intrusive_ptr<Expression<R&>> result = Term<R>::create(
             (*func_ptr)(try_conv<FirstArg>(target)->eval(), try_conv<Args>(args[Indices])->eval()...)
         );
 
@@ -56,7 +56,7 @@ private:
 
         (*func_ptr)(try_conv<FirstArg>(target)->eval(), try_conv<Args>(args[Indices])->eval()...);
 
-        return Term<void, true>::create();
+        return 0;
     }
 
 public:

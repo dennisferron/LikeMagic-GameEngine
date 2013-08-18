@@ -15,6 +15,6 @@ namespace LikeMagic { namespace StdBindings {
 
 // You don't call this directly; you call create_typesystem and it calls this.
 // Static member function create_typesystem is DLL_PUBLIC instead of this function.
-void add_bindings(LikeMagic::TypeSystem& type_sys);
+void add_bindings();
 
 }}

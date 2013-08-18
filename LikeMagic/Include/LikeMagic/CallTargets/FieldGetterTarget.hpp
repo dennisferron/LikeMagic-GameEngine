@@ -36,10 +36,10 @@ public:
     {
         auto target_check = type_system->try_conv(target, actual_type);
         Delegate& target_obj = try_conv<Delegate&>(target_check)->eval();
-        return Term<R, true>::create(target_obj.*f_ptr);
+        return Term<R>::create(target_obj.*f_ptr);
     }
 
-    virtual TypeInfoList get_arg_types() const
+    virtual TypeInfoList const& get_arg_types() const
     {
         return empty_arg_list;
     }

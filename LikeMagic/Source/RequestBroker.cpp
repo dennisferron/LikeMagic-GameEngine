@@ -128,7 +128,7 @@ CallReturn RequestBroker::listen(int wanted_invocation_id, bool wants_rvalue)
                 ArgList arg_list = transporter.read_args(arg_types, temp.args_buffer);
                 int arg = try_conv<int>(arg_list[0])->eval();
                 int result = execute(temp.method_id, arg);
-                auto method_call = Term<int, true>::create(result);
+                auto method_call = Term<int>::create(result);
 
                 DataRegister<CallReturn>& wrv_reg = temp.sender->call_return;
 

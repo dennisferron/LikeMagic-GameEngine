@@ -43,7 +43,7 @@ struct MarshalByStdCopyToArray : public AbstractSharedArgMarshaller
     {
         ReferenceToSharedArray<ElementType> buffer =
             *reinterpret_cast<ReferenceToSharedArray<ElementType>*>(location);
-        return Term<T, true>::create(Container(buffer.data, buffer.data + size));
+        return Term<T>::create(Container(buffer.data, buffer.data + size));
     }
 
     virtual size_t size() const

@@ -53,7 +53,7 @@ public:
 
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
         build_method_call(args, IPack());
-        return Term<void, true>::create();
+        return 0;
     }
 
     virtual TypeInfoList const& get_arg_types() const
@@ -78,7 +78,7 @@ private:
     template<int... Indices>
     ExprPtr build_method_call(ArgList args, IndexPack<Indices...>) const
     {
-        return Term<R, true>::create((*func_ptr)(try_conv<Args>(args[Indices])->eval()...));
+        return Term<R>::create((*func_ptr)(try_conv<Args>(args[Indices])->eval()...));
     }
 
 public:

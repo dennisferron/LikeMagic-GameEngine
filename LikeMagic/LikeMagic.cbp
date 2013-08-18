@@ -70,7 +70,7 @@
 		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldReferenceTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldSetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/BottomPtrTarget.hpp" />
-		<Unit filename="Include/LikeMagic/CallTargets/ConstructorCallTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/ConstructorTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/Delegate.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/DelegateCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/DestructorCallTarget.hpp" />
@@ -170,6 +170,7 @@
 		<Unit filename="Source/TypeInfoCache.cpp" />
 		<Unit filename="Source/TypeMirror.cpp" />
 		<Unit filename="Source/TypeSystem.cpp" />
+		<Unit filename="Source/binding_functions.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

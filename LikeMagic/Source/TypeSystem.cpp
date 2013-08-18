@@ -13,7 +13,7 @@
 #include "LikeMagic/TypeConv/GenericConv.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 #include "LikeMagic/Exprs/NullExpr.hpp"
-#include "LikeMagic/Utility/IsIterator.hpp"
+#include "LikeMagic/Exprs/BottomPtrExpr.hpp"
 #include "LikeMagic/Exprs/Trampoline.hpp"
 #include "LikeMagic/Utility/TupleForEach.hpp"
 #include "LikeMagic/Utility/KeyWrapper.hpp"
@@ -40,7 +40,9 @@ using namespace LikeMagic::Utility;
 using namespace LikeMagic::CallTargets;
 using namespace LikeMagic::Mirrors;
 
-TypeSystem* type_system = NULL;
+namespace LikeMagic {
+    TypeSystem* type_system = NULL;
+}
 
 struct TypeSystem::Impl
 {
@@ -111,13 +113,20 @@ struct TypeSystem::Impl
 TypeSystem::TypeSystem()
     : impl(new TypeSystem::Impl)
 {
+    impl->dll_shared_typeinfo = new TypeInfoCache;
+    TypeInfoCache::set_instance(impl->dll_shared_typeinfo);
+
     TypeIndex ns_type = NamespaceTypeInfo::create_index("namespace");
     impl->global_namespace = new TypeMirror("namespace", 0, ns_type, ns_type, ns_type);
+
+    // Allow conversions from nil to any pointer.
+    static TypeIndex nil_expr_type = BetterTypeInfo::create_index<BottomPtrType>();
+    impl->conv_graph.add_type(nil_expr_type);
 }
 
-TypeMirror* TypeSystem::global_namespace() const
+TypeMirror& TypeSystem::global_namespace() const
 {
-    return impl->global_namespace;
+    return *(impl->global_namespace);
 }
 
 void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr)

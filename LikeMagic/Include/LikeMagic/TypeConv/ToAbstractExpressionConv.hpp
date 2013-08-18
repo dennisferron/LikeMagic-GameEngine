@@ -25,7 +25,7 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Term<ExprPtr, true>::create(expr);
+        return Term<ExprPtr>::create(expr);
     }
 
     virtual std::string description() const { return "ToAbstractExpressionConv"; }

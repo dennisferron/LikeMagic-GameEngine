@@ -19,7 +19,7 @@ SUITE(TestArgTransporter)
         char buffer[5];
         *(int*)buffer = 0;  // clear buffer
         buffer[4] = 99;     // sentry value
-        ExprPtr arg = Term<int, true>::create(1234);
+        ExprPtr arg = Term<int>::create(1234);
         TypeIndex arg_type = get_type_index<int>();
         SharedArgTransporter transporter;
         void* next_location = transporter.write_value(arg_type, buffer, arg);

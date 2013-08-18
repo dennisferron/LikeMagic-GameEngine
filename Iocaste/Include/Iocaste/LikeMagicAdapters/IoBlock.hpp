@@ -10,12 +10,10 @@
 
 #include "Iocaste/LikeMagicAdapters/API_Io.hpp"
 
-#include "LikeMagic/AbstractTypeSystem.hpp"
-#include "LikeMagic/Exprs/ExprProxy.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
 
 #include "LikeMagic/IMarkable.hpp"
-#include "LikeMagic/DebugInfo.hpp"
 
 #include "Iocaste/Exception.hpp"
 
@@ -23,12 +21,12 @@
 
 namespace Iocaste { namespace LikeMagicAdapters {
 
-using LikeMagic::AbstractTypeSystem;
+using LikeMagic::TypeSystem;
 using namespace LikeMagic::Exprs;
 
 class IoVM;
 
-class IoBlock : public LikeMagic::IMarkable, public LikeMagic::DebugInfo
+class IoBlock : public LikeMagic::IMarkable
 {
 private:
     IoVM* iovm;
@@ -43,7 +41,7 @@ private:
     template <typename T>
     ExprPtr make_proxy(T t) const
     {
-        return Term<T, true>::create(t);
+        return Term<T>::create(t);
     }
 
     void add_arg(IoMessage* m, AbstractCppObjProxy* proxy) const;
@@ -96,7 +94,7 @@ public:
                 errorPoint = "return value from_script";
                 ExprPtr expr = from_script(io_target, result, r_type);
                 errorPoint = "try_conv return value";
-                return type_system->try_conv<R>(expr)->eval();
+                return try_conv<R>(expr)->eval();
             }
             catch (Iocaste::ScriptException const& exc)
             {

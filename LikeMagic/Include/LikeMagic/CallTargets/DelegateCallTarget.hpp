@@ -52,7 +52,7 @@ public:
 
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
         build_method_call(target, args, IPack());
-        return Term<void, true>::create();
+        return 0;
     }
 
     virtual TypeInfoList const& get_arg_types() const
@@ -94,7 +94,7 @@ public:
 
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
         build_method_call(target, args, IPack());
-        return Term<void, true>::create();
+        return 0;
     }
 
     virtual TypeInfoList const& get_arg_types() const
@@ -120,7 +120,7 @@ private:
     {
         auto target_check = type_system->try_conv(target, actual_type);
         Delegate& target_obj = try_conv<Delegate&>(target_check)->eval();
-        return Term<R, true>::create((target_obj.*func_ptr)(try_conv<Args>(args[Indices])->eval()...));
+        return Term<R>::create((target_obj.*func_ptr)(try_conv<Args>(args[Indices])->eval()...));
     }
 
 public:
@@ -160,7 +160,7 @@ private:
     {
         auto target_check = type_system->try_conv(target, actual_type);
         Delegate const& target_obj = try_conv<Delegate const&>(target_check)->eval();
-        return Term<R, true>::create((target_obj.*func_ptr)(try_conv<Args>(args[Indices])->eval()...));
+        return Term<R>::create((target_obj.*func_ptr)(try_conv<Args>(args[Indices])->eval()...));
     }
 
 public:

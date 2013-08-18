@@ -32,7 +32,7 @@ public:
         return 0;
     }
 
-    virtual TypeInfoList get_arg_types() const
+    virtual TypeInfoList const& get_arg_types() const
     {
         return empty_arg_list;
     }

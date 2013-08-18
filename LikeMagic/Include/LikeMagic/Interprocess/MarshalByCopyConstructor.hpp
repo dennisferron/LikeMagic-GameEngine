@@ -24,7 +24,7 @@ struct MarshalByCopyConstructor : public AbstractSharedArgMarshaller
         // allocating a new term every time.
         // Actually if it is known all of a method's args are copy
         // by value, could we simply memcpy it onto the stack?
-        return LikeMagic::Exprs::Term<T, true>::create(*((T*)location));
+        return LikeMagic::Exprs::Term<T>::create(*((T*)location));
     }
 
     virtual size_t size() const

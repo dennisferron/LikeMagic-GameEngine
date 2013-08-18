@@ -42,28 +42,22 @@
 #define LM_ADD_VECTORS(vm_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ADD_VECTORS_IMPL, vm_name, SEQ)
 
 #define LM_CLASS(namespace, class_name) auto& class_name##_LM = register_class<class_name>(#class_name, namespace);
+#define LM_CLASS_NO_COPY(namespace, class_name) auto& class_name##_LM = register_class<class_name, false>(#class_name, namespace);
+#define LM_ENUM(namespace, class_name) auto& class_name##_LM = register_enum<class_name>(#class_name, namespace);
 
-#define LM_CLASS_NO_COPY(namespace, class_name) auto& class_name##_LM = type_system->register_class<class_name, false>(#class_name, namespace);
-
-#define LM_ENUM(namespace, class_name) auto& class_name##_LM = type_system->register_enum<class_name>(#class_name, namespace);
-
-// Your LikeMagic Class object must be named with the class name followed by "_LM" (do not provide the _LM to the macro)
-#define LM_FUNC_IMPL(r, data, elem) data##_LM.bind_method(BOOST_PP_STRINGIZE(elem), &data::elem);
+#define LM_FUNC_IMPL(r, data, elem) bind_method<data>(data##_LM, BOOST_PP_STRINGIZE(elem), &data::elem);
 #define LM_FUNC(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_FUNC_IMPL, class_name, SEQ)
 
-#define LM_STATIC_MEMBER_FUNC_IMPL(r, data, elem) data##_LM.bind_static_method(BOOST_PP_STRINGIZE(elem), &data::elem);
+#define LM_STATIC_MEMBER_FUNC_IMPL(r, data, elem) bind_static_method(data##_LM, BOOST_PP_STRINGIZE(elem), &data::elem);
 #define LM_STATIC_MEMBER_FUNC(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_STATIC_MEMBER_FUNC_IMPL, class_name, SEQ)
 
-#define LM_EXTENSION_METHOD_IMPL(r, data, elem) data##_LM.bind_nonmember_op(BOOST_PP_STRINGIZE(elem), &elem);
-// Extension methods allow you to bind a nonmember function so it will be called like a member in script.
-// The first parameter of the method is passed the self object from script.
+#define LM_EXTENSION_METHOD_IMPL(r, data, elem) bind_nonmember_op(data##_LM, BOOST_PP_STRINGIZE(elem), &elem);
 #define LM_EXTENSION_METHOD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_EXTENSION_METHOD_IMPL, class_name, SEQ)
+#define LM_EXTENSION_METHOD_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) bind_nonmember_op(class_name##_LM, given_func_name, static_cast<ret_type (*)(__VA_ARGS__)>(&actual_func));
 
-#define LM_EXTENSION_METHOD_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) class_name##_LM.bind_nonmember_op(given_func_name, static_cast<ret_type (*)(__VA_ARGS__)>(&actual_func));
-
-#define LM_FUNC_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) class_name##_LM.bind_method(given_func_name, static_cast<ret_type (class_name::*)(__VA_ARGS__)>(&class_name::actual_func));
-#define LM_FUNC_OVERLOAD_CONST(class_name, given_func_name, actual_func, ret_type, ...) class_name##_LM.bind_method(given_func_name, static_cast<ret_type (class_name::*)(__VA_ARGS__) const>(&class_name::actual_func));
-#define LM_OP_OVERLOAD(class_name, CONST, op, ret_type, ...) class_name##_LM.bind_method(#op, static_cast<ret_type (class_name::*)(__VA_ARGS__) CONST>(&class_name::operator op));
+#define LM_FUNC_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) bind_method(class_name##_LM, given_func_name, static_cast<ret_type (class_name::*)(__VA_ARGS__)>(&class_name::actual_func));
+#define LM_FUNC_OVERLOAD_CONST(class_name, given_func_name, actual_func, ret_type, ...) bind_method(class_name##_LM, given_func_name, static_cast<ret_type (class_name::*)(__VA_ARGS__) const>(&class_name::actual_func));
+#define LM_OP_OVERLOAD(class_name, CONST, op, ret_type, ...) bind_method(class_name##_LM, #op, static_cast<ret_type (class_name::*)(__VA_ARGS__) CONST>(&class_name::operator op));
 
 // For LM_FUNC_OVERLOAD_BOTH
 template <typename T> struct LM_InsertConst { typedef T const type; };
@@ -72,30 +66,23 @@ template <typename T> struct LM_InsertConst<T&> { typedef T const& type; };
 
 #define LM_FUNC_OVERLOAD_BOTH(class_name, actual_func, ret_type, ...) LM_FUNC_OVERLOAD_CONST(class_name, #actual_func "_c", actual_func, LM_InsertConst<ret_type>::type, __VA_ARGS__) LM_FUNC_OVERLOAD(class_name, #actual_func "_nc", actual_func, ret_type, __VA_ARGS__)
 
-#define LM_OP_IMPL(r, data, elem) data##_LM.bind_method(BOOST_PP_STRINGIZE(elem), &data::operator elem);
+#define LM_OP_IMPL(r, data, elem) bind_method(data##_LM, BOOST_PP_STRINGIZE(elem), &data::operator elem);
 #define LM_OP(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_OP_IMPL, class_name, SEQ)
 
-#define LM_CONSTR(class_name, constructor_name, ...)  class_name##_LM.bind_constructor<__VA_ARGS__>(constructor_name);
+#define LM_CONSTR(class_name, constructor_name, ...) bind_constructor<class_name>(class_name##_LM, constructor_name, TypePack<__VA_ARGS__>());
 
 // Your LikeMagic Class objects must be named with the class name followed by "_LM" (do not provide the _LM to the macro)
-#define LM_BASE(class_name, base_name) class_name##_LM.add_base(base_name##_LM);
+#define LM_BASE(class_name, base_name) add_base(class_name##_LM, base_name##_LM);
 
-
-#define LM_FIELD_IMPL(r, data, elem) data##_LM.bind_field(BOOST_PP_STRINGIZE(elem), &data::elem);
+#define LM_FIELD_IMPL(r, data, elem) bind_field(data##_LM, BOOST_PP_STRINGIZE(elem), &data::elem);
 #define LM_FIELD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_FIELD_IMPL, class_name, SEQ)
 
-// LM_FIELD auto-detects markable fields.
-//#define LM_MARKABLE_FIELD_IMPL(r, data, elem) data##_LM.bind_markable_field(BOOST_PP_STRINGIZE(elem), &data::elem);
-//#define LM_MAKRABLE_FIELD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_FIELD_IMPL, class_name, SEQ)
-
-#define LM_BLOCK_IMPL(r, data, elem) data##_LM.bind_field("On" BOOST_PP_STRINGIZE(elem), &data::BOOST_PP_CAT(On,elem));
+#define LM_BLOCK_IMPL(r, data, elem) bind_field(data##_LM, "On" BOOST_PP_STRINGIZE(elem), &data::BOOST_PP_CAT(On,elem));
 #define LM_BLOCK(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_BLOCK_IMPL, class_name, SEQ)
 
-#define LM_ARRAY_FIELD_IMPL(r, data, elem) data##_LM.bind_array_field(BOOST_PP_STRINGIZE(elem), &data::elem);
+#define LM_ARRAY_FIELD_IMPL(r, data, elem) bind_array_field(data##_LM, BOOST_PP_STRINGIZE(elem), &data::elem);
 #define LM_ARRAY_FIELD(class_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ARRAY_FIELD_IMPL, class_name, SEQ)
 
-#define LM_STATIC_FUNC(class_name, func_name) type_system->register_functions().bind_method(#func_name, class_name::func_name);
-#define LM_STATIC_FUNC_NAME(class_name, given_func_name, actual_func) type_system->register_functions().bind_method(given_func_name, class_name::actual_func);
-#define LM_STATIC_FUNC_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) type_system->register_functions().bind_method(given_func_name, static_cast<ret_type (*)(__VA_ARGS__)>(&class_name::actual_func));
-
-#define LM_NAMESPACE(parent_ns, child_ns) auto& chlid_ns = register_namespace(#child_ns, parent_ns);
+#define LM_STATIC_FUNC(class_name, func_name) bind_static_method(class_name##_LM, #func_name, class_name::func_name);
+#define LM_STATIC_FUNC_NAME(class_name, given_func_name, actual_func) bind_static_method(class_name##_LM, given_func_name, class_name::actual_func);
+#define LM_STATIC_FUNC_OVERLOAD(class_name, given_func_name, actual_func, ret_type, ...) bind_static_method(class_name##_LM, given_func_name, static_cast<ret_type (*)(__VA_ARGS__)>(&class_name::actual_func));

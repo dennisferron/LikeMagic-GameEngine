@@ -36,7 +36,7 @@ public:
     {
         auto target_check = type_system->try_conv(target, actual_type);
         Delegate& target_obj = try_conv<Delegate&>(target_check)->eval();
-        return Term<R, true>::create(
+        return Term<R>::create(
             (target_obj.*f_ptr)[try_conv<size_t>(args[0])->eval()]);
     }
 
