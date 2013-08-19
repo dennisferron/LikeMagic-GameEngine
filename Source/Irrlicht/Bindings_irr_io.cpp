@@ -11,7 +11,7 @@
 
 #include <irrlicht.h>
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 using namespace irr;
@@ -19,9 +19,11 @@ using namespace irr::io;
 
 namespace Bindings { namespace Irrlicht {
 
-void add_bindings_irr_io(RuntimeTypeSystem& type_sys)
+void add_bindings_irr_io()
 {
-    auto ns_irr_io = Namespace::global->subspace("irr").subspace("io");
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_irr = register_namespace("irr", global_ns);
+    TypeMirror& ns_irr_io = register_namespace("io", ns_irr);
 
     LM_CLASS(ns_irr_io, IAttributes)
 

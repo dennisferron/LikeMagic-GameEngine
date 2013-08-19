@@ -92,8 +92,6 @@ void LikeMagic::StdBindings::add_bindings()
     typedef std::map<s32, IoObject*> map_of_s32_IoObject;
     LM_CLASS(ns_std, map_of_s32_IoObject)
     LM_CONSTR(map_of_s32_IoObject, "new")
-//LM_CONSTR(class_name, constructor_name, ...)
-//bind_constructor<map_of_s32_IoObject>(map_of_s32_IoObject_LM);
 
     LM_EXTENSION_METHOD(map_of_s32_IoObject, (at)(atPut)(removeAt))
 

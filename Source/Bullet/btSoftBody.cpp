@@ -11,19 +11,22 @@
 #include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 #include "BulletSoftBody/btSoftBodyHelpers.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btSoftBody(Namespace const& ns_bullet)
+void add_bindings_btSoftBody()
 {
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);
+
     LM_CLASS(ns_bullet, btCollisionObject)
 
     LM_CLASS_NO_COPY(ns_bullet, btSoftBody)
     LM_BASE(btSoftBody, btCollisionObject)
-    LM_CONSTR(btSoftBody,, btSoftBodyWorldInfo*, int, const btVector3*, const btScalar*)
+    LM_CONSTR(btSoftBody, "new", btSoftBodyWorldInfo*, int, const btVector3*, const btScalar*)
     LM_FUNC(btSoftBody, (transform)(translate)(rotate))
     LM_FIELD(btSoftBody,
         (m_collisionDisabledObjects)(m_cfg)(m_sst)(m_pose)(m_tag)(m_worldInfo)(m_notes)
@@ -65,12 +68,12 @@ void add_bindings_btSoftBody(Namespace const& ns_bullet)
     )
 
     LM_CLASS(ns_bullet,	btSoftBodyWorldInfo)
-    LM_CONSTR(btSoftBodyWorldInfo,,)
+    LM_CONSTR(btSoftBodyWorldInfo,"new")
     LM_FIELD(btSoftBodyWorldInfo, (air_density)(water_density)(water_offset)(water_normal)(m_broadphase)(m_dispatcher)(m_gravity)(m_sparsesdf))
 
     typedef btSparseSdf<3> btSparseSdf_3;
     LM_CLASS(ns_bullet, btSparseSdf_3)
-    LM_CONSTR(btSparseSdf_3,,)
+    LM_CONSTR(btSparseSdf_3,"new")
     LM_FIELD(btSparseSdf_3,(cells)(voxelsz)(puid)(ncells)(nprobes)(nqueries))
     LM_FUNC(btSparseSdf_3, (Initialize)(Reset)(GarbageCollect)(RemoveReferences)(Evaluate)(BuildCell))
     LM_STATIC_MEMBER_FUNC(btSparseSdf_3, (DistanceToShape)(Decompose)(Lerp)(Hash))

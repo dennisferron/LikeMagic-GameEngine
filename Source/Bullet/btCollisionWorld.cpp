@@ -9,7 +9,8 @@
 #include "btBulletDynamicsCommon.h"
 #include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
+#include "LikeMagic/TypeConv/NumberConv.hpp"
 #include "Bindings/Bullet/ScriptedClosestRayResultCallback.hpp"
 #include "Bindings/Bullet/ScriptedContactResultCallback.hpp"
 #include "Bindings/Bullet/ScriptedWorldManager.hpp"
@@ -19,10 +20,13 @@ using namespace Iocaste::LikeMagicAdapters;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btCollisionWorld(Namespace const& ns_bullet)
+void add_bindings_btCollisionWorld()
 {
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);
+
     LM_CLASS(ns_bullet, btCollisionWorld)
-    LM_FUNC(btCollisionWorld, (rayTest)(contactTest))
+    LM_FUNC(btCollisionWorld, (rayTest)(contactTest)(setDebugDrawer)(getDebugDrawer))
 
     LM_CLASS(ns_bullet, btDynamicsWorld)
     LM_BASE(btDynamicsWorld, btCollisionWorld)
@@ -39,14 +43,14 @@ void add_bindings_btCollisionWorld(Namespace const& ns_bullet)
 
     LM_CLASS(ns_bullet, btDiscreteDynamicsWorld)
     LM_BASE(btDiscreteDynamicsWorld, btDynamicsWorld)
-    LM_CONSTR(btDiscreteDynamicsWorld,, btDispatcher*, btBroadphaseInterface*, btConstraintSolver*, btCollisionConfiguration*)
-    LM_FUNC(btDiscreteDynamicsWorld, (setGravity)(setDebugDrawer)(getDebugDrawer)(debugDrawWorld))
+    LM_CONSTR(btDiscreteDynamicsWorld, "new", btDispatcher*, btBroadphaseInterface*, btConstraintSolver*, btCollisionConfiguration*)
+    LM_FUNC(btDiscreteDynamicsWorld, (setGravity))
 
     LM_FUNC_OVERLOAD(btDiscreteDynamicsWorld, "addRigidBody", addRigidBody, void, btRigidBody*, short, short)
 
     LM_CLASS(ns_bullet, btSoftRigidDynamicsWorld)
     LM_BASE(btSoftRigidDynamicsWorld, btDiscreteDynamicsWorld)
-    LM_CONSTR(btSoftRigidDynamicsWorld,, btDispatcher*, btBroadphaseInterface*, btConstraintSolver*, btCollisionConfiguration*)
+    LM_CONSTR(btSoftRigidDynamicsWorld, "new", btDispatcher*, btBroadphaseInterface*, btConstraintSolver*, btCollisionConfiguration*)
     LM_FUNC(btSoftRigidDynamicsWorld, (addSoftBody)(removeSoftBody)(getDrawFlags)(setDrawFlags))
     LM_STATIC_MEMBER_FUNC(btSoftRigidDynamicsWorld, (rayTestSingle))
 
@@ -58,7 +62,7 @@ void add_bindings_btCollisionWorld(Namespace const& ns_bullet)
 
     typedef btIDebugDraw::DebugDrawModes DebugDrawModes;
     LM_CLASS(ns_bullet, DebugDrawModes)
-    ns_bullet.get_type_system().add_conv<DebugDrawModes, int, LikeMagic::TypeConv::NumberConv>();
+    add_conv<DebugDrawModes, int, LikeMagic::TypeConv::NumberConv>();
 
     typedef btCollisionWorld::RayResultCallback btCollisionWorld_RayResultCallback;
     LM_CLASS(ns_bullet, btCollisionWorld_RayResultCallback)
@@ -73,7 +77,7 @@ void add_bindings_btCollisionWorld(Namespace const& ns_bullet)
 
     LM_CLASS(ns_bullet, ScriptedClosestRayResultCallback)
     LM_BASE(ScriptedClosestRayResultCallback, btCollisionWorld_ClosestRayResultCallback)
-    LM_CONSTR(ScriptedClosestRayResultCallback,, IoBlock)
+    LM_CONSTR(ScriptedClosestRayResultCallback, "new", IoBlock)
     LM_FUNC(ScriptedClosestRayResultCallback, (baseAddSingleResult)(test_equals))
 
     typedef btCollisionWorld::LocalRayResult btCollisionWorld_LocalRayResult;
@@ -93,12 +97,12 @@ void add_bindings_btCollisionWorld(Namespace const& ns_bullet)
 
     LM_CLASS(ns_bullet, ScriptedContactResultCallback)
     LM_BASE(ScriptedContactResultCallback, btCollisionWorld_ContactResultCallback)
-    LM_CONSTR(ScriptedContactResultCallback,, IoBlock, IoBlock)
+    LM_CONSTR(ScriptedContactResultCallback, "new", IoBlock, IoBlock)
     LM_FUNC(ScriptedContactResultCallback, (baseNeedsCollision))
 
     LM_CLASS(ns_bullet, btManifoldPoint)
-    LM_CONSTR(btManifoldPoint,,)
-    LM_CONSTR(btManifoldPoint,, const btVector3 &, const btVector3 &, const btVector3 &, btScalar)
+    LM_CONSTR(btManifoldPoint,"new")
+    LM_CONSTR(btManifoldPoint, "new", const btVector3 &, const btVector3 &, const btVector3 &, btScalar)
     LM_FUNC(btManifoldPoint, (getDistance)(getLifeTime)(getPositionWorldOnA)(getPositionWorldOnB)(setDistance))
     LM_FIELD(btManifoldPoint, (m_appliedImpulse)(m_appliedImpulseLateral1)(m_appliedImpulseLateral2)(m_combinedFriction)
              (m_combinedRestitution)(m_contactCFM1)(m_contactCFM2)(m_contactMotion1)(m_contactMotion2)(m_distance1)
@@ -107,7 +111,7 @@ void add_bindings_btCollisionWorld(Namespace const& ns_bullet)
              (m_userPersistentData))
 
     LM_CLASS(ns_bullet, ScriptedWorldManager)
-    LM_CONSTR(ScriptedWorldManager,,)
+    LM_CONSTR(ScriptedWorldManager,"new")
     LM_FUNC(ScriptedWorldManager, (setOnTick)(setOnPreTick))
 }
 

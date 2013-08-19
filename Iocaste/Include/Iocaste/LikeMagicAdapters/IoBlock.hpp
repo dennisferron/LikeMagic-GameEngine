@@ -21,7 +21,7 @@
 
 namespace Iocaste { namespace LikeMagicAdapters {
 
-using LikeMagic::TypeSystem;
+using namespace LikeMagic;
 using namespace LikeMagic::Exprs;
 
 class IoVM;
@@ -44,7 +44,7 @@ private:
         return Term<T>::create(t);
     }
 
-    void add_arg(IoMessage* m, AbstractCppObjProxy* proxy) const;
+    void add_arg(IoMessage* m, ExprPtr expr) const;
 
     void add_args(IoMessage* m) const {}
 

@@ -8,14 +8,17 @@
 
 #include "btBulletDynamicsCommon.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btTypedConstraint(Namespace const& ns_bullet)
+void add_bindings_btTypedConstraint()
 {
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);
+
     LM_CLASS(ns_bullet, btTypedObject)
     LM_CLASS(ns_bullet, btTypedConstraint)
     LM_BASE(btTypedConstraint, btTypedObject)
@@ -29,21 +32,21 @@ void add_bindings_btTypedConstraint(Namespace const& ns_bullet)
 
     LM_CLASS(ns_bullet, btHingeConstraint)
     LM_BASE(btHingeConstraint, btTypedConstraint)
-    LM_CONSTR(btHingeConstraint,,
+    LM_CONSTR(btHingeConstraint, "new",
         btRigidBody &, btRigidBody &,
         const btVector3 &, const btVector3 &,
         btVector3 &, btVector3 &,
         bool)
-    LM_CONSTR(btHingeConstraint,,
+    LM_CONSTR(btHingeConstraint, "new",
         btRigidBody &,
         const btVector3 &,
         btVector3 &,
         bool)
-    LM_CONSTR(btHingeConstraint,,
+    LM_CONSTR(btHingeConstraint, "new",
         btRigidBody &, btRigidBody &,
         const btTransform &, const btTransform &,
         bool)
-    LM_CONSTR(btHingeConstraint,,
+    LM_CONSTR(btHingeConstraint, "new",
         btRigidBody &,
         const btTransform &,
         bool)
@@ -65,11 +68,11 @@ void add_bindings_btTypedConstraint(Namespace const& ns_bullet)
 
     LM_CLASS(ns_bullet, btSliderConstraint)
     LM_BASE(btSliderConstraint, btTypedConstraint)
-    LM_CONSTR(btSliderConstraint,,
+    LM_CONSTR(btSliderConstraint, "new",
         btRigidBody &, btRigidBody &,
         const btTransform &, const btTransform &,
         bool)
-    LM_CONSTR(btSliderConstraint,,
+    LM_CONSTR(btSliderConstraint, "new",
         btRigidBody &,
         const btTransform &,
         bool)
@@ -94,10 +97,10 @@ void add_bindings_btTypedConstraint(Namespace const& ns_bullet)
 
     LM_CLASS(ns_bullet, btConeTwistConstraint)
     LM_BASE(btConeTwistConstraint, btTypedConstraint)
-    LM_CONSTR(btConeTwistConstraint,,
+    LM_CONSTR(btConeTwistConstraint, "new",
         btRigidBody &, btRigidBody &,
         const btTransform &, const btTransform &)
-    LM_CONSTR(btConeTwistConstraint,,
+    LM_CONSTR(btConeTwistConstraint, "new",
         btRigidBody &,
         const btTransform &)
 
@@ -113,10 +116,10 @@ void add_bindings_btTypedConstraint(Namespace const& ns_bullet)
 
     LM_CLASS(ns_bullet, btPoint2PointConstraint)
     LM_BASE(btPoint2PointConstraint, btTypedConstraint)
-    LM_CONSTR(btPoint2PointConstraint,,
+    LM_CONSTR(btPoint2PointConstraint, "new",
         btRigidBody &, btRigidBody &,
         btVector3 const&, btVector3 const&)
-    LM_CONSTR(btPoint2PointConstraint,,
+    LM_CONSTR(btPoint2PointConstraint, "new",
         btRigidBody &,
         btVector3 const&)
 
@@ -129,11 +132,11 @@ void add_bindings_btTypedConstraint(Namespace const& ns_bullet)
 
     LM_CLASS(ns_bullet, btGeneric6DofConstraint)
     LM_BASE(btGeneric6DofConstraint, btTypedConstraint)
-    LM_CONSTR(btGeneric6DofConstraint,,
+    LM_CONSTR(btGeneric6DofConstraint, "new",
         btRigidBody &, btRigidBody &,
         const btTransform &, const btTransform &,
         bool)
-    LM_CONSTR(btGeneric6DofConstraint,,
+    LM_CONSTR(btGeneric6DofConstraint, "new",
         btRigidBody &,
         const btTransform &,
         bool)
@@ -159,7 +162,7 @@ void add_bindings_btTypedConstraint(Namespace const& ns_bullet)
 
     LM_CLASS(ns_bullet, btGeneric6DofSpringConstraint)
     LM_BASE(btGeneric6DofSpringConstraint, btGeneric6DofConstraint)
-    LM_CONSTR(btGeneric6DofSpringConstraint,,
+    LM_CONSTR(btGeneric6DofSpringConstraint, "new",
         btRigidBody &, btRigidBody &,
         const btTransform &, const btTransform &,
         bool)
@@ -169,7 +172,7 @@ void add_bindings_btTypedConstraint(Namespace const& ns_bullet)
 
 
     LM_CLASS(ns_bullet, btRotationalLimitMotor)
-    LM_CONSTR(btRotationalLimitMotor,,)
+    LM_CONSTR(btRotationalLimitMotor,"new")
     LM_FUNC(btRotationalLimitMotor, (isLimited)(needApplyTorques)(solveAngularLimits)(testLimitValue))
     LM_FIELD(btRotationalLimitMotor, (m_accumulatedImpulse)(m_bounce)(m_currentLimit)(m_currentLimitError)(m_currentPosition)(m_damping)(m_enableMotor)(m_hiLimit)(m_limitSoftness)
              (m_loLimit)(m_maxLimitForce)(m_maxMotorForce)(m_normalCFM)(m_stopCFM)(m_stopERP)(m_targetVelocity))

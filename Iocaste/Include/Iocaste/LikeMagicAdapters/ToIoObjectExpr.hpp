@@ -32,11 +32,12 @@ public:
 
     virtual IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m) = 0;
 
-    virtual boost::intrusive_ptr<Expression<IoObject*>> clone() const
-    {
-        throw std::logic_error("clone not implemented yet");
-    }
+    virtual TypeIndex get_class_type() const { return this->get_type(); }
 
+    // It's already a script object, so don't need to try to convert it a second time.
+    virtual bool disable_to_script_conv() const { return true; }
+
+    virtual bool is_null() const { return false; }
 };
 
 template <typename T, typename F>

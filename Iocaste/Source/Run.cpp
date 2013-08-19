@@ -10,7 +10,7 @@ using namespace Iocaste::LikeMagicAdapters;
 #include <stdexcept>
 
 #include "boost/algorithm/string/trim.hpp"
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 #include "LikeMagic/ScriptUtil.hpp"
 #include "boost/program_options.hpp"
@@ -88,7 +88,7 @@ void do_file(IoVM& vm, string file_name)
     vm.do_string(code.str());
 }
 
-int Iocaste::run(int argc, const char *argv[], void (*add_bindings)(LikeMagic::RuntimeTypeSystem&))
+int Iocaste::run(int argc, const char *argv[], void (*add_bindings)())
 {
     namespace po = boost::program_options;
 

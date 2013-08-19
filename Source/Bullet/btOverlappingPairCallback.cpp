@@ -9,14 +9,17 @@
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btOverlappingPairCallback(Namespace const& ns_bullet)
+void add_bindings_btOverlappingPairCallback()
 {
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);
+
 }
 
 

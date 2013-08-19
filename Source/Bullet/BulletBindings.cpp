@@ -11,7 +11,7 @@
 
 #include "btBulletDynamicsCommon.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 
@@ -35,32 +35,31 @@ void add_bindings_btTransform(Namespace const& ns_bullet);
 void add_bindings_btTypedConstraint(Namespace const& ns_bullet);
 void add_bindings_btVector3(Namespace const& ns_bullet);
 
-DLL_PUBLIC void add_bindings(Namespace const& ns_bullet_bindings)
+void add_bindings()
 {
-    // This needs to be done once in every DLL.
-    LM_SET_TYPE_INFO(ns_bullet_bindings)
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bindings = register_namespace("Bindings", global_ns);
+    TypeMirror& ns_bullet_bindings = register_namespace("Bullet", ns_bindings);
 
-    //auto ns_bullet = Namespace::global(ns_bullet).subspace("Bindings").subspace("Bullet");
+    Bindings::Bullet::add_bindings_btBroadphaseProxy();
+    Bindings::Bullet::add_bindings_btBroadphaseInterface();
+    Bindings::Bullet::add_bindings_btCollisionConfiguration();
+    Bindings::Bullet::add_bindings_btCollisionObject();
+    Bindings::Bullet::add_bindings_btCollisionShape();
+    Bindings::Bullet::add_bindings_btCollisionWorld();
+    Bindings::Bullet::add_bindings_btConcaveShape();
+    Bindings::Bullet::add_bindings_btConstraintSolver();
+    Bindings::Bullet::add_bindings_btDispatcher();
+    Bindings::Bullet::add_bindings_btMatrix3x3();
+    Bindings::Bullet::add_bindings_btMotionState();
+    Bindings::Bullet::add_bindings_btQuaternion();
+    Bindings::Bullet::add_bindings_btSoftBody();
+    Bindings::Bullet::add_bindings_btStridingMeshInterface();
+    Bindings::Bullet::add_bindings_btTransform();
+    Bindings::Bullet::add_bindings_btTypedConstraint();
+    Bindings::Bullet::add_bindings_btVector3();
 
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btBroadphaseProxy)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btBroadphaseInterface)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btCollisionConfiguration)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btCollisionObject)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btCollisionShape)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btCollisionWorld)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btConcaveShape)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btConstraintSolver)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btDispatcher)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btMatrix3x3)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btMotionState)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btQuaternion)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btSoftBody)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btStridingMeshInterface)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btTransform)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btTypedConstraint)
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_bindings_btVector3)
-
-    LM_STATIC_FUNC(ns_bullet_bindings, Bindings::Bullet, add_protos)
+    Bindings::Bullet::add_protos();
 }
 
 }}

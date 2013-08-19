@@ -8,18 +8,21 @@
 
 #include "btBulletDynamicsCommon.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btVector3(Namespace const& ns_bullet)
+void add_bindings_btVector3()
 {
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);
+
     LM_CLASS(ns_bullet, btVector3)
-    LM_CONSTR(btVector3,,)
-    LM_CONSTR(btVector3,, btVector3 const&)
-    LM_CONSTR(btVector3,, btScalar const&, btScalar const&, btScalar const&)
+    LM_CONSTR(btVector3,"new")
+    LM_CONSTR(btVector3, "new", btVector3 const&)
+    LM_CONSTR(btVector3, "new", btScalar const&, btScalar const&, btScalar const&)
     LM_FUNC(btVector3, (absolute)(angle)(closestAxis)(cross)(deSerialize)(deSerializeDouble)(deSerializeFloat)(distance)
             (distance2)(dot)(furthestAxis)(fuzzyZero)(getSkewSymmetricMatrix)(getX)(getY)(getZ)(isZero)(length)(length2)
             (lerp)(maxAxis)(minAxis)(normalize)(normalized)(rotate)(serializeDouble)(serializeFloat)(setInterpolate3)

@@ -62,7 +62,7 @@ public:
     }
 };
 
-template <typename R, typename... Args>
+template <typename... Args>
 class DelegateCallTarget_void_const : public CallTarget
 {
 public:

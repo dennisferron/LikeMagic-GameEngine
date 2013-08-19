@@ -11,7 +11,7 @@
 
 #include <irrlicht.h>
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 using namespace irr::video;
@@ -32,9 +32,11 @@ public:
     }
 };
 
-void add_bindings_video(RuntimeTypeSystem& type_sys)
+void add_bindings_video()
 {
-    auto ns_irr_video = Namespace::global->subspace("irr").subspace("video");
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_irr = register_namespace("irr", global_ns);
+    TypeMirror& ns_irr_video = register_namespace("video", ns_irr);
 
     // enums
     LM_ENUM(ns_irr_video, E_DRIVER_TYPE)
@@ -46,7 +48,7 @@ void add_bindings_video(RuntimeTypeSystem& type_sys)
     LM_ENUM(ns_irr_video, E_COLOR_MATERIAL)
 
     LM_CLASS(ns_irr_video, S3DVertex)
-    LM_CONSTR(S3DVertex,,)
+    LM_CONSTR(S3DVertex,"new")
     LM_CONSTR(S3DVertex, "newWithFloats", f32,f32,f32,  f32,f32,f32,  SColor,  f32,f32)
     LM_CONSTR(S3DVertex, "newWithVector3df", vector3df, vector3df, SColor, vector2df)
 
@@ -54,18 +56,18 @@ void add_bindings_video(RuntimeTypeSystem& type_sys)
     LM_CLASS(ns_irr_video, vector_of_S3DVertex)
 
     LM_CLASS(ns_irr_video, SColor)
-    LM_CONSTR(SColor,, int,int,int,int)
+    LM_CONSTR(SColor, "new", int,int,int,int)
     LM_CONSTR(SColor, "newWithARGB", int,int,int,int)
 
     LM_CLASS(ns_irr_video, SColorf)
     LM_CONSTR(SColorf, "newWithRGBA", f32,f32,f32,f32)
 
     LM_CLASS(ns_irr_video, SExposedVideoData)
-    LM_CONSTR(SExposedVideoData,,)
+    LM_CONSTR(SExposedVideoData,"new")
 
     LM_CLASS(ns_irr_video, SMaterial)
-    LM_CONSTR(SMaterial,,)
-    LM_CONSTR(SMaterial,, SMaterial const&)
+    LM_CONSTR(SMaterial,"new")
+    LM_CONSTR(SMaterial, "new", SMaterial const&)
     LM_FUNC(SMaterial, (setFlag)(getFlag)(getTexture)(setTexture)(setTextureMatrix)(isTransparent))
     LM_FIELD(SMaterial, (AntiAliasing)(AmbientColor)(DiffuseColor)(EmissiveColor)(MaterialType)(MaterialTypeParam)(MaterialTypeParam2)(Shininess)(SpecularColor)(Thickness)(ZBuffer))
     LM_BIT_FIELD(SMaterial, BackfaceCulling)

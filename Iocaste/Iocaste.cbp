@@ -72,6 +72,7 @@
 			<Add option="-Wno-unused-parameter" />
 			<Add option="-Wno-unused-but-set-variable" />
 			<Add option="--std=c++0x" />
+			<Add option="-ftemplate-depth=90" />
 			<Add directory="Include" />
 			<Add directory="Include/Iocaste/CShims" />
 			<Add directory="basekit/source" />

@@ -8,14 +8,17 @@
 
 #include "btBulletDynamicsCommon.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btCollisionShape(Namespace const& ns_bullet)
+void add_bindings_btCollisionShape()
 {
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);
+
     LM_CLASS(ns_bullet, btCollisionShape)
     LM_FUNC(btCollisionShape,
             (calculateLocalInertia)
@@ -26,47 +29,47 @@ void add_bindings_btCollisionShape(Namespace const& ns_bullet)
 
     LM_CLASS(ns_bullet, btStaticPlaneShape)
     LM_BASE(btStaticPlaneShape, btCollisionShape)
-    LM_CONSTR(btStaticPlaneShape,,btVector3 const&, btScalar)
+    LM_CONSTR(btStaticPlaneShape, "new",btVector3 const&, btScalar)
 
     LM_CLASS(ns_bullet, btSphereShape)
     LM_BASE(btSphereShape, btCollisionShape)
-    LM_CONSTR(btSphereShape,, btScalar const&)
+    LM_CONSTR(btSphereShape, "new", btScalar const&)
 
     LM_CLASS(ns_bullet, btBoxShape)
     LM_BASE(btBoxShape, btCollisionShape)
-    LM_CONSTR(btBoxShape,, btVector3 const&)
+    LM_CONSTR(btBoxShape, "new", btVector3 const&)
 
     LM_CLASS(ns_bullet, btCylinderShape)
     LM_BASE(btCylinderShape, btCollisionShape)
-    LM_CONSTR(btCylinderShape,, btVector3 const&)
+    LM_CONSTR(btCylinderShape, "new", btVector3 const&)
 
     LM_CLASS(ns_bullet, btCylinderShapeX)
     LM_BASE(btCylinderShapeX, btCollisionShape)
-    LM_CONSTR(btCylinderShapeX,, btVector3 const&)
+    LM_CONSTR(btCylinderShapeX, "new", btVector3 const&)
 
     LM_CLASS(ns_bullet, btCylinderShapeZ)
     LM_BASE(btCylinderShapeZ, btCollisionShape)
-    LM_CONSTR(btCylinderShapeZ,, btVector3 const&)
+    LM_CONSTR(btCylinderShapeZ, "new", btVector3 const&)
 
     LM_CLASS(ns_bullet, btConeShape)
     LM_BASE(btConeShape, btCollisionShape)
-    LM_CONSTR(btConeShape,, btScalar, btScalar)
+    LM_CONSTR(btConeShape, "new", btScalar, btScalar)
 
     LM_CLASS(ns_bullet, btConeShapeX)
     LM_BASE(btConeShapeX, btCollisionShape)
-    LM_CONSTR(btConeShapeX,, btScalar, btScalar)
+    LM_CONSTR(btConeShapeX, "new", btScalar, btScalar)
 
     LM_CLASS(ns_bullet, btConeShapeZ)
     LM_BASE(btConeShapeZ, btCollisionShape)
-    LM_CONSTR(btConeShapeZ,, btScalar, btScalar)
+    LM_CONSTR(btConeShapeZ, "new", btScalar, btScalar)
 
     LM_CLASS(ns_bullet, btCapsuleShape)
     LM_BASE(btCapsuleShape, btCollisionShape)
-    LM_CONSTR(btCapsuleShape,, btScalar, btScalar)
+    LM_CONSTR(btCapsuleShape, "new", btScalar, btScalar)
 
     LM_CLASS(ns_bullet, btCompoundShape)
     LM_BASE(btCompoundShape, btCollisionShape)
-    LM_CONSTR(btCompoundShape,, bool)
+    LM_CONSTR(btCompoundShape, "new", bool)
     LM_FUNC(btCompoundShape, (addChildShape)(calculateLocalInertia)(calculatePrincipalAxisTransform)(calculateSerializeBufferSize))
     LM_FUNC(btCompoundShape, (getAabb)(getChildList))
 

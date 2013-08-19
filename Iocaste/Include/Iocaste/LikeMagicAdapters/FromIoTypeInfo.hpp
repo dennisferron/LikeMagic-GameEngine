@@ -11,8 +11,7 @@
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 #include "Iocaste/LikeMagicAdapters/API_Io.hpp"
 
-#include "LikeMagic/AbstractTypeSystem.hpp"
-#include "LikeMagic/Exprs/ExprProxy.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 
 #include "LikeMagic/IMarkable.hpp"
 
@@ -22,7 +21,7 @@
 
 namespace Iocaste { namespace LikeMagicAdapters {
 
-using LikeMagic::AbstractTypeSystem;
+using namespace LikeMagic;
 using namespace LikeMagic::Exprs;
 using namespace LikeMagic::Utility;
 

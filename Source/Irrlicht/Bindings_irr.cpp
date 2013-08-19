@@ -10,17 +10,18 @@
 
 #include <irrlicht.h>
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 using namespace irr;
 
 namespace Bindings { namespace Irrlicht {
 
-void add_bindings_irr(RuntimeTypeSystem& type_sys)
+void add_bindings_irr()
 {
-    auto ns_irr = Namespace::global->subspace("irr");
-
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_irr = register_namespace("irr", global_ns);
+s
     // functions
     auto& funcs_LM = ns_irr.register_functions();
     funcs_LM.bind_method("createDevice", createDevice);

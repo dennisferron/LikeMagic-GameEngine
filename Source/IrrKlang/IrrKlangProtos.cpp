@@ -20,7 +20,7 @@ void add_protos(IoVM& vm) {}
 
 #include "irrKlang.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace std;
 using namespace Iocaste::LikeMagicAdapters;

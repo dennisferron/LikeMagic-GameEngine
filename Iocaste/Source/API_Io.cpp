@@ -13,6 +13,12 @@
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 
+#if (defined(__MINGW32__) || defined(__MINGW64__)) && (__GNUC__ == 4)
+#include <stddef.h>
+// workaround a mingw bug, http://sourceforge.net/tracker/index.php?func=detail&aid=2373234&group_id=2435&atid=102435
+int swprintf (wchar_t *, size_t, const wchar_t *, ...);
+#endif
+
 #include "boost/lexical_cast.hpp"
 
 #ifdef USE_DMALLOC
@@ -54,7 +60,7 @@ IoMethodTable* make_io_method_table(std::vector<std::string> const& method_names
     for (auto it = method_names.begin(); it != method_names.end(); it++, i++)
     {
         // Io will make a copy of the string's c_str() bytes for method name,
-        // and the method names vector object lives inside AbstractClass,
+        // and the method names vector object lives inside TypeMirror,
         // so that we can be sure it survives long enough for Io to make the copy.
         IoMethodTable entry = { it->c_str(), &API_io_perform };  // All point to same userfunc
         table[i] = entry;
@@ -155,8 +161,9 @@ void API_io_free_expr(IoObject* self)
             throw std::logic_error("free Exprs proxy passed a NON-Exprs object");
         }
 
-        auto expr = reinterpret_cast<ExprPtr>(IoObject_dataPointer(self));
-        intrusive_ptr_release(expr);
+        void* voidDataPtr = IoObject_dataPointer(self);
+        AbstractExpression* exprDataPtr = reinterpret_cast<AbstractExpression*>(voidDataPtr);
+        intrusive_ptr_release(exprDataPtr);
         IoObject_setDataPointer_(self, 0);
     }
 }
@@ -166,8 +173,8 @@ void API_io_mark(IoObject* self)
     if (self && IoObject_dataPointer(self))
     {
         IoObject_shouldMark(self);
-        auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
-        proxy->mark();
+        auto expr = reinterpret_cast<AbstractExpression*>(IoObject_dataPointer(self));
+        expr->mark();
     }
 }
 

@@ -12,7 +12,7 @@
 
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 #include "Bindings/Irrlicht/ScriptedSceneNode.hpp"
 #include "Bindings/Irrlicht/ScriptedEventReceiver.hpp"
 
@@ -27,7 +27,7 @@ using namespace irr::gui;
 
 namespace Bindings { namespace Irrlicht {
 
-DLL_PUBLIC void add_protos(IoVM& vm, RuntimeTypeSystem& type_sys)
+void add_protos(IoVM& vm, )
 {
     //LM_STATIC_FUNC(Bindings::Irrlicht, add_protos_irr)
 }

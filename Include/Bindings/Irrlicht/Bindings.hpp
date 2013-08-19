@@ -14,23 +14,22 @@
 namespace LikeMagic { class RuntimeTypeSystem; }
 
 namespace Iocaste { namespace LikeMagicAdapters {
-    class IoVM;
 }}
 
 
 namespace Bindings { namespace Irrlicht {
 
-DLL_PUBLIC void add_bindings(LikeMagic::RuntimeTypeSystem& type_sys);
+void add_bindings();
 
-void add_bindings_irr(LikeMagic::RuntimeTypeSystem& type_sys);
-void add_bindings_gui(LikeMagic::RuntimeTypeSystem& type_sys);
-void add_bindings_video(LikeMagic::RuntimeTypeSystem& type_sys);
-void add_bindings_scene(LikeMagic::RuntimeTypeSystem& type_sys);
-void add_bindings_core(LikeMagic::RuntimeTypeSystem& type_sys);
-void add_bindings_custom(LikeMagic::RuntimeTypeSystem& type_sys);
-void add_bindings_irr_io(LikeMagic::RuntimeTypeSystem& type_sys);
+void add_bindings_irr();
+void add_bindings_gui();
+void add_bindings_video();
+void add_bindings_scene();
+void add_bindings_core();
+void add_bindings_custom();
+void add_bindings_irr_io();
 
-void add_bindings_orientation(LikeMagic::RuntimeTypeSystem& type_sys);
+void add_bindings_orientation();
 
 void add_protos_irr(Iocaste::LikeMagicAdapters::IoVM& vm);
 

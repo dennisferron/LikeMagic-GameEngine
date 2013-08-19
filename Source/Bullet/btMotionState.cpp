@@ -8,19 +8,22 @@
 
 #include "btBulletDynamicsCommon.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btMotionState(Namespace const& ns_bullet)
+void add_bindings_btMotionState()
 {
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);
+
     LM_CLASS(ns_bullet, btMotionState)
     LM_FUNC(btMotionState, (getWorldTransform)(setWorldTransform))
     LM_CLASS(ns_bullet, btDefaultMotionState)
     LM_BASE(btDefaultMotionState, btMotionState)
-    LM_CONSTR(btDefaultMotionState,, btTransform const&, btTransform const&)
+    LM_CONSTR(btDefaultMotionState, "new", btTransform const&, btTransform const&)
 }
 
 }}

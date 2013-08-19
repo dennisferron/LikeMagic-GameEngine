@@ -47,7 +47,7 @@ private:
 
     ExprPtr get_abs_expr(std::string io_code) const;
 
-    IoObject* to_script(IoObject *self, IoObject *locals, IoMessage *m, AbstractCppObjProxy* proxy) const;
+    IoObject* to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPtr expr) const;
 
     friend class IoBlock;
 
@@ -62,7 +62,7 @@ private:
 
     std::map<std::string, std::string> paths;
 
-    IoObject* proxy_to_io_obj(AbstractCppObjProxy* proxy);
+    IoObject* expr_to_io_obj(ExprPtr expr);
 
 public:
     IoVM(std::string bootstrap_path);
@@ -76,25 +76,7 @@ public:
     std::string get_path(std::string path_identifier);
     void set_path(std::string path_identifier, std::string path_value);
 
-    void add_proto(std::string name, AbstractCppObjProxy* proxy, LikeMagic::NamespacePath ns=LikeMagic::NamespacePath::global(), bool conv_to_script=false) const;
-
-    template <typename T>
-    void add_proto(std::string name,  T obj=T(), LikeMagic::NamespacePath ns=LikeMagic::NamespacePath::global(), bool to_script=false) const
-    {
-        add_proto
-        (
-            name,
-            ExprProxy::create
-            (
-                Term<T>::create
-                (
-                    obj
-                )
-            ),
-            ns,
-            to_script
-        );
-    }
+    void add_proto(std::string name, ExprPtr expr, std::string ns = "", bool conv_to_script=false) const;
 
     void run_cli() const;
     IoObject* do_string(std::string io_code) const;
@@ -103,7 +85,7 @@ public:
     boost::intrusive_ptr<Expression<T>> get_expr(std::string io_code) const
     {
         auto abs_expr = get_abs_expr(io_code);
-        return type_system->try_conv<T>(abs_expr);
+        return try_conv<T>(abs_expr);
     }
 
     // This is intended for pointers but I used "T" instead of "T*" so that you can specify a smart pointer instead.
@@ -120,9 +102,9 @@ public:
 
     IoObject* castToIoObjectPointer(void* object);
 
-    virtual void register_class(LikeMagic::Marshaling::AbstractClass const* class_);
-    virtual void register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base);
-    virtual void register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::CallTargets::AbstractMethod* method);
+    virtual void register_class(LikeMagic::Mirrors::TypeMirror const* class_);
+    virtual void register_base(LikeMagic::Mirrors::TypeMirror const* class_, LikeMagic::Mirrors::TypeMirror const* base);
+    virtual void register_method(LikeMagic::Mirrors::TypeMirror const* class_, std::string method_name, LikeMagic::Mirrors::CallTarget* method);
 
     virtual void mark() const;
 
@@ -137,5 +119,19 @@ public:
     static IoVM* get(IoMessage* m);
 };
 
+template <typename T>
+void add_proto(IoVM& iovm, std::string name,  T obj=T(), std::string ns = "", bool to_script=false)
+{
+    iovm.add_proto
+    (
+        name,
+        Term<T>::create
+        (
+            obj
+        ),
+        ns,
+        to_script
+    );
+}
 
 }}

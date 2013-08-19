@@ -12,6 +12,8 @@
 #include <stdexcept>
 
 #include "boost/preprocessor/control/iif.hpp"
+#include "boost/preprocessor/seq/for_each.hpp"
+#include "boost/preprocessor/seq/for_each_i.hpp"
 
 #define TypedArgList(r, data, i, elem) BOOST_PP_COMMA_IF(i) elem data##i
 

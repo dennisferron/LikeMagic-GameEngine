@@ -8,7 +8,7 @@
 
 #include "Bindings/Bullet/Protos.hpp"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 #ifndef M_PI
 #define M_PI       3.14159265358979323846
@@ -22,9 +22,10 @@ using namespace Iocaste::LikeMagicAdapters;
 
 namespace Bindings { namespace Bullet {
 
-DLL_PUBLIC void add_protos(IoVM& vm)
+void add_protos(IoVM& vm)
 {
-    auto ns_path = LikeMagic::NamespacePath::global().subspace("Bullet");
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_path = register_namespace("Bullet", global_ns);
 
     vm.add_proto<double>("TAU", 2*M_PI, ns_path, true);
 

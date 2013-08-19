@@ -32,10 +32,6 @@ namespace LikeMagic { namespace Exprs {
 
 using LikeMagic::Utility::TypeIndex;
 
-// more forward declarations
-
-class AbstractCppObjProxy;
-
 class AbstractExpression;
 
 void intrusive_ptr_add_ref(AbstractExpression* p);

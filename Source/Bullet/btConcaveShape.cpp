@@ -10,14 +10,17 @@
 #include "BulletCollision/CollisionShapes/btMultimaterialTriangleMeshShape.h"
 #include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btConcaveShape(Namespace const& ns_bullet)
+void add_bindings_btConcaveShape()
 {
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);
+
     // Previously defined in btCollisionShape.cpp; needed here as a base.
     LM_CLASS(ns_bullet, btCollisionShape)
 
@@ -32,19 +35,19 @@ void add_bindings_btConcaveShape(Namespace const& ns_bullet)
 
     LM_CLASS(ns_bullet, btBvhTriangleMeshShape)
     LM_BASE(btBvhTriangleMeshShape, btTriangleMeshShape)
-    LM_CONSTR(btBvhTriangleMeshShape,, btStridingMeshInterface *, bool, bool)
-    LM_CONSTR(btBvhTriangleMeshShape,, btStridingMeshInterface *, bool, const btVector3 &, const btVector3 &, bool)
+    LM_CONSTR(btBvhTriangleMeshShape, "new", btStridingMeshInterface *, bool, bool)
+    LM_CONSTR(btBvhTriangleMeshShape, "new", btStridingMeshInterface *, bool, const btVector3 &, const btVector3 &, bool)
     LM_FUNC(btBvhTriangleMeshShape, (getOwnsBvh)(performRaycast)(performConvexcast)(processAllTriangles)(refitTree)(partialRefitTree)(getOptimizedBvh)(setOptimizedBvh)(buildOptimizedBvh)(usesQuantizedAabbCompression))
 
     LM_CLASS(ns_bullet, btMultimaterialTriangleMeshShape)
     LM_BASE(btMultimaterialTriangleMeshShape, btBvhTriangleMeshShape)
-    LM_CONSTR(btMultimaterialTriangleMeshShape,, btStridingMeshInterface*, bool, bool)
-    LM_CONSTR(btMultimaterialTriangleMeshShape,, btStridingMeshInterface*, bool, const btVector3 &, const btVector3 &, bool)
+    LM_CONSTR(btMultimaterialTriangleMeshShape, "new", btStridingMeshInterface*, bool, bool)
+    LM_CONSTR(btMultimaterialTriangleMeshShape, "new", btStridingMeshInterface*, bool, const btVector3 &, const btVector3 &, bool)
     LM_FUNC(btMultimaterialTriangleMeshShape, (getMaterialProperties))
 
     LM_CLASS(ns_bullet, btHeightfieldTerrainShape)
     LM_BASE(btHeightfieldTerrainShape, btConcaveShape)
-    LM_CONSTR(btHeightfieldTerrainShape,,
+    LM_CONSTR(btHeightfieldTerrainShape, "new",
         int, int, void *, btScalar, btScalar, btScalar, int, PHY_ScalarType, bool)
 
     LM_FUNC(btHeightfieldTerrainShape, (setUseDiamondSubdivision))

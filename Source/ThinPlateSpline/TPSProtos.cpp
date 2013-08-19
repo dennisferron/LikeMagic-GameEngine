@@ -8,7 +8,7 @@
 
 #include "Bindings/ThinPlateSpline/Protos.hpp"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 
 using namespace std;
@@ -16,9 +16,10 @@ using namespace Iocaste::LikeMagicAdapters;
 
 namespace Bindings { namespace ThinPlateSpline {
 
-DLL_PUBLIC void add_protos(IoVM& vm)
+void add_protos(IoVM& vm)
 {
-    auto ns_path = LikeMagic::NamespacePath::global().subspace("TPS");
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_tps = register_namespace("TPS", global_ns);
 }
 
 }}

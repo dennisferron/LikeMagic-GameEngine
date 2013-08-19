@@ -9,11 +9,9 @@
 
 #pragma once
 
-#include "LikeMagic/Utility/DLLHelper.hpp"
-#include "LikeMagic/Namespace.hpp"
 
 namespace Bindings { namespace Bullet {
 
-DLL_PUBLIC void add_bindings(LikeMagic::Namespace const& ns_bullet_bindings);
+void add_bindings();
 
 }}

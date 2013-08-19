@@ -243,10 +243,10 @@ template <typename T>
 LikeMagic::Mirrors::TypeMirror& register_enum(std::string name, TypeMirror& namespace_)
 {
     auto& result = register_class<T, true>(name, namespace_);
-    result.bind_nonmember_op("==",    &LikeMagic::Utility::EnumHelper<T>::equals);
-    result.bind_nonmember_op("!=",    &LikeMagic::Utility::EnumHelper<T>::not_equals);
-    result.bind_nonmember_op("value", &LikeMagic::Utility::EnumHelper<T>::value);
-    result.bind_nonmember_op("asString", &LikeMagic::Utility::EnumHelper<T>::asString);
+    bind_nonmember_op(result, "==",    &LikeMagic::Utility::EnumHelper<T>::equals);
+    bind_nonmember_op(result, "!=",    &LikeMagic::Utility::EnumHelper<T>::not_equals);
+    bind_nonmember_op(result, "value", &LikeMagic::Utility::EnumHelper<T>::value);
+    bind_nonmember_op(result, "asString", &LikeMagic::Utility::EnumHelper<T>::asString);
     return result;
 }
 

@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "LikeMagic/RuntimeTypeSystem.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 
 namespace Interpreter {
     void add_bindings();

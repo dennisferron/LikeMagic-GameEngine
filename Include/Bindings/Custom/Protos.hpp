@@ -13,6 +13,6 @@
 
 namespace Bindings { namespace Custom {
 
-DLL_PUBLIC void add_protos(Iocaste::LikeMagicAdapters::IoVM& vm);
+void add_protos(Iocaste::LikeMagicAdapters::IoVM& vm);
 
 }}

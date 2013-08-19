@@ -9,28 +9,31 @@
 #include "btBulletDynamicsCommon.h"
 #include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btCollisionConfiguration(Namespace const& ns_bullet)
+void add_bindings_btCollisionConfiguration()
 {
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);
+
     LM_CLASS(ns_bullet, btCollisionConfiguration)
 
     LM_CLASS(ns_bullet, btDefaultCollisionConfiguration)
     LM_BASE(btDefaultCollisionConfiguration, btCollisionConfiguration)
-    LM_CONSTR(btDefaultCollisionConfiguration,,)
-    LM_CONSTR(btDefaultCollisionConfiguration,,btDefaultCollisionConstructionInfo const&)
+    LM_CONSTR(btDefaultCollisionConfiguration,"new")
+    LM_CONSTR(btDefaultCollisionConfiguration, "new",btDefaultCollisionConstructionInfo const&)
 
     LM_CLASS(ns_bullet, btSoftBodyRigidBodyCollisionConfiguration)
     LM_BASE(btSoftBodyRigidBodyCollisionConfiguration, btDefaultCollisionConfiguration)
-    LM_CONSTR(btSoftBodyRigidBodyCollisionConfiguration,,)
-    LM_CONSTR(btSoftBodyRigidBodyCollisionConfiguration,, btDefaultCollisionConstructionInfo const&)
+    LM_CONSTR(btSoftBodyRigidBodyCollisionConfiguration,"new")
+    LM_CONSTR(btSoftBodyRigidBodyCollisionConfiguration, "new", btDefaultCollisionConstructionInfo const&)
 
     LM_CLASS(ns_bullet, btDefaultCollisionConstructionInfo)
-    LM_CONSTR(btDefaultCollisionConstructionInfo,,)
+    LM_CONSTR(btDefaultCollisionConstructionInfo,"new")
     LM_FIELD(btDefaultCollisionConstructionInfo,
         (m_stackAlloc)
         // These cause a compile error due to the pool allocator class only being forward declared.

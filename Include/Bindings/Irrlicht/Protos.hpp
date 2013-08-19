@@ -18,6 +18,6 @@ namespace Iocaste { namespace LikeMagicAdapters {
 
 namespace Bindings { namespace Irrlicht {
 
-DLL_PUBLIC void add_protos(Iocaste::LikeMagicAdapters::IoVM&, LikeMagic::RuntimeTypeSystem&);
+void add_protos(Iocaste::LikeMagicAdapters::IoVM&, LikeMagic::RuntimeTypeSystem&);
 
 }}

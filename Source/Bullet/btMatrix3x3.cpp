@@ -8,17 +8,21 @@
 
 #include "btBulletDynamicsCommon.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btMatrix3x3(Namespace const& ns_bullet)
+void add_bindings_btMatrix3x3()
 {
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);
+
     LM_CLASS(ns_bullet, btMatrix3x3)
-    LM_CONSTR(btMatrix3x3,,)
-    LM_STATIC_FUNC_OVERLOAD(ns_bullet, btMatrix3x3, "getIdentityMatrix", getIdentity, btMatrix3x3 const&)
+    LM_CONSTR(btMatrix3x3, "new")
+    LM_STATIC_FUNC_OVERLOAD(btMatrix3x3_LM, "getIdentityMatrix", btMatrix3x3::getIdentity, btMatrix3x3 const&)
+
     LM_FUNC(btMatrix3x3, (absolute)(adjoint)(cofac)(deSerialize)(deSerializeDouble)(deSerializeFloat)(determinant)(diagonalize)(getColumn)
             (getEulerYPR)(getEulerZYX)(getOpenGLSubMatrix)(getRotation)(getRow)(inverse)(scaled)(serialize)(serializeFloat)(setEulerYPR)
             (setEulerZYX)(setFromOpenGLSubMatrix)(setIdentity)(setValue)(tdotx)(tdoty)(tdotz)(timesTranspose)(transpose)(transposeTimes))

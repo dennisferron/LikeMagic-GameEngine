@@ -8,14 +8,14 @@
 
 #include "Bindings/Custom/Protos.hpp"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace std;
 using namespace Iocaste::LikeMagicAdapters;
 
 namespace Bindings { namespace Custom {
 
-DLL_PUBLIC void add_protos(IoVM& vm)
+void add_protos(IoVM& vm)
 {
 
 }

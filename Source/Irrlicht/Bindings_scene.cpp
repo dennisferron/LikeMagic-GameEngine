@@ -11,7 +11,7 @@
 
 #include <irrlicht.h>
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 using namespace irr;
@@ -22,9 +22,11 @@ using namespace irr::io;
 
 namespace Bindings { namespace Irrlicht {
 
-void add_bindings_scene(RuntimeTypeSystem& type_sys)
+void add_bindings_scene()
 {
-    auto ns_irr_scene = Namespace::global->subspace("irr").subspace("scene");
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_irr = register_namespace("irr", global_ns);
+    TypeMirror& ns_irr_scene = register_namespace("scene", ns_irr);
 
     LM_CLASS(ns_irr_scene, E_BUFFER_TYPE)
     LM_CLASS(ns_irr_scene, E_HARDWARE_MAPPING)
@@ -111,7 +113,7 @@ void add_bindings_scene(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_irr_scene, SMeshBuffer)
     LM_BASE(SMeshBuffer, IMeshBuffer)
-    LM_CONSTR(SMeshBuffer,,)
+    LM_CONSTR(SMeshBuffer,"new")
     LM_FIELD(SMeshBuffer, (MappingHint_Vertex)(MappingHint_Index)(Material)(Vertices)(Indices)(BoundingBox))
 
     LM_CLASS(ns_irr_scene, IMesh)

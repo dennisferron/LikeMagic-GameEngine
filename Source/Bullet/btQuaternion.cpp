@@ -8,20 +8,23 @@
 
 #include "btBulletDynamicsCommon.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btQuaternion(Namespace const& ns_bullet)
+void add_bindings_btQuaternion()
 {
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);
+
     LM_CLASS(ns_bullet, btQuaternion)
-    LM_CONSTR(btQuaternion,,)
-    LM_CONSTR(btQuaternion,, const btVector3 &, const btScalar &)
-    LM_CONSTR(btQuaternion,, const btScalar &, const btScalar &, const btScalar &)
-    LM_CONSTR(btQuaternion,, btScalar const&, btScalar const&, btScalar const&, btScalar const&)
-    LM_STATIC_FUNC_OVERLOAD(ns_bullet, btQuaternion, "getIdentityQuaternion", getIdentity, btQuaternion const&)
+    LM_CONSTR(btQuaternion,"new")
+    LM_CONSTR(btQuaternion, "new", const btVector3 &, const btScalar &)
+    LM_CONSTR(btQuaternion, "new", const btScalar &, const btScalar &, const btScalar &)
+    LM_CONSTR(btQuaternion, "new", btScalar const&, btScalar const&, btScalar const&, btScalar const&)
+    LM_STATIC_FUNC_OVERLOAD(btQuaternion_LM, "getIdentityQuaternion", btQuaternion::getIdentity, btQuaternion const&)
 
     LM_FUNC(btQuaternion, (angle)(dot)(farthest)(getAngle)(getAxis)(getW)(inverse)(length)(length2)(nearest)(normalize)(normalized)
             (setEuler)(setEulerZYX)(setRotation)(slerp))

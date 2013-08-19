@@ -12,7 +12,7 @@
 
 #include <irrlicht.h>
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 using namespace irr;
@@ -20,11 +20,13 @@ using namespace irr::scene;
 
 namespace Bindings { namespace Irrlicht {
 
-void add_bindings_custom(RuntimeTypeSystem& type_sys)
+void add_bindings_custom()
 {
-    add_bindings_orientation(type_sys);
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_irr = register_namespace("irr", global_ns);
+    TypeMirror& ns_irr_custom = register_namespace("custom", ns_irr);
 
-    auto ns_irr_custom = Namespace::global->subspace("irr").subspace("custom");
+    add_bindings_orientation();
 
     LM_CLASS(ns_irr_custom, ISceneNode)
 
@@ -38,7 +40,7 @@ void add_bindings_custom(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_irr_custom, ScriptedEventReceiver)
     LM_BASE(ScriptedEventReceiver, IEventReceiver)
-    LM_CONSTR(ScriptedEventReceiver,, IoBlock)
+    LM_CONSTR(ScriptedEventReceiver, "new", IoBlock)
     LM_FUNC(ScriptedEventReceiver, (setOnEvent)(OnEvent)(isKeyDown))
 }
 

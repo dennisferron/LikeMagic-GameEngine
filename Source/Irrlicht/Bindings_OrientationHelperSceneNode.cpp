@@ -8,7 +8,7 @@
 
 #include "Bindings/Irrlicht/OrientationHelperSceneNode.hpp"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 
@@ -18,16 +18,19 @@ using namespace irr::scene;
 
 namespace Bindings { namespace Irrlicht {
 
-void add_bindings_orientation(RuntimeTypeSystem& type_sys)
+void add_bindings_orientation()
 {
-    auto ns_irr_scene = Namespace::global->subspace("irr").subspace("scene");
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_irr = register_namespace("irr", global_ns);
+    TypeMirror& ns_irr_scene = register_namespace("scene", ns_irr);
+
     LM_CLASS(ns_irr_scene, ISceneNode)
 
     auto ns_irr_custom = Namespace::global->subspace("irr").subspace("custom");
 
     LM_CLASS(ns_irr_custom, OrientationHelperSceneNode)
     LM_BASE(OrientationHelperSceneNode, ISceneNode)
-    LM_CONSTR(OrientationHelperSceneNode,, f32,scene::ISceneNode*, scene::ISceneManager*, s32)
+    LM_CONSTR(OrientationHelperSceneNode, "new", f32,scene::ISceneNode*, scene::ISceneManager*, s32)
     LM_FUNC_OVERLOAD(OrientationHelperSceneNode, "rotateZToDirectionVectorVector", rotateZToDirection,
         void, const core::vector3df &, const core::vector3df &
     )

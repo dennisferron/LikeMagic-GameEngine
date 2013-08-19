@@ -9,7 +9,6 @@
 #include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
 #include "LikeMagic/Exprs/NullExpr.hpp"
-#include "LikeMagic/Exprs/FalseExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 #include "Iocaste/LikeMagicAdapters/IoObjectExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp"
@@ -17,7 +16,7 @@
 #include "Iocaste/LikeMagicAdapters/IoListSTL.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVectorSTL.hpp"
 
-#include "LikeMagic/AbstractTypeSystem.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 
 #include <vector>
 #include <algorithm>
@@ -82,7 +81,7 @@ std::vector<T> from_list(IoObject* io_obj)
     type_system->add_converter_simple(FromIoTypeInfo::create_index(#scriptType), BetterTypeInfo::create_index<cppType&>(), new From##scriptType); \
 }
 
-void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
+void add_convs_from_script(TypeSystem& type_sys, IoVM* iovm)
 {
     // Nil requires special handling because it produces not a term but a NullExpr.
     struct FromNil : public AbstractTypeConverter
@@ -142,7 +141,14 @@ void add_convs_from_script(AbstractTypeSystem& type_sys, IoVM* iovm)
         virtual std::string description() const { return "From Block Conv"; }
     };
 
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoBlock&>(), new FromIoBlock(type_sys, iovm));
+    TypeIndex from_script_block_type = FromIoTypeInfo::create_index("Block");
+    TypeIndex to_block_wrapper_type = BetterTypeInfo::create_index<IoBlock&>();
+    p_conv_t block_converter = new FromIoBlock(iovm);
+
+    type_system->add_converter_simple(
+          from_script_block_type,
+          to_block_wrapper_type,
+          block_converter);
 
     MKCONV(Number, double, IoNumber_asDouble)
     MKCONV(Number, int, IoNumber_asInt)
@@ -205,11 +211,10 @@ ExprPtr from_script(IoObject* self, IoObject* io_obj, TypeIndex to_type)
 
     if (is_Exprs_obj(io_obj) && !(to_type == wants_io_obj))
     {
-        AbstractCppObjProxy* proxy(
-                reinterpret_cast<AbstractCppObjProxy*>
-                    (IoObject_dataPointer(io_obj)));
-        proxy->check_magic();
-        return proxy->get_expr();
+        AbstractExpression* expr =
+                reinterpret_cast<AbstractExpression*>
+                    (IoObject_dataPointer(io_obj));
+        return expr;
     }
     else
     {

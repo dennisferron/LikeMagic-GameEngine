@@ -11,32 +11,30 @@
 
 #include "ThinPlateSpline/ThinPlateQuilt.hpp"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 using namespace TPS;
 
 namespace Bindings { namespace ThinPlateSpline {
 
-DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
+void add_bindings()
 {
-    // This needs to be done once in every DLL.
-    LM_SET_TYPE_INFO(type_sys)
-
-    auto ns_tps = Namespace::global->subspace("TPS");
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_tps = register_namespace("TPS", global_ns);
 
     LM_CLASS(ns_tps, Vec)
     LM_FIELD(Vec, (x)(y)(z))
-    LM_CONSTR(Vec,,)
-    LM_CONSTR(Vec,,float,float,float)
-    LM_CONSTR(Vec,,Vec const&)
+    LM_CONSTR(Vec,"new")
+    LM_CONSTR(Vec, "new",float,float,float)
+    LM_CONSTR(Vec, "new",Vec const&)
     LM_FUNC(Vec,(norm)(len))
     LM_OP(Vec,(+=)(+)(-=)(*=)(*)(/=)(/)(==))
     LM_OP_OVERLOAD(Vec, const, -, Vec)
     LM_OP_OVERLOAD(Vec, const, -, Vec, Vec const&)
 
     LM_CLASS(ns_tps, ControlPoint)
-    LM_CONSTR(ControlPoint,, Vec const&)
+    LM_CONSTR(ControlPoint, "new", Vec const&)
     LM_FIELD(ControlPoint,(pos))
 
     LM_CLASS(ns_tps, ControlPointPtr)
@@ -46,7 +44,7 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_CLASS(ns_tps, ThinPlateSpline)
 
     LM_CLASS(ns_tps, ThinPlateQuilt)
-    LM_CONSTR(ThinPlateQuilt,,int,int,Vec,Vec)
+    LM_CONSTR(ThinPlateQuilt, "new",int,int,Vec,Vec)
     LM_FUNC(ThinPlateQuilt,
         (heightAt)(addControlPoint)(getControlPoint)
         (numControlPoints)(removeControlPoint)

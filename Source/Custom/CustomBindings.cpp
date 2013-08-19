@@ -21,7 +21,7 @@
 
 #include "BulletSoftBody/btSoftBodyHelpers.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 #include <boost/preprocessor/repetition/repeat.hpp>
 
@@ -44,7 +44,7 @@ int  flag_bits_get_value(ISceneNode* node)            { return node->getID();   
 void flag_bits_set_value(ISceneNode* node, int value) {        node->setID(value);  }
 typedef FlagBits<ISceneNode*> FlagBits_of_ISceneNode;
 
-DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
+void add_bindings()
 {
     // This needs to be done once in every DLL.
     LM_SET_TYPE_INFO(type_sys)
@@ -62,22 +62,22 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_CLASS(ns_custom, PhysicsAnimator)
     LM_BASE(PhysicsAnimator, btMotionState)
     LM_BASE(PhysicsAnimator, ISceneNodeAnimator)
-    LM_CONSTR(PhysicsAnimator,, btTransform const&, btTransform const&)
+    LM_CONSTR(PhysicsAnimator, "new", btTransform const&, btTransform const&)
 
     LM_CLASS(ns_custom, KinematicAnimator)
     LM_BASE(KinematicAnimator, btMotionState)
     LM_BASE(KinematicAnimator, ISceneNodeAnimator)
-    LM_CONSTR(KinematicAnimator,, btTransform const&, btTransform const&)
+    LM_CONSTR(KinematicAnimator, "new", btTransform const&, btTransform const&)
 
     LM_CLASS(ns_custom, LockAnimator)
     LM_BASE(LockAnimator, btMotionState)
     LM_BASE(LockAnimator, ISceneNodeAnimator)
-    LM_CONSTR(LockAnimator,, btMotionState const&, btTransform const&)
+    LM_CONSTR(LockAnimator, "new", btMotionState const&, btTransform const&)
     LM_FIELD(LockAnimator, (stop_rotation))
 
     LM_CLASS(ns_custom, ScriptObjAnimator)
     LM_BASE(ScriptObjAnimator, ISceneNodeAnimator)
-    LM_CONSTR(ScriptObjAnimator,, IoObject*)
+    LM_CONSTR(ScriptObjAnimator, "new", IoObject*)
     LM_FUNC(ScriptObjAnimator, (getScriptObj))
     LM_STATIC_MEMBER_FUNC(ScriptObjAnimator, (findIn))
 
@@ -85,20 +85,20 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
 
     LM_CLASS(ns_custom, IrrlichtBulletDebugDrawer)
     LM_BASE(IrrlichtBulletDebugDrawer, btIDebugDraw)
-    LM_CONSTR(IrrlichtBulletDebugDrawer,, irr::video::IVideoDriver*)
+    LM_CONSTR(IrrlichtBulletDebugDrawer, "new", irr::video::IVideoDriver*)
     LM_FUNC(IrrlichtBulletDebugDrawer, (drawLine))
 
     LM_CLASS(ns_custom, btTypedConstraint)
 
     LM_CLASS(ns_custom, GearConstraint)
     LM_BASE(GearConstraint, btTypedConstraint)
-    LM_CONSTR(GearConstraint,, btRigidBody&, btRigidBody&, btScalar)
+    LM_CONSTR(GearConstraint, "new", btRigidBody&, btRigidBody&, btScalar)
     GearConstraint_LM.bind_static_method("getRotZ", GearConstraint::getRotZ);
 
-    LM_STATIC_FUNC(ns_custom, Bindings::Custom, add_protos)
+    LM_STATIC_FUNC_NAME(ns_custom, "add_protos", Bindings::Custom::add_protos)
 
     LM_CLASS(ns_custom, SoftBodyMeshSynchronizer)
-    LM_CONSTR(SoftBodyMeshSynchronizer,, btSoftBody*, irr::scene::IMeshBuffer*)
+    LM_CONSTR(SoftBodyMeshSynchronizer, "new", btSoftBody*, irr::scene::IMeshBuffer*)
     LM_FUNC(SoftBodyMeshSynchronizer, (sync))
 
     LM_CLASS(ns_custom, MeshTools)
@@ -111,14 +111,14 @@ DLL_PUBLIC void add_bindings(RuntimeTypeSystem& type_sys)
     LM_FIELD(SplitMeshResult, (left)(middle)(right))
 
     LM_CLASS(ns_custom, FlagBits_of_ISceneNode)
-    LM_CONSTR(FlagBits_of_ISceneNode,, ISceneNode*)
+    LM_CONSTR(FlagBits_of_ISceneNode, "new", ISceneNode*)
     LM_FUNC(FlagBits_of_ISceneNode, (getBit)(setBit)(extractNumber)(embedNumber))
 
     typedef SurfaceQuadTree::Shell Shell;
     LM_CLASS(ns_custom, Shell)
 
     LM_CLASS(ns_custom, SurfaceQuadTree)
-    LM_CONSTR(SurfaceQuadTree,,rectf, TPS::ThinPlateQuilt&, std::string)
+    LM_CONSTR(SurfaceQuadTree, "new",rectf, TPS::ThinPlateQuilt&, std::string)
     LM_FUNC(SurfaceQuadTree, (triangulate)(split)(fit))
 }
 

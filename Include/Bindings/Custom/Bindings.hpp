@@ -9,11 +9,10 @@
 
 #pragma once
 
-#include "LikeMagic/RuntimeTypeSystem.hpp"
-#include "LikeMagic/Utility/DLLHelper.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 
 namespace Bindings { namespace Custom {
 
-DLL_PUBLIC void add_bindings(LikeMagic::RuntimeTypeSystem& type_sys);
+void add_bindings();
 
 }}

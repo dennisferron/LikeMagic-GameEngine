@@ -17,12 +17,9 @@
 #include "Iocaste/DebugAPI.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 
-#include "LikeMagic/Exprs/ExprProxy.hpp"
-
 #include "LikeMagic/Utility/TypeDescr.hpp"
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
-#include "LikeMagic/Utility/FuncPtrTraits.hpp"
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 #include "boost/lexical_cast.hpp"
 
@@ -43,7 +40,7 @@
 
 using namespace std;
 using namespace LikeMagic;
-using namespace LikeMagic::Marshaling;
+using namespace LikeMagic::Mirrors;
 using namespace LikeMagic::Exprs;
 using namespace Iocaste;
 using namespace Iocaste::LikeMagicAdapters;
@@ -177,31 +174,12 @@ struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter
     virtual std::string description() const { return "PtrToIoObjectConv"; }
 };
 
-void print_conv(TypeIndex from, TypeIndex to)
-{
-    type_system->print_conv_chain(from, to);
-}
-
-template <typename From>
-void print_conv(TypeIndex to)
-{
-    TypeIndex from = BetterTypeInfo::create_index<From>();
-    print_conv(from, to);
-}
-
-template <typename From, typename To>
-void print_conv()
-{
-    TypeIndex to = BetterTypeInfo::create_index<To>();
-    print_conv<From>(to);
-}
-
 void IoVM::setShowAllMessages(bool value)
 {
     state->showAllMessages = value;
 }
 
-IoVM::IoVM(std::string bootstrap_path) : type_system(type_sys), last_exception(0)
+IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
 {
     set_path("language", bootstrap_path);
 
@@ -247,16 +225,18 @@ IoVM::IoVM(std::string bootstrap_path) : type_system(type_sys), last_exception(0
     add_convs_from_script(this);
     add_convs_to_script(this);
 
+    auto& global_ns = type_system->global_namespace();
+
     // Register this vm
-    LM_CLASS_NO_COPY(IoVM)
-    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(proxy_to_io_obj)(setShowAllMessages))
+    //TypeMirror& IoVM_LM = register_class<int, false>("IoVM", global_ns);
+    LM_CLASS_NO_COPY(global_ns, IoVM)
+
+    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(expr_to_io_obj)(setShowAllMessages))
     LM_FIELD(IoVM, (onRegisterMethod)(onRegisterClass)(onRegisterBase)(onAddProto))
 
-    LM_CLASS_NO_COPY(AbstractTypeSystem)
-    LM_CLASS_NO_COPY(RuntimeTypeSystem)
-    LM_BASE(RuntimeTypeSystem, AbstractTypeSystem)
+    LM_CLASS_NO_COPY(global_ns, TypeSystem)
 
-    LM_CLASS(IoObject)
+    LM_CLASS(global_ns, IoObject)
 
     // To convert an Io object to a void*
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<void*>(), new LikeMagic::TypeConv::ImplicitConv<IoObject*, void*>);
@@ -269,53 +249,27 @@ IoVM::IoVM(std::string bootstrap_path) : type_system(type_sys), last_exception(0
     // Allow LikeMagic proxy objects to be converted to the C/C++ type IoObject*
     type_system->add_converter_simple(FromIoTypeInfo::create_index("LikeMagic"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv<>);
 
-    LM_CLASS(DebugInfo)
-    LM_CLASS(IoBlock)
-    LM_BASE(IoBlock, DebugInfo)
+    LM_CLASS(global_ns, IoBlock)
 
     // Allow conversion of Io blocks to IoObject*
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv<>);
 
     // Allow reference/value conversions for IoBlock.
-    type_system->add_conv<Iocaste::LikeMagicAdapters::IoBlock&, Iocaste::LikeMagicAdapters::IoBlock>();
-    type_system->add_conv<Iocaste::LikeMagicAdapters::IoBlock&, Iocaste::LikeMagicAdapters::IoBlock const&>();
+    add_conv<Iocaste::LikeMagicAdapters::IoBlock&, Iocaste::LikeMagicAdapters::IoBlock>();
+    add_conv<Iocaste::LikeMagicAdapters::IoBlock&, Iocaste::LikeMagicAdapters::IoBlock const&>();
 
     // You have to have registered the types before you can add protos for them.
 
     // Make this vm accessible in the bootstrap environment
-    add_proto<IoVM&>("io_vm", *this);
+    Iocaste::LikeMagicAdapters::add_proto<IoVM&>(*this, "io_vm", *this);
 
     // Also make the abstract type system available by pointer.
-    add_proto<RuntimeTypeSystem&>("type_system", type_system);
+    Iocaste::LikeMagicAdapters::add_proto<TypeSystem*>(*this, "type_system", type_system);
 
     // The object that represents the global namespace.
     //add_proto("namespace", Namespace::global->register_functions().create_class_proxy(), false);
 
     return;
-}
-
-void IoVM::register_base(LikeMagic::Marshaling::AbstractClass const* class_, LikeMagic::Marshaling::AbstractClass const* base)
-{
-    //cout << "Register base " << class_->get_class_name() << " : " << base->get_class_name() << endl << flush;
-    //string proto_code = code_to_get_class_proto(class_);
-    //do_string(proto_code + " appendProto(" + code_to_get_class_proto(base) + ")");
-
-    if (!onRegisterBase.empty())
-        onRegisterBase(class_, base);
-}
-
-void IoVM::register_method(LikeMagic::Marshaling::AbstractClass const* class_, std::string method_name, LikeMagic::Marshaling::AbstractMethod* method)
-{
-    //cout << "Register method " << method_name << endl;
-    if (!onRegisterMethod.empty())
-        onRegisterMethod(class_, method_name, method);
-}
-
-void IoVM::register_class(LikeMagic::Marshaling::AbstractClass const* class_)
-{
-    if (!onRegisterClass.empty())
-        onRegisterClass(class_);
-        //class_protos[class_->get_type()] = onRegisterClass.eval<IoObject*>(class_);
 }
 
 IoVM::~IoVM()
@@ -331,18 +285,18 @@ IoObject* IoVM::castToIoObjectPointer(void* p)
     return reinterpret_cast<IoObject*>(p);
 }
 
-void IoVM::add_proto(std::string name, AbstractCppObjProxy* proxy, LikeMagic::NamespacePath ns, bool conv_to_script) const
+void IoVM::add_proto(std::string name, ExprPtr expr, string ns, bool conv_to_script) const
 {
     IoObject* clone;
     if (conv_to_script)
     {
-        clone = to_script(state->lobby, state->lobby, NULL, proxy);
+        clone = to_script(state->lobby, state->lobby, NULL, expr);
     }
     else
     {
         IoObject* proto = LM_Proxy;
         clone = API_io_rawClone(proto);
-        IoObject_setDataPointer_(clone, proxy);
+        IoObject_setDataPointer_(clone, expr.get());
     }
 
     //if (onAddProto.empty())
@@ -411,14 +365,14 @@ void IoVM::mark() const
     }
 }
 
-IoObject* IoVM::proxy_to_io_obj(AbstractCppObjProxy* proxy)
+IoObject* IoVM::expr_to_io_obj(ExprPtr expr)
 {
-    if (!proxy)
-        throw logic_error("IoVM::proxy_to_io_obj: proxy argument was NULL.");
+    if (!expr)
+        throw logic_error("IoVM::expr_to_io_obj: expr argument was NULL.");
 
     IoObject* proto = LM_Proxy;
     IoObject* clone = API_io_rawClone(proto);
-    IoObject_setDataPointer_(clone, proxy);
+    IoObject_setDataPointer_(clone, expr.get());
     return clone;
 }
 
@@ -455,11 +409,11 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
         //if (method_name == "unsafe_ptr_cast")
         //    cout << "unsafe_ptr_cast used" << endl;
 
-        auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
-        proxy->check_magic();
+        auto expr = reinterpret_cast<AbstractExpression*>(IoObject_dataPointer(self));
 
         int arg_count = IoMessage_argCount(m);
-        auto* method = proxy->try_get_method(method_name, arg_count);
+        TypeMirror* type_mirror = type_system->get_class(expr->get_class_type());
+        auto* method = type_mirror->get_method(method_name, arg_count);
 
         // If it's not a C++ method, maybe it is an Io method.  If it is neither,
         // it will end up coming back to us via IoVM::forward where we can throw the method not found exception.
@@ -486,11 +440,7 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
             }
         }
 
-        // Debugging
-        //if (method_name == "createHillPlaneMesh")
-        //    raise(SIGINT);
-
-        auto result = proxy->call(method, args);
+        auto result = method->call(expr, args);
         IoObject* result_obj = iovm->to_script(self, locals, m, result);
 
         return result_obj;
@@ -548,10 +498,10 @@ IoObject* IoVM::forward(IoObject *self, IoObject *locals, IoMessage *m)
     {
         std::cout << "forward "  << method_name << std::endl;
 
-        auto proxy = reinterpret_cast<AbstractCppObjProxy*>(IoObject_dataPointer(self));
-        proxy->check_magic();
+        auto expr = reinterpret_cast<AbstractExpression*>(IoObject_dataPointer(self));
 
-        proxy->suggest_method(method_name, arg_count);
+        TypeMirror* type_mirror = type_system->get_class(expr->get_class_type());
+        type_mirror->suggest_method(method_name, arg_count);
 
         // Never get here; suggest_method always throws.
         return IONIL(self);
@@ -576,31 +526,27 @@ IoObject* IoVM::forward(IoObject *self, IoObject *locals, IoMessage *m)
 }
 
 
-IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, AbstractCppObjProxy* proxy) const
+IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPtr from_expr) const
 {
     static TypeIndex to_io_type = ToIoTypeInfo::create_index();
 
-    if (!proxy)
+    if (!from_expr)
         return IOSTATE->ioNil;
-    else
-        proxy->check_magic();
 
-    ExprPtr from_expr = proxy->get_expr();
+    bool is_terminal = from_expr->is_terminal();
+    bool disable_to_script = from_expr->disable_to_script_conv();
+    bool expr_has_conv = is_terminal && !disable_to_script
+        && type_system->has_conv(from_expr->get_type(), to_io_type);
 
-    bool is_terminal = proxy->is_terminal();
-    bool disable_to_script = proxy->disable_to_script_conv();
-    bool has_conv = is_terminal && !disable_to_script && type_system->has_conv(from_expr->get_type(), to_io_type);
-
-    if (!disable_to_script && proxy->get_expr()->is_null())
+    if (!disable_to_script && from_expr->is_null())
     {
         return IOSTATE->ioNil;
     }
-    else if (has_conv)
+    else if (expr_has_conv)
     {
         ExprPtr to_expr = type_system->try_conv(from_expr, to_io_type);
         boost::intrusive_ptr<AbstractToIoObjectExpr> io_expr = static_cast<AbstractToIoObjectExpr*>(to_expr.get());
         IoObject* io_obj = io_expr->eval_in_context(self, locals, m);
-        delete proxy;
         return io_obj;
     }
     else
@@ -623,7 +569,7 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, Abstra
         */
 
         IoObject* clone = IOCLONE(proto);
-        IoObject_setDataPointer_(clone, proxy);
+        IoObject_setDataPointer_(clone, from_expr.get());
 
         return clone;
     }

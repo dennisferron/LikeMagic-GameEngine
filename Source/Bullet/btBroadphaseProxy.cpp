@@ -8,19 +8,21 @@
 
 #include "btBulletDynamicsCommon.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
+#include "LikeMagic/TypeConv/NumberConv.hpp"
 
 using namespace LikeMagic;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btBroadphaseProxy(Namespace const& ns_bullet)
+void add_bindings_btBroadphaseProxy()
 {
-    LM_CLASS(ns_bullet, btBroadphaseProxy)
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);
 
     typedef btBroadphaseProxy::CollisionFilterGroups CollisionFilterGroups;
     LM_CLASS(ns_bullet, CollisionFilterGroups)
-    ns_bullet.get_type_system().add_conv<CollisionFilterGroups, short, LikeMagic::TypeConv::NumberConv>();
+    add_conv<CollisionFilterGroups, short, LikeMagic::TypeConv::NumberConv>();
 
 }
 

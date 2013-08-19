@@ -13,6 +13,6 @@
 
 namespace Bindings { namespace IrrKlang {
 
-void add_bindings(LikeMagic::Namespace const& type_sys);
+void add_bindings();
 
 }}

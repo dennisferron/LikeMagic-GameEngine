@@ -12,18 +12,21 @@
 #pragma GCC diagnostic ignored "-Wuninitialized"
 #include "btBulletDynamicsCommon.h"
 
-#include "LikeMagic/Utility/UserMacros.hpp"
+#include "LikeMagic/BindingMacros.hpp"
 
 using namespace LikeMagic;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btConstraintSolver(Namespace const& ns_bullet)
+void add_bindings_btConstraintSolver()
 {
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);
+
     LM_CLASS(ns_bullet, btConstraintSolver)
     LM_CLASS(ns_bullet, btSequentialImpulseConstraintSolver)
     LM_BASE(btSequentialImpulseConstraintSolver, btConstraintSolver)
-    LM_CONSTR(btSequentialImpulseConstraintSolver,,)
+    LM_CONSTR(btSequentialImpulseConstraintSolver,"new")
 }
 
 }}
