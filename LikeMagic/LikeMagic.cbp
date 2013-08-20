@@ -88,6 +88,8 @@
 		<Unit filename="Include/LikeMagic/Exprs/Reference.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/StringCachingTrampoline.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/Term.hpp" />
+		<Unit filename="Include/LikeMagic/Exprs/TermDeleter.hpp" />
+		<Unit filename="Include/LikeMagic/Exprs/TermStoreAs.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/Trampoline.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/methodcall_args.hpp" />
 		<Unit filename="Include/LikeMagic/IMarkable.hpp" />

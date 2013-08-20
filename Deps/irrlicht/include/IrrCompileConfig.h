@@ -7,7 +7,9 @@
 
 // DLF:  Fixes the MinGW define
 #ifdef __MINGW32__
+#ifndef __GNUWIN32__
 #define __GNUWIN32__
+#endif
 #endif
 
 //! Irrlicht SDK Version

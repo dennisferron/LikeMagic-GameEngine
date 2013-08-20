@@ -2,6 +2,10 @@
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
 
+#include "LikeMagic/Exprs/TermDeleter.hpp"
+LM_CUSTOM_DELETER(btCollisionObjectWrapper*, /* do nothing */)
+LM_CUSTOM_DELETER(btCollisionObjectWrapper const*, /* do nothing */)
+
 #include "LikeMagic/IMarkable.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"

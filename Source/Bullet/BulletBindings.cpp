@@ -17,23 +17,23 @@ using namespace LikeMagic;
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings_btBroadphaseProxy(Namespace const& ns_bullet);
-void add_bindings_btBroadphaseInterface(Namespace const& ns_bullet);
-void add_bindings_btCollisionConfiguration(Namespace const& ns_bullet);
-void add_bindings_btCollisionObject(Namespace const& ns_bullet);
-void add_bindings_btCollisionShape(Namespace const& ns_bullet);
-void add_bindings_btCollisionWorld(Namespace const& ns_bullet);
-void add_bindings_btConcaveShape(Namespace const& ns_bullet);
-void add_bindings_btConstraintSolver(Namespace const& ns_bullet);
-void add_bindings_btDispatcher(Namespace const& ns_bullet);
-void add_bindings_btMatrix3x3(Namespace const& ns_bullet);
-void add_bindings_btMotionState(Namespace const& ns_bullet);
-void add_bindings_btQuaternion(Namespace const& ns_bullet);
-void add_bindings_btSoftBody(Namespace const& ns_bullet);
-void add_bindings_btStridingMeshInterface(Namespace const& ns_bullet);
-void add_bindings_btTransform(Namespace const& ns_bullet);
-void add_bindings_btTypedConstraint(Namespace const& ns_bullet);
-void add_bindings_btVector3(Namespace const& ns_bullet);
+void add_bindings_btBroadphaseProxy();
+void add_bindings_btBroadphaseInterface();
+void add_bindings_btCollisionConfiguration();
+void add_bindings_btCollisionObject();
+void add_bindings_btCollisionShape();
+void add_bindings_btCollisionWorld();
+void add_bindings_btConcaveShape();
+void add_bindings_btConstraintSolver();
+void add_bindings_btDispatcher();
+void add_bindings_btMatrix3x3();
+void add_bindings_btMotionState();
+void add_bindings_btQuaternion();
+void add_bindings_btSoftBody();
+void add_bindings_btStridingMeshInterface();
+void add_bindings_btTransform();
+void add_bindings_btTypedConstraint();
+void add_bindings_btVector3();
 
 void add_bindings()
 {
@@ -59,7 +59,7 @@ void add_bindings()
     Bindings::Bullet::add_bindings_btTypedConstraint();
     Bindings::Bullet::add_bindings_btVector3();
 
-    Bindings::Bullet::add_protos();
+    LM_STATIC_FUNC_NAME(ns_bullet_bindings, "add_protos", Bindings::Bullet::add_protos)
 }
 
 }}

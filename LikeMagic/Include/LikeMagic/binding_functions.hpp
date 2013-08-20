@@ -175,19 +175,19 @@ void bind_field(LikeMagic::Mirrors::TypeMirror& class_, std::string field_name, 
     class_.add_method("ref_" + field_name, reffer);
 }
 
-template <typename T, typename R, int N>
+template <typename T, typename R, size_t N>
 void bind_array_field(LikeMagic::Mirrors::TypeMirror& class_, std::string field_name, R(T::*f)[N])
 {
     typedef LikeMagic::CallTargets::ArrayFieldSetterTarget<R> SetterTarget;
-    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), class_.get_const_ref_type());
+    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), class_.get_const_ref_type(), N);
     class_.add_method("set_" + field_name, setter);
 
     typedef LikeMagic::CallTargets::ArrayFieldGetterTarget<R> GetterTarget;
-    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), class_.get_ref_type());
+    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), class_.get_ref_type(), N);
     class_.add_method("get_" + field_name, getter);
 
     typedef LikeMagic::CallTargets::ArrayFieldReferenceTarget<R> RefferTarget;
-    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), class_.get_ref_type());
+    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), class_.get_ref_type(), N);
     class_.add_method("ref_" + field_name, reffer);
 }
 

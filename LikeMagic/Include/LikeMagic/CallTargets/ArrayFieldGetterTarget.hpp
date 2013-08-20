@@ -21,16 +21,17 @@ template <typename R>
 class ArrayFieldGetterTarget : public CallTarget
 {
 public:
-    typedef R (Delegate::*F);
+    typedef R (Delegate::*F)[];
 
 private:
     F const f_ptr;
     TypeIndex const actual_type;
+    size_t array_size;
 
 public:
 
-    ArrayFieldGetterTarget(F f_ptr_, TypeIndex actual_type_)
-        : f_ptr(f_ptr_), actual_type(actual_type_) {}
+    ArrayFieldGetterTarget(F f_ptr_, TypeIndex actual_type_, size_t array_size_)
+        : f_ptr(f_ptr_), actual_type(actual_type_), array_size(array_size_) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {

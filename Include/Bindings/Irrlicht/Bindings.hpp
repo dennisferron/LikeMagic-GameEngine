@@ -9,13 +9,11 @@
 
 #pragma once
 
-#include "LikeMagic/Utility/DLLHelper.hpp"
-
-namespace LikeMagic { class RuntimeTypeSystem; }
+namespace LikeMagic { class TypeSystem; }
 
 namespace Iocaste { namespace LikeMagicAdapters {
+    class IoVM;
 }}
-
 
 namespace Bindings { namespace Irrlicht {
 

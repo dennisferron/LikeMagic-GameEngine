@@ -63,16 +63,16 @@ void add_bindings_gui()
     typedef SEvent::SMouseInput SMouseInput;
     LM_CLASS(ns_irr_gui, SMouseInput)
     LM_FIELD(SMouseInput, (Event)(X)(Y)(Wheel)(ButtonStates))
-    LM_BIT_FIELD(SMouseInput, Shift)
-    LM_BIT_FIELD(SMouseInput, Control)
+    //LM_BIT_FIELD(SMouseInput, Shift)
+    //LM_BIT_FIELD(SMouseInput, Control)
     LM_FUNC(SMouseInput, (isLeftPressed)(isRightPressed)(isMiddlePressed))
 
     typedef SEvent::SKeyInput SKeyInput;
     LM_CLASS(ns_irr_gui, SKeyInput)
     LM_FIELD(SKeyInput, (Char)(Key))
-    LM_BIT_FIELD(SKeyInput, PressedDown)
-    LM_BIT_FIELD(SKeyInput, Shift)
-    LM_BIT_FIELD(SKeyInput, Control)
+    //LM_BIT_FIELD(SKeyInput, PressedDown)
+    //LM_BIT_FIELD(SKeyInput, Shift)
+    //LM_BIT_FIELD(SKeyInput, Control)
 
     typedef SEvent::SJoystickEvent SJoystickEvent;
     LM_CLASS(ns_irr_gui, SJoystickEvent)

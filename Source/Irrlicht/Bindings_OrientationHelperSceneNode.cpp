@@ -26,7 +26,7 @@ void add_bindings_orientation()
 
     LM_CLASS(ns_irr_scene, ISceneNode)
 
-    auto ns_irr_custom = Namespace::global->subspace("irr").subspace("custom");
+    TypeMirror& ns_irr_custom = register_namespace("custom", ns_irr);
 
     LM_CLASS(ns_irr_custom, OrientationHelperSceneNode)
     LM_BASE(OrientationHelperSceneNode, ISceneNode)

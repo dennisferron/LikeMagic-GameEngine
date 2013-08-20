@@ -14,7 +14,7 @@
 // Define the irrklang bindings as a dummy function.
 using namespace LikeMagic;
 namespace Bindings { namespace IrrKlang {
-void add_bindings(Namespace const& type_sys) {}
+void add_bindings() {}
 }}
 
 #else

@@ -27,7 +27,7 @@ using namespace irr::gui;
 
 namespace Bindings { namespace Irrlicht {
 
-void add_protos(IoVM& vm, )
+void add_protos(IoVM& vm)
 {
     //LM_STATIC_FUNC(Bindings::Irrlicht, add_protos_irr)
 }

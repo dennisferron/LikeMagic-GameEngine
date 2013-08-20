@@ -10,6 +10,8 @@
 #pragma once
 
 #include "LikeMagic/Exprs/Expression.hpp"
+#include "LikeMagic/Exprs/TermStoreAs.hpp"
+#include "LikeMagic/Exprs/TermDeleter.hpp"
 
 #include "LikeMagic/IMarkable.hpp"
 #include "LikeMagic/Utility/TypeDescr.hpp"
@@ -24,46 +26,6 @@
 namespace LikeMagic { namespace Exprs {
 
 using namespace LikeMagic::Utility;
-
-
-// The compiler seems to treat numeric temporaries as "extra temporary",
-// too aggressively deciding the temporary isn't needed and dropping it off the stack.
-// So don't allow a const& to be made to any numeric; just store the value.
-template <typename T> struct TermStoreAs { typedef T type; };
-template <> struct TermStoreAs<float const&> { typedef float type; };
-template <> struct TermStoreAs<double const&> { typedef double type; };
-template <> struct TermStoreAs<signed char const&> { typedef signed char type; };
-template <> struct TermStoreAs<int const&> { typedef int type; };
-template <> struct TermStoreAs<long const&> { typedef long type; };
-template <> struct TermStoreAs<long long const&> { typedef long long type; };
-template <> struct TermStoreAs<unsigned char const&> { typedef unsigned char type; };
-template <> struct TermStoreAs<unsigned int const&> { typedef unsigned int type; };
-template <> struct TermStoreAs<unsigned long const&> { typedef unsigned long type; };
-template <> struct TermStoreAs<unsigned long long const&> { typedef unsigned long long type; };
-
-// Still necessary?
-template <> struct TermStoreAs<bool&> { typedef bool type; };
-
-template <typename T>
-struct Deleter
-{
-    static void delete_if_possible(T const& value) { /* do nothing */ }
-};
-
-template <typename T>
-struct Deleter<T*>
-{
-    static void delete_if_possible(T* value) { delete value; }
-};
-
-template <>
-struct Deleter<void*>
-{
-    static void delete_if_possible(void* value)
-    {
-        throw std::logic_error("Cannot auto-delete void*.");
-    }
-};
 
 template <typename T>
 class Term : public Expression<T&>
@@ -116,7 +78,7 @@ public:
     ~Term()
     {
         if (auto_delete_ptr)
-            Deleter<T>::delete_if_possible(value);
+            TermDeleter<T>::delete_if_possible(value);
     }
 
     void set_auto_delete_ptr(bool value_)

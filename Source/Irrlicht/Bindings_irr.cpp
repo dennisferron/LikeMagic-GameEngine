@@ -21,10 +21,9 @@ void add_bindings_irr()
 {
     TypeMirror& global_ns = type_system->global_namespace();
     TypeMirror& ns_irr = register_namespace("irr", global_ns);
-s
+
     // functions
-    auto& funcs_LM = ns_irr.register_functions();
-    funcs_LM.bind_method("createDevice", createDevice);
+    bind_static_method(ns_irr, "createDevice", createDevice);
 
     LM_CLASS(ns_irr, IReferenceCounted)
     //LM_FUNC(IReferenceCounted, (drop)(grab)(getDebugName)(getReferenceCount))

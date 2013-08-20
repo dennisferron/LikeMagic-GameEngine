@@ -46,10 +46,8 @@ typedef FlagBits<ISceneNode*> FlagBits_of_ISceneNode;
 
 void add_bindings()
 {
-    // This needs to be done once in every DLL.
-    LM_SET_TYPE_INFO(type_sys)
-
-    auto ns_custom = Namespace::global->subspace("Custom");
+    TypeMirror& ns_global = type_system->global_namespace();
+    TypeMirror& ns_custom = register_namespace("Custom", ns_global);
 
     LM_CLASS(ns_custom, SceneNodePtrTest)
     LM_STATIC_MEMBER_FUNC(SceneNodePtrTest,
@@ -93,7 +91,7 @@ void add_bindings()
     LM_CLASS(ns_custom, GearConstraint)
     LM_BASE(GearConstraint, btTypedConstraint)
     LM_CONSTR(GearConstraint, "new", btRigidBody&, btRigidBody&, btScalar)
-    GearConstraint_LM.bind_static_method("getRotZ", GearConstraint::getRotZ);
+    LM_STATIC_FUNC_NAME(GearConstraint_LM, "getRotZ", GearConstraint::getRotZ)
 
     LM_STATIC_FUNC_NAME(ns_custom, "add_protos", Bindings::Custom::add_protos)
 

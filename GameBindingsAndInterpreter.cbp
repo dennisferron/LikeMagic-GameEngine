@@ -148,7 +148,7 @@
 			<Add option="-Wno-ignored-qualifiers" />
 			<Add directory="Common/boost_1_49_0" />
 			<Add directory="Deps/bullet-2.81-rev2613/src" />
-			<Add directory="../desteer/bindings/Include" />
+			<Add directory="../desteer/include" />
 			<Add directory="Include" />
 			<Add directory="LikeMagic/Include" />
 			<Add directory="LikeMagic/StdBindings/Include" />
@@ -182,6 +182,11 @@
 		<Unit filename="Include/Bindings/Custom/ScriptObjAnimator.hpp" />
 		<Unit filename="Include/Bindings/Custom/SoftBodyMeshSynchronizer.hpp" />
 		<Unit filename="Include/Bindings/Custom/SurfaceQuadTree.hpp" />
+		<Unit filename="Include/Bindings/DESteer/Bindings.hpp" />
+		<Unit filename="Include/Bindings/DESteer/Protos.hpp" />
+		<Unit filename="Include/Bindings/DESteer/ScriptedBaseEntity.hpp" />
+		<Unit filename="Include/Bindings/DESteer/ScriptedEntitySpace.hpp" />
+		<Unit filename="Include/Bindings/DESteer/ScriptedMobileEntity.hpp" />
 		<Unit filename="Include/Bindings/IrrKlang/Bindings.hpp" />
 		<Unit filename="Include/Bindings/IrrKlang/Protos.hpp" />
 		<Unit filename="Include/Bindings/Irrlicht/Bindings.hpp" />
@@ -233,6 +238,10 @@
 		<Unit filename="Source/Custom/ScriptObjAnimator.cpp" />
 		<Unit filename="Source/Custom/SoftBodyMeshSynchronizer.cpp" />
 		<Unit filename="Source/Custom/SurfaceQuadTree.cpp" />
+		<Unit filename="Source/DESteer/Bindings.cpp" />
+		<Unit filename="Source/DESteer/Protos.cpp" />
+		<Unit filename="Source/DESteer/ScriptedBaseEntity.cpp" />
+		<Unit filename="Source/DESteer/ScriptedMobileEntity.cpp" />
 		<Unit filename="Source/IrrKlang/IrrKlangBindings.cpp" />
 		<Unit filename="Source/IrrKlang/IrrKlangProtos.cpp" />
 		<Unit filename="Source/Irrlicht/Bindings_OrientationHelperSceneNode.cpp" />

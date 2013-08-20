@@ -27,7 +27,7 @@ void add_bindings_core()
     TypeMirror& ns_irr = register_namespace("irr", global_ns);
     TypeMirror& ns_irr_core = register_namespace("core", ns_irr);
 
-    LM_STATIC_FUNC_NAME(core, "isnotzero", isnotzero)
+    LM_STATIC_FUNC_NAME(ns_irr_core, "isnotzero", core::isnotzero)
 
     typedef irr::core::string<fschar_t> irrFsStr;
     LM_CLASS(ns_irr_core, irrFsStr)
@@ -63,14 +63,14 @@ void add_bindings_core()
     LM_FUNC(rectf, (getWidth)(getHeight))
 
     LM_CLASS(ns_irr_core, vector2di)
-    LM_CONSTR(vector2di,"new")
-    LM_CONSTR(vector2di, , int, int)
+    LM_CONSTR(vector2di, "new")
+    LM_CONSTR(vector2di, "new", int, int)
     LM_CONSTR(vector2di, "newWithXY", int, int)
     LM_FIELD(vector2di, (X)(Y))
 
     LM_CLASS(ns_irr_core, vector2df)
     LM_CONSTR(vector2df,"new")
-    LM_CONSTR(vector2df, , float, float)
+    LM_CONSTR(vector2df, "new", float, float)
     LM_CONSTR(vector2df, "newWithXY", f32, f32)
     LM_FIELD(vector2df, (X)(Y))
 

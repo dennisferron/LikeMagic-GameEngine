@@ -12,6 +12,7 @@
 
 
 using namespace std;
+using namespace LikeMagic;
 using namespace Iocaste::LikeMagicAdapters;
 
 namespace Bindings { namespace ThinPlateSpline {
