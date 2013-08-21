@@ -34,6 +34,15 @@ struct TermDeleter<void*>
     }
 };
 
+template <>
+struct TermDeleter<const void*>
+{
+    static void delete_if_possible(const void* value)
+    {
+        throw std::logic_error("Cannot auto-delete void*.");
+    }
+};
+
 }}
 
 // Most pointer types can be deleted, but there may be situations

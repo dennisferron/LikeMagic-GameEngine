@@ -228,7 +228,6 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     auto& global_ns = type_system->global_namespace();
 
     // Register this vm
-    //TypeMirror& IoVM_LM = register_class<int, false>("IoVM", global_ns);
     LM_CLASS_NO_COPY(global_ns, IoVM)
 
     LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(expr_to_io_obj)(setShowAllMessages))

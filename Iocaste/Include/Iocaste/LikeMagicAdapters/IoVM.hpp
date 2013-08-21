@@ -102,10 +102,6 @@ public:
 
     IoObject* castToIoObjectPointer(void* object);
 
-    virtual void register_class(LikeMagic::Mirrors::TypeMirror const* class_);
-    virtual void register_base(LikeMagic::Mirrors::TypeMirror const* class_, LikeMagic::Mirrors::TypeMirror const* base);
-    virtual void register_method(LikeMagic::Mirrors::TypeMirror const* class_, std::string method_name, LikeMagic::Mirrors::CallTarget* method);
-
     virtual void mark() const;
 
     virtual void setShowAllMessages(bool value);

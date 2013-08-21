@@ -81,7 +81,7 @@ std::vector<T> from_list(IoObject* io_obj)
     type_system->add_converter_simple(FromIoTypeInfo::create_index(#scriptType), BetterTypeInfo::create_index<cppType&>(), new From##scriptType); \
 }
 
-void add_convs_from_script(TypeSystem& type_sys, IoVM* iovm)
+void add_convs_from_script(IoVM* iovm)
 {
     // Nil requires special handling because it produces not a term but a NullExpr.
     struct FromNil : public AbstractTypeConverter
@@ -124,8 +124,6 @@ void add_convs_from_script(TypeSystem& type_sys, IoVM* iovm)
     };
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), BetterTypeInfo::create_index<void>(), new FromNilToVoid);
 
-
-    // IoBlock requires an extra argument (type_sys)
     struct FromIoBlock : public AbstractTypeConverter
     {
         IoVM* iovm;
