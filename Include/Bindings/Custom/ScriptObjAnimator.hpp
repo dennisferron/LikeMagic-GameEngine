@@ -15,7 +15,7 @@ typedef CollectorMarker IoObject;
 
 namespace Bindings { namespace Custom {
 
-class ScriptObjAnimator : public irr::scene::ISceneNodeAnimator, public LikeMagic::IMarkable
+class ScriptObjAnimator : public irr::scene::ISceneNodeAnimator, public LM::IMarkable
 {
 public:
 

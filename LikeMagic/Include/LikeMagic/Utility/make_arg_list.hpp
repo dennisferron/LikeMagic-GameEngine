@@ -12,7 +12,7 @@
 #include "LikeMagic/Utility/TypePack.hpp"
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 template <typename FirstArg, typename... Args>
 TypeInfoList make_arg_list(TypePack<FirstArg, Args...> args)
@@ -29,4 +29,4 @@ inline TypeInfoList make_arg_list(TypePack<> args)
     return TypeInfoList();
 }
 
-}}
+}

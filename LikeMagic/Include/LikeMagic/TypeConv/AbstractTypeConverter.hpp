@@ -13,19 +13,19 @@
 
 #include "boost/intrusive_ptr.hpp"
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
 class AbstractExpression;
 typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
 
-}}
+}
 
 #include <string>
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using LikeMagic::Utility::BetterTypeInfo;
-using LikeMagic::Exprs::ExprPtr;
+using LM::BetterTypeInfo;
+using LM::ExprPtr;
 
 class AbstractTypeConverter;
 void intrusive_ptr_add_ref(AbstractTypeConverter const* p);
@@ -62,4 +62,4 @@ std::string describe_converter(std::string converter_name)
 
 typedef boost::intrusive_ptr<AbstractTypeConverter const> p_conv_t;
 
-}}
+}

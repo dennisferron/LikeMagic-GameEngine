@@ -10,7 +10,7 @@
 
 #include <type_traits>
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 // Detects STL-compatible containers
 template<typename T>
@@ -24,4 +24,4 @@ class IsContainer {
     enum { value = sizeof(test<typename std::remove_reference<T>::type>(0)) == sizeof(Yes) };
 };
 
-}}
+}

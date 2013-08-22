@@ -43,7 +43,7 @@ using namespace std;
 
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 using namespace Iocaste;
-using namespace Iocaste::LikeMagicAdapters;
+using namespace Iocaste::LMAdapters;
 
 extern "C" IoDirectory *IoDirectory_proto(void *state);
 

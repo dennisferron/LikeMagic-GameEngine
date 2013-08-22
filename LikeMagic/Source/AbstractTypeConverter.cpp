@@ -8,7 +8,7 @@
 
 #include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
 AbstractTypeConverter::AbstractTypeConverter()
     : ref_count(0)
@@ -36,4 +36,4 @@ void intrusive_ptr_release(AbstractTypeConverter const* p)
         delete p;
 }
 
-}}
+}

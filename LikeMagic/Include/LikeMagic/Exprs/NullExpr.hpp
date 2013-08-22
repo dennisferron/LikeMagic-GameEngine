@@ -11,7 +11,7 @@
 
 #include "LikeMagic/Exprs/BottomPtrExpr.hpp"
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
 // When IoNil is encountered, it is marshaled as a NullExpr object.
 // The type can be converted to any other pointer in TypeConvGraph.
@@ -21,7 +21,7 @@ private:
     NullExpr() {}
 
 public:
-    static boost::intrusive_ptr<Expression<BottomPtrType>> create() { return new NullExpr(); }
+    static ExprPtr create() { return new NullExpr(); }
 
     inline virtual BottomPtrType eval() { return NULL; }
     virtual bool is_terminal() const { return true; }
@@ -36,4 +36,4 @@ public:
     virtual void mark() const {}
 };
 
-}}
+}

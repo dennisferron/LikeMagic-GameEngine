@@ -21,8 +21,7 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 
 #include "boost/lexical_cast.hpp"
 
-using namespace LikeMagic::Mirrors;
-using namespace LikeMagic::CallTargets;
+using namespace LM;
 using namespace std;
 
 struct TypeMirror::Impl

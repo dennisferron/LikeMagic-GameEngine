@@ -5,6 +5,6 @@
 
 int main(int argc, const char *argv[])
 {
-    LikeMagic::type_system = LikeMagic::StdBindings::create_typesystem();
+    LM::type_system = LM::create_typesystem();
     return Iocaste::run(argc, argv, &Interpreter::add_bindings);
 }

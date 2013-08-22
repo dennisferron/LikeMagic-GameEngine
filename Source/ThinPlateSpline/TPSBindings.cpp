@@ -13,7 +13,7 @@
 
 #include "LikeMagic/BindingMacros.hpp"
 
-using namespace LikeMagic;
+using namespace LM;
 using namespace TPS;
 
 namespace Bindings { namespace ThinPlateSpline {

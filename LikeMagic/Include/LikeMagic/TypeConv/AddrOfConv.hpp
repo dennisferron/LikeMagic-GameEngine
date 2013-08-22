@@ -13,9 +13,9 @@
 
 #include "boost/type_traits/is_reference.hpp"
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using namespace LikeMagic::Exprs;
+
 
 template <typename From, typename To>
 class AddrOfConv : public ConvertibleTo<To>
@@ -28,9 +28,7 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, AddrOfConv>::create(
-            boost::intrusive_ptr<Expression<From>>(
-                reinterpret_cast<Expression<From>*>(expr.get())));
+        return Trampoline<From, To, AddrOfConv>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("AddrOfConv"); }
@@ -39,4 +37,4 @@ public:
     virtual float cost() const { return 3.0f; }
 };
 
-}}
+}

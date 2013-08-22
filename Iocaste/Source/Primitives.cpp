@@ -5,7 +5,7 @@
 #include "IoObject.h"
 
 using namespace Iocaste;
-using namespace Iocaste::LikeMagicAdapters;
+using namespace Iocaste::LMAdapters;
 
 Primitives::Primitives()
 {

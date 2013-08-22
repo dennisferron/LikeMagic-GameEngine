@@ -2,7 +2,7 @@
 
 #include "LikeMagic/Interprocess/ProcessControlStructure.hpp"
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
 struct SharedMemoryFormat
 {
@@ -13,4 +13,4 @@ struct SharedMemoryFormat
     ProcessControlStructure processes[10];
 };
 
-}}
+}

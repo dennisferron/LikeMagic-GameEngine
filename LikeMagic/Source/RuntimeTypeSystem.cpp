@@ -18,10 +18,7 @@
 
 #include <sstream>
 
-using namespace LikeMagic;
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::TypeConv;
-using namespace LikeMagic::Utility;
+using namespace LM;
 
 using namespace std;
 

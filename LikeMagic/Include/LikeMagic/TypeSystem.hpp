@@ -12,30 +12,14 @@
 #include "LikeMagic/Utility/TypeIndex.hpp"
 #include "LikeMagic/Exprs/Expression.hpp"
 
-namespace LikeMagic {
+namespace LM {
 
-namespace Exprs {
-    class AbstractExpression;
-    typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
-}
-
-namespace Mirrors {
-    class CallTarget;
-    class TypeMirror;
-}
-
-namespace TypeConv {
-    class AbstractTypeConverter;
-    typedef boost::intrusive_ptr<AbstractTypeConverter const> p_conv_t;
-}
-
-using LikeMagic::TypeConv::p_conv_t;
-using LikeMagic::Mirrors::CallTarget;
-using LikeMagic::Mirrors::TypeMirror;
-using LikeMagic::Utility::TypeIndex;
-using LikeMagic::Utility::TypeInfoList;
-using LikeMagic::Exprs::AbstractExpression;
-using LikeMagic::Exprs::ExprPtr;
+class AbstractExpression;
+typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
+class CallTarget;
+class TypeMirror;
+class AbstractTypeConverter;
+typedef boost::intrusive_ptr<AbstractTypeConverter const> p_conv_t;
 
 class TypeSystem
 {
@@ -68,18 +52,18 @@ public:
 extern TypeSystem* type_system;
 
 template <typename To>
-boost::intrusive_ptr<LikeMagic::Exprs::Expression<To>> try_conv(ExprPtr from)
+LM::Expression<To>* try_conv(ExprPtr from)
 {
-    return static_cast<LikeMagic::Exprs::Expression<To>*>(
+    return static_cast<LM::Expression<To>*>(
           type_system->try_conv(
-            from, LikeMagic::Utility::BetterTypeInfo::create_index<To>()).get());
+            from, LM::BetterTypeInfo::create_index<To>()).get());
 }
 
 template <typename To>
-bool has_conv(LikeMagic::Exprs::ExprPtr from)
+bool has_conv(LM::ExprPtr from)
 {
     return type_system->has_conv(from->get_type(),
-         LikeMagic::Utility::BetterTypeInfo::create_index<To>());
+         LM::BetterTypeInfo::create_index<To>());
 }
 
 }

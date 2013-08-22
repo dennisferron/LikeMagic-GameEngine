@@ -5,7 +5,7 @@
 #include "LikeMagic/Interprocess/CallReturn.hpp"
 #include "LikeMagic/Interprocess/CallRequest.hpp"
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
 struct ProcessControlStructure
 {
@@ -21,4 +21,4 @@ struct ProcessControlStructure
     }
 };
 
-}}
+}

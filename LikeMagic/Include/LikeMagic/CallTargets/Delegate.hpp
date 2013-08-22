@@ -1,5 +1,5 @@
 #pragma once
 
-namespace LikeMagic { namespace CallTargets {
+namespace LM {
     struct Delegate {};
-}}
+}

@@ -11,7 +11,7 @@
 #include "LikeMagic/BindingMacros.hpp"
 #include "LikeMagic/TypeConv/NumberConv.hpp"
 
-using namespace LikeMagic;
+using namespace LM;
 
 namespace Bindings { namespace Bullet {
 
@@ -22,7 +22,7 @@ void add_bindings_btBroadphaseProxy()
 
     typedef btBroadphaseProxy::CollisionFilterGroups CollisionFilterGroups;
     LM_CLASS(ns_bullet, CollisionFilterGroups)
-    add_conv<CollisionFilterGroups, short, LikeMagic::TypeConv::NumberConv>();
+    add_conv<CollisionFilterGroups, short, LM::NumberConv>();
 
 }
 

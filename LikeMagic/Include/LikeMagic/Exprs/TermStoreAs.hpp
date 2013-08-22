@@ -8,7 +8,7 @@
 
 #pragma once
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
 // The compiler seems to treat numeric temporaries as "extra temporary",
 // too aggressively deciding the temporary isn't needed and dropping it off the stack.
@@ -28,4 +28,4 @@ template <> struct TermStoreAs<unsigned long long const&> { typedef unsigned lon
 // Still necessary?
 template <> struct TermStoreAs<bool&> { typedef bool type; };
 
-}}
+}

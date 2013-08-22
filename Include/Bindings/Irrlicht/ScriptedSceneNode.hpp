@@ -14,10 +14,10 @@
 
 namespace Bindings { namespace Irrlicht {
 
-using Iocaste::LikeMagicAdapters::IoBlock;
+using Iocaste::LMAdapters::IoBlock;
 using namespace irr;
 
-class ScriptedSceneNode : public scene::ISceneNode, public LikeMagic::IMarkable
+class ScriptedSceneNode : public scene::ISceneNode, public LM::IMarkable
 {
 private:
     core::aabbox3d<f32> Box;

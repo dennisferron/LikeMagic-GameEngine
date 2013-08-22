@@ -18,8 +18,8 @@
 
 
 using namespace std;
-using namespace Iocaste::LikeMagicAdapters;
-using namespace LikeMagic;
+using namespace Iocaste::LMAdapters;
+using namespace LM;
 
 namespace Bindings { namespace Bullet {
 

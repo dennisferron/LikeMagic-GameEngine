@@ -24,12 +24,12 @@
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 #include "LikeMagic/Utility/KeyWrapper.hpp"
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
 using namespace boost::graph;
-using LikeMagic::Utility::TypeIndex;
-using LikeMagic::Utility::TypeIndex;
-using LikeMagic::Utility::TypeInfoList;
+using LM::TypeIndex;
+using LM::TypeIndex;
+using LM::TypeInfoList;
 
 struct FindType;
 
@@ -92,4 +92,4 @@ public:
     void print_conv_chain(p_chain_t const& chain) const;
 };
 
-}}
+}

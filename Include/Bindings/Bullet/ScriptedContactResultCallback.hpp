@@ -12,8 +12,8 @@ LM_CUSTOM_DELETER(btCollisionObjectWrapper const*, /* do nothing */)
 
 namespace Bindings { namespace Bullet {
 
-using Iocaste::LikeMagicAdapters::IoBlock;
-using LikeMagic::IMarkable;
+using Iocaste::LMAdapters::IoBlock;
+using LM::IMarkable;
 
 class ScriptedContactResultCallback : public IMarkable, public btCollisionWorld::ContactResultCallback
 {

@@ -3,50 +3,50 @@
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
 
 template <typename T>
-LikeMagic::Exprs::ArgList make_arg_list(T value)
+LM::ArgList make_arg_list(T value)
 {
-    LikeMagic::Exprs::ExprPtr term = LikeMagic::Exprs::Term<T>::create(value);
-    LikeMagic::Exprs::ArgList arg_list;
+    LM::ExprPtr term = LM::Term<T>::create(value);
+    LM::ArgList arg_list;
     arg_list.push_back(term);
     return arg_list;
 }
 
 template <typename T, typename U>
-LikeMagic::Exprs::ArgList make_arg_list(T value, U other_value)
+LM::ArgList make_arg_list(T value, U other_value)
 {
-    LikeMagic::Exprs::ExprPtr term = LikeMagic::Exprs::Term<T>::create(value);
-    LikeMagic::Exprs::ExprPtr other_term = LikeMagic::Exprs::Term<T>::create(other_value);
-    LikeMagic::Exprs::ArgList arg_list;
+    LM::ExprPtr term = LM::Term<T>::create(value);
+    LM::ExprPtr other_term = LM::Term<T>::create(other_value);
+    LM::ArgList arg_list;
     arg_list.push_back(term);
     arg_list.push_back(other_term);
     return arg_list;
 }
 
 template <typename T>
-LikeMagic::Utility::TypeInfoList make_type_list()
+LM::TypeInfoList make_type_list()
 {
-    LikeMagic::Utility::TypeIndex type_index
-        = LikeMagic::Utility::BetterTypeInfo::create_index<T>();
-    LikeMagic::Utility::TypeInfoList arg_types;
+    LM::TypeIndex type_index
+        = LM::BetterTypeInfo::create_index<T>();
+    LM::TypeInfoList arg_types;
     arg_types.push_back(type_index);
     return arg_types;
 }
 
 template <typename T, typename U>
-LikeMagic::Utility::TypeInfoList make_type_list()
+LM::TypeInfoList make_type_list()
 {
-    LikeMagic::Utility::TypeIndex type_index
-        = LikeMagic::Utility::BetterTypeInfo::create_index<T>();
-    LikeMagic::Utility::TypeIndex other_type_index
-        = LikeMagic::Utility::BetterTypeInfo::create_index<U>();
-    LikeMagic::Utility::TypeInfoList arg_types;
+    LM::TypeIndex type_index
+        = LM::BetterTypeInfo::create_index<T>();
+    LM::TypeIndex other_type_index
+        = LM::BetterTypeInfo::create_index<U>();
+    LM::TypeInfoList arg_types;
     arg_types.push_back(type_index);
     arg_types.push_back(other_type_index);
     return arg_types;
 }
 
 template <typename T>
-LikeMagic::Utility::TypeIndex get_type_index()
+LM::TypeIndex get_type_index()
 {
-    return LikeMagic::Utility::BetterTypeInfo::create_index<T>();
+    return LM::BetterTypeInfo::create_index<T>();
 }

@@ -19,7 +19,7 @@
 #include "LikeMagic/Utility/TypeInfoCache.hpp"
 #include "LikeMagic/Utility/KeyWrapper.hpp"
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 class AbstractTypeInfo;
 void intrusive_ptr_add_ref(AbstractTypeInfo const* p);
@@ -152,4 +152,4 @@ inline std::size_t hash_value(TypeInfoPtr info_p)
 
 typedef AbstractTypeInfo::TypeInfoKey TypeInfoKey;
 
-}}
+}

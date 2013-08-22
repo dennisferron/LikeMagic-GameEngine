@@ -81,7 +81,7 @@ io_vm set_onRegisterMethod(block(abstract_class, method_name, call_target,
 ))
 */
 
-// Convert LikeMagic::Namespace object to the Io object associated with it.
+// Convert LM::Namespace object to the Io object associated with it.
 find_namespace := method(ns,
     //writeln("find_namespace(", ns to_string, ")")
     if (ns is_root,

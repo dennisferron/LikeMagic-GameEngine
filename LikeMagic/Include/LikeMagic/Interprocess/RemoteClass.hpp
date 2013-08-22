@@ -2,9 +2,9 @@
 
 #include "LikeMagic/Exprs/TypeMirror.hpp"
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
-using TypeMirror = LikeMagic::Exprs::TypeMirror;
+using TypeMirror = LM::TypeMirror;
 
 class RemoteClass : TypeMirror
 {
@@ -13,4 +13,4 @@ private:
 
 };
 
-}}
+}

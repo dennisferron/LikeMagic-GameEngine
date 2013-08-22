@@ -8,7 +8,7 @@
 
 #include "LikeMagic/Exprs/NamespaceExpr.hpp"
 
-using namespace LikeMagic::Exprs;
+using namespace LM;
 
 NamespaceExpr::NamespaceExpr(TypeIndex type_, TypeIndex class_type_)
     : type(type_), class_type(class_type_)

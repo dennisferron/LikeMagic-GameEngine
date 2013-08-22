@@ -1,5 +1,5 @@
 
-namespace LikeMagic
+namespace LM
 {
     class RuntimeTypeSystem;
 }

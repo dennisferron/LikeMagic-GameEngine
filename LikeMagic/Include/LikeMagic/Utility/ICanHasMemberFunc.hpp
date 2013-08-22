@@ -8,7 +8,7 @@
 
 #pragma once
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 // Detects if type is legal to use as qualifier for member function pointer.
 template<typename T>
@@ -23,4 +23,4 @@ public:
     enum { value = sizeof(test<T>(0)) == sizeof(Yes) };
 };
 
-}}
+}

@@ -41,20 +41,15 @@ add_conv<type const&, double const&, NumberConv>();
 #define add_all_num_conv_impl(r, data, elem) add_num_conv(elem);
 #define add_all_num_conv(SEQ) BOOST_PP_SEQ_FOR_EACH(add_all_num_conv_impl,, SEQ)
 
-using namespace LikeMagic;
-using namespace LikeMagic::StdBindings;
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::TypeConv;
-using namespace LikeMagic::Utility;
-
+using namespace LM;
 using namespace std;
 
-namespace LikeMagic { namespace StdBindings {
+namespace LM {
 
 TypeSystem* create_typesystem()
 {
     auto* result = new TypeSystemInstance();
-    LikeMagic::StdBindings::add_bindings();
+    LM::add_bindings();
     return result;
 }
 
@@ -111,4 +106,4 @@ TypeSystemInstance::TypeSystemInstance()
 */
 }
 
-}}
+}

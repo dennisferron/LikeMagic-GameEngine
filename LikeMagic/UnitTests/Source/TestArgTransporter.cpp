@@ -8,9 +8,9 @@
 
 using namespace std;
 
-using namespace LikeMagic;
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Interprocess;
+using namespace LM;
+using namespace LM;
+using namespace LM::Interprocess;
 
 SUITE(TestArgTransporter)
 {

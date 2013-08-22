@@ -8,7 +8,7 @@
 
 #pragma once
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 namespace Private {
 
@@ -92,6 +92,6 @@ struct StripModifiers : public Private::StripRef<T>
 };
 
 
-}}
+}
 
 

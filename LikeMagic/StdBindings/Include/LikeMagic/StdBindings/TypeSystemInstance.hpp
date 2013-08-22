@@ -10,7 +10,7 @@
 
 #include "LikeMagic/TypeSystem.hpp"
 
-namespace LikeMagic { namespace StdBindings {
+namespace LM {
 
 // Use this function to create the RuntimeTypesystem object.  I put it in the StdBindings project
 // to reduce the size of the LikeMagic static library when using DLL-based build.
@@ -27,4 +27,4 @@ private:
     friend TypeSystem* create_typesystem();
 };
 
-}}
+}

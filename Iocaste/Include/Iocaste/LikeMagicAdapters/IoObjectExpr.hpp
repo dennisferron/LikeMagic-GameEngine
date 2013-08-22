@@ -16,11 +16,11 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
-using LikeMagic::Exprs::ExprPtr;
-using LikeMagic::Exprs::Expression;
-using LikeMagic::Utility::TypeIndex;
+using LM::ExprPtr;
+using LM::Expression;
+using LM::TypeIndex;
 
 class IoObjectExpr : public Expression<IoObject*>
 {

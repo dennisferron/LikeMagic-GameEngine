@@ -11,9 +11,9 @@
 #include "ConvertibleTo.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using namespace LikeMagic::Exprs;
+
 
 // This type converter allows bound functions to get ahold of the outer expression object,
 // rather than what is inside the expression object.  It allows you to write functions that
@@ -31,4 +31,4 @@ public:
     virtual std::string description() const { return "ToAbstractExpressionConv"; }
 };
 
-}}
+}

@@ -15,7 +15,7 @@
 #include "boost/type_traits.hpp"
 #include "boost/utility/enable_if.hpp"
 
-namespace LikeMagic
+namespace LM
 {
 
 // Utility class to aid in implementing scripted C++ objects that keep track of child

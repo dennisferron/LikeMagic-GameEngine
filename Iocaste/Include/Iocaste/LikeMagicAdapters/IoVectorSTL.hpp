@@ -16,7 +16,7 @@
 
 #include <iterator>
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
 template <typename T> struct UArrayElemConv;
 

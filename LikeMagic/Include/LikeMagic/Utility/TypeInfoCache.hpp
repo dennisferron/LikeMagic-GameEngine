@@ -11,7 +11,7 @@
 #include "LikeMagic/Utility/TypeIndex.hpp"
 #include "LikeMagic/Utility/KeyWrapper.hpp"
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 class TypeInfoCache
 {
@@ -32,4 +32,4 @@ public:
 };
 
 
-}}
+}

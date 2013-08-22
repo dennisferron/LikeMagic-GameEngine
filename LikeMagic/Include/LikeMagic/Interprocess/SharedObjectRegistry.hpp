@@ -4,9 +4,9 @@
 
 #include "boost/unordered_map.hpp"
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
-using ExprPtr = LikeMagic::Exprs::ExprPtr;
+using ExprPtr = LM::ExprPtr;
 
 typedef int shared_object_handle;
 
@@ -17,4 +17,4 @@ private:
 public:
 };
 
-}}
+}

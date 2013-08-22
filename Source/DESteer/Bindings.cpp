@@ -18,7 +18,7 @@
 #include "desteer/entity/IMobileEntity.hpp"
 #include "desteer/controller/SimpleSteeringController.hpp"
 
-using namespace LikeMagic;
+using namespace LM;
 
 using namespace desteer;
 using namespace desteer::entity;
@@ -139,7 +139,7 @@ void add_bindings()
     // To avoid the warning, I'm using NumberConv which
     // caches the temporary copy of the value so there
     // will be something persistent for the reference to refer to.
-    add_conv<ScriptedMobileEntity*&, IBaseEntity* const&, LikeMagic::TypeConv::NumberConv>();
+    add_conv<ScriptedMobileEntity*&, IBaseEntity* const&, LM::NumberConv>();
 
     LM_BLOCK(ScriptedMobileEntity,
 

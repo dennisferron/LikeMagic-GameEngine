@@ -2,9 +2,9 @@
 
 #include "AbstractCppObjProxy.hpp"
 
-namespace LikeMagic { namespace Interprocess
+namespace LM { namespace Interprocess
 
-using TypeIndex = LikeMagic::Utility::TypeIndex;
+using TypeIndex = LM::TypeIndex;
 
 struct ProcessControlStructure;
 typedef int ObjectHandle;
@@ -17,15 +17,15 @@ private:
 
     RemoteObject(TypeIndex class_id, ProcessControlStructure* remote_process_);
 
-    virtual ~ExprProxy();
+    virtual ~RemoteObject();
 
 public:
 
-    static AbstractCppObjProxy* create(ExprPtr expr_);
-    static AbstractCppObjProxy* create(ExprPtr expr_, LikeMagic::Utility::TypeIndex class_id);
+    static ExprPtr create(ExprPtr expr_);
+    static ExprPtr create(ExprPtr expr_, LM::TypeIndex class_id);
 
     virtual void dispose() const;
-    virtual boost::intrusive_ptr<AbstractExpression> get_expr();
+    virtual ExprPtr get_expr();
     virtual bool is_terminal() const;
     virtual std::string description() const;
     virtual bool disable_to_script_conv() const;
@@ -33,4 +33,4 @@ public:
     virtual TypeIndex get_type() const;
 };
 
-}}
+}

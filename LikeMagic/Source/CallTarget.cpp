@@ -8,7 +8,7 @@
 
 #include "LikeMagic/Mirrors/CallTarget.hpp"
 
-using namespace LikeMagic::Mirrors;
+using namespace LM;
 
 CallTarget::~CallTarget()
 {

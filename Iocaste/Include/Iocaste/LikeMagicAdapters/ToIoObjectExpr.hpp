@@ -17,11 +17,11 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
-using LikeMagic::Exprs::ExprPtr;
-using LikeMagic::Exprs::Expression;
-using LikeMagic::Utility::TypeIndex;
+using LM::ExprPtr;
+using LM::Expression;
+using LM::TypeIndex;
 
 class AbstractToIoObjectExpr : public AbstractExpression
 {
@@ -59,7 +59,7 @@ public:
         return result;
     }
 
-    virtual LikeMagic::Utility::TypeIndex get_type() const
+    virtual LM::TypeIndex get_type() const
     {
         return ToIoTypeInfo::create_index();
     }

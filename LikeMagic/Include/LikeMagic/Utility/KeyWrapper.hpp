@@ -11,7 +11,7 @@
 
 #include "boost/shared_ptr.hpp"
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 
 // Used to wrap a polymorphic type that has an abstract < operator
@@ -45,4 +45,4 @@ KeyWrapper<T> make_key_wrapper(boost::intrusive_ptr<T> key) { return KeyWrapper<
 template <typename T>
 inline std::size_t hash_value(KeyWrapper<T> const& kw) { return kw.key->hash_value(); }
 
-}}
+}

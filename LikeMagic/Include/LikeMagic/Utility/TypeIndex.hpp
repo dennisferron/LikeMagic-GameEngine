@@ -21,7 +21,7 @@
 
 #include "LikeMagic/Utility/KeyWrapper.hpp"
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 class AbstractTypeInfo;
 typedef boost::intrusive_ptr<AbstractTypeInfo const> TypeInfoPtr;
@@ -68,4 +68,4 @@ inline std::size_t hash_value(TypeIndex info)
 typedef std::vector<TypeIndex> TypeInfoList;
 extern const TypeInfoList empty_arg_list;
 
-}}
+}

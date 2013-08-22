@@ -22,22 +22,22 @@
 #include <vector>
 
 // forward declarations
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
 class AbstractTypeConverter;
 
-}}
+}
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
-using LikeMagic::Utility::TypeIndex;
+using LM::TypeIndex;
 
 class AbstractExpression;
 
 void intrusive_ptr_add_ref(AbstractExpression* p);
 void intrusive_ptr_release(AbstractExpression* p);
 
-class AbstractExpression : public LikeMagic::IMarkable
+class AbstractExpression : public LM::IMarkable
 {
 private:
     int ref_count;
@@ -47,17 +47,8 @@ private:
 
 protected:
 
-    virtual ~AbstractExpression()
-    {
-        //std::cout << "~AbstractExpression " << this << std::endl;
-        if (ref_count)
-        {
-            std::cout << "Fatal error:  Deleting abstract expression when ref_count is nonzero: ref_count = " << ref_count << std::endl;
-            std::terminate();
-        }
-    }
-
-    AbstractExpression() : ref_count(0) {}
+    virtual ~AbstractExpression();
+    AbstractExpression();
 
 public:
 
@@ -70,6 +61,9 @@ public:
     virtual std::string description() const = 0;
     virtual bool disable_to_script_conv() const = 0;
     virtual bool is_null() const = 0;
+
+    virtual void set_disable_to_script(bool value);
+    virtual void set_auto_delete_ptr(bool value);
 };
 
 // Most of the time you will be using an expression via smart ptr.
@@ -80,4 +74,4 @@ typedef std::vector<ExprPtr> ArgList;
 
 
 
-}}
+}

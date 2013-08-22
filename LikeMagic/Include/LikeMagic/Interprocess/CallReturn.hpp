@@ -1,6 +1,6 @@
 #pragma once
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
 struct CallReturn
 {
@@ -8,4 +8,4 @@ struct CallReturn
     char rvalue_buffer[512];
 };
 
-}}
+}

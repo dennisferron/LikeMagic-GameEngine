@@ -8,7 +8,7 @@
 
 #pragma once
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 // Detects STL container iterators, but not pointers.
 template<typename T>
@@ -22,4 +22,4 @@ class IsIterator {
     enum { value = sizeof(IsIterator<T>::test<T>(0)) == sizeof(Yes) };
 };
 
-}}
+}

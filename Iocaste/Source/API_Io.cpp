@@ -25,11 +25,11 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 #include "dmalloc.h"
 #endif
 
-using namespace LikeMagic::Utility;
+using namespace LM;
 
 static char const* LikeMagic_protoId = "LikeMagic";
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
 std::string get_type_name(IoObject* io_obj)
 {

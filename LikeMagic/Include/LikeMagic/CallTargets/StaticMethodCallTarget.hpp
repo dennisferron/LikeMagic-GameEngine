@@ -19,17 +19,16 @@
 // GCC no longer recognizes this option?
 //#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 
-namespace LikeMagic { namespace CallTargets {
+namespace LM {
 
-using namespace LikeMagic::Utility;
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Mirrors;
+
+
+
 
 template <typename... Args>
 class StaticMethodCallTarget_void : public CallTarget
 {
 public:
-    typedef std::tuple<boost::intrusive_ptr<Expression<Args>>...> ArgTuple;
     typedef void (*F)(Args...);
 
 private:
@@ -67,7 +66,6 @@ template <typename R, typename... Args>
 class StaticMethodCallTarget_R : public CallTarget
 {
 public:
-    typedef std::tuple<boost::intrusive_ptr<Expression<Args>>...> ArgTuple;
     typedef R (*F)(Args...);
 
 private:
@@ -101,4 +99,4 @@ public:
     }
 };
 
-}}
+}

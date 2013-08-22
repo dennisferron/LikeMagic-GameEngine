@@ -10,10 +10,10 @@
 
 #include "LikeMagic/TypeConv/ImplicitConv.hpp"
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Utility;
+
+
 
 template <typename From, typename To>
 class GenericConv : public ImplicitConv<From, To>
@@ -38,4 +38,4 @@ public:
 };
 
 
-}}
+}

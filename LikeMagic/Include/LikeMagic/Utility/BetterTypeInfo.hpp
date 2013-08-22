@@ -18,7 +18,7 @@
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 class BetterTypeInfo : public AbstractTypeInfo
 {
@@ -108,4 +108,4 @@ public:
 };
 
 
-}}
+}

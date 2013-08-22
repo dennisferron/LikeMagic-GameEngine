@@ -12,7 +12,7 @@
 
 #include "IndexPack.hpp"
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 
 
@@ -88,4 +88,4 @@ void tuple_for_each(Functor f, const std::tuple<T...>& t)
 
 */
 
-}}
+}

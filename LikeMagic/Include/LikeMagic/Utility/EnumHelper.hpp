@@ -18,7 +18,7 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 
 #pragma once
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 template <typename E>
 struct EnumHelper
@@ -29,4 +29,4 @@ struct EnumHelper
     static std::string asString(E e) { return boost::lexical_cast<std::string>(value(e)); }
 };
 
-}}
+}

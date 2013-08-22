@@ -21,10 +21,9 @@
 #include <vector>
 #include <algorithm>
 
-using LikeMagic::Utility::BetterTypeInfo;
-using namespace LikeMagic::TypeConv;
+using namespace LM;
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
 template <typename T>
 std::vector<T> from_vector(IoObject* io_obj)
@@ -163,8 +162,7 @@ void add_convs_from_script(IoVM* iovm)
         {
             boost::intrusive_ptr<IoObjectExpr> io_expr = static_cast<IoObjectExpr*>(expr.get());
             bool value = ISTRUE(io_expr->eval());
-            boost::intrusive_ptr<Expression<bool&>> result = Term<bool>::create(value);
-            return result;
+            return Term<bool>::create(value);
         }
 
         virtual std::string description() const { return "From Bool Conv"; }

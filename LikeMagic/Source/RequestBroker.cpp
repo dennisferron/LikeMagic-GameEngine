@@ -7,10 +7,7 @@
 #include "LikeMagic/Exprs/Term.hpp"
 #include "LikeMagic/TypeSystem.hpp"
 
-using namespace LikeMagic;
-using namespace LikeMagic::Interprocess;
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Utility;
+using namespace LM;
 
 using namespace boost::interprocess;
 using namespace std;
@@ -121,9 +118,9 @@ CallReturn RequestBroker::listen(int wanted_invocation_id, bool wants_rvalue)
 
                 // Execute the args and enplace the rvalue
                 pcs->state = ProcessState::ExecutingCallRequest;
-                LikeMagic::Utility::TypeIndex arg_type_index
-                    = LikeMagic::Utility::BetterTypeInfo::create_index<int>();
-                LikeMagic::Utility::TypeInfoList arg_types;
+                LM::TypeIndex arg_type_index
+                    = LM::BetterTypeInfo::create_index<int>();
+                LM::TypeInfoList arg_types;
                 arg_types.push_back(arg_type_index);
                 ArgList arg_list = transporter.read_args(arg_types, temp.args_buffer);
                 int arg = try_conv<int>(arg_list[0])->eval();
@@ -140,8 +137,8 @@ CallReturn RequestBroker::listen(int wanted_invocation_id, bool wants_rvalue)
 
                 CallReturn& wrv_val = wrv_reg.data;
                 wrv_val.invocation_id = temp.invocation_id;
-                LikeMagic::Utility::TypeIndex ret_type_index
-                    = LikeMagic::Utility::BetterTypeInfo::create_index<int>();
+                LM::TypeIndex ret_type_index
+                    = LM::BetterTypeInfo::create_index<int>();
                 transporter.write_value(ret_type_index, wrv_val.rvalue_buffer, method_call);
                 wrv_reg.has_data = true;
                 wrv_reg.writing_in_progress.post();

@@ -14,11 +14,11 @@
 #include "LikeMagic/Utility/IndexPack.hpp"
 #include "LikeMagic/CallTargets/Delegate.hpp"
 
-namespace LikeMagic { namespace CallTargets {
+namespace LM {
 
-using namespace LikeMagic::Utility;
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Mirrors;
+
+
+
 
 template <typename... Args>
 class DelegateCallTarget_void_nonconst : public CallTarget
@@ -184,4 +184,4 @@ public:
     }
 };
 
-}}
+}

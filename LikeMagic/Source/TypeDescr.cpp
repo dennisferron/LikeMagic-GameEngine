@@ -14,7 +14,7 @@
 #include <malloc.h>
 #endif
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 std::string demangle_name(std::string type_name)
 {
@@ -25,4 +25,4 @@ std::string demangle_name(std::string type_name)
     return result;
 }
 
-}}
+}

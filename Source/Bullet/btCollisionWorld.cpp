@@ -15,8 +15,8 @@
 #include "Bindings/Bullet/ScriptedContactResultCallback.hpp"
 #include "Bindings/Bullet/ScriptedWorldManager.hpp"
 
-using namespace LikeMagic;
-using namespace Iocaste::LikeMagicAdapters;
+using namespace LM;
+using namespace Iocaste::LMAdapters;
 
 namespace Bindings { namespace Bullet {
 
@@ -62,7 +62,7 @@ void add_bindings_btCollisionWorld()
 
     typedef btIDebugDraw::DebugDrawModes DebugDrawModes;
     LM_CLASS(ns_bullet, DebugDrawModes)
-    add_conv<DebugDrawModes, int, LikeMagic::TypeConv::NumberConv>();
+    add_conv<DebugDrawModes, int, LM::NumberConv>();
 
     typedef btCollisionWorld::RayResultCallback btCollisionWorld_RayResultCallback;
     LM_CLASS(ns_bullet, btCollisionWorld_RayResultCallback)

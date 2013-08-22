@@ -33,8 +33,8 @@
 #include "IoError.h"
 
 using namespace std;
-using namespace LikeMagic::Exprs;
-using namespace Iocaste::LikeMagicAdapters;
+using namespace LM;
+using namespace Iocaste::LMAdapters;
 
 extern "C"
 {
@@ -53,10 +53,10 @@ struct IoState;
 struct CollectorMarker;
 typedef CollectorMarker IoObject;
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Utility;
+using namespace LM;
+using namespace LM;
 
 bool is_Exprs_obj(IoObject* io_obj);
 boost::intrusive_ptr<AbstractExpression> from_script(IoObject* self, IoObject* io_obj, TypeIndex expected_type);

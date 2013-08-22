@@ -4,8 +4,8 @@
 
 using namespace std;
 
-using namespace LikeMagic;
-using namespace LikeMagic::Exprs;
+using namespace LM;
+using namespace LM;
 
 class BindingTestClass
 {

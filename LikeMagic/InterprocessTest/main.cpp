@@ -9,9 +9,9 @@
 
 using namespace std;
 
-using namespace LikeMagic;
-using namespace LikeMagic::Interprocess;
-using namespace LikeMagic::StdBindings;
+using namespace LM;
+using namespace LM::Interprocess;
+using namespace LM::StdBindings;
 
 void do_call(RPC& rpc, string order)
 {

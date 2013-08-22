@@ -39,12 +39,8 @@
 #include "Iocaste/CShims/IoVMCpp.h"
 
 using namespace std;
-using namespace LikeMagic;
-using namespace LikeMagic::Mirrors;
-using namespace LikeMagic::Exprs;
 using namespace Iocaste;
-using namespace Iocaste::LikeMagicAdapters;
-using namespace LikeMagic::Utility;
+using namespace Iocaste::LMAdapters;
 
 // CShims functions
 extern "C" {
@@ -159,7 +155,7 @@ Breakpoint* IoVM::find_pending_breakpoint(IoMessage* m)
 }
 
 // The difference between this and a no-change or implicit conv is this evals in context to return IoObject* directly.
-struct PtrToIoObjectConv : public LikeMagic::TypeConv::AbstractTypeConverter
+struct PtrToIoObjectConv : public LM::AbstractTypeConverter
 {
     static IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m, IoObject* value)
     {
@@ -238,32 +234,32 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     LM_CLASS(global_ns, IoObject)
 
     // To convert an Io object to a void*
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<void*>(), new LikeMagic::TypeConv::ImplicitConv<IoObject*, void*>);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<void*>(), new LM::ImplicitConv<IoObject*, void*>);
 
     // Make general Io objects convertible with IoObject*.
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv<>);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<IoObject*>(), new LM::NoChangeConv<>);
     type_system->add_converter_simple(BetterTypeInfo::create_index<IoObject*>(), ToIoTypeInfo::create_index("Object"), new PtrToIoObjectConv);
-    type_system->add_converter_simple(ToIoTypeInfo::create_index("Object"), ToIoTypeInfo::create_index(), new LikeMagic::TypeConv::NoChangeConv<>);
+    type_system->add_converter_simple(ToIoTypeInfo::create_index("Object"), ToIoTypeInfo::create_index(), new LM::NoChangeConv<>);
 
     // Allow LikeMagic proxy objects to be converted to the C/C++ type IoObject*
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("LikeMagic"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv<>);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("LikeMagic"), BetterTypeInfo::create_index<IoObject*>(), new LM::NoChangeConv<>);
 
     LM_CLASS(global_ns, IoBlock)
 
     // Allow conversion of Io blocks to IoObject*
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoObject*>(), new LikeMagic::TypeConv::NoChangeConv<>);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoObject*>(), new LM::NoChangeConv<>);
 
     // Allow reference/value conversions for IoBlock.
-    add_conv<Iocaste::LikeMagicAdapters::IoBlock&, Iocaste::LikeMagicAdapters::IoBlock>();
-    add_conv<Iocaste::LikeMagicAdapters::IoBlock&, Iocaste::LikeMagicAdapters::IoBlock const&>();
+    add_conv<Iocaste::LMAdapters::IoBlock&, Iocaste::LMAdapters::IoBlock>();
+    add_conv<Iocaste::LMAdapters::IoBlock&, Iocaste::LMAdapters::IoBlock const&>();
 
     // You have to have registered the types before you can add protos for them.
 
     // Make this vm accessible in the bootstrap environment
-    Iocaste::LikeMagicAdapters::add_proto<IoVM&>(*this, "io_vm", *this);
+    Iocaste::LMAdapters::add_proto<IoVM&>(*this, "io_vm", *this);
 
     // Also make the abstract type system available by pointer.
-    Iocaste::LikeMagicAdapters::add_proto<TypeSystem*>(*this, "type_system", type_system);
+    Iocaste::LMAdapters::add_proto<TypeSystem*>(*this, "type_system", type_system);
 
     // The object that represents the global namespace.
     //add_proto("namespace", Namespace::global->register_functions().create_class_proxy(), false);
@@ -452,13 +448,13 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
     catch (std::logic_error le)
     {
         //std::cout << "Caught exception: " << le.what() << std::endl;
-        IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(le).name()).c_str(), le.what());
+        IoState_error_(IOSTATE,  m, "C++ %s, %s", LM::demangle_name(typeid(le).name()).c_str(), le.what());
         return IONIL(self);
     }
     catch (std::exception e)
     {
         std::cout << "Caught exception: " << e.what() << std::endl;
-        IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(e).name()).c_str(), e.what());
+        IoState_error_(IOSTATE,  m, "C++ %s, %s", LM::demangle_name(typeid(e).name()).c_str(), e.what());
         return IONIL(self);
     }
     catch (...)
@@ -508,13 +504,13 @@ IoObject* IoVM::forward(IoObject *self, IoObject *locals, IoMessage *m)
     catch (std::logic_error le)
     {
         //std::cout << "Caught exception: " << le.what() << std::endl;
-        IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(le).name()).c_str(), le.what());
+        IoState_error_(IOSTATE,  m, "C++ %s, %s", LM::demangle_name(typeid(le).name()).c_str(), le.what());
         return IONIL(self);
     }
     catch (std::exception e)
     {
         //std::cout << "Caught exception: " << e.what() << std::endl;
-        IoState_error_(IOSTATE,  m, "C++ %s, %s", LikeMagic::Utility::demangle_name(typeid(e).name()).c_str(), e.what());
+        IoState_error_(IOSTATE,  m, "C++ %s, %s", LM::demangle_name(typeid(e).name()).c_str(), e.what());
         return IONIL(self);
     }
     catch (...)

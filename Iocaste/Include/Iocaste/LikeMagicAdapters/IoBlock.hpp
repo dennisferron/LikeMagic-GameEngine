@@ -19,14 +19,14 @@
 
 #include <tuple>
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
-using namespace LikeMagic;
-using namespace LikeMagic::Exprs;
+using namespace LM;
+using namespace LM;
 
 class IoVM;
 
-class IoBlock : public LikeMagic::IMarkable
+class IoBlock : public LM::IMarkable
 {
 private:
     IoVM* iovm;
@@ -90,7 +90,7 @@ public:
                 add_args(m, args...);
                 errorPoint = "on activate";
                 IoObject* result = activate(m);
-                static TypeIndex r_type = LikeMagic::Utility::BetterTypeInfo::template create_index<R>();
+                static TypeIndex r_type = LM::BetterTypeInfo::template create_index<R>();
                 errorPoint = "return value from_script";
                 ExprPtr expr = from_script(io_target, result, r_type);
                 errorPoint = "try_conv return value";

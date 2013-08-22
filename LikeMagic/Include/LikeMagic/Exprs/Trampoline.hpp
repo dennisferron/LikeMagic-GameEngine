@@ -8,38 +8,39 @@
 
 #pragma once
 
-#include "Expression.hpp"
+#include "LikeMagic/Exprs/Expression.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
 // Adapts an expression of one type so that it can be used as another type.
 template <typename From, typename To, typename Converter>
 class Trampoline : public Expression<To>
 {
 private:
-    boost::intrusive_ptr<Expression<From>> from_expr;
+    ExprPtr from_expr;
 
-    Trampoline(boost::intrusive_ptr<Expression<From>> expr) : from_expr(expr)
+    Trampoline(ExprPtr expr) : from_expr(expr)
     {
     }
 
 public:
-    static boost::intrusive_ptr<Expression<To>> create(ExprPtr expr)
+    static ExprPtr create(ExprPtr expr)
     {
-        boost::intrusive_ptr<Expression<To>> result = new Trampoline(reinterpret_cast<Expression<From>*>(expr.get()));
+        ExprPtr result = new Trampoline(expr);
         return result;
     }
 
     inline virtual To eval()
     {
-        return Converter::do_conv(from_expr->eval());
+        return Converter::do_conv(LM::try_conv<From>(from_expr)->eval());
     }
 
     virtual bool is_terminal() const { return false; }
 
     virtual std::string description() const
     {
-        return "(" + from_expr->description() + " from " + LikeMagic::Utility::TypeDescr<From>::text() + " to " + LikeMagic::Utility::TypeDescr<To>::text() + ")";
+        return "(" + from_expr->description() + " from " + LM::TypeDescr<From>::text() + " to " + LM::TypeDescr<To>::text() + ")";
     }
 
     virtual void mark() const
@@ -49,4 +50,4 @@ public:
 
 };
 
-}}
+}

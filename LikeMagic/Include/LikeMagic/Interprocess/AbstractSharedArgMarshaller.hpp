@@ -2,9 +2,7 @@
 
 #include "LikeMagic/Exprs/AbstractExpression.hpp"
 
-namespace LikeMagic { namespace Interprocess {
-
-using ExprPtr = LikeMagic::Exprs::ExprPtr;
+namespace LM {
 
 struct AbstractSharedArgMarshaller
 {
@@ -14,4 +12,4 @@ struct AbstractSharedArgMarshaller
     virtual size_t size() const = 0;
 };
 
-}}
+}

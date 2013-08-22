@@ -13,7 +13,7 @@
 
 #include "LikeMagic/Utility/TypeDescr.hpp"
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
 // In formal type theory it is often convenient to define a type that is a superclass
 // of all other types.  By convention it is called "Top" in type theory discussions,
@@ -47,29 +47,20 @@ typedef BottomPtrTag__* BottomPtrType;
 class BottomPtrExpr : public Expression<BottomPtrType>
 {
 private:
-    boost::intrusive_ptr<Expression<void*>> inner;
-    BottomPtrExpr(boost::intrusive_ptr<Expression<void*>> inner_) : inner(inner_) {}
+    ExprPtr inner;
+    BottomPtrExpr(ExprPtr inner_);
 
 public:
-    static boost::intrusive_ptr<Expression<BottomPtrType>> create(boost::intrusive_ptr<Expression<void*>> inner) { return new BottomPtrExpr(inner); }
 
-    inline virtual BottomPtrType eval() { return reinterpret_cast<BottomPtrType>(inner->eval()); }
-    virtual bool is_terminal() const { return inner->is_terminal(); }
-
-    virtual std::string description() const
-    {
-        return std::string("any_ptr_type");
-    }
-
-    virtual void mark() const { inner->mark(); }
+    static ExprPtr create(ExprPtr inner);
+    inline virtual BottomPtrType eval();
+    virtual bool is_terminal() const;
+    virtual std::string description() const;
+    virtual void mark() const;
 
     // Since char* is convertible to IoSeq (string in Io) and we are convertible to any pointer,
     // we would be convertible to IoSeq.  Not good.  Disable to-script conversions to prevent this:
-    virtual bool disable_to_script_conv() const
-    {
-        return true;
-    }
-
+    virtual bool disable_to_script_conv() const;
 };
 
-}}
+}

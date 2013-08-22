@@ -13,7 +13,7 @@ extern "C"
 
 namespace Iocaste {
 
-using LikeMagic::Utility::TypeIndex;
+using LM::TypeIndex;
 
 class Primitives
 {

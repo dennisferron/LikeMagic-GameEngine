@@ -8,7 +8,7 @@
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 const TypeInfoList empty_arg_list;
 
@@ -37,4 +37,4 @@ TypeIndex AbstractTypeInfo::get_index() const
     return TypeInfoCache::get_instance()->get_index(this, this->bare_type());
 }
 
-}}
+}

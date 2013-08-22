@@ -23,9 +23,9 @@
 
 #include <iostream>
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
-using namespace LikeMagic::Utility;
+
 
 template <typename T>
 class Term : public Expression<T&>
@@ -81,24 +81,24 @@ public:
             TermDeleter<T>::delete_if_possible(value);
     }
 
-    void set_auto_delete_ptr(bool value_)
+    virtual void set_auto_delete_ptr(bool value_)
     {
-        auto_delete_ptr = value;
+        auto_delete_ptr = value_;
     }
 
-    static boost::intrusive_ptr<Term> create()
+    static ExprPtr create()
     {
         return new Term();
     }
 
     template <typename... Args>
-    static boost::intrusive_ptr<Term> create(Args && ... args)
+    static ExprPtr create(Args && ... args)
     {
         return new Term(std::forward<Args>(args)...);
     }
 
     template <typename... Args>
-    static boost::intrusive_ptr<Term> create(Args const& ... args)
+    static ExprPtr create(Args const& ... args)
     {
         return new Term(args...);
     }
@@ -114,7 +114,7 @@ public:
 
     virtual std::string description() const
     {
-        return std::string("Term<" + LikeMagic::Utility::TypeDescr<T>::text() + ">");
+        return std::string("Term<" + LM::TypeDescr<T>::text() + ">");
     }
 
     virtual void mark() const
@@ -128,4 +128,4 @@ public:
     }
 };
 
-}}
+}

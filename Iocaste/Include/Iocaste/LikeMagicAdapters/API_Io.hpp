@@ -18,10 +18,10 @@ struct CollectorMarker;
 typedef CollectorMarker IoObject;
 typedef IoObject IoMessage;
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Utility;
+using namespace LM;
+using namespace LM;
 
 class IoVM;
 

@@ -15,9 +15,9 @@
 
 #include <string>
 
-namespace LikeMagic { namespace Exprs { namespace methodcall_args {
+namespace LM { namespace methodcall_args {
 
-using namespace LikeMagic::Utility;
+
 
 // Functor used to describe each of the arguments.
 struct DescribeArgs
@@ -66,4 +66,4 @@ void mark_args(ArgTuple args, IndexPack<Indices...>)
 }
 
 
-}}}
+}}

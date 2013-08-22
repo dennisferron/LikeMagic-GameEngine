@@ -13,28 +13,28 @@
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 #include "LikeMagic/Exprs/AbstractExpression.hpp"
 
-namespace LikeMagic {
+namespace LM {
     class TypeSystem;
 }
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
     class AbstractCppObjProxy;
     class AbstractExpression;
-}}
+}
 
-namespace LikeMagic { namespace Mirrors {
+namespace LM {
     class CallTarget;
-}}
+}
 
-namespace LikeMagic { namespace Mirrors {
+namespace LM {
 
-using LikeMagic::Exprs::AbstractExpression;
-using LikeMagic::Exprs::ExprPtr;
-using LikeMagic::Exprs::ArgList;
-using LikeMagic::TypeSystem;
-using LikeMagic::Utility::TypeIndex;
-using LikeMagic::Utility::TypeInfoList;
-using LikeMagic::Mirrors::CallTarget;
+using LM::AbstractExpression;
+using LM::ExprPtr;
+using LM::ArgList;
+using LM::TypeSystem;
+using LM::TypeIndex;
+using LM::TypeInfoList;
+using LM::CallTarget;
 
 class TypeMirror
 {
@@ -69,4 +69,4 @@ public:
     virtual void suggest_method(std::string method_name, int num_args) const;
 };
 
-}}
+}

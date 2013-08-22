@@ -12,11 +12,11 @@
 
 #include "LikeMagic/CallTargets/Delegate.hpp"
 
-namespace LikeMagic { namespace CallTargets {
+namespace LM {
 
-using namespace LikeMagic::Utility;
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Mirrors;
+
+
+
 
 template <typename R>
 class FieldSetterTarget : public CallTarget
@@ -48,4 +48,4 @@ public:
     }
 };
 
-}}
+}

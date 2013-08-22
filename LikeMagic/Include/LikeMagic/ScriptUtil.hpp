@@ -10,7 +10,7 @@
 
 #include <string>
 
-namespace LikeMagic
+namespace LM
 {
 
 // Supports the same script functions as a vector, but this

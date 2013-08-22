@@ -2,7 +2,7 @@
 
 #include "boost/interprocess/offset_ptr.hpp"
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
 struct ProcessControlStructure;
 
@@ -16,4 +16,4 @@ struct CallRequest
     char args_buffer[1024];
 };
 
-}}
+}

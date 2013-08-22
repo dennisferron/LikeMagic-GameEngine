@@ -14,7 +14,7 @@
 
 #include "LikeMagic/BindingMacros.hpp"
 
-using namespace LikeMagic;
+using namespace LM;
 
 namespace Bindings { namespace Bullet {
 

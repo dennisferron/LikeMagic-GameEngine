@@ -18,7 +18,7 @@
 #include <sstream>
 
 using namespace std;
-using namespace LikeMagic;
+using namespace LM;
 
 // Use to communicate with running scripts what path they are running under
 // in order to properly load assets.  TODO:  Move all this to Iocaste (maybe).

@@ -13,9 +13,9 @@
 
 #include "boost/type_traits.hpp"
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using namespace LikeMagic::Exprs;
+
 
 // cannot use with vector<bool>
 template <typename From, typename To>
@@ -52,8 +52,7 @@ class VectorConv<std::vector<F>, T*> : public ConvertibleTo<T*>
 //    virtual ExprPtr wrap_expr(ExprPtr expr) const
 //    {
 //        return Trampoline<From, To, VectorConvImpl<From, To>>::create(
-//            boost::intrusive_ptr<Expression<From>>(
-//                reinterpret_cast<Expression<From>*>(expr.get())));
+//            boost::intrusive_ptr<Expression<From>>(expr));
 //    }
 //
 //    virtual std::string description() const { return describe_converter<From, To>("VectorConv"); }
@@ -69,9 +68,7 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, VectorConvImpl<From, To>>::create(
-            boost::intrusive_ptr<Expression<From>>(
-                reinterpret_cast<Expression<From>*>(expr.get())));
+        return Trampoline<From, To, VectorConvImpl<From, To>>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("VectorConv"); }
@@ -87,9 +84,7 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, VectorConvImpl<From, To>>::create(
-            boost::intrusive_ptr<Expression<From>>(
-                reinterpret_cast<Expression<From>*>(expr.get())));
+        return Trampoline<From, To, VectorConvImpl<From, To>>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("VectorConv"); }
@@ -97,4 +92,4 @@ public:
 };
 
 
-}}
+}

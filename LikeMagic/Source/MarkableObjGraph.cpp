@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace LikeMagic
+namespace LM
 {
 
 MarkableObjGraph::MarkableObjGraph()

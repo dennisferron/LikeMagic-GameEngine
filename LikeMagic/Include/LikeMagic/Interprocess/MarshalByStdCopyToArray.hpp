@@ -3,7 +3,7 @@
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Interprocess/AbstractSharedArgMarshaller.hpp"
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
 template <typename T>
 struct ReferenceToSharedArray
@@ -25,7 +25,7 @@ public:
 template <typename ContainerType, typename ElementType>
 struct MarshalByStdCopyToArray : public AbstractSharedArgMarshaller
 {
-    LikeMagic::Interprocess::SharedMemoryAllocator& allocator;
+    LM::Interprocess::SharedMemoryAllocator& allocator;
 
     MarshalByCopy(SharedMemoryAllocator& allocator_) : allocator(allocator_) {}
 
@@ -58,4 +58,4 @@ struct MarshalByStdCopyToArray : public AbstractSharedArgMarshaller
     }
 };
 
-}}
+}

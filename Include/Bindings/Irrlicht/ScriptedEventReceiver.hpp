@@ -14,10 +14,10 @@
 
 namespace Bindings { namespace Irrlicht {
 
-using Iocaste::LikeMagicAdapters::IoBlock;
+using Iocaste::LMAdapters::IoBlock;
 using namespace irr;
 
-class ScriptedEventReceiver : public irr::IEventReceiver, public LikeMagic::IMarkable
+class ScriptedEventReceiver : public irr::IEventReceiver, public LM::IMarkable
 {
 private:
     bool KeyStates[KEY_KEY_CODES_COUNT];

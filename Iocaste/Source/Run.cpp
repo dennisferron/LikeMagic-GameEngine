@@ -1,8 +1,8 @@
 
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 
-using namespace LikeMagic;
-using namespace Iocaste::LikeMagicAdapters;
+using namespace LM;
+using namespace Iocaste::LMAdapters;
 
 #include "Iocaste/Run.hpp"
 

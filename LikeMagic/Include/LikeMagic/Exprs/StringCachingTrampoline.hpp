@@ -13,9 +13,9 @@
 
 #include <iostream>
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
-using namespace LikeMagic::Utility;
+
 
 // When converting strings to char* or references, the conversion is unsafe in Exprs expressions if a new string has to be generated
 // unless this temporary string is stored away somewhere for the pointer to have
@@ -27,24 +27,24 @@ class StringCachingTrampoline : public Expression<To>
 private:
     typedef typename boost::remove_const<typename boost::remove_reference<To>::type>::type CacheType;
 
-    boost::intrusive_ptr<Expression<From>> from_expr;
+    ExprPtr from_expr;
     CacheType cached_String;
     std::string test_String;
 
-    StringCachingTrampoline(boost::intrusive_ptr<Expression<From>> expr) : from_expr(expr) {}
+    StringCachingTrampoline(ExprPtr expr) : from_expr(expr) {}
 
 public:
 
-    static boost::intrusive_ptr<Expression<To>> create(ExprPtr expr)
+    static ExprPtr create(ExprPtr expr)
     {
-        return new StringCachingTrampoline(reinterpret_cast<Expression<From>*>(expr.get()));
+        return new StringCachingTrampoline(expr);
     }
 
     inline virtual To eval()
     {
         //std::cout << "String conversion from expression: " << from_expr->description() << std::endl;
         //std::cout << "Converting string: " << from_expr->eval();
-        cached_String = Converter::do_conv(from_expr->eval());
+        cached_String = Converter::do_conv(try_conv<From>(from_expr)->eval());
 
         //cached_String = L"ASDF";
 
@@ -54,7 +54,7 @@ public:
         //std::cout << "About to set test_String" << std::endl;
         //test_String = "ZXCV";
         //std::cout << "test_String: " << test_String << std::endl;
-//        std::cout << "string caching converter: " << LikeMagic::Utility::TypeDescr<decltype(*this)>::text() << std::endl;
+//        std::cout << "string caching converter: " << LM::TypeDescr<decltype(*this)>::text() << std::endl;
 //
 //        std::wstring* p = new std::wstring(L"ASDF");
 //        std::cout << "wstring pointer: " << p << std::endl;
@@ -67,7 +67,7 @@ public:
 
     virtual std::string description() const
     {
-        return "converts " + from_expr->description() + " from " + LikeMagic::Utility::TypeDescr<From>::text() + " to " + LikeMagic::Utility::TypeDescr<To>::text();
+        return "converts " + from_expr->description() + " from " + LM::TypeDescr<From>::text() + " to " + LM::TypeDescr<To>::text();
     }
 
     virtual void mark() const
@@ -77,4 +77,4 @@ public:
 
 };
 
-}}
+}

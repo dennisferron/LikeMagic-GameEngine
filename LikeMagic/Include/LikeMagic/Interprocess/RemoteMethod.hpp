@@ -2,7 +2,7 @@
 
 #include "LikeMagic/Marshaling/CallTarget.hpp"
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
 class RequestBroker;
 
@@ -15,13 +15,13 @@ public:
     RemoteMethod(RequestBroker& broker_);
     virtual ~RemoteMethod();
 
-    virtual LikeMagic::Exprs::AbstractCppObjProxy* call
+    virtual LM::AbstractCppObjProxy* call
         (
-            LikeMagic::Exprs::AbstractCppObjProxy* target,
-            LikeMagic::Exprs::ArgList args
+            LM::AbstractCppObjProxy* target,
+            LM::ArgList args
         ) const;
 
-    virtual LikeMagic::Utility::TypeInfoList get_arg_types() const;
+    virtual LM::TypeInfoList get_arg_types() const;
 };
 
-}}
+}

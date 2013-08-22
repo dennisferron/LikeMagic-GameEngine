@@ -1,6 +1,6 @@
 #include "LikeMagic/Interprocess/RequestBroker.hpp"
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
 class RPC : public RequestBroker
 {

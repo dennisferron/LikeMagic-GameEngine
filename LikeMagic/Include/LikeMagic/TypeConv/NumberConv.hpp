@@ -14,9 +14,9 @@
 
 #include "boost/type_traits.hpp"
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using namespace LikeMagic::Exprs;
+
 
 template <typename From, typename To>
 class NumberConvImpl
@@ -48,9 +48,7 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, NumberConvImpl<From, To>>::create(
-            boost::intrusive_ptr<Expression<From>>(
-                reinterpret_cast<Expression<From>*>(expr.get())));
+        return Trampoline<From, To, NumberConvImpl<From, To>>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("NumberConv"); }
@@ -71,9 +69,7 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return NumberCachingTrampoline<From, To&, NumberConvImpl<From, To&>>::create(
-            boost::intrusive_ptr<Expression<From>>(
-                reinterpret_cast<Expression<From>*>(expr.get())));
+        return NumberCachingTrampoline<From, To&, NumberConvImpl<From, To&>>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To&>("NumberConv"); }
@@ -81,4 +77,4 @@ public:
     virtual float cost() const { return 10.0; }
 };
 
-}}
+}

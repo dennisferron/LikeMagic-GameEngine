@@ -14,7 +14,7 @@
 #include "dmalloc.h"
 #endif
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
 IoBlock::IoBlock()
     : iovm(0), io_block(0), io_target(0)

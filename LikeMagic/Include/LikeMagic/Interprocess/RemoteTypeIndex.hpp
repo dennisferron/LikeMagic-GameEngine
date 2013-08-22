@@ -1,6 +1,6 @@
 #pragma once
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
 class RemoteTypeIndex
 {
@@ -41,4 +41,4 @@ inline std::size_t hash_value(TypeIndex info)
 
 typedef std::vector<TypeIndex> RemoteTypeIndexList;
 
-}}
+}

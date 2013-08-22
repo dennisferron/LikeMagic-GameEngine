@@ -14,12 +14,11 @@
 #include "Iocaste/LikeMagicAdapters/IoObjectExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 
-using namespace LikeMagic;
-using namespace LikeMagic::Utility;
-using namespace LikeMagic::TypeConv;
-using namespace LikeMagic::Exprs;
+using namespace LM;
+using namespace LM;
+using namespace LM;
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
 // Note:  This is not Io strings-as-sequences, but actually stuff like vector which is implemented as a sequence.
 template <typename T>
@@ -110,7 +109,7 @@ struct ToIoNilExpr : public AbstractToIoObjectExpr
         return IONIL(self);
     }
 
-    virtual LikeMagic::Utility::TypeIndex get_type() const
+    virtual LM::TypeIndex get_type() const
     {
         return ToIoTypeInfo::create_index();
     }

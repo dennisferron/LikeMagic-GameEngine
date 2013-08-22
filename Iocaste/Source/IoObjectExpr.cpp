@@ -10,9 +10,9 @@
 #include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
 #include "Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp"
 
-using namespace LikeMagic::Utility;
+using namespace LM;
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
 
 IoObjectExpr::IoObjectExpr(IoObject* io_object_) : io_object(io_object_), type_info(FromIoTypeInfo::create_index(get_type_name(io_object)))

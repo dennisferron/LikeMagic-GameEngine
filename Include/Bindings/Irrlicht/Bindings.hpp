@@ -9,9 +9,9 @@
 
 #pragma once
 
-namespace LikeMagic { class TypeSystem; }
+namespace LM { class TypeSystem; }
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
     class IoVM;
 }}
 
@@ -29,6 +29,6 @@ void add_bindings_irr_io();
 
 void add_bindings_orientation();
 
-void add_protos_irr(Iocaste::LikeMagicAdapters::IoVM& vm);
+void add_protos_irr(Iocaste::LMAdapters::IoVM& vm);
 
 }}

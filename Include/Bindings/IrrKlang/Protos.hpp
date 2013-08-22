@@ -12,6 +12,6 @@
 
 namespace Bindings { namespace IrrKlang {
 
-void add_protos(Iocaste::LikeMagicAdapters::IoVM& vm);
+void add_protos(Iocaste::LMAdapters::IoVM& vm);
 
 }}

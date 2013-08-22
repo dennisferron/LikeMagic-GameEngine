@@ -15,12 +15,12 @@
 
 namespace Bindings { namespace Irrlicht {
 
-using Iocaste::LikeMagicAdapters::IoBlock;
+using Iocaste::LMAdapters::IoBlock;
 using namespace irr;
 using namespace irr::io;
 using namespace irr::scene;
 
-class ScriptedDataSerializer : public ISceneUserDataSerializer, public LikeMagic::MarkableObjGraph
+class ScriptedDataSerializer : public ISceneUserDataSerializer, public LM::MarkableObjGraph
 {
 public:
     IoBlock on_OnCreateNode;

@@ -10,7 +10,7 @@
 #include "LikeMagic/BindingMacros.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 
-using namespace LikeMagic;
+using namespace LM;
 
 namespace Bindings { namespace Irrlicht {
 

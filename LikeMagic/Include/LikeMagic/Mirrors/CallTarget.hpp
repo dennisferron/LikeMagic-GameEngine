@@ -12,18 +12,18 @@
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 #include "LikeMagic/Exprs/AbstractExpression.hpp"
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
     class AbstractCppObjProxy;
-}}
+}
 
-namespace LikeMagic {
+namespace LM {
     class TypeSystem;
 }
 
-namespace LikeMagic { namespace Mirrors {
+namespace LM {
 
-using ExprPtr = LikeMagic::Exprs::ExprPtr;
-using ArgList = LikeMagic::Exprs::ArgList;
+using ExprPtr = LM::ExprPtr;
+using ArgList = LM::ArgList;
 
 class CallTarget
 {
@@ -31,10 +31,10 @@ public:
     virtual ~CallTarget() = 0;
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const = 0;
-    virtual LikeMagic::Utility::TypeInfoList const& get_arg_types() const = 0;
+    virtual LM::TypeInfoList const& get_arg_types() const = 0;
 
     // Some methods (like constructors) should not be inherited.
     virtual bool is_inherited() const;
 };
 
-}}
+}

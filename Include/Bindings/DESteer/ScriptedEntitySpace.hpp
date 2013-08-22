@@ -8,7 +8,7 @@
 namespace desteer {
 namespace entity {
 
-class ScriptedEntitySpace : virtual public LikeMagic::MarkableObjGraph, public IEntitySpace
+class ScriptedEntitySpace : virtual public LM::MarkableObjGraph, public IEntitySpace
 {
 public:
     ScriptFunc(0, irr::core::vector3df, SideVector,                     const,)

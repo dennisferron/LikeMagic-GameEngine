@@ -17,7 +17,7 @@
 
 #include <iterator>
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
 template <typename T> struct IoListElemConv;
 template <> struct IoListElemConv<double> { static double do_conv(IoNumber* obj) { return IoNumber_asDouble(obj); }};

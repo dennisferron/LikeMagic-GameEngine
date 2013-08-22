@@ -9,7 +9,7 @@
 
 #pragma once
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 // Given an integer N, "pops" N-1 and pastes it on front of Tail; repeats with N diminishing.
 template<int N, int... Tail>
@@ -27,4 +27,4 @@ struct MakeIndexPack<0,Tail...>
     typedef IndexPack<Tail...> type;
 };
 
-}}
+}

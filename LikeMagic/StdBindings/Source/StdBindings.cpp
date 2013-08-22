@@ -41,16 +41,8 @@ add_conv<type const&, double const&, NumberConv>();
 #define add_all_num_conv_impl(r, data, elem) add_num_conv(data, elem);
 #define add_all_num_conv(type_sys, SEQ) BOOST_PP_SEQ_FOR_EACH(add_all_num_conv_impl, type_sys, SEQ)
 
-using namespace LikeMagic;
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::TypeConv;
-using namespace LikeMagic::Utility;
-using namespace LikeMagic::Mirrors;
-using namespace LikeMagic::CallTargets;
-
+using namespace LM;
 using namespace std;
-
-using namespace LikeMagic;
 
 typedef int s32;
 
@@ -84,7 +76,7 @@ void at_put(vector<T>& target, size_t pos, T const& value)
     target.at(pos) = value;
 }
 
-void LikeMagic::StdBindings::add_bindings()
+void LM::add_bindings()
 {
     TypeMirror& global_ns = type_system->global_namespace();
     TypeMirror& ns_std = register_namespace("std", global_ns);

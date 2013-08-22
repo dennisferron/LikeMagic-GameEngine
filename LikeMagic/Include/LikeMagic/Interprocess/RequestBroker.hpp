@@ -7,7 +7,7 @@
 
 using namespace boost::interprocess;
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
 typedef int ObjectHandle;
 typedef int MethodId;
@@ -37,4 +37,4 @@ public:
                                MethodId method_id, TypeInfoList arg_types, ArgList args);
 };
 
-}}
+}

@@ -1,8 +1,8 @@
 #include "LikeMagic/binding_functions.hpp"
 
-using namespace LikeMagic;
+using namespace LM;
 
-namespace LikeMagic {
+namespace LM {
 
 std::string create_constructor_name(std::string prefix, std::string method_name)
 {
@@ -12,15 +12,15 @@ std::string create_constructor_name(std::string prefix, std::string method_name)
         return prefix + "_" + method_name;
 }
 
-LikeMagic::Mirrors::TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespace_)
+LM::TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespace_)
 {
-    static const TypeIndex namespace_type(LikeMagic::Utility::NamespaceTypeInfo::create_index(name));
+    static const TypeIndex namespace_type(LM::NamespaceTypeInfo::create_index(name));
 
     parent_namespace_.add_method
     (
-        name, new LikeMagic::CallTargets::ExprTarget
+        name, new LM::ExprTarget
         (
-            LikeMagic::Exprs::NamespaceExpr::create
+            LM::NamespaceExpr::create
             (
                 namespace_type, namespace_type
             )
@@ -33,7 +33,7 @@ LikeMagic::Mirrors::TypeMirror& register_namespace(std::string name, TypeMirror&
     }
     else
     {
-        auto result = new LikeMagic::Mirrors::TypeMirror(name, 0,
+        auto result = new LM::TypeMirror(name, 0,
                             namespace_type, namespace_type, namespace_type);
         type_system->add_class(namespace_type, result);
         return *result;

@@ -2,7 +2,7 @@
 #include "LikeMagic/Interprocess/SharedArgTransporter.hpp"
 #include "LikeMagic/Interprocess/MarshalByCopyConstructor.hpp"
 
-using namespace LikeMagic::Interprocess;
+using namespace LM;
 
 SharedArgTransporter::SharedArgTransporter()
 {

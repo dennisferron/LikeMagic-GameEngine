@@ -9,7 +9,7 @@
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 #include "LikeMagic/Utility/TypeInfoCache.hpp"
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 TypeInfoCache* TypeInfoCache::instance = NULL;
 
@@ -82,4 +82,4 @@ TypeInfoPtr TypeInfoCache::get_info(TypeIndex id) const
 }
 
 
-}}
+}

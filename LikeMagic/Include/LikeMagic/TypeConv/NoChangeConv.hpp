@@ -11,9 +11,9 @@
 #include "LikeMagic/TypeConv/ConvertibleTo.hpp"
 #include "LikeMagic/Exprs/Trampoline.hpp"
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using namespace LikeMagic::Exprs;
+
 
 // The difference between implicit conv and no change conv
 // is implicit conversion wraps the expression in a trampoline and
@@ -37,4 +37,4 @@ public:
     virtual float cost() const { return 0.01; }
 };
 
-}}
+}

@@ -11,9 +11,9 @@
 #include "ConvertibleTo.hpp"
 #include "LikeMagic/Exprs/Trampoline.hpp"
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using namespace LikeMagic::Exprs;
+
 
 template <typename From, typename To>
 class BaseConv : public ConvertibleTo<To>
@@ -27,12 +27,10 @@ public:
         // (which would be unsafe if it were so);
         // it is merely converting the ExprPtr to its actual _FROM_ type.
         // The to-base _TO_ type conversion work is done implicitly by do_conv above.
-        return LikeMagic::Exprs::Trampoline<From, To, BaseConv>::create(
-            boost::intrusive_ptr<LikeMagic::Exprs::Expression<From>>(
-                reinterpret_cast<LikeMagic::Exprs::Expression<From>*>(expr.get())));
+        return LM::Trampoline<From, To, BaseConv>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("BaseConv"); }
 };
 
-}}
+}

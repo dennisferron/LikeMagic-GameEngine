@@ -1,6 +1,6 @@
 #pragma once
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
 enum class ProcessState
 {
@@ -23,4 +23,4 @@ enum class ProcessState
     ExecutingCallRequest
 };
 
-}}
+}

@@ -39,10 +39,10 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 
 using namespace boost;
 
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Utility;
+using namespace LM;
+using namespace LM;
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
 TypeConvGraph::TypeConvGraph()
     : no_vertex(std::numeric_limits<vertex_t>::max()), bot_conv(new NoChangeConv<>())
@@ -307,4 +307,4 @@ TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, T
 
 
 
-}}
+}

@@ -1,7 +1,6 @@
 #include "LikeMagic/CallTargets/ExprTarget.hpp"
 
-using namespace LikeMagic::CallTargets;
-using namespace LikeMagic::Exprs;
+using namespace LM;
 
 ExprTarget::ExprTarget(ExprPtr expr_)
     : expr(expr_)

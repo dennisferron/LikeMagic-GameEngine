@@ -8,8 +8,8 @@
 
 namespace Bindings { namespace Bullet {
 
-using Iocaste::LikeMagicAdapters::IoBlock;
-using LikeMagic::IMarkable;
+using Iocaste::LMAdapters::IoBlock;
+using LM::IMarkable;
 
 class ScriptedWorldManager : public IMarkable
 {

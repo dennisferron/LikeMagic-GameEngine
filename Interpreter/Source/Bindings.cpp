@@ -30,8 +30,8 @@
 
 #include "LikeMagic/BindingMacros.hpp"
 
-using namespace LikeMagic;
-using namespace Iocaste::LikeMagicAdapters;
+using namespace LM;
+using namespace Iocaste::LMAdapters;
 
 namespace Interpreter{
 

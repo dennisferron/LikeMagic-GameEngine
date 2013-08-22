@@ -11,7 +11,7 @@
 #include "LikeMagic/BindingMacros.hpp"
 
 using namespace std;
-using namespace Iocaste::LikeMagicAdapters;
+using namespace Iocaste::LMAdapters;
 
 namespace Bindings { namespace Custom {
 

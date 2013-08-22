@@ -13,9 +13,9 @@
 
 #include "boost/lexical_cast.hpp"
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using namespace LikeMagic::Exprs;
+
 
 class AddCostForConv : public AbstractTypeConverter
 {
@@ -49,4 +49,4 @@ public:
 };
 
 
-}}
+}

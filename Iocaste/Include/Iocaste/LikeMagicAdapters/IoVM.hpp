@@ -27,10 +27,10 @@ extern "C"
     List* IoState_tagList(IoState *self);
 }
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
 
-class IoVM : public IoState, public LikeMagic::MarkableObjGraph
+class IoVM : public IoState, public LM::MarkableObjGraph
 {
 private:
     friend IOVM_API void ::IoState_registerProtoWithId_(IoState *self, IoObject *proto, const char *v);

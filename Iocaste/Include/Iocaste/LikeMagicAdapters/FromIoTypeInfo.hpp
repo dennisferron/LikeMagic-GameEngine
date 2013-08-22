@@ -19,11 +19,11 @@
 
 #include <tuple>
 
-namespace Iocaste { namespace LikeMagicAdapters {
+namespace Iocaste { namespace LMAdapters {
 
-using namespace LikeMagic;
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Utility;
+using namespace LM;
+using namespace LM;
+using namespace LM;
 
 class FromIoTypeInfo : public AbstractTypeInfo
 {

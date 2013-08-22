@@ -13,17 +13,17 @@
 #include "boost/intrusive_ptr.hpp"
 
 // Forward declarations.
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
 class AbstractExpression;
 
 typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
 
-}}
+}
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using namespace LikeMagic::Exprs;
+
 
 template <typename To>
 class ConvertibleTo : public virtual AbstractTypeConverter
@@ -32,4 +32,4 @@ public:
     virtual std::string description() const { return BetterTypeInfo::create_index<decltype(this)>().description(); }
 };
 
-}}
+}

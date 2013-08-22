@@ -7,7 +7,7 @@
 namespace desteer{
 namespace entity {
 
-class ScriptedBaseEntity : virtual public LikeMagic::MarkableObjGraph, public IBaseEntity
+class ScriptedBaseEntity : virtual public LM::MarkableObjGraph, public IBaseEntity
 {
 public:
 

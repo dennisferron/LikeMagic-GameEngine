@@ -11,9 +11,9 @@
 #include "LikeMagic/TypeConv/ConvertibleTo.hpp"
 #include "LikeMagic/Exprs/Trampoline.hpp"
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using namespace LikeMagic::Exprs;
+
 
 template <typename From, typename To>
 class IteratorConv : public ConvertibleTo<To>
@@ -23,12 +23,10 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, IteratorConv>::create(
-            boost::intrusive_ptr<Expression<From>>(
-                reinterpret_cast<Expression<From>*>(expr.get())));
+        return Trampoline<From, To, IteratorConv>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("IteratorConv"); }
 };
 
-}}
+}

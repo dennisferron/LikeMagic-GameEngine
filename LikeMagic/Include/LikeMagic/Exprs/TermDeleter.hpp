@@ -11,7 +11,7 @@
 
 #include <stdexcept>
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
 template <typename T>
 struct TermDeleter
@@ -43,12 +43,12 @@ struct TermDeleter<const void*>
     }
 };
 
-}}
+}
 
 // Most pointer types can be deleted, but there may be situations
 // (such as if a class has a private delete operator) when you need to
 // override the definition of delete for a particular type.
 #define LM_CUSTOM_DELETER(type, impl) \
-namespace LikeMagic { namespace Exprs { \
+namespace LM { \
     template <> struct TermDeleter<type> \
-        { static void delete_if_possible(type value) {impl;} }; }}
+        { static void delete_if_possible(type value) {impl;} }; }

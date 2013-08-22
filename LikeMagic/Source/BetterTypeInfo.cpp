@@ -10,7 +10,7 @@
 
 #include <cstring>
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 // Used for default constructed BetterTypeInfo with no type stored in it.
 struct no_type {};
@@ -128,5 +128,5 @@ std::string BetterTypeInfo::description() const
             ;
 }
 
-}}
+}
 

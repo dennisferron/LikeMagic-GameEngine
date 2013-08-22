@@ -14,11 +14,11 @@
 #include "LikeMagic/Utility/TypePack.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
 
-namespace LikeMagic { namespace CallTargets {
+namespace LM {
 
-using namespace LikeMagic::Utility;
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Mirrors;
+
+
+
 
 template <typename ObjT, typename... Args>
 class ConstructorCallTarget : public CallTarget
@@ -30,7 +30,7 @@ private:
     template<int... Indices>
     ExprPtr construct_obj(ArgList args, IndexPack<Indices...>) const
     {
-        boost::intrusive_ptr<Term<ObjT*>> term = Term<ObjT*>::create(new ObjT(try_conv<Args>(args[Indices])->eval()...));
+        ExprPtr term = Term<ObjT*>::create(new ObjT(try_conv<Args>(args[Indices])->eval()...));
         term->set_auto_delete_ptr(auto_delete);
         return term;
     }
@@ -54,4 +54,4 @@ public:
     virtual bool is_inherited() const { return false; }
 };
 
-}}
+}

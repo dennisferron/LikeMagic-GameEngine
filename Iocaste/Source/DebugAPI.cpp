@@ -9,7 +9,7 @@ using namespace std;
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 #include "Iocaste/CShims/IoVMCpp.h"
 using namespace Iocaste;
-using namespace Iocaste::LikeMagicAdapters;
+using namespace Iocaste::LMAdapters;
 
 extern "C"
 {

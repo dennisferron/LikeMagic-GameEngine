@@ -8,11 +8,11 @@
 
 #pragma once
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 // Used to wrap up the types of a function pointer into a set of types.
 template <typename... Types> struct TypePack
 {
 };
 
-}}
+}

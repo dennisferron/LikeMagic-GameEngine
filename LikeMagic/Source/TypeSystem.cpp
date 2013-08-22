@@ -34,13 +34,9 @@
 #include <iostream>
 using namespace std;
 
-using namespace LikeMagic;
-using namespace LikeMagic::TypeConv;
-using namespace LikeMagic::Utility;
-using namespace LikeMagic::CallTargets;
-using namespace LikeMagic::Mirrors;
+using namespace LM;
 
-namespace LikeMagic {
+namespace LM {
     TypeSystem* type_system = NULL;
 }
 

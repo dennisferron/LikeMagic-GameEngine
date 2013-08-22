@@ -5,7 +5,7 @@
 #include "LikeMagic/Interprocess/AbstractSharedArgMarshaller.hpp"
 #include "LikeMagic/binding_functions.hpp"
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
 template <typename T>
 struct MarshalByCopyConstructor : public AbstractSharedArgMarshaller
@@ -24,7 +24,7 @@ struct MarshalByCopyConstructor : public AbstractSharedArgMarshaller
         // allocating a new term every time.
         // Actually if it is known all of a method's args are copy
         // by value, could we simply memcpy it onto the stack?
-        return LikeMagic::Exprs::Term<T>::create(*((T*)location));
+        return LM::Term<T>::create(*((T*)location));
     }
 
     virtual size_t size() const
@@ -33,4 +33,4 @@ struct MarshalByCopyConstructor : public AbstractSharedArgMarshaller
     }
 };
 
-}}
+}

@@ -13,9 +13,9 @@
 
 #include <iostream>
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
-using namespace LikeMagic::Utility;
+
 
 // Adapts an expression of one type so that it can be used as another type.
 // Numeric casts to references are unsafe in Exprs expressions unless the intermediate result is stored away somewhere
@@ -28,21 +28,21 @@ class NumberCachingTrampoline : public Expression<To>
 private:
     typedef typename boost::remove_const<typename boost::remove_reference<To>::type>::type CacheType;
 
-    boost::intrusive_ptr<Expression<From>> from_expr;
+    ExprPtr from_expr;
     CacheType cached_number;
 
-    NumberCachingTrampoline(boost::intrusive_ptr<Expression<From>> expr) : from_expr(expr) {}
+    NumberCachingTrampoline(ExprPtr expr) : from_expr(expr) {}
 
 public:
 
-    static boost::intrusive_ptr<Expression<To>> create(ExprPtr expr)
+    static ExprPtr create(ExprPtr expr)
     {
-        return new NumberCachingTrampoline(reinterpret_cast<Expression<From>*>(expr.get()));
+        return new NumberCachingTrampoline(expr);
     }
 
     inline virtual To eval()
     {
-        cached_number = Converter::do_conv(from_expr->eval());
+        cached_number = Converter::do_conv(try_conv<From>(from_expr)->eval());
 
         // Here we may be returning a reference to the cached value instead of by-value.
         return cached_number;
@@ -52,7 +52,7 @@ public:
 
     virtual std::string description() const
     {
-        return "converts " + from_expr->description() + " from " + LikeMagic::Utility::TypeDescr<From>::text() + " to " + LikeMagic::Utility::TypeDescr<To>::text();
+        return "converts " + from_expr->description() + " from " + LM::TypeDescr<From>::text() + " to " + LM::TypeDescr<To>::text();
     }
 
     virtual void mark() const
@@ -62,4 +62,4 @@ public:
 
 };
 
-}}
+}

@@ -11,9 +11,9 @@
 #include "ConvertibleTo.hpp"
 #include "LikeMagic/Exprs/Trampoline.hpp"
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using namespace LikeMagic::Exprs;
+
 
 // For most implicit conv cases, just return obj.  One special case below.
 template <typename From, typename To>
@@ -56,4 +56,4 @@ public:
 };
 
 
-}}
+}

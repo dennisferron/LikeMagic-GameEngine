@@ -14,11 +14,11 @@
 #include "LikeMagic/Mirrors/CallTarget.hpp"
 #include "LikeMagic/Utility/IndexPack.hpp"
 
-namespace LikeMagic { namespace CallTargets {
+namespace LM {
 
-using namespace LikeMagic::Utility;
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Mirrors;
+
+
+
 
 template <typename R, typename FirstArg, typename... Args>
 class ExtensionMethodCallTarget : public CallTarget
@@ -33,13 +33,12 @@ private:
 
     // Handle functions that return a value
     template<typename R_, int... Indices>
-    boost::intrusive_ptr<Expression<R_&>>
-    build_method_call(ExprPtr target, ArgList args, TypePack<R_>, IndexPack<Indices...>) const
+    ExprPtr build_method_call(ExprPtr target, ArgList args, TypePack<R_>, IndexPack<Indices...>) const
     {
         if (args.size() != sizeof...(Indices))
             throw std::logic_error("Wrong number of arguments.");
 
-        boost::intrusive_ptr<Expression<R&>> result = Term<R>::create(
+        ExprPtr result = Term<R>::create(
             (*func_ptr)(try_conv<FirstArg>(target)->eval(), try_conv<Args>(args[Indices])->eval()...)
         );
 
@@ -48,7 +47,7 @@ private:
 
     // Handle functions that do not return a value
     template<int... Indices>
-    boost::intrusive_ptr<Expression<void>>
+    ExprPtr
     build_method_call(ExprPtr target, ArgList args, TypePack<void>, IndexPack<Indices...>) const
     {
         if (args.size() != sizeof...(Indices))
@@ -76,4 +75,4 @@ public:
 
 };
 
-}}
+}

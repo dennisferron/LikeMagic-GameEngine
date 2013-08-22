@@ -24,7 +24,7 @@
 // undue burden on implementors who do not need/use base classes with default implementations.
 //
 #define ScriptFunc(IsVoid, RType, FuncName, CONST, ArgTypes) \
-Iocaste::LikeMagicAdapters::IoBlock On##FuncName; \
+Iocaste::LMAdapters::IoBlock On##FuncName; \
 virtual RType FuncName( \
     BOOST_PP_SEQ_FOR_EACH_I(TypedArgList, arg, ArgTypes) \
 ) CONST \

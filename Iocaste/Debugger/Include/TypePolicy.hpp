@@ -5,8 +5,8 @@
 namespace Iocaste {
     namespace Debugger {
 
-using LikeMagic::Utility::IndexPack;
-using LikeMagic::Utility::MakeIndexPack;
+using LM::IndexPack;
+using LM::MakeIndexPack;
 
 struct UnusedType {};
 

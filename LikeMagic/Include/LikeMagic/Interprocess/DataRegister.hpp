@@ -2,7 +2,7 @@
 
 #include "boost/interprocess/sync/interprocess_semaphore.hpp"
 
-namespace LikeMagic { namespace Interprocess {
+namespace LM {
 
 template <typename T>
 struct DataRegister
@@ -17,4 +17,4 @@ struct DataRegister
         has_data(false) {}
 };
 
-}}
+}

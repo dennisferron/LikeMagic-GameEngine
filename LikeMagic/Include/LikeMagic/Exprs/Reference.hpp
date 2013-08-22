@@ -13,9 +13,9 @@
 
 #include <iostream>
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
-using namespace LikeMagic::Utility;
+
 
 template <typename T>
 class Reference : public Expression<T&>
@@ -26,9 +26,9 @@ private:
 
     // This allows the reference expression to bump up the refcount
     // on the storage location, if that is being tracked.  Otherwise this is null.
-    boost::intrusive_ptr<Expression<T&>> storage_location;
+    ExprPtr storage_location;
 
-    Reference(T& value_, boost::intrusive_ptr<Expression<T&>> storage_location_) : value(value_), storage_location(storage_location_)
+    Reference(T& value_, ExprPtr storage_location_) : value(value_), storage_location(storage_location_)
     {
     }
 
@@ -57,9 +57,9 @@ private:
 
 public:
 
-    static boost::intrusive_ptr<Expression<T&>> create(T& value_, boost::intrusive_ptr<Expression<T&>> storage_location_=0)
+    static ExprPtr create(T& value_, ExprPtr storage_location_=0)
     {
-        boost::intrusive_ptr<Expression<T&>> result = new Reference(value_, storage_location_);
+        ExprPtr result = new Reference(value_, storage_location_);
         return result;
     }
 
@@ -68,7 +68,7 @@ public:
 
     virtual std::string description() const
     {
-        return std::string("Reference<" + LikeMagic::Utility::TypeDescr<T>::text() + ">");
+        return std::string("Reference<" + LM::TypeDescr<T>::text() + ">");
     }
 
     virtual void mark() const
@@ -85,4 +85,4 @@ public:
 };
 
 
-}}
+}

@@ -11,11 +11,11 @@
 #include "LikeMagic/Mirrors/CallTarget.hpp"
 #include "LikeMagic/Utility/make_arg_list.hpp"
 
-namespace LikeMagic { namespace CallTargets {
+namespace LM {
 
-using namespace LikeMagic::Utility;
-using namespace LikeMagic::Exprs;
-using namespace LikeMagic::Mirrors;
+
+
+
 
 template <typename ObjT>
 class DestructorCallTarget : public CallTarget
@@ -40,4 +40,4 @@ public:
 };
 
 
-}}
+}

@@ -11,7 +11,7 @@
 #include <string>
 #include <typeinfo>
 
-namespace LikeMagic { namespace Utility {
+namespace LM {
 
 std::string demangle_name(std::string type_name);
 
@@ -45,4 +45,4 @@ struct TypeDescr<U * const> { static std::string text() { return TypeDescr<U>::t
 template <typename U>
 struct TypeDescr<U const * const> { static std::string text() { return TypeDescr<U>::text() + " const * const"; } };
 
-}}
+}

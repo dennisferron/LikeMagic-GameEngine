@@ -12,7 +12,7 @@
 #ifndef USE_IRRKLANG
 
 // Define the irrklang bindings as a dummy function.
-using namespace LikeMagic;
+using namespace LM;
 namespace Bindings { namespace IrrKlang {
 void add_bindings() {}
 }}
@@ -21,7 +21,7 @@ void add_bindings() {}
 
 #include "irrKlang.h"
 
-using namespace LikeMagic;
+using namespace LM;
 using namespace irrklang;
 
 namespace Bindings { namespace IrrKlang {

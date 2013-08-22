@@ -17,9 +17,9 @@
 #include <string>
 #include <algorithm>
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using namespace LikeMagic::Exprs;
+
 
 template <typename T> struct IsString { enum { value = false }; };
 
@@ -229,9 +229,7 @@ class StringConv : public ConvertibleTo<To>
 public:
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, StringConvImpl<From, To>>::create(
-            boost::intrusive_ptr<Expression<From>>(
-                reinterpret_cast<Expression<From>*>(expr.get())));
+        return Trampoline<From, To, StringConvImpl<From, To>>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("StringConv"); }
@@ -249,9 +247,7 @@ public:
     {
         // Convert the string to a wstring and cache it before converting to wchar_t const*.
         return Trampoline<std::wstring&, wchar_t const*, StringConvImpl<std::wstring&, wchar_t const*>>::create(
-                StringCachingTrampoline<std::string, std::wstring&, StringConvImpl<std::string, std::wstring>>::create(
-                    boost::intrusive_ptr<Expression<std::string>>(
-                        reinterpret_cast<Expression<std::string>*>(expr.get()))));
+                StringCachingTrampoline<std::string, std::wstring&, StringConvImpl<std::string, std::wstring>>::create(expr));
     }
 
     virtual std::string description() const { return describe_converter<std::string, wchar_t const*>("StringConv"); }
@@ -279,4 +275,4 @@ public:
 };
 
 
-}}
+}

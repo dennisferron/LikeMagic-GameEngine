@@ -29,7 +29,7 @@
 
 #include "Bindings/Custom/SceneNodePtrTest.hpp"
 
-using namespace LikeMagic;
+using namespace LM;
 
 using namespace irr;
 using namespace irr::core;

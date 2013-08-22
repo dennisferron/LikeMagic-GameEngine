@@ -11,9 +11,9 @@
 #include "LikeMagic/TypeConv/ConvertibleTo.hpp"
 #include "LikeMagic/Exprs/Trampoline.hpp"
 
-namespace LikeMagic { namespace TypeConv {
+namespace LM {
 
-using namespace LikeMagic::Exprs;
+
 
 template <typename From, typename To>
 class PtrCastConv : public ConvertibleTo<To>
@@ -27,9 +27,7 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, PtrCastConv>::create(
-            boost::intrusive_ptr<Expression<From>>(
-                static_cast<Expression<From>*>(expr.get())));
+        return Trampoline<From, To, PtrCastConv>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("PtrCastConv"); }
@@ -39,4 +37,4 @@ public:
     virtual float cost() const { return 10.0; }
 };
 
-}}
+}

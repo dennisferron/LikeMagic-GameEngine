@@ -11,7 +11,7 @@
 #ifndef USE_IRRKLANG
 
 // Replace protos with empty dummy function.
-using namespace Iocaste::LikeMagicAdapters;
+using namespace Iocaste::LMAdapters;
 namespace Bindings { namespace IrrKlang {
 void add_protos(IoVM& vm) {}
 }}
@@ -23,7 +23,7 @@ void add_protos(IoVM& vm) {}
 #include "LikeMagic/BindingMacros.hpp"
 
 using namespace std;
-using namespace Iocaste::LikeMagicAdapters;
+using namespace Iocaste::LMAdapters;
 using namespace irrklang;
 
 namespace Bindings { namespace IrrKlang {

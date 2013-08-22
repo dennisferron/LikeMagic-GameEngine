@@ -11,7 +11,7 @@
 
 #include "LikeMagic/Exprs/AbstractExpression.hpp"
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
 class NamespaceExpr : public AbstractExpression
 {
@@ -33,4 +33,4 @@ public:
     virtual bool is_null() const;
 };
 
-}}
+}

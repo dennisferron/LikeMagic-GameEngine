@@ -10,7 +10,7 @@
 
 #include <stdexcept>
 
-namespace LikeMagic { namespace Exprs {
+namespace LM {
 
 void intrusive_ptr_add_ref(AbstractExpression* p)
 {
@@ -23,4 +23,19 @@ void intrusive_ptr_release(AbstractExpression* p)
         delete p;
 }
 
-}}
+AbstractExpression::~AbstractExpression()
+{
+    //std::cout << "~AbstractExpression " << this << std::endl;
+    if (ref_count)
+    {
+        std::cout << "Fatal error:  Deleting abstract expression when ref_count is nonzero: ref_count = " << ref_count << std::endl;
+        std::terminate();
+    }
+}
+
+AbstractExpression::AbstractExpression() : ref_count(0) {}
+
+void AbstractExpression::set_disable_to_script(bool value) {}
+void AbstractExpression::set_auto_delete_ptr(bool value) {}
+
+}
