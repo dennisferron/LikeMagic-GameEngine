@@ -147,7 +147,7 @@ CallReturn RPC::listen(int wanted_invocation_id, bool wants_rvalue)
                 // Execute the args and enplace the rvalue
                 pcs->state = ProcessState::ExecutingCallRequest;
                 LM::TypeIndex arg_type_index
-                    = LM::BetterTypeInfo::create_index<int>();
+                    = LM::TypId<int>::get();
                 LM::TypeInfoList arg_types;
                 arg_types.push_back(arg_type_index);
                 ArgList arg_list = transporter.read_args(arg_types, temp.args_buffer);
@@ -166,7 +166,7 @@ CallReturn RPC::listen(int wanted_invocation_id, bool wants_rvalue)
                 CallReturn& wrv_val = wrv_reg.data;
                 wrv_val.invocation_id = temp.invocation_id;
                 LM::TypeIndex ret_type_index
-                    = LM::BetterTypeInfo::create_index<int>();
+                    = LM::TypId<int>::get();
                 transporter.write_value(ret_type_index, wrv_val.rvalue_buffer, method_call);
                 wrv_reg.has_data = true;
                 wrv_reg.writing_in_progress.post();
@@ -196,7 +196,7 @@ int RPC::call_int(int method, int arg)
 {
     CallReturn ret = call(-1, method, arg);
     LM::TypeIndex ret_type_index
-        = LM::BetterTypeInfo::create_index<int>();
+        = LM::TypId<int>::get();
     std::pair<ExprPtr, void*> result = transporter.read_value(ret_type_index, ret.rvalue_buffer);
     int rval = type_system->try_conv<int>(result.first)->eval();
     return rval;
@@ -250,7 +250,7 @@ CallReturn RPC::call(int object_handle, int method, int arg)
     int temp = term->eval();
     cout << "Term is " << temp << endl;
 
-    TypeIndex type_index = BetterTypeInfo::create_index<int>();
+    TypeIndex type_index = TypId<int>::get();
     TypeInfoList arg_types;
     arg_types.push_back(type_index);
 

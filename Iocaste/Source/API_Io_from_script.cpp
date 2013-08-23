@@ -77,7 +77,7 @@ std::vector<T> from_list(IoObject* io_obj)
         virtual std::string description() const { return "From " #scriptType " Conv"; } \
     }; \
 \
-    type_system->add_converter_simple(FromIoTypeInfo::create_index(#scriptType), BetterTypeInfo::create_index<cppType&>(), new From##scriptType); \
+    type_system->add_converter_simple(FromIoTypeInfo::create_index(#scriptType), TypId<cppType&>::get(), new From##scriptType); \
 }
 
 void add_convs_from_script(IoVM* iovm)
@@ -109,7 +109,7 @@ void add_convs_from_script(IoVM* iovm)
 
         virtual std::string description() const { return "From Nil to 'false' Conv"; }
     };
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), BetterTypeInfo::create_index<bool>(), new FromNilToFalse);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), TypId<bool>::get(), new FromNilToFalse);
 
     // Allow nil to convert to void (for IoBlock eval<void>)
     struct FromNilToVoid : public AbstractTypeConverter
@@ -121,7 +121,7 @@ void add_convs_from_script(IoVM* iovm)
 
         virtual std::string description() const { return "From Nil to void Conv"; }
     };
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), BetterTypeInfo::create_index<void>(), new FromNilToVoid);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), TypId<void>::get(), new FromNilToVoid);
 
     struct FromIoBlock : public AbstractTypeConverter
     {
@@ -139,7 +139,7 @@ void add_convs_from_script(IoVM* iovm)
     };
 
     TypeIndex from_script_block_type = FromIoTypeInfo::create_index("Block");
-    TypeIndex to_block_wrapper_type = BetterTypeInfo::create_index<IoBlock&>();
+    TypeIndex to_block_wrapper_type = TypId<IoBlock&>::get();
     p_conv_t block_converter = new FromIoBlock(iovm);
 
     type_system->add_converter_simple(
@@ -168,7 +168,7 @@ void add_convs_from_script(IoVM* iovm)
         virtual std::string description() const { return "From Bool Conv"; }
     };
 
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Bool"), BetterTypeInfo::create_index<bool&>(), new FromBool);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Bool"), TypId<bool&>::get(), new FromBool);
 
 
     //MKCONV(Vector, std::vector<long double>, from_vector<long double>)
@@ -203,7 +203,7 @@ void add_convs_from_script(IoVM* iovm)
 
 ExprPtr from_script(IoObject* self, IoObject* io_obj, TypeIndex to_type)
 {
-    static TypeIndex wants_io_obj = BetterTypeInfo::create_index<IoObject*>();
+    TypeIndex wants_io_obj = TypId<IoObject*>::get();
 
     if (is_Exprs_obj(io_obj) && !(to_type == wants_io_obj))
     {

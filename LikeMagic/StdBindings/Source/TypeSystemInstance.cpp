@@ -68,7 +68,7 @@ TypeSystemInstance::TypeSystemInstance()
 /*
     // Register proxy methods (methods that act on the ExprProxy instead of the object itself)
     // Everything below here uses proxy methods.
-    static TypeIndex proxy_methods_type = BetterTypeInfo::create_index<ProxyMethodsType>();
+    static TypeIndex proxy_methods_type = TypId<ProxyMethodsType>::get();
     proxy_methods = new ProxyMethods(proxy_methods_type, "ProxyMethods", *this, NamespacePath::global());
     add_class(proxy_methods_type, proxy_methods);
     proxy_methods->bind_method("get_class", &AbstractCppObjProxy::get_class);
@@ -79,7 +79,7 @@ TypeSystemInstance::TypeSystemInstance()
 
 /*
     // register void so functions returning void will work right.
-    static TypeIndex void_type = BetterTypeInfo::create_index<void>();
+    static TypeIndex void_type = TypId<void>::get();
     auto void_class = new DummyClass<void>(void_type, "void", *this, NamespacePath::global());
     add_class(void_type, void_class);
     void_class->add_base(proxy_methods);
@@ -87,7 +87,7 @@ TypeSystemInstance::TypeSystemInstance()
 
 /*
     // register the Bottom Pointer so unsafe_ptr_cast will work.
-    static TypeIndex bot_type = BetterTypeInfo::create_index<BottomPtrTag__>();
+    static TypeIndex bot_type = TypId<BottomPtrTag__>::get();
     auto bot_class = new DummyClass<BottomPtrTag__>(bot_type, "unsafe_ptr_cast", *this, NamespacePath::global());
     add_class(bot_type, bot_class);
     bot_class->add_base(proxy_methods);
@@ -98,7 +98,7 @@ TypeSystemInstance::TypeSystemInstance()
 /*
     // register the Unknown_CppObj so functions returning unregistered classes
     // can still be called.
-    static TypeIndex unknown_type = BetterTypeInfo::create_index<Unknown_CppObj>();
+    static TypeIndex unknown_type = TypId<Unknown_CppObj>::get();
     auto unknown_class = new DummyClass<Unknown_CppObj>(unknown_type, "Unknown_CppObj", *this, NamespacePath::global());
     add_class(unknown_type, unknown_class);
     unknown_class->add_base_abstr(proxy_methods);

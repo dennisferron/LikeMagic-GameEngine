@@ -56,14 +56,14 @@ LM::Expression<To>* try_conv(ExprPtr from)
 {
     return static_cast<LM::Expression<To>*>(
           type_system->try_conv(
-            from, LM::BetterTypeInfo::create_index<To>()).get());
+            from, LM::TypId<To>::get()).get());
 }
 
 template <typename To>
 bool has_conv(LM::ExprPtr from)
 {
     return type_system->has_conv(from->get_type(),
-         LM::BetterTypeInfo::create_index<To>());
+         LM::TypId<To>::get());
 }
 
 }

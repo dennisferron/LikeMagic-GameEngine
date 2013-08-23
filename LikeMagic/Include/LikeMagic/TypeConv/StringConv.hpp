@@ -46,9 +46,9 @@ template <typename F, typename T> struct StringConvImpl
     inline static T do_conv(F obj)
     {
         throw std::logic_error("Error, StringConvImpl:  cannot do string conversion from type "
-                + BetterTypeInfo::create_index<F>().description()
+                + TypId<F>::get().description()
                 + " to type "
-                + BetterTypeInfo::create_index<T>().description());
+                + TypId<T>::get().description());
     }
 
     // Conversion should never be used anyway.

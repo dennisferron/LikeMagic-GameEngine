@@ -45,6 +45,9 @@ private:
     friend void intrusive_ptr_add_ref(AbstractExpression* p);
     friend void intrusive_ptr_release(AbstractExpression* p);
 
+    bool disable_to_script;
+    bool auto_delete_ptr;
+
 protected:
 
     virtual ~AbstractExpression();
@@ -52,18 +55,18 @@ protected:
 
 public:
 
-    // I think the current interface here is good.
-    // Use typeindex -> class -> method -> call.
-
     virtual bool is_terminal() const = 0;
     virtual TypeIndex get_type() const = 0;
-    virtual TypeIndex get_class_type() const = 0;
-    virtual std::string description() const = 0;
-    virtual bool disable_to_script_conv() const = 0;
-    virtual bool is_null() const = 0;
+
+    virtual std::string description() const;
+
+    virtual TypeIndex get_class_type() const;
+    virtual bool is_null() const;
+    virtual bool disable_to_script_conv() const;
 
     virtual void set_disable_to_script(bool value);
     virtual void set_auto_delete_ptr(bool value);
+    virtual bool get_auto_delete_ptr() const;
 };
 
 // Most of the time you will be using an expression via smart ptr.

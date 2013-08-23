@@ -43,7 +43,7 @@
 			<Add directory="Include" />
 			<Add directory="../Include" />
 			<Add directory="../StdBindings/Include" />
-			<Add directory="../../Common/boost_1_49_0" />
+			<Add directory="../../Common/boost_1_54_0" />
 			<Add directory="../../Common/UnitTest++/src" />
 		</Compiler>
 		<Unit filename="Include/UnitTests/ArgListHelpers.hpp" />

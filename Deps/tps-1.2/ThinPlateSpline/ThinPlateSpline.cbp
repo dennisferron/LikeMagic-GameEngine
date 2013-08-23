@@ -8,7 +8,7 @@
 		<Build>
 			<Target title="Debug Mac">
 				<Option platforms="Mac;" />
-				<Option output="bin/Debug/libThinPlateSpline" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/ThinPlateSpline" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
 				<Option type="2" />
@@ -50,7 +50,7 @@
 			</Target>
 			<Target title="Debug Linux">
 				<Option platforms="Unix;" />
-				<Option output="bin/Debug/libThinPlateSpline" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/ThinPlateSpline" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
 				<Option type="2" />
@@ -71,7 +71,7 @@
 			</Target>
 			<Target title="Debug Windows">
 				<Option platforms="Windows;" />
-				<Option output="bin/Debug/libThinPlateSpline" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/ThinPlateSpline" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
 				<Option type="2" />
@@ -95,7 +95,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="--std=c++0x" />
-			<Add directory="../../../Common/boost_1_49_0" />
+			<Add directory="../../../Common/boost_1_54_0" />
 			<Add directory="../Include" />
 		</Compiler>
 		<Unit filename="../Include/ThinPlateSpline/ControlPoint.hpp" />

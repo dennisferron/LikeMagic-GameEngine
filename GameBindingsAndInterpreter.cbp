@@ -115,6 +115,7 @@
 					<Add library="..\desteer\bindings\libDESteerBindings-Windows.a" />
 					<Add library="LikeMagic\StdBindings\libStdBindings-Windows.a" />
 					<Add library="Iocaste\libIocaste-Windows.a" />
+					<Add library="Common\boost_1_54_0\stage\lib\libboost_program_options-mgw47-mt-d-1_54.a" />
 					<Add library="LikeMagic\libLikeMagic-Windows.a" />
 					<Add library="..\desteer\lib\libdesteer.a" />
 					<Add library="Deps\tps-1.2\ThinPlateSpline\bin\Debug\libThinPlateSpline.a" />
@@ -146,7 +147,7 @@
 			<Add option="-Wno-unused-parameter" />
 			<Add option="-Wno-deprecated" />
 			<Add option="-Wno-ignored-qualifiers" />
-			<Add directory="Common/boost_1_49_0" />
+			<Add directory="Common/boost_1_54_0" />
 			<Add directory="Deps/bullet-2.81-rev2613/src" />
 			<Add directory="../desteer/include" />
 			<Add directory="Include" />

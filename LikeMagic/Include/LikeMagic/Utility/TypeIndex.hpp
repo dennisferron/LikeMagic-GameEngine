@@ -37,9 +37,11 @@ private:
     std::size_t class_id;
 
 public:
-    TypeIndex() : id(-1), class_id(-1) {}
+    TypeIndex() : id(0), class_id(0) {}
     explicit TypeIndex(std::size_t id_, std::size_t class_id_) : id(id_), class_id(class_id_) {}
     TypeIndex(TypeIndex const& that) : id(that.id), class_id(that.class_id) {}
+
+    bool is_initialized() const { return id != 0; }
 
     inline bool operator <(TypeIndex const& that) const
         { return this->id < that.id; }

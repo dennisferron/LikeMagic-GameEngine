@@ -42,6 +42,11 @@ TypeInfoCache* TypeInfoCache::get_instance()
     return instance;
 }
 
+TypeIndex TypeInfoCache::get_index(TypeInfoPtr candidate)
+{
+    return get_index(candidate, candidate->bare_type());
+}
+
 TypeIndex TypeInfoCache::get_index(TypeInfoPtr candidate, TypeInfoPtr class_type)
 {
     TypeIndex index;

@@ -118,6 +118,22 @@ TypeInfoPtr BetterTypeInfo::remove_all_const() const
     return TypeInfoPtr(new BetterTypeInfo(info, false, false, is_ref, is_ptr));
 }
 
+std::string BetterTypeInfo::get_system() const
+{
+    return "C++";
+}
+
+std::size_t BetterTypeInfo::calc_hash() const
+{
+    std::size_t seed = 0;
+    boost::hash_combine(seed, obj_is_const);
+    boost::hash_combine(seed, ptr_is_const);
+    boost::hash_combine(seed, is_ref);
+    boost::hash_combine(seed, is_ptr);
+    boost::hash_combine(seed, std::string(info->name()));
+    return seed;
+}
+
 std::string BetterTypeInfo::description() const
 {
     return std::string(demangle_name(info->name()))

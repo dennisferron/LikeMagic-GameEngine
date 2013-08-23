@@ -80,7 +80,7 @@
 			<Add directory="garbagecollector/source" />
 			<Add directory="iovm/source" />
 			<Add directory="basekit/source/simd_cph/include" />
-			<Add directory="../Common/boost_1_49_0" />
+			<Add directory="../Common/boost_1_54_0" />
 			<Add directory="../LikeMagic/Include" />
 		</Compiler>
 		<Unit filename="Include/Iocaste/Breakpoint.hpp" />

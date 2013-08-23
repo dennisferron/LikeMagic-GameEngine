@@ -30,7 +30,7 @@ public:
     template <template <typename T_> class Marshaller, typename T, typename... Args>
     void add_marshaller_by_type(Args && ... args)
     {
-        TypeIndex index = LM::BetterTypeInfo::create_index<T>();
+        TypeIndex index = LM::TypId<T>::get();
         auto marshaller = ArgMarshaller(new Marshaller<T>(std::forward<Args>(args)...));
         add_marshaller(index, marshaller);
     }

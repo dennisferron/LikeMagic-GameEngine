@@ -205,7 +205,7 @@ bool TypeConvGraph::has_conv(TypeIndex from_type, TypeIndex to_type) const
 TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, TypeIndex to) const
 {
     // Why was this set if not used?
-    //static TypeIndex bot = BetterTypeInfo::create_index<BottomPtrType>();
+    //static TypeIndex bot = TypId<BottomPtrType>::get();
 
     static int count = 0;
 

@@ -55,7 +55,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="-DBOOST_DATE_TIME_NO_LIB" />
-			<Add directory="../../Common/boost_1_49_0" />
+			<Add directory="../../Common/boost_1_54_0" />
 			<Add directory="../Include" />
 			<Add directory="../StdBindings/Include" />
 		</Compiler>

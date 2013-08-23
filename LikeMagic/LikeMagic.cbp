@@ -57,7 +57,7 @@
 			<Add option="-Wno-unused-parameter" />
 			<Add option="-Wno-deprecated" />
 			<Add option="-Wno-ignored-qualifiers" />
-			<Add directory="../Common/boost_1_49_0" />
+			<Add directory="../Common/boost_1_54_0" />
 			<Add directory="../Iocaste/basekit/source" />
 			<Add directory="../Iocaste/garbagecollector/source" />
 			<Add directory="../Iocaste/iovm/source" />
@@ -134,13 +134,11 @@
 		<Unit filename="Include/LikeMagic/Utility/BetterTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/DLLHelper.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/EnumHelper.hpp" />
-		<Unit filename="Include/LikeMagic/Utility/FieldPtrTraits.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/ICanHasMemberFunc.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/IndexPack.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/IsContainer.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/IsIterator.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/KeyWrapper.hpp" />
-		<Unit filename="Include/LikeMagic/Utility/MakeCall.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/NamespaceTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/ScriptFunc.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/StripModifiers.hpp" />
@@ -158,6 +156,7 @@
 		<Unit filename="Source/AbstractTypeConverter.cpp" />
 		<Unit filename="Source/AbstractTypeInfo.cpp" />
 		<Unit filename="Source/BetterTypeInfo.cpp" />
+		<Unit filename="Source/BottomPtrExpr.cpp" />
 		<Unit filename="Source/CallTarget.cpp" />
 		<Unit filename="Source/ExprTarget.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />

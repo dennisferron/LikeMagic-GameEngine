@@ -25,16 +25,12 @@
 
 namespace LM {
 
-
-
 template <typename T>
 class Term : public Expression<T&>
 {
 private:
 
     typename TermStoreAs<T>::type value;
-    bool disable_to_script;
-    bool auto_delete_ptr;
 
     static void mark(IMarkable const* obj)
     {
@@ -59,17 +55,17 @@ private:
     {
     }
 
-    Term() : value(), disable_to_script(false)
+    Term() : value()
     {
     }
 
     template <typename... Args>
-    Term(Args && ... args) : value(std::forward<Args>(args)...), disable_to_script(false)
+    Term(Args && ... args) : value(std::forward<Args>(args)...)
     {
     }
 
     template <typename... Args>
-    Term(Args const& ... args) : value(args...), disable_to_script(false)
+    Term(Args const& ... args) : value(args...)
     {
     }
 
@@ -77,13 +73,8 @@ public:
 
     ~Term()
     {
-        if (auto_delete_ptr)
+        if (((AbstractExpression*)this)->get_auto_delete_ptr())
             TermDeleter<T>::delete_if_possible(value);
-    }
-
-    virtual void set_auto_delete_ptr(bool value_)
-    {
-        auto_delete_ptr = value_;
     }
 
     static ExprPtr create()
@@ -109,12 +100,10 @@ public:
     }
 
     virtual bool is_terminal() const { return true; }
-    virtual bool disable_to_script_conv() const { return disable_to_script; }
-    virtual void set_disable_to_script(bool value) { disable_to_script = value; }
 
     virtual std::string description() const
     {
-        return std::string("Term<" + LM::TypeDescr<T>::text() + ">");
+        return std::string("Term<" + AbstractExpression::description() + ">");
     }
 
     virtual void mark() const

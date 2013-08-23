@@ -56,8 +56,8 @@ std::string describe_converter(std::string converter_name)
 {
     return
             converter_name +
-            " from " + BetterTypeInfo::create_index<From>().description() +
-            " to " + BetterTypeInfo::create_index<To>().description();
+            " from " + TypId<From>::get().description() +
+            " to " + TypId<To>::get().description();
 }
 
 typedef boost::intrusive_ptr<AbstractTypeConverter const> p_conv_t;

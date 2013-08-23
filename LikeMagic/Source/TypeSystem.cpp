@@ -54,15 +54,15 @@ struct TypeSystem::Impl
         add_conv_track<void>(bare);
         add_conv_track<void const>(bare->as_const_obj_type());
 
-        auto bot_tag = BetterTypeInfo::create_index<BottomPtrType>().get_info();
+        auto bot_tag = TypId<BottomPtrType>::get().get_info();
 
         // allow unsafe_ptr_cast to convert to any type and nil (NULL) to any pointer type
         add_nochange_conv<BottomPtrType, void*>(bot_tag, bare->as_ptr());
         add_nochange_conv<BottomPtrType, void const*>(bot_tag, bare->as_ptr()->as_const_obj_type());
 
         // allow any ptr to be converted to void* or void const*
-        add_nochange_conv<void*, void*>(bare->as_ptr(), BetterTypeInfo::create_index<void*>().get_info());
-        add_nochange_conv<void const*, void const*>(bare->as_ptr()->as_const_obj_type(), BetterTypeInfo::create_index<void const*>().get_info());
+        add_nochange_conv<void*, void*>(bare->as_ptr(), TypId<void*>::get().get_info());
+        add_nochange_conv<void const*, void const*>(bare->as_ptr()->as_const_obj_type(), TypId<void const*>::get().get_info());
     }
 
     template <typename From, typename To>
@@ -116,7 +116,7 @@ TypeSystem::TypeSystem()
     impl->global_namespace = new TypeMirror("namespace", 0, ns_type, ns_type, ns_type);
 
     // Allow conversions from nil to any pointer.
-    static TypeIndex nil_expr_type = BetterTypeInfo::create_index<BottomPtrType>();
+    static TypeIndex nil_expr_type = TypId<BottomPtrType>::get();
     impl->conv_graph.add_type(nil_expr_type);
 }
 
@@ -205,7 +205,7 @@ void TypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t
     impl->conv_graph.add_conv(from.get_info()->as_const_obj_type()->get_index(), to.get_info()->as_const_obj_type()->get_index(), conv);
 
     // Allow this expression type to be converted to an expression argument.
-    TypeIndex as_expr_type = BetterTypeInfo::create_index<ExprPtr>();
+    TypeIndex as_expr_type = TypId<ExprPtr>::get();
     impl->conv_graph.add_conv(from, as_expr_type, new ToAbstractExpressionConv);
     impl->conv_graph.add_conv(from.get_info()->as_const_obj_type()->get_index(), as_expr_type, new ToAbstractExpressionConv);
     impl->conv_graph.add_conv(to, as_expr_type, new ToAbstractExpressionConv);

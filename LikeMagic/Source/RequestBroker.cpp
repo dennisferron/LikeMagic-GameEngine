@@ -119,7 +119,7 @@ CallReturn RequestBroker::listen(int wanted_invocation_id, bool wants_rvalue)
                 // Execute the args and enplace the rvalue
                 pcs->state = ProcessState::ExecutingCallRequest;
                 LM::TypeIndex arg_type_index
-                    = LM::BetterTypeInfo::create_index<int>();
+                    = LM::TypId<int>::get();
                 LM::TypeInfoList arg_types;
                 arg_types.push_back(arg_type_index);
                 ArgList arg_list = transporter.read_args(arg_types, temp.args_buffer);
@@ -138,7 +138,7 @@ CallReturn RequestBroker::listen(int wanted_invocation_id, bool wants_rvalue)
                 CallReturn& wrv_val = wrv_reg.data;
                 wrv_val.invocation_id = temp.invocation_id;
                 LM::TypeIndex ret_type_index
-                    = LM::BetterTypeInfo::create_index<int>();
+                    = LM::TypId<int>::get();
                 transporter.write_value(ret_type_index, wrv_val.rvalue_buffer, method_call);
                 wrv_reg.has_data = true;
                 wrv_reg.writing_in_progress.post();

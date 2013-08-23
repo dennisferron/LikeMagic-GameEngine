@@ -234,20 +234,20 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     LM_CLASS(global_ns, IoObject)
 
     // To convert an Io object to a void*
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<void*>(), new LM::ImplicitConv<IoObject*, void*>);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), TypId<void*>::get(), new LM::ImplicitConv<IoObject*, void*>);
 
     // Make general Io objects convertible with IoObject*.
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), BetterTypeInfo::create_index<IoObject*>(), new LM::NoChangeConv<>);
-    type_system->add_converter_simple(BetterTypeInfo::create_index<IoObject*>(), ToIoTypeInfo::create_index("Object"), new PtrToIoObjectConv);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), TypId<IoObject*>::get(), new LM::NoChangeConv<>);
+    type_system->add_converter_simple(TypId<IoObject*>::get(), ToIoTypeInfo::create_index("Object"), new PtrToIoObjectConv);
     type_system->add_converter_simple(ToIoTypeInfo::create_index("Object"), ToIoTypeInfo::create_index(), new LM::NoChangeConv<>);
 
     // Allow LikeMagic proxy objects to be converted to the C/C++ type IoObject*
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("LikeMagic"), BetterTypeInfo::create_index<IoObject*>(), new LM::NoChangeConv<>);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("LikeMagic"), TypId<IoObject*>::get(), new LM::NoChangeConv<>);
 
     LM_CLASS(global_ns, IoBlock)
 
     // Allow conversion of Io blocks to IoObject*
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), BetterTypeInfo::create_index<IoObject*>(), new LM::NoChangeConv<>);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), TypId<IoObject*>::get(), new LM::NoChangeConv<>);
 
     // Allow reference/value conversions for IoBlock.
     add_conv<Iocaste::LMAdapters::IoBlock&, Iocaste::LMAdapters::IoBlock>();

@@ -90,7 +90,7 @@ public:
                 add_args(m, args...);
                 errorPoint = "on activate";
                 IoObject* result = activate(m);
-                static TypeIndex r_type = LM::BetterTypeInfo::template create_index<R>();
+                static TypeIndex r_type = LM::TypId<R>::get();
                 errorPoint = "return value from_script";
                 ExprPtr expr = from_script(io_target, result, r_type);
                 errorPoint = "try_conv return value";

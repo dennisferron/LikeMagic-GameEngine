@@ -33,9 +33,43 @@ AbstractExpression::~AbstractExpression()
     }
 }
 
-AbstractExpression::AbstractExpression() : ref_count(0) {}
+AbstractExpression::AbstractExpression() : ref_count(0), disable_to_script(false), auto_delete_ptr(false)
+{
+}
 
-void AbstractExpression::set_disable_to_script(bool value) {}
-void AbstractExpression::set_auto_delete_ptr(bool value) {}
+bool AbstractExpression::get_auto_delete_ptr() const
+{
+    return auto_delete_ptr;
+}
+
+std::string AbstractExpression::description() const
+{
+    return get_type().description();
+}
+
+void AbstractExpression::set_disable_to_script(bool value_)
+{
+    disable_to_script = value_;
+}
+
+void AbstractExpression::set_auto_delete_ptr(bool value_)
+{
+    auto_delete_ptr = value_;
+}
+
+TypeIndex AbstractExpression::get_class_type() const
+{
+    return get_type().class_type();
+}
+
+bool AbstractExpression::is_null() const
+{
+    return false;
+}
+
+bool AbstractExpression::disable_to_script_conv() const
+{
+    return disable_to_script;
+}
 
 }

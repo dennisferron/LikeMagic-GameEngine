@@ -20,9 +20,14 @@
 
 namespace LM {
 
+template <typename T>
+class TypId;
+
 class BetterTypeInfo : public AbstractTypeInfo
 {
 private:
+    template <typename T> friend class TypId;
+
     std::type_info const* info;
     bool obj_is_const;
     bool ptr_is_const;
@@ -35,53 +40,12 @@ private:
 
 protected:
 
-    virtual std::string get_system() const
-    {
-        return "C++";
-    }
-
+    virtual std::string get_system() const;
     virtual bool less(const AbstractTypeInfo& other) const;
     virtual bool equals(const AbstractTypeInfo& other) const;
-
-    virtual std::size_t calc_hash() const
-    {
-        std::size_t seed = 0;
-        boost::hash_combine(seed, obj_is_const);
-        boost::hash_combine(seed, ptr_is_const);
-        boost::hash_combine(seed, is_ref);
-        boost::hash_combine(seed, is_ptr);
-        boost::hash_combine(seed, std::string(info->name()));
-        return seed;
-    }
-
-    template <typename T>
-    static TypeInfoPtr create()
-    {
-        typedef StripModifiers<T> stripped;
-
-        return
-            new BetterTypeInfo(
-                &typeid(typename stripped::type),
-                stripped::obj_is_const,
-                stripped::ptr_is_const,
-                stripped::is_ref,
-                stripped::is_ptr
-            );
-    }
+    virtual std::size_t calc_hash() const;
 
 public:
-
-    template <typename T>
-    static TypeIndex create_index()
-    {
-        static TypeIndex cached(
-            TypeInfoCache::get_instance()->get_index(
-                create<T>(), create<T>()->bare_type()
-            )
-        );
-
-        return cached;
-    }
 
     bool get_obj_is_const() const;
     bool get_ptr_is_const() const;
@@ -98,14 +62,32 @@ public:
     TypeInfoPtr remove_reference() const;
     TypeInfoPtr remove_all_const() const;
 
-    template <typename T>
-    bool is_type()
-    {
-        return *this == BetterTypeInfo::create<T>();
-    }
-
     virtual std::string description() const;
 };
 
+template <typename T>
+class TypId
+{
+private:
+
+    TypId() = delete;
+    TypId(TypId const&) = delete;
+    ~TypId() = delete;
+
+public:
+    static TypeIndex get()
+    {
+        typedef StripModifiers<T> stripped;
+        static TypeIndex id = TypeInfoCache::get_instance()->get_index(
+                new BetterTypeInfo(
+                    &typeid(typename stripped::type),
+                    stripped::obj_is_const,
+                    stripped::ptr_is_const,
+                    stripped::is_ref,
+                    stripped::is_ptr
+                ));
+        return id;
+    }
+};
 
 }

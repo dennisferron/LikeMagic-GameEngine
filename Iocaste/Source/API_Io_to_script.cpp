@@ -24,7 +24,7 @@ namespace Iocaste { namespace LMAdapters {
 template <typename T>
 IoObject* to_seq(std::vector<T> const& vect, IoState* self)
 {
-    static TypeIndex to_type = BetterTypeInfo::create_index<T>();
+    TypeIndex to_type = TypId<T>::get();
 
     // Yuck!  C-style memory alloc!  NAasty...  At least Io frees it for us (I *think*...)
     T* c_buf = reinterpret_cast<T*>(io_calloc(vect.size(), sizeof(T)));
@@ -32,9 +32,9 @@ IoObject* to_seq(std::vector<T> const& vect, IoState* self)
     // TODO:  change CTYPE depending on T.
     UArray* uarray;
 
-    if (to_type == BetterTypeInfo::create_index<int>())
+    if (to_type == TypId<int>::get())
         uarray = UArray_newWithData_type_encoding_size_copy_(c_buf, CTYPE_int32_t, CENCODING_NUMBER, vect.size(), 0);
-    else if (to_type == BetterTypeInfo::create_index<unsigned int>())
+    else if (to_type == TypId<unsigned int>::get())
         uarray = UArray_newWithData_type_encoding_size_copy_(c_buf, CTYPE_uint32_t, CENCODING_NUMBER, vect.size(), 0);
     else
         throw std::logic_error(std::string("No code implemented yet in LikeMagic for converting to IoSeq from ") + to_type.description());
@@ -64,7 +64,7 @@ struct To##name : public AbstractTypeConverter \
 }; \
 
 #define ADD_CONV(name, type) \
-type_system->add_converter_simple(BetterTypeInfo::create_index<type>(), ToIoTypeInfo::create_index(), new To##name);
+type_system->add_converter_simple(TypId<type>::get(), ToIoTypeInfo::create_index(), new To##name);
 
 DECL_CONV(Number, double, IONUMBER(value))
 DECL_CONV(Bool, bool, value? IOTRUE(self) : IOFALSE(self))
@@ -80,7 +80,7 @@ struct ToNumberFromT : public AbstractTypeConverter
     {
         IoObject* io_obj = IONUMBER(value);
         //cout <<
-        //    "To Number from " + BetterTypeInfo::create_index<T>().description() + " Conv"
+        //    "To Number from " + TypId<T>::get().description() + " Conv"
         //    << " from value = " << value << " and to io_obj = " << IoNumber_asDouble(io_obj) << endl;
         return io_obj;
     }
@@ -90,11 +90,11 @@ struct ToNumberFromT : public AbstractTypeConverter
         return ToIoObjectExpr<T, ToNumberFromT>::create(expr);
     }
 
-    virtual std::string description() const { return "To Number from " + BetterTypeInfo::create_index<T>().description() + " Conv"; }
+    virtual std::string description() const { return "To Number from " + TypId<T>::get().description() + " Conv"; }
 
     static void add_conv()
     {
-        type_system->add_converter_simple(BetterTypeInfo::create_index<T>(), ToIoTypeInfo::create_index(), new ToNumberFromT<T>());
+        type_system->add_converter_simple(TypId<T>::get(), ToIoTypeInfo::create_index(), new ToNumberFromT<T>());
     }
 };
 
@@ -142,7 +142,7 @@ void add_convs_to_script(IoVM* iovm)
     ADD_CONV(Vector_of_Int, std::vector<int> const&)
     ADD_CONV(Vector_of_UInt, std::vector<unsigned int> const&)
 
-    type_system->add_converter_simple(BetterTypeInfo::create_index<void>(), ToIoTypeInfo::create_index(), new ToIoNil);
+    type_system->add_converter_simple(TypId<void>::get(), ToIoTypeInfo::create_index(), new ToIoNil);
 
     ToNumberFromT<double>::add_conv();
     ToNumberFromT<float>::add_conv();

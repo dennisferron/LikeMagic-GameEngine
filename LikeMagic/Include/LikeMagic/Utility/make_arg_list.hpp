@@ -18,7 +18,7 @@ template <typename FirstArg, typename... Args>
 TypeInfoList make_arg_list(TypePack<FirstArg, Args...> args)
 {
     TypeInfoList list;
-    list.push_back(BetterTypeInfo::create_index<FirstArg>());
+    list.push_back(TypId<FirstArg>::get());
     TypeInfoList others = make_arg_list(TypePack<Args...>());
     list.insert(list.end(), others.begin(), others.end());
     return list;

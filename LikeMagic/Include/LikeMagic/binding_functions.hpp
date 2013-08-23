@@ -44,8 +44,8 @@ template <typename From, typename To,
 void add_conv()
 {
     type_system->add_converter_variations(
-        LM::BetterTypeInfo::create_index<From>(),
-        LM::BetterTypeInfo::create_index<To>(),
+        LM::TypId<From>::get(),
+        LM::TypId<To>::get(),
             new Converter<From, To>);
 }
 
@@ -109,7 +109,7 @@ void bind_method(LM::TypeMirror& class_, std::string method_name, R (ObjT::*f)(A
         method_name,
         new Target(
            reinterpret_cast<typename Target::F>(f),
-           LM::BetterTypeInfo::create_index<ObjT&>()));
+           LM::TypId<ObjT&>::get()));
 }
 
 template <typename ObjT, typename... Args>
@@ -120,7 +120,7 @@ void bind_method(TypeMirror& class_, std::string method_name, void (ObjT::*f)(Ar
         method_name,
         new Target(
            reinterpret_cast<typename Target::F>(f),
-           LM::BetterTypeInfo::create_index<ObjT&>()));
+           LM::TypId<ObjT&>::get()));
 }
 
 template <typename ObjT, typename R, typename... Args>
@@ -131,7 +131,7 @@ void bind_method(LM::TypeMirror& class_, std::string method_name, R (ObjT::*f)(A
         method_name,
         new Target(
            reinterpret_cast<typename Target::F>(f),
-           LM::BetterTypeInfo::create_index<ObjT const&>()));
+           LM::TypId<ObjT const&>::get()));
 }
 
 template <typename ObjT, typename... Args>
@@ -142,7 +142,7 @@ void bind_method(LM::TypeMirror& class_, std::string method_name, void (ObjT::*f
         method_name,
         new Target(
            reinterpret_cast<typename Target::F>(f),
-           LM::BetterTypeInfo::create_index<ObjT const&>()));
+           LM::TypId<ObjT const&>::get()));
 }
 
 template <typename R, typename... Args>
@@ -207,9 +207,9 @@ register_copyable_conv()
 template <typename T, bool is_copyable=!boost::is_abstract<T>::value, bool add_deref_ptr_conv=true>
 LM::TypeMirror& register_class(std::string name, TypeMirror& namespace_)
 {
-    static const TypeIndex class_type(LM::BetterTypeInfo::create_index<T>());
-    static const TypeIndex ref_type(LM::BetterTypeInfo::create_index<T&>());
-    static const TypeIndex const_ref_type(LM::BetterTypeInfo::create_index<T const&>());
+    static const TypeIndex class_type(LM::TypId<T>::get());
+    static const TypeIndex ref_type(LM::TypId<T&>::get());
+    static const TypeIndex const_ref_type(LM::TypId<T const&>::get());
 
     namespace_.add_method
     (

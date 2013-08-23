@@ -24,6 +24,7 @@ private:
 public:
 
     TypeIndex get_index(TypeInfoPtr candidate, TypeInfoPtr class_type);
+    TypeIndex get_index(TypeInfoPtr candidate);
     TypeInfoPtr get_info(TypeIndex id) const;
 
     // I'm not a fan of singletons but in this case it makes sense.
