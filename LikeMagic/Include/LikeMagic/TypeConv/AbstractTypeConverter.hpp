@@ -24,9 +24,6 @@ typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
 
 namespace LM {
 
-using LM::BetterTypeInfo;
-using LM::ExprPtr;
-
 class AbstractTypeConverter;
 void intrusive_ptr_add_ref(AbstractTypeConverter const* p);
 void intrusive_ptr_release(AbstractTypeConverter const* p);

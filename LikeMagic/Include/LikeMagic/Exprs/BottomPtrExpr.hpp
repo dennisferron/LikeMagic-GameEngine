@@ -53,7 +53,7 @@ private:
 public:
 
     static ExprPtr create(ExprPtr inner);
-    inline virtual BottomPtrType eval();
+    virtual BottomPtrType eval();
     virtual bool is_terminal() const;
     virtual std::string description() const;
     virtual void mark() const;

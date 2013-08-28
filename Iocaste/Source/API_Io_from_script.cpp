@@ -132,7 +132,7 @@ void add_convs_from_script(IoVM* iovm)
         {
             boost::intrusive_ptr<IoObjectExpr> io_expr = static_cast<IoObjectExpr*>(expr.get());
             IoObject* io_obj = io_expr->eval();
-            return Term<IoBlock>::create(iovm, io_obj, io_obj);
+            return Term<IoBlock>::create(IoBlock(iovm, io_obj, io_obj));
         }
 
         virtual std::string description() const { return "From Block Conv"; }

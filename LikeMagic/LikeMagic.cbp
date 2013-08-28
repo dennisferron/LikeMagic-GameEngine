@@ -159,6 +159,7 @@
 		<Unit filename="Source/BottomPtrExpr.cpp" />
 		<Unit filename="Source/CallTarget.cpp" />
 		<Unit filename="Source/ExprTarget.cpp" />
+		<Unit filename="Source/IMarkable.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/NamespaceExpr.cpp" />
 		<Unit filename="Source/RequestBroker.cpp" />

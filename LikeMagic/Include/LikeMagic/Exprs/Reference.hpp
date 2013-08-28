@@ -63,12 +63,11 @@ public:
         return result;
     }
 
-    virtual bool is_terminal() const { return false; }
-    virtual bool disable_script_conv() const { return true; }
+    virtual bool is_terminal() const { return true; }
 
     virtual std::string description() const
     {
-        return std::string("Reference<" + LM::TypeDescr<T>::text() + ">");
+        return std::string("Reference<" + AbstractExpression::description() + ">");
     }
 
     virtual void mark() const
@@ -80,8 +79,6 @@ public:
     {
         return value;
     }
-
-    virtual bool disable_to_script_conv() const { return true; }
 };
 
 

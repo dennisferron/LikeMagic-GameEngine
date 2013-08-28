@@ -30,4 +30,8 @@ public:
     // destructed virtually, which might be an unwanted runtime cost.
 };
 
+void mark_if_possible(IMarkable const* const* const& obj);
+void mark_if_possible(IMarkable const* const& obj);
+void mark_if_possible(void const*const& ptr);  // Does nothing
+
 }

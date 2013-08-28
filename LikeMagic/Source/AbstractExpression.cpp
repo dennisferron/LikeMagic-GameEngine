@@ -44,7 +44,7 @@ bool AbstractExpression::get_auto_delete_ptr() const
 
 std::string AbstractExpression::description() const
 {
-    return get_type().description();
+    return "Expression<" + get_type().description() + ">";
 }
 
 void AbstractExpression::set_disable_to_script(bool value_)
@@ -70,6 +70,11 @@ bool AbstractExpression::is_null() const
 bool AbstractExpression::disable_to_script_conv() const
 {
     return disable_to_script;
+}
+
+bool AbstractExpression::is_terminal() const
+{
+    return true;
 }
 
 }

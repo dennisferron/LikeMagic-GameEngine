@@ -48,8 +48,6 @@ public:
         return cached_number;
     }
 
-    virtual bool is_terminal() const { return false; }
-
     virtual std::string description() const
     {
         return "converts " + from_expr->description() + " from " + LM::TypeDescr<From>::text() + " to " + LM::TypeDescr<To>::text();

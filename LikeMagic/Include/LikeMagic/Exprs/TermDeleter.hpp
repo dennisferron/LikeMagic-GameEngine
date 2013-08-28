@@ -16,17 +16,11 @@ namespace LM {
 template <typename T>
 struct TermDeleter
 {
-    static void delete_if_possible(T const& value) { /* do nothing */ }
-};
-
-template <typename T>
-struct TermDeleter<T*>
-{
-    static void delete_if_possible(T* value) { delete value; }
+    static void delete_if_possible(T const * const& value) { delete value; }
 };
 
 template <>
-struct TermDeleter<void*>
+struct TermDeleter<void>
 {
     static void delete_if_possible(void* value)
     {
@@ -35,7 +29,7 @@ struct TermDeleter<void*>
 };
 
 template <>
-struct TermDeleter<const void*>
+struct TermDeleter<const void>
 {
     static void delete_if_possible(const void* value)
     {
@@ -50,5 +44,5 @@ struct TermDeleter<const void*>
 // override the definition of delete for a particular type.
 #define LM_CUSTOM_DELETER(type, impl) \
 namespace LM { \
-    template <> struct TermDeleter<type> \
-        { static void delete_if_possible(type value) {impl;} }; }
+    template <> struct TermDeleter<type const> \
+        { static void delete_if_possible(type const*const& value) {impl;} }; }

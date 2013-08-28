@@ -8,12 +8,20 @@
 
 #pragma once
 
+#include "boost/type_traits/remove_reference.hpp"
+
 namespace LM {
 
 // The compiler seems to treat numeric temporaries as "extra temporary",
 // too aggressively deciding the temporary isn't needed and dropping it off the stack.
 // So don't allow a const& to be made to any numeric; just store the value.
 template <typename T> struct TermStoreAs { typedef T type; };
+template <typename T> struct TermStoreAs<T&> { typedef T* type; };
+template <typename T> struct TermStoreAs<T*&> { typedef T** type; };
+template <typename T> struct TermStoreAs<T const&> { typedef T const* type; };
+template <typename T> struct TermStoreAs<T const*&> { typedef T const** type; };
+template <typename T> struct TermStoreAs<T* const&> { typedef T *const* type; };
+template <typename T> struct TermStoreAs<T const*const&> { typedef T const*const* type; };
 template <> struct TermStoreAs<float const&> { typedef float type; };
 template <> struct TermStoreAs<double const&> { typedef double type; };
 template <> struct TermStoreAs<signed char const&> { typedef signed char type; };
@@ -24,8 +32,5 @@ template <> struct TermStoreAs<unsigned char const&> { typedef unsigned char typ
 template <> struct TermStoreAs<unsigned int const&> { typedef unsigned int type; };
 template <> struct TermStoreAs<unsigned long const&> { typedef unsigned long type; };
 template <> struct TermStoreAs<unsigned long long const&> { typedef unsigned long long type; };
-
-// Still necessary?
-template <> struct TermStoreAs<bool&> { typedef bool type; };
 
 }

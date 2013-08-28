@@ -9,7 +9,8 @@
 
 #pragma once
 
-#include "LikeMagic/Exprs/Expression.hpp"
+#include "LikeMagic/Exprs/AbstractExpression.hpp"
+
 #include "LikeMagic/Exprs/TermStoreAs.hpp"
 #include "LikeMagic/Exprs/TermDeleter.hpp"
 
@@ -26,94 +27,80 @@
 namespace LM {
 
 template <typename T>
-class Term : public Expression<T&>
+class Expression : public AbstractExpression
 {
-private:
+public:
+    virtual TypeIndex get_type() const { return TypId<T>::get(); }
+    virtual T eval() = 0;
+};
 
-    typename TermStoreAs<T>::type value;
-
-    static void mark(IMarkable const* obj)
-    {
-        obj->mark();
-    }
-
-    static void mark(IMarkable const& obj)
-    {
-        obj.mark();
-    }
-
-    template <typename MarkType>
-    typename boost::enable_if<boost::is_base_of<IMarkable, MarkType>
-        >::type mark_if_possible(TypePack<MarkType>) const
-    {
-        mark(value);
-    }
-
-    template <typename MarkType>
-    typename boost::disable_if<boost::is_base_of<IMarkable, MarkType>
-        >::type mark_if_possible(TypePack<MarkType>) const
-    {
-    }
-
-    Term() : value()
-    {
-    }
-
-    template <typename... Args>
-    Term(Args && ... args) : value(std::forward<Args>(args)...)
-    {
-    }
-
-    template <typename... Args>
-    Term(Args const& ... args) : value(args...)
-    {
-    }
+template <typename T>
+class Expression<T*> : public AbstractExpression
+{
+protected:
+    T* value;
 
 public:
 
-    ~Term()
+    Expression() : value(NULL) {}
+    Expression(T* ptr) : value(ptr) {}
+
+    virtual ~Expression()
     {
         if (((AbstractExpression*)this)->get_auto_delete_ptr())
-            TermDeleter<T>::delete_if_possible(value);
+            TermDeleter<T const>::delete_if_possible(value);
     }
 
-    static ExprPtr create()
+    virtual T* eval() { return value; }
+    virtual void mark() const { mark_if_possible(value); }
+    virtual TypeIndex get_type() const { return TypId<T*>::get(); }
+};
+
+template <typename T>
+class Expression<T&> : public AbstractExpression
+{
+public:
+    virtual TypeIndex get_type() const { return TypId<T&>::get(); }
+    virtual T& eval() = 0;
+};
+
+
+template <typename R>
+struct Term
+{
+    static ExprPtr create(R func_result)
     {
-        return new Term();
+        return new Expression<R*>(new R(func_result));
     }
+};
 
-    template <typename... Args>
-    static ExprPtr create(Args && ... args)
+// Reference case
+template <typename R>
+struct Term<R&>
+{
+    static ExprPtr create(R& func_result)
     {
-        return new Term(std::forward<Args>(args)...);
+        return new Expression<R*>(&func_result);
     }
+};
 
-    template <typename... Args>
-    static ExprPtr create(Args const& ... args)
+// Pointer case
+template <typename R>
+struct Term<R*>
+{
+    static ExprPtr create(R* func_result)
     {
-        return new Term(args...);
+        return new Expression<R*>(func_result);
     }
+};
 
-    inline virtual T& eval()
+// Reference to pointer case
+template <typename R>
+struct Term<R*&>
+{
+    static ExprPtr create(R*& func_result)
     {
-        return value;
-    }
-
-    virtual bool is_terminal() const { return true; }
-
-    virtual std::string description() const
-    {
-        return std::string("Term<" + AbstractExpression::description() + ">");
-    }
-
-    virtual void mark() const
-    {
-        mark_if_possible(TypePack<
-            typename boost::remove_reference<
-                typename boost::remove_pointer<
-                    T
-                >::type
-             >::type>());
+        return new Expression<R**>(&func_result);
     }
 };
 

@@ -36,11 +36,9 @@ public:
         return Converter::do_conv(LM::try_conv<From>(from_expr)->eval());
     }
 
-    virtual bool is_terminal() const { return false; }
-
     virtual std::string description() const
     {
-        return "(" + from_expr->description() + " from " + LM::TypeDescr<From>::text() + " to " + LM::TypeDescr<To>::text() + ")";
+        return "(" + from_expr->description() + " from " + LM::TypeDescr<From>::text() + " to " + AbstractExpression::description() + ")";
     }
 
     virtual void mark() const
@@ -48,6 +46,10 @@ public:
         from_expr->mark();
     }
 
+    virtual bool is_terminal() const
+    {
+        return false;
+    }
 };
 
 }

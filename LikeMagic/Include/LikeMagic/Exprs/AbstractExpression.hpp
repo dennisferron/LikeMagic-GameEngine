@@ -55,16 +55,17 @@ protected:
 
 public:
 
-    virtual bool is_terminal() const = 0;
-    virtual TypeIndex get_type() const = 0;
-
     virtual std::string description() const;
 
+    virtual TypeIndex get_type() const = 0;
     virtual TypeIndex get_class_type() const;
-    virtual bool is_null() const;
-    virtual bool disable_to_script_conv() const;
 
+    virtual bool is_terminal() const;
+    virtual bool is_null() const;
+
+    virtual bool disable_to_script_conv() const;
     virtual void set_disable_to_script(bool value);
+
     virtual void set_auto_delete_ptr(bool value);
     virtual bool get_auto_delete_ptr() const;
 };

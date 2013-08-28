@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include "AbstractExpression.hpp"
+//#include "AbstractExpression.hpp"
+#include "LikeMagic/Exprs/Term.hpp"
 
 #include "LikeMagic/Utility/TypeDescr.hpp"
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
@@ -17,9 +18,7 @@
 
 namespace LM {
 
-using LM::BetterTypeInfo;
-using LM::TypeIndex;
-
+/*
 template <typename T>
 class Expression : public AbstractExpression
 {
@@ -28,5 +27,8 @@ public:
     typedef T ReturnType;
     virtual TypeIndex get_type() const { return TypId<T>::get(); }
 };
+*/
+
+// Expression defined in Term.hpp
 
 }

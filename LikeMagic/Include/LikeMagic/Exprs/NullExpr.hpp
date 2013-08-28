@@ -25,7 +25,6 @@ public:
 
     inline virtual BottomPtrType eval() { return NULL; }
     virtual bool is_terminal() const { return true; }
-
     virtual bool is_null() const { return true; }
 
     virtual std::string description() const

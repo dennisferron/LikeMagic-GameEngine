@@ -15,8 +15,6 @@
 
 namespace LM {
 
-
-
 // When converting strings to char* or references, the conversion is unsafe in Exprs expressions if a new string has to be generated
 // unless this temporary string is stored away somewhere for the pointer to have
 // something durable to refer to while the Exprs expression exists.
@@ -42,39 +40,20 @@ public:
 
     inline virtual To eval()
     {
-        //std::cout << "String conversion from expression: " << from_expr->description() << std::endl;
-        //std::cout << "Converting string: " << from_expr->eval();
         cached_String = Converter::do_conv(try_conv<From>(from_expr)->eval());
-
-        //cached_String = L"ASDF";
-
         // Here we may be returning a reference to the cached value instead of by-value.
         return cached_String;
-
-        //std::cout << "About to set test_String" << std::endl;
-        //test_String = "ZXCV";
-        //std::cout << "test_String: " << test_String << std::endl;
-//        std::cout << "string caching converter: " << LM::TypeDescr<decltype(*this)>::text() << std::endl;
-//
-//        std::wstring* p = new std::wstring(L"ASDF");
-//        std::cout << "wstring pointer: " << p << std::endl;
-//        std::cout << "buf pointer: " << p->c_str() << std::endl;
-//
-//        return *p;
     }
-
-    virtual bool is_terminal() const { return false; }
 
     virtual std::string description() const
     {
-        return "converts " + from_expr->description() + " from " + LM::TypeDescr<From>::text() + " to " + LM::TypeDescr<To>::text();
+        return "converts " + from_expr->description() + " from " + LM::TypeDescr<From>::text() + " to " + AbstractExpression::description();
     }
 
     virtual void mark() const
     {
         from_expr->mark();
     }
-
 };
 
 }

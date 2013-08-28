@@ -78,7 +78,7 @@ public:
     static TypeIndex get()
     {
         typedef StripModifiers<T> stripped;
-        static TypeIndex id = TypeInfoCache::get_instance()->get_index(
+        return TypeInfoCache::get_instance()->get_index(
                 new BetterTypeInfo(
                     &typeid(typename stripped::type),
                     stripped::obj_is_const,
@@ -86,7 +86,6 @@ public:
                     stripped::is_ref,
                     stripped::is_ptr
                 ));
-        return id;
     }
 };
 
