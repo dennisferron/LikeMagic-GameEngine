@@ -11,7 +11,7 @@
 #include "boost/shared_ptr.hpp"
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
-#include "LikeMagic/Exprs/AbstractExpression.hpp"
+#include "LikeMagic/Exprs/Expr.hpp"
 
 namespace LM {
     class TypeSystem;
@@ -19,7 +19,7 @@ namespace LM {
 
 namespace LM {
     class AbstractCppObjProxy;
-    class AbstractExpression;
+    class Expr;
 }
 
 namespace LM {
@@ -28,7 +28,7 @@ namespace LM {
 
 namespace LM {
 
-using LM::AbstractExpression;
+using LM::Expr;
 using LM::ExprPtr;
 using LM::ArgList;
 using LM::TypeSystem;
@@ -48,7 +48,7 @@ private:
     friend void suggest_method(TypeMirror& type_, std::string method_name, int num_args);
 
 public:
-    TypeMirror(std::string class_name, size_t instance_size, TypeIndex class_type, TypeIndex ref_type, TypeIndex const_ref_type);
+    TypeMirror(std::string class_name, size_t instance_size, TypeIndex class_type);
     virtual ~TypeMirror();
 
     virtual std::string get_class_name() const;
@@ -61,12 +61,14 @@ public:
     virtual bool has_base(TypeMirror const* base) const;
 
     virtual TypeIndex get_class_type() const;
-    virtual TypeIndex get_ref_type() const;
-    virtual TypeIndex get_const_ref_type() const;
+    virtual TypeIndex get_ptr_type() const;
+    virtual TypeIndex get_const_ptr_type() const;
 
     virtual size_t get_instance_size() const;
 
     virtual void suggest_method(std::string method_name, int num_args) const;
+
+    virtual void try_delete(void const* ptr) const;
 };
 
 }

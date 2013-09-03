@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "LikeMagic/Exprs/Expression.hpp"
+#include "LikeMagic/Exprs/Expr.hpp"
 #include "LikeMagic/Utility/TypeDescr.hpp"
 #include "Iocaste/LikeMagicAdapters/API_Io.hpp"
 

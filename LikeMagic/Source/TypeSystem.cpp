@@ -9,18 +9,19 @@
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Mirrors/TypeMirror.hpp"
 #include "LikeMagic/TypeConv/TypeConvGraph.hpp"
-#include "LikeMagic/TypeConv/ImplicitConv.hpp"
-#include "LikeMagic/TypeConv/GenericConv.hpp"
+#include "LikeMagic/TypeConv/StaticCastConv.hpp"
+#include "LikeMagic/TypeConv/StaticCastConv.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 #include "LikeMagic/Exprs/NullExpr.hpp"
 #include "LikeMagic/Exprs/BottomPtrExpr.hpp"
-#include "LikeMagic/Exprs/Trampoline.hpp"
+#include "LikeMagic/Exprs/Adapter.hpp"
+#include "LikeMagic/CallTargets/ExprTarget.hpp"
 #include "LikeMagic/Utility/TupleForEach.hpp"
 #include "LikeMagic/Utility/KeyWrapper.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
-#include "LikeMagic/TypeConv/ImplicitConv.hpp"
-#include "LikeMagic/TypeConv/GenericConv.hpp"
-#include "LikeMagic/TypeConv/ToAbstractExpressionConv.hpp"
+#include "LikeMagic/TypeConv/StaticCastConv.hpp"
+#include "LikeMagic/TypeConv/StaticCastConv.hpp"
+#include "LikeMagic/TypeConv/ToExprConv.hpp"
 #include "LikeMagic/TypeConv/PtrDerefConv.hpp"
 #include "LikeMagic/TypeConv/AddrOfConv.hpp"
 #include "LikeMagic/Exprs/NamespaceExpr.hpp"
@@ -75,7 +76,7 @@ struct TypeSystem::Impl
     template <typename From, typename To>
     void add_generic_conv(TypeInfoPtr from, TypeInfoPtr to)
     {
-        conv_graph.add_conv(from->get_index(), to->get_index(), new GenericConv<From, To>(from, to));
+        conv_graph.add_conv(from->get_index(), to->get_index(), new StaticCastConv<From, To>(from, to));
     }
 
     template <typename T>
@@ -113,7 +114,7 @@ TypeSystem::TypeSystem()
     TypeInfoCache::set_instance(impl->dll_shared_typeinfo);
 
     TypeIndex ns_type = NamespaceTypeInfo::create_index("namespace");
-    impl->global_namespace = new TypeMirror("namespace", 0, ns_type, ns_type, ns_type);
+    impl->global_namespace = new TypeMirror("namespace", 0, ns_type);
 
     // Allow conversions from nil to any pointer.
     static TypeIndex nil_expr_type = TypId<BottomPtrType>::get();
@@ -125,7 +126,7 @@ TypeMirror& TypeSystem::global_namespace() const
     return *(impl->global_namespace);
 }
 
-void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr)
+void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& namespace_, bool add_ptr_deref_conv)
 {
     if (!index.is_class_type())
         throw std::logic_error("add_class type index has to be a class type!");
@@ -136,7 +137,28 @@ void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr)
     // add_class also called for non-C++ type objects such as "namespace"
     //add_ptr_convs(index);
 
+    // Add conversion to delegate type so that delegate call targets will work.
+    impl->conv_graph.add_conv(index.get_info()->as_ptr()->get_index(),
+        TypId<LM::Delegate*>::get(), new NoChangeConv<>());
+    impl->conv_graph.add_conv(index.get_info()->as_const_obj_type()->as_ptr()->get_index(),
+        TypId<LM::Delegate const*>::get(), new NoChangeConv<>());
+
+    // TODO: create a remove const call target
+    //class_.add_method("remove_const",
+    //    new LM::ExtensionMethodCallTarget<R, FirstArg, Args...>(f));
+
     impl->classes[index] = class_ptr;
+
+    namespace_.add_method(
+        class_ptr->get_class_name(), new LM::ExprTarget(
+            LM::NamespaceExpr::create(
+                LM::NamespaceTypeInfo::create_index(class_ptr->get_class_name()),
+                class_ptr->get_class_type()
+            )
+        )
+    );
+
+    add_ptr_conversions(class_ptr->get_class_type(), add_ptr_deref_conv);
 }
 
 TypeSystem::~TypeSystem()
@@ -166,7 +188,7 @@ bool TypeSystem::has_conv(TypeIndex from_type, TypeIndex to_type) const
 
 TypeMirror* TypeSystem::get_class(TypeIndex type) const
 {
-    auto iter = impl->classes.find(type);
+    auto iter = impl->classes.find(type.class_type());
     if (iter != impl->classes.end())
     {
         return iter->second;
@@ -206,10 +228,10 @@ void TypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t
 
     // Allow this expression type to be converted to an expression argument.
     TypeIndex as_expr_type = TypId<ExprPtr>::get();
-    impl->conv_graph.add_conv(from, as_expr_type, new ToAbstractExpressionConv);
-    impl->conv_graph.add_conv(from.get_info()->as_const_obj_type()->get_index(), as_expr_type, new ToAbstractExpressionConv);
-    impl->conv_graph.add_conv(to, as_expr_type, new ToAbstractExpressionConv);
-    impl->conv_graph.add_conv(to.get_info()->as_const_obj_type()->get_index(), as_expr_type, new ToAbstractExpressionConv);
+    impl->conv_graph.add_conv(from, as_expr_type, new ToExprConv);
+    impl->conv_graph.add_conv(from.get_info()->as_const_obj_type()->get_index(), as_expr_type, new ToExprConv);
+    impl->conv_graph.add_conv(to, as_expr_type, new ToExprConv);
+    impl->conv_graph.add_conv(to.get_info()->as_const_obj_type()->get_index(), as_expr_type, new ToExprConv);
 }
 
 void TypeSystem::add_ptr_conversions(TypeIndex from_type, bool auto_deref)

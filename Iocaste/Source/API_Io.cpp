@@ -162,7 +162,7 @@ void API_io_free_expr(IoObject* self)
         }
 
         void* voidDataPtr = IoObject_dataPointer(self);
-        AbstractExpression* exprDataPtr = reinterpret_cast<AbstractExpression*>(voidDataPtr);
+        Expr* exprDataPtr = reinterpret_cast<Expr*>(voidDataPtr);
         intrusive_ptr_release(exprDataPtr);
         IoObject_setDataPointer_(self, 0);
     }
@@ -173,7 +173,7 @@ void API_io_mark(IoObject* self)
     if (self && IoObject_dataPointer(self))
     {
         IoObject_shouldMark(self);
-        auto expr = reinterpret_cast<AbstractExpression*>(IoObject_dataPointer(self));
+        auto expr = reinterpret_cast<Expr*>(IoObject_dataPointer(self));
         expr->mark();
     }
 }

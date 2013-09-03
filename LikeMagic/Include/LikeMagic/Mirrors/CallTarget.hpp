@@ -10,7 +10,7 @@
 #pragma once
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
-#include "LikeMagic/Exprs/AbstractExpression.hpp"
+#include "LikeMagic/Exprs/Expr.hpp"
 
 namespace LM {
     class AbstractCppObjProxy;

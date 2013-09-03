@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "LikeMagic/Exprs/AbstractExpression.hpp"
+#include "LikeMagic/Exprs/Expr.hpp"
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
 
 // Using forward declarations here so that user of IoVM class doesn't

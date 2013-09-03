@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "Expression.hpp"
+#include "Expr.hpp"
 #include "LikeMagic/Utility/StripModifiers.hpp"
 
 #include <iostream>
@@ -20,7 +20,7 @@ namespace LM {
 // something durable to refer to while the Exprs expression exists.
 // This class should probably not be used for other kind of casts.
 template <typename From, typename To, typename Converter>
-class StringCachingTrampoline : public Expression<To>
+class StringCachingAdapter : public Expression<To>
 {
 private:
     typedef typename boost::remove_const<typename boost::remove_reference<To>::type>::type CacheType;
@@ -29,13 +29,13 @@ private:
     CacheType cached_String;
     std::string test_String;
 
-    StringCachingTrampoline(ExprPtr expr) : from_expr(expr) {}
+    StringCachingAdapter(ExprPtr expr) : from_expr(expr) {}
 
 public:
 
     static ExprPtr create(ExprPtr expr)
     {
-        return new StringCachingTrampoline(expr);
+        return new StringCachingAdapter(expr);
     }
 
     inline virtual To eval()
@@ -47,7 +47,7 @@ public:
 
     virtual std::string description() const
     {
-        return "converts " + from_expr->description() + " from " + LM::TypeDescr<From>::text() + " to " + AbstractExpression::description();
+        return "converts " + from_expr->description() + " from " + LM::TypeDescr<From>::text() + " to " + Expr::description();
     }
 
     virtual void mark() const

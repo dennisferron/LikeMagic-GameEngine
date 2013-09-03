@@ -19,7 +19,7 @@
 #include "boost/unordered_map.hpp"
 
 #include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
-#include "LikeMagic/Exprs/AbstractExpression.hpp"
+#include "LikeMagic/Exprs/Expr.hpp"
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 #include "LikeMagic/Utility/KeyWrapper.hpp"

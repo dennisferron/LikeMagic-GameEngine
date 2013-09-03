@@ -15,7 +15,7 @@ namespace LM {
 
 // When IoNil is encountered, it is marshaled as a NullExpr object.
 // The type can be converted to any other pointer in TypeConvGraph.
-class NullExpr : public Expression<BottomPtrType>
+class NullExpr : public BottomPtrExpr
 {
 private:
     NullExpr() {}
@@ -23,9 +23,7 @@ private:
 public:
     static ExprPtr create() { return new NullExpr(); }
 
-    inline virtual BottomPtrType eval() { return NULL; }
     virtual bool is_terminal() const { return true; }
-    virtual bool is_null() const { return true; }
 
     virtual std::string description() const
     {

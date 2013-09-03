@@ -13,16 +13,6 @@ namespace LM {
 
 TypeInfoCache* TypeInfoCache::instance = NULL;
 
-TypeInfoPtr TypeIndex::get_info() const
-{
-    return TypeInfoCache::get_instance()->get_info(*this);
-}
-
-std::string TypeIndex::description() const
-{
-    return get_info()->description();
-}
-
 void TypeInfoCache::set_instance(TypeInfoCache* instance_)
 {
     bool is_null = (instance == NULL);

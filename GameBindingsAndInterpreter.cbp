@@ -99,16 +99,14 @@
 				<Option parameters="Iocaste\iovm\io\ Engine\Startup.io.inl ..\..\wayup\Startup.io.inl" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-DIRR_1_7" />
 					<Add option="-DNO_USE_DMALLOC" />
 					<Add option="-DNO_USE_DLL_BUILD" />
-					<Add option="-D_IRR_STATIC_LIB_" />
 					<Add option="-D_DEBUG" />
 					<Add option="-DWIN32" />
 					<Add option="-D_WINDOWS" />
 					<Add option="-D_CRT_SECURE_NO_DEPRECATE_" />
 					<Add option="-D__GNUWIN32__" />
-					<Add directory="Deps/irrlicht/include" />
+					<Add directory="Deps/irrlicht-1.8/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
@@ -119,20 +117,8 @@
 					<Add library="LikeMagic\libLikeMagic-Windows.a" />
 					<Add library="..\desteer\lib\libdesteer.a" />
 					<Add library="Deps\tps-1.2\ThinPlateSpline\bin\Debug\libThinPlateSpline.a" />
-					<Add library="Deps\irrlicht-1.7.3\lib\Win32-gcc\libIrrlicht.a" />
 					<Add library=".\libBullet.a" />
-					<Add library="kernel32" />
-					<Add library="user32" />
-					<Add library="gdi32" />
-					<Add library="winspool" />
-					<Add library="comdlg32" />
-					<Add library="advapi32" />
-					<Add library="shell32" />
-					<Add library="ole32" />
-					<Add library="oleaut32" />
-					<Add library="uuid" />
-					<Add library="opengl32" />
-					<Add library="winmm" />
+					<Add library="Deps\irrlicht-1.8\lib\Win32-gcc\libIrrlicht.a" />
 				</Linker>
 			</Target>
 		</Build>
@@ -159,7 +145,6 @@
 			<Add directory="Iocaste/basekit/source" />
 			<Add directory="Iocaste/Include/Iocaste/CShims" />
 			<Add directory="Deps/tps-1.2/Include" />
-			<Add directory="/usr/X11R6/include" />
 			<Add directory="Interpreter/Include" />
 		</Compiler>
 		<Unit filename="Include/Bindings/Bullet/Bindings.hpp" />

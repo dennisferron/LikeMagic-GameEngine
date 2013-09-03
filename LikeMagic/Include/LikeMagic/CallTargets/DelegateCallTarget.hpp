@@ -16,12 +16,11 @@
 
 namespace LM {
 
-
-
-
+template <bool is_const, typename R, typename... Args>
+class DelegateCallTarget { static_assert(sizeof(R) && false, "Use the specializations."); };
 
 template <typename... Args>
-class DelegateCallTarget_void_nonconst : public CallTarget
+class DelegateCallTarget<false, void, Args...> : public CallTarget
 {
 public:
     typedef void (Delegate::*F)(Args...);
@@ -36,14 +35,14 @@ private:
     void build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate& target_obj = try_conv<Delegate&>(target_check)->eval();
-        (target_obj.*func_ptr)(try_conv<Args>(args[Indices])->eval()...);
+        Delegate* target_obj = EvalAs<Delegate*>(target_check);
+        (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices])...);
     }
 
 public:
 
-    DelegateCallTarget_void_nonconst(F func_ptr_, TypeIndex actual_type_)
-        : func_ptr(func_ptr_), actual_type(actual_type_) {}
+    DelegateCallTarget(F func_ptr_, TypeIndex class_type)
+        : func_ptr(func_ptr_), actual_type(class_type.as_ptr_type()) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
@@ -63,7 +62,7 @@ public:
 };
 
 template <typename... Args>
-class DelegateCallTarget_void_const : public CallTarget
+class DelegateCallTarget<true, void, Args...> : public CallTarget
 {
 public:
     typedef void (Delegate::*F)(Args...) const;
@@ -78,14 +77,14 @@ private:
     void build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate const& target_obj = try_conv<Delegate const&>(target_check)->eval();
-        (target_obj.*func_ptr)(try_conv<Args>(args[Indices])->eval()...);
+        Delegate const* target_obj = EvalAs<Delegate const*>(target_check);
+        (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices])...);
     }
 
 public:
 
-    DelegateCallTarget_void_const(F func_ptr_, TypeIndex actual_type_)
-        : func_ptr(func_ptr_), actual_type(actual_type_) {}
+    DelegateCallTarget(F func_ptr_, TypeIndex class_type)
+        : func_ptr(func_ptr_), actual_type(class_type.as_const_ptr_type()) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
@@ -105,7 +104,7 @@ public:
 };
 
 template <typename R, typename... Args>
-class DelegateCallTarget_R_nonconst : public CallTarget
+class DelegateCallTarget<false, R, Args...> : public CallTarget
 {
 public:
     typedef R (Delegate::*F)(Args...);
@@ -119,14 +118,14 @@ private:
     ExprPtr build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate& target_obj = try_conv<Delegate&>(target_check)->eval();
-        return Term<R>::create((target_obj.*func_ptr)(try_conv<Args>(args[Indices])->eval()...));
+        Delegate* target_obj = EvalAs<Delegate*>(target_check);
+        return Term<R>::create((target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices])...));
     }
 
 public:
 
-    DelegateCallTarget_R_nonconst(F func_ptr_, TypeIndex actual_type_)
-        : func_ptr(func_ptr_), actual_type(actual_type_) {}
+    DelegateCallTarget(F func_ptr_, TypeIndex class_type)
+        : func_ptr(func_ptr_), actual_type(class_type.as_ptr_type()) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
@@ -145,7 +144,7 @@ public:
 };
 
 template <typename R, typename... Args>
-class DelegateCallTarget_R_const : public CallTarget
+class DelegateCallTarget<true, R, Args...> : public CallTarget
 {
 public:
     typedef R (Delegate::*F)(Args...) const;
@@ -159,14 +158,14 @@ private:
     ExprPtr build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate const& target_obj = try_conv<Delegate const&>(target_check)->eval();
-        return Term<R>::create((target_obj.*func_ptr)(try_conv<Args>(args[Indices])->eval()...));
+        Delegate const* target_obj = EvalAs<Delegate const*>::value(target_check);
+        return Term<R>::create((target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices])...));
     }
 
 public:
 
-    DelegateCallTarget_R_const(F func_ptr_, TypeIndex actual_type_)
-        : func_ptr(func_ptr_), actual_type(actual_type_) {}
+    DelegateCallTarget(F func_ptr_, TypeIndex class_type)
+        : func_ptr(func_ptr_), actual_type(class_type.as_const_ptr_type()) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
@@ -183,5 +182,13 @@ public:
         return arg_types;
     }
 };
+
+template <typename R, typename... Args>
+CallTarget* create_target(R (Delegate::*f)(Args...), TypeIndex class_type) {
+    return new DelegateCallTarget<false, R, Args...>(f, class_type); }
+
+template <typename R, typename... Args>
+CallTarget* create_target(R (Delegate::*f)(Args...) const, TypeIndex class_type) {
+    return new DelegateCallTarget<true, R, Args...>(f, class_type); }
 
 }

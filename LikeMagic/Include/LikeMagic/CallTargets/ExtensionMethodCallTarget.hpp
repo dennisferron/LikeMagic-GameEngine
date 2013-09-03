@@ -16,10 +16,6 @@
 
 namespace LM {
 
-
-
-
-
 template <typename R, typename FirstArg, typename... Args>
 class ExtensionMethodCallTarget : public CallTarget
 {
@@ -39,7 +35,7 @@ private:
             throw std::logic_error("Wrong number of arguments.");
 
         ExprPtr result = Term<R>::create(
-            (*func_ptr)(try_conv<FirstArg>(target)->eval(), try_conv<Args>(args[Indices])->eval()...)
+            (*func_ptr)(EvalAs<FirstArg>::value(target), EvalAs<Args>::value(args[Indices])...)
         );
 
         return result;
@@ -53,7 +49,7 @@ private:
         if (args.size() != sizeof...(Indices))
             throw std::logic_error("Wrong number of arguments.");
 
-        (*func_ptr)(try_conv<FirstArg>(target)->eval(), try_conv<Args>(args[Indices])->eval()...);
+        (*func_ptr)(EvalAs<FirstArg>::value(target), EvalAs<Args>::value(args[Indices])...);
 
         return 0;
     }

@@ -10,13 +10,14 @@
 #pragma once
 
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
+#include "LikeMagic/TypeConv/ConvImpl.hpp"
 
 #include "boost/intrusive_ptr.hpp"
 
 namespace LM {
 
-class AbstractExpression;
-typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
+class Expr;
+typedef boost::intrusive_ptr<Expr> ExprPtr;
 
 }
 
@@ -40,10 +41,6 @@ public:
     virtual ~AbstractTypeConverter();
     virtual std::string description() const = 0;
     virtual ExprPtr wrap_expr(ExprPtr expr) const = 0;
-
-    // Since the conversions are cached once figured out, there would be little benefit
-    // to trying to optimize by using an integer cost, and using a float allows us
-    // more flexibility in defining fractional costs for special cases.
     virtual float cost() const;
 };
 

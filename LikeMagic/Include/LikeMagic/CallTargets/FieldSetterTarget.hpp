@@ -14,10 +14,6 @@
 
 namespace LM {
 
-
-
-
-
 template <typename R>
 class FieldSetterTarget : public CallTarget
 {
@@ -36,8 +32,8 @@ public:
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate& target_obj = try_conv<Delegate&>(target_check)->eval();
-        (target_obj.*f_ptr) = try_conv<R const&>(args[0])->eval();
+        Delegate* target_obj = EvalAs<Delegate*>::value(target_check);
+        (target_obj->*f_ptr) = EvalAs<R const&>::value(args[0]);
         return 0;
     }
 

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "LikeMagic/TypeConv/ImplicitConv.hpp"
+#include "LikeMagic/TypeConv/StaticCastConv.hpp"
 
 namespace LM {
 
@@ -16,7 +16,7 @@ namespace LM {
 
 
 template <typename From, typename To>
-class GenericConv : public ImplicitConv<From, To>
+class StaticCastConv : public StaticCastConv<From, To>
 {
 private:
     TypeInfoPtr from_info;
@@ -24,14 +24,14 @@ private:
 
 public:
 
-    GenericConv(TypeInfoPtr from, TypeInfoPtr to) : from_info(from), to_info(to)
+    StaticCastConv(TypeInfoPtr from, TypeInfoPtr to) : from_info(from), to_info(to)
     {
     }
 
     virtual std::string description() const
     {
         return
-            std::string("GenericConv ") +
+            std::string("StaticCastConv ") +
             " from " + from_info->description() +
             " to " + to_info->description();
     }

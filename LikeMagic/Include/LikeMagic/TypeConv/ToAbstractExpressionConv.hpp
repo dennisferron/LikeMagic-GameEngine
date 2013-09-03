@@ -19,7 +19,7 @@ namespace LM {
 // rather than what is inside the expression object.  It allows you to write functions that
 // work with any expression.
 
-class ToAbstractExpressionConv : public AbstractTypeConverter
+class ToExprConv : public AbstractTypeConverter
 {
 public:
 
@@ -28,7 +28,7 @@ public:
         return Term<ExprPtr>::create(expr);
     }
 
-    virtual std::string description() const { return "ToAbstractExpressionConv"; }
+    virtual std::string description() const { return "ToExprConv"; }
 };
 
 }

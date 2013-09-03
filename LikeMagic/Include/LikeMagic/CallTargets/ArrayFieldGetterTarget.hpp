@@ -13,10 +13,6 @@
 
 namespace LM {
 
-
-
-
-
 template <typename R>
 class ArrayFieldGetterTarget : public CallTarget
 {
@@ -36,9 +32,9 @@ public:
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate& target_obj = try_conv<Delegate&>(target_check)->eval();
+        Delegate* target_obj = EvalAs<Delegate*>::value(target_check);
         return Term<R>::create(
-            (target_obj.*f_ptr)[try_conv<size_t>(args[0])->eval()]);
+            (target_obj->*f_ptr)[EvalAs<size_t>::value(args[0])]);
     }
 
     virtual TypeInfoList const& get_arg_types() const

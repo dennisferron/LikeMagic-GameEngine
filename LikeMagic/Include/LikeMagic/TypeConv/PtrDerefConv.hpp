@@ -9,7 +9,7 @@
 #pragma once
 
 #include "LikeMagic/TypeConv/ConvertibleTo.hpp"
-#include "LikeMagic/Exprs/Trampoline.hpp"
+#include "LikeMagic/Exprs/Adapter.hpp"
 
 namespace LM {
 
@@ -29,7 +29,7 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, PtrDerefConv>::create(expr);
+        return Adapter<From, To, PtrDerefConv>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("PtrDerefConv"); }

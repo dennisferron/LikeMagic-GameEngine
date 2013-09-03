@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ConvertibleTo.hpp"
-#include "LikeMagic/Exprs/Trampoline.hpp"
+#include "LikeMagic/Exprs/Adapter.hpp"
 
 namespace LM {
 
@@ -17,7 +17,7 @@ namespace LM {
 
 // For most implicit conv cases, just return obj.  One special case below.
 template <typename From, typename To>
-struct ImplicitConvImpl
+struct StaticCastConvImpl
 {
     inline static To do_conv(From obj) { return obj; }
 };
@@ -32,27 +32,27 @@ struct ImplicitConvImpl
 // to accept that reference as a const & instead - we're
 // turning it into a const To reference anyway.)
 template <typename From, typename To>
-struct ImplicitConvImpl<From, To const&>
+struct StaticCastConvImpl<From, To const&>
 {
     inline static To const& do_conv(From const& obj) { return obj; }
 };
 
 
 template <typename From, typename To>
-class ImplicitConv : public ConvertibleTo<To>
+class StaticCastConv : public ConvertibleTo<To>
 {
 public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
         Expression<From>* from_expr = static_cast<Expression<From>*>(expr.get());
-        ExprPtr result = Trampoline<From, To, ImplicitConvImpl<From, To>>::create(
+        ExprPtr result = Adapter<From, To, StaticCastConvImpl<From, To>>::create(
             from_expr
         );
         return result;
     }
 
-    virtual std::string description() const { return describe_converter<From, To>("ImplicitConv"); }
+    virtual std::string description() const { return describe_converter<From, To>("StaticCastConv"); }
 };
 
 

@@ -207,8 +207,8 @@ ExprPtr from_script(IoObject* self, IoObject* io_obj, TypeIndex to_type)
 
     if (is_Exprs_obj(io_obj) && !(to_type == wants_io_obj))
     {
-        AbstractExpression* expr =
-                reinterpret_cast<AbstractExpression*>
+        Expr* expr =
+                reinterpret_cast<Expr*>
                     (IoObject_dataPointer(io_obj));
         return expr;
     }

@@ -13,16 +13,24 @@
 
 namespace LM {
 
+struct AbstractTermDeleter
+{
+    virtual void delete_if_possible() = 0;
+};
+
 template <typename T>
 struct TermDeleter
 {
-    static void delete_if_possible(T const * const& value) { delete value; }
+    virtual void delete_if_possible(Expr const* expr) const
+    {
+        delete reinterpret_cast<T*>(expr->get_value_ptr());
+    }
 };
 
 template <>
 struct TermDeleter<void>
 {
-    static void delete_if_possible(void* value)
+    virtual void delete_if_possible(Expr const* expr) const
     {
         throw std::logic_error("Cannot auto-delete void*.");
     }
@@ -31,7 +39,7 @@ struct TermDeleter<void>
 template <>
 struct TermDeleter<const void>
 {
-    static void delete_if_possible(const void* value)
+    virtual void delete_if_possible(const void* value) const
     {
         throw std::logic_error("Cannot auto-delete void*.");
     }
@@ -45,4 +53,4 @@ struct TermDeleter<const void>
 #define LM_CUSTOM_DELETER(type, impl) \
 namespace LM { \
     template <> struct TermDeleter<type const> \
-        { static void delete_if_possible(type const*const& value) {impl;} }; }
+        { virtual void delete_if_possible(type const*const& value) const {impl;} }; }

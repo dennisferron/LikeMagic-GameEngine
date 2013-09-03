@@ -21,10 +21,6 @@
 
 namespace LM {
 
-
-
-
-
 template <typename... Args>
 class StaticMethodCallTarget_void : public CallTarget
 {
@@ -38,7 +34,7 @@ private:
     template<int... Indices>
     void build_method_call(ArgList args, IndexPack<Indices...>) const
     {
-        (*func_ptr)(try_conv<Args>(args[Indices])->eval()...);
+        (*func_ptr)(EvalAs<Args>::value(args[Indices])...);
     }
 
 public:
@@ -76,7 +72,7 @@ private:
     template<int... Indices>
     ExprPtr build_method_call(ArgList args, IndexPack<Indices...>) const
     {
-        return Term<R>::create((*func_ptr)(try_conv<Args>(args[Indices])->eval()...));
+        return Term<R>::create((*func_ptr)(EvalAs<Args>::value(args[Indices])...));
     }
 
 public:

@@ -1,5 +1,0 @@
-# Ignore CMake Stuff
-build-gcc-win32/*
-build-gcc-linux/*
-CMakeFiles/*
-

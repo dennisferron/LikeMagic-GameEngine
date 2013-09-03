@@ -16,10 +16,6 @@
 
 namespace LM {
 
-
-
-
-
 template <typename ObjT, typename... Args>
 class ConstructorCallTarget : public CallTarget
 {
@@ -30,7 +26,7 @@ private:
     template<int... Indices>
     ExprPtr construct_obj(ArgList args, IndexPack<Indices...>) const
     {
-        ExprPtr term = Term<ObjT*>::create(new ObjT(try_conv<Args>(args[Indices])->eval()...));
+        ExprPtr term = Term<ObjT*>::create(new ObjT(EvalAs<Args>::value(args[Indices])...));
         term->set_auto_delete_ptr(auto_delete);
         return term;
     }

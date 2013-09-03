@@ -44,13 +44,3 @@ TypeIndex NamespaceExpr::get_type() const
 {
     return type;
 }
-
-TypeIndex NamespaceExpr::get_class_type() const
-{
-    return class_type;
-}
-
-bool NamespaceExpr::is_null() const
-{
-    return false;
-}

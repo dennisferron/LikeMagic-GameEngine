@@ -16,10 +16,6 @@
 
 namespace LM {
 
-
-
-
-
 class BottomPtrTarget : public CallTarget
 {
 public:
@@ -28,14 +24,13 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        return BottomPtrExpr::create(try_conv<void*>(target.get()));
+        return BottomPtrExpr::create(EvalAs<void*>::value(target));
     }
 
     virtual TypeInfoList const& get_arg_types() const
     {
         return empty_arg_list;
     }
-
 };
 
 }

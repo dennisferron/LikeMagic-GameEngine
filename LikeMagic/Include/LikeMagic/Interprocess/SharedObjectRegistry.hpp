@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LikeMagic/Exprs/AbstractExpression.hpp"
+#include "LikeMagic/Exprs/Expr.hpp"
 
 #include "boost/unordered_map.hpp"
 

@@ -9,7 +9,7 @@
 #pragma once
 
 #include "LikeMagic/TypeConv/ConvertibleTo.hpp"
-#include "LikeMagic/Exprs/Trampoline.hpp"
+#include "LikeMagic/Exprs/Adapter.hpp"
 
 namespace LM {
 

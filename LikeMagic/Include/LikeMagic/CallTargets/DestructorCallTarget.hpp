@@ -11,11 +11,9 @@
 #include "LikeMagic/Mirrors/CallTarget.hpp"
 #include "LikeMagic/Utility/make_arg_list.hpp"
 
+// TODO: Merge with TermDeleter mechanism.
+/*
 namespace LM {
-
-
-
-
 
 template <typename ObjT>
 class DestructorCallTarget : public CallTarget
@@ -39,5 +37,5 @@ public:
 
 };
 
-
 }
+*/

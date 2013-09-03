@@ -9,11 +9,11 @@
 
 #pragma once
 
-#include "LikeMagic/Exprs/AbstractExpression.hpp"
+#include "LikeMagic/Exprs/Expr.hpp"
 
 namespace LM {
 
-class NamespaceExpr : public AbstractExpression
+class NamespaceExpr : public Expr
 {
 private:
     NamespaceExpr(TypeIndex type, TypeIndex class_type);
@@ -29,8 +29,6 @@ public:
     virtual bool disable_to_script_conv() const;
     virtual void mark() const;
     virtual TypeIndex get_type() const;
-    virtual TypeIndex get_class_type() const;
-    virtual bool is_null() const;
 };
 
 }

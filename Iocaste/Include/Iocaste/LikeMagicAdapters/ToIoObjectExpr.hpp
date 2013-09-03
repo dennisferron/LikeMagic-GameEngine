@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "LikeMagic/Exprs/Expression.hpp"
+#include "LikeMagic/Exprs/Expr.hpp"
 #include "LikeMagic/Utility/TypeDescr.hpp"
 #include "Iocaste/LikeMagicAdapters/API_Io.hpp"
 #include "Iocaste/LikeMagicAdapters/ToIoTypeInfo.hpp"
@@ -23,7 +23,7 @@ using LM::ExprPtr;
 using LM::Expression;
 using LM::TypeIndex;
 
-class AbstractToIoObjectExpr : public AbstractExpression
+class AbstractToIoObjectExpr : public Expr
 {
 public:
 
@@ -32,12 +32,8 @@ public:
 
     virtual IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m) = 0;
 
-    virtual TypeIndex get_class_type() const { return this->get_type(); }
-
     // It's already a script object, so don't need to try to convert it a second time.
     virtual bool disable_to_script_conv() const { return true; }
-
-    virtual bool is_null() const { return false; }
 };
 
 template <typename T, typename F>
@@ -53,7 +49,7 @@ public:
 
     static ExprPtr create(ExprPtr from_expr)
     {
-        AbstractExpression* from_ptr = from_expr.get();
+        Expr* from_ptr = from_expr.get();
         Expression<T>* from_exact = static_cast<Expression<T>*>(from_ptr);
         ToIoObjectExpr* result = new ToIoObjectExpr<T, F>(from_exact);
         return result;

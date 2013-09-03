@@ -8,7 +8,7 @@
 
 #include "LikeMagic/Mirrors/TypeMirror.hpp"
 #include "LikeMagic/Mirrors/CallTarget.hpp"
-#include "LikeMagic/Exprs/AbstractExpression.hpp"
+#include "LikeMagic/Exprs/Expr.hpp"
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/CallTargets/BottomPtrTarget.hpp"
 #include "boost/unordered_map.hpp"
@@ -30,12 +30,12 @@ struct TypeMirror::Impl
     std::string name;
     boost::unordered_map<std::string, std::map<int, CallTarget*>> methods;
     TypeIndex class_type;
-    TypeIndex ref_type;
-    TypeIndex const_ref_type;
+    TypeIndex ptr_type;
+    TypeIndex const_ptr_type;
     size_t instance_size;
 };
 
-TypeMirror::TypeMirror(std::string name, size_t instance_size, TypeIndex class_type, TypeIndex ref_type, TypeIndex const_ref_type)
+TypeMirror::TypeMirror(std::string name, size_t instance_size, TypeIndex class_type)
     : impl(new TypeMirror::Impl)
 {
     if (name == "")
@@ -43,8 +43,8 @@ TypeMirror::TypeMirror(std::string name, size_t instance_size, TypeIndex class_t
 
     impl->name = name;
     impl->class_type = class_type;
-    impl->ref_type = ref_type;
-    impl->const_ref_type = const_ref_type;
+    impl->ptr_type = class_type.get_info()->as_ptr()->get_index();
+    impl->const_ptr_type = class_type.get_info()->as_const_obj_type()->as_ptr()->get_index();
     impl->instance_size = instance_size;
 
     auto ptr_caster = new BottomPtrTarget();
@@ -59,6 +59,11 @@ TypeMirror::~TypeMirror()
         for (auto it2=overloads.begin(); it2 != overloads.end(); it2++)
             delete it2->second;
     }
+}
+
+void TypeMirror::try_delete(void const* ptr) const
+{
+    // TODO: Add deleter.
 }
 
 void TypeMirror::add_method(std::string method_name, CallTarget* method)
@@ -197,12 +202,12 @@ TypeIndex TypeMirror::get_class_type() const
     return impl->class_type;
 }
 
-TypeIndex TypeMirror::get_ref_type() const
+TypeIndex TypeMirror::get_ptr_type() const
 {
-    return impl->ref_type;
+    return impl->ptr_type;
 }
 
-TypeIndex TypeMirror::get_const_ref_type() const
+TypeIndex TypeMirror::get_const_ptr_type() const
 {
-    return impl->const_ref_type;
+    return impl->const_ptr_type;
 }

@@ -27,9 +27,9 @@
 #include "LikeMagic/CallTargets/ArrayFieldGetterTarget.hpp"
 #include "LikeMagic/CallTargets/ArrayFieldReferenceTarget.hpp"
 
-#include "LikeMagic/TypeConv/ImplicitConv.hpp"
+#include "LikeMagic/TypeConv/StaticCastConv.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
-#include "LikeMagic/TypeConv/BaseConv.hpp"
+#include "LikeMagic/TypeConv/StaticCastConv.hpp"
 
 #include "LikeMagic/Utility/EnumHelper.hpp"
 #include "LikeMagic/Utility/NamespaceTypeInfo.hpp"
@@ -40,7 +40,7 @@ std::string create_constructor_name(std::string prefix, std::string method_name)
 
 template <typename From, typename To,
     template <typename From, typename To>
-        class Converter = LM::ImplicitConv>
+        class Converter = LM::StaticCastConv>
 void add_conv()
 {
     type_system->add_converter_variations(
@@ -74,7 +74,7 @@ void bind_nonmember_op(LM::TypeMirror& class_, std::string method_name, R (*f)(F
     class_.add_method(method_name,
         new LM::ExtensionMethodCallTarget<R, FirstArg, Args...>(f));
 }
-
+/*
 template <typename T>
 void bind_built_in_operations(LM::TypeMirror& class_)
 {
@@ -85,65 +85,82 @@ void bind_built_in_operations(LM::TypeMirror& class_)
     // const cast
     bind_nonmember_op(class_, "remove_const", &operator_remove_const<T>);
 }
-
+*/
+/*
 template <typename T>
 void add_delegate_conv()
 {
     // Allow the type to be reinterpreted as Delegate to work with DelegateCallGenerator.
     add_conv<T&, LM::Delegate&, LM::NoChangeConv>();
 }
+*/
 
 template <typename T, typename Base, template <typename From, typename To>
-    class Converter=LM::BaseConv>
+    class Converter=LM::StaticCastConv>
 void add_base(LM::TypeMirror& class_, LM::TypeMirror const& base_class)
 {
     class_.add_base(&base_class);
     add_conv<T*, Base*, Converter>();
 }
 
+
 template <typename ObjT, typename R, typename... Args>
 void bind_method(LM::TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...))
 {
-    typedef LM::DelegateCallTarget_R_nonconst<R, Args...> Target;
+    typedef LM::DelegateCallTarget<false, R, Args...> Target;
     class_.add_method(
         method_name,
         new Target(
            reinterpret_cast<typename Target::F>(f),
-           LM::TypId<ObjT&>::get()));
-}
-
-template <typename ObjT, typename... Args>
-void bind_method(TypeMirror& class_, std::string method_name, void (ObjT::*f)(Args...))
-{
-    typedef LM::DelegateCallTarget_void_nonconst<Args...> Target;
-    class_.add_method(
-        method_name,
-        new Target(
-           reinterpret_cast<typename Target::F>(f),
-           LM::TypId<ObjT&>::get()));
+           class_.get_class_type()));
 }
 
 template <typename ObjT, typename R, typename... Args>
 void bind_method(LM::TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...) const)
 {
-    typedef LM::DelegateCallTarget_R_const<R, Args...> Target;
+    typedef LM::DelegateCallTarget<true, R, Args...> Target;
     class_.add_method(
         method_name,
         new Target(
            reinterpret_cast<typename Target::F>(f),
-           LM::TypId<ObjT const&>::get()));
+           class_.get_class_type()));
 }
 
-template <typename ObjT, typename... Args>
-void bind_method(LM::TypeMirror& class_, std::string method_name, void (ObjT::*f)(Args...) const)
-{
-    typedef LM::DelegateCallTarget_void_const<Args...> Target;
-    class_.add_method(
-        method_name,
-        new Target(
-           reinterpret_cast<typename Target::F>(f),
-           LM::TypId<ObjT const&>::get()));
-}
+
+#ifdef LM_BINDING_FUNCTIONS_CPP
+#define LM_DEF_BIND_METHOD_IMPL(RTYPE, ARGTYPE) \
+void bind_method_impl(TypeMirror& class_, std::string method_name, RTYPE (Delegate::*f)(ARGTYPE)) { \
+    class_.add_method(method_name, create_target(f, class_.get_class_type())); } \
+void bind_method_impl(TypeMirror& class_, std::string method_name, RTYPE (Delegate::*f)(ARGTYPE) const) { \
+    class_.add_method(method_name, create_target(f, class_.get_class_type())); }
+#else
+#define LM_DEF_BIND_METHOD_IMPL(RTYPE, ARGTYPE) \
+void bind_method_impl(TypeMirror& class_, std::string method_name, RTYPE (Delegate::*f)(ARGTYPE)); \
+void bind_method_impl(TypeMirror& class_, std::string method_name, RTYPE (Delegate::*f)(ARGTYPE) const);
+#endif
+
+#define LM_DECL_BIND_METHOD(RTYPE, ARGTYPE) \
+LM_DEF_BIND_METHOD_IMPL(RTYPE, ARGTYPE) \
+template <typename ObjT> void bind_method( \
+    LM::TypeMirror& class_, std::string method_name, RTYPE (ObjT::*f)(ARGTYPE)) { \
+    bind_method_impl(class_, method_name, reinterpret_cast<RTYPE(Delegate::*)(ARGTYPE)>(f)); } \
+template <typename ObjT> void bind_method( \
+    LM::TypeMirror& class_, std::string method_name, RTYPE (ObjT::*f)(ARGTYPE) const) { \
+        bind_method_impl(class_, method_name, reinterpret_cast<RTYPE(Delegate::*)(ARGTYPE) const>(f)); }
+
+LM_DECL_BIND_METHOD(void,)
+LM_DECL_BIND_METHOD(int,)
+LM_DECL_BIND_METHOD(unsigned int,)
+LM_DECL_BIND_METHOD(float,)
+LM_DECL_BIND_METHOD(double,)
+
+LM_DECL_BIND_METHOD(void, int)
+LM_DECL_BIND_METHOD(void, unsigned int)
+LM_DECL_BIND_METHOD(void, float)
+LM_DECL_BIND_METHOD(void, double)
+
+
+
 
 template <typename R, typename... Args>
 void bind_static_method(LM::TypeMirror& class_, std::string method_name, R (*f)(Args...))
@@ -163,15 +180,15 @@ template <typename T, typename R>
 void bind_field(LM::TypeMirror& class_, std::string field_name, R(T::*f))
 {
     typedef LM::FieldSetterTarget<R> SetterTarget;
-    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), class_.get_const_ref_type());
+    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), class_.get_const_ptr_type());
     class_.add_method("set_" + field_name, setter);
 
     typedef LM::FieldGetterTarget<R> GetterTarget;
-    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), class_.get_ref_type());
+    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), class_.get_ptr_type());
     class_.add_method("get_" + field_name, getter);
 
     typedef LM::FieldReferenceTarget<R> RefferTarget;
-    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), class_.get_ref_type());
+    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), class_.get_ptr_type());
     class_.add_method("ref_" + field_name, reffer);
 }
 
@@ -179,62 +196,49 @@ template <typename T, typename R, size_t N>
 void bind_array_field(LM::TypeMirror& class_, std::string field_name, R(T::*f)[N])
 {
     typedef LM::ArrayFieldSetterTarget<R> SetterTarget;
-    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), class_.get_const_ref_type(), N);
+    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), class_.get_const_ptr_type(), N);
     class_.add_method("set_" + field_name, setter);
 
     typedef LM::ArrayFieldGetterTarget<R> GetterTarget;
-    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), class_.get_ref_type(), N);
+    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), class_.get_ptr_type(), N);
     class_.add_method("get_" + field_name, getter);
 
     typedef LM::ArrayFieldReferenceTarget<R> RefferTarget;
-    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), class_.get_ref_type(), N);
+    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), class_.get_ptr_type(), N);
     class_.add_method("ref_" + field_name, reffer);
 }
 
-template <typename T, bool is_copyable>
-typename boost::enable_if_c<is_copyable>::type
-register_copyable_conv()
+template <bool is_copyable>
+struct IfCopyable
 {
-    add_conv<T const&, T>();
-}
+    template <typename T>
+    static void register_conv() { /* do nothing */ }
+};
 
-template <typename T, bool is_copyable>
-typename boost::disable_if_c<is_copyable>::type
-register_copyable_conv()
+template <>
+struct IfCopyable<true>
 {
-}
+    template <typename T>
+    static void register_conv() { add_conv<T const&, T>(); }
+};
 
 template <typename T, bool is_copyable=!boost::is_abstract<T>::value, bool add_deref_ptr_conv=true>
 LM::TypeMirror& register_class(std::string name, TypeMirror& namespace_)
 {
-    static const TypeIndex class_type(LM::TypId<T>::get());
-    static const TypeIndex ref_type(LM::TypId<T&>::get());
-    static const TypeIndex const_ref_type(LM::TypId<T const&>::get());
-
-    namespace_.add_method
-    (
-        name, new LM::ExprTarget
-        (
-            LM::NamespaceExpr::create
-            (
-                LM::NamespaceTypeInfo::create_index(name), class_type
-            )
-        )
-    );
+    const TypeIndex class_type(LM::TypId<T>::get());
 
     if (type_system->get_class(class_type))
-    {
         return *(type_system->get_class(class_type));
-    }
     else
     {
-        auto result = new LM::TypeMirror(name, sizeof(T), class_type, ref_type, const_ref_type);
-        type_system->add_class(class_type, result);
-        //result->add_base(proxy_methods);
-        type_system->add_ptr_conversions(class_type, add_deref_ptr_conv);
-        register_copyable_conv<T, is_copyable>();
-        bind_built_in_operations<T>(*result);
-        add_delegate_conv<T>();
+        auto result = new LM::TypeMirror(name, sizeof(T), class_type);
+        type_system->add_class(class_type, result, namespace_, add_deref_ptr_conv);
+        IfCopyable<is_copyable>::template register_conv<T>();
+
+        // In C++, any type can be deleted.
+        auto deleter = new LM::DestructorCallTarget<T>();
+        result->add_method("delete", deleter);
+
         return *result;
     }
 }

@@ -14,10 +14,6 @@
 
 namespace LM {
 
-
-
-
-
 template <typename R>
 class ArrayFieldSetterTarget : public CallTarget
 {
@@ -37,8 +33,8 @@ public:
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate& target_obj = try_conv<Delegate&>(target_check)->eval();
-        (target_obj.*f_ptr)[try_conv<size_t>(args[0])->eval()] = try_conv<R const&>(args[1])->eval();
+        Delegate* target_obj = EvalAs<Delegate*>::value(target_check);
+        (target_obj->*f_ptr)[EvalAs<size_t>::value(args[0])] = EvalAs<R const&>::value(args[1]);
         return 0;
     }
 

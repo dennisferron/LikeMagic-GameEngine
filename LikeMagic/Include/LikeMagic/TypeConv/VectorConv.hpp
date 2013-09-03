@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ConvertibleTo.hpp"
-#include "LikeMagic/Exprs/Trampoline.hpp"
+#include "LikeMagic/Exprs/Adapter.hpp"
 
 #include "boost/type_traits.hpp"
 
@@ -51,7 +51,7 @@ class VectorConv<std::vector<F>, T*> : public ConvertibleTo<T*>
 //
 //    virtual ExprPtr wrap_expr(ExprPtr expr) const
 //    {
-//        return Trampoline<From, To, VectorConvImpl<From, To>>::create(
+//        return Adapter<From, To, VectorConvImpl<From, To>>::create(
 //            boost::intrusive_ptr<Expression<From>>(expr));
 //    }
 //
@@ -68,7 +68,7 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, VectorConvImpl<From, To>>::create(expr);
+        return Adapter<From, To, VectorConvImpl<From, To>>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("VectorConv"); }
@@ -84,7 +84,7 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, VectorConvImpl<From, To>>::create(expr);
+        return Adapter<From, To, VectorConvImpl<From, To>>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("VectorConv"); }

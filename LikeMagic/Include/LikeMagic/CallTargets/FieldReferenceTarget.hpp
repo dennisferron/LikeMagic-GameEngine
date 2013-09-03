@@ -37,8 +37,8 @@ public:
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate& target_obj = try_conv<Delegate&>(target_check)->eval();
-        return Reference<R>::create(target_obj.*f_ptr);
+        Delegate* target_obj = EvalAs<Delegate*>::value(target_check);
+        return Reference<R>::create(target_obj->*f_ptr);
     }
 
     virtual TypeInfoList const& get_arg_types() const

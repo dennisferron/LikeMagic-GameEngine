@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "LikeMagic/Exprs/Expression.hpp"
+#include "LikeMagic/Exprs/Expr.hpp"
 
 #include "LikeMagic/Utility/TypeDescr.hpp"
 
@@ -44,7 +44,7 @@ struct BottomPtrTag__ {};
 typedef BottomPtrTag__* BottomPtrType;
 
 // This type can be converted to any other pointer in TypeConvGraph.
-class BottomPtrExpr : public Expression<BottomPtrType>
+class BottomPtrExpr : public Expr
 {
 private:
     ExprPtr inner;
@@ -61,6 +61,8 @@ public:
     // Since char* is convertible to IoSeq (string in Io) and we are convertible to any pointer,
     // we would be convertible to IoSeq.  Not good.  Disable to-script conversions to prevent this:
     virtual bool disable_to_script_conv() const;
+
+    virtual TypeIndex get_type() const { return TypId<BottomPtrType>::get(); }
 };
 
 }

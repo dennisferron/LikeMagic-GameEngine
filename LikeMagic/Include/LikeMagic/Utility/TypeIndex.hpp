@@ -58,6 +58,9 @@ public:
     inline std::size_t get_id() const { return id; }
     inline std::size_t get_class_id() const { return class_id; }
 
+    TypeIndex as_ptr_type() const;
+    TypeIndex as_const_ptr_type() const;
+
     TypeInfoPtr get_info() const;
     std::string description() const;
 };

@@ -9,8 +9,8 @@
 #pragma once
 
 #include "ConvertibleTo.hpp"
-#include "LikeMagic/Exprs/Trampoline.hpp"
-#include "LikeMagic/Exprs/StringCachingTrampoline.hpp"
+#include "LikeMagic/Exprs/Adapter.hpp"
+#include "LikeMagic/Exprs/StringCachingAdapter.hpp"
 
 #include "boost/type_traits.hpp"
 
@@ -229,7 +229,7 @@ class StringConv : public ConvertibleTo<To>
 public:
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, StringConvImpl<From, To>>::create(expr);
+        return Adapter<From, To, StringConvImpl<From, To>>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("StringConv"); }
@@ -246,8 +246,8 @@ public:
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
         // Convert the string to a wstring and cache it before converting to wchar_t const*.
-        return Trampoline<std::wstring&, wchar_t const*, StringConvImpl<std::wstring&, wchar_t const*>>::create(
-                StringCachingTrampoline<std::string, std::wstring&, StringConvImpl<std::string, std::wstring>>::create(expr));
+        return Adapter<std::wstring&, wchar_t const*, StringConvImpl<std::wstring&, wchar_t const*>>::create(
+                StringCachingAdapter<std::string, std::wstring&, StringConvImpl<std::string, std::wstring>>::create(expr));
     }
 
     virtual std::string description() const { return describe_converter<std::string, wchar_t const*>("StringConv"); }
@@ -263,8 +263,8 @@ public:
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
         // Convert the string to a wstring and cache it before converting to wchar_t const*.
-        return Trampoline<std::wstring&, wchar_t const*, StringConvImpl<std::wstring&, wchar_t const*>>::create(
-                StringCachingTrampoline<std::string&, std::wstring&, StringConvImpl<std::string&, std::wstring>>::create(
+        return Adapter<std::wstring&, wchar_t const*, StringConvImpl<std::wstring&, wchar_t const*>>::create(
+                StringCachingAdapter<std::string&, std::wstring&, StringConvImpl<std::string&, std::wstring>>::create(
                     boost::intrusive_ptr<Expression<std::string&>>(
                         reinterpret_cast<Expression<std::string&>*>(expr.get()))));
     }

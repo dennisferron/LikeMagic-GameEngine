@@ -404,10 +404,10 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
         //if (method_name == "unsafe_ptr_cast")
         //    cout << "unsafe_ptr_cast used" << endl;
 
-        auto expr = reinterpret_cast<AbstractExpression*>(IoObject_dataPointer(self));
+        auto expr = reinterpret_cast<Expr*>(IoObject_dataPointer(self));
 
         int arg_count = IoMessage_argCount(m);
-        TypeMirror* type_mirror = type_system->get_class(expr->get_class_type());
+        TypeMirror* type_mirror = type_system->get_class(expr->get_type());
         auto* method = type_mirror->get_method(method_name, arg_count);
 
         // If it's not a C++ method, maybe it is an Io method.  If it is neither,
@@ -493,9 +493,9 @@ IoObject* IoVM::forward(IoObject *self, IoObject *locals, IoMessage *m)
     {
         std::cout << "forward "  << method_name << std::endl;
 
-        auto expr = reinterpret_cast<AbstractExpression*>(IoObject_dataPointer(self));
+        auto expr = reinterpret_cast<Expr*>(IoObject_dataPointer(self));
 
-        TypeMirror* type_mirror = type_system->get_class(expr->get_class_type());
+        TypeMirror* type_mirror = type_system->get_class(expr->get_type());
         type_mirror->suggest_method(method_name, arg_count);
 
         // Never get here; suggest_method always throws.
@@ -533,7 +533,7 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPt
     bool expr_has_conv = is_terminal && !disable_to_script
         && type_system->has_conv(from_expr->get_type(), to_io_type);
 
-    if (!disable_to_script && from_expr->is_null())
+    if (!disable_to_script && from_expr->get_value_ptr() == NULL)
     {
         return IOSTATE->ioNil;
     }

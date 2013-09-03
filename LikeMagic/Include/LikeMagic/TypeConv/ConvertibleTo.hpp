@@ -15,15 +15,13 @@
 // Forward declarations.
 namespace LM {
 
-class AbstractExpression;
+class Expr;
 
-typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
+typedef boost::intrusive_ptr<Expr> ExprPtr;
 
 }
 
 namespace LM {
-
-
 
 template <typename To>
 class ConvertibleTo : public virtual AbstractTypeConverter

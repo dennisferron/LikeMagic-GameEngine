@@ -91,3 +91,8 @@ doxygen/*
 .DS_Store
 Deps/tps-1.2/ThinPlateSpline/bin/Debug/SplineTest
 Common/UnitTest++/bin/
+
+# Ignore nm symbol analysis files
+./symbols*.txt
+./analysis*.txt
+

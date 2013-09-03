@@ -10,12 +10,12 @@
 
 #include "boost/intrusive_ptr.hpp"
 #include "LikeMagic/Utility/TypeIndex.hpp"
-#include "LikeMagic/Exprs/Expression.hpp"
+#include "LikeMagic/Exprs/Expr.hpp"
 
 namespace LM {
 
-class AbstractExpression;
-typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
+class Expr;
+typedef boost::intrusive_ptr<Expr> ExprPtr;
 class CallTarget;
 class TypeMirror;
 class AbstractTypeConverter;
@@ -40,7 +40,7 @@ public:
 
     virtual ~TypeSystem();
     virtual TypeMirror* get_class(TypeIndex type) const;
-    virtual void add_class(TypeIndex index, TypeMirror* class_ptr);
+    virtual void add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& namespace_, bool add_ptr_deref_conv);
     virtual void add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv);
     virtual void add_converter_simple(TypeIndex from, TypeIndex to, p_conv_t conv);
     virtual void add_ptr_conversions(TypeIndex from_type, bool auto_deref);
@@ -52,18 +52,61 @@ public:
 extern TypeSystem* type_system;
 
 template <typename To>
-LM::Expression<To>* try_conv(ExprPtr from)
-{
-    return static_cast<LM::Expression<To>*>(
-          type_system->try_conv(
-            from, LM::TypId<To>::get()).get());
-}
-
-template <typename To>
 bool has_conv(LM::ExprPtr from)
 {
     return type_system->has_conv(from->get_type(),
          LM::TypId<To>::get());
 }
+
+template <typename T> struct EvalAs // by value
+{
+    EvalAs() = delete;
+    inline static T const& value(ExprPtr from)
+    {
+        return *EvalAs<T const*>(from);
+    }
+};
+
+template <typename T> struct EvalAs<T const*> // by const ptr
+{
+    EvalAs() = delete;
+    inline static T const* value(ExprPtr from)
+    {
+        return reinterpret_cast<T const*>(
+            type_system->try_conv(from, LM::TypId<T const*>::get())
+              ->get_value_ptr());
+    }
+};
+
+template <typename T> struct EvalAs<T*> // by nonconst ptr
+{
+    EvalAs() = delete;
+    inline static T* value(ExprPtr from)
+    {
+        return reinterpret_cast<T*>(
+            const_cast<void*>(
+              type_system->try_conv(from, LM::TypId<T*>::get())
+                ->get_value_ptr()));
+    }
+};
+
+template <typename T> struct EvalAs<T const&> // by const ref
+{
+    EvalAs() = delete;
+    inline static T const& value(ExprPtr from)
+    {
+
+        return *EvalAs<T const*>(from);
+    }
+};
+
+template <typename T> struct EvalAs<T&> // by nonconst ref
+{
+    EvalAs() = delete;
+    inline static T& value(ExprPtr from)
+    {
+        return *EvalAs<T*>(from);
+    }
+};
 
 }

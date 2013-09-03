@@ -9,8 +9,8 @@
 
 namespace LM {
     class TypeSystem;
-    class AbstractExpression;
-    typedef boost::intrusive_ptr<AbstractExpression> ExprPtr;
+    class Expr;
+    typedef boost::intrusive_ptr<Expr> ExprPtr;
     typedef std::vector<ExprPtr> ArgList;
 
 class SharedArgTransporter

@@ -18,17 +18,15 @@ namespace LM {
 
 
 template <typename T>
-class Reference : public Expression<T&>
+class Reference : public Expr
 {
 private:
-
-    T& value;
 
     // This allows the reference expression to bump up the refcount
     // on the storage location, if that is being tracked.  Otherwise this is null.
     ExprPtr storage_location;
 
-    Reference(T& value_, ExprPtr storage_location_) : value(value_), storage_location(storage_location_)
+    Reference(T* value_, ExprPtr storage_location_) : Expr(value_), storage_location(storage_location_)
     {
     }
 
@@ -57,7 +55,7 @@ private:
 
 public:
 
-    static ExprPtr create(T& value_, ExprPtr storage_location_=0)
+    static ExprPtr create(T* value_, ExprPtr storage_location_=0)
     {
         ExprPtr result = new Reference(value_, storage_location_);
         return result;
@@ -67,17 +65,12 @@ public:
 
     virtual std::string description() const
     {
-        return std::string("Reference<" + AbstractExpression::description() + ">");
+        return std::string("Reference<" + Expr::description() + ">");
     }
 
     virtual void mark() const
     {
         mark_if_possible(TypePack<typename boost::remove_pointer<typename boost::remove_reference<T>::type>::type>());
-    }
-
-    inline virtual T& eval()
-    {
-        return value;
     }
 };
 

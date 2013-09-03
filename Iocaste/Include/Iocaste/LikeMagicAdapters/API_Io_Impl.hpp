@@ -59,7 +59,7 @@ using namespace LM;
 using namespace LM;
 
 bool is_Exprs_obj(IoObject* io_obj);
-boost::intrusive_ptr<AbstractExpression> from_script(IoObject* self, IoObject* io_obj, TypeIndex expected_type);
+boost::intrusive_ptr<Expr> from_script(IoObject* self, IoObject* io_obj, TypeIndex expected_type);
 
 IoMethodTable* make_io_method_table(std::vector<std::string> const& method_names);
 IoObject* get_io_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos);

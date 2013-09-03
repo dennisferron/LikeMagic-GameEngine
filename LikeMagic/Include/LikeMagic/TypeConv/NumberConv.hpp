@@ -9,14 +9,12 @@
 #pragma once
 
 #include "LikeMagic/TypeConv/ConvertibleTo.hpp"
-#include "LikeMagic/Exprs/Trampoline.hpp"
-#include "LikeMagic/Exprs/NumberCachingTrampoline.hpp"
+#include "LikeMagic/Exprs/Adapter.hpp"
+#include "LikeMagic/Exprs/NumberCachingAdapter.hpp"
 
 #include "boost/type_traits.hpp"
 
 namespace LM {
-
-
 
 template <typename From, typename To>
 class NumberConvImpl
@@ -34,7 +32,7 @@ class NumberConvImpl<From, To&>
 {
 public:
 
-    // Return To as a non-reference here; depending on NumberCachingTrampoline to cache it as a value and return a reference for us.
+    // Return To as a non-reference here; depending on NumberCachingAdapter to cache it as a value and return a reference for us.
     inline static To do_conv(From obj)
     {
         return static_cast<To>(obj);
@@ -48,7 +46,7 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return Trampoline<From, To, NumberConvImpl<From, To>>::create(expr);
+        return Adapter<From, To, NumberConvImpl<From, To>>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("NumberConv"); }
@@ -57,7 +55,7 @@ public:
 };
 
 // When the destination type is a reference, we must cache the intermediate
-// value (via CachingTrampoline) EVEN IF To-type is a CONST ref.  I would have
+// value (via CachingAdapter) EVEN IF To-type is a CONST ref.  I would have
 // thought the temporary would live long enough to provide a quick read-only
 // reference in a function call, but in actual observation I've seen
 // the args clobbered when I did this without using caching.
@@ -69,7 +67,7 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return NumberCachingTrampoline<From, To&, NumberConvImpl<From, To&>>::create(expr);
+        return NumberCachingAdapter<From, To&, NumberConvImpl<From, To&>>::create(expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To&>("NumberConv"); }
