@@ -234,7 +234,7 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     LM_CLASS(global_ns, IoObject)
 
     // To convert an Io object to a void*
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), TypId<void*>::get(), new LM::ImplicitConv<IoObject*, void*>);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), TypId<void*>::get(), new LM::StaticCastConv<IoObject*, void*>);
 
     // Make general Io objects convertible with IoObject*.
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), TypId<IoObject*>::get(), new LM::NoChangeConv<>);

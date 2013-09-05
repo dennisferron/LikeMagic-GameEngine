@@ -13,12 +13,15 @@
 
 namespace LM {
 
+// By-Value case
 template <typename R>
 struct Term
 {
     static ExprPtr create(R func_result)
     {
-        return new Expr(new R(func_result));
+        Expr* result = new Expr(new R(func_result));
+        result->set_auto_delete_ptr(true);
+        return result;
     }
 };
 

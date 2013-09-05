@@ -16,7 +16,7 @@
 #include "IoObject.h"
 
 #include "LikeMagic/TypeConv/NumberConv.hpp"
-#include "LikeMagic/TypeConv/StringConv.hpp"
+//#include "LikeMagic/TypeConv/StringConv.hpp"
 #include "LikeMagic/TypeConv/IteratorConv.hpp"
 
 #include "LikeMagic/BindingMacros.hpp"
@@ -126,6 +126,7 @@ void LM::add_bindings()
 
     add_all_num_conv(type_sys, (signed char)(short)(int)(long)(unsigned char)(unsigned short)(unsigned int)(unsigned long)(float)(double))
 
+    /*
     // Allow string conversions
     add_conv<  std::string&,    std::wstring,   StringConv>();
     add_conv<  std::string&,    wchar_t const*, StringConv>();
@@ -134,6 +135,7 @@ void LM::add_bindings()
     add_conv<  std::wstring,    std::string,    StringConv>();
     add_conv<  std::wstring&,   std::string,    StringConv>();
     add_conv<  wchar_t const*,  std::string,    StringConv>();
+    */
 
     // When IoNil is encountered, it is marshaled as a NullExpr<void*> object,
     // which is an expression   of type of void* that always returns NULL.
@@ -142,11 +144,11 @@ void LM::add_bindings()
     add_conv<void*&, void*>();
 
     // Allow char*& terms to be converted to char* values.
-    add_conv<  char const*&,    char const*,    ImplicitConv>();
-    add_conv<  unsigned char const*&,    unsigned char const*,    ImplicitConv>();
-    add_conv<  char*&, char*,    ImplicitConv>();
-    add_conv<  unsigned char*&,    unsigned char*,    ImplicitConv>();
-    add_conv<  void const*&,    void const*,    ImplicitConv>();
+    add_conv<  char const*&,    char const*,    StaticCastConv>();
+    add_conv<  unsigned char const*&,    unsigned char const*,    StaticCastConv>();
+    add_conv<  char*&, char*,    StaticCastConv>();
+    add_conv<  unsigned char*&,    unsigned char*,    StaticCastConv>();
+    add_conv<  void const*&,    void const*,    StaticCastConv>();
     add_conv<  void*, void* const&, NumberConv>();
 
     // enable std::vector conversions to pointers for primitives

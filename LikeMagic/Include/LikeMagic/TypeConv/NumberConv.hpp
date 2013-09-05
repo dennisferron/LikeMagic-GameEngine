@@ -8,70 +8,37 @@
 
 #pragma once
 
-#include "LikeMagic/TypeConv/ConvertibleTo.hpp"
-#include "LikeMagic/Exprs/Adapter.hpp"
-#include "LikeMagic/Exprs/NumberCachingAdapter.hpp"
-
-#include "boost/type_traits.hpp"
+#include "LikeMagic/TypeConv/StaticCastConv.hpp"
 
 namespace LM {
 
+// By-value case is same as a StaticCastConv.
 template <typename From, typename To>
-class NumberConvImpl
+class NumberConv : public StaticCastConv
 {
 public:
-
-    inline static To do_conv(From obj)
-    {
-        return static_cast<To>(obj);
-    }
-};
-
-template <typename From, typename To>
-class NumberConvImpl<From, To&>
-{
-public:
-
-    // Return To as a non-reference here; depending on NumberCachingAdapter to cache it as a value and return a reference for us.
-    inline static To do_conv(From obj)
-    {
-        return static_cast<To>(obj);
-    }
-};
-
-template <typename From, typename To>
-class NumberConv : public ConvertibleTo<To>
-{
-public:
-
-    virtual ExprPtr wrap_expr(ExprPtr expr) const
-    {
-        return Adapter<From, To, NumberConvImpl<From, To>>::create(expr);
-    }
-
-    virtual std::string description() const { return describe_converter<From, To>("NumberConv"); }
-
+    virtual std::string description() const { return describe_converter<From, To>("NumberConv(static cast)"); }
     virtual float cost() const { return 10.0; }
 };
 
-// When the destination type is a reference, we must cache the intermediate
-// value (via CachingAdapter) EVEN IF To-type is a CONST ref.  I would have
-// thought the temporary would live long enough to provide a quick read-only
-// reference in a function call, but in actual observation I've seen
-// the args clobbered when I did this without using caching.
-// Even if (especially if?) the source type is a reference, you must still cache it.
+// When the _destination_ type is a reference, we must create an lvalue to refer
+// to (by creating a Term) EVEN IF To-type is a const reference.  Otherwise, if
+// some part of this chain refers to a temporary, it might not still be around
+// between when the expression is built and when it is used.
+
 template <typename From, typename To>
-class NumberConv<From, To&> : public ConvertibleTo<To&>
+class NumberConv<From, To&> : public AbstractTypeConverter
 {
 public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return NumberCachingAdapter<From, To&, NumberConvImpl<From, To&>>::create(expr);
+        return Term<To>::create(
+            static_cast<To>(
+                EvalAs<From>::value(obj)));
     }
 
-    virtual std::string description() const { return describe_converter<From, To&>("NumberConv"); }
-
+    virtual std::string description() const { return describe_converter<From, To&>("NumberConv(new Term)"); }
     virtual float cost() const { return 10.0; }
 };
 

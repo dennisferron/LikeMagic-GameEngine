@@ -7,12 +7,6 @@ BottomPtrExpr::BottomPtrExpr(ExprPtr inner_) : inner(inner_) {}
 
 ExprPtr BottomPtrExpr::create(ExprPtr inner) { return new BottomPtrExpr(inner); }
 
-BottomPtrType BottomPtrExpr::eval()
-{
-    return reinterpret_cast<BottomPtrType>(
-        LM::try_conv<void*>(inner)->eval());
-}
-
 bool BottomPtrExpr::is_terminal() const { return inner->is_terminal(); }
 
 std::string BottomPtrExpr::description() const

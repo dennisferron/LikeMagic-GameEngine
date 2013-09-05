@@ -9,7 +9,6 @@
 #pragma once
 
 #include "LikeMagic/Mirrors/CallTarget.hpp"
-#include "LikeMagic/Exprs/NamespaceExpr.hpp"
 #include "LikeMagic/Utility/TypePack.hpp"
 #include "LikeMagic/Utility/make_arg_list.hpp"
 

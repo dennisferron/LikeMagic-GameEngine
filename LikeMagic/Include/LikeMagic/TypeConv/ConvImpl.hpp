@@ -1,9 +1,11 @@
 
+#include "LikeMagic/Exprs/ValuePtr.hpp"
+
 namespace LM {
 
 struct ConvImpl
 {
-    virtual void const* do_conv(void const* value) const = 0;
+    virtual ValuePtr do_conv(ValuePtr value) const = 0;
 };
 
 }

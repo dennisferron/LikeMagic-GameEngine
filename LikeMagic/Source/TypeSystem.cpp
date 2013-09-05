@@ -55,6 +55,7 @@ struct TypeSystem::Impl
         add_conv_track<void>(bare);
         add_conv_track<void const>(bare->as_const_obj_type());
 
+        // TODO:  Add convertsion from BottomPtrTypeInfo not BottomPtrType.
         auto bot_tag = TypId<BottomPtrType>::get().get_info();
 
         // allow unsafe_ptr_cast to convert to any type and nil (NULL) to any pointer type
@@ -149,10 +150,13 @@ void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& n
 
     impl->classes[index] = class_ptr;
 
+    // TODO: Replace "ExprTarget" with some kind of CallTarget that returns
+    // a TypeMirror-of-metaclass.
     namespace_.add_method(
         class_ptr->get_class_name(), new LM::ExprTarget(
-            LM::NamespaceExpr::create(
-                LM::NamespaceTypeInfo::create_index(class_ptr->get_class_name()),
+            new Expr(
+                null,
+                    LM::NamespaceTypeInfo::create_index(class_ptr->get_class_name()),
                 class_ptr->get_class_type()
             )
         )

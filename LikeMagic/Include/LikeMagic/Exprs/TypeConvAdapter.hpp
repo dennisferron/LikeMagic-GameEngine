@@ -15,26 +15,25 @@ namespace LM {
 
 // Adapts an expression of one type so that it can be used as another type.
 template <typename From, typename To>
-class Adapter : public Expr
+class TypeConvAdapter : public Expr
 {
 private:
     ExprPtr from_expr;
     ConvImpl const& conv;
 
-    Adapter(ExprPtr expr, ConvImpl const& conv_) : from_expr(expr), conv(conv_)
+    TypeConvAdapter(ExprPtr expr, ConvImpl const& conv_) : from_expr(expr), conv(conv_)
     {
     }
 
 public:
     static ExprPtr create(ExprPtr expr, ConvImpl const& conv)
     {
-        ExprPtr result = new Adapter(expr, conv);
-        return result;
+        return new TypeConvAdapter(expr, conv);
     }
 
-    virtual void* get_ptr_value()
+    virtual ValuePtr get_ptr_value()
     {
-        return conv.do_conv(expr->get_value_ptr());
+        return conv.do_conv(from_expr->get_value_ptr());
     }
 
     virtual std::string description() const

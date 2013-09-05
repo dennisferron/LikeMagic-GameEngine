@@ -7,6 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/Exprs/Expr.hpp"
+#include "LikeMagic/TypeSystem.hpp"
 
 #include <stdexcept>
 
@@ -39,12 +40,23 @@ Expr::~Expr()
     }
 }
 
-Expr::Expr() : ref_count(0), disable_to_script(false), auto_delete_ptr(false), value_ptr(NULL)
+Expr::Expr(ValuePtr ptr, TypeIndex type_)
+    : value_ptr(ptr), type(type_), ref_count(0),
+        disable_to_script(false), auto_delete_ptr(false)
 {
 }
 
-Expr::Expr(void const* ptr) : ref_count(0), disable_to_script(false), auto_delete_ptr(false), value_ptr(ptr)
+ValuePtr Expr::get_value_ptr() const
 {
+    return value_ptr;
+}
+
+void Expr::mark() const
+{
+    if (has_conv<IMarkable const*>(this))
+    {
+        EvalAs<IMarkable const*>::value(const_cast<Expr*>(this))->mark();
+    }
 }
 
 bool Expr::get_auto_delete_ptr() const

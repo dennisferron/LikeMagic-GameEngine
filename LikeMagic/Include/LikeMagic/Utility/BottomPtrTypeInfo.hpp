@@ -8,26 +8,25 @@
 
 #pragma once
 
-
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 
 namespace LM {
 
-class NamespaceTypeInfo : public AbstractTypeInfo
+class BottomPtrTypeInfo : public AbstractTypeInfo
 {
 private:
-    std::string namespace_name;
-    NamespaceTypeInfo(std::string namespace_name_);
+
+    BottomPtrTypeInfo(std::string namespace_name_);
+
 protected:
+
     virtual std::string get_system() const;
     virtual bool less(const AbstractTypeInfo& other) const;
     virtual bool equals(const AbstractTypeInfo& other) const;
     virtual std::size_t calc_hash() const;
-public:
-    static TypeInfoPtr create(std::string namespace_name);
-    static TypeIndex create_index(std::string namespace_name);
+    static TypeInfoPtr create();
+    static TypeIndex create_index();
     virtual std::string description() const;
 };
-
 
 }

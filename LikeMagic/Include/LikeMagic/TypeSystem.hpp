@@ -10,6 +10,7 @@
 
 #include "boost/intrusive_ptr.hpp"
 #include "LikeMagic/Utility/TypeIndex.hpp"
+#include "LikeMagic/Utility/BetterTypeInfo.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
 
 namespace LM {
@@ -52,7 +53,7 @@ public:
 extern TypeSystem* type_system;
 
 template <typename To>
-bool has_conv(LM::ExprPtr from)
+bool has_conv(LM::Expr const* from)
 {
     return type_system->has_conv(from->get_type(),
          LM::TypId<To>::get());
@@ -74,7 +75,7 @@ template <typename T> struct EvalAs<T const*> // by const ptr
     {
         return reinterpret_cast<T const*>(
             type_system->try_conv(from, LM::TypId<T const*>::get())
-              ->get_value_ptr());
+              ->get_value_ptr().as_const);
     }
 };
 
@@ -84,9 +85,8 @@ template <typename T> struct EvalAs<T*> // by nonconst ptr
     inline static T* value(ExprPtr from)
     {
         return reinterpret_cast<T*>(
-            const_cast<void*>(
               type_system->try_conv(from, LM::TypId<T*>::get())
-                ->get_value_ptr()));
+                ->get_value_ptr().as_nonconst);
     }
 };
 
@@ -95,7 +95,6 @@ template <typename T> struct EvalAs<T const&> // by const ref
     EvalAs() = delete;
     inline static T const& value(ExprPtr from)
     {
-
         return *EvalAs<T const*>(from);
     }
 };

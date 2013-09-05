@@ -10,8 +10,6 @@
 
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Mirrors/TypeMirror.hpp"
-
-#include "LikeMagic/Exprs/NamespaceExpr.hpp"
 #include "LikeMagic/Utility/NamespaceTypeInfo.hpp"
 
 #include "LikeMagic/CallTargets/ExprTarget.hpp"

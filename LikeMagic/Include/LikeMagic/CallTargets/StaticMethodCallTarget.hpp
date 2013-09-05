@@ -11,13 +11,8 @@
 
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
-#include "LikeMagic/Exprs/methodcall_args.hpp"
 #include "LikeMagic/Mirrors/CallTarget.hpp"
 #include "LikeMagic/Utility/IndexPack.hpp"
-
-// When there are no args, args_tuple does not get expanded below and therefore is set but unused.
-// GCC no longer recognizes this option?
-//#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 
 namespace LM {
 

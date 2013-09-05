@@ -8,23 +8,23 @@
 
 #pragma once
 
-#include "LikeMagic/TypeConv/ConvertibleTo.hpp"
-#include "LikeMagic/Exprs/Adapter.hpp"
+#include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
+#include "LikeMagic/Exprs/TypeConvAdapter.hpp"
 
 namespace LM {
 
 template <typename From, typename To>
-class StaticCastConv : public ConvertibleTo<To>
+class StaticCastConv : public AbstractTypeConverter
 {
 private:
     struct Impl : public ConvImpl
     {
-        virtual void const* do_conv(void const* value)
+        virtual ValuePtr do_conv(ValuePtr value)
         {
             return
                 static_cast<To*>(
                     reinterpret_cast<From*>(
-                        const_cast<void*>(value)));
+                        GetValuePtr<From>::value(value)));
         }
     } impl;
 
@@ -32,7 +32,7 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return LM::Adapter<From, To>::create(expr, impl);
+        return LM::TypeConvAdapter<From, To>::create(expr, impl);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("StaticCastConv"); }
