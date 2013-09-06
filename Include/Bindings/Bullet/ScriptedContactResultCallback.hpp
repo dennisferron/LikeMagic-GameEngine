@@ -2,8 +2,9 @@
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
 
-#include "LikeMagic/Exprs/TermDeleter.hpp"
-LM_CUSTOM_DELETER(btCollisionObjectWrapper, /* do nothing */)
+// TODO: Re-enable this after re-adding deleter to register_class.
+//#include "LikeMagic/Exprs/TermDeleter.hpp"
+//LM_CUSTOM_DELETER(btCollisionObjectWrapper, /* do nothing */)
 
 #include "LikeMagic/IMarkable.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"

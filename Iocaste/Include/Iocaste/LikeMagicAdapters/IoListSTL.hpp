@@ -12,7 +12,6 @@
 
 #include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
-#include "LikeMagic/Exprs/NullExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 
 #include <iterator>

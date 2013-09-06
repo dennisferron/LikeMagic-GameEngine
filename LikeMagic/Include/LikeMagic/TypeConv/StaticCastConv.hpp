@@ -11,19 +11,24 @@
 #include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
 #include "LikeMagic/Exprs/TypeConvAdapter.hpp"
 
+#include "boost/type_traits/is_pointer.hpp"
+
 namespace LM {
 
 template <typename From, typename To>
 class StaticCastConv : public AbstractTypeConverter
 {
 private:
+    static_assert(boost::is_pointer<From>::value, "Conversion must take place by pointers.");
+    static_assert(boost::is_pointer<To>::value, "Conversion must take place by pointers.");
+
     struct Impl : public ConvImpl
     {
-        virtual ValuePtr do_conv(ValuePtr value)
+        virtual ValuePtr do_conv(ValuePtr value) const
         {
             return
-                static_cast<To*>(
-                    reinterpret_cast<From*>(
+                static_cast<To>(
+                    reinterpret_cast<From>(
                         GetValuePtr<From>::value(value)));
         }
     } impl;

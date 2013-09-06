@@ -20,28 +20,28 @@ public:
     // fight it it is just easier to define all the interface functions here:
 
     // IBaseEntity Functions
-    ScriptFunc(0, irr::core::vector3df, Position,           const,          )
-    ScriptFunc(1, void,                 SetPosition,    /* not const */,    (irr::core::vector3df))
-    ScriptFunc(0, float,                Radius,             const,          )
-    ScriptFunc(1, void,                 Update,         /* not const */,    (float))
+    ScriptFunc_R(irr::core::vector3df, Position,           const,          )
+    ScriptFunc_void(                 SetPosition,    /* not const */,    (irr::core::vector3df))
+    ScriptFunc_R(float,                Radius,             const,          )
+    ScriptFunc_void(                 Update,         /* not const */,    (float))
 
     // IEntitySpace Functions
-    ScriptFunc(0, irr::core::vector3df, SideVector,                     const,)
-	ScriptFunc(1, void,                 SetSideVector,              /* not const */,    (irr::core::vector3df))
-	ScriptFunc(0, irr::core::vector3df, ForwardVector,                  const,)
-	ScriptFunc(1, void,                 SetForwardVector,           /* not const */,    (irr::core::vector3df))
-    ScriptFunc(0, irr::core::vector3df, transformWorldVectToLocal,  /* not const */,    (irr::core::vector3df))
-	ScriptFunc(0, irr::core::vector3df, transformLocalVectToWorld,  /* not const */,    (irr::core::vector3df))
+    ScriptFunc_R(irr::core::vector3df, SideVector,                     const,)
+	ScriptFunc_void(                 SetSideVector,              /* not const */,    (irr::core::vector3df))
+	ScriptFunc_R(irr::core::vector3df, ForwardVector,                  const,)
+	ScriptFunc_void(                 SetForwardVector,           /* not const */,    (irr::core::vector3df))
+    ScriptFunc_R(irr::core::vector3df, transformWorldVectToLocal,  /* not const */,    (irr::core::vector3df))
+	ScriptFunc_R(irr::core::vector3df, transformLocalVectToWorld,  /* not const */,    (irr::core::vector3df))
 
     // IMobile Entity Functions
-	ScriptFunc(1, void,                 SetSteering,                /* not const */,    (controller::ISteeringController*) )
-    ScriptFunc(0, float,                Mass,                           const, )
-	ScriptFunc(1, void,                 SetMass,                    /* not const */,    (float) )
-	ScriptFunc(0, float,                MaxForce,                       const, )
-	ScriptFunc(1, void,                 SetMaxForce,                /* not const */,    (float) )
-	ScriptFunc(0, float,                MaxSpeed,                       const, )
-	ScriptFunc(1, void,                 SetMaxSpeed,                /* not const */,    (float) )
-    ScriptFunc(0, irr::core::vector3df, Velocity,                       const,  )
+	ScriptFunc_void(                 SetSteering,                /* not const */,    (controller::ISteeringController*) )
+    ScriptFunc_R(float,                Mass,                           const, )
+	ScriptFunc_void(                 SetMass,                    /* not const */,    (float) )
+	ScriptFunc_R(float,                MaxForce,                       const, )
+	ScriptFunc_void(                 SetMaxForce,                /* not const */,    (float) )
+	ScriptFunc_R(float,                MaxSpeed,                       const, )
+	ScriptFunc_void(                 SetMaxSpeed,                /* not const */,    (float) )
+    ScriptFunc_R(irr::core::vector3df, Velocity,                       const,  )
 };
 
 }//end namespace entity

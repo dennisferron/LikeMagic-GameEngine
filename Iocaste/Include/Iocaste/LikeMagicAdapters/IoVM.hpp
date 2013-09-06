@@ -82,10 +82,10 @@ public:
     IoObject* do_string(std::string io_code) const;
 
     template <typename T>
-    boost::intrusive_ptr<Expression<T>> get_expr(std::string io_code) const
+    T get_expr(std::string io_code) const
     {
         auto abs_expr = get_abs_expr(io_code);
-        return try_conv<T>(abs_expr);
+        return EvalAs<T>::value(abs_expr);
     }
 
     // This is intended for pointers but I used "T" instead of "T*" so that you can specify a smart pointer instead.

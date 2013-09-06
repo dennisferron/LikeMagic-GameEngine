@@ -8,9 +8,6 @@
 
 #include "LikeMagic/TypeConv/TypeConvGraph.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
-#include "LikeMagic/Exprs/BottomPtrExpr.hpp"
-
-//#include "boost/graph/breadth_first_search.hpp"
 #include "boost/graph/dijkstra_shortest_paths.hpp"
 #include <iostream>
 
@@ -45,7 +42,7 @@ using namespace LM;
 namespace LM {
 
 TypeConvGraph::TypeConvGraph()
-    : no_vertex(std::numeric_limits<vertex_t>::max()), bot_conv(new NoChangeConv<>())
+    : no_vertex(std::numeric_limits<vertex_t>::max()), bot_conv(new NoChangeConv())
 {
 }
 

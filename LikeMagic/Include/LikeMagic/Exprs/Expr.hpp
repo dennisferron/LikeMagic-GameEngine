@@ -37,10 +37,12 @@ private:
     bool disable_to_script;
     bool auto_delete_ptr;
 
-    virtual ~Expr();
-
     friend void intrusive_ptr_add_ref(Expr* p);
     friend void intrusive_ptr_release(Expr* p);
+
+protected:
+
+    virtual ~Expr();
 
 public:
     Expr(ValuePtr ptr_, TypeIndex type_);

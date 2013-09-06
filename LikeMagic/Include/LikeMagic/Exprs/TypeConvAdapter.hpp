@@ -21,7 +21,7 @@ private:
     ExprPtr from_expr;
     ConvImpl const& conv;
 
-    TypeConvAdapter(ExprPtr expr, ConvImpl const& conv_) : from_expr(expr), conv(conv_)
+    TypeConvAdapter(ExprPtr expr, ConvImpl const& conv_) : Expr(nullptr, TypId<To>::get()), from_expr(expr), conv(conv_)
     {
     }
 

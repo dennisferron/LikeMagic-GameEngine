@@ -35,7 +35,7 @@ private:
     void build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate* target_obj = EvalAs<Delegate*>(target_check);
+        Delegate* target_obj = EvalAs<Delegate*>::value(target_check);
         (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices])...);
     }
 
@@ -77,7 +77,7 @@ private:
     void build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate const* target_obj = EvalAs<Delegate const*>(target_check);
+        Delegate const* target_obj = EvalAs<Delegate const*>::value(target_check);
         (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices])...);
     }
 
@@ -118,7 +118,7 @@ private:
     ExprPtr build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate* target_obj = EvalAs<Delegate*>(target_check);
+        Delegate* target_obj = EvalAs<Delegate*>::value(target_check);
         return Term<R>::create((target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices])...));
     }
 

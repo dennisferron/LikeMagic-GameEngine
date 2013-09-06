@@ -24,7 +24,7 @@ void add_bindings_btSoftBody()
 
     LM_CLASS(ns_bullet, btCollisionObject)
 
-    LM_CLASS_NO_COPY(ns_bullet, btSoftBody)
+    LM_CLASS(ns_bullet, btSoftBody)
     LM_BASE(btSoftBody, btCollisionObject)
     LM_CONSTR(btSoftBody, "new", btSoftBodyWorldInfo*, int, const btVector3*, const btScalar*)
     LM_FUNC(btSoftBody, (transform)(translate)(rotate))

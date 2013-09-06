@@ -206,21 +206,7 @@ void bind_array_field(LM::TypeMirror& class_, std::string field_name, R(T::*f)[N
     class_.add_method("ref_" + field_name, reffer);
 }
 
-template <bool is_copyable>
-struct IfCopyable
-{
-    template <typename T>
-    static void register_conv() { /* do nothing */ }
-};
-
-template <>
-struct IfCopyable<true>
-{
-    template <typename T>
-    static void register_conv() { add_conv<T const&, T>(); }
-};
-
-template <typename T, bool is_copyable=!boost::is_abstract<T>::value, bool add_deref_ptr_conv=true>
+template <typename T>
 LM::TypeMirror& register_class(std::string name, TypeMirror& namespace_)
 {
     const TypeIndex class_type(LM::TypId<T>::get());
@@ -230,12 +216,11 @@ LM::TypeMirror& register_class(std::string name, TypeMirror& namespace_)
     else
     {
         auto result = new LM::TypeMirror(name, sizeof(T), class_type);
-        type_system->add_class(class_type, result, namespace_, add_deref_ptr_conv);
-        IfCopyable<is_copyable>::template register_conv<T>();
+        type_system->add_class(class_type, result, namespace_);
 
-        // In C++, any type can be deleted.
-        auto deleter = new LM::DestructorCallTarget<T>();
-        result->add_method("delete", deleter);
+        // TODO: Merge implementation of this with implementation of TermDeleter.
+        //auto deleter = new LM::DestructorCallTarget<T>();
+        //result->add_method("delete", deleter);
 
         return *result;
     }
@@ -244,7 +229,7 @@ LM::TypeMirror& register_class(std::string name, TypeMirror& namespace_)
 template <typename T>
 LM::TypeMirror& register_enum(std::string name, TypeMirror& namespace_)
 {
-    auto& result = register_class<T, true>(name, namespace_);
+    auto& result = register_class<T>(name, namespace_);
     bind_nonmember_op(result, "==",    &LM::EnumHelper<T>::equals);
     bind_nonmember_op(result, "!=",    &LM::EnumHelper<T>::not_equals);
     bind_nonmember_op(result, "value", &LM::EnumHelper<T>::value);

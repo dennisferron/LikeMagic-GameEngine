@@ -11,10 +11,10 @@ class ScriptedBaseEntity : virtual public LM::MarkableObjGraph, public IBaseEnti
 {
 public:
 
-    ScriptFunc(0, irr::core::vector3df, Position,           const,          )
-    ScriptFunc(1, void,                 SetPosition,    /* not const */,    (irr::core::vector3df))
-    ScriptFunc(0, float,                Radius,             const,          )
-    ScriptFunc(1, void,                 Update,         /* not const */,    (float))
+    ScriptFunc_R(irr::core::vector3df, Position,           const,          )
+    ScriptFunc_void(SetPosition,    /* not const */,    (irr::core::vector3df))
+    ScriptFunc_R(float,                Radius,             const,          )
+    ScriptFunc_void(Update,         /* not const */,    (float))
 };
 
 }//end namespace entity

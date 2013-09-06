@@ -17,6 +17,7 @@ union ValuePtr
 
     ValuePtr(void const* ptr) : as_const(ptr) {}
     ValuePtr(void* ptr) : as_nonconst(ptr) {}
+    ValuePtr(std::nullptr_t ptr) : as_nonconst(ptr) {}
 };
 
 template <typename T>
@@ -26,7 +27,19 @@ struct GetValuePtr
 };
 
 template <typename T>
+struct GetValuePtr<T*>
+{
+    static void* value(ValuePtr ptr) { return ptr.as_nonconst; }
+};
+
+template <typename T>
 struct GetValuePtr<T const>
+{
+    static void const* value(ValuePtr ptr) { return ptr.as_const; }
+};
+
+template <typename T>
+struct GetValuePtr<T const*>
 {
     static void const* value(ValuePtr ptr) { return ptr.as_const; }
 };

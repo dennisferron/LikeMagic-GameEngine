@@ -8,26 +8,17 @@
 
 #pragma once
 
-#include "LikeMagic/TypeConv/StaticCastConv.hpp"
-
 namespace LM {
 
 // By-value case is same as a StaticCastConv.
 template <typename From, typename To>
-class NumberConv : public StaticCastConv
+class NumberConv
 {
-public:
-    virtual std::string description() const { return describe_converter<From, To>("NumberConv(static cast)"); }
-    virtual float cost() const { return 10.0; }
+    static_assert(sizeof(From) && sizeof(To) && false, "Only use converter by pointer types.");
 };
 
-// When the _destination_ type is a reference, we must create an lvalue to refer
-// to (by creating a Term) EVEN IF To-type is a const reference.  Otherwise, if
-// some part of this chain refers to a temporary, it might not still be around
-// between when the expression is built and when it is used.
-
 template <typename From, typename To>
-class NumberConv<From, To&> : public AbstractTypeConverter
+class NumberConv<From*, To*> : public AbstractTypeConverter
 {
 public:
 
@@ -35,10 +26,10 @@ public:
     {
         return Term<To>::create(
             static_cast<To>(
-                EvalAs<From>::value(obj)));
+                EvalAs<From>::value(expr)));
     }
 
-    virtual std::string description() const { return describe_converter<From, To&>("NumberConv(new Term)"); }
+    virtual std::string description() const { return describe_converter<From, To>("NumberConv(new Term)"); }
     virtual float cost() const { return 10.0; }
 };
 

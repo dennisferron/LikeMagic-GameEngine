@@ -28,7 +28,7 @@ LM::TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespac
     else
     {
         auto result = new LM::TypeMirror(name, 0, namespace_type);
-        type_system->add_class(namespace_type, result, parent_namespace_, false);
+        type_system->add_class(namespace_type, result, parent_namespace_);
         return *result;
     }
 }

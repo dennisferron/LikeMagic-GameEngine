@@ -22,7 +22,7 @@ void add_bindings_btBroadphaseProxy()
 
     typedef btBroadphaseProxy::CollisionFilterGroups CollisionFilterGroups;
     LM_CLASS(ns_bullet, CollisionFilterGroups)
-    add_conv<CollisionFilterGroups, short, LM::NumberConv>();
+    add_conv<CollisionFilterGroups*, short*, LM::NumberConv>();
 
 }
 

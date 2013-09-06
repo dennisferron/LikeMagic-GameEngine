@@ -8,14 +8,8 @@
 
 #include "LikeMagic/StdBindings/StdBindings.hpp"
 #include "LikeMagic/StdBindings/TypeSystemInstance.hpp"
-
-#include "LikeMagic/TypeConv/StringConv.hpp"
-#include "LikeMagic/TypeConv/IteratorConv.hpp"
-
 #include "LikeMagic/BindingMacros.hpp"
-
 #include "boost/preprocessor/seq/for_each.hpp"
-
 #include "LikeMagic/ScriptUtil.hpp"
 
 #include <sstream>

@@ -139,7 +139,7 @@ void add_bindings()
     // To avoid the warning, I'm using NumberConv which
     // caches the temporary copy of the value so there
     // will be something persistent for the reference to refer to.
-    add_conv<ScriptedMobileEntity*&, IBaseEntity* const&, LM::NumberConv>();
+    add_conv<ScriptedMobileEntity*, IBaseEntity*, LM::StaticCastConv>();
 
     LM_BLOCK(ScriptedMobileEntity,
 

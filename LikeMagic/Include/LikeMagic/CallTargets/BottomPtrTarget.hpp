@@ -8,11 +8,10 @@
 
 #pragma once
 
-#include "LikeMagic/Exprs/BottomPtrExpr.hpp"
 #include "LikeMagic/Mirrors/CallTarget.hpp"
-
 #include "LikeMagic/Utility/TypePack.hpp"
 #include "LikeMagic/Utility/make_arg_list.hpp"
+#include "LikeMagic/Utility/BottomPtrTypeInfo.hpp"
 
 namespace LM {
 
@@ -24,7 +23,7 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        return BottomPtrExpr::create(EvalAs<void*>::value(target));
+        return new Expr(target->get_value_ptr(), BottomPtrTypeInfo::create_index());
     }
 
     virtual TypeInfoList const& get_arg_types() const

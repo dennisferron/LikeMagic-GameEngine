@@ -8,7 +8,6 @@
 
 #include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
-#include "LikeMagic/Exprs/NullExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 #include "Iocaste/LikeMagicAdapters/IoObjectExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp"
@@ -17,6 +16,9 @@
 #include "Iocaste/LikeMagicAdapters/IoVectorSTL.hpp"
 
 #include "LikeMagic/TypeSystem.hpp"
+#include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
+#include "LikeMagic/Exprs/Expr.hpp"
+#include "LikeMagic/Utility/BottomPtrTypeInfo.hpp"
 
 #include <vector>
 #include <algorithm>
@@ -70,8 +72,7 @@ std::vector<T> from_list(IoObject* io_obj)
     { \
         virtual ExprPtr wrap_expr(ExprPtr expr) const \
         { \
-            boost::intrusive_ptr<IoObjectExpr> io_expr = static_cast<IoObjectExpr*>(expr.get()); \
-            return Term<cppType>::create(ioFunc(io_expr->eval())); \
+            return Term<cppType>::create(ioFunc(EvalAs<IoObject*>::value(expr))); \
         } \
 \
         virtual std::string description() const { return "From " #scriptType " Conv"; } \
@@ -87,7 +88,7 @@ void add_convs_from_script(IoVM* iovm)
     {
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            return NullExpr::create();
+            return new Expr(nullptr, BottomPtrTypeInfo::create_index());
         }
 
         virtual std::string description() const { return "From Nil Conv"; }
@@ -130,8 +131,7 @@ void add_convs_from_script(IoVM* iovm)
 
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            boost::intrusive_ptr<IoObjectExpr> io_expr = static_cast<IoObjectExpr*>(expr.get());
-            IoObject* io_obj = io_expr->eval();
+            IoObject* io_obj = EvalAs<IoObject*>::value(expr);
             return Term<IoBlock>::create(IoBlock(iovm, io_obj, io_obj));
         }
 
@@ -160,8 +160,7 @@ void add_convs_from_script(IoVM* iovm)
     {
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            boost::intrusive_ptr<IoObjectExpr> io_expr = static_cast<IoObjectExpr*>(expr.get());
-            bool value = ISTRUE(io_expr->eval());
+            bool value = ISTRUE(EvalAs<IoObject*>::value(expr));
             return Term<bool>::create(value);
         }
 

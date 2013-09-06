@@ -11,21 +11,15 @@
 #include "LikeMagic/TypeConv/TypeConvGraph.hpp"
 #include "LikeMagic/TypeConv/StaticCastConv.hpp"
 #include "LikeMagic/TypeConv/StaticCastConv.hpp"
-#include "LikeMagic/TypeConv/NoChangeConv.hpp"
-#include "LikeMagic/Exprs/NullExpr.hpp"
-#include "LikeMagic/Exprs/BottomPtrExpr.hpp"
-#include "LikeMagic/Exprs/Adapter.hpp"
+#include "LikeMagic/Exprs/TypeConvAdapter.hpp"
 #include "LikeMagic/CallTargets/ExprTarget.hpp"
 #include "LikeMagic/Utility/TupleForEach.hpp"
 #include "LikeMagic/Utility/KeyWrapper.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 #include "LikeMagic/TypeConv/StaticCastConv.hpp"
 #include "LikeMagic/TypeConv/StaticCastConv.hpp"
-#include "LikeMagic/TypeConv/ToExprConv.hpp"
-#include "LikeMagic/TypeConv/PtrDerefConv.hpp"
-#include "LikeMagic/TypeConv/AddrOfConv.hpp"
-#include "LikeMagic/Exprs/NamespaceExpr.hpp"
 #include "LikeMagic/Utility/NamespaceTypeInfo.hpp"
+#include "LikeMagic/Utility/BottomPtrTypeInfo.hpp"
 #include "LikeMagic/CallTargets/Delegate.hpp"
 
 #include <set>
@@ -55,27 +49,23 @@ struct TypeSystem::Impl
         add_conv_track<void>(bare);
         add_conv_track<void const>(bare->as_const_obj_type());
 
-        // TODO:  Add convertsion from BottomPtrTypeInfo not BottomPtrType.
-        auto bot_tag = TypId<BottomPtrType>::get().get_info();
-
         // allow unsafe_ptr_cast to convert to any type and nil (NULL) to any pointer type
-        add_nochange_conv<BottomPtrType, void*>(bot_tag, bare->as_ptr());
-        add_nochange_conv<BottomPtrType, void const*>(bot_tag, bare->as_ptr()->as_const_obj_type());
+        add_nochange_conv(BottomPtrTypeInfo::create(), bare->as_ptr());
+        add_nochange_conv(BottomPtrTypeInfo::create(), bare->as_ptr()->as_const_obj_type());
 
         // allow any ptr to be converted to void* or void const*
-        add_nochange_conv<void*, void*>(bare->as_ptr(), TypId<void*>::get().get_info());
-        add_nochange_conv<void const*, void const*>(bare->as_ptr()->as_const_obj_type(), TypId<void const*>::get().get_info());
+        add_nochange_conv(bare->as_ptr(), TypId<void*>::get().get_info());
+        add_nochange_conv(bare->as_ptr()->as_const_obj_type(), TypId<void const*>::get().get_info());
     }
 
-    template <typename From, typename To>
     void add_nochange_conv(TypeInfoPtr from, TypeInfoPtr to)
     {
         if (!(from->get_index() == to->get_index()))
-            conv_graph.add_conv(from->get_index(), to->get_index(), new NoChangeConv<From, To>());
+            conv_graph.add_conv(from->get_index(), to->get_index(), new NoChangeConv());
     }
 
     template <typename From, typename To>
-    void add_generic_conv(TypeInfoPtr from, TypeInfoPtr to)
+    void add_static_cast_conv(TypeInfoPtr from, TypeInfoPtr to)
     {
         conv_graph.add_conv(from->get_index(), to->get_index(), new StaticCastConv<From, To>(from, to));
     }
@@ -89,22 +79,7 @@ struct TypeSystem::Impl
         auto as_ptr_val = type->as_ptr();
 
         // Making a reference const does not change the implementation.
-        add_nochange_conv<T*&, T*const&>(as_ptr_ref, as_ptr_const_ref);
-
-        // Reciprocally convert const ref and const value with a generic conv.
-        add_generic_conv<T*const&, T*const>(as_ptr_const_ref, as_ptr_const_val);
-        add_generic_conv<T*const, T*const&>(as_ptr_const_val, as_ptr_const_ref);
-
-        // Reciprocally convert const and nonconst ptr values with no change in the impl.
-        add_nochange_conv<T*const, T*>(as_ptr_const_val, as_ptr_val);
-        add_nochange_conv<T*, T*const>(as_ptr_val, as_ptr_const_val);
-
-        // For the nonconst track, add all the conversions to the const track.
-        // (These will be nop's if we are already on the const track)
-        add_nochange_conv<T*&, T const*&>(as_ptr_ref, as_ptr_ref->as_const_obj_type());
-        add_nochange_conv<T*const&, T const*const&>(as_ptr_const_ref, as_ptr_const_ref->as_const_obj_type());
-        add_nochange_conv<T*const , T const*const >(as_ptr_const_val, as_ptr_const_val->as_const_obj_type());
-        add_nochange_conv<T* , T const* >(as_ptr_val, as_ptr_val->as_const_obj_type());
+        add_nochange_conv(as_ptr_ref, as_ptr_const_ref);
     }
 };
 
@@ -118,7 +93,7 @@ TypeSystem::TypeSystem()
     impl->global_namespace = new TypeMirror("namespace", 0, ns_type);
 
     // Allow conversions from nil to any pointer.
-    static TypeIndex nil_expr_type = TypId<BottomPtrType>::get();
+    static TypeIndex nil_expr_type = BottomPtrTypeInfo::create_index();
     impl->conv_graph.add_type(nil_expr_type);
 }
 
@@ -127,7 +102,7 @@ TypeMirror& TypeSystem::global_namespace() const
     return *(impl->global_namespace);
 }
 
-void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& namespace_, bool add_ptr_deref_conv)
+void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& namespace_)
 {
     if (!index.is_class_type())
         throw std::logic_error("add_class type index has to be a class type!");
@@ -140,9 +115,9 @@ void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& n
 
     // Add conversion to delegate type so that delegate call targets will work.
     impl->conv_graph.add_conv(index.get_info()->as_ptr()->get_index(),
-        TypId<LM::Delegate*>::get(), new NoChangeConv<>());
+        TypId<LM::Delegate*>::get(), new NoChangeConv());
     impl->conv_graph.add_conv(index.get_info()->as_const_obj_type()->as_ptr()->get_index(),
-        TypId<LM::Delegate const*>::get(), new NoChangeConv<>());
+        TypId<LM::Delegate const*>::get(), new NoChangeConv());
 
     // TODO: create a remove const call target
     //class_.add_method("remove_const",
@@ -155,14 +130,11 @@ void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& n
     namespace_.add_method(
         class_ptr->get_class_name(), new LM::ExprTarget(
             new Expr(
-                null,
-                    LM::NamespaceTypeInfo::create_index(class_ptr->get_class_name()),
-                class_ptr->get_class_type()
+                nullptr,
+                LM::NamespaceTypeInfo::create_index(class_ptr->get_class_name())
             )
         )
     );
-
-    add_ptr_conversions(class_ptr->get_class_type(), add_ptr_deref_conv);
 }
 
 TypeSystem::~TypeSystem()
@@ -221,39 +193,12 @@ void TypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t
     auto to_info = to.get_info();
 
     // Allow converting the object directly to its const form
-    impl->conv_graph.add_conv(from, from_info->as_const_obj_type()->get_index(), new NoChangeConv<>);
-    impl->conv_graph.add_conv(to, to_info->as_const_obj_type()->get_index(), new NoChangeConv<>);
+    impl->conv_graph.add_conv(from, from_info->as_const_obj_type()->get_index(), new NoChangeConv);
+    impl->conv_graph.add_conv(to, to_info->as_const_obj_type()->get_index(), new NoChangeConv);
 
     // Reuse this converter for just the "to" obj const
     impl->conv_graph.add_conv(from, to.get_info()->as_const_obj_type()->get_index(), conv);
 
     // Reuse this converter for both from and to as const
     impl->conv_graph.add_conv(from.get_info()->as_const_obj_type()->get_index(), to.get_info()->as_const_obj_type()->get_index(), conv);
-
-    // Allow this expression type to be converted to an expression argument.
-    TypeIndex as_expr_type = TypId<ExprPtr>::get();
-    impl->conv_graph.add_conv(from, as_expr_type, new ToExprConv);
-    impl->conv_graph.add_conv(from.get_info()->as_const_obj_type()->get_index(), as_expr_type, new ToExprConv);
-    impl->conv_graph.add_conv(to, as_expr_type, new ToExprConv);
-    impl->conv_graph.add_conv(to.get_info()->as_const_obj_type()->get_index(), as_expr_type, new ToExprConv);
-}
-
-void TypeSystem::add_ptr_conversions(TypeIndex from_type, bool auto_deref)
-{
-    auto from_nc = from_type.get_info();
-    auto from_c =  from_type.get_info()->as_const_obj_type();
-
-    // Allow passing the actual object to things that need the pointer to the object.
-    impl->conv_graph.add_conv(from_nc->as_ref()->get_index(), from_nc->as_ptr()->get_index(), new AddrOfConv<Delegate&, Delegate*>);
-    impl->conv_graph.add_conv( from_c->as_ref()->get_index(),  from_c->as_ptr()->get_index(), new AddrOfConv<Delegate&, Delegate*>);
-
-    // Don't want to do this for types convertible to script types, e.g. int*,
-    // because then you couldn't return an array; instead the first array element
-    // could get converted to a script value if you had this enabled.
-    if (auto_deref)
-    {
-        // Also allow converting pointers back to references.
-        impl->conv_graph.add_conv(from_nc->as_ptr()->get_index(), from_nc->as_ref()->get_index(), new PtrDerefConv<Delegate*, Delegate&>);
-        impl->conv_graph.add_conv( from_c->as_ptr()->get_index(),  from_c->as_ref()->get_index(), new PtrDerefConv<Delegate*, Delegate&>);
-    }
 }

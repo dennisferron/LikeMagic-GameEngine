@@ -8,12 +8,7 @@
 
 
 #include "LikeMagic/TypeSystem.hpp"
-
-#include "LikeMagic/TypeConv/StringConv.hpp"
-#include "LikeMagic/TypeConv/IteratorConv.hpp"
-
 #include "LikeMagic/BindingMacros.hpp"
-
 #include "LikeMagic/ScriptUtil.hpp"
 
 #include <sstream>

@@ -14,12 +14,7 @@ namespace LM {
 
 class BottomPtrTypeInfo : public AbstractTypeInfo
 {
-private:
-
-    BottomPtrTypeInfo(std::string namespace_name_);
-
-protected:
-
+public:
     virtual std::string get_system() const;
     virtual bool less(const AbstractTypeInfo& other) const;
     virtual bool equals(const AbstractTypeInfo& other) const;

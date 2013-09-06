@@ -36,7 +36,7 @@ public:
         auto target_check = type_system->try_conv(target, actual_type);
         Delegate* target_obj = EvalAs<Delegate*>::value(target_check);
         return new Reference(
-            (target_obj->*f_ptr)[EvalAs<size_t>::value(args[0])], TypId<R>::get(), target);
+            &((target_obj->*f_ptr)[EvalAs<size_t>::value(args[0])]), TypId<R>::get(), target);
     }
 
     virtual TypeInfoList const& get_arg_types() const

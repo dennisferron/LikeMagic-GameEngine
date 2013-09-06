@@ -16,30 +16,17 @@
 #include "IoObject.h"
 
 #include "LikeMagic/TypeConv/NumberConv.hpp"
-//#include "LikeMagic/TypeConv/StringConv.hpp"
-#include "LikeMagic/TypeConv/IteratorConv.hpp"
-
 #include "LikeMagic/BindingMacros.hpp"
-
 #include "boost/preprocessor/seq/for_each.hpp"
-
 #include "LikeMagic/ScriptUtil.hpp"
 
 #include <sstream>
 
 #define add_num_conv(type_sys, type) \
-add_conv<type, type const&, NumberConv>(); \
-add_conv<type&, type, NumberConv>(); \
-add_conv<type const&, type, NumberConv>(); \
-add_conv<type, double, NumberConv>(); \
-add_conv<type, double const&, NumberConv>(); \
-add_conv<type&, double, NumberConv>(); \
-add_conv<type&, double const&, NumberConv>(); \
-add_conv<type const&, double, NumberConv>(); \
-add_conv<type const&, double const&, NumberConv>();
+add_conv<type*, double*, NumberConv>();
 
 #define add_all_num_conv_impl(r, data, elem) add_num_conv(data, elem);
-#define add_all_num_conv(type_sys, SEQ) BOOST_PP_SEQ_FOR_EACH(add_all_num_conv_impl, type_sys, SEQ)
+#define add_all_num_conv(SEQ) BOOST_PP_SEQ_FOR_EACH(add_all_num_conv_impl, type_sys, SEQ)
 
 using namespace LM;
 using namespace std;
@@ -88,12 +75,12 @@ void LM::add_bindings()
     LM_EXTENSION_METHOD(map_of_s32_IoObject, (at)(atPut)(removeAt))
 
     // Add the abstract type system itself as a class.
-    LM_CLASS_NO_COPY(global_ns, TypeSystem)
+    LM_CLASS(global_ns, TypeSystem)
     LM_FUNC(TypeSystem, (global_namespace))
 
-    LM_CLASS_NO_COPY(global_ns, CallTarget)
+    LM_CLASS(global_ns, CallTarget)
 
-    LM_CLASS_NO_COPY(global_ns, TypeMirror)
+    LM_CLASS(global_ns, TypeMirror)
     LM_FUNC(TypeMirror, (get_class_name)(get_class_type)(get_instance_size))
 
     LM_CLASS(global_ns, TypeIndex)
@@ -106,50 +93,38 @@ void LM::add_bindings()
     LM_CLASS(global_ns, wstring)
 
     // Register number types as copyable but do not auto-deref
-    register_class<short, true, false>("short", global_ns);
-    register_class<unsigned short, true, false>("ushort", global_ns);
-    register_class<int, true, false>("int", global_ns);
-    register_class<unsigned int, true, false>("uint", global_ns);
-    register_class<long, true, false>("long", global_ns);
-    register_class<unsigned long, true, false>("ulong", global_ns);
-    register_class<double, true, false>("double", global_ns);
-    register_class<float, true, false>("float", global_ns);
+    register_class<short>("short", global_ns);
+    register_class<unsigned short>("ushort", global_ns);
+    register_class<int>("int", global_ns);
+    register_class<unsigned int>("uint", global_ns);
+    register_class<long>("long", global_ns);
+    register_class<unsigned long>("ulong", global_ns);
+    register_class<double>("double", global_ns);
+    register_class<float>("float", global_ns);
 
     // Do auto-deref bool though
-    register_class<bool, true, true>("bool", global_ns);
+    register_class<bool>("bool", global_ns);
 
-    register_class<unsigned char, true, false>("uchar", global_ns);
+    register_class<unsigned char>("uchar", global_ns);
 
     LM_CLASS(global_ns, wchar_t)
 
     LM_CLASS(global_ns, Delegate)
 
-    add_all_num_conv(type_sys, (signed char)(short)(int)(long)(unsigned char)(unsigned short)(unsigned int)(unsigned long)(float)(double))
+    add_conv<float*, double*, NumberConv>();
+    add_conv<short*, double*, NumberConv>();
+    add_conv<int*, double*, NumberConv>();
+    add_conv<long*, double*, NumberConv>();
+    add_conv<unsigned short*, double*, NumberConv>();
+    add_conv<unsigned int*, double*, NumberConv>();
+    add_conv<unsigned long*, double*, NumberConv>();
 
-    /*
-    // Allow string conversions
-    add_conv<  std::string&,    std::wstring,   StringConv>();
-    add_conv<  std::string&,    wchar_t const*, StringConv>();
-    add_conv<  std::string&,    char const*,    StringConv>();
-
-    add_conv<  std::wstring,    std::string,    StringConv>();
-    add_conv<  std::wstring&,   std::string,    StringConv>();
-    add_conv<  wchar_t const*,  std::string,    StringConv>();
-    */
-
-    // When IoNil is encountered, it is marshaled as a NullExpr<void*> object,
-    // which is an expression   of type of void* that always returns NULL.
-    // Some fancy magic happens in try_conv to intercept the void* NULL value
-    // and replace it with a NullExpr of the appropriate pointer type for the function argument.
-    add_conv<void*&, void*>();
-
-    // Allow char*& terms to be converted to char* values.
-    add_conv<  char const*&,    char const*,    StaticCastConv>();
-    add_conv<  unsigned char const*&,    unsigned char const*,    StaticCastConv>();
-    add_conv<  char*&, char*,    StaticCastConv>();
-    add_conv<  unsigned char*&,    unsigned char*,    StaticCastConv>();
-    add_conv<  void const*&,    void const*,    StaticCastConv>();
-    add_conv<  void*, void* const&, NumberConv>();
+    add_conv<short*, int*, NumberConv>();
+    add_conv<short*, long*, NumberConv>();
+    add_conv<int*, long*, NumberConv>();
+    add_conv<unsigned short*, int*, NumberConv>();
+    add_conv<unsigned short*, long*, NumberConv>();
+    add_conv<unsigned int*, long*, NumberConv>();
 
     // enable std::vector conversions to pointers for primitives
     //register_collection<unsigned short>("ushort");
@@ -181,7 +156,7 @@ void LM::add_bindings()
     // These three lines allow converting a vector iterator to a pointer into the array.
     typedef vector_of_float::iterator vector_of_float_iterator;
     LM_CLASS(ns_std, vector_of_float_iterator)
-    add_conv<vector_of_float_iterator, float*, IteratorConv>();
+    //add_conv<vector_of_float_iterator, float*, IteratorConv>();
 
     typedef NativeArray<float> NativeArray_of_float;
     LM_CLASS(global_ns, NativeArray_of_float)
@@ -208,7 +183,7 @@ void LM::add_bindings()
     // These three lines allow converting a vector iterator to a pointer into the array.
     typedef vector_of_double::iterator vector_of_double_iterator;
     LM_CLASS(ns_std, vector_of_double_iterator)
-    add_conv<vector_of_double_iterator, double*, IteratorConv>();
+    //add_conv<vector_of_double_iterator, double*, IteratorConv>();
 
     typedef NativeArray<double> NativeArray_of_double;
     LM_CLASS(global_ns, NativeArray_of_double)

@@ -41,10 +41,9 @@ public:
 
     virtual ~TypeSystem();
     virtual TypeMirror* get_class(TypeIndex type) const;
-    virtual void add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& namespace_, bool add_ptr_deref_conv);
+    virtual void add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& namespace_);
     virtual void add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv);
     virtual void add_converter_simple(TypeIndex from, TypeIndex to, p_conv_t conv);
-    virtual void add_ptr_conversions(TypeIndex from_type, bool auto_deref);
     virtual ExprPtr try_conv(ExprPtr from_expr, TypeIndex to_type) const;
     virtual bool has_conv(TypeIndex  from_type, TypeIndex to_type) const;
     virtual TypeMirror& global_namespace() const;
@@ -64,7 +63,7 @@ template <typename T> struct EvalAs // by value
     EvalAs() = delete;
     inline static T const& value(ExprPtr from)
     {
-        return *EvalAs<T const*>(from);
+        return *EvalAs<T const*>::value(from);
     }
 };
 
@@ -95,7 +94,7 @@ template <typename T> struct EvalAs<T const&> // by const ref
     EvalAs() = delete;
     inline static T const& value(ExprPtr from)
     {
-        return *EvalAs<T const*>(from);
+        return *EvalAs<T const*>::value(from);
     }
 };
 
@@ -104,7 +103,7 @@ template <typename T> struct EvalAs<T&> // by nonconst ref
     EvalAs() = delete;
     inline static T& value(ExprPtr from)
     {
-        return *EvalAs<T*>(from);
+        return *EvalAs<T*>::value(from);
     }
 };
 

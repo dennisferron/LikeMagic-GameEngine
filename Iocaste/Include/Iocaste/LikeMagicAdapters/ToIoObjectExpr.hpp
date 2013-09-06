@@ -20,12 +20,13 @@
 namespace Iocaste { namespace LMAdapters {
 
 using LM::ExprPtr;
-using LM::Expression;
+using LM::Expr;
 using LM::TypeIndex;
 
 class AbstractToIoObjectExpr : public Expr
 {
 public:
+    AbstractToIoObjectExpr(ValuePtr ptr, TypeIndex type) : Expr(ptr, type) {}
 
     virtual bool is_terminal() const { return true; }
     virtual bool is_lazy() const { return false; }
@@ -40,29 +41,21 @@ template <typename T, typename F>
 class ToIoObjectExpr : public AbstractToIoObjectExpr
 {
 private:
-    boost::intrusive_ptr<Expression<T>> from_expr;
+    ExprPtr from_expr;
 
 private:
-    ToIoObjectExpr(boost::intrusive_ptr<Expression<T>> from_expr_) : from_expr(from_expr_) {}
+    ToIoObjectExpr(ExprPtr from_expr_) : AbstractToIoObjectExpr(nullptr, ToIoTypeInfo::create_index()), from_expr(from_expr_) {}
 
 public:
 
     static ExprPtr create(ExprPtr from_expr)
     {
-        Expr* from_ptr = from_expr.get();
-        Expression<T>* from_exact = static_cast<Expression<T>*>(from_ptr);
-        ToIoObjectExpr* result = new ToIoObjectExpr<T, F>(from_exact);
-        return result;
-    }
-
-    virtual LM::TypeIndex get_type() const
-    {
-        return ToIoTypeInfo::create_index();
+        return new ToIoObjectExpr<T, F>(from_expr);
     }
 
     virtual IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m)
     {
-        return F::eval_in_context(self, locals, m, from_expr->eval());
+        return F::eval_in_context(self, locals, m, EvalAs<T>::value(from_expr));
     }
 
     virtual std::string description() const
@@ -73,6 +66,5 @@ public:
     virtual void mark() const { from_expr->mark(); }
 
 };
-
 
 }}

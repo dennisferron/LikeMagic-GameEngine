@@ -17,15 +17,28 @@
 
 #define TypedArgList(r, data, i, elem) BOOST_PP_COMMA_IF(i) elem data##i
 
-// Example:  ScriptFunc(0, MyRetType, FuncName, const, 3, ClassX, ClassY, ClassZ)
+// Example:  ScriptFunc_R(MyRetType, FuncName, const, 3, ClassX, ClassY, ClassZ)
 // Expands to: IoBlock On##FuncName; MyRetType FuncName(ClassX arg0, ClassY arg1, ClassZ arg2) const { ... }
 //
 // TODO:  Find way to implement calling of default implementation or "BASE" without adding
 // undue burden on implementors who do not need/use base classes with default implementations.
 //
-#define ScriptFunc(IsVoid, RType, FuncName, CONST, ArgTypes) \
+#define ScriptFunc_R(RType, FuncName, CONST, ArgTypes) \
 Iocaste::LMAdapters::IoBlock On##FuncName; \
 virtual RType FuncName( \
+    BOOST_PP_SEQ_FOR_EACH_I(TypedArgList, arg, ArgTypes) \
+) CONST \
+{ \
+    if (On##FuncName.empty()) \
+        /* return Base::FuncName(BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(ArgTypes), arg));  */ \
+        throw std::logic_error("No script block registered for " #FuncName); \
+    else \
+        return On##FuncName.eval<RType>(BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(ArgTypes), arg)); \
+}
+
+#define ScriptFunc_void(FuncName, CONST, ArgTypes) \
+Iocaste::LMAdapters::IoBlock On##FuncName; \
+virtual void FuncName( \
     BOOST_PP_SEQ_FOR_EACH_I(TypedArgList, arg, ArgTypes) \
 ) CONST \
 { \
@@ -33,5 +46,5 @@ virtual RType FuncName( \
         /* BOOST_PP_IIF(IsVoid, , return) Base::FuncName(BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(ArgTypes), arg));  */ \
         throw std::logic_error("No script block registered for " #FuncName); \
     else \
-        BOOST_PP_IIF(IsVoid, , return) On##FuncName.eval<RType>(BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(ArgTypes), arg)); \
+        On##FuncName(BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(ArgTypes), arg)); \
 }

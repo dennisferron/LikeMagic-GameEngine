@@ -42,7 +42,6 @@
 #define LM_ADD_VECTORS(vm_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ADD_VECTORS_IMPL, vm_name, SEQ)
 
 #define LM_CLASS(namespace, class_name) auto& class_name##_LM = LM::register_class<class_name>(#class_name, namespace);
-#define LM_CLASS_NO_COPY(namespace, class_name) auto& class_name##_LM = LM::register_class<class_name, false>(#class_name, namespace);
 #define LM_ENUM(namespace, class_name) auto& class_name##_LM = LM::register_enum<class_name>(#class_name, namespace);
 
 #define LM_FUNC_IMPL(r, data, elem) LM::bind_method<data>(data##_LM, BOOST_PP_STRINGIZE(elem), &data::elem);

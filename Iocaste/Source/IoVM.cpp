@@ -224,12 +224,12 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     auto& global_ns = type_system->global_namespace();
 
     // Register this vm
-    LM_CLASS_NO_COPY(global_ns, IoVM)
+    LM_CLASS(global_ns, IoVM)
 
     LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(expr_to_io_obj)(setShowAllMessages))
     LM_FIELD(IoVM, (onRegisterMethod)(onRegisterClass)(onRegisterBase)(onAddProto))
 
-    LM_CLASS_NO_COPY(global_ns, TypeSystem)
+    LM_CLASS(global_ns, TypeSystem)
 
     LM_CLASS(global_ns, IoObject)
 
@@ -237,21 +237,17 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), TypId<void*>::get(), new LM::StaticCastConv<IoObject*, void*>);
 
     // Make general Io objects convertible with IoObject*.
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), TypId<IoObject*>::get(), new LM::NoChangeConv<>);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), TypId<IoObject*>::get(), new LM::NoChangeConv);
     type_system->add_converter_simple(TypId<IoObject*>::get(), ToIoTypeInfo::create_index("Object"), new PtrToIoObjectConv);
-    type_system->add_converter_simple(ToIoTypeInfo::create_index("Object"), ToIoTypeInfo::create_index(), new LM::NoChangeConv<>);
+    type_system->add_converter_simple(ToIoTypeInfo::create_index("Object"), ToIoTypeInfo::create_index(), new LM::NoChangeConv);
 
     // Allow LikeMagic proxy objects to be converted to the C/C++ type IoObject*
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("LikeMagic"), TypId<IoObject*>::get(), new LM::NoChangeConv<>);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("LikeMagic"), TypId<IoObject*>::get(), new LM::NoChangeConv);
 
     LM_CLASS(global_ns, IoBlock)
 
     // Allow conversion of Io blocks to IoObject*
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), TypId<IoObject*>::get(), new LM::NoChangeConv<>);
-
-    // Allow reference/value conversions for IoBlock.
-    add_conv<Iocaste::LMAdapters::IoBlock&, Iocaste::LMAdapters::IoBlock>();
-    add_conv<Iocaste::LMAdapters::IoBlock&, Iocaste::LMAdapters::IoBlock const&>();
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), TypId<IoObject*>::get(), new LM::NoChangeConv);
 
     // You have to have registered the types before you can add protos for them.
 
@@ -533,7 +529,7 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPt
     bool expr_has_conv = is_terminal && !disable_to_script
         && type_system->has_conv(from_expr->get_type(), to_io_type);
 
-    if (!disable_to_script && from_expr->get_value_ptr() == NULL)
+    if (!disable_to_script && from_expr->get_value_ptr().as_const == NULL)
     {
         return IOSTATE->ioNil;
     }

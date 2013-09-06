@@ -6,12 +6,11 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-#include "LikeMagic/Exprs/Term.hpp"
+#include "LikeMagic/Exprs/Reference.hpp"
 
 #include <iostream>
 
 namespace LM {
-
 
 Reference::Reference(ValuePtr value_, TypeIndex type_, ExprPtr storage_location_)
     : Expr(value_, type_), storage_location(storage_location_)

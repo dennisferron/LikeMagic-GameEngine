@@ -6,13 +6,9 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-#pragma once
-
 #include "LikeMagic/Utility/BottomPtrTypeInfo.hpp"
 
 using namespace LM;
-
-BottomPtrTypeInfo::BottomPtrTypeInfo(std::string namespace_name_) : namespace_name(namespace_name_) {}
 
 std::string BottomPtrTypeInfo::get_system() const
 {
@@ -44,7 +40,7 @@ TypeIndex BottomPtrTypeInfo::create_index()
     );
 }
 
-virtual std::string BottomPtrTypeInfo::description() const
+std::string BottomPtrTypeInfo::description() const
 {
     return "NULL";
 }
