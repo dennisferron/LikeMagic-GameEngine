@@ -13,17 +13,6 @@
 #include "LikeMagic/Exprs/Expr.hpp"
 
 namespace LM {
-    class AbstractCppObjProxy;
-}
-
-namespace LM {
-    class TypeSystem;
-}
-
-namespace LM {
-
-using ExprPtr = LM::ExprPtr;
-using ArgList = LM::ArgList;
 
 class CallTarget
 {
