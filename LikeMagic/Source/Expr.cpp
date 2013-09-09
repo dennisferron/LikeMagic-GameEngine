@@ -53,7 +53,7 @@ ValuePtr Expr::get_value_ptr() const
 
 void Expr::mark() const
 {
-    if (has_conv<IMarkable const*>(this))
+    if (EvalAs<IMarkable const*>::has_conv(this))
     {
         EvalAs<IMarkable const*>::value(const_cast<Expr*>(this))->mark();
     }

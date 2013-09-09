@@ -32,6 +32,7 @@ using namespace std;
 using namespace LM;
 
 namespace LM {
+    TypeSystem* create_type_system() { return new TypeSystem(); }
     TypeSystem* type_system = NULL;
 }
 
@@ -88,6 +89,7 @@ TypeSystem::TypeSystem()
 
     TypeIndex ns_type = NamespaceTypeInfo::create_index("namespace");
     impl->global_namespace = new TypeMirror("namespace", 0, ns_type);
+    impl->classes[ns_type] = impl->global_namespace;
 
     // Allow conversions from nil to any pointer.
     static TypeIndex nil_expr_type = BottomPtrTypeInfo::create_index();
@@ -168,8 +170,7 @@ TypeMirror* TypeSystem::get_class(TypeIndex type) const
     }
     else
     {
-        //return unknown_class;
-        throw std::logic_error("No class registered for type " + type.description());
+        return nullptr;
     }
 }
 

@@ -22,11 +22,33 @@
 
 #include <sstream>
 
-#define add_num_conv(type_sys, type) \
-add_conv<type*, double*, NumberConv>();
+#include "LikeMagic/StdBindings/StdBindings.hpp"
+#include "LikeMagic/BindingMacros.hpp"
+#include "boost/preprocessor/seq/for_each.hpp"
+#include "LikeMagic/ScriptUtil.hpp"
 
-#define add_all_num_conv_impl(r, data, elem) add_num_conv(data, elem);
-#define add_all_num_conv(SEQ) BOOST_PP_SEQ_FOR_EACH(add_all_num_conv_impl, type_sys, SEQ)
+#include <sstream>
+
+#define add_num_conv(type) \
+add_conv<type, type const&, NumberConv>(); \
+add_conv<type&, type, NumberConv>(); \
+add_conv<type const&, type, NumberConv>(); \
+/* \
+add_conv<double, type, NumberConv>(); \
+add_conv<double, type const&, NumberConv>(); \
+add_conv<double&, type, NumberConv>(); \
+add_conv<double&, type const&, NumberConv>(); \
+add_conv<double const&, type, NumberConv>(); \
+add_conv<double const&, type const&, NumberConv>(); */ \
+add_conv<type, double, NumberConv>(); \
+add_conv<type, double const&, NumberConv>(); \
+add_conv<type&, double, NumberConv>(); \
+add_conv<type&, double const&, NumberConv>(); \
+add_conv<type const&, double, NumberConv>(); \
+add_conv<type const&, double const&, NumberConv>();
+
+#define add_all_num_conv_impl(r, data, elem) add_num_conv(elem);
+#define add_all_num_conv(SEQ) BOOST_PP_SEQ_FOR_EACH(add_all_num_conv_impl,, SEQ)
 
 using namespace LM;
 using namespace std;

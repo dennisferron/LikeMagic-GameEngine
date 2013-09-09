@@ -44,3 +44,28 @@ std::string BottomPtrTypeInfo::description() const
 {
     return "NULL";
 }
+
+TypeInfoPtr BottomPtrTypeInfo::as_const() const
+{
+    return this;
+}
+
+TypeInfoPtr BottomPtrTypeInfo::as_nonconst() const
+{
+    return this;
+}
+
+TypeInfoPtr BottomPtrTypeInfo::as_ptr() const
+{
+    return this;
+}
+
+TypeInfoPtr BottomPtrTypeInfo::as_value() const
+{
+    return this;
+}
+
+TypeInfoPtr BottomPtrTypeInfo::class_type() const
+{
+    return this;
+}

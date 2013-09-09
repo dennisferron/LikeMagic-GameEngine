@@ -87,9 +87,7 @@
 			<Add directory="../../Iocaste/Include/Iocaste/CShims" />
 		</Compiler>
 		<Unit filename="Include/LikeMagic/StdBindings/StdBindings.hpp" />
-		<Unit filename="Include/LikeMagic/StdBindings/TypeSystemInstance.hpp" />
 		<Unit filename="Source/StdBindings.cpp" />
-		<Unit filename="Source/TypeSystemInstance.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

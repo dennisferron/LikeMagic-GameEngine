@@ -67,26 +67,6 @@ bool AbstractTypeInfo::operator ==(const AbstractTypeInfo& that) const
 
 bool AbstractTypeInfo::get_is_const() const { return false; }
 
-TypeInfoPtr AbstractTypeInfo::as_const() const
-{
-    throw std::logic_error("Type variation as_const undefined on " + description());
-}
-
-TypeInfoPtr AbstractTypeInfo::as_nonconst() const
-{
-    throw std::logic_error("Type variation as_nonconst undefined on " + description());
-}
-
-TypeInfoPtr AbstractTypeInfo::as_ptr() const
-{
-    throw std::logic_error("Type variation as_ptr undefined on " + description());
-}
-
-TypeInfoPtr AbstractTypeInfo::as_value() const
-{
-    throw std::logic_error("Type variation as_value undefined on " + description());
-}
-
 TypeInfoPtr AbstractTypeInfo::class_type() const
 {
     throw std::logic_error("Type variation class_type undefined on " + description());

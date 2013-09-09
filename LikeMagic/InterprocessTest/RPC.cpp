@@ -254,7 +254,7 @@ CallReturn RPC::call(int object_handle, int method, int arg)
     TypeInfoList arg_types;
     arg_types.push_back(type_index);
 
-    cout << "type_system has_conv<int>(term): " << type_system->has_conv<int>(term) << endl;
+    cout << "type_system has_conv<int>(term): " << EvalAs<int>::has_conv(term) << endl;
     cout << "type_system has_conv(type_index, type_index): " << type_system->has_conv(type_index, type_index) << endl;
     auto term2 = type_system->try_conv<int>(term);
 

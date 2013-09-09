@@ -53,11 +53,11 @@ public:
     bool operator <(const AbstractTypeInfo& that) const;
     bool operator ==(const AbstractTypeInfo& that) const;
     virtual bool get_is_const() const;
-    virtual TypeInfoPtr as_const() const;
-    virtual TypeInfoPtr as_nonconst() const;
-    virtual TypeInfoPtr as_ptr() const;
-    virtual TypeInfoPtr as_value() const;
-    virtual TypeInfoPtr class_type() const;
+    virtual TypeInfoPtr as_const() const = 0;
+    virtual TypeInfoPtr as_nonconst() const = 0;
+    virtual TypeInfoPtr as_ptr() const = 0;
+    virtual TypeInfoPtr as_value() const = 0;
+    virtual TypeInfoPtr class_type() const = 0;
     virtual std::string description() const = 0;
     std::size_t hash_value() const;
     TypeIndex get_index() const;

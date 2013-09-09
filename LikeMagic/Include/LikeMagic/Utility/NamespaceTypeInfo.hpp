@@ -27,6 +27,11 @@ public:
     static TypeInfoPtr create(std::string namespace_name);
     static TypeIndex create_index(std::string namespace_name);
     virtual std::string description() const;
+    virtual TypeInfoPtr as_const() const;
+    virtual TypeInfoPtr as_nonconst() const;
+    virtual TypeInfoPtr as_ptr() const;
+    virtual TypeInfoPtr as_value() const;
+    virtual TypeInfoPtr class_type() const;
 };
 
 
