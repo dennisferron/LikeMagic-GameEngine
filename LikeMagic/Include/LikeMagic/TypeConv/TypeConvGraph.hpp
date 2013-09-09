@@ -27,9 +27,6 @@
 namespace LM {
 
 using namespace boost::graph;
-using LM::TypeIndex;
-using LM::TypeIndex;
-using LM::TypeInfoList;
 
 struct FindType;
 

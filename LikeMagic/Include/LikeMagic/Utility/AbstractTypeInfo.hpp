@@ -50,105 +50,21 @@ protected:
 
 public:
 
-    bool operator <(const AbstractTypeInfo& that) const
-    {
-        if (this->get_system() < that.get_system())
-            return true;
-        else if (that.get_system() < this->get_system())
-            return false;
-        else
-            return this->less(that);
-    }
-
-    bool operator ==(const AbstractTypeInfo& that) const
-    {
-        if (this->get_system() != that.get_system())
-            return false;
-        else
-            return this->equals(that);
-    }
-
-
-    virtual bool get_ptr_is_const() const { return false; }
-
-    virtual bool get_obj_is_const() const { return false; }
-
-    virtual bool get_is_ref() const { return false; }
-
-    virtual bool get_is_ptr() const { return false; }
-
-    virtual TypeInfoPtr bare_type() const
-    {
-        return this;
-    }
-
-    virtual TypeInfoPtr as_const_obj_type() const
-    {
-        throw std::logic_error("Type variation as_const_obj_type undefined on " + description());
-    }
-
-    virtual TypeInfoPtr as_nonconst_obj_type() const
-    {
-        throw std::logic_error("Type variation as_nonconst_obj_type undefined on " + description());
-    }
-
-    virtual TypeInfoPtr as_const_ptr_type() const
-    {
-        throw std::logic_error("Type variation as_const_ptr_type undefined on " + description());
-    }
-
-    virtual TypeInfoPtr as_nonconst_ptr_type() const
-    {
-        throw std::logic_error("Type variation as_nonconst_ptr_type undefined on " + description());
-    }
-
-    virtual TypeInfoPtr remove_reference() const
-    {
-        throw std::logic_error("Type variation remove_reference undefined on " + description());
-    }
-
-    virtual TypeInfoPtr as_ptr() const
-    {
-        throw std::logic_error("Type variation as_ptr_type undefined on " + description());
-    }
-
-    virtual TypeInfoPtr as_ref() const
-    {
-        throw std::logic_error("Type variation as_ref_type undefined on " + description());
-    }
-
-    virtual TypeInfoPtr remove_all_const() const
-    {
-        throw std::logic_error("Type variation remove_all_const undefined on " + description());
-    }
-
+    bool operator <(const AbstractTypeInfo& that) const;
+    bool operator ==(const AbstractTypeInfo& that) const;
+    virtual bool get_is_const() const;
+    virtual TypeInfoPtr as_const() const;
+    virtual TypeInfoPtr as_nonconst() const;
+    virtual TypeInfoPtr as_ptr() const;
+    virtual TypeInfoPtr as_value() const;
+    virtual TypeInfoPtr class_type() const;
     virtual std::string description() const = 0;
-
-    std::size_t hash_value() const
-    {
-
-        if (!has_cached_hash)
-        {
-            cached_hash = 0;
-            boost::hash_combine(cached_hash, get_system());
-            boost::hash_combine(cached_hash, calc_hash());
-            has_cached_hash = true;
-        }
-        return cached_hash;
-    }
-
+    std::size_t hash_value() const;
     TypeIndex get_index() const;
 };
 
-inline std::size_t hash_value(AbstractTypeInfo const& info)
-{
-    return info.hash_value();
-}
-
-inline std::size_t hash_value(TypeInfoPtr info_p)
-{
-    return info_p->hash_value();
-}
+std::size_t hash_value(AbstractTypeInfo const& info);
+std::size_t hash_value(TypeInfoPtr info_p);
 
 typedef AbstractTypeInfo::TypeInfoKey TypeInfoKey;
 

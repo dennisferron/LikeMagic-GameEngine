@@ -48,7 +48,7 @@ public:
 
     virtual TypeInfoList const& get_arg_types() const
     {
-        static TypeInfoList arg_types = make_arg_list(TypePack<Args...>());
+        static TypeInfoList arg_types = MakeArgList<Args...>::value();
         return arg_types;
     }
 };
@@ -85,7 +85,7 @@ public:
 
     virtual TypeInfoList const& get_arg_types() const
     {
-        static TypeInfoList arg_types = make_arg_list(TypePack<Args...>());
+        static TypeInfoList arg_types = MakeArgList<Args...>::value();
         return arg_types;
     }
 };

@@ -14,6 +14,7 @@
 
 namespace LM {
 
+/*
 template <typename FirstArg, typename... Args>
 TypeInfoList make_arg_list(TypePack<FirstArg, Args...> args)
 {
@@ -24,9 +25,38 @@ TypeInfoList make_arg_list(TypePack<FirstArg, Args...> args)
     return list;
 }
 
-inline TypeInfoList make_arg_list(TypePack<> args)
+template <typename FirstArg>
+TypeInfoList make_arg_list(TypePack<> args)
 {
     return TypeInfoList();
 }
+*/
+
+template <typename... Args>
+struct MakeArgList;
+
+template <>
+struct MakeArgList<>
+{
+    MakeArgList() = delete;
+
+    static TypeInfoList value()
+    {
+        return TypeInfoList();
+    }
+};
+
+template <typename FirstArg, typename... Args>
+struct MakeArgList<FirstArg, Args...>
+{
+    MakeArgList() = delete;
+
+    static TypeInfoList value()
+    {
+        TypeInfoList result = MakeArgList<Args...>::value();
+        result.insert(result.begin(), TypId<FirstArg>::get());
+        return result;
+    }
+};
 
 }

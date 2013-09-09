@@ -44,7 +44,7 @@ TypeMirror::TypeMirror(std::string name, size_t instance_size, TypeIndex class_t
     impl->name = name;
     impl->class_type = class_type;
     impl->ptr_type = class_type.get_info()->as_ptr()->get_index();
-    impl->const_ptr_type = class_type.get_info()->as_const_obj_type()->as_ptr()->get_index();
+    impl->const_ptr_type = class_type.get_info()->as_const()->as_ptr()->get_index();
     impl->instance_size = instance_size;
 
     auto ptr_caster = new BottomPtrTarget();

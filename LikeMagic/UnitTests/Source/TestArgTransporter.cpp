@@ -10,7 +10,6 @@ using namespace std;
 
 using namespace LM;
 using namespace LM;
-using namespace LM::Interprocess;
 
 SUITE(TestArgTransporter)
 {
@@ -52,7 +51,7 @@ SUITE(TestArgTransporter)
         SharedArgTransporter transporter;
         std::pair<ExprPtr, void*> result =
             transporter.read_value(arg_type, buffer);
-        int result_value = try_conv<int>(result.first)->eval();
+        int result_value = EvalAs<int>::value(result.first);
         CHECK_EQUAL(1234, result_value);  // check arg written
         CHECK_EQUAL(99, buffer[4]);        // check sentry
         CHECK_EQUAL((void*)&(buffer[4]), result.second);
@@ -67,8 +66,8 @@ SUITE(TestArgTransporter)
         TypeInfoList type_list = make_type_list<int, int>();
         SharedArgTransporter transporter;
         ArgList arg_list = transporter.read_args(type_list, buffer);
-        int value1 = try_conv<int>(arg_list[0])->eval();
-        int value2 = try_conv<int>(arg_list[1])->eval();
+        int value1 = EvalAs<int>::value(arg_list[0]);
+        int value2 = EvalAs<int>::value(arg_list[1]);
         CHECK_EQUAL(1234, value1);  // check arg written
         CHECK_EQUAL(5678, value2);  // check arg written
         CHECK_EQUAL(99, buffer[8]);        // check sentry

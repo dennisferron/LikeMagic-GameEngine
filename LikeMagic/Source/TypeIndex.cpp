@@ -21,5 +21,5 @@ TypeIndex TypeIndex::as_ptr_type() const
 
 TypeIndex TypeIndex::as_const_ptr_type() const
 {
-    return get_info()->as_const_obj_type()->as_ptr()->get_index();
+    return get_info()->as_const()->as_ptr()->get_index();
 }

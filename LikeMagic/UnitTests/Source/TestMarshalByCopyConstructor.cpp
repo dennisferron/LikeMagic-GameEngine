@@ -9,7 +9,6 @@ using namespace std;
 
 using namespace LM;
 using namespace LM;
-using namespace LM::Interprocess;
 
 /*
 SUITE(TestMarshalByCopyConstructor)

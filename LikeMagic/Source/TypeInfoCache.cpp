@@ -27,14 +27,14 @@ void TypeInfoCache::set_instance(TypeInfoCache* instance_)
 TypeInfoCache* TypeInfoCache::get_instance()
 {
     if (!instance)
-        throw std::logic_error("Error:  TypeInfoCache instance has not been created yet!  Use the user macro LM_SET_TYPE_INFO to set the type info object once in each DLL.");
+        throw std::logic_error("Error:  TypeInfoCache instance has not been created yet!");
 
     return instance;
 }
 
 TypeIndex TypeInfoCache::get_index(TypeInfoPtr candidate)
 {
-    return get_index(candidate, candidate->bare_type());
+    return get_index(candidate, candidate->class_type());
 }
 
 TypeIndex TypeInfoCache::get_index(TypeInfoPtr candidate, TypeInfoPtr class_type)

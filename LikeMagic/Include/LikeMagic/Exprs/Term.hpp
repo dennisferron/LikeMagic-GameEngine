@@ -10,6 +10,7 @@
 #pragma once
 
 #include "LikeMagic/Exprs/Expr.hpp"
+#include "LikeMagic/Utility/BetterTypeInfo.hpp"
 
 namespace LM {
 

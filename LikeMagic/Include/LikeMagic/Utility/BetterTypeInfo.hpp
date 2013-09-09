@@ -29,12 +29,10 @@ private:
     template <typename T> friend class TypId;
 
     std::type_info const* info;
-    bool obj_is_const;
-    bool ptr_is_const;
-    bool is_ref;
+    bool is_const;
     bool is_ptr;
 
-    BetterTypeInfo(std::type_info const* info_, bool obj_is_const_, bool ptr_is_const_, bool is_ref_, bool is_ptr_);
+    BetterTypeInfo(std::type_info const* info_, bool is_const_, bool is_ptr_);
     BetterTypeInfo();
     BetterTypeInfo(BetterTypeInfo const& that);
 
@@ -47,45 +45,84 @@ protected:
 
 public:
 
-    bool get_obj_is_const() const;
-    bool get_ptr_is_const() const;
-    bool get_is_ptr() const;
-    bool get_is_ref() const;
-
-    TypeInfoPtr bare_type() const;
-    TypeInfoPtr as_ref() const;
-    TypeInfoPtr as_ptr() const;
-    TypeInfoPtr as_const_obj_type() const;
-    TypeInfoPtr as_nonconst_obj_type() const;
-    TypeInfoPtr as_const_ptr_type() const;
-    TypeInfoPtr as_nonconst_ptr_type() const;
-    TypeInfoPtr remove_reference() const;
-    TypeInfoPtr remove_all_const() const;
-
+    virtual bool get_is_const() const;
+    virtual TypeInfoPtr as_const() const;
+    virtual TypeInfoPtr as_nonconst() const;
+    virtual TypeInfoPtr as_ptr() const;
+    virtual TypeInfoPtr as_value() const;
+    virtual TypeInfoPtr class_type() const;
     virtual std::string description() const;
 };
 
+// Value types - not const, not ptr
 template <typename T>
-class TypId
+struct TypId
 {
-private:
-
-    TypId() = delete;
-    TypId(TypId const&) = delete;
-    ~TypId() = delete;
-
-public:
+    TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
     static TypeIndex get()
     {
-        typedef StripModifiers<T> stripped;
         return TypeInfoCache::get_instance()->get_index(
-                new BetterTypeInfo(
-                    &typeid(typename stripped::type),
-                    stripped::obj_is_const,
-                    stripped::ptr_is_const,
-                    stripped::is_ref,
-                    stripped::is_ptr
-                ));
+            new BetterTypeInfo(&typeid(T), false, false));
+    }
+};
+
+// Const value - is const, not ptr
+template <typename T>
+struct TypId<T const>
+{
+    TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
+    static TypeIndex get()
+    {
+        return TypeInfoCache::get_instance()->get_index(
+            new BetterTypeInfo(&typeid(T), true, false));
+    }
+};
+
+// Nonconst ptr - not const, is ptr
+template <typename T>
+struct TypId<T*>
+{
+    TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
+    static TypeIndex get()
+    {
+        return TypeInfoCache::get_instance()->get_index(
+            new BetterTypeInfo(&typeid(T), false, true));
+    }
+};
+
+// ptr to const - is const, is ptr
+template <typename T>
+struct TypId<T const*>
+{
+    TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
+    static TypeIndex get()
+    {
+        return TypeInfoCache::get_instance()->get_index(
+                new BetterTypeInfo(&typeid(T), true, true));
+    }
+};
+
+// nonconst ref marshals as nonconst ptr
+template <typename T>
+struct TypId<T&>
+{
+    TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
+    static TypeIndex get()
+    {
+        return TypeInfoCache::get_instance()->get_index(
+                new BetterTypeInfo(&typeid(T), false, true));
+    }
+};
+
+// const ref marshals as const ptr
+template <typename T>
+struct TypId<T const&>
+{
+    TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
+    static TypeIndex get()
+    {
+        return TypeInfoCache::get_instance()->get_index(
+                new BetterTypeInfo(&typeid(T), true, true));
     }
 };
 

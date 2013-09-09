@@ -40,22 +40,22 @@ struct TypeSystem::Impl
     boost::unordered_map<TypeIndex, TypeMirror*> classes;
     TypeMirror* unknown_class;
     TypeConvGraph conv_graph;
-    TypeInfoCache* dll_shared_typeinfo;
+    TypeInfoCache type_info_cache;
     TypeMirror* global_namespace;
 
     void add_ptr_convs(TypeIndex index)
     {
-        TypeInfoPtr bare = index.get_info()->bare_type();
+        TypeInfoPtr bare = index.get_info()->class_type();
         add_conv_track<void>(bare);
-        add_conv_track<void const>(bare->as_const_obj_type());
+        add_conv_track<void const>(bare->as_const());
 
         // allow unsafe_ptr_cast to convert to any type and nil (NULL) to any pointer type
         add_nochange_conv(BottomPtrTypeInfo::create(), bare->as_ptr());
-        add_nochange_conv(BottomPtrTypeInfo::create(), bare->as_ptr()->as_const_obj_type());
+        add_nochange_conv(BottomPtrTypeInfo::create(), bare->as_ptr()->as_const());
 
         // allow any ptr to be converted to void* or void const*
         add_nochange_conv(bare->as_ptr(), TypId<void*>::get().get_info());
-        add_nochange_conv(bare->as_ptr()->as_const_obj_type(), TypId<void const*>::get().get_info());
+        add_nochange_conv(bare->as_ptr()->as_const(), TypId<void const*>::get().get_info());
     }
 
     void add_nochange_conv(TypeInfoPtr from, TypeInfoPtr to)
@@ -73,21 +73,18 @@ struct TypeSystem::Impl
     template <typename T>
     void add_conv_track(TypeInfoPtr type)
     {
-        auto as_ptr_ref = type->as_ptr()->as_ref();
-        auto as_ptr_const_ref = type->as_ptr()->as_const_ptr_type()->as_ref();
-        auto as_ptr_const_val = type->as_ptr()->as_const_ptr_type();
-        auto as_ptr_val = type->as_ptr();
+        auto as_ptr = type->as_ptr();
+        auto as_ptr_const = as_ptr->as_const();
 
-        // Making a reference const does not change the implementation.
-        add_nochange_conv(as_ptr_ref, as_ptr_const_ref);
+        // Making a ptr const does not change the implementation.
+        add_nochange_conv(as_ptr, as_ptr_const);
     }
 };
 
 TypeSystem::TypeSystem()
     : impl(new TypeSystem::Impl)
 {
-    impl->dll_shared_typeinfo = new TypeInfoCache;
-    TypeInfoCache::set_instance(impl->dll_shared_typeinfo);
+    TypeInfoCache::set_instance(&(impl->type_info_cache));
 
     TypeIndex ns_type = NamespaceTypeInfo::create_index("namespace");
     impl->global_namespace = new TypeMirror("namespace", 0, ns_type);
@@ -116,7 +113,7 @@ void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& n
     // Add conversion to delegate type so that delegate call targets will work.
     impl->conv_graph.add_conv(index.get_info()->as_ptr()->get_index(),
         TypId<LM::Delegate*>::get(), new NoChangeConv());
-    impl->conv_graph.add_conv(index.get_info()->as_const_obj_type()->as_ptr()->get_index(),
+    impl->conv_graph.add_conv(index.get_info()->as_const()->as_ptr()->get_index(),
         TypId<LM::Delegate const*>::get(), new NoChangeConv());
 
     // TODO: create a remove const call target
@@ -193,12 +190,12 @@ void TypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t
     auto to_info = to.get_info();
 
     // Allow converting the object directly to its const form
-    impl->conv_graph.add_conv(from, from_info->as_const_obj_type()->get_index(), new NoChangeConv);
-    impl->conv_graph.add_conv(to, to_info->as_const_obj_type()->get_index(), new NoChangeConv);
+    impl->conv_graph.add_conv(from, from_info->as_const()->get_index(), new NoChangeConv);
+    impl->conv_graph.add_conv(to, to_info->as_const()->get_index(), new NoChangeConv);
 
     // Reuse this converter for just the "to" obj const
-    impl->conv_graph.add_conv(from, to.get_info()->as_const_obj_type()->get_index(), conv);
+    impl->conv_graph.add_conv(from, to.get_info()->as_const()->get_index(), conv);
 
     // Reuse this converter for both from and to as const
-    impl->conv_graph.add_conv(from.get_info()->as_const_obj_type()->get_index(), to.get_info()->as_const_obj_type()->get_index(), conv);
+    impl->conv_graph.add_conv(from.get_info()->as_const()->get_index(), to.get_info()->as_const()->get_index(), conv);
 }
