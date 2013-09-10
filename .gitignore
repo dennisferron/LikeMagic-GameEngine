@@ -96,3 +96,4 @@ Common/UnitTest++/bin/
 ./symbols*.txt
 ./analysis*.txt
 
+LikeMagic/UnitTests/bin
