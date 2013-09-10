@@ -82,6 +82,12 @@ public:
     {
         return "To Io Type " + type_name;
     }
+
+    virtual TypeInfoPtr as_const() const { return this; }
+    virtual TypeInfoPtr as_nonconst() const { return this; }
+    virtual TypeInfoPtr as_ptr() const { return this; }
+    virtual TypeInfoPtr as_value() const { return this; }
+    virtual TypeInfoPtr class_type() const { return this; }
 };
 
 
