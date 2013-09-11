@@ -38,9 +38,6 @@ struct TypeMirror::Impl
 TypeMirror::TypeMirror(std::string name, size_t instance_size, TypeIndex class_type)
     : impl(new TypeMirror::Impl)
 {
-    if (name == "")
-        throw std::logic_error("Tried to register class with no name!");
-
     impl->name = name;
     impl->class_type = class_type;
     impl->ptr_type = class_type.get_info()->as_ptr()->get_index();

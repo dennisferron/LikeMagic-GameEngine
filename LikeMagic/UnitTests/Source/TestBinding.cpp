@@ -163,19 +163,61 @@ SUITE(TestBinding)
         std::vector<ExprPtr> args;
 
         auto& test_ns = register_namespace("TestNs", global_ns);
-        TypeMirror* type_mirror1 = &test_ns; //type_system->get_class(test_ns.get_class_type());
+        TypeMirror const* type_mirror1 = &test_ns;
         ASSERT_NOT_NULL(type_mirror1);
         auto* method1 = type_mirror1->get_method("DiscernNsFuncInt", args.size());
         ASSERT_NOT_NULL(method1);
 
         auto& nested_ns = register_namespace("NestedNs", test_ns);
-        TypeMirror* type_mirror2 = &nested_ns; //type_system->get_class(test_ns.get_class_type());
+        TypeMirror const* type_mirror2 = &nested_ns; //type_system->get_class(test_ns.get_class_type());
         ASSERT_NOT_NULL(type_mirror2);
         auto* method2 = type_mirror2->get_method("DiscernNsFuncInt", args.size());
         ASSERT_NOT_NULL(method2);
 
         auto& nested_test_ns = register_namespace("TestNs", nested_ns);
-        TypeMirror* type_mirror3 = &nested_test_ns; //type_system->get_class(test_ns.get_class_type());
+        TypeMirror const* type_mirror3 = &nested_test_ns; //type_system->get_class(test_ns.get_class_type());
+        ASSERT_NOT_NULL(type_mirror3);
+        auto* method3 = type_mirror3->get_method("DiscernNsFuncInt", args.size());
+        ASSERT_NOT_NULL(method3);
+
+        CHECK(type_mirror1 != type_mirror2);
+        CHECK(method1 != method2);
+        CHECK(type_mirror1 != type_mirror3);
+        CHECK(method1 != method3);
+        CHECK(type_mirror2 != type_mirror3);
+        CHECK(method2 != method3);
+
+        ExprPtr result1 = method1->call(nullptr, args);
+        CHECK(result1);
+        CHECK(EvalAs<int>::has_conv(result1.get()));
+        CHECK_EQUAL(11, EvalAs<int>::value(result1));
+
+        ExprPtr result2 = method2->call(nullptr, args);
+        CHECK(result2);
+        CHECK(EvalAs<int>::has_conv(result2.get()));
+        CHECK_EQUAL(22, EvalAs<int>::value(result2));
+
+        ExprPtr result3 = method3->call(nullptr, args);
+        CHECK(result3);
+        CHECK(EvalAs<int>::has_conv(result3.get()));
+        CHECK_EQUAL(33, EvalAs<int>::value(result3));
+    }
+
+    TEST(DiscernNsFuncIntUsingGetNamespace)
+    {
+        std::vector<ExprPtr> args;
+
+        TypeMirror const* type_mirror1 = get_namespace("::TestNs");
+        ASSERT_NOT_NULL(type_mirror1);
+        auto* method1 = type_mirror1->get_method("DiscernNsFuncInt", args.size());
+        ASSERT_NOT_NULL(method1);
+
+        TypeMirror const* type_mirror2 = get_namespace("::TestNs::NestedNs"); //type_system->get_class(test_ns.get_class_type());
+        ASSERT_NOT_NULL(type_mirror2);
+        auto* method2 = type_mirror2->get_method("DiscernNsFuncInt", args.size());
+        ASSERT_NOT_NULL(method2);
+
+        TypeMirror const* type_mirror3 = get_namespace("::TestNs::NestedNs::TestNs"); //type_system->get_class(test_ns.get_class_type());
         ASSERT_NOT_NULL(type_mirror3);
         auto* method3 = type_mirror3->get_method("DiscernNsFuncInt", args.size());
         ASSERT_NOT_NULL(method3);

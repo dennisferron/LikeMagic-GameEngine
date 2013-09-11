@@ -87,8 +87,8 @@ TypeSystem::TypeSystem()
 {
     TypeInfoCache::set_instance(&(impl->type_info_cache));
 
-    TypeIndex ns_type = NamespaceTypeInfo::create_index("namespace");
-    impl->global_namespace = new TypeMirror("namespace", 0, ns_type);
+    TypeIndex ns_type = NamespaceTypeInfo::create_index("");
+    impl->global_namespace = new TypeMirror("", 0, ns_type);
     impl->classes[ns_type] = impl->global_namespace;
 
     // Allow conversions from nil to any pointer.
@@ -199,4 +199,13 @@ void TypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t
 
     // Reuse this converter for both from and to as const
     impl->conv_graph.add_conv(from.get_info()->as_const()->get_index(), to.get_info()->as_const()->get_index(), conv);
+}
+
+TypeMirror const* LM::get_namespace(std::string full_name)
+{
+    if (full_name.substr(0, 2) != "::")
+        throw std::logic_error(std::string("get_namespace full_name must begin with :: in namespace ") + full_name);
+
+    return type_system->get_class(
+        NamespaceTypeInfo::create_index(full_name));
 }

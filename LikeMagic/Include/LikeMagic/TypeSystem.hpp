@@ -135,4 +135,6 @@ template <typename T> struct EvalAs<T&> // by nonconst ref
     }
 };
 
+TypeMirror const* get_namespace(std::string full_name);
+
 }
