@@ -2,9 +2,12 @@
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/BindingMacros.hpp"
 
-using namespace std;
+#define ASSERT_NOT_NULL(value) \
+    CHECK((value) != nullptr); \
+    if ((value) == nullptr) \
+        throw std::logic_error(std::string("Pointer should not be null: ") + #value);
 
-using namespace LM;
+using namespace std;
 using namespace LM;
 
 class BindingTestClass
@@ -19,46 +22,184 @@ public:
     {
         return i+1;
     }
-};
 
-struct AddBindingsTestFixture
-{
-    AddBindingsTestFixture()
+    static int StaticFuncIntInt(int i)
     {
-        auto& global_ns = type_system->global_namespace();
-        LM_CLASS(global_ns, BindingTestClass)
-        LM_FUNC(BindingTestClass, (FuncInt)(FuncIntInt))
+        return 2*i;
     }
 };
 
+namespace TestNs {
+    int NsFuncIntInt(int i)
+    {
+        return i+10;
+    }
+
+    int DiscernNsFuncInt()
+    {
+        return 11;
+    }
+
+    namespace NestedNs {
+        int NestedFuncInt()
+        {
+            return 43;
+        }
+
+        int DiscernNsFuncInt()
+        {
+            return 22;
+        }
+
+        namespace TestNs {
+            int DiscernNsFuncInt()
+            {
+                return 33;
+            }
+        }
+    }
+}
+
+void add_unit_test_bindings()
+{
+    auto& global_ns = type_system->global_namespace();
+    LM_CLASS(global_ns, BindingTestClass)
+    LM_FUNC(BindingTestClass, (FuncInt)(FuncIntInt))
+    LM_STATIC_FUNC_NAME(BindingTestClass_LM, "StaticFuncIntInt", BindingTestClass::StaticFuncIntInt)
+
+    auto& test_ns = register_namespace("TestNs", global_ns);
+    LM_STATIC_FUNC_NAME(test_ns, "NsFuncIntInt", TestNs::NsFuncIntInt)
+    LM_STATIC_FUNC_NAME(test_ns, "DiscernNsFuncInt", TestNs::DiscernNsFuncInt)
+
+    auto& nested_ns = register_namespace("NestedNs", test_ns);
+    LM_STATIC_FUNC_NAME(nested_ns, "NestedFuncIntInt", TestNs::NestedNs::NestedFuncInt)
+    LM_STATIC_FUNC_NAME(nested_ns, "DiscernNsFuncInt", TestNs::NestedNs::DiscernNsFuncInt)
+
+    auto& nested_test_ns = register_namespace("TestNs", nested_ns);
+    LM_STATIC_FUNC_NAME(nested_test_ns, "DiscernNsFuncInt", TestNs::NestedNs::TestNs::DiscernNsFuncInt)
+}
+
 SUITE(TestBinding)
 {
-    TEST_FIXTURE(AddBindingsTestFixture, CallInt)
+    TEST(CallInt)
     {
         ExprPtr term = Term<BindingTestClass*>::create(new BindingTestClass);
         TypeMirror* type_mirror = type_system->get_class(term->get_type());
-        CHECK(type_mirror);
+        ASSERT_NOT_NULL(type_mirror);
         std::vector<ExprPtr> args;
         auto* method = type_mirror->get_method("FuncInt", args.size());
-        CHECK(method);
+        ASSERT_NOT_NULL(method);
         ExprPtr result = method->call(term, args);
         CHECK(result);
         CHECK(EvalAs<int>::has_conv(result.get()));
         CHECK_EQUAL(99, EvalAs<int>::value(result));
     }
 
-    TEST_FIXTURE(AddBindingsTestFixture, CallIntInt)
+    TEST(CallIntInt)
     {
         ExprPtr term = Term<BindingTestClass*>::create(new BindingTestClass);
         TypeMirror* type_mirror = type_system->get_class(term->get_type());
-        CHECK(type_mirror);
+        ASSERT_NOT_NULL(type_mirror);
         std::vector<ExprPtr> args;
         args.push_back(Term<int>::create(100));
         auto* method = type_mirror->get_method("FuncIntInt", args.size());
-        CHECK(method);
+        ASSERT_NOT_NULL(method);
         ExprPtr result = method->call(term, args);
         CHECK(result);
         CHECK(EvalAs<int>::has_conv(result.get()));
         CHECK_EQUAL(101, EvalAs<int>::value(result));
+    }
+
+    TEST(CallStaticIntInt)
+    {
+        ExprPtr term = Term<BindingTestClass*>::create(new BindingTestClass);
+        TypeMirror* type_mirror = type_system->get_class(term->get_type());
+        ASSERT_NOT_NULL(type_mirror);
+        std::vector<ExprPtr> args;
+        args.push_back(Term<int>::create(33));
+        auto* method = type_mirror->get_method("StaticFuncIntInt", args.size());
+        ASSERT_NOT_NULL(method);
+        ExprPtr result = method->call(term, args);
+        CHECK(result);
+        CHECK(EvalAs<int>::has_conv(result.get()));
+        CHECK_EQUAL(66, EvalAs<int>::value(result));
+    }
+
+    TEST(CallNsIntInt)
+    {
+        auto& global_ns = type_system->global_namespace();
+        auto& test_ns = register_namespace("TestNs", global_ns);
+        TypeMirror* type_mirror = &test_ns; //type_system->get_class(test_ns.get_class_type());
+        ASSERT_NOT_NULL(type_mirror);
+        std::vector<ExprPtr> args;
+        args.push_back(Term<int>::create(11));
+        auto* method = type_mirror->get_method("NsFuncIntInt", args.size());
+        ASSERT_NOT_NULL(method);
+        ExprPtr result = method->call(nullptr, args);
+        CHECK(result);
+        CHECK(EvalAs<int>::has_conv(result.get()));
+        CHECK_EQUAL(21, EvalAs<int>::value(result));
+    }
+
+    TEST(CallNestedFuncInt)
+    {
+        auto& global_ns = type_system->global_namespace();
+        auto& test_ns = register_namespace("TestNs", global_ns);
+        auto& nested_ns = register_namespace("NestedNs", test_ns);
+        TypeMirror* type_mirror = &nested_ns; //type_system->get_class(test_ns.get_class_type());
+        ASSERT_NOT_NULL(type_mirror);
+        std::vector<ExprPtr> args;
+        auto* method = type_mirror->get_method("NestedFuncIntInt", args.size());
+        ASSERT_NOT_NULL(method);
+        ExprPtr result = method->call(nullptr, args);
+        CHECK(result);
+        CHECK(EvalAs<int>::has_conv(result.get()));
+        CHECK_EQUAL(43, EvalAs<int>::value(result));
+    }
+
+    TEST(DiscernNsFuncInt)
+    {
+        auto& global_ns = type_system->global_namespace();
+        std::vector<ExprPtr> args;
+
+        auto& test_ns = register_namespace("TestNs", global_ns);
+        TypeMirror* type_mirror1 = &test_ns; //type_system->get_class(test_ns.get_class_type());
+        ASSERT_NOT_NULL(type_mirror1);
+        auto* method1 = type_mirror1->get_method("DiscernNsFuncInt", args.size());
+        ASSERT_NOT_NULL(method1);
+
+        auto& nested_ns = register_namespace("NestedNs", test_ns);
+        TypeMirror* type_mirror2 = &nested_ns; //type_system->get_class(test_ns.get_class_type());
+        ASSERT_NOT_NULL(type_mirror2);
+        auto* method2 = type_mirror2->get_method("DiscernNsFuncInt", args.size());
+        ASSERT_NOT_NULL(method2);
+
+        auto& nested_test_ns = register_namespace("TestNs", nested_ns);
+        TypeMirror* type_mirror3 = &nested_test_ns; //type_system->get_class(test_ns.get_class_type());
+        ASSERT_NOT_NULL(type_mirror3);
+        auto* method3 = type_mirror3->get_method("DiscernNsFuncInt", args.size());
+        ASSERT_NOT_NULL(method3);
+
+        CHECK(type_mirror1 != type_mirror2);
+        CHECK(method1 != method2);
+        CHECK(type_mirror1 != type_mirror3);
+        CHECK(method1 != method3);
+        CHECK(type_mirror2 != type_mirror3);
+        CHECK(method2 != method3);
+
+        ExprPtr result1 = method1->call(nullptr, args);
+        CHECK(result1);
+        CHECK(EvalAs<int>::has_conv(result1.get()));
+        CHECK_EQUAL(11, EvalAs<int>::value(result1));
+
+        ExprPtr result2 = method2->call(nullptr, args);
+        CHECK(result2);
+        CHECK(EvalAs<int>::has_conv(result2.get()));
+        CHECK_EQUAL(22, EvalAs<int>::value(result2));
+
+        ExprPtr result3 = method3->call(nullptr, args);
+        CHECK(result3);
+        CHECK(EvalAs<int>::has_conv(result3.get()));
+        CHECK_EQUAL(33, EvalAs<int>::value(result3));
     }
 }
