@@ -51,6 +51,11 @@ std::string NamespaceTypeInfo::description() const
     return "namespace-typeinfo '" + namespace_name + "'";
 }
 
+std::string NamespaceTypeInfo::get_namespace_name() const
+{
+    return namespace_name;
+}
+
 TypeInfoPtr NamespaceTypeInfo::as_const() const
 {
     return this;

@@ -26,6 +26,7 @@ protected:
 public:
     static TypeInfoPtr create(std::string namespace_name);
     static TypeIndex create_index(std::string namespace_name);
+    std::string get_namespace_name() const;
     virtual std::string description() const;
     virtual TypeInfoPtr as_const() const;
     virtual TypeInfoPtr as_nonconst() const;
