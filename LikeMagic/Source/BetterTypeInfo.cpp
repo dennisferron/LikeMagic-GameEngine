@@ -9,6 +9,7 @@
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
 
 #include <cstring>
+#include <sstream>
 
 namespace LM {
 
@@ -95,8 +96,14 @@ std::size_t BetterTypeInfo::calc_hash() const
 
 std::string BetterTypeInfo::description() const
 {
-    return std::string(demangle_name(info->name()))
-            + (is_const? " const" : "");
+    std::stringstream result;
+    result << get_system() << " ";
+    result << demangle_name(info->name());
+    if (is_const)
+        result << " const";
+    if (is_ptr)
+        result << "*";
+    return result.str();
 }
 
 }

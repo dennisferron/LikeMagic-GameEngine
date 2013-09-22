@@ -30,8 +30,7 @@ struct TypeMirror::Impl
     std::string name;
     boost::unordered_map<std::string, std::map<int, CallTarget*>> methods;
     TypeIndex class_type;
-    TypeIndex ptr_type;
-    TypeIndex const_ptr_type;
+    TypeIndex metaclass_type;
     size_t instance_size;
 };
 
@@ -40,8 +39,6 @@ TypeMirror::TypeMirror(std::string name, size_t instance_size, TypeIndex class_t
 {
     impl->name = name;
     impl->class_type = class_type;
-    impl->ptr_type = class_type.get_info()->as_ptr()->get_index();
-    impl->const_ptr_type = class_type.get_info()->as_const()->as_ptr()->get_index();
     impl->instance_size = instance_size;
 
     auto ptr_caster = new BottomPtrTarget();
@@ -77,8 +74,11 @@ void TypeMirror::add_method(std::string method_name, CallTarget* method)
     }
     else
     {
+        /*
+        std::cout << impl->name + "::" + method_name
+            + "(" + boost::lexical_cast<std::string>(num_args) + " args)" << std::endl; */
         impl->methods[method_name][num_args] = method;
-   }
+    }
 }
 
 void TypeMirror::suggest_method(std::string method_name, int num_args) const
@@ -197,14 +197,4 @@ size_t TypeMirror::get_instance_size() const
 TypeIndex TypeMirror::get_class_type() const
 {
     return impl->class_type;
-}
-
-TypeIndex TypeMirror::get_ptr_type() const
-{
-    return impl->ptr_type;
-}
-
-TypeIndex TypeMirror::get_const_ptr_type() const
-{
-    return impl->const_ptr_type;
 }

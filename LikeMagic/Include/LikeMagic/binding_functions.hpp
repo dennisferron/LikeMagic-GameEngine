@@ -38,17 +38,17 @@ std::string create_constructor_name(std::string prefix, std::string method_name)
 
 template <typename From, typename To,
     template <typename From, typename To>
-        class Converter = LM::StaticCastConv>
+        class Converter = StaticCastConv>
 void add_conv()
 {
     type_system->add_converter_variations(
-        LM::TypId<From>::get(),
-        LM::TypId<To>::get(),
+        TypId<From>::get(),
+        TypId<To>::get(),
             new Converter<From, To>);
 }
 
 template <typename T, typename... Args>
-void bind_constructor(LM::TypeMirror& class_, std::string method_name, LM::TypePack<Args...>)
+void bind_constructor(TypeMirror& class_, std::string method_name, TypePack<Args...>)
 {
     static_assert(!boost::is_abstract<T>::value, "Cannot declare LikeMagic constructor on abstract class. To construct objects of this type, register a derived, concrete class and register its constructor.");
 
@@ -67,35 +67,15 @@ T* operator_remove_const(T const * ptr)
 
 // Also useful for defining "extension methods".
 template <typename R, typename FirstArg, typename... Args>
-void bind_nonmember_op(LM::TypeMirror& class_, std::string method_name, R (*f)(FirstArg, Args...))
+void bind_nonmember_op(TypeMirror& class_, std::string method_name, R (*f)(FirstArg, Args...))
 {
     class_.add_method(method_name,
         new LM::ExtensionMethodCallTarget<R, FirstArg, Args...>(f));
 }
-/*
-template <typename T>
-void bind_built_in_operations(LM::TypeMirror& class_)
-{
-    // In C++, any type can be deleted.
-    auto deleter = new LM::DestructorCallTarget<T>();
-    class_.add_method("delete", deleter);
-
-    // const cast
-    bind_nonmember_op(class_, "remove_const", &operator_remove_const<T>);
-}
-*/
-/*
-template <typename T>
-void add_delegate_conv()
-{
-    // Allow the type to be reinterpreted as Delegate to work with DelegateCallGenerator.
-    add_conv<T&, LM::Delegate&, LM::NoChangeConv>();
-}
-*/
 
 template <typename T, typename Base, template <typename From, typename To>
-    class Converter=LM::StaticCastConv>
-void add_base(LM::TypeMirror& class_, LM::TypeMirror const& base_class)
+    class Converter=StaticCastConv>
+void add_base(TypeMirror& class_, TypeMirror const& base_class)
 {
     class_.add_base(&base_class);
     add_conv<T*, Base*, Converter>();
@@ -103,7 +83,7 @@ void add_base(LM::TypeMirror& class_, LM::TypeMirror const& base_class)
 
 
 template <typename ObjT, typename R, typename... Args>
-void bind_method(LM::TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...))
+void bind_method(TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...))
 {
     typedef LM::DelegateCallTarget<false, R, Args...> Target;
     class_.add_method(
@@ -114,7 +94,7 @@ void bind_method(LM::TypeMirror& class_, std::string method_name, R (ObjT::*f)(A
 }
 
 template <typename ObjT, typename R, typename... Args>
-void bind_method(LM::TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...) const)
+void bind_method(TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...) const)
 {
     typedef LM::DelegateCallTarget<true, R, Args...> Target;
     class_.add_method(
@@ -140,10 +120,10 @@ void bind_method_impl(TypeMirror& class_, std::string method_name, RTYPE (Delega
 #define LM_DECL_BIND_METHOD(RTYPE, ARGTYPE) \
 LM_DEF_BIND_METHOD_IMPL(RTYPE, ARGTYPE) \
 template <typename ObjT> void bind_method( \
-    LM::TypeMirror& class_, std::string method_name, RTYPE (ObjT::*f)(ARGTYPE)) { \
+    TypeMirror& class_, std::string method_name, RTYPE (ObjT::*f)(ARGTYPE)) { \
     bind_method_impl(class_, method_name, reinterpret_cast<RTYPE(Delegate::*)(ARGTYPE)>(f)); } \
 template <typename ObjT> void bind_method( \
-    LM::TypeMirror& class_, std::string method_name, RTYPE (ObjT::*f)(ARGTYPE) const) { \
+    TypeMirror& class_, std::string method_name, RTYPE (ObjT::*f)(ARGTYPE) const) { \
         bind_method_impl(class_, method_name, reinterpret_cast<RTYPE(Delegate::*)(ARGTYPE) const>(f)); }
 
 LM_DECL_BIND_METHOD(void,)
@@ -157,65 +137,70 @@ LM_DECL_BIND_METHOD(void, unsigned int)
 LM_DECL_BIND_METHOD(void, float)
 LM_DECL_BIND_METHOD(void, double)
 
-
-
-
 template <typename R, typename... Args>
-void bind_static_method(LM::TypeMirror& class_, std::string method_name, R (*f)(Args...))
+void bind_static_method(TypeMirror& class_, std::string method_name, R (*f)(Args...))
 {
-    typedef LM::StaticMethodCallTarget_R<R, Args...> Target;
+    typedef StaticMethodCallTarget_R<R, Args...> Target;
     class_.add_method(method_name, new Target(f));
 }
 
 template <typename... Args>
-void bind_static_method(LM::TypeMirror& class_, std::string method_name, void (*f)(Args...))
+void bind_static_method(TypeMirror& class_, std::string method_name, void (*f)(Args...))
 {
-    typedef LM::StaticMethodCallTarget_void<Args...> Target;
+    typedef StaticMethodCallTarget_void<Args...> Target;
     class_.add_method(method_name, new Target(f));
 }
 
 template <typename T, typename R>
-void bind_field(LM::TypeMirror& class_, std::string field_name, R(T::*f))
+void bind_field(TypeMirror& class_, std::string field_name, R(T::*f))
 {
+    TypeIndex class_type = class_.get_class_type();
+    TypeIndex ptr_type = class_type.as_ptr_type();
+    TypeIndex const_ptr_type = class_type.as_const_ptr_type();
+
     typedef LM::FieldSetterTarget<R> SetterTarget;
-    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), class_.get_const_ptr_type());
+    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), ptr_type);
     class_.add_method("set_" + field_name, setter);
 
     typedef LM::FieldGetterTarget<R> GetterTarget;
-    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), class_.get_ptr_type());
+    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), const_ptr_type);
     class_.add_method("get_" + field_name, getter);
 
     typedef LM::FieldReferenceTarget<R> RefferTarget;
-    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), class_.get_ptr_type());
+    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), ptr_type);
     class_.add_method("ref_" + field_name, reffer);
 }
 
 template <typename T, typename R, size_t N>
-void bind_array_field(LM::TypeMirror& class_, std::string field_name, R(T::*f)[N])
+void bind_array_field(TypeMirror& class_, std::string field_name, R(T::*f)[N])
 {
+    TypeIndex class_type = class_.get_class_type();
+    TypeIndex ptr_type = class_type.as_ptr_type();
+    TypeIndex const_ptr_type = class_type.as_const_ptr_type();
+
     typedef LM::ArrayFieldSetterTarget<R> SetterTarget;
-    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), class_.get_const_ptr_type(), N);
+    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), ptr_type, N);
     class_.add_method("set_" + field_name, setter);
 
     typedef LM::ArrayFieldGetterTarget<R> GetterTarget;
-    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), class_.get_ptr_type(), N);
+    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), const_ptr_type, N);
     class_.add_method("get_" + field_name, getter);
 
     typedef LM::ArrayFieldReferenceTarget<R> RefferTarget;
-    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), class_.get_ptr_type(), N);
+    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), ptr_type, N);
     class_.add_method("ref_" + field_name, reffer);
 }
 
 template <typename T>
-LM::TypeMirror& register_class(std::string name, TypeMirror& namespace_)
+TypeMirror& register_class(std::string name, TypeMirror& namespace_)
 {
-    const TypeIndex class_type(LM::TypId<T>::get());
+    const TypeIndex class_type(TypId<T>::get());
 
     if (type_system->get_class(class_type))
         return *(type_system->get_class(class_type));
     else
     {
-        auto result = new LM::TypeMirror(name, sizeof(T), class_type);
+        auto result = new TypeMirror(name, sizeof(T), class_type);
         type_system->add_class(class_type, result, namespace_);
 
         // TODO: Merge implementation of this with implementation of TermDeleter.
@@ -227,7 +212,7 @@ LM::TypeMirror& register_class(std::string name, TypeMirror& namespace_)
 }
 
 template <typename T>
-LM::TypeMirror& register_enum(std::string name, TypeMirror& namespace_)
+TypeMirror& register_enum(std::string name, TypeMirror& namespace_)
 {
     auto& result = register_class<T>(name, namespace_);
     bind_nonmember_op(result, "==",    &LM::EnumHelper<T>::equals);
@@ -237,6 +222,6 @@ LM::TypeMirror& register_enum(std::string name, TypeMirror& namespace_)
     return result;
 }
 
-LM::TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespace_);
+TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespace_);
 
 }

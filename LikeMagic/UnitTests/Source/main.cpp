@@ -3,7 +3,9 @@
 #include "LikeMagic/StdBindings/StdBindings.hpp"
 #include <iostream>
 
-void add_unit_test_bindings();
+void add_binding_test_bindings();
+void add_term_test_bindings();
+void add_typesystem_test_bindings();
 
 int main()
 {
@@ -11,7 +13,9 @@ int main()
     {
         LM::type_system = LM::create_type_system();
         LM::add_bindings();
-        add_unit_test_bindings();
+        add_binding_test_bindings();
+        add_typesystem_test_bindings();
+        add_term_test_bindings();
         int result = UnitTest::RunAllTests();
         std::cout << "Press enter..." << std::endl;
         std::cin.ignore( 99, '\n' );

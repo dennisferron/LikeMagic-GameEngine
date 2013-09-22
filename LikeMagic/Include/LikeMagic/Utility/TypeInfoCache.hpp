@@ -17,7 +17,6 @@ class TypeInfoCache
 {
 private:
     static TypeInfoCache* instance;
-    //boost::unordered_map<TypeInfoPtr, TypeIndex> info_to_index;
     std::map<KeyWrapper<AbstractTypeInfo>, TypeIndex> info_to_index;
     std::vector<TypeInfoPtr> index_to_info;
 
@@ -30,6 +29,8 @@ public:
     // I'm not a fan of singletons but in this case it makes sense.
     static TypeInfoCache* get_instance();
     static void set_instance(TypeInfoCache* instance_);
+
+    void debug_dump();
 };
 
 

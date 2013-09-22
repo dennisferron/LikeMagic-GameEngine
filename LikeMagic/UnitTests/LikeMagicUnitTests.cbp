@@ -50,6 +50,7 @@
 		<Unit filename="Source/TestArgTransporter.cpp" />
 		<Unit filename="Source/TestBinding.cpp" />
 		<Unit filename="Source/TestMarshalByCopyConstructor.cpp" />
+		<Unit filename="Source/TestTerms.cpp" />
 		<Unit filename="Source/TestTypeSystem.cpp" />
 		<Unit filename="Source/main.cpp" />
 		<Extensions>

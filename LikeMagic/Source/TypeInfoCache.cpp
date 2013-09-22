@@ -76,5 +76,13 @@ TypeInfoPtr TypeInfoCache::get_info(TypeIndex id) const
     return index_to_info[id.id];
 }
 
+void TypeInfoCache::debug_dump()
+{
+    for (size_t i=0; i<index_to_info.size(); i++)
+        std::cout << "index_to_info " << i << ": " << index_to_info[i]->description() << std::endl;
+
+    for (auto& kv : info_to_index)
+        std::cout << "info_to_index " << kv.first.key->description() << " => " << kv.second.description() << std::endl;
+}
 
 }

@@ -2,10 +2,7 @@
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/BindingMacros.hpp"
 
-#define ASSERT_NOT_NULL(value) \
-    CHECK((value) != nullptr); \
-    if ((value) == nullptr) \
-        throw std::logic_error(std::string("Pointer should not be null: ") + #value);
+#include "UnitTests/TestHelpers.hpp"
 
 using namespace std;
 using namespace LM;
@@ -60,7 +57,7 @@ namespace TestNs {
     }
 }
 
-void add_unit_test_bindings()
+void add_binding_test_bindings()
 {
     auto& global_ns = type_system->global_namespace();
     LM_CLASS(global_ns, BindingTestClass)
@@ -90,7 +87,7 @@ SUITE(TestBinding)
         auto* method = type_mirror->get_method("FuncInt", args.size());
         ASSERT_NOT_NULL(method);
         ExprPtr result = method->call(term, args);
-        CHECK(result);
+        ASSERT_NOT_NULL(result);
         CHECK(EvalAs<int>::has_conv(result.get()));
         CHECK_EQUAL(99, EvalAs<int>::value(result));
     }
@@ -105,7 +102,7 @@ SUITE(TestBinding)
         auto* method = type_mirror->get_method("FuncIntInt", args.size());
         ASSERT_NOT_NULL(method);
         ExprPtr result = method->call(term, args);
-        CHECK(result);
+        ASSERT_NOT_NULL(result);
         CHECK(EvalAs<int>::has_conv(result.get()));
         CHECK_EQUAL(101, EvalAs<int>::value(result));
     }
@@ -120,7 +117,7 @@ SUITE(TestBinding)
         auto* method = type_mirror->get_method("StaticFuncIntInt", args.size());
         ASSERT_NOT_NULL(method);
         ExprPtr result = method->call(term, args);
-        CHECK(result);
+        ASSERT_NOT_NULL(result);
         CHECK(EvalAs<int>::has_conv(result.get()));
         CHECK_EQUAL(66, EvalAs<int>::value(result));
     }
@@ -136,7 +133,7 @@ SUITE(TestBinding)
         auto* method = type_mirror->get_method("NsFuncIntInt", args.size());
         ASSERT_NOT_NULL(method);
         ExprPtr result = method->call(nullptr, args);
-        CHECK(result);
+        ASSERT_NOT_NULL(result);
         CHECK(EvalAs<int>::has_conv(result.get()));
         CHECK_EQUAL(21, EvalAs<int>::value(result));
     }
@@ -152,7 +149,7 @@ SUITE(TestBinding)
         auto* method = type_mirror->get_method("NestedFuncIntInt", args.size());
         ASSERT_NOT_NULL(method);
         ExprPtr result = method->call(nullptr, args);
-        CHECK(result);
+        ASSERT_NOT_NULL(result);
         CHECK(EvalAs<int>::has_conv(result.get()));
         CHECK_EQUAL(43, EvalAs<int>::value(result));
     }
@@ -188,17 +185,17 @@ SUITE(TestBinding)
         CHECK(method2 != method3);
 
         ExprPtr result1 = method1->call(nullptr, args);
-        CHECK(result1);
+        ASSERT_NOT_NULL(result1);
         CHECK(EvalAs<int>::has_conv(result1.get()));
         CHECK_EQUAL(11, EvalAs<int>::value(result1));
 
         ExprPtr result2 = method2->call(nullptr, args);
-        CHECK(result2);
+        ASSERT_NOT_NULL(result2);
         CHECK(EvalAs<int>::has_conv(result2.get()));
         CHECK_EQUAL(22, EvalAs<int>::value(result2));
 
         ExprPtr result3 = method3->call(nullptr, args);
-        CHECK(result3);
+        ASSERT_NOT_NULL(result3);
         CHECK(EvalAs<int>::has_conv(result3.get()));
         CHECK_EQUAL(33, EvalAs<int>::value(result3));
     }
@@ -230,17 +227,17 @@ SUITE(TestBinding)
         CHECK(method2 != method3);
 
         ExprPtr result1 = method1->call(nullptr, args);
-        CHECK(result1);
+        ASSERT_NOT_NULL(result1);
         CHECK(EvalAs<int>::has_conv(result1.get()));
         CHECK_EQUAL(11, EvalAs<int>::value(result1));
 
         ExprPtr result2 = method2->call(nullptr, args);
-        CHECK(result2);
+        ASSERT_NOT_NULL(result2);
         CHECK(EvalAs<int>::has_conv(result2.get()));
         CHECK_EQUAL(22, EvalAs<int>::value(result2));
 
         ExprPtr result3 = method3->call(nullptr, args);
-        CHECK(result3);
+        ASSERT_NOT_NULL(result3);
         CHECK(EvalAs<int>::has_conv(result3.get()));
         CHECK_EQUAL(33, EvalAs<int>::value(result3));
     }

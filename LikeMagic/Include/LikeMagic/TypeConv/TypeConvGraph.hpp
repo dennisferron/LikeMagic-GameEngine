@@ -64,8 +64,6 @@ private:
     // Caching is a perfect example of this.
     mutable boost::unordered_map<std::pair<TypeIndex, TypeIndex>, p_chain_t> conv_cache;
 
-    bool has_type(TypeIndex type) const;
-
     ExprPtr build_conv_chain(ExprPtr from_expr, p_chain_t const& chain) const;
     p_chain_t const& search_for_conv(TypeIndex from, TypeIndex to) const;
 
@@ -87,6 +85,7 @@ public:
     void print_graph() const;
     void print_conv_chain(TypeIndex from, TypeIndex to) const;
     void print_conv_chain(p_chain_t const& chain) const;
+    bool has_type(TypeIndex type) const;
 };
 
 }

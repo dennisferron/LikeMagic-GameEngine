@@ -48,6 +48,7 @@ private:
     friend void suggest_method(TypeMirror& type_, std::string method_name, int num_args);
 
 public:
+
     TypeMirror(std::string class_name, size_t instance_size, TypeIndex class_type);
     virtual ~TypeMirror();
 
@@ -61,8 +62,6 @@ public:
     virtual bool has_base(TypeMirror const* base) const;
 
     virtual TypeIndex get_class_type() const;
-    virtual TypeIndex get_ptr_type() const;
-    virtual TypeIndex get_const_ptr_type() const;
 
     virtual size_t get_instance_size() const;
 

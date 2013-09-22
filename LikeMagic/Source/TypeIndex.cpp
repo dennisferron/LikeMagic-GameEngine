@@ -11,7 +11,11 @@ TypeInfoPtr TypeIndex::get_info() const
 
 std::string TypeIndex::description() const
 {
-    return get_info()->description();
+    std::stringstream result;
+    result << get_info()->description() << " ";
+    result << " " << get_id();
+    result << "/" << get_class_id();
+    return result.str();
 }
 
 TypeIndex TypeIndex::as_ptr_type() const

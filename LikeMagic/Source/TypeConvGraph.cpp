@@ -63,11 +63,21 @@ bool TypeConvGraph::has_type(TypeIndex type) const
 {
     std::size_t pos = type.get_id();
     std::size_t sz = has_vertex.size();
+    /*
+    cout << "pos=" << pos << " sz=" << sz;
+    if (pos < sz)
+        cout << " has_vertex=" << has_vertex[pos];
+    else
+        cout << " !(pos<sz)";
+    cout << endl;
+    */
     return pos < sz && has_vertex[pos];
 }
 
 TypeConvGraph::vertex_t TypeConvGraph::add_type(TypeIndex type)
 {
+    //cout << "add_type " << type.description() << endl;
+
     std::size_t pos = type.get_id();
 
     if (!has_type(type))

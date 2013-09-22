@@ -103,14 +103,12 @@ TypeMirror& TypeSystem::global_namespace() const
 
 void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& namespace_)
 {
+    cout << "add_class " << index.description() << endl;
     if (!index.is_class_type())
         throw std::logic_error("add_class type index has to be a class type!");
 
     if (!(index == class_ptr->get_class_type()))
         throw std::logic_error("add_class: Index=" + index.description() + " not the same as class_ptr type=" + class_ptr->get_class_type().description());
-
-    // add_class also called for non-C++ type objects such as "namespace"
-    //add_ptr_convs(index);
 
     // Add conversion to delegate type so that delegate call targets will work.
     impl->conv_graph.add_conv(index.get_info()->as_ptr()->get_index(),
@@ -118,22 +116,21 @@ void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& n
     impl->conv_graph.add_conv(index.get_info()->as_const()->as_ptr()->get_index(),
         TypId<LM::Delegate const*>::get(), new NoChangeConv());
 
-    // TODO: create a remove const call target
-    //class_.add_method("remove_const",
-    //    new LM::ExtensionMethodCallTarget<R, FirstArg, Args...>(f));
+    // Add conversion from nonconst pointer to const.
+    impl->conv_graph.add_conv(
+        index.get_info()->as_ptr()->get_index(),
+        index.get_info()->as_const()->as_ptr()->get_index(),
+        new NoChangeConv());
+
+    TypeIndex x = index.get_info()->as_ptr()->get_index();
+    if (!impl->conv_graph.has_type(x))
+        throw std::logic_error(std::string("Type just added is missing from conv_graph: ") + x.description());
 
     impl->classes[index] = class_ptr;
 
-    // TODO: Replace "ExprTarget" with some kind of CallTarget that returns
-    // a TypeMirror-of-metaclass.
     namespace_.add_method(
         class_ptr->get_class_name(), new LM::ExprTarget(
-            new Expr(
-                nullptr,
-                LM::NamespaceTypeInfo::create_index(class_ptr->get_class_name())
-            )
-        )
-    );
+            new Expr(class_ptr, index)));
 }
 
 TypeSystem::~TypeSystem()
@@ -152,7 +149,7 @@ ExprPtr TypeSystem::try_conv(ExprPtr from_expr, TypeIndex to_type) const
     }
     catch (std::logic_error const& le)
     {
-        throw std::logic_error(le.what() + std::string(" Note: From expression is ") + from_expr->description());
+        throw std::logic_error(le.what() + std::string(" From expression was ") + from_expr->description());
     }
 }
 
@@ -203,7 +200,7 @@ void TypeSystem::add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t
 
 TypeMirror const* LM::get_namespace(std::string full_name)
 {
-    if (full_name.substr(0, 2) != "::")
+    if (full_name.substr(0, 2) != "::" && full_name != "")
         throw std::logic_error(std::string("get_namespace full_name must begin with :: in namespace ") + full_name);
 
     return type_system->get_class(
