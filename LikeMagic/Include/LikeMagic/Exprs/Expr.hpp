@@ -18,8 +18,6 @@
 
 namespace LM {
 
-struct TermDeleter;
-
 class Expr;
 
 void intrusive_ptr_add_ref(Expr* p);
@@ -63,7 +61,5 @@ typedef boost::intrusive_ptr<Expr> ExprPtr;
 
 // Sometimes you put expressions together into arg lists, esp. for functionoid.
 typedef std::vector<ExprPtr> ArgList;
-
-
 
 }

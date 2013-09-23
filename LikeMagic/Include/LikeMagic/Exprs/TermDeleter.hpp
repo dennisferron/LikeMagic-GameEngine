@@ -15,29 +15,29 @@ namespace LM {
 
 struct AbstractTermDeleter
 {
-    virtual void delete_if_possible() = 0;
+    virtual void delete_if_possible(void const* value) const = 0;
 };
 
 template <typename T>
-struct TermDeleter
+struct TermDeleter : public AbstractTermDeleter
 {
-    virtual void delete_if_possible(Expr const* expr) const
+    virtual void delete_if_possible(void const* value) const
     {
-        delete reinterpret_cast<T*>(expr->get_value_ptr());
+        delete reinterpret_cast<T const*>(value);
     }
 };
 
 template <>
-struct TermDeleter<void>
+struct TermDeleter<void> : public AbstractTermDeleter
 {
-    virtual void delete_if_possible(Expr const* expr) const
+    virtual void delete_if_possible(void const* value) const
     {
         throw std::logic_error("Cannot auto-delete void*.");
     }
 };
 
 template <>
-struct TermDeleter<const void>
+struct TermDeleter<const void> : public AbstractTermDeleter
 {
     virtual void delete_if_possible(const void* value) const
     {
@@ -52,5 +52,5 @@ struct TermDeleter<const void>
 // override the definition of delete for a particular type.
 #define LM_CUSTOM_DELETER(type, impl) \
 namespace LM { \
-    template <> struct TermDeleter<type const> \
-        { virtual void delete_if_possible(type const*const& value) const {impl;} }; }
+    template <> struct TermDeleter<type const> : public AbstractTermDeleter \
+        { virtual void delete_if_possible(void const* value) const {impl;} }; }

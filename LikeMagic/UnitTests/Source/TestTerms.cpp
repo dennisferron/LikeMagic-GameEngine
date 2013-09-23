@@ -16,21 +16,32 @@ struct ConstructorTestClass
     ConstructorTestClass(int value_) : value(value_) {}
 };
 
-/*
 struct DestructorTestClass
 {
     bool& output;
+
+    DestructorTestClass(bool& output_) : output(output_) {}
+    ~DestructorTestClass()
+    {
+        output = true;
+    }
 };
-*/
 
 void add_term_test_bindings()
 {
     auto& global_ns = type_system->global_namespace();
     LM_CLASS(global_ns, ConstructorTestClass)
     LM_CONSTR(ConstructorTestClass, "new", int)
+    LM_CLASS(global_ns, DestructorTestClass)
 }
 
-
+void create_and_destroy(bool& output)
+{
+    ExprPtr term = Term<DestructorTestClass const*>
+        ::create(new DestructorTestClass(output));
+    term->set_auto_delete_ptr(true);
+    // ...and let it go out of scope.
+}
 
 SUITE(TestTerms)
 {
@@ -59,9 +70,11 @@ SUITE(TestTerms)
         CHECK_EQUAL(99, EvalAs<ConstructorTestClass>::value(result).value);
         delete EvalAs<ConstructorTestClass const*>::value(result);
     }
-/*
+
     TEST(TermDestructor)
     {
+        bool did_it_work = false;
+        create_and_destroy(did_it_work);
+        CHECK(did_it_work);
     }
-*/
 }

@@ -12,6 +12,7 @@
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
+#include "LikeMagic/Exprs/TermDeleter.hpp"
 
 namespace LM {
     class TypeSystem;
@@ -67,7 +68,8 @@ public:
 
     virtual void suggest_method(std::string method_name, int num_args) const;
 
-    virtual void try_delete(void const* ptr) const;
+    virtual void try_delete(Expr const* expr) const;
+    virtual void set_deleter(std::unique_ptr<AbstractTermDeleter const> deleter);
 };
 
 }

@@ -32,6 +32,7 @@ struct TypeMirror::Impl
     TypeIndex class_type;
     TypeIndex metaclass_type;
     size_t instance_size;
+    std::unique_ptr<AbstractTermDeleter const> term_deleter;
 };
 
 TypeMirror::TypeMirror(std::string name, size_t instance_size, TypeIndex class_type)
@@ -40,9 +41,15 @@ TypeMirror::TypeMirror(std::string name, size_t instance_size, TypeIndex class_t
     impl->name = name;
     impl->class_type = class_type;
     impl->instance_size = instance_size;
+    impl->term_deleter = nullptr;
 
     auto ptr_caster = new BottomPtrTarget();
     add_method("unsafe_ptr_cast", ptr_caster);
+}
+
+void TypeMirror::set_deleter(std::unique_ptr<AbstractTermDeleter const> deleter)
+{
+    impl->term_deleter = std::move(deleter);
 }
 
 TypeMirror::~TypeMirror()
@@ -55,9 +62,12 @@ TypeMirror::~TypeMirror()
     }
 }
 
-void TypeMirror::try_delete(void const* ptr) const
+void TypeMirror::try_delete(Expr const* expr) const
 {
-    // TODO: Add deleter.
+    if (impl->term_deleter == nullptr)
+        throw std::logic_error("No deleter registered for " + this->get_class_type().description());
+
+    impl->term_deleter->delete_if_possible(expr->get_value_ptr().as_const);
 }
 
 void TypeMirror::add_method(std::string method_name, CallTarget* method)

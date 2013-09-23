@@ -21,6 +21,7 @@
 #include "LikeMagic/Utility/NamespaceTypeInfo.hpp"
 #include "LikeMagic/Utility/BottomPtrTypeInfo.hpp"
 #include "LikeMagic/CallTargets/Delegate.hpp"
+#include "LikeMagic/CallTargets/DeleterCallTarget.hpp"
 
 #include <set>
 #include <map>
@@ -127,6 +128,9 @@ void TypeSystem::add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& n
         throw std::logic_error(std::string("Type just added is missing from conv_graph: ") + x.description());
 
     impl->classes[index] = class_ptr;
+
+    auto deleter_target = new DeleterCallTarget();
+    class_ptr->add_method("delete", deleter_target);
 
     namespace_.add_method(
         class_ptr->get_class_name(), new LM::ExprTarget(

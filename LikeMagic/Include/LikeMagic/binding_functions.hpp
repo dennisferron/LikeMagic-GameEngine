@@ -14,7 +14,6 @@
 
 #include "LikeMagic/CallTargets/ExprTarget.hpp"
 #include "LikeMagic/CallTargets/ConstructorTarget.hpp"
-#include "LikeMagic/CallTargets/DestructorCallTarget.hpp"
 #include "LikeMagic/CallTargets/DelegateCallTarget.hpp"
 #include "LikeMagic/CallTargets/ExtensionMethodCallTarget.hpp"
 #include "LikeMagic/CallTargets/StaticMethodCallTarget.hpp"
@@ -203,9 +202,9 @@ TypeMirror& register_class(std::string name, TypeMirror& namespace_)
         auto result = new TypeMirror(name, sizeof(T), class_type);
         type_system->add_class(class_type, result, namespace_);
 
-        // TODO: Merge implementation of this with implementation of TermDeleter.
-        //auto deleter = new LM::DestructorCallTarget<T>();
-        //result->add_method("delete", deleter);
+        result->set_deleter(
+            std::unique_ptr<AbstractTermDeleter const>(
+               new TermDeleter<T>()));
 
         return *result;
     }

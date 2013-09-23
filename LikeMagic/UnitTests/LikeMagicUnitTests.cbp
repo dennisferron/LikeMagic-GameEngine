@@ -47,6 +47,7 @@
 			<Add directory="../../Common/UnitTest++/src" />
 		</Compiler>
 		<Unit filename="Include/UnitTests/ArgListHelpers.hpp" />
+		<Unit filename="Include/UnitTests/TestHelpers.hpp" />
 		<Unit filename="Source/TestArgTransporter.cpp" />
 		<Unit filename="Source/TestBinding.cpp" />
 		<Unit filename="Source/TestMarshalByCopyConstructor.cpp" />

@@ -8,6 +8,7 @@
 
 #include "LikeMagic/Exprs/Expr.hpp"
 #include "LikeMagic/TypeSystem.hpp"
+#include "LikeMagic/Mirrors/TypeMirror.hpp"
 
 #include <stdexcept>
 
@@ -35,8 +36,13 @@ Expr::~Expr()
 
     if (get_auto_delete_ptr())
     {
-        // TODO:  Get deleter from TypeSystem/TypeMirror, and then try_delete if auto delete pt..
-        //TermDeleter<T const>::delete_if_possible((T*)value_ptr);
+        TypeIndex class_type = this->get_type().class_type();
+        TypeMirror const* type_mirror = type_system->get_class(class_type);
+
+        if (type_mirror == nullptr)
+            throw std::logic_error("Cannot delete term or expr because no class found for " + class_type.description());
+
+        type_mirror->try_delete(this);
     }
 }
 
