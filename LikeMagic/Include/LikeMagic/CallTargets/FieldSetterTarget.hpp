@@ -32,8 +32,10 @@ public:
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate* target_obj = EvalAs<Delegate*>::value(target_check);
-        (target_obj->*f_ptr) = EvalAs<R const&>::value(args[0]);
+        ExprPtr target_warden;
+        ExprPtr arg_warden;
+        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_warden);
+        (target_obj->*f_ptr) = EvalAs<R const&>::value(args[0], arg_warden);
         return 0;
     }
 

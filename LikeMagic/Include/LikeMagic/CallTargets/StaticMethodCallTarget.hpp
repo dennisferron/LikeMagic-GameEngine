@@ -29,7 +29,8 @@ private:
     template<int... Indices>
     void build_method_call(ArgList args, IndexPack<Indices...>) const
     {
-        (*func_ptr)(EvalAs<Args>::value(args[Indices])...);
+        ExprPtr wardens[sizeof...(Args)];
+        (*func_ptr)(EvalAs<Args>::value(args[Indices], wardens[Indices])...);
     }
 
 public:
@@ -38,9 +39,6 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        if (args.size() != sizeof...(Args))
-            throw std::logic_error("Wrong number of arguments.");
-
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
         build_method_call(args, IPack());
         return 0;
@@ -67,7 +65,9 @@ private:
     template<int... Indices>
     ExprPtr build_method_call(ArgList args, IndexPack<Indices...>) const
     {
-        return Term<R>::create((*func_ptr)(EvalAs<Args>::value(args[Indices])...));
+        ExprPtr wardens[sizeof...(Args)];
+        return Term<R>::create((*func_ptr)(
+               EvalAs<Args>::value(args[Indices], wardens[Indices])...));
     }
 
 public:
@@ -76,9 +76,6 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        if (args.size() != sizeof...(Args))
-            throw std::logic_error("Wrong number of arguments.");
-
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
         return build_method_call(args, IPack());
     }

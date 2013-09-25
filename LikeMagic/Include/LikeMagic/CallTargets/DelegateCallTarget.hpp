@@ -34,9 +34,11 @@ private:
     template<int... Indices>
     void build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
+        ExprPtr wardens[sizeof...(Args)];
+        ExprPtr target_warden;
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate* target_obj = EvalAs<Delegate*>::value(target_check);
-        (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices])...);
+        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_warden);
+        (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices], wardens[Indices])...);
     }
 
 public:
@@ -46,9 +48,6 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        if (args.size() != sizeof...(Args))
-            throw std::logic_error("Wrong number of arguments.");
-
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
         build_method_call(target, args, IPack());
         return 0;
@@ -76,9 +75,11 @@ private:
     template<int... Indices>
     void build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
+        ExprPtr wardens[sizeof...(Args)];
+        ExprPtr target_warden;
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate const* target_obj = EvalAs<Delegate const*>::value(target_check);
-        (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices])...);
+        Delegate const* target_obj = EvalAs<Delegate const*>::value(target_check, target_warden);
+        (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices], wardens[Indices])...);
     }
 
 public:
@@ -88,9 +89,6 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        if (args.size() != sizeof...(Args))
-            throw std::logic_error("Wrong number of arguments.");
-
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
         build_method_call(target, args, IPack());
         return 0;
@@ -117,9 +115,12 @@ private:
     template<int... Indices>
     ExprPtr build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
+        ExprPtr wardens[sizeof...(Args)];
+        ExprPtr target_warden;
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate* target_obj = EvalAs<Delegate*>::value(target_check);
-        return Term<R>::create((target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices])...));
+        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_warden);
+        return Term<R>::create((target_obj->*func_ptr)(
+           EvalAs<Args>::value(args[Indices], wardens[Indices])...));
     }
 
 public:
@@ -129,9 +130,6 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        if (args.size() != sizeof...(Args))
-            throw std::logic_error("Wrong number of arguments.");
-
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
         return build_method_call(target, args, IPack());
     }
@@ -157,9 +155,12 @@ private:
     template<int... Indices>
     ExprPtr build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
+        ExprPtr wardens[sizeof...(Args)];
+        ExprPtr target_warden;
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate const* target_obj = EvalAs<Delegate const*>::value(target_check);
-        return Term<R>::create((target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices])...));
+        Delegate const* target_obj = EvalAs<Delegate const*>::value(target_check, target_warden);
+        return Term<R>::create((target_obj->*func_ptr)(
+            EvalAs<Args>::value(args[Indices], wardens[Indices])...));
     }
 
 public:
@@ -169,9 +170,6 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        if (args.size() != sizeof...(Args))
-            throw std::logic_error("Wrong number of arguments.");
-
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
         return build_method_call(target, args, IPack());
     }

@@ -56,10 +56,8 @@ public:
     virtual void mark() const;
 };
 
-// Most of the time you will be using an expression via smart ptr.
 typedef boost::intrusive_ptr<Expr> ExprPtr;
 
-// Sometimes you put expressions together into arg lists, esp. for functionoid.
-typedef std::vector<ExprPtr> ArgList;
+typedef ExprPtr ArgList[];
 
 }

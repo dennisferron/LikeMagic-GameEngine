@@ -33,10 +33,10 @@ SUITE(TestArgTransporter)
         *(int*)&(buffer[0]) = 0;  // clear buffer
         *(int*)&(buffer[4]) = 0;  // clear buffer
         buffer[8] = 99;             // sentry value
-        ArgList arg_list = make_arg_list<int, int>(1234, 5678);
+        std::vector<LM::ExprPtr> arg_list = make_arg_list<int, int>(1234, 5678);
         TypeInfoList type_list = make_type_list<int, int>();
         SharedArgTransporter transporter;
-        transporter.write_args(type_list, buffer, arg_list);
+        transporter.write_args(type_list, buffer, &arg_list[0]);
         CHECK_EQUAL(1234, *(int*)&(buffer[0]));  // check arg written
         CHECK_EQUAL(5678, *(int*)&(buffer[4]));  // check arg written
         CHECK_EQUAL(99, buffer[8]);        // check sentry
@@ -51,7 +51,8 @@ SUITE(TestArgTransporter)
         SharedArgTransporter transporter;
         std::pair<ExprPtr, void*> result =
             transporter.read_value(arg_type, buffer);
-        int result_value = EvalAs<int>::value(result.first);
+        ExprPtr warden;
+        int result_value = EvalAs<int>::value(result.first, warden);
         CHECK_EQUAL(1234, result_value);  // check arg written
         CHECK_EQUAL(99, buffer[4]);        // check sentry
         CHECK_EQUAL((void*)&(buffer[4]), result.second);
@@ -65,9 +66,10 @@ SUITE(TestArgTransporter)
         buffer[8] = 99;             // sentry value
         TypeInfoList type_list = make_type_list<int, int>();
         SharedArgTransporter transporter;
-        ArgList arg_list = transporter.read_args(type_list, buffer);
-        int value1 = EvalAs<int>::value(arg_list[0]);
-        int value2 = EvalAs<int>::value(arg_list[1]);
+        ExprPtr warden[2];
+        std::vector<ExprPtr> arg_list = transporter.read_args(type_list, buffer);
+        int value1 = EvalAs<int>::value(arg_list[0], warden[0]);
+        int value2 = EvalAs<int>::value(arg_list[1], warden[1]);
         CHECK_EQUAL(1234, value1);  // check arg written
         CHECK_EQUAL(5678, value2);  // check arg written
         CHECK_EQUAL(99, buffer[8]);        // check sentry

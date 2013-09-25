@@ -6,12 +6,10 @@
 
 #include "LikeMagic/Interprocess/AbstractSharedArgMarshaller.hpp"
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
+#include "LikeMagic/Exprs/Expr.hpp"
 
 namespace LM {
     class TypeSystem;
-    class Expr;
-    typedef boost::intrusive_ptr<Expr> ExprPtr;
-    typedef std::vector<ExprPtr> ArgList;
 
 class SharedArgTransporter
 {
@@ -43,7 +41,7 @@ public:
     void write_args(TypeInfoList arg_types, void* buffer, ArgList args);
     void* write_value(TypeIndex arg_type, void* location, ExprPtr arg);
 
-    ArgList read_args(TypeInfoList arg_types, void* buffer);
+    std::vector<ExprPtr> read_args(TypeInfoList arg_types, void* buffer);
     std::pair<ExprPtr, void*> read_value(TypeIndex arg_type, void* location);
 };
 

@@ -3,20 +3,20 @@
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
 
 template <typename T>
-LM::ArgList make_arg_list(T value)
+std::vector<LM::ExprPtr> make_arg_list(T value)
 {
     LM::ExprPtr term = LM::Term<T>::create(value);
-    LM::ArgList arg_list;
+    std::vector<LM::ExprPtr> arg_list;
     arg_list.push_back(term);
     return arg_list;
 }
 
 template <typename T, typename U>
-LM::ArgList make_arg_list(T value, U other_value)
+std::vector<LM::ExprPtr> make_arg_list(T value, U other_value)
 {
     LM::ExprPtr term = LM::Term<T>::create(value);
     LM::ExprPtr other_term = LM::Term<T>::create(other_value);
-    LM::ArgList arg_list;
+    std::vector<LM::ExprPtr> arg_list;
     arg_list.push_back(term);
     arg_list.push_back(other_term);
     return arg_list;

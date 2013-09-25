@@ -12,6 +12,9 @@
 
 #include <stdexcept>
 
+#include <iostream>
+using namespace std;
+
 namespace LM {
 
 void intrusive_ptr_add_ref(Expr* p)
@@ -61,7 +64,8 @@ void Expr::mark() const
 {
     if (EvalAs<IMarkable const*>::has_conv(this))
     {
-        EvalAs<IMarkable const*>::value(const_cast<Expr*>(this))->mark();
+        ExprPtr warden;
+        EvalAs<IMarkable const*>::value(const_cast<Expr*>(this), warden)->mark();
     }
 }
 

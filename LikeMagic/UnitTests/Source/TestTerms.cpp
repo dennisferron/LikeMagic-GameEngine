@@ -54,7 +54,7 @@ SUITE(TestTerms)
         ASSERT_NOT_NULL(class_slot);
 
         std::vector<ExprPtr> constr_args;
-        ExprPtr class_expr = class_slot->call(nullptr, constr_args);
+        ExprPtr class_expr = class_slot->call(nullptr, &constr_args[0]);
         ASSERT_NOT_NULL(class_expr);
 
         TypeMirror const* class_mirror = type_system->get_class(class_expr->get_type());
@@ -64,11 +64,12 @@ SUITE(TestTerms)
         args.push_back(Term<int>::create(99));
         auto* method = class_mirror->get_method("new", args.size());
         ASSERT_NOT_NULL(method);
-        ExprPtr result = method->call(nullptr, args);
+        ExprPtr result = method->call(nullptr, &args[0]);
         ASSERT_NOT_NULL(result);
         CHECK(EvalAs<ConstructorTestClass>::has_conv(result.get()));
-        CHECK_EQUAL(99, EvalAs<ConstructorTestClass>::value(result).value);
-        delete EvalAs<ConstructorTestClass const*>::value(result);
+        ExprPtr warden;
+        CHECK_EQUAL(99, EvalAs<ConstructorTestClass>::value(result, warden).value);
+        delete EvalAs<ConstructorTestClass const*>::value(result, warden);
     }
 
     TEST(TermDestructor)

@@ -72,7 +72,7 @@
 		<Unit filename="Include/LikeMagic/CallTargets/ConstructorTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/Delegate.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/DelegateCallTarget.hpp" />
-		<Unit filename="Include/LikeMagic/CallTargets/DestructorCallTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/DeleterCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ExprTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ExtensionMethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldGetterTarget.hpp" />
@@ -142,6 +142,7 @@
 		<Unit filename="Source/BetterTypeInfo.cpp" />
 		<Unit filename="Source/BottomPtrTypeInfo.cpp" />
 		<Unit filename="Source/CallTarget.cpp" />
+		<Unit filename="Source/DeleterCallTarget.cpp" />
 		<Unit filename="Source/Expr.cpp" />
 		<Unit filename="Source/ExprTarget.cpp" />
 		<Unit filename="Source/IMarkable.cpp" />

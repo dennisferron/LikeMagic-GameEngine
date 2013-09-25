@@ -30,11 +30,12 @@ private:
     template<typename R_, int... Indices>
     ExprPtr build_method_call(ExprPtr target, ArgList args, TypePack<R_>, IndexPack<Indices...>) const
     {
-        if (args.size() != sizeof...(Indices))
-            throw std::logic_error("Wrong number of arguments.");
+        ExprPtr target_warden;
+        ExprPtr wardens[sizeof...(Args)];
 
         ExprPtr result = Term<R>::create(
-            (*func_ptr)(EvalAs<FirstArg>::value(target), EvalAs<Args>::value(args[Indices])...)
+            (*func_ptr)(EvalAs<FirstArg>::value(target, target_warden),
+                EvalAs<Args>::value(args[Indices], wardens[Indices])...)
         );
 
         return result;
@@ -45,10 +46,11 @@ private:
     ExprPtr
     build_method_call(ExprPtr target, ArgList args, TypePack<void>, IndexPack<Indices...>) const
     {
-        if (args.size() != sizeof...(Indices))
-            throw std::logic_error("Wrong number of arguments.");
+        ExprPtr target_warden;
+        ExprPtr wardens[sizeof...(Args)];
 
-        (*func_ptr)(EvalAs<FirstArg>::value(target), EvalAs<Args>::value(args[Indices])...);
+        (*func_ptr)(EvalAs<FirstArg>::value(target, target_warden),
+            EvalAs<Args>::value(args[Indices], wardens[Indices])...);
 
         return 0;
     }

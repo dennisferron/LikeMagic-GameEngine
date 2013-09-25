@@ -30,11 +30,8 @@ void SharedArgTransporter::add_marshaller(TypeIndex type, ArgMarshaller marshall
 
 void SharedArgTransporter::write_args(TypeInfoList arg_types, void* buffer, ArgList args)
 {
-    if (arg_types.size() != args.size())
-        throw std::logic_error("Number of args passed does not match number of args of the method.");
-
     void* location = (char*)buffer;
-    for (size_t i=0; i<args.size(); ++i)
+    for (size_t i=0; i<arg_types.size(); ++i)
     {
         ExprPtr arg = args[i];
         TypeIndex arg_type = arg_types[i];
@@ -49,9 +46,9 @@ void* SharedArgTransporter::write_value(TypeIndex arg_type, void* location, Expr
     return marshaller.size() + (char*)location;
 }
 
-ArgList SharedArgTransporter::read_args(TypeInfoList arg_types, void* buffer)
+std::vector<ExprPtr> SharedArgTransporter::read_args(TypeInfoList arg_types, void* buffer)
 {
-    ArgList arg_list;
+    std::vector<ExprPtr> arg_list;
     void* location = (char*)buffer;
     for (TypeIndex arg_type : arg_types)
     {

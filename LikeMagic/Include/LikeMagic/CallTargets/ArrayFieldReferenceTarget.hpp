@@ -33,10 +33,12 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
+        ExprPtr warden;
+        ExprPtr target_warden;
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate* target_obj = EvalAs<Delegate*>::value(target_check);
+        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_warden);
         return new Reference(
-            &((target_obj->*f_ptr)[EvalAs<size_t>::value(args[0])]), TypId<R>::get(), target);
+            &((target_obj->*f_ptr)[EvalAs<size_t>::value(args[0], warden)]), TypId<R>::get(), target);
     }
 
     virtual TypeInfoList const& get_arg_types() const

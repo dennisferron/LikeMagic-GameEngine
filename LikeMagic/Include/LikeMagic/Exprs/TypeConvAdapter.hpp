@@ -11,6 +11,8 @@
 #include "LikeMagic/Exprs/Expr.hpp"
 #include "LikeMagic/TypeSystem.hpp"
 
+#include <iostream>
+
 namespace LM {
 
 // Adapts an expression of one type so that it can be used as another type.
@@ -21,8 +23,15 @@ private:
     ExprPtr from_expr;
     ConvImpl const& conv;
 
-    TypeConvAdapter(ExprPtr expr, ConvImpl const& conv_) : Expr(nullptr, TypId<To>::get()), from_expr(expr), conv(conv_)
+    TypeConvAdapter(ExprPtr expr, ConvImpl const& conv_)
+        : Expr(nullptr, TypId<To>::get()), from_expr(expr), conv(conv_)
     {
+        std::cout << "TypeConvAdapter() " << this << " / " << from_expr.get() << std::endl;
+    }
+
+    ~TypeConvAdapter()
+    {
+        std::cout << "~TypeConvAdapter  " << this << " / " << from_expr.get() << std::endl;
     }
 
 public:

@@ -431,7 +431,7 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
             }
         }
 
-        auto result = method->call(expr, args);
+        auto result = method->call(expr, &args[0]);
         IoObject* result_obj = iovm->to_script(self, locals, m, result);
 
         return result_obj;

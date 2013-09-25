@@ -181,7 +181,7 @@ CallReturn RequestBroker::call(ProcessControlStructure* target_pcs, ObjectHandle
     request_args.object_handle = 0;
 
     // In this demo there's only a single int arg.
-    request_args.args_count = args.size();
+    request_args.args_count = arg_types.size();
 
     transporter.write_args(arg_types, request_args.args_buffer, args);
 

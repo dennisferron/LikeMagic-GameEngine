@@ -56,12 +56,12 @@ template <typename T> struct EvalAs // by value
 {
     EvalAs() = delete;
 
-    inline static T const& value(ExprPtr from)
+    inline static T const& value(ExprPtr from, ExprPtr& warden)
     {
-        return *EvalAs<T const*>::value(from);
+        return *EvalAs<T const*>::value(from, warden);
     }
 
-    inline static bool has_conv(LM::Expr const* from)
+    inline static bool has_conv(Expr const* from)
     {
         return EvalAs<T const*>::has_conv(from);
     }
@@ -71,11 +71,10 @@ template <typename T> struct EvalAs<T const*> // by const ptr
 {
     EvalAs() = delete;
 
-    inline static T const* value(ExprPtr from)
+    inline static T const* value(ExprPtr from, ExprPtr& warden)
     {
-        return reinterpret_cast<T const*>(
-            type_system->try_conv(from, LM::TypId<T const*>::get())
-              ->get_value_ptr().as_const);
+        warden = type_system->try_conv(from, LM::TypId<T const*>::get());
+        return reinterpret_cast<T const*>(warden->get_value_ptr().as_const);
     }
 
     inline static bool has_conv(LM::Expr const* from)
@@ -89,11 +88,10 @@ template <typename T> struct EvalAs<T*> // by nonconst ptr
 {
     EvalAs() = delete;
 
-    inline static T* value(ExprPtr from)
+    inline static T* value(ExprPtr from, ExprPtr& warden)
     {
-        return reinterpret_cast<T*>(
-              type_system->try_conv(from, LM::TypId<T*>::get())
-                ->get_value_ptr().as_nonconst);
+        warden = type_system->try_conv(from, LM::TypId<T*>::get());
+        return reinterpret_cast<T*>(warden->get_value_ptr().as_nonconst);
     }
 
     inline static bool has_conv(LM::Expr const* from)
@@ -107,12 +105,12 @@ template <typename T> struct EvalAs<T const&> // by const ref
 {
     EvalAs() = delete;
 
-    inline static T const& value(ExprPtr from)
+    inline static T const& value(ExprPtr from, ExprPtr& warden)
     {
-        return *EvalAs<T const*>::value(from);
+        return *EvalAs<T const*>::value(from, warden);
     }
 
-    inline static bool has_conv(LM::Expr const* from)
+    inline static bool has_conv(Expr const* from)
     {
         return type_system->has_conv(from->get_type(),
              LM::TypId<T const*>::get());
@@ -123,12 +121,12 @@ template <typename T> struct EvalAs<T&> // by nonconst ref
 {
     EvalAs() = delete;
 
-    inline static T& value(ExprPtr from)
+    inline static T& value(ExprPtr from, ExprPtr& warden)
     {
-        return *EvalAs<T*>::value(from);
+        return *EvalAs<T*>::value(from, warden);
     }
 
-    inline static bool has_conv(LM::Expr const* from)
+    inline static bool has_conv(Expr const* from)
     {
         return type_system->has_conv(from->get_type(),
              LM::TypId<T*>::get());

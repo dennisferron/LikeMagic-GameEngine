@@ -17,6 +17,12 @@ ConvTestStruct* create_test_struct()
     return new ConvTestStruct();
 }
 
+struct WrapExprTestStruct
+{
+    bool& is_constructed;
+    bool& is_destructed;
+};
+
 void add_typesystem_test_bindings()
 {
     auto& global_ns = type_system->global_namespace();
@@ -39,14 +45,17 @@ SUITE(TestTypeSystem)
     {
         ExprPtr term = Term<int>::create(1234);
         CHECK(EvalAs<int>::has_conv(term.get()));
-        CHECK_EQUAL(1234, EvalAs<int>::value(term));
+        ExprPtr warden;
+        CHECK_EQUAL(1234, EvalAs<int>::value(term, warden));
     }
 
     TEST(ConvIntToDouble)
     {
         ExprPtr term = Term<int>::create(1234);
         CHECK(EvalAs<double>::has_conv(term.get()));
-        CHECK_CLOSE(1234.0, EvalAs<double>::value(term), 0.01);
+        ExprPtr warden;
+        double result = EvalAs<double>::value(term, warden);
+        CHECK_CLOSE(1234.0, result, 0.01);
     }
 
     TEST(HasConvTestStruct)
@@ -62,7 +71,7 @@ SUITE(TestTypeSystem)
         std::vector<ExprPtr> args;
         auto* method = type_mirror->get_method("create_test_struct", args.size());
         ASSERT_NOT_NULL(method);
-        ExprPtr result = method->call(nullptr, args);
+        ExprPtr result = method->call(nullptr, &args[0]);
         ASSERT_NOT_NULL(result);
         CHECK(EvalAs<ConvTestStruct>::has_conv(result.get()));
     }

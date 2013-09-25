@@ -31,10 +31,12 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
+        ExprPtr warden;
+        ExprPtr target_warden;
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate* target_obj = EvalAs<Delegate*>::value(target_check);
+        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_warden);
         return Term<R>::create(
-            (target_obj->*f_ptr)[EvalAs<size_t>::value(args[0])]);
+            (target_obj->*f_ptr)[EvalAs<size_t>::value(args[0], warden)]);
     }
 
     virtual TypeInfoList const& get_arg_types() const

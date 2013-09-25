@@ -86,10 +86,11 @@ SUITE(TestBinding)
         std::vector<ExprPtr> args;
         auto* method = type_mirror->get_method("FuncInt", args.size());
         ASSERT_NOT_NULL(method);
-        ExprPtr result = method->call(term, args);
+        ExprPtr result = method->call(term, &args[0]);
         ASSERT_NOT_NULL(result);
         CHECK(EvalAs<int>::has_conv(result.get()));
-        CHECK_EQUAL(99, EvalAs<int>::value(result));
+        ExprPtr warden;
+        CHECK_EQUAL(99, EvalAs<int>::value(result, warden));
     }
 
     TEST(CallIntInt)
@@ -101,10 +102,11 @@ SUITE(TestBinding)
         args.push_back(Term<int>::create(100));
         auto* method = type_mirror->get_method("FuncIntInt", args.size());
         ASSERT_NOT_NULL(method);
-        ExprPtr result = method->call(term, args);
+        ExprPtr result = method->call(term, &args[0]);
         ASSERT_NOT_NULL(result);
         CHECK(EvalAs<int>::has_conv(result.get()));
-        CHECK_EQUAL(101, EvalAs<int>::value(result));
+        ExprPtr warden;
+        CHECK_EQUAL(101, EvalAs<int>::value(result, warden));
     }
 
     TEST(CallStaticIntInt)
@@ -116,10 +118,11 @@ SUITE(TestBinding)
         args.push_back(Term<int>::create(33));
         auto* method = type_mirror->get_method("StaticFuncIntInt", args.size());
         ASSERT_NOT_NULL(method);
-        ExprPtr result = method->call(term, args);
+        ExprPtr result = method->call(term, &args[0]);
         ASSERT_NOT_NULL(result);
         CHECK(EvalAs<int>::has_conv(result.get()));
-        CHECK_EQUAL(66, EvalAs<int>::value(result));
+        ExprPtr warden;
+        CHECK_EQUAL(66, EvalAs<int>::value(result, warden));
     }
 
     TEST(CallNsIntInt)
@@ -132,10 +135,11 @@ SUITE(TestBinding)
         args.push_back(Term<int>::create(11));
         auto* method = type_mirror->get_method("NsFuncIntInt", args.size());
         ASSERT_NOT_NULL(method);
-        ExprPtr result = method->call(nullptr, args);
+        ExprPtr result = method->call(nullptr, &args[0]);
         ASSERT_NOT_NULL(result);
         CHECK(EvalAs<int>::has_conv(result.get()));
-        CHECK_EQUAL(21, EvalAs<int>::value(result));
+        ExprPtr warden;
+        CHECK_EQUAL(21, EvalAs<int>::value(result, warden));
     }
 
     TEST(CallNestedFuncInt)
@@ -148,10 +152,11 @@ SUITE(TestBinding)
         std::vector<ExprPtr> args;
         auto* method = type_mirror->get_method("NestedFuncIntInt", args.size());
         ASSERT_NOT_NULL(method);
-        ExprPtr result = method->call(nullptr, args);
+        ExprPtr result = method->call(nullptr, &args[0]);
         ASSERT_NOT_NULL(result);
         CHECK(EvalAs<int>::has_conv(result.get()));
-        CHECK_EQUAL(43, EvalAs<int>::value(result));
+        ExprPtr warden;
+        CHECK_EQUAL(43, EvalAs<int>::value(result, warden));
     }
 
     TEST(DiscernNsFuncInt)
@@ -184,20 +189,22 @@ SUITE(TestBinding)
         CHECK(type_mirror2 != type_mirror3);
         CHECK(method2 != method3);
 
-        ExprPtr result1 = method1->call(nullptr, args);
+        ExprPtr warden;
+
+        ExprPtr result1 = method1->call(nullptr, &args[0]);
         ASSERT_NOT_NULL(result1);
         CHECK(EvalAs<int>::has_conv(result1.get()));
-        CHECK_EQUAL(11, EvalAs<int>::value(result1));
+        CHECK_EQUAL(11, EvalAs<int>::value(result1, warden));
 
-        ExprPtr result2 = method2->call(nullptr, args);
+        ExprPtr result2 = method2->call(nullptr, &args[0]);
         ASSERT_NOT_NULL(result2);
         CHECK(EvalAs<int>::has_conv(result2.get()));
-        CHECK_EQUAL(22, EvalAs<int>::value(result2));
+        CHECK_EQUAL(22, EvalAs<int>::value(result2, warden));
 
-        ExprPtr result3 = method3->call(nullptr, args);
+        ExprPtr result3 = method3->call(nullptr, &args[0]);
         ASSERT_NOT_NULL(result3);
         CHECK(EvalAs<int>::has_conv(result3.get()));
-        CHECK_EQUAL(33, EvalAs<int>::value(result3));
+        CHECK_EQUAL(33, EvalAs<int>::value(result3, warden));
     }
 
     TEST(DiscernNsFuncIntUsingGetNamespace)
@@ -226,19 +233,21 @@ SUITE(TestBinding)
         CHECK(type_mirror2 != type_mirror3);
         CHECK(method2 != method3);
 
-        ExprPtr result1 = method1->call(nullptr, args);
+        ExprPtr warden;
+
+        ExprPtr result1 = method1->call(nullptr, &args[0]);
         ASSERT_NOT_NULL(result1);
         CHECK(EvalAs<int>::has_conv(result1.get()));
-        CHECK_EQUAL(11, EvalAs<int>::value(result1));
+        CHECK_EQUAL(11, EvalAs<int>::value(result1, warden));
 
-        ExprPtr result2 = method2->call(nullptr, args);
+        ExprPtr result2 = method2->call(nullptr, &args[0]);
         ASSERT_NOT_NULL(result2);
         CHECK(EvalAs<int>::has_conv(result2.get()));
-        CHECK_EQUAL(22, EvalAs<int>::value(result2));
+        CHECK_EQUAL(22, EvalAs<int>::value(result2, warden));
 
-        ExprPtr result3 = method3->call(nullptr, args);
+        ExprPtr result3 = method3->call(nullptr, &args[0]);
         ASSERT_NOT_NULL(result3);
         CHECK(EvalAs<int>::has_conv(result3.get()));
-        CHECK_EQUAL(33, EvalAs<int>::value(result3));
+        CHECK_EQUAL(33, EvalAs<int>::value(result3, warden));
     }
 }
