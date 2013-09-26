@@ -61,7 +61,7 @@ struct TypId
     TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
     static TypeIndex get()
     {
-        return TypeInfoCache::get_instance()->get_index(
+        return type_info_cache_instance->get_index(
             new BetterTypeInfo(&typeid(T), false, false));
     }
 };
@@ -73,7 +73,7 @@ struct TypId<T const>
     TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
     static TypeIndex get()
     {
-        return TypeInfoCache::get_instance()->get_index(
+        return type_info_cache_instance->get_index(
             new BetterTypeInfo(&typeid(T), true, false));
     }
 };
@@ -85,7 +85,7 @@ struct TypId<T*>
     TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
     static TypeIndex get()
     {
-        return TypeInfoCache::get_instance()->get_index(
+        return type_info_cache_instance->get_index(
             new BetterTypeInfo(&typeid(T), false, true));
     }
 };
@@ -97,7 +97,7 @@ struct TypId<T const*>
     TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
     static TypeIndex get()
     {
-        return TypeInfoCache::get_instance()->get_index(
+        return type_info_cache_instance->get_index(
                 new BetterTypeInfo(&typeid(T), true, true));
     }
 };
@@ -109,7 +109,7 @@ struct TypId<T&>
     TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
     static TypeIndex get()
     {
-        return TypeInfoCache::get_instance()->get_index(
+        return type_info_cache_instance->get_index(
                 new BetterTypeInfo(&typeid(T), false, true));
     }
 };
@@ -121,7 +121,7 @@ struct TypId<T const&>
     TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
     static TypeIndex get()
     {
-        return TypeInfoCache::get_instance()->get_index(
+        return type_info_cache_instance->get_index(
                 new BetterTypeInfo(&typeid(T), true, true));
     }
 };

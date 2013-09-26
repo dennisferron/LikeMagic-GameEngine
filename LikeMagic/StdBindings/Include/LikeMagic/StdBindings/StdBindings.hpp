@@ -6,6 +6,10 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
+#ifdef BUILDING_DLL_STD_BINDINGS
+    #define BUILDING_DLL
+#endif
+#include "LikeMagic/Utility/DLLHelper.hpp"
 
 #pragma once
 
@@ -15,6 +19,6 @@ class TypeSystem;
 
 // You don't call this directly; you call create_typesystem and it calls this.
 // Static member function create_typesystem is DLL_PUBLIC instead of this function.
-void add_bindings();
+DLL_PUBLIC void add_bindings();
 
 }

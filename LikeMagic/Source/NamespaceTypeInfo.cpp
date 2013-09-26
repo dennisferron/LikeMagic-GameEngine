@@ -41,9 +41,7 @@ TypeInfoPtr NamespaceTypeInfo::create(std::string namespace_name) { return new N
 TypeIndex NamespaceTypeInfo::create_index(std::string namespace_name)
 {
     TypeInfoPtr info = create(namespace_name);
-    return TypeInfoCache::get_instance()->get_index(
-            info, info
-    );
+    return type_info_cache_instance->get_index(info, info);
 }
 
 std::string NamespaceTypeInfo::description() const

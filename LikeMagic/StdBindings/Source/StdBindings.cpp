@@ -50,6 +50,15 @@ add_conv<type const&, double const&, NumberConv>();
 #define add_all_num_conv_impl(r, data, elem) add_num_conv(elem);
 #define add_all_num_conv(SEQ) BOOST_PP_SEQ_FOR_EACH(add_all_num_conv_impl,, SEQ)
 
+#define BUILDING_DLL
+#include "LikeMagic/Utility/TypeInfoCache.hpp"
+
+namespace LM {
+    DLL_PUBLIC TypeSystem* create_type_system() { return new TypeSystem(); }
+    DLL_PUBLIC TypeSystem* type_system = NULL;
+    DLL_PUBLIC TypeInfoCache* type_info_cache_instance = NULL;
+}
+
 using namespace LM;
 using namespace std;
 
@@ -85,7 +94,7 @@ void at_put(vector<T>& target, size_t pos, T const& value)
     target.at(pos) = value;
 }
 
-void LM::add_bindings()
+DLL_PUBLIC void LM::add_bindings()
 {
     TypeMirror& global_ns = type_system->global_namespace();
     TypeMirror& ns_std = register_namespace("std", global_ns);

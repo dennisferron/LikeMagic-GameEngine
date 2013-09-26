@@ -34,7 +34,7 @@ AbstractTypeInfo::~AbstractTypeInfo()
 
 TypeIndex AbstractTypeInfo::get_index() const
 {
-    return TypeInfoCache::get_instance()->get_index(this, this->class_type());
+    return type_info_cache_instance->get_index(this, this->class_type());
 }
 
 std::size_t hash_value(AbstractTypeInfo const& info)

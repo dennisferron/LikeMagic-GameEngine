@@ -11,12 +11,16 @@
 #include "LikeMagic/Utility/TypeIndex.hpp"
 #include "LikeMagic/Utility/KeyWrapper.hpp"
 
+#ifdef BUILDING_DLL_STD_BINDINGS
+    #define BUILDING_DLL
+#endif
+#include "LikeMagic/Utility/DLLHelper.hpp"
+
 namespace LM {
 
 class TypeInfoCache
 {
 private:
-    static TypeInfoCache* instance;
     std::map<KeyWrapper<AbstractTypeInfo>, TypeIndex> info_to_index;
     std::vector<TypeInfoPtr> index_to_info;
 
@@ -26,12 +30,9 @@ public:
     TypeIndex get_index(TypeInfoPtr candidate);
     TypeInfoPtr get_info(TypeIndex id) const;
 
-    // I'm not a fan of singletons but in this case it makes sense.
-    static TypeInfoCache* get_instance();
-    static void set_instance(TypeInfoCache* instance_);
-
     void debug_dump();
 };
 
+DLL_PUBLIC extern TypeInfoCache* type_info_cache_instance;
 
 }

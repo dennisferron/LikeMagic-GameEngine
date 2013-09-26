@@ -32,11 +32,6 @@ using namespace std;
 
 using namespace LM;
 
-namespace LM {
-    TypeSystem* create_type_system() { return new TypeSystem(); }
-    TypeSystem* type_system = NULL;
-}
-
 struct TypeSystem::Impl
 {
     boost::unordered_map<TypeIndex, TypeMirror*> classes;
@@ -86,7 +81,7 @@ struct TypeSystem::Impl
 TypeSystem::TypeSystem()
     : impl(new TypeSystem::Impl)
 {
-    TypeInfoCache::set_instance(&(impl->type_info_cache));
+    type_info_cache_instance = &(impl->type_info_cache);
 
     TypeIndex ns_type = NamespaceTypeInfo::create_index("");
     impl->global_namespace = new TypeMirror("", 0, ns_type);

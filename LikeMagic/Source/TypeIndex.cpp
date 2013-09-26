@@ -6,7 +6,7 @@ using namespace LM;
 
 TypeInfoPtr TypeIndex::get_info() const
 {
-    return TypeInfoCache::get_instance()->get_info(*this);
+    return type_info_cache_instance->get_info(*this);
 }
 
 std::string TypeIndex::description() const

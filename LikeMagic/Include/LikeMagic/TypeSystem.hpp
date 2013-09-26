@@ -13,6 +13,11 @@
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
 
+#ifdef BUILDING_DLL_STD_BINDINGS
+    #define BUILDING_DLL
+#endif
+#include "LikeMagic/Utility/DLLHelper.hpp"
+
 namespace LM {
 
 class Expr;
@@ -23,13 +28,13 @@ class AbstractTypeConverter;
 typedef boost::intrusive_ptr<AbstractTypeConverter const> p_conv_t;
 
 class TypeSystem;
-TypeSystem* create_type_system();
+DLL_PUBLIC TypeSystem* create_type_system();
 
 class TypeSystem
 {
 private:
     TypeSystem();
-    friend TypeSystem* create_type_system();
+    friend DLL_PUBLIC TypeSystem* create_type_system();
 
     struct Impl;
     boost::shared_ptr<Impl> impl;
@@ -50,7 +55,7 @@ public:
     virtual TypeMirror& global_namespace() const;
 };
 
-extern TypeSystem* type_system;
+DLL_PUBLIC extern TypeSystem* type_system;
 
 template <typename T> struct EvalAs // by value
 {

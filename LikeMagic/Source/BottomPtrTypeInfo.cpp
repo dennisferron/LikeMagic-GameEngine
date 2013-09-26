@@ -35,9 +35,7 @@ TypeInfoPtr BottomPtrTypeInfo::create() { return new BottomPtrTypeInfo(); }
 TypeIndex BottomPtrTypeInfo::create_index()
 {
     TypeInfoPtr info = create();
-    return TypeInfoCache::get_instance()->get_index(
-            info, info
-    );
+    return type_info_cache_instance->get_index(info, info);
 }
 
 std::string BottomPtrTypeInfo::description() const

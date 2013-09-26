@@ -9,28 +9,12 @@
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 #include "LikeMagic/Utility/TypeInfoCache.hpp"
 
+#ifdef BUILDING_DLL_STD_BINDINGS
+    #define BUILDING_DLL
+#endif
+#include "LikeMagic/Utility/DLLHelper.hpp"
+
 namespace LM {
-
-TypeInfoCache* TypeInfoCache::instance = NULL;
-
-void TypeInfoCache::set_instance(TypeInfoCache* instance_)
-{
-    bool is_null = (instance == NULL);
-    bool is_same = ((void*)instance == (void*)instance_);
-
-    if (!is_null && !is_same)
-        throw std::logic_error("Error: TypeInfoCache already exists.");
-
-    instance = instance_;
-}
-
-TypeInfoCache* TypeInfoCache::get_instance()
-{
-    if (!instance)
-        throw std::logic_error("Error:  TypeInfoCache instance has not been created yet!");
-
-    return instance;
-}
 
 TypeIndex TypeInfoCache::get_index(TypeInfoPtr candidate)
 {

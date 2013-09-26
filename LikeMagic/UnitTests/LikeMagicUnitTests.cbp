@@ -14,12 +14,17 @@
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-g" />
+					<Add option="-DUSE_DLL_BUILD" />
 				</Compiler>
 				<Linker>
 					<Add library="..\StdBindings\libStdBindings-Windows.a" />
 					<Add library="..\libLikeMagic-Windows.a" />
 					<Add library="..\..\Common\UnitTest++\bin\Debug\libUnitTest++.a" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cmd /c copy /y ..\StdBindings\*.dll bin\Debug" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Debug Mac">
 				<Option output="bin/Debug/LikeMagicUnitTests" prefix_auto="1" extension_auto="1" />
