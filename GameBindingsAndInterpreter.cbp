@@ -99,7 +99,7 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DNO_USE_DMALLOC" />
-					<Add option="-DNO_USE_DLL_BUILD" />
+					<Add option="-DUSE_DLL_BUILD" />
 					<Add option="-D_DEBUG" />
 					<Add option="-DWIN32" />
 					<Add option="-D_WINDOWS" />
@@ -119,6 +119,10 @@
 					<Add library=".\libBullet.a" />
 					<Add library="Deps\irrlicht-1.8\lib\Win32-gcc\libIrrlicht.a" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cmd /c copy /y LikeMagic\StdBindings\*.dll bin\Debug" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 		</Build>
 		<Compiler>
