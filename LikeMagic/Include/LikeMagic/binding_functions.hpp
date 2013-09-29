@@ -33,7 +33,7 @@
 
 namespace LM {
 
-std::string create_constructor_name(std::string prefix, std::string method_name);
+LIKEMAGIC_API std::string create_constructor_name(std::string prefix, std::string method_name);
 
 template <typename From, typename To,
     template <typename From, typename To>
@@ -80,7 +80,6 @@ void add_base(TypeMirror& class_, TypeMirror const& base_class)
     add_conv<T*, Base*, Converter>();
 }
 
-
 template <typename ObjT, typename R, typename... Args>
 void bind_method(TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...))
 {
@@ -103,7 +102,7 @@ void bind_method(TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args.
            class_.get_class_type()));
 }
 
-
+/*
 #ifdef LM_BINDING_FUNCTIONS_CPP
 #define LM_DEF_BIND_METHOD_IMPL(RTYPE, ARGTYPE) \
 void bind_method_impl(TypeMirror& class_, std::string method_name, RTYPE (Delegate::*f)(ARGTYPE)) { \
@@ -135,6 +134,7 @@ LM_DECL_BIND_METHOD(void, int)
 LM_DECL_BIND_METHOD(void, unsigned int)
 LM_DECL_BIND_METHOD(void, float)
 LM_DECL_BIND_METHOD(void, double)
+*/
 
 template <typename R, typename... Args>
 void bind_static_method(TypeMirror& class_, std::string method_name, R (*f)(Args...))
@@ -199,7 +199,7 @@ TypeMirror& register_class(std::string name, TypeMirror& namespace_)
         return *(type_system->get_class(class_type));
     else
     {
-        auto result = new TypeMirror(name, sizeof(T), class_type);
+        auto result = create_type_mirror(name, sizeof(T), class_type);
         type_system->add_class(class_type, result, namespace_);
 
         result->set_deleter(
@@ -221,6 +221,6 @@ TypeMirror& register_enum(std::string name, TypeMirror& namespace_)
     return result;
 }
 
-TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespace_);
+LIKEMAGIC_API TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespace_);
 
 }

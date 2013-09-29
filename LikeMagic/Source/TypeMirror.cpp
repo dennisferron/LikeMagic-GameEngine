@@ -24,7 +24,50 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 using namespace LM;
 using namespace std;
 
-struct TypeMirror::Impl
+LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type);
+
+class TypeMirrorImpl : private TypeMirror
+{
+private:
+    struct Impl;
+    boost::shared_ptr<Impl> impl;
+
+    TypeMirrorImpl(TypeMirrorImpl const&) = delete;
+    TypeMirrorImpl& operator =(TypeMirrorImpl const&) = delete;
+
+    friend void suggest_method(TypeMirror& type_, std::string method_name, int num_args);
+    friend LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type);
+
+public:
+
+    TypeMirrorImpl(std::string class_name, size_t instance_size, TypeIndex class_type);
+    virtual ~TypeMirrorImpl();
+
+    virtual std::string get_class_name() const;
+
+    virtual CallTarget* get_method(std::string method_name, int num_args, bool in_base_class=false) const;
+    virtual void add_method(std::string method_name, CallTarget* method);
+
+    // support inheritance
+    virtual void add_base(TypeMirror const* base);
+    virtual bool has_base(TypeMirror const* base) const;
+
+    virtual TypeIndex get_class_type() const;
+
+    virtual size_t get_instance_size() const;
+
+    virtual void suggest_method(std::string method_name, int num_args) const;
+
+    virtual void try_delete(Expr const* expr) const;
+    virtual void set_deleter(std::unique_ptr<AbstractTermDeleter const> deleter);
+};
+
+LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type)
+{
+    return new TypeMirrorImpl(class_name, instance_size, class_type);
+}
+
+struct TypeMirrorImpl::Impl
 {
     boost::unordered_map<std::string, TypeMirror const*> bases;
     std::string name;
@@ -35,8 +78,8 @@ struct TypeMirror::Impl
     std::unique_ptr<AbstractTermDeleter const> term_deleter;
 };
 
-TypeMirror::TypeMirror(std::string name, size_t instance_size, TypeIndex class_type)
-    : impl(new TypeMirror::Impl)
+TypeMirrorImpl::TypeMirrorImpl(std::string name, size_t instance_size, TypeIndex class_type)
+    : impl(new TypeMirrorImpl::Impl)
 {
     impl->name = name;
     impl->class_type = class_type;
@@ -47,12 +90,12 @@ TypeMirror::TypeMirror(std::string name, size_t instance_size, TypeIndex class_t
     add_method("unsafe_ptr_cast", ptr_caster);
 }
 
-void TypeMirror::set_deleter(std::unique_ptr<AbstractTermDeleter const> deleter)
+void TypeMirrorImpl::set_deleter(std::unique_ptr<AbstractTermDeleter const> deleter)
 {
     impl->term_deleter = std::move(deleter);
 }
 
-TypeMirror::~TypeMirror()
+TypeMirrorImpl::~TypeMirrorImpl()
 {
     for (auto it=impl->methods.begin(); it != impl->methods.end(); it++)
     {
@@ -62,7 +105,7 @@ TypeMirror::~TypeMirror()
     }
 }
 
-void TypeMirror::try_delete(Expr const* expr) const
+void TypeMirrorImpl::try_delete(Expr const* expr) const
 {
     if (impl->term_deleter == nullptr)
         throw std::logic_error("No deleter registered for " + this->get_class_type().description());
@@ -70,7 +113,7 @@ void TypeMirror::try_delete(Expr const* expr) const
     impl->term_deleter->delete_if_possible(expr->get_value_ptr().as_const);
 }
 
-void TypeMirror::add_method(std::string method_name, CallTarget* method)
+void TypeMirrorImpl::add_method(std::string method_name, CallTarget* method)
 {
     int num_args = method->get_arg_types().size();
 
@@ -91,7 +134,7 @@ void TypeMirror::add_method(std::string method_name, CallTarget* method)
     }
 }
 
-void TypeMirror::suggest_method(std::string method_name, int num_args) const
+void TypeMirrorImpl::suggest_method(std::string method_name, int num_args) const
 {
     auto candidates = impl->methods.find(method_name);
 
@@ -145,7 +188,7 @@ void TypeMirror::suggest_method(std::string method_name, int num_args) const
     }
 }
 
-CallTarget* TypeMirror::get_method(std::string method_name, int num_args, bool in_base_class) const
+CallTarget* TypeMirrorImpl::get_method(std::string method_name, int num_args, bool in_base_class) const
 {
     // First try to find the name and arg number method in this class.
     auto name_iter = impl->methods.find(method_name);
@@ -180,7 +223,7 @@ CallTarget* TypeMirror::get_method(std::string method_name, int num_args, bool i
     return 0;
 }
 
-bool TypeMirror::has_base(TypeMirror const* base) const
+bool TypeMirrorImpl::has_base(TypeMirror const* base) const
 {
     for (auto it=impl->bases.begin(); it != impl->bases.end(); it++)
         if (it->second == base || it->second->has_base(base))
@@ -189,22 +232,22 @@ bool TypeMirror::has_base(TypeMirror const* base) const
     return false;
 }
 
-void TypeMirror::add_base(TypeMirror const* base)
+void TypeMirrorImpl::add_base(TypeMirror const* base)
 {
     impl->bases[base->get_class_name()] = base;
 }
 
-std::string TypeMirror::get_class_name() const
+std::string TypeMirrorImpl::get_class_name() const
 {
     return impl->name;
 }
 
-size_t TypeMirror::get_instance_size() const
+size_t TypeMirrorImpl::get_instance_size() const
 {
     return impl->instance_size;
 }
 
-TypeIndex TypeMirror::get_class_type() const
+TypeIndex TypeMirrorImpl::get_class_type() const
 {
     return impl->class_type;
 }

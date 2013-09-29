@@ -15,61 +15,29 @@
 #include "LikeMagic/Exprs/TermDeleter.hpp"
 
 namespace LM {
-    class TypeSystem;
-}
 
-namespace LM {
-    class AbstractCppObjProxy;
-    class Expr;
-}
-
-namespace LM {
-    class CallTarget;
-}
-
-namespace LM {
-
-using LM::Expr;
-using LM::ExprPtr;
-using LM::ArgList;
-using LM::TypeSystem;
-using LM::TypeIndex;
-using LM::TypeInfoList;
-using LM::CallTarget;
+class TypeSystem;
+class Expr;
+class CallTarget;
 
 class TypeMirror
 {
-private:
-    struct Impl;
-    boost::shared_ptr<Impl> impl;
-
-    TypeMirror(TypeMirror const&) = delete;
-    TypeMirror& operator =(TypeMirror const&) = delete;
-
-    friend void suggest_method(TypeMirror& type_, std::string method_name, int num_args);
-
 public:
-
-    TypeMirror(std::string class_name, size_t instance_size, TypeIndex class_type);
-    virtual ~TypeMirror();
-
-    virtual std::string get_class_name() const;
-
-    virtual CallTarget* get_method(std::string method_name, int num_args, bool in_base_class=false) const;
-    virtual void add_method(std::string method_name, CallTarget* method);
-
-    // support inheritance
-    virtual void add_base(TypeMirror const* base);
-    virtual bool has_base(TypeMirror const* base) const;
-
-    virtual TypeIndex get_class_type() const;
-
-    virtual size_t get_instance_size() const;
-
-    virtual void suggest_method(std::string method_name, int num_args) const;
-
-    virtual void try_delete(Expr const* expr) const;
-    virtual void set_deleter(std::unique_ptr<AbstractTermDeleter const> deleter);
+    virtual ~TypeMirror() = 0;
+    virtual std::string get_class_name() const = 0;
+    virtual CallTarget* get_method(std::string method_name, int num_args, bool in_base_class=false) const = 0;
+    virtual void add_method(std::string method_name, CallTarget* method) = 0;
+    virtual void add_base(TypeMirror const* base) = 0;
+    virtual bool has_base(TypeMirror const* base) const = 0;
+    virtual TypeIndex get_class_type() const = 0;
+    virtual size_t get_instance_size() const = 0;
+    virtual void suggest_method(std::string method_name, int num_args) const = 0;
+    virtual void try_delete(Expr const* expr) const = 0;
+    virtual void set_deleter(std::unique_ptr<AbstractTermDeleter const> deleter) = 0;
 };
+
+inline TypeMirror::~TypeMirror() {}
+
+LIKEMAGIC_API TypeMirror* create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type);
 
 }

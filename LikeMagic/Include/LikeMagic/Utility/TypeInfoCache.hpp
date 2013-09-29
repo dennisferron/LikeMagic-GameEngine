@@ -26,13 +26,13 @@ private:
 
 public:
 
-    TypeIndex get_index(TypeInfoPtr candidate, TypeInfoPtr class_type);
-    TypeIndex get_index(TypeInfoPtr candidate);
+    TypeIndex const& get_index(TypeInfoPtr candidate, TypeInfoPtr class_type);
+    TypeIndex const& get_index(TypeInfoPtr candidate);
     TypeInfoPtr get_info(TypeIndex id) const;
 
     void debug_dump();
 };
 
-DLL_PUBLIC extern TypeInfoCache* type_info_cache_instance;
+LIKEMAGIC_API extern TypeInfoCache* type_info_cache_instance;
 
 }

@@ -1,7 +1,6 @@
 #include "UnitTest++.h"
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/BindingMacros.hpp"
-
 #include "UnitTests/TestHelpers.hpp"
 
 using namespace std;
@@ -211,17 +210,17 @@ SUITE(TestBinding)
     {
         std::vector<ExprPtr> args;
 
-        TypeMirror const* type_mirror1 = get_namespace("::TestNs");
+        TypeMirror const* type_mirror1 = type_system->get_namespace("::TestNs");
         ASSERT_NOT_NULL(type_mirror1);
         auto* method1 = type_mirror1->get_method("DiscernNsFuncInt", args.size());
         ASSERT_NOT_NULL(method1);
 
-        TypeMirror const* type_mirror2 = get_namespace("::TestNs::NestedNs"); //type_system->get_class(test_ns.get_class_type());
+        TypeMirror const* type_mirror2 = type_system->get_namespace("::TestNs::NestedNs"); //type_system->get_class(test_ns.get_class_type());
         ASSERT_NOT_NULL(type_mirror2);
         auto* method2 = type_mirror2->get_method("DiscernNsFuncInt", args.size());
         ASSERT_NOT_NULL(method2);
 
-        TypeMirror const* type_mirror3 = get_namespace("::TestNs::NestedNs::TestNs"); //type_system->get_class(test_ns.get_class_type());
+        TypeMirror const* type_mirror3 = type_system->get_namespace("::TestNs::NestedNs::TestNs"); //type_system->get_class(test_ns.get_class_type());
         ASSERT_NOT_NULL(type_mirror3);
         auto* method3 = type_mirror3->get_method("DiscernNsFuncInt", args.size());
         ASSERT_NOT_NULL(method3);

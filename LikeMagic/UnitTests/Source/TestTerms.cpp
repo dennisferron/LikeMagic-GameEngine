@@ -47,7 +47,7 @@ SUITE(TestTerms)
 {
     TEST(CallIntConstrutor)
     {
-        TypeMirror const* global_ns = get_namespace("");
+        TypeMirror const* global_ns = type_system->get_namespace("");
         ASSERT_NOT_NULL(global_ns);
 
         auto* class_slot = global_ns->get_method("ConstructorTestClass", 0);

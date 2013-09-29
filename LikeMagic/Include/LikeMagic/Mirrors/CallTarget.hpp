@@ -23,7 +23,9 @@ public:
     virtual LM::TypeInfoList const& get_arg_types() const = 0;
 
     // Some methods (like constructors) should not be inherited.
-    virtual bool is_inherited() const;
+    virtual bool is_inherited() const = 0;
 };
+
+inline CallTarget::~CallTarget() {}
 
 }

@@ -66,7 +66,7 @@ SUITE(TestTypeSystem)
 
     TEST(CreateConvTestStruct)
     {
-        TypeMirror const* type_mirror = get_namespace("");
+        TypeMirror const* type_mirror = type_system->get_namespace("");
         ASSERT_NOT_NULL(type_mirror);
         std::vector<ExprPtr> args;
         auto* method = type_mirror->get_method("create_test_struct", args.size());

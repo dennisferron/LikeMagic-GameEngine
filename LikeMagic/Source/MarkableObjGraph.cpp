@@ -8,7 +8,7 @@ using namespace std;
 
 namespace LM
 {
-
+/*
 MarkableObjGraph::MarkableObjGraph()
     : just_testing(false), has_marked(false)
 {
@@ -80,6 +80,5 @@ void MarkableObjGraph::remove_mark_obj(MarkableObjGraph const& obj) const
         obj.parents.erase(this);
     }
 }
-
-
+*/
 }

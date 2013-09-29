@@ -44,6 +44,8 @@ public:
         static TypeInfoList arg_types = MakeArgList<size_t>::value();
         return arg_types;
     }
+
+    virtual bool is_inherited() const { return true; }
 };
 
 }

@@ -10,6 +10,7 @@
 
 namespace LM {
 
+/*
 AbstractTypeConverter::AbstractTypeConverter()
     : ref_count(0)
 {
@@ -24,13 +25,14 @@ float AbstractTypeConverter::cost() const
 {
     return 1.0;
 }
+*/
 
-void intrusive_ptr_add_ref(AbstractTypeConverter const* p)
+LIKEMAGIC_API void intrusive_ptr_add_ref(AbstractTypeConverter const* p)
 {
     ++(p->ref_count);
 }
 
-void intrusive_ptr_release(AbstractTypeConverter const* p)
+LIKEMAGIC_API void intrusive_ptr_release(AbstractTypeConverter const* p)
 {
     if (!--(p->ref_count))
         delete p;

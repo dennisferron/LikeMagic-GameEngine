@@ -23,13 +23,15 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        return new Expr(target->get_value_ptr(), BottomPtrTypeInfo::create_index());
+        return create_expr(target->get_value_ptr(), create_bottom_ptr_type_index());
     }
 
     virtual TypeInfoList const& get_arg_types() const
     {
         return empty_arg_list;
     }
+
+    virtual bool is_inherited() const { return true; }
 };
 
 }

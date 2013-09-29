@@ -1,5 +1,2 @@
 EXPORTS
-    _ZN2LM11type_systemE @1 DATA
-    _ZN2LM12add_bindingsEv @2
-    _ZN2LM18create_type_systemEv @3
-    _ZN2LM24type_info_cache_instanceE @4 DATA
+    _ZN2LM12add_bindingsEv @1

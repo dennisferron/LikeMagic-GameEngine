@@ -2,28 +2,19 @@
 #include "LikeMagic/Utility/TypeInfoCache.hpp"
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
 
-using namespace LM;
+namespace LM {
 
-TypeInfoPtr TypeIndex::get_info() const
+const TypeInfoList empty_arg_list_obj;
+LIKEMAGIC_API const TypeInfoList& empty_arg_list = empty_arg_list_obj;
+
+LIKEMAGIC_API TypeIndex const& get_index(TypeInfoPtr type)
 {
-    return type_info_cache_instance->get_info(*this);
+    return type_info_cache_instance->get_index(type, type->class_type());
 }
 
-std::string TypeIndex::description() const
+LIKEMAGIC_API TypeInfoPtr get_info(TypeIndex const& index)
 {
-    std::stringstream result;
-    result << get_info()->description() << " ";
-    result << " " << get_id();
-    result << "/" << get_class_id();
-    return result.str();
+    return type_info_cache_instance->get_info(index);
 }
 
-TypeIndex TypeIndex::as_ptr_type() const
-{
-    return get_info()->as_ptr()->get_index();
-}
-
-TypeIndex TypeIndex::as_const_ptr_type() const
-{
-    return get_info()->as_const()->as_ptr()->get_index();
 }

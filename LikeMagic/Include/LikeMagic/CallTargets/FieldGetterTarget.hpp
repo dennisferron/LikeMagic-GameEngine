@@ -40,6 +40,8 @@ public:
     {
         return empty_arg_list;
     }
+
+    virtual bool is_inherited() const { return true; }
 };
 
 }

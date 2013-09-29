@@ -1,0 +1,24 @@
+EXPORTS
+    _ZN2LM11create_exprENS_8ValuePtrENS_9TypeIndexE @1
+    _ZN2LM11type_systemE @2 DATA
+    _ZN2LM14empty_arg_listE @3 DATA
+    _ZN2LM16create_referenceENS_8ValuePtrENS_9TypeIndexEN5boost13intrusive_ptrINS_4ExprEEE @4
+    _ZN2LM18create_type_mirrorESsjNS_9TypeIndexE @5
+    _ZN2LM18create_type_systemEv @6
+    _ZN2LM18register_namespaceESsRNS_10TypeMirrorE @7
+    _ZN2LM20create_cpp_type_infoEPKSt9type_infobb @8
+    _ZN2LM21create_cpp_type_indexEPKSt9type_infobb @9
+    _ZN2LM21intrusive_ptr_add_refEPKNS_16AbstractTypeInfoE @10
+    _ZN2LM21intrusive_ptr_add_refEPKNS_21AbstractTypeConverterE @11
+    _ZN2LM21intrusive_ptr_add_refEPNS_4ExprE @12
+    _ZN2LM21intrusive_ptr_releaseEPKNS_16AbstractTypeInfoE @13
+    _ZN2LM21intrusive_ptr_releaseEPKNS_21AbstractTypeConverterE @14
+    _ZN2LM21intrusive_ptr_releaseEPNS_4ExprE @15
+    _ZN2LM23create_constructor_nameESsSs @16
+    _ZN2LM24type_info_cache_instanceE @17 DATA
+    _ZN2LM26create_namespace_type_infoESs @18
+    _ZN2LM27create_bottom_ptr_type_infoEv @19
+    _ZN2LM27create_namespace_type_indexESs @20
+    _ZN2LM28create_bottom_ptr_type_indexEv @21
+    _ZN2LM8get_infoERKNS_9TypeIndexE @22
+    _ZN2LM9get_indexEN5boost13intrusive_ptrIKNS_16AbstractTypeInfoEEE @23

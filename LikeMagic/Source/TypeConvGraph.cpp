@@ -184,7 +184,7 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to
 
         try
         {
-            if (search_for_conv(from.get_info()->as_nonconst()->get_index(), to))
+            if (search_for_conv(get_index(from.get_info()->as_nonconst()), to))
                 msg += "I notice the conversion would work if the from-type were not const.  Did you use get_fieldName (const version) when you meant to use ref_fieldName (nonconst version)?  Or call functionName_nc (nonconst version) when you meant to call functioname_c (const version)?  Don't forget that a member of a const object is also const.";
         }
         catch (...)

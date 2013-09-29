@@ -20,7 +20,7 @@ struct Term
 {
     static ExprPtr create(R func_result)
     {
-        Expr* result = new Expr(new R(func_result), TypId<R*>::get());
+        Expr* result = create_expr(new R(func_result), TypId<R*>::get());
         result->set_auto_delete_ptr(true);
         return result;
     }
@@ -32,7 +32,7 @@ struct Term<R&>
 {
     static ExprPtr create(R& func_result)
     {
-        return new Expr(&func_result, TypId<R*>::get());
+        return create_expr(&func_result, TypId<R*>::get());
     }
 };
 
@@ -42,7 +42,7 @@ struct Term<R*>
 {
     static ExprPtr create(R* func_result)
     {
-        return new Expr(func_result, TypId<R*>::get());
+        return create_expr(func_result, TypId<R*>::get());
     }
 };
 
@@ -52,7 +52,7 @@ struct Term<R*&>
 {
     static ExprPtr create(R*& func_result)
     {
-        return new Expr(&func_result, TypId<R*>::get());
+        return create_expr(&func_result, TypId<R*>::get());
     }
 };
 

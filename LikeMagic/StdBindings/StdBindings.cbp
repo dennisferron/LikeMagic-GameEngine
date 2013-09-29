@@ -64,7 +64,7 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-DUSE_DLL_BUILD" />
-					<Add option="-DBUILDING_DLL_STD_BINDINGS" />
+					<Add option="-DBUILDING_STD_BINDINGS_DLL" />
 				</Compiler>
 				<Linker>
 					<Add library="..\libLikeMagic-Windows.a" />
@@ -90,7 +90,9 @@
 			<Add directory="../../Iocaste/garbagecollector/source" />
 			<Add directory="../../Iocaste/Include/Iocaste/CShims" />
 		</Compiler>
+		<Unit filename="Include/LikeMagic/StdBindings/ScriptUtil.hpp" />
 		<Unit filename="Include/LikeMagic/StdBindings/StdBindings.hpp" />
+		<Unit filename="Source/ScriptUtil.cpp" />
 		<Unit filename="Source/StdBindings.cpp" />
 		<Extensions>
 			<code_completion />

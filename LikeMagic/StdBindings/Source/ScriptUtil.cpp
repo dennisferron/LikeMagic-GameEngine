@@ -7,7 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 
-#include "LikeMagic/ScriptUtil.hpp"
+#include "LikeMagic/StdBindings/ScriptUtil.hpp"
 
 #include "boost/random/linear_congruential.hpp"
 #include "boost/random/uniform_int.hpp"

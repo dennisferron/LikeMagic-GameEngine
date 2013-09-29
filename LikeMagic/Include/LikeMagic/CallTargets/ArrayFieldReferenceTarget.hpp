@@ -9,8 +9,6 @@
 #pragma once
 
 #include "LikeMagic/Mirrors/CallTarget.hpp"
-#include "LikeMagic/Exprs/Reference.hpp"
-
 #include "LikeMagic/CallTargets/Delegate.hpp"
 
 namespace LM {
@@ -37,7 +35,7 @@ public:
         ExprPtr target_warden;
         auto target_check = type_system->try_conv(target, actual_type);
         Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_warden);
-        return new Reference(
+        return create_reference(
             &((target_obj->*f_ptr)[EvalAs<size_t>::value(args[0], warden)]), TypId<R>::get(), target);
     }
 
@@ -46,6 +44,8 @@ public:
         static TypeInfoList arg_types = MakeArgList<size_t>::value();
         return arg_types;
     }
+
+    virtual bool is_inherited() const { return true; }
 };
 
 }

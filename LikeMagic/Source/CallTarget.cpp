@@ -10,6 +10,7 @@
 
 using namespace LM;
 
+/*
 CallTarget::~CallTarget()
 {
 }
@@ -19,3 +20,5 @@ bool CallTarget::is_inherited() const
 {
     return true;
 }
+
+*/

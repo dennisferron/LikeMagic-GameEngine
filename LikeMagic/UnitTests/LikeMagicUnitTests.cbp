@@ -23,6 +23,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c copy /y ..\StdBindings\*.dll bin\Debug" />
+					<Add after="cmd /c copy /y ..\*.dll bin\Debug" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

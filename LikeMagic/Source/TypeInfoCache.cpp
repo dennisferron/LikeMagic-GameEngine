@@ -16,19 +16,21 @@
 
 namespace LM {
 
-TypeIndex TypeInfoCache::get_index(TypeInfoPtr candidate)
+LIKEMAGIC_API TypeInfoCache* type_info_cache_instance = NULL;
+
+TypeIndex const& TypeInfoCache::get_index(TypeInfoPtr candidate)
 {
     return get_index(candidate, candidate->class_type());
 }
 
-TypeIndex TypeInfoCache::get_index(TypeInfoPtr candidate, TypeInfoPtr class_type)
+TypeIndex const& TypeInfoCache::get_index(TypeInfoPtr candidate, TypeInfoPtr class_type)
 {
-    TypeIndex index;
+    TypeIndex const* index;
     TypeIndex class_index;
     auto iter = info_to_index.find(KeyWrapper<AbstractTypeInfo>(candidate));
 
     if (iter != info_to_index.end())
-        index = iter->second;
+        index = &(iter->second);
     else
     {
         auto class_iter = info_to_index.find(KeyWrapper<AbstractTypeInfo>(class_type));
@@ -43,16 +45,16 @@ TypeIndex TypeInfoCache::get_index(TypeInfoPtr candidate, TypeInfoPtr class_type
         }
 
         if (*candidate == *class_type)
-            index = class_index;
+            index = &(info_to_index[class_type]);
         else
         {
-            index = TypeIndex(index_to_info.size(), class_index.id);
-            info_to_index[candidate] = index;
+            info_to_index[candidate] = TypeIndex(index_to_info.size(), class_index.id);
+            index = &(info_to_index[candidate]);
             index_to_info.push_back(candidate);
         }
     }
 
-    return index;
+    return *index;
 }
 
 TypeInfoPtr TypeInfoCache::get_info(TypeIndex id) const

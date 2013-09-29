@@ -10,14 +10,12 @@
 
 namespace LM {
 
-const TypeInfoList empty_arg_list;
-
-void intrusive_ptr_add_ref(AbstractTypeInfo const* p)
+LIKEMAGIC_API void intrusive_ptr_add_ref(AbstractTypeInfo const* p)
 {
     ++(p->ref_count);
 }
 
-void intrusive_ptr_release(AbstractTypeInfo const* p)
+LIKEMAGIC_API void intrusive_ptr_release(AbstractTypeInfo const* p)
 {
     if (!--(p->ref_count))
         delete p;
@@ -30,11 +28,6 @@ AbstractTypeInfo::AbstractTypeInfo() :
 
 AbstractTypeInfo::~AbstractTypeInfo()
 {
-}
-
-TypeIndex AbstractTypeInfo::get_index() const
-{
-    return type_info_cache_instance->get_index(this, this->class_type());
 }
 
 std::size_t hash_value(AbstractTypeInfo const& info)

@@ -49,6 +49,8 @@ public:
         static TypeInfoList arg_types = MakeArgList<Args...>::value();
         return arg_types;
     }
+
+    virtual bool is_inherited() const { return true; }
 };
 
 template <typename R, typename... Args>
@@ -85,6 +87,8 @@ public:
         static TypeInfoList arg_types = MakeArgList<Args...>::value();
         return arg_types;
     }
+
+    virtual bool is_inherited() const { return true; }
 };
 
 }

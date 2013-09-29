@@ -16,6 +16,46 @@ namespace LM {
 // Used for default constructed BetterTypeInfo with no type stored in it.
 struct no_type {};
 
+class BetterTypeInfo : public AbstractTypeInfo
+{
+private:
+    template <typename T> friend class TypId;
+
+    std::type_info const* info;
+    bool is_const;
+    bool is_ptr;
+
+    BetterTypeInfo();
+    BetterTypeInfo(BetterTypeInfo const& that);
+
+protected:
+
+    virtual std::string get_system() const;
+    virtual bool less(const AbstractTypeInfo& other) const;
+    virtual bool equals(const AbstractTypeInfo& other) const;
+    virtual std::size_t calc_hash() const;
+
+public:
+
+    BetterTypeInfo(std::type_info const* info_, bool is_const_, bool is_ptr_);
+    virtual bool get_is_const() const;
+    virtual TypeInfoPtr as_const() const;
+    virtual TypeInfoPtr as_nonconst() const;
+    virtual TypeInfoPtr as_ptr() const;
+    virtual TypeInfoPtr as_value() const;
+    virtual TypeInfoPtr class_type() const;
+    virtual std::string description() const;
+};
+
+LIKEMAGIC_API TypeInfoPtr create_cpp_type_info(std::type_info const* info_, bool is_const_, bool is_ptr_)
+{
+    return new BetterTypeInfo(info_, is_const_, is_ptr_);
+}
+
+LIKEMAGIC_API TypeIndex create_cpp_type_index(std::type_info const* info_, bool is_const_, bool is_ptr_)
+{
+    return get_index(new BetterTypeInfo(info_, is_const_, is_ptr_));
+}
 
 BetterTypeInfo::BetterTypeInfo(std::type_info const* info_, bool is_const_, bool is_ptr_)
     : info(info_), is_const(is_const_), is_ptr(is_ptr_)

@@ -17,18 +17,69 @@ using namespace std;
 
 namespace LM {
 
-void intrusive_ptr_add_ref(Expr* p)
+class Expr;
+
+LIKEMAGIC_API void intrusive_ptr_add_ref(Expr* p);
+LIKEMAGIC_API void intrusive_ptr_release(Expr* p);
+
+class ExprImpl : private Expr
 {
-    ++(p->ref_count);
+protected:
+    int ref_count;
+
+    ValuePtr value_ptr;
+    TypeIndex type;
+
+    ExprPtr storage_location;
+
+    bool disable_to_script;
+    bool auto_delete_ptr;
+
+    friend LIKEMAGIC_API Expr* create_expr(ValuePtr ptr_, TypeIndex type_);
+    friend LIKEMAGIC_API Expr* create_reference(ValuePtr ptr_, TypeIndex type_, ExprPtr storage_location_);
+
+protected:
+
+    virtual ~ExprImpl();
+    virtual void add_ref();
+    virtual void release();
+
+public:
+    ExprImpl(ValuePtr ptr_, TypeIndex type_, ExprPtr storage_location_);
+
+    virtual std::string description() const;
+    virtual TypeIndex get_type() const;
+    virtual bool is_terminal() const;
+    virtual bool disable_to_script_conv() const;
+    virtual void set_disable_to_script(bool value);
+    virtual void set_auto_delete_ptr(bool value);
+    virtual bool get_auto_delete_ptr() const;
+    virtual ValuePtr get_value_ptr() const;
+    virtual void mark() const;
+};
+
+LIKEMAGIC_API void intrusive_ptr_add_ref(Expr* p)
+{
+    p->add_ref();
 }
 
-void intrusive_ptr_release(Expr* p)
+LIKEMAGIC_API void intrusive_ptr_release(Expr* p)
 {
-    if (!--(p->ref_count))
-        delete p;
+    p->release();
 }
 
-Expr::~Expr()
+void ExprImpl::add_ref()
+{
+    ++ref_count;
+}
+
+void ExprImpl::release()
+{
+    if (!--ref_count)
+        delete this;
+}
+
+ExprImpl::~ExprImpl()
 {
     //std::cout << "~Expr " << this << std::endl;
     if (ref_count)
@@ -49,57 +100,70 @@ Expr::~Expr()
     }
 }
 
-Expr::Expr(ValuePtr ptr, TypeIndex type_)
-    : value_ptr(ptr), type(type_), ref_count(0),
+LIKEMAGIC_API Expr* create_expr(ValuePtr ptr_, TypeIndex type_)
+{
+    return new ExprImpl(ptr_, type_, nullptr);
+}
+
+LIKEMAGIC_API Expr* create_reference(ValuePtr ptr_, TypeIndex type_, ExprPtr storage_location_)
+{
+    return new ExprImpl(ptr_, type_, storage_location_);
+}
+
+ExprImpl::ExprImpl(ValuePtr ptr_, TypeIndex type_, ExprPtr storage_location_)
+    : ref_count(0), value_ptr(ptr_), type(type_), storage_location(storage_location_),
         disable_to_script(false), auto_delete_ptr(false)
 {
 }
 
-ValuePtr Expr::get_value_ptr() const
+ValuePtr ExprImpl::get_value_ptr() const
 {
     return value_ptr;
 }
 
-void Expr::mark() const
+void ExprImpl::mark() const
 {
     if (EvalAs<IMarkable const*>::has_conv(this))
     {
         ExprPtr warden;
-        EvalAs<IMarkable const*>::value(const_cast<Expr*>(this), warden)->mark();
+        EvalAs<IMarkable const*>::value(const_cast<ExprImpl*>(this), warden)->mark();
     }
+
+    if (storage_location != nullptr)
+        storage_location->mark();
 }
 
-bool Expr::get_auto_delete_ptr() const
+bool ExprImpl::get_auto_delete_ptr() const
 {
     return auto_delete_ptr;
 }
 
-std::string Expr::description() const
+std::string ExprImpl::description() const
 {
     return "Expression<" + get_type().description() + ">";
 }
 
-void Expr::set_disable_to_script(bool value_)
+void ExprImpl::set_disable_to_script(bool value_)
 {
     disable_to_script = value_;
 }
 
-void Expr::set_auto_delete_ptr(bool value_)
+void ExprImpl::set_auto_delete_ptr(bool value_)
 {
     auto_delete_ptr = value_;
 }
 
-bool Expr::disable_to_script_conv() const
+bool ExprImpl::disable_to_script_conv() const
 {
     return disable_to_script;
 }
 
-bool Expr::is_terminal() const
+bool ExprImpl::is_terminal() const
 {
     return true;
 }
 
-TypeIndex Expr::get_type() const
+TypeIndex ExprImpl::get_type() const
 {
     return type;
 }

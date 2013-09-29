@@ -36,14 +36,16 @@
 			<Target title="Debug Windows">
 				<Option platforms="Windows;" />
 				<Option output="LikeMagic-Windows" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
 				<Option object_output="obj/Debug-Windows/" />
-				<Option type="2" />
+				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add option="-DUSE_DLL_BUILD" />
+					<Add option="-DBUILDING_LIKEMAGIC_DLL" />
 				</Compiler>
 			</Target>
 		</Build>
@@ -80,7 +82,6 @@
 		<Unit filename="Include/LikeMagic/CallTargets/FieldSetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/StaticMethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/Expr.hpp" />
-		<Unit filename="Include/LikeMagic/Exprs/Reference.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/Term.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/TermDeleter.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/TermStoreAs.hpp" />
@@ -103,10 +104,11 @@
 		<Unit filename="Include/LikeMagic/Interprocess/SharedArgTransporter.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/SharedMemoryFormat.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/SharedObjectRegistry.hpp" />
+		<Unit filename="Include/LikeMagic/Lang/LangBlock.hpp" />
+		<Unit filename="Include/LikeMagic/Lang/LangInterpreter.hpp" />
 		<Unit filename="Include/LikeMagic/MarkableObjGraph.hpp" />
 		<Unit filename="Include/LikeMagic/Mirrors/CallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Mirrors/TypeMirror.hpp" />
-		<Unit filename="Include/LikeMagic/ScriptUtil.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/AbstractTypeConverter.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/ConvImpl.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/NoChangeConv.hpp" />
@@ -148,9 +150,7 @@
 		<Unit filename="Source/IMarkable.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/NamespaceTypeInfo.cpp" />
-		<Unit filename="Source/Reference.cpp" />
 		<Unit filename="Source/RequestBroker.cpp" />
-		<Unit filename="Source/ScriptUtil.cpp" />
 		<Unit filename="Source/SharedArgTransporter.cpp" />
 		<Unit filename="Source/TypeConvGraph.cpp" />
 		<Unit filename="Source/TypeDescr.cpp" />

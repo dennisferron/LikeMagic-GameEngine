@@ -9,15 +9,10 @@
 #pragma once
 
 #include "LikeMagic/Mirrors/CallTarget.hpp"
-#include "LikeMagic/Exprs/Reference.hpp"
 
 #include "LikeMagic/CallTargets/Delegate.hpp"
 
 namespace LM {
-
-
-
-
 
 template <typename R>
 class FieldReferenceTarget : public CallTarget
@@ -39,13 +34,15 @@ public:
         ExprPtr target_check = type_system->try_conv(target, actual_type);
         ExprPtr target_warden;
         Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_warden);
-        return new Reference(&(target_obj->*f_ptr), TypId<R*>::get(), target);
+        return create_reference(&(target_obj->*f_ptr), TypId<R*>::get(), target);
     }
 
     virtual TypeInfoList const& get_arg_types() const
     {
         return empty_arg_list;
     }
+
+    virtual bool is_inherited() const { return true; }
 };
 
 }

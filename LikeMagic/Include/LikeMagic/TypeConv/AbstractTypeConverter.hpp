@@ -26,23 +26,26 @@ typedef boost::intrusive_ptr<Expr> ExprPtr;
 namespace LM {
 
 class AbstractTypeConverter;
-void intrusive_ptr_add_ref(AbstractTypeConverter const* p);
-void intrusive_ptr_release(AbstractTypeConverter const* p);
+LIKEMAGIC_API void intrusive_ptr_add_ref(AbstractTypeConverter const* p);
+LIKEMAGIC_API void intrusive_ptr_release(AbstractTypeConverter const* p);
 
 class AbstractTypeConverter
 {
 private:
-    friend void intrusive_ptr_add_ref(AbstractTypeConverter const* p);
-    friend void intrusive_ptr_release(AbstractTypeConverter const* p);
+    friend LIKEMAGIC_API void intrusive_ptr_add_ref(AbstractTypeConverter const* p);
+    friend LIKEMAGIC_API void intrusive_ptr_release(AbstractTypeConverter const* p);
     mutable int ref_count;
 
 public:
     AbstractTypeConverter();
-    virtual ~AbstractTypeConverter();
+    virtual ~AbstractTypeConverter() = 0;
     virtual std::string description() const = 0;
     virtual ExprPtr wrap_expr(ExprPtr expr) const = 0;
-    virtual float cost() const;
+    virtual float cost() const = 0;
 };
+
+inline AbstractTypeConverter::AbstractTypeConverter() : ref_count(0) {}
+inline AbstractTypeConverter::~AbstractTypeConverter() {}
 
 // Handy helper function
 template <typename From, typename To>

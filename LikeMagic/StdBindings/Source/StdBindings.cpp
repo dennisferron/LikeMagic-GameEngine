@@ -18,14 +18,14 @@
 #include "LikeMagic/TypeConv/NumberConv.hpp"
 #include "LikeMagic/BindingMacros.hpp"
 #include "boost/preprocessor/seq/for_each.hpp"
-#include "LikeMagic/ScriptUtil.hpp"
+#include "LikeMagic/StdBindings/ScriptUtil.hpp"
 
 #include <sstream>
 
 #include "LikeMagic/StdBindings/StdBindings.hpp"
 #include "LikeMagic/BindingMacros.hpp"
 #include "boost/preprocessor/seq/for_each.hpp"
-#include "LikeMagic/ScriptUtil.hpp"
+#include "LikeMagic/StdBindings/ScriptUtil.hpp"
 
 #include <sstream>
 
@@ -53,11 +53,6 @@ add_conv<type const&, double const&, NumberConv>();
 #define BUILDING_DLL
 #include "LikeMagic/Utility/TypeInfoCache.hpp"
 
-namespace LM {
-    DLL_PUBLIC TypeSystem* create_type_system() { return new TypeSystem(); }
-    DLL_PUBLIC TypeSystem* type_system = NULL;
-    DLL_PUBLIC TypeInfoCache* type_info_cache_instance = NULL;
-}
 
 using namespace LM;
 using namespace std;
@@ -94,7 +89,7 @@ void at_put(vector<T>& target, size_t pos, T const& value)
     target.at(pos) = value;
 }
 
-DLL_PUBLIC void LM::add_bindings()
+STD_BINDINGS_API void LM::add_bindings()
 {
     TypeMirror& global_ns = type_system->global_namespace();
     TypeMirror& ns_std = register_namespace("std", global_ns);

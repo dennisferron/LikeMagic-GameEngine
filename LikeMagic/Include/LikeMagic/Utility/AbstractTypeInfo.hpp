@@ -16,14 +16,15 @@
 #include "boost/intrusive_ptr.hpp"
 #include "boost/functional/hash.hpp"
 
-#include "LikeMagic/Utility/TypeInfoCache.hpp"
 #include "LikeMagic/Utility/KeyWrapper.hpp"
+#include "LikeMagic/Utility/DLLHelper.hpp"
 
 namespace LM {
 
 class AbstractTypeInfo;
-void intrusive_ptr_add_ref(AbstractTypeInfo const* p);
-void intrusive_ptr_release(AbstractTypeInfo const* p);
+typedef boost::intrusive_ptr<AbstractTypeInfo const> TypeInfoPtr;
+LIKEMAGIC_API void intrusive_ptr_add_ref(AbstractTypeInfo const* p);
+LIKEMAGIC_API void intrusive_ptr_release(AbstractTypeInfo const* p);
 
 class AbstractTypeInfo
 {
@@ -32,8 +33,8 @@ public:
     typedef KeyWrapper<AbstractTypeInfo const> TypeInfoKey;
 
 private:
-    friend void intrusive_ptr_add_ref(AbstractTypeInfo const* p);
-    friend void intrusive_ptr_release(AbstractTypeInfo const* p);
+    friend LIKEMAGIC_API void intrusive_ptr_add_ref(AbstractTypeInfo const* p);
+    friend LIKEMAGIC_API void intrusive_ptr_release(AbstractTypeInfo const* p);
 
     mutable int ref_count;
     mutable bool has_cached_hash;
@@ -59,8 +60,7 @@ public:
     virtual TypeInfoPtr as_value() const = 0;
     virtual TypeInfoPtr class_type() const = 0;
     virtual std::string description() const = 0;
-    std::size_t hash_value() const;
-    TypeIndex get_index() const;
+    virtual std::size_t hash_value() const;
 };
 
 std::size_t hash_value(AbstractTypeInfo const& info);

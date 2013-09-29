@@ -70,6 +70,7 @@ public:
         return arg_types;
     }
 
+    virtual bool is_inherited() const { return true; }
 };
 
 }

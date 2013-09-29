@@ -12,10 +12,6 @@
 #include "LikeMagic/Utility/TypeIndex.hpp"
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
-
-#ifdef BUILDING_DLL_STD_BINDINGS
-    #define BUILDING_DLL
-#endif
 #include "LikeMagic/Utility/DLLHelper.hpp"
 
 namespace LM {
@@ -27,35 +23,22 @@ class TypeMirror;
 class AbstractTypeConverter;
 typedef boost::intrusive_ptr<AbstractTypeConverter const> p_conv_t;
 
-class TypeSystem;
-DLL_PUBLIC TypeSystem* create_type_system();
-
 class TypeSystem
 {
-private:
-    TypeSystem();
-    friend DLL_PUBLIC TypeSystem* create_type_system();
-
-    struct Impl;
-    boost::shared_ptr<Impl> impl;
-
-    // Don't allow accidently making copies of this class
-    TypeSystem(TypeSystem const&) = delete;
-    TypeSystem & operator =(TypeSystem const&) = delete;
-
 public:
-
-    virtual ~TypeSystem();
-    virtual TypeMirror* get_class(TypeIndex type) const;
-    virtual void add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& namespace_);
-    virtual void add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv);
-    virtual void add_converter_simple(TypeIndex from, TypeIndex to, p_conv_t conv);
-    virtual ExprPtr try_conv(ExprPtr from_expr, TypeIndex to_type) const;
-    virtual bool has_conv(TypeIndex  from_type, TypeIndex to_type) const;
-    virtual TypeMirror& global_namespace() const;
+    virtual ~TypeSystem() = 0;
+    virtual TypeMirror* get_class(TypeIndex type) const = 0;
+    virtual void add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& namespace_) = 0;
+    virtual void add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv) = 0;
+    virtual void add_converter_simple(TypeIndex from, TypeIndex to, p_conv_t conv) = 0;
+    virtual ExprPtr try_conv(ExprPtr from_expr, TypeIndex to_type) const = 0;
+    virtual bool has_conv(TypeIndex  from_type, TypeIndex to_type) const = 0;
+    virtual TypeMirror& global_namespace() const = 0;
+    virtual TypeMirror const* get_namespace(std::string full_name) const = 0;
 };
 
-DLL_PUBLIC extern TypeSystem* type_system;
+LIKEMAGIC_API extern TypeSystem* type_system;
+LIKEMAGIC_API TypeSystem* create_type_system();
 
 template <typename T> struct EvalAs // by value
 {
@@ -137,7 +120,5 @@ template <typename T> struct EvalAs<T&> // by nonconst ref
              LM::TypId<T*>::get());
     }
 };
-
-TypeMirror const* get_namespace(std::string full_name);
 
 }

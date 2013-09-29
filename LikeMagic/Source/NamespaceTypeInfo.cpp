@@ -10,6 +10,36 @@
 
 using namespace LM;
 
+class NamespaceTypeInfo : public AbstractTypeInfo
+{
+private:
+    std::string namespace_name;
+protected:
+    virtual std::string get_system() const;
+    virtual bool less(const AbstractTypeInfo& other) const;
+    virtual bool equals(const AbstractTypeInfo& other) const;
+    virtual std::size_t calc_hash() const;
+public:
+    NamespaceTypeInfo(std::string namespace_name_);
+    std::string get_namespace_name() const;
+    virtual std::string description() const;
+    virtual TypeInfoPtr as_const() const;
+    virtual TypeInfoPtr as_nonconst() const;
+    virtual TypeInfoPtr as_ptr() const;
+    virtual TypeInfoPtr as_value() const;
+    virtual TypeInfoPtr class_type() const;
+};
+
+LIKEMAGIC_API TypeInfoPtr LM::create_namespace_type_info(std::string namespace_name)
+{
+    return new NamespaceTypeInfo(namespace_name);
+}
+
+LIKEMAGIC_API TypeIndex LM::create_namespace_type_index(std::string namespace_name)
+{
+    return get_index(new NamespaceTypeInfo(namespace_name));
+}
+
 NamespaceTypeInfo::NamespaceTypeInfo(std::string namespace_name_) : namespace_name(namespace_name_) {}
 
 std::string NamespaceTypeInfo::get_system() const
@@ -34,14 +64,6 @@ std::size_t NamespaceTypeInfo::calc_hash() const
     std::size_t seed = 0;
     boost::hash_combine(seed, namespace_name);
     return seed;
-}
-
-TypeInfoPtr NamespaceTypeInfo::create(std::string namespace_name) { return new NamespaceTypeInfo(namespace_name); }
-
-TypeIndex NamespaceTypeInfo::create_index(std::string namespace_name)
-{
-    TypeInfoPtr info = create(namespace_name);
-    return type_info_cache_instance->get_index(info, info);
 }
 
 std::string NamespaceTypeInfo::description() const

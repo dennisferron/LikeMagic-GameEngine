@@ -17,42 +17,12 @@
 #include "StripModifiers.hpp"
 
 #include "LikeMagic/Utility/AbstractTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeIndex.hpp"
 
 namespace LM {
 
-template <typename T>
-class TypId;
-
-class BetterTypeInfo : public AbstractTypeInfo
-{
-private:
-    template <typename T> friend class TypId;
-
-    std::type_info const* info;
-    bool is_const;
-    bool is_ptr;
-
-    BetterTypeInfo(std::type_info const* info_, bool is_const_, bool is_ptr_);
-    BetterTypeInfo();
-    BetterTypeInfo(BetterTypeInfo const& that);
-
-protected:
-
-    virtual std::string get_system() const;
-    virtual bool less(const AbstractTypeInfo& other) const;
-    virtual bool equals(const AbstractTypeInfo& other) const;
-    virtual std::size_t calc_hash() const;
-
-public:
-
-    virtual bool get_is_const() const;
-    virtual TypeInfoPtr as_const() const;
-    virtual TypeInfoPtr as_nonconst() const;
-    virtual TypeInfoPtr as_ptr() const;
-    virtual TypeInfoPtr as_value() const;
-    virtual TypeInfoPtr class_type() const;
-    virtual std::string description() const;
-};
+LIKEMAGIC_API TypeInfoPtr create_cpp_type_info(std::type_info const* info_, bool is_const_, bool is_ptr_);
+LIKEMAGIC_API TypeIndex create_cpp_type_index(std::type_info const* info_, bool is_const_, bool is_ptr_);
 
 // Value types - not const, not ptr
 template <typename T>
@@ -61,8 +31,7 @@ struct TypId
     TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
     static TypeIndex get()
     {
-        return type_info_cache_instance->get_index(
-            new BetterTypeInfo(&typeid(T), false, false));
+        return create_cpp_type_index(&typeid(T), false, false);
     }
 };
 
@@ -73,8 +42,7 @@ struct TypId<T const>
     TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
     static TypeIndex get()
     {
-        return type_info_cache_instance->get_index(
-            new BetterTypeInfo(&typeid(T), true, false));
+        return create_cpp_type_index(&typeid(T), true, false);
     }
 };
 
@@ -85,8 +53,7 @@ struct TypId<T*>
     TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
     static TypeIndex get()
     {
-        return type_info_cache_instance->get_index(
-            new BetterTypeInfo(&typeid(T), false, true));
+        return create_cpp_type_index(&typeid(T), false, true);
     }
 };
 
@@ -97,8 +64,7 @@ struct TypId<T const*>
     TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
     static TypeIndex get()
     {
-        return type_info_cache_instance->get_index(
-                new BetterTypeInfo(&typeid(T), true, true));
+        return create_cpp_type_index(&typeid(T), true, true);
     }
 };
 
@@ -109,8 +75,7 @@ struct TypId<T&>
     TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
     static TypeIndex get()
     {
-        return type_info_cache_instance->get_index(
-                new BetterTypeInfo(&typeid(T), false, true));
+        return create_cpp_type_index(&typeid(T), false, true);
     }
 };
 
@@ -121,8 +86,7 @@ struct TypId<T const&>
     TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
     static TypeIndex get()
     {
-        return type_info_cache_instance->get_index(
-                new BetterTypeInfo(&typeid(T), true, true));
+        return create_cpp_type_index(&typeid(T), true, true);
     }
 };
 
