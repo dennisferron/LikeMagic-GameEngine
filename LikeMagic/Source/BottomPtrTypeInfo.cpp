@@ -7,10 +7,11 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/Utility/BottomPtrTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfoBaseImpl.hpp"
 
 namespace LM {
 
-class BottomPtrTypeInfo : public AbstractTypeInfo
+class BottomPtrTypeInfo : public TypeInfoBaseImpl
 {
 public:
     virtual std::string get_system() const;
@@ -18,21 +19,16 @@ public:
     virtual bool equals(const AbstractTypeInfo& other) const;
     virtual std::size_t calc_hash() const;
     virtual std::string description() const;
-    virtual TypeInfoPtr as_const() const;
-    virtual TypeInfoPtr as_nonconst() const;
-    virtual TypeInfoPtr as_ptr() const;
-    virtual TypeInfoPtr as_value() const;
-    virtual TypeInfoPtr class_type() const;
 };
 
 LIKEMAGIC_API TypeInfoPtr create_bottom_ptr_type_info()
 {
-    return new BottomPtrTypeInfo();
+    return TypeInfoPtr(new BottomPtrTypeInfo());
 }
 
 LIKEMAGIC_API TypeIndex create_bottom_ptr_type_index()
 {
-    return get_index(new BottomPtrTypeInfo());
+    return get_index(TypeInfoPtr(new BottomPtrTypeInfo()));
 }
 
 std::string BottomPtrTypeInfo::get_system() const
@@ -58,31 +54,6 @@ std::size_t BottomPtrTypeInfo::calc_hash() const
 std::string BottomPtrTypeInfo::description() const
 {
     return "NULL";
-}
-
-TypeInfoPtr BottomPtrTypeInfo::as_const() const
-{
-    return this;
-}
-
-TypeInfoPtr BottomPtrTypeInfo::as_nonconst() const
-{
-    return this;
-}
-
-TypeInfoPtr BottomPtrTypeInfo::as_ptr() const
-{
-    return this;
-}
-
-TypeInfoPtr BottomPtrTypeInfo::as_value() const
-{
-    return this;
-}
-
-TypeInfoPtr BottomPtrTypeInfo::class_type() const
-{
-    return this;
 }
 
 }

@@ -14,13 +14,20 @@ using namespace LM;
 
 namespace Iocaste { namespace LMAdapters {
 
-IoObjectExpr::IoObjectExpr(IoObject* io_object_) : Expr(io_object_, FromIoTypeInfo::create_index(get_type_name(io_object)))
+ExprPtr IoObjectExpr::create(IoObject* io_object)
+{
+    auto* result = new IoObjectExpr(io_object);
+    return create_expr(result, result->get_type());
+}
+
+IoObjectExpr::IoObjectExpr(IoObject* io_object_) :
+    io_object(io_object_), io_type(FromIoTypeInfo::create_index(get_type_name(io_object)))
 {
 }
 
-ExprPtr IoObjectExpr::create(IoObject* io_object)
+TypeIndex IoObjectExpr::get_type() const
 {
-    return new IoObjectExpr(io_object);
+    return io_type;
 }
 
 std::string IoObjectExpr::description() const

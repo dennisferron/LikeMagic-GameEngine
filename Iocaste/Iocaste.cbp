@@ -60,7 +60,6 @@
 					<Add option="-DUSE_DLL_BUILD" />
 				</Compiler>
 				<Linker>
-					<Add library="..\LikeMagic\StdBindings\libStdBindings-Windows.a" />
 					<Add library="..\LikeMagic\libLikeMagic-Windows.a" />
 					<Add library="..\Common\boost_1_54_0\stage\lib\libboost_program_options-mgw47-mt-d-1_54.a" />
 				</Linker>

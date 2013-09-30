@@ -23,10 +23,13 @@ using LM::ExprPtr;
 using LM::Expr;
 using LM::TypeIndex;
 
-class AbstractToIoObjectExpr : public Expr
+class AbstractToIoObjectExpr : public IMarkable
 {
+protected:
+    TypeIndex io_type;
+
 public:
-    AbstractToIoObjectExpr(ValuePtr ptr, TypeIndex type) : Expr(ptr, type) {}
+    AbstractToIoObjectExpr(ValuePtr ptr, TypeIndex type) : io_type(type) {}
 
     virtual bool is_terminal() const { return true; }
     virtual bool is_lazy() const { return false; }
@@ -35,6 +38,8 @@ public:
 
     // It's already a script object, so don't need to try to convert it a second time.
     virtual bool disable_to_script_conv() const { return true; }
+
+    virtual TypeIndex get_type() const { return io_type; }
 };
 
 template <typename T, typename F>
@@ -44,13 +49,15 @@ private:
     ExprPtr from_expr;
 
 private:
-    ToIoObjectExpr(ExprPtr from_expr_) : AbstractToIoObjectExpr(nullptr, ToIoTypeInfo::create_index()), from_expr(from_expr_) {}
+    ToIoObjectExpr(ExprPtr from_expr_)
+        : AbstractToIoObjectExpr(nullptr, ToIoTypeInfo::create_index()), from_expr(from_expr_) {}
 
 public:
 
     static ExprPtr create(ExprPtr from_expr)
     {
-        return new ToIoObjectExpr<T, F>(from_expr);
+        auto* result = new ToIoObjectExpr<T, F>(from_expr);
+        return create_expr(result, result->get_type());
     }
 
     virtual IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m)

@@ -9,8 +9,6 @@
 #pragma once
 
 #include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
-#include "LikeMagic/Exprs/TypeConvAdapter.hpp"
-
 #include "boost/type_traits/is_pointer.hpp"
 
 namespace LM {
@@ -22,25 +20,24 @@ private:
     static_assert(boost::is_pointer<From>::value, "Conversion must take place by pointers.");
     static_assert(boost::is_pointer<To>::value, "Conversion must take place by pointers.");
 
-    struct Impl : public ConvImpl
-    {
-        virtual ValuePtr do_conv(ValuePtr value) const
-        {
-            return
-                static_cast<To>(
-                    reinterpret_cast<From>(
-                        GetValuePtr<From>::value(value)));
-        }
-    } impl;
-
 public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return LM::TypeConvAdapter<From, To>::create(expr, impl);
+        // Although we calculate the to-value immediately,
+        // we return a "reference" to ensure the original
+        // storage location does not get collected.
+        return create_reference(
+            static_cast<To>(
+                reinterpret_cast<From>(
+                    GetValuePtr<From>::value(
+                         expr->get_value_ptr()))),
+            TypId<To>::get(), expr);
     }
 
     virtual std::string description() const { return describe_converter<From, To>("StaticCastConv"); }
+
+    virtual float cost() const { return 1.0f; }
 };
 
 }

@@ -24,7 +24,7 @@
 
 namespace LM {
 
-typedef boost::intrusive_ptr<AbstractTypeInfo const> TypeInfoPtr;
+typedef std::shared_ptr<AbstractTypeInfo const> TypeInfoPtr;
 
 class TypeIndex;
 LIKEMAGIC_API TypeIndex const& get_index(TypeInfoPtr type);

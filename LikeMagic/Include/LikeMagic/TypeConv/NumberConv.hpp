@@ -27,6 +27,9 @@ public:
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
+        // Don't need to return a "reference" here because
+        // the number converter creates a new To-value not a To-pointer
+        // as the StaticCastConv did.
         ExprPtr result = Term<To>::create(
             static_cast<To>(
                 *reinterpret_cast<From const*>(

@@ -121,6 +121,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c copy /y LikeMagic\StdBindings\*.dll bin\Debug" />
+					<Add after="cmd /c copy /y LikeMagic\*.dll bin\Debug" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

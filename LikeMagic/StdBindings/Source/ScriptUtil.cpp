@@ -20,20 +20,6 @@
 using namespace std;
 using namespace LM;
 
-// Use to communicate with running scripts what path they are running under
-// in order to properly load assets.  TODO:  Move all this to Iocaste (maybe).
-string scriptPath = "";
-
-string ScriptUtil::get_script_path()
-{
-    return scriptPath;
-}
-
-void ScriptUtil::set_script_path(string value)
-{
-    scriptPath = value;
-}
-
 bool ScriptUtil::is_nan(float f)
 {
     return (boost::math::isnan)(f);

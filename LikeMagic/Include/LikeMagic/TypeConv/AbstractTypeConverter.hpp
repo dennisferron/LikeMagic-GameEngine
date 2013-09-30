@@ -10,8 +10,6 @@
 #pragma once
 
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
-#include "LikeMagic/TypeConv/ConvImpl.hpp"
-
 #include "boost/intrusive_ptr.hpp"
 
 namespace LM {

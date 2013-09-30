@@ -59,8 +59,10 @@ struct To##name : public AbstractTypeConverter \
     { \
         return ToIoObjectExpr<type, To##name>::create(expr); \
     } \
-\
+    \
     virtual std::string description() const { return "To " #name " Conv"; } \
+    \
+    virtual float cost() const { return 5.0f; } \
 }; \
 
 #define ADD_CONV(name, type) \
@@ -96,6 +98,8 @@ struct ToNumberFromT : public AbstractTypeConverter
     {
         type_system->add_converter_simple(TypId<T>::get(), ToIoTypeInfo::create_index(), new ToNumberFromT<T>());
     }
+
+    virtual float cost() const { return 5.0f; }
 };
 
 struct ToIoNilExpr : public AbstractToIoObjectExpr
@@ -116,16 +120,21 @@ struct ToIoNilExpr : public AbstractToIoObjectExpr
     }
 
     virtual void mark() const { expr->mark(); }
+
+    virtual float cost() const { return 5.0f; }
 };
 
 struct ToIoNil : public AbstractTypeConverter
 {
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return new ToIoNilExpr(expr);
+        auto* result = new ToIoNilExpr(expr);
+        return create_expr(result, result->get_type());
     }
 
-    virtual std::string description() const { return "To nil Conv"; } \
+    virtual std::string description() const { return "To nil Conv"; }
+
+    virtual float cost() const { return 5.0f; }
 };
 
 void add_convs_to_script(IoVM* iovm)

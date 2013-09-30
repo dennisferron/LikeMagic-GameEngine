@@ -64,9 +64,15 @@ private:
 
     IoObject* expr_to_io_obj(ExprPtr expr);
 
+    std::string scriptPath;
+
 public:
     IoVM(std::string bootstrap_path);
     ~IoVM();
+
+
+    std::string get_script_path();
+    void set_script_path(std::string value);
 
     static IoObject* perform(IoObject *self, IoObject *locals, IoMessage *m);
     static IoObject* forward(IoObject *self, IoObject *locals, IoMessage *m);

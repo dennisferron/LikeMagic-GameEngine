@@ -8,12 +8,14 @@
 
 #pragma once
 
+#include "LikeMagic/Utility/DLLHelper.hpp"
+
 #include <string>
 #include <typeinfo>
 
 namespace LM {
 
-std::string demangle_name(std::string type_name);
+LIKEMAGIC_API std::string demangle_name(std::string type_name);
 
 template <typename U>
 struct TypeDescr

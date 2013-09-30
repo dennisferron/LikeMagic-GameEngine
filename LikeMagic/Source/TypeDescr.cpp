@@ -14,9 +14,11 @@
 #include <malloc.h>
 #endif
 
+#include "LikeMagic/Utility/DLLHelper.hpp"
+
 namespace LM {
 
-std::string demangle_name(std::string type_name)
+LIKEMAGIC_API std::string demangle_name(std::string type_name)
 {
     int status;
     char* buf = abi::__cxa_demangle(type_name.c_str(), 0, 0, &status);

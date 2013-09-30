@@ -22,11 +22,11 @@ using LM::ExprPtr;
 using LM::Expr;
 using LM::TypeIndex;
 
-class IoObjectExpr : public Expr
+class IoObjectExpr : public IMarkable
 {
 private:
     IoObject* io_object;
-    TypeIndex type_info;
+    TypeIndex io_type;
 
     IoObjectExpr(IoObject* io_object_);
 
@@ -34,6 +34,7 @@ public:
     static ExprPtr create(IoObject* io_object);
     virtual std::string description() const;
     virtual void mark() const;
+    virtual TypeIndex get_type() const;
 };
 
 }}

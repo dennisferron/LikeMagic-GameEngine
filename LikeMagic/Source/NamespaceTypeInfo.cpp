@@ -7,10 +7,11 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/Utility/NamespaceTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfoBaseImpl.hpp"
 
 using namespace LM;
 
-class NamespaceTypeInfo : public AbstractTypeInfo
+class NamespaceTypeInfo : public TypeInfoBaseImpl
 {
 private:
     std::string namespace_name;
@@ -23,21 +24,16 @@ public:
     NamespaceTypeInfo(std::string namespace_name_);
     std::string get_namespace_name() const;
     virtual std::string description() const;
-    virtual TypeInfoPtr as_const() const;
-    virtual TypeInfoPtr as_nonconst() const;
-    virtual TypeInfoPtr as_ptr() const;
-    virtual TypeInfoPtr as_value() const;
-    virtual TypeInfoPtr class_type() const;
 };
 
 LIKEMAGIC_API TypeInfoPtr LM::create_namespace_type_info(std::string namespace_name)
 {
-    return new NamespaceTypeInfo(namespace_name);
+    return TypeInfoPtr(new NamespaceTypeInfo(namespace_name));
 }
 
 LIKEMAGIC_API TypeIndex LM::create_namespace_type_index(std::string namespace_name)
 {
-    return get_index(new NamespaceTypeInfo(namespace_name));
+    return get_index(TypeInfoPtr(new NamespaceTypeInfo(namespace_name)));
 }
 
 NamespaceTypeInfo::NamespaceTypeInfo(std::string namespace_name_) : namespace_name(namespace_name_) {}
@@ -76,27 +72,3 @@ std::string NamespaceTypeInfo::get_namespace_name() const
     return namespace_name;
 }
 
-TypeInfoPtr NamespaceTypeInfo::as_const() const
-{
-    return this;
-}
-
-TypeInfoPtr NamespaceTypeInfo::as_nonconst() const
-{
-    return this;
-}
-
-TypeInfoPtr NamespaceTypeInfo::as_ptr() const
-{
-    return this;
-}
-
-TypeInfoPtr NamespaceTypeInfo::as_value() const
-{
-    return this;
-}
-
-TypeInfoPtr NamespaceTypeInfo::class_type() const
-{
-    return this;
-}

@@ -85,7 +85,6 @@
 		<Unit filename="Include/LikeMagic/Exprs/Term.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/TermDeleter.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/TermStoreAs.hpp" />
-		<Unit filename="Include/LikeMagic/Exprs/TypeConvAdapter.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/ValuePtr.hpp" />
 		<Unit filename="Include/LikeMagic/IMarkable.hpp" />
 		<Unit filename="Include/LikeMagic/Interprocess/AbstractSharedArgMarshaller.hpp" />
@@ -110,7 +109,6 @@
 		<Unit filename="Include/LikeMagic/Mirrors/CallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Mirrors/TypeMirror.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/AbstractTypeConverter.hpp" />
-		<Unit filename="Include/LikeMagic/TypeConv/ConvImpl.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/NoChangeConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/NumberConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/StaticCastConv.hpp" />
@@ -132,6 +130,7 @@
 		<Unit filename="Include/LikeMagic/Utility/TupleForEach.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeDescr.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeIndex.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/TypeInfoBaseImpl.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeInfoCache.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypePack.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/make_arg_list.hpp" />
@@ -140,7 +139,6 @@
 		<Unit filename="Script/TestScripts/debugtest.io" />
 		<Unit filename="Source/AbstractSharedArgMarshaller.cpp" />
 		<Unit filename="Source/AbstractTypeConverter.cpp" />
-		<Unit filename="Source/AbstractTypeInfo.cpp" />
 		<Unit filename="Source/BetterTypeInfo.cpp" />
 		<Unit filename="Source/BottomPtrTypeInfo.cpp" />
 		<Unit filename="Source/CallTarget.cpp" />

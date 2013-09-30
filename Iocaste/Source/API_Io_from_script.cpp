@@ -25,6 +25,8 @@
 
 using namespace LM;
 
+LM_DEFINE_ABSTRACTTYPEINFO_DESTRUCTOR
+
 namespace Iocaste { namespace LMAdapters {
 
 template <typename T>
@@ -77,6 +79,8 @@ std::vector<T> from_list(IoObject* io_obj)
         } \
 \
         virtual std::string description() const { return "From " #scriptType " Conv"; } \
+        \
+        virtual float cost() const { return 5.0f; } \
     }; \
 \
     type_system->add_converter_simple(FromIoTypeInfo::create_index(#scriptType), TypId<cppType&>::get(), new From##scriptType); \
@@ -89,10 +93,12 @@ void add_convs_from_script(IoVM* iovm)
     {
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            return new Expr(nullptr, BottomPtrTypeInfo::create_index());
+            return create_expr(nullptr, create_bottom_ptr_type_index());
         }
 
         virtual std::string description() const { return "From Nil Conv"; }
+
+        virtual float cost() const { return 5.0f; }
     };
     static const char* name1 = "Nil";
     static std::string name2(name1);
@@ -110,6 +116,8 @@ void add_convs_from_script(IoVM* iovm)
         }
 
         virtual std::string description() const { return "From Nil to 'false' Conv"; }
+
+        virtual float cost() const { return 5.0f; }
     };
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), TypId<bool>::get(), new FromNilToFalse);
 
@@ -122,6 +130,8 @@ void add_convs_from_script(IoVM* iovm)
         }
 
         virtual std::string description() const { return "From Nil to void Conv"; }
+
+        virtual float cost() const { return 5.0f; }
     };
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), TypId<void>::get(), new FromNilToVoid);
 
@@ -138,6 +148,8 @@ void add_convs_from_script(IoVM* iovm)
         }
 
         virtual std::string description() const { return "From Block Conv"; }
+
+        virtual float cost() const { return 5.0f; }
     };
 
     TypeIndex from_script_block_type = FromIoTypeInfo::create_index("Block");
@@ -168,6 +180,8 @@ void add_convs_from_script(IoVM* iovm)
         }
 
         virtual std::string description() const { return "From Bool Conv"; }
+
+        virtual float cost() const { return 5.0f; }
     };
 
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Bool"), TypId<bool&>::get(), new FromBool);

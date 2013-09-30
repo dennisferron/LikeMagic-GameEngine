@@ -42,6 +42,16 @@ using namespace std;
 using namespace Iocaste;
 using namespace Iocaste::LMAdapters;
 
+string IoVM::get_script_path()
+{
+    return scriptPath;
+}
+
+void IoVM::set_script_path(string value)
+{
+    scriptPath = value;
+}
+
 // CShims functions
 extern "C" {
 
@@ -168,6 +178,8 @@ struct PtrToIoObjectConv : public LM::AbstractTypeConverter
     }
 
     virtual std::string description() const { return "PtrToIoObjectConv"; }
+
+    virtual float cost() const { return 5.0f; }
 };
 
 void IoVM::setShowAllMessages(bool value)
@@ -535,8 +547,9 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPt
     }
     else if (expr_has_conv)
     {
-        ExprPtr to_expr = type_system->try_conv(from_expr, to_io_type);
-        boost::intrusive_ptr<AbstractToIoObjectExpr> io_expr = static_cast<AbstractToIoObjectExpr*>(to_expr.get());
+        ExprPtr to_expr = type_system->try_conv(from_expr, LM::TypId<AbstractToIoObjectExpr*>::get());
+        AbstractToIoObjectExpr* io_expr =
+            reinterpret_cast<AbstractToIoObjectExpr*>(to_expr->get_value_ptr().as_nonconst);
         IoObject* io_obj = io_expr->eval_in_context(self, locals, m);
         return io_obj;
     }

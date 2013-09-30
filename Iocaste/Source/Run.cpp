@@ -12,7 +12,7 @@ using namespace Iocaste::LMAdapters;
 #include "boost/algorithm/string/trim.hpp"
 #include "LikeMagic/BindingMacros.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
-#include "LikeMagic/ScriptUtil.hpp"
+//#include "LikeMagic/StdBindings/ScriptUtil.hpp"
 #include "boost/program_options.hpp"
 
 #include "Iocaste/Exception.hpp"
@@ -82,7 +82,7 @@ void do_file(IoVM& vm, string file_name)
     std::string scriptPath(file_name);
     boost::algorithm::trim_right_if(scriptPath, IsNotDirChar());
     //vm.add_proto("scriptPath", scriptPath, NamespacePath::global(), true);
-    ScriptUtil::set_script_path(scriptPath);
+    vm.set_script_path(scriptPath);
     std::stringstream code;
     code << "doFile(\"" << file_name << "\")";
     vm.do_string(code.str());

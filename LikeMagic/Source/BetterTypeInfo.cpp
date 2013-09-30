@@ -7,6 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/Utility/BetterTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfoBaseImpl.hpp"
 
 #include <cstring>
 #include <sstream>
@@ -16,7 +17,9 @@ namespace LM {
 // Used for default constructed BetterTypeInfo with no type stored in it.
 struct no_type {};
 
-class BetterTypeInfo : public AbstractTypeInfo
+LM_DEFINE_ABSTRACTTYPEINFO_DESTRUCTOR
+
+class BetterTypeInfo : public TypeInfoBaseImpl
 {
 private:
     template <typename T> friend class TypId;
@@ -49,12 +52,12 @@ public:
 
 LIKEMAGIC_API TypeInfoPtr create_cpp_type_info(std::type_info const* info_, bool is_const_, bool is_ptr_)
 {
-    return new BetterTypeInfo(info_, is_const_, is_ptr_);
+    return TypeInfoPtr(new BetterTypeInfo(info_, is_const_, is_ptr_));
 }
 
 LIKEMAGIC_API TypeIndex create_cpp_type_index(std::type_info const* info_, bool is_const_, bool is_ptr_)
 {
-    return get_index(new BetterTypeInfo(info_, is_const_, is_ptr_));
+    return get_index(TypeInfoPtr(new BetterTypeInfo(info_, is_const_, is_ptr_)));
 }
 
 BetterTypeInfo::BetterTypeInfo(std::type_info const* info_, bool is_const_, bool is_ptr_)
