@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
-#include "LikeMagic/Utility/DLLHelper.hpp"
+#include "LikeMagic/Lang/LangInterpreter.hpp"
+#include "Bindings/Custom/MeshToolsBindingsDLL.hpp"
 
 namespace Bindings { namespace Custom {
 
-void add_protos(Iocaste::LMAdapters::IoVM& vm);
+MESHTOOLS_BINDINGS_API void add_values(LM::LangInterpreter& vm);
 
 }}

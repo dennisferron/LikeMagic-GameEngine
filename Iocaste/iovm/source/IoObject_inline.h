@@ -102,7 +102,7 @@ int IoObject_isBlack(IoObject *self)
 void IoObject_createSlotsIfNeeded(IoObject *self);
 void IoObject_rawRemoveAllProtos(IoObject *self);
 void IoObject_shouldMark(IoObject *self);
-void IoObject_shouldMarkIfNonNull(IoObject *self);
+IOVM_API void IoObject_shouldMarkIfNonNull(IoObject *self);
 void IoObject_freeIfUnreferenced(IoObject *self);
 IoObject *IoObject_addingRef_(IoObject *self, IoObject *ref);
 void IoObject_inlineSetSlot_to_(IoObject *self,

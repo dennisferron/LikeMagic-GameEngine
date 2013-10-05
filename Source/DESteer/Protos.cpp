@@ -13,12 +13,12 @@
 #include "desteer/controller/SimpleSteeringController.hpp"
 
 using namespace std;
-using namespace Iocaste::LMAdapters;
+using namespace LM;
 using namespace desteer::controller;
 
 namespace Bindings { namespace DESteer {
 
-void add_protos(IoVM& vm)
+void add_values(LangInterpreter& vm)
 {
     LM_ENUM_PROTOS(vm,
         (EBF_ARRIVE)

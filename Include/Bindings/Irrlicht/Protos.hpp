@@ -10,14 +10,13 @@
 
 #include "LikeMagic/Utility/DLLHelper.hpp"
 
-namespace LM { class RuntimeTypeSystem; }
-
-namespace Iocaste { namespace LMAdapters {
-    class IoVM;
-}}
+namespace LM {
+    class TypeSystem;
+    class LangInterpreter;
+}
 
 namespace Bindings { namespace Irrlicht {
 
-void add_protos(Iocaste::LMAdapters::IoVM&, LM::RuntimeTypeSystem&);
+void add_values(LM::LangInterpreter&, LM::TypeSystem&);
 
 }}

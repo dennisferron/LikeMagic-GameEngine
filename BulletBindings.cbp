@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="BulletBindings" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Windows">
+				<Option platforms="Windows;" />
+				<Option output="bin/Debug/BulletBindings" imp_lib="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).def" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="./" />
+				<Option object_output="obj/Debug/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DUSE_DLL_BUILD" />
+					<Add option="-DDBUILDING_BULLET_BINDINGS_DLL" />
+					<Add option="-D_DEBUG" />
+					<Add option="-DWIN32" />
+					<Add option="-D_WINDOWS" />
+					<Add option="-D_CRT_SECURE_NO_DEPRECATE_" />
+					<Add option="-D__GNUWIN32__" />
+				</Compiler>
+				<Linker>
+					<Add option="-m32" />
+					<Add library="LikeMagic\libLikeMagic-Windows.a" />
+					<Add library=".\libBullet.a" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add option="--std=c++0x" />
+			<Add option="-Werror=return-type" />
+			<Add option="-fdiagnostics-show-option" />
+			<Add option="-Wno-unused-variable" />
+			<Add option="-Wno-unused-parameter" />
+			<Add option="-Wno-deprecated" />
+			<Add option="-Wno-ignored-qualifiers" />
+			<Add option="-Wno-unused-but-set-parameter" />
+			<Add directory="Common/boost_1_54_0" />
+			<Add directory="Deps/bullet-2.81-rev2613/src" />
+			<Add directory="Include" />
+			<Add directory="LikeMagic/Include" />
+		</Compiler>
+		<Unit filename="Include/Bindings/Bullet/Bindings.hpp" />
+		<Unit filename="Include/Bindings/Bullet/BulletBindingsDLL.hpp" />
+		<Unit filename="Include/Bindings/Bullet/Protos.hpp" />
+		<Unit filename="Include/Bindings/Bullet/ScriptedClosestRayResultCallback.hpp" />
+		<Unit filename="Include/Bindings/Bullet/ScriptedContactResultCallback.hpp" />
+		<Unit filename="Include/Bindings/Bullet/ScriptedWorldManager.hpp" />
+		<Unit filename="Source/Bullet/BulletBindings.cpp" />
+		<Unit filename="Source/Bullet/BulletProtos.cpp" />
+		<Unit filename="Source/Bullet/ScriptedClosestRayResultCallback.cpp" />
+		<Unit filename="Source/Bullet/ScriptedContactResultCallback.cpp" />
+		<Unit filename="Source/Bullet/ScriptedWorldManager.cpp" />
+		<Unit filename="Source/Bullet/btBroadphaseInterface.cpp" />
+		<Unit filename="Source/Bullet/btBroadphaseProxy.cpp" />
+		<Unit filename="Source/Bullet/btCollisionConfiguration.cpp" />
+		<Unit filename="Source/Bullet/btCollisionObject.cpp" />
+		<Unit filename="Source/Bullet/btCollisionShape.cpp" />
+		<Unit filename="Source/Bullet/btCollisionWorld.cpp" />
+		<Unit filename="Source/Bullet/btConcaveShape.cpp" />
+		<Unit filename="Source/Bullet/btConstraintSolver.cpp" />
+		<Unit filename="Source/Bullet/btDispatcher.cpp" />
+		<Unit filename="Source/Bullet/btMatrix3x3.cpp" />
+		<Unit filename="Source/Bullet/btMotionState.cpp" />
+		<Unit filename="Source/Bullet/btOverlappingPairCallback.cpp" />
+		<Unit filename="Source/Bullet/btQuaternion.cpp" />
+		<Unit filename="Source/Bullet/btSoftBody.cpp" />
+		<Unit filename="Source/Bullet/btStridingMeshInterface.cpp" />
+		<Unit filename="Source/Bullet/btTransform.cpp" />
+		<Unit filename="Source/Bullet/btTypedConstraint.cpp" />
+		<Unit filename="Source/Bullet/btVector3.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger>
+				<search_path add="LikeMagic/Include" />
+				<search_path add="LikeMagic/Source" />
+				<search_path add="LikeMagic/Include/LikeMagic" />
+				<search_path add="LikeMagic/Include/LikeMagic/CallTargets" />
+			</debugger>
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

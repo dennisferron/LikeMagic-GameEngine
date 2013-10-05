@@ -14,20 +14,20 @@ using namespace irr::io;
 
 void ScriptedDataSerializer::OnCreateNode(ISceneNode* node)
 {
-    if (!on_OnCreateNode.empty())
-        on_OnCreateNode(node);
+    if (!on_OnCreateNode->empty())
+        (*on_OnCreateNode)(node);
 }
 
 void ScriptedDataSerializer::OnReadUserData(ISceneNode* forSceneNode, io::IAttributes* userData)
 {
-    if (!on_OnReadUserData.empty())
-        on_OnReadUserData(forSceneNode, userData);
+    if (!on_OnReadUserData->empty())
+        (*on_OnReadUserData)(forSceneNode, userData);
 }
 
 io::IAttributes* ScriptedDataSerializer::createUserData(ISceneNode* forSceneNode)
 {
-    if (!on_createUserData.empty())
-        return on_createUserData.eval<io::IAttributes*>(forSceneNode);
+    if (!on_createUserData->empty())
+        return on_createUserData->eval<io::IAttributes*>(forSceneNode);
     else
         return 0;
 }

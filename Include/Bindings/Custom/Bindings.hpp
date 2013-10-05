@@ -10,9 +10,10 @@
 #pragma once
 
 #include "LikeMagic/TypeSystem.hpp"
+#include "Bindings/Custom/MeshToolsBindingsDLL.hpp"
 
 namespace Bindings { namespace Custom {
 
-void add_bindings();
+MESHTOOLS_BINDINGS_API void add_bindings();
 
 }}

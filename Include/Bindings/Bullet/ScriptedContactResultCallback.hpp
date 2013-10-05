@@ -6,18 +6,18 @@
 LM_CUSTOM_DELETER(btCollisionObjectWrapper, /* do nothing */)
 
 #include "LikeMagic/IMarkable.hpp"
-#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
-#include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
+#include "LikeMagic/Lang/LangInterpreter.hpp"
+#include "LikeMagic/Lang/LangBlock.hpp"
 
 namespace Bindings { namespace Bullet {
 
-using Iocaste::LMAdapters::IoBlock;
+using LM::BlockPtr;
 using LM::IMarkable;
 
 class ScriptedContactResultCallback : public IMarkable, public btCollisionWorld::ContactResultCallback
 {
 public:
-    ScriptedContactResultCallback(IoBlock onAddSingleResult_, IoBlock onNeedsCollision);
+    ScriptedContactResultCallback(BlockPtr onAddSingleResult_, BlockPtr onNeedsCollision);
     virtual ~ScriptedContactResultCallback();
 
     virtual void mark() const;
@@ -38,8 +38,8 @@ public:
                                     const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1);
 
 private:
-    IoBlock onAddSingleResult;
-    IoBlock onNeedsCollision;
+    BlockPtr onAddSingleResult;
+    BlockPtr onNeedsCollision;
 };
 
 }}

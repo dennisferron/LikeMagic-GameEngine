@@ -10,14 +10,13 @@
 
 #include <irrlicht.h>
 
-#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+#include "LikeMagic/Lang/LangInterpreter.hpp"
 
 #include "LikeMagic/BindingMacros.hpp"
 #include "Bindings/Irrlicht/ScriptedSceneNode.hpp"
 #include "Bindings/Irrlicht/ScriptedEventReceiver.hpp"
 
 using namespace std;
-using namespace Iocaste::LMAdapters;
 using namespace LM;
 using namespace irr;
 using namespace irr::video;
@@ -27,27 +26,27 @@ using namespace irr::gui;
 
 namespace Bindings { namespace Irrlicht {
 
-void add_protos(IoVM& vm)
+void add_values(LangInterpreter& vm)
 {
-    //LM_STATIC_FUNC(Bindings::Irrlicht, add_protos_irr)
+    //LM_STATIC_FUNC(Bindings::Irrlicht, add_values_irr)
 }
 
-void add_protos_irr(IoVM& vm)
+void add_values_irr(LangInterpreter& vm)
 {
     // What?  Why would I add std::string as a proto?
-    //LM_ADD_PROTOS(vm, (std::string)(std::wstring))
+    //LM_CREATE_VALUES(vm, (std::string)(std::wstring))
 
     typedef core::string<fschar_t> irrFsStr;
-    LM_ADD_PROTO(vm, irrFsStr)
+    LM_CREATE_VALUE(vm, irrFsStr)
 
-    LM_ADD_PROTOS(vm, (dimension2du)(recti)(vector2df)(vector2di)(vector3df)(aabbox3df))
+    LM_CREATE_VALUES(vm, (dimension2du)(recti)(vector2df)(vector2di)(vector3df)(aabbox3df))
 
-    LM_ADD_PROTOS(vm, (u16)(SColor)(SColorf)(SMaterial)(S3DVertex)(SExposedVideoData))
+    LM_CREATE_VALUES(vm, (u16)(SColor)(SColorf)(SMaterial)(S3DVertex)(SExposedVideoData))
 
     LM_ADD_VECTORS(vm, (u16)(S3DVertex)(vector3df))
 
-    LM_ADD_PROTO(vm, ScriptedSceneNode, 0, 0, 0)
-    //LM_ADD_PROTO(vm, ScriptedEventReceiver)
+    LM_CREATE_VALUE(vm, ScriptedSceneNode, 0, 0, 0)
+    //LM_ADD_VALUE(vm, ScriptedEventReceiver)
 
     LM_ENUM_PROTOS(vm, (EDT_DIRECT3D9)(EDT_DIRECT3D8)(EDT_OPENGL)(EDT_SOFTWARE)(EDT_BURNINGSVIDEO)(EDT_NULL))
 

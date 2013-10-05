@@ -9,10 +9,10 @@
 #pragma once
 
 #include "LikeMagic/Utility/DLLHelper.hpp"
-#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+#include "LikeMagic/Lang/LangInterpreter.hpp"
 
 namespace Bindings { namespace Bullet {
 
-void add_protos(Iocaste::LMAdapters::IoVM& vm);
+void add_values(LM::LangInterpreter& vm);
 
 }}

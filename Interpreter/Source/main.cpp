@@ -4,5 +4,5 @@
 
 int main(int argc, const char *argv[])
 {
-    return Iocaste::run(argc, argv, &Interpreter::add_bindings);
+    return Iocaste_run(argc, argv, &Interpreter::add_bindings);
 }

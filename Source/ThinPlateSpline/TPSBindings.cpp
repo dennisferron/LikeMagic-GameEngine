@@ -18,7 +18,7 @@ using namespace TPS;
 
 namespace Bindings { namespace ThinPlateSpline {
 
-void add_bindings()
+MESHTOOLS_BINDINGS_API void add_bindings()
 {
     TypeMirror& global_ns = type_system->global_namespace();
     TypeMirror& ns_tps = register_namespace("TPS", global_ns);

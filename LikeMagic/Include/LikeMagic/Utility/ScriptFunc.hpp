@@ -7,7 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/MarkableObjGraph.hpp"
-#include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
+#include "LikeMagic/Lang/LangBlock.hpp"
 
 #include <stdexcept>
 
@@ -24,27 +24,27 @@
 // undue burden on implementors who do not need/use base classes with default implementations.
 //
 #define ScriptFunc_R(RType, FuncName, CONST, ArgTypes) \
-Iocaste::LMAdapters::IoBlock On##FuncName; \
+LM::BlockPtr On##FuncName; \
 virtual RType FuncName( \
     BOOST_PP_SEQ_FOR_EACH_I(TypedArgList, arg, ArgTypes) \
 ) CONST \
 { \
-    if (On##FuncName.empty()) \
+    if (On##FuncName->empty()) \
         /* return Base::FuncName(BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(ArgTypes), arg));  */ \
         throw std::logic_error("No script block registered for " #FuncName); \
     else \
-        return On##FuncName.eval<RType>(BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(ArgTypes), arg)); \
+        return On##FuncName->eval<RType>(BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(ArgTypes), arg)); \
 }
 
 #define ScriptFunc_void(FuncName, CONST, ArgTypes) \
-Iocaste::LMAdapters::IoBlock On##FuncName; \
+LM::BlockPtr On##FuncName; \
 virtual void FuncName( \
     BOOST_PP_SEQ_FOR_EACH_I(TypedArgList, arg, ArgTypes) \
 ) CONST \
 { \
-    if (On##FuncName.empty()) \
+    if (On##FuncName->empty()) \
         /* BOOST_PP_IIF(IsVoid, , return) Base::FuncName(BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(ArgTypes), arg));  */ \
         throw std::logic_error("No script block registered for " #FuncName); \
     else \
-        On##FuncName(BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(ArgTypes), arg)); \
+        (*On##FuncName)(BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(ArgTypes), arg)); \
 }

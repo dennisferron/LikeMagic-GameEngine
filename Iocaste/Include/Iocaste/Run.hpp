@@ -1,11 +1,8 @@
+#include "IocasteDLL.hpp"
 
 namespace LM
 {
     class RuntimeTypeSystem;
 }
 
-namespace Iocaste
-{
-    int run(int argc, const char *argv[], void (*add_bindings)());
-}
-
+IOCASTE_API int Iocaste_run(int argc, const char *argv[], void (*add_bindings)());

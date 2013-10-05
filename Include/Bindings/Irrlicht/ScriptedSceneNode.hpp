@@ -9,12 +9,12 @@
 #include <irrlicht.h>
 
 #include "LikeMagic/IMarkable.hpp"
-#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
-#include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
+#include "LikeMagic/Lang/LangInterpreter.hpp"
+#include "LikeMagic/Lang/LangBlock.hpp"
 
 namespace Bindings { namespace Irrlicht {
 
-using Iocaste::LMAdapters::IoBlock;
+using LM::BlockPtr;
 using namespace irr;
 
 class ScriptedSceneNode : public scene::ISceneNode, public LM::IMarkable
@@ -23,11 +23,11 @@ private:
     core::aabbox3d<f32> Box;
     video::S3DVertex Vertices[4];
     video::SMaterial Material;
-    IoBlock on_register;
-    IoBlock on_render;
-    IoBlock on_get_box;
-    IoBlock on_get_material;
-    IoBlock on_get_material_count;
+    BlockPtr on_register;
+    BlockPtr on_render;
+    BlockPtr on_get_box;
+    BlockPtr on_get_material;
+    BlockPtr on_get_material_count;
 
 public:
 
@@ -35,11 +35,11 @@ public:
 
     ScriptedSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id);
 
-    void setOnRegisterSceneNode(IoBlock block);
-    void setOnRender(IoBlock block);
-    void setOnGetBoundingBox (IoBlock block);
-    void setOnGetMaterial(IoBlock block);
-    void setOnGetMaterialCount(IoBlock block);
+    void setOnRegisterSceneNode(BlockPtr block);
+    void setOnRender(BlockPtr block);
+    void setOnGetBoundingBox (BlockPtr block);
+    void setOnGetMaterial(BlockPtr block);
+    void setOnGetMaterialCount(BlockPtr block);
 
     video::S3DVertex const* getExampleVertices() const;
     u16 const* getExampleIndices() const;

@@ -9,12 +9,12 @@
 #include <irrlicht.h>
 
 #include "LikeMagic/IMarkable.hpp"
-#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
-#include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
+#include "LikeMagic/Lang/LangInterpreter.hpp"
+#include "LikeMagic/Lang/LangBlock.hpp"
 
 namespace Bindings { namespace Irrlicht {
 
-using Iocaste::LMAdapters::IoBlock;
+using LM::BlockPtr;
 using namespace irr;
 
 class ScriptedEventReceiver : public irr::IEventReceiver, public LM::IMarkable
@@ -22,15 +22,15 @@ class ScriptedEventReceiver : public irr::IEventReceiver, public LM::IMarkable
 private:
     bool KeyStates[KEY_KEY_CODES_COUNT];
 
-    IoBlock on_OnEvent;
+    BlockPtr on_OnEvent;
 
 public:
 
     virtual void mark() const;
 
-    ScriptedEventReceiver(IoBlock onEvent_);
+    ScriptedEventReceiver(BlockPtr onEvent_);
 
-    void setOnEvent(IoBlock block);
+    void setOnEvent(BlockPtr block);
     virtual bool OnEvent(SEvent const& event);
 
     bool isKeyDown(EKEY_CODE keyCode);

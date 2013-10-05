@@ -20,61 +20,39 @@ namespace LM {
 class LangBlock : public LM::IMarkable
 {
 public:
-    virtual ~LangBlock();
-    virtual LangBlock& operator =(LangBlock const& other) = 0;
+
+    virtual ExprPtr call(ArgList args, std::size_t num_args) = 0;
+
+    virtual ~LangBlock() = 0;
 
     template <typename... Args>
-    void operator()(Args... args) const
+    void operator()(Args... args)
     {
-        if (io_block && io_target)
+        if (!empty())
         {
-            IoMessage* m = new_message(io_target, "LangBlock");
-            add_args(m, args...);
-            activate(m);
+            ArgList argList = { Term<Args>::create(args)...};
+            call(argList, sizeof...(args));
         }
     }
 
     template <typename R, typename... Args>
-    R eval(Args... args) const
+    R eval(Args... args)
     {
         if (!empty())
         {
-            char const* errorPoint = "before eval";
-            IoMessage* m;
-            try
-            {
-                m = new_message(io_target, "LangBlock");
-                errorPoint = "while adding args";
-                add_args(m, args...);
-                errorPoint = "on activate";
-                IoObject* result = activate(m);
-                static TypeIndex r_type = LM::TypId<R>::get();
-                errorPoint = "return value from_script";
-                ExprPtr expr = from_script(io_target, result, r_type);
-                errorPoint = "try_conv return value";
-                ExprPtr warden;
-                return EvalAs<R>::value(expr, warden);
-            }
-            catch (Iocaste::ScriptException const& exc)
-            {
-                // TODO:  assoc addn'l info w/exp.
-                throw;
-            }
-            // TODO:  Create LikeMagic exception object.
-            catch (std::exception const& e)
-            {
-                throw Iocaste::IoStateError(io_block, std::string() + "Error in LangBlock " + errorPoint + ": " + e.what(), m);
-            }
+            ArgList argList = { Term<Args>::create(args)...};
+            ExprPtr warden;
+            return EvalAs<R>::value(
+                call(argList, sizeof...(args))
+            , warden);
         }
         else
-        {
             throw std::logic_error("Tried to eval an empty block.");
-        }
     }
 
     virtual bool empty() const = 0;
-    virtual void mark() const = 0;
 };
 
+typedef std::shared_ptr<LangBlock> BlockPtr;
 
-}}
+}

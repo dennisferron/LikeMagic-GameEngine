@@ -8,7 +8,9 @@
 
 #include "Bindings/Custom/ScriptObjAnimator.hpp"
 #include "Bindings/Custom/CustomAnimatorTypes.hpp"
-#include "IoObject.h"
+
+// TODO:  Fix this
+//#include "IoObject.h"
 
 #include <stdexcept>
 
@@ -24,7 +26,8 @@ ScriptObjAnimator::ScriptObjAnimator(IoObject* io_obj_)
 
 void ScriptObjAnimator::mark() const
 {
-    IoObject_shouldMarkIfNonNull(io_obj);
+    // TODO:  Fix this
+    //IoObject_shouldMarkIfNonNull(io_obj);
 }
 
 

@@ -16,13 +16,13 @@ using namespace irr::scene;
 void ScriptedEventReceiver::mark() const
 {
     //std::cout << "ScriptedEventReceiver::mark()" << std::endl;
-    on_OnEvent.mark();
+    on_OnEvent->mark();
 }
 
-void ScriptedEventReceiver::setOnEvent(IoBlock block) { on_OnEvent = block; }
+void ScriptedEventReceiver::setOnEvent(BlockPtr block) { on_OnEvent = block; }
 
 
-ScriptedEventReceiver::ScriptedEventReceiver(IoBlock onEvent_)
+ScriptedEventReceiver::ScriptedEventReceiver(BlockPtr onEvent_)
     : on_OnEvent(onEvent_)
 {
     for (u32 i=0; i<KEY_KEY_CODES_COUNT; ++i)
@@ -36,10 +36,10 @@ bool ScriptedEventReceiver::OnEvent(SEvent const& event)
     if (event.EventType == irr::EET_KEY_INPUT_EVENT)
             KeyStates[event.KeyInput.Key] = event.KeyInput.PressedDown;
 
-    if (on_OnEvent.empty())
+    if (on_OnEvent->empty())
         return false;
     else
-        return on_OnEvent.eval<bool>(event);
+        return on_OnEvent->eval<bool>(event);
 }
 
 bool ScriptedEventReceiver::isKeyDown(EKEY_CODE keyCode)

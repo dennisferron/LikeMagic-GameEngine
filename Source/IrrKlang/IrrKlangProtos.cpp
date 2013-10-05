@@ -11,9 +11,9 @@
 #ifndef USE_IRRKLANG
 
 // Replace protos with empty dummy function.
-using namespace Iocaste::LMAdapters;
+using namespace LM;
 namespace Bindings { namespace IrrKlang {
-void add_protos(IoVM& vm) {}
+void add_values(LangInterpreter& vm) {}
 }}
 
 #else
@@ -28,7 +28,7 @@ using namespace irrklang;
 
 namespace Bindings { namespace IrrKlang {
 
-void add_protos(IoVM& vm)
+void add_values(LangInterpreter& vm)
 {
     LM_ENUM_PROTOS(vm, (ESM_AUTO_DETECT)(ESM_STREAMING)(ESM_NO_STREAMING)(ESM_FORCE_32_BIT))
 

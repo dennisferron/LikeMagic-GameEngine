@@ -58,6 +58,7 @@
 					<Add option="-D__SIMD_EMU__" />
 					<Add option="-DBUILDING_IOVMALL_DLL" />
 					<Add option="-DUSE_DLL_BUILD" />
+					<Add option="-DBUILDING_IOCASTE_DLL" />
 				</Compiler>
 				<Linker>
 					<Add library="..\LikeMagic\libLikeMagic-Windows.a" />
@@ -97,6 +98,7 @@
 		<Unit filename="Include/Iocaste/Error.hpp" />
 		<Unit filename="Include/Iocaste/Exception.hpp" />
 		<Unit filename="Include/Iocaste/ExceptionSystem.hpp" />
+		<Unit filename="Include/Iocaste/IocasteDLL.hpp" />
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/API_Io.hpp" />
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/API_Io_Impl.hpp" />
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp" />

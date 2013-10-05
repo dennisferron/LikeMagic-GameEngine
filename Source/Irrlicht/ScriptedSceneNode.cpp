@@ -15,18 +15,18 @@ using namespace irr::scene;
 
 void ScriptedSceneNode::mark() const
 {
-    on_register.mark();
-    on_render.mark();
-    on_get_box.mark();
-    on_get_material.mark();
-    on_get_material_count.mark();
+    on_register->mark();
+    on_render->mark();
+    on_get_box->mark();
+    on_get_material->mark();
+    on_get_material_count->mark();
 }
 
-void ScriptedSceneNode::setOnRegisterSceneNode(IoBlock block) { on_register = block; }
-void ScriptedSceneNode::setOnRender(IoBlock block) { on_render = block; }
-void ScriptedSceneNode::setOnGetBoundingBox (IoBlock block) { on_get_box = block; }
-void ScriptedSceneNode::setOnGetMaterial(IoBlock block) { on_get_material = block; }
-void ScriptedSceneNode::setOnGetMaterialCount(IoBlock block) { on_get_material_count = block; }
+void ScriptedSceneNode::setOnRegisterSceneNode(BlockPtr block) { on_register = block; }
+void ScriptedSceneNode::setOnRender(BlockPtr block) { on_render = block; }
+void ScriptedSceneNode::setOnGetBoundingBox (BlockPtr block) { on_get_box = block; }
+void ScriptedSceneNode::setOnGetMaterial(BlockPtr block) { on_get_material = block; }
+void ScriptedSceneNode::setOnGetMaterialCount(BlockPtr block) { on_get_material_count = block; }
 
 
 ScriptedSceneNode::ScriptedSceneNode(scene::ISceneNode* parent, scene::ISceneManager* mgr, s32 id)
@@ -92,7 +92,7 @@ tetraeder.
 */
 void ScriptedSceneNode::render()
 {
-    on_render();
+    (*on_render)();
 
     //u16 indices[] = {	0,2,3, 2,1,3, 1,0,3, 2,0,1	};
     //video::IVideoDriver* driver = SceneManager->getVideoDriver();
@@ -125,26 +125,26 @@ getMaterial() with an index greater than 0.
 */
 const core::aabbox3d<f32>& ScriptedSceneNode::getBoundingBox() const
 {
-    if (on_get_box.empty())
+    if (on_get_box->empty())
         return Box;
     else
-        return on_get_box.eval<aabbox3df&>();
+        return on_get_box->eval<aabbox3df&>();
 }
 
 u32 ScriptedSceneNode::getMaterialCount() const
 {
-    if (on_get_material_count.empty())
+    if (on_get_material_count->empty())
         return 1;
     else
-        return static_cast<u32>(on_get_material_count.eval<double&>());
+        return static_cast<u32>(on_get_material_count->eval<double&>());
 }
 
 video::SMaterial& ScriptedSceneNode::getMaterial(u32 i)
 {
-    if (on_get_material.empty())
+    if (on_get_material->empty())
         return Material;
     else
-        return on_get_material.eval<video::SMaterial&>();
+        return on_get_material->eval<video::SMaterial&>();
 }
 
 

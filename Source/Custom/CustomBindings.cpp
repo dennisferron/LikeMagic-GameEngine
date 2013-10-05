@@ -25,26 +25,23 @@
 
 #include <boost/preprocessor/repetition/repeat.hpp>
 
-#include "IoObject.h"
+//#include "IoObject.h"
 
 #include "Bindings/Custom/SceneNodePtrTest.hpp"
 
 using namespace LM;
-
 using namespace irr;
 using namespace irr::core;
 using namespace irr::scene;
 
-
 namespace Bindings { namespace Custom {
-
 
 // Support FlagBits for Irrlicht Scene Node* ID
 int  flag_bits_get_value(ISceneNode* node)            { return node->getID();       }
 void flag_bits_set_value(ISceneNode* node, int value) {        node->setID(value);  }
 typedef FlagBits<ISceneNode*> FlagBits_of_ISceneNode;
 
-void add_bindings()
+MESHTOOLS_BINDINGS_API void add_bindings()
 {
     TypeMirror& ns_global = type_system->global_namespace();
     TypeMirror& ns_custom = register_namespace("Custom", ns_global);
@@ -93,7 +90,7 @@ void add_bindings()
     LM_CONSTR(GearConstraint, "new", btRigidBody&, btRigidBody&, btScalar)
     LM_STATIC_FUNC_NAME(GearConstraint_LM, "getRotZ", GearConstraint::getRotZ)
 
-    LM_STATIC_FUNC_NAME(ns_custom, "add_protos", Bindings::Custom::add_protos)
+    LM_STATIC_FUNC_NAME(ns_custom, "add_values", Bindings::Custom::add_values)
 
     LM_CLASS(ns_custom, SoftBodyMeshSynchronizer)
     LM_CONSTR(SoftBodyMeshSynchronizer, "new", btSoftBody*, irr::scene::IMeshBuffer*)

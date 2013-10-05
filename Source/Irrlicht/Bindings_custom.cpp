@@ -40,7 +40,7 @@ void add_bindings_custom()
 
     LM_CLASS(ns_irr_custom, ScriptedEventReceiver)
     LM_BASE(ScriptedEventReceiver, IEventReceiver)
-    LM_CONSTR(ScriptedEventReceiver, "new", IoBlock)
+    LM_CONSTR(ScriptedEventReceiver, "new", BlockPtr)
     LM_FUNC(ScriptedEventReceiver, (setOnEvent)(OnEvent)(isKeyDown))
 }
 

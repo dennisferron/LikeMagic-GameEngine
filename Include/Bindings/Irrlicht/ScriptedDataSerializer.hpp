@@ -9,13 +9,13 @@
 #include <irrlicht.h>
 
 #include "LikeMagic/IMarkable.hpp"
-#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
-#include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
+#include "LikeMagic/Lang/LangInterpreter.hpp"
+#include "LikeMagic/Lang/LangBlock.hpp"
 
 
 namespace Bindings { namespace Irrlicht {
 
-using Iocaste::LMAdapters::IoBlock;
+using LM::BlockPtr;
 using namespace irr;
 using namespace irr::io;
 using namespace irr::scene;
@@ -23,9 +23,9 @@ using namespace irr::scene;
 class ScriptedDataSerializer : public ISceneUserDataSerializer, public LM::MarkableObjGraph
 {
 public:
-    IoBlock on_OnCreateNode;
-    IoBlock on_OnReadUserData;
-    IoBlock on_createUserData;
+    BlockPtr on_OnCreateNode;
+    BlockPtr on_OnReadUserData;
+    BlockPtr on_createUserData;
 
     virtual void OnCreateNode(ISceneNode* node);
     virtual void OnReadUserData(ISceneNode* forSceneNode, io::IAttributes* userData);

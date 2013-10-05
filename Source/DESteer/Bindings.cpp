@@ -35,7 +35,7 @@ void add_bindings()
     TypeMirror& ns_bindings = register_namespace("Bindings", global_ns);
     TypeMirror& ns_bindings_desteer = register_namespace("desteer", ns_bindings);
 
-    LM_STATIC_FUNC_NAME(ns_bindings, "add_protos", Bindings::DESteer::add_protos)
+    LM_STATIC_FUNC_NAME(ns_bindings, "add_values", Bindings::DESteer::add_values)
 
     TypeMirror& ns_desteer = register_namespace("desteer", global_ns);
 

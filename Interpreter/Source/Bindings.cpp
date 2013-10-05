@@ -7,7 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "Interpreter/Bindings.hpp"
-#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+#include "LikeMagic/Lang/LangInterpreter.hpp"
 
 #include "Bindings/Irrlicht/Bindings.hpp"
 #include "Bindings/Bullet/Bindings.hpp"
@@ -31,7 +31,6 @@
 #include "LikeMagic/BindingMacros.hpp"
 
 using namespace LM;
-using namespace Iocaste::LMAdapters;
 
 namespace Interpreter{
 

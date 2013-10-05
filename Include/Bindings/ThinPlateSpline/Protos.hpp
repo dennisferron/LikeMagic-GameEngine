@@ -8,16 +8,16 @@
 
 #pragma once
 
-#include "LikeMagic/Utility/DLLHelper.hpp"
+#include "Bindings/Custom/MeshToolsBindingsDLL.hpp"
 
 namespace LM { class RuntimeTypeSystem; }
 
-namespace Iocaste { namespace LMAdapters {
-    class IoVM;
-}}
+namespace LM {
+    class LangInterpreter;
+}
 
 namespace Bindings { namespace Irrlicht {
 
-void add_protos(Iocaste::LMAdapters::IoVM&, LM::RuntimeTypeSystem&);
+MESHTOOLS_BINDINGS_API void add_values(LM::LangInterpreter&, LM::RuntimeTypeSystem&);
 
 }}

@@ -16,44 +16,42 @@
 
 #include "btBulletDynamicsCommon.h"
 
-
 using namespace std;
-using namespace Iocaste::LMAdapters;
 using namespace LM;
 
 namespace Bindings { namespace Bullet {
 
-void add_protos(IoVM& vm)
+void add_values(LangInterpreter& vm)
 {
     TypeMirror& global_ns = type_system->global_namespace();
     TypeMirror& ns_path = register_namespace("Bullet", global_ns);
 
-    add_proto<double>(vm, "TAU", 2*M_PI, "Bullet", true);
+    vm.add_value("TAU", 2*M_PI, "Bullet", true);
 
-    add_proto(vm, "DefaultFilter", btBroadphaseProxy::DefaultFilter);
-    add_proto(vm, "StaticFilter", btBroadphaseProxy::StaticFilter);
-    add_proto(vm, "KinematicFilter", btBroadphaseProxy::KinematicFilter);
-    add_proto(vm, "DebrisFilter", btBroadphaseProxy::DebrisFilter);
-    add_proto(vm, "SensorTrigger", btBroadphaseProxy::SensorTrigger);
-    add_proto(vm, "CharacterFilter", btBroadphaseProxy::CharacterFilter);
-    add_proto(vm, "AllFilter", btBroadphaseProxy::AllFilter);
+    vm.add_value("DefaultFilter", btBroadphaseProxy::DefaultFilter);
+    vm.add_value("StaticFilter", btBroadphaseProxy::StaticFilter);
+    vm.add_value("KinematicFilter", btBroadphaseProxy::KinematicFilter);
+    vm.add_value("DebrisFilter", btBroadphaseProxy::DebrisFilter);
+    vm.add_value("SensorTrigger", btBroadphaseProxy::SensorTrigger);
+    vm.add_value("CharacterFilter", btBroadphaseProxy::CharacterFilter);
+    vm.add_value("AllFilter", btBroadphaseProxy::AllFilter);
 
-    add_proto(vm, "DBG_NoDebug",  btIDebugDraw::DBG_NoDebug);
-    add_proto(vm, "DBG_DrawWireframe",  btIDebugDraw::DBG_DrawWireframe);
-    add_proto(vm, "DBG_DrawAabb",  btIDebugDraw::DBG_DrawAabb);
-    add_proto(vm, "DBG_DrawFeaturesText",  btIDebugDraw::DBG_DrawFeaturesText);
-    add_proto(vm, "DBG_DrawContactPoints",  btIDebugDraw::DBG_DrawContactPoints);
-    add_proto(vm, "DBG_NoDeactivation",  btIDebugDraw::DBG_NoDeactivation);
-    add_proto(vm, "DBG_NoHelpText",  btIDebugDraw::DBG_NoHelpText);
-    add_proto(vm, "DBG_DrawText",  btIDebugDraw::DBG_DrawText);
-    add_proto(vm, "DBG_ProfileTimings",  btIDebugDraw::DBG_ProfileTimings);
-    add_proto(vm, "DBG_EnableSatComparison",  btIDebugDraw::DBG_EnableSatComparison);
-    add_proto(vm, "DBG_DisableBulletLCP",  btIDebugDraw::DBG_DisableBulletLCP);
-    add_proto(vm, "DBG_EnableCCD",  btIDebugDraw::DBG_EnableCCD);
-    add_proto(vm, "DBG_DrawConstraints",  btIDebugDraw::DBG_DrawConstraints);
-    add_proto(vm, "DBG_DrawConstraintLimits",  btIDebugDraw::DBG_DrawConstraintLimits);
-    add_proto(vm, "DBG_FastWireframe",  btIDebugDraw::DBG_FastWireframe);
-    add_proto(vm, "DBG_MAX_DEBUG_DRAW_MODE",  btIDebugDraw::DBG_MAX_DEBUG_DRAW_MODE);
+    vm.add_value("DBG_NoDebug",  btIDebugDraw::DBG_NoDebug);
+    vm.add_value("DBG_DrawWireframe",  btIDebugDraw::DBG_DrawWireframe);
+    vm.add_value("DBG_DrawAabb",  btIDebugDraw::DBG_DrawAabb);
+    vm.add_value("DBG_DrawFeaturesText",  btIDebugDraw::DBG_DrawFeaturesText);
+    vm.add_value("DBG_DrawContactPoints",  btIDebugDraw::DBG_DrawContactPoints);
+    vm.add_value("DBG_NoDeactivation",  btIDebugDraw::DBG_NoDeactivation);
+    vm.add_value("DBG_NoHelpText",  btIDebugDraw::DBG_NoHelpText);
+    vm.add_value("DBG_DrawText",  btIDebugDraw::DBG_DrawText);
+    vm.add_value("DBG_ProfileTimings",  btIDebugDraw::DBG_ProfileTimings);
+    vm.add_value("DBG_EnableSatComparison",  btIDebugDraw::DBG_EnableSatComparison);
+    vm.add_value("DBG_DisableBulletLCP",  btIDebugDraw::DBG_DisableBulletLCP);
+    vm.add_value("DBG_EnableCCD",  btIDebugDraw::DBG_EnableCCD);
+    vm.add_value("DBG_DrawConstraints",  btIDebugDraw::DBG_DrawConstraints);
+    vm.add_value("DBG_DrawConstraintLimits",  btIDebugDraw::DBG_DrawConstraintLimits);
+    vm.add_value("DBG_FastWireframe",  btIDebugDraw::DBG_FastWireframe);
+    vm.add_value("DBG_MAX_DEBUG_DRAW_MODE",  btIDebugDraw::DBG_MAX_DEBUG_DRAW_MODE);
 
     LM_ENUM_PROTOS(vm,
         (PHY_FLOAT)

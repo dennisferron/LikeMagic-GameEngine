@@ -16,7 +16,6 @@
 #include "Bindings/Bullet/ScriptedWorldManager.hpp"
 
 using namespace LM;
-using namespace Iocaste::LMAdapters;
 
 namespace Bindings { namespace Bullet {
 
@@ -77,7 +76,7 @@ void add_bindings_btCollisionWorld()
 
     LM_CLASS(ns_bullet, ScriptedClosestRayResultCallback)
     LM_BASE(ScriptedClosestRayResultCallback, btCollisionWorld_ClosestRayResultCallback)
-    LM_CONSTR(ScriptedClosestRayResultCallback, "new", IoBlock)
+    LM_CONSTR(ScriptedClosestRayResultCallback, "new", BlockPtr)
     LM_FUNC(ScriptedClosestRayResultCallback, (baseAddSingleResult)(test_equals))
 
     typedef btCollisionWorld::LocalRayResult btCollisionWorld_LocalRayResult;
@@ -93,11 +92,11 @@ void add_bindings_btCollisionWorld()
     LM_FIELD(btCollisionWorld_ContactResultCallback, (m_collisionFilterGroup)(m_collisionFilterMask))
     LM_FUNC(btCollisionWorld_ContactResultCallback, (needsCollision)(addSingleResult))
 
-    ScriptedContactResultCallback* compileMe = new ScriptedContactResultCallback(IoBlock(), IoBlock());
+    ScriptedContactResultCallback* compileMe = new ScriptedContactResultCallback(BlockPtr(), BlockPtr());
 
     LM_CLASS(ns_bullet, ScriptedContactResultCallback)
     LM_BASE(ScriptedContactResultCallback, btCollisionWorld_ContactResultCallback)
-    LM_CONSTR(ScriptedContactResultCallback, "new", IoBlock, IoBlock)
+    LM_CONSTR(ScriptedContactResultCallback, "new", BlockPtr, BlockPtr)
     LM_FUNC(ScriptedContactResultCallback, (baseNeedsCollision))
 
     LM_CLASS(ns_bullet, btManifoldPoint)

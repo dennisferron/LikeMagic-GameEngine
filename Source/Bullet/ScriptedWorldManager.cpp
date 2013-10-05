@@ -7,13 +7,13 @@ ScriptedWorldManager::ScriptedWorldManager() {}
 
 ScriptedWorldManager::~ScriptedWorldManager() {}
 
-void ScriptedWorldManager::setOnTick(btDynamicsWorld& world, IoBlock onTick_)
+void ScriptedWorldManager::setOnTick(btDynamicsWorld& world, BlockPtr onTick_)
 {
     onTick = onTick_;
     world.setInternalTickCallback(static_tick_callback, this, false);
 }
 
-void ScriptedWorldManager::setOnPreTick(btDynamicsWorld& world, IoBlock onPreTick_)
+void ScriptedWorldManager::setOnPreTick(btDynamicsWorld& world, BlockPtr onPreTick_)
 {
     onPreTick = onPreTick_;
     world.setInternalTickCallback(static_pretick_callback, this, true);
@@ -31,8 +31,8 @@ void ScriptedWorldManager::tick_callback(btDynamicsWorld *world, btScalar timeSt
     if (++count % 1 != 0)
         return;
 
-    if (!onTick.empty())
-        onTick(world, timeStep);
+    if (!onTick->empty())
+        (*onTick)(world, timeStep);
 }
 
 void ScriptedWorldManager::static_pretick_callback(btDynamicsWorld *world, btScalar timeStep)
@@ -42,12 +42,12 @@ void ScriptedWorldManager::static_pretick_callback(btDynamicsWorld *world, btSca
 
 void ScriptedWorldManager::pretick_callback(btDynamicsWorld *world, btScalar timeStep)
 {
-    if (!onPreTick.empty())
-        onPreTick(world, timeStep);
+    if (!onPreTick->empty())
+        (*onPreTick)(world, timeStep);
 }
 
 void ScriptedWorldManager::mark() const
 {
-    onTick.mark();
-    onPreTick.mark();
+    onTick->mark();
+    onPreTick->mark();
 }

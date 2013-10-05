@@ -3,12 +3,12 @@
 #include "BulletDynamics/Dynamics/btDynamicsWorld.h"
 
 #include "LikeMagic/IMarkable.hpp"
-#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
-#include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
+#include "LikeMagic/Lang/LangInterpreter.hpp"
+#include "LikeMagic/Lang/LangBlock.hpp"
 
 namespace Bindings { namespace Bullet {
 
-using Iocaste::LMAdapters::IoBlock;
+using LM::BlockPtr;
 using LM::IMarkable;
 
 class ScriptedWorldManager : public IMarkable
@@ -18,12 +18,12 @@ public:
     virtual ~ScriptedWorldManager();
     virtual void mark() const;
 
-    void setOnTick(btDynamicsWorld& world, IoBlock onTick_);
-    void setOnPreTick(btDynamicsWorld& world, IoBlock onPreTick_);
+    void setOnTick(btDynamicsWorld& world, BlockPtr onTick_);
+    void setOnPreTick(btDynamicsWorld& world, BlockPtr onPreTick_);
 
 private:
-    IoBlock onPreTick;
-    IoBlock onTick;
+    BlockPtr onPreTick;
+    BlockPtr onTick;
 
     static void static_tick_callback(btDynamicsWorld *world, btScalar timeStep);
     void tick_callback(btDynamicsWorld *world, btScalar timeStep);

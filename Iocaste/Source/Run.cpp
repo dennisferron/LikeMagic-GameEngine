@@ -88,7 +88,7 @@ void do_file(IoVM& vm, string file_name)
     vm.do_string(code.str());
 }
 
-int Iocaste::run(int argc, const char *argv[], void (*add_bindings)())
+IOCASTE_API int Iocaste_run(int argc, const char *argv[], void (*add_bindings)())
 {
     namespace po = boost::program_options;
 

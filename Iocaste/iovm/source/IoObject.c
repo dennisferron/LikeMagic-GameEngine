@@ -203,7 +203,7 @@ void IoObject_shouldMark(IoObject *self)
 	Collector_shouldMark_(IOCOLLECTOR, self);
 }
 
-void IoObject_shouldMarkIfNonNull(IoObject *self)
+IOVM_API void IoObject_shouldMarkIfNonNull(IoObject *self)
 {
 	if (self)
 	{

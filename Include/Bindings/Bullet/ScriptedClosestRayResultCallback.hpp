@@ -3,18 +3,18 @@
 #include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
 
 #include "LikeMagic/IMarkable.hpp"
-#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
-#include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
+#include "LikeMagic/Lang/LangInterpreter.hpp"
+#include "LikeMagic/Lang/LangBlock.hpp"
 
 namespace Bindings { namespace Bullet {
 
-using Iocaste::LMAdapters::IoBlock;
+using LM::BlockPtr;
 using LM::IMarkable;
 
 class ScriptedClosestRayResultCallback : public IMarkable, public btCollisionWorld::ClosestRayResultCallback
 {
 public:
-    ScriptedClosestRayResultCallback(IoBlock onAddSingleResult_);
+    ScriptedClosestRayResultCallback(BlockPtr onAddSingleResult_);
     virtual ~ScriptedClosestRayResultCallback();
 
     virtual void mark() const;
@@ -23,7 +23,7 @@ public:
     bool test_equals(btCollisionObject* a, btCollisionObject* b) const;
 
 private:
-    IoBlock onAddSingleResult;
+    BlockPtr onAddSingleResult;
 };
 
 }}

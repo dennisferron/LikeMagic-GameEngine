@@ -9,11 +9,10 @@
 
 #pragma once
 
-namespace LM { class TypeSystem; }
-
-namespace Iocaste { namespace LMAdapters {
-    class IoVM;
-}}
+namespace LM {
+    class TypeSystem;
+    class LangInterpreter;
+}
 
 namespace Bindings { namespace Irrlicht {
 
@@ -29,6 +28,6 @@ void add_bindings_irr_io();
 
 void add_bindings_orientation();
 
-void add_protos_irr(Iocaste::LMAdapters::IoVM& vm);
+void add_values_irr(LM::LangInterpreter& vm);
 
 }}

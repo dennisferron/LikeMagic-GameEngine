@@ -6,11 +6,12 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-
 #pragma once
+
+#include "Bindings/Custom/MeshToolsBindingsDLL.hpp"
 
 namespace Bindings { namespace ThinPlateSpline {
 
-void add_bindings();
+MESHTOOLS_BINDINGS_API void add_bindings();
 
 }}

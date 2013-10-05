@@ -8,7 +8,7 @@
 
 #include "Bindings/Irrlicht/Bindings.hpp"
 #include "LikeMagic/BindingMacros.hpp"
-#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+#include "LikeMagic/Lang/LangInterpreter.hpp"
 
 using namespace LM;
 
@@ -20,7 +20,7 @@ void add_bindings()
     TypeMirror& ns_bindings = register_namespace("Bindings", global_ns);
     TypeMirror& ns_irrlicht = register_namespace("Irrlicht", ns_bindings);
 
-    LM_STATIC_FUNC_NAME(ns_irrlicht, "add_protos_irr", Bindings::Irrlicht::add_protos_irr)
+    LM_STATIC_FUNC_NAME(ns_irrlicht, "add_values_irr", Bindings::Irrlicht::add_values_irr)
 
     add_bindings_irr();
     add_bindings_gui();

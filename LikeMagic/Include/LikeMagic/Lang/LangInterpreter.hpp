@@ -14,52 +14,53 @@
 
 namespace LM {
 
+typedef void* LangObjPtr;
+
 class LangInterpreter : public MarkableObjGraph
 {
 public:
-    virtual ~LangInterpreter();
+    virtual ~LangInterpreter() = 0;
     virtual void add_value(std::string name, ExprPtr expr,
-                           std::string ns = "", bool conv_to_script=false) const = 0;
+                           std::string ns = "", bool conv_to_script=false) = 0;
 
-    virtual void run_cli() const = 0;
-    virtual LangObject* do_string(std::string code) const = 0;
-
-    virtual LangObject* CastToLangObject(void* object) = 0;
+    virtual LangObjPtr do_string(std::string code) = 0;
+    virtual LangObjPtr CastToLangObject(void* object) = 0;
+    virtual ExprPtr eval(std::string io_code) = 0;
     virtual void mark() const = 0;
-};
 
-template <typename T>
-T get_expr(LangInterpreter& interpreter, std::string io_code) const
-{
-    auto abs_expr = get_abs_expr(io_code);
-    return EvalAs<T>::value(abs_expr);
-}
+    template <typename T>
+    T get_expr(LangInterpreter& interpreter, std::string script_code)
+    {
+        ExprPtr expr = eval(script_code);
+        ExprPtr warden;
+        return EvalAs<T>::value(expr, warden);
+    }
 
-// This is intended for pointers but I used "T" instead of "T*" so that you can specify a smart pointer instead.
-template <typename T>
-T get_resource(std::string io_code) const
-{
-    auto ptr = get_expr<T>(io_code)->eval();
+    // This is intended for pointers but I used "T" instead of "T*" so that you can specify a smart pointer instead.
+    template <typename T>
+    T get_resource(std::string script_code)
+    {
+        ExprPtr ptr = get_expr<T>(script_code);
 
-    if (ptr == NULL)
-        throw std::logic_error("Failed to get resource object '" + io_code + "'");
+        if (ptr == NULL)
+            throw std::logic_error("Failed to get resource object '" + script_code + "'");
 
-    return ptr;
-}
+        return ptr;
+    }
 
-template <typename T>
-void add_value(LangInterpreter& interpreter, std::string name,  T obj=T(), std::string ns = "", bool to_script=false)
-{
-    interpreter.add_value
-    (
-        name,
-        Term<T>::create
+    template <typename T>
+    void add_value(std::string name,  T obj=T(), std::string ns = "", bool to_script=false)
+    {
+        add_value
         (
-            obj
-        ),
-        ns,
-        to_script
-    );
-}
-
+            name,
+            Term<T>::create
+            (
+                obj
+            ),
+            ns,
+            to_script
+        );
+    }
+};
 }
