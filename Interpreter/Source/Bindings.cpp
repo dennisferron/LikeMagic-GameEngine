@@ -10,6 +10,7 @@
 #include "LikeMagic/Lang/LangInterpreter.hpp"
 
 #include "Bindings/Irrlicht/Bindings.hpp"
+#include "Bindings/IrrKlang/Bindings.hpp"
 #include "Bindings/Bullet/Bindings.hpp"
 #include "Bindings/Custom/Bindings.hpp"
 #include "Bindings/DESteer/Bindings.hpp"
@@ -37,6 +38,7 @@ namespace Interpreter{
 void add_bindings()
 {
     Bindings::Irrlicht::add_bindings();
+    Bindings::IrrKlang::add_bindings();
     Bindings::Bullet::add_bindings();
     Bindings::Custom::add_bindings();
     Bindings::DESteer::add_bindings();

@@ -6,12 +6,8 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-
 #include "irrlicht.h"
 #include "LikeMagic/IMarkable.hpp"
-
-struct CollectorMarker;
-typedef CollectorMarker IoObject;
 
 namespace Bindings { namespace Custom {
 
@@ -25,9 +21,9 @@ public:
                     irr::scene::ISceneManager* newManager=0);
     irr::scene::ESCENE_NODE_ANIMATOR_TYPE getType() const;
 
-    ScriptObjAnimator(IoObject* io_obj_);
+    ScriptObjAnimator(void* io_obj_);
 
-    IoObject* getScriptObj() const;
+    void* getScriptObj() const;
 
     static ScriptObjAnimator* findIn(irr::scene::ISceneNode* node);
 
@@ -35,7 +31,7 @@ public:
 
 private:
 
-    IoObject* io_obj;
+    void* io_obj;
 };
 
 }}

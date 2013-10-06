@@ -10,7 +10,7 @@
 #include "Bindings/Custom/CustomAnimatorTypes.hpp"
 
 // TODO:  Fix this
-//#include "IoObject.h"
+//#include "void.h"
 
 #include <stdexcept>
 
@@ -20,18 +20,18 @@ using namespace irr::scene;
 
 using namespace Bindings::Custom;
 
-ScriptObjAnimator::ScriptObjAnimator(IoObject* io_obj_)
+ScriptObjAnimator::ScriptObjAnimator(void* io_obj_)
     : io_obj(io_obj_) {}
 
 
 void ScriptObjAnimator::mark() const
 {
     // TODO:  Fix this
-    //IoObject_shouldMarkIfNonNull(io_obj);
+    //void_shouldMarkIfNonNull(io_obj);
 }
 
 
-IoObject* ScriptObjAnimator::getScriptObj() const
+void* ScriptObjAnimator::getScriptObj() const
 {
     return io_obj;
 }

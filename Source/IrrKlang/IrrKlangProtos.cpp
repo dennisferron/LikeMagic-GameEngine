@@ -13,7 +13,7 @@
 // Replace protos with empty dummy function.
 using namespace LM;
 namespace Bindings { namespace IrrKlang {
-void add_values(LangInterpreter& vm) {}
+IRRKLANG_BINDINGS_API void add_values(LangInterpreter& vm) {}
 }}
 
 #else
@@ -28,7 +28,7 @@ using namespace irrklang;
 
 namespace Bindings { namespace IrrKlang {
 
-void add_values(LangInterpreter& vm)
+IRRKLANG_BINDINGS_API void add_values(LangInterpreter& vm)
 {
     LM_ENUM_PROTOS(vm, (ESM_AUTO_DETECT)(ESM_STREAMING)(ESM_NO_STREAMING)(ESM_FORCE_32_BIT))
 

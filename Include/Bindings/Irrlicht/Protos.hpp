@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "LikeMagic/Utility/DLLHelper.hpp"
+#include "Bindings/Irrlicht/IrrlichtBindingsDLL.hpp"
 
 namespace LM {
     class TypeSystem;
@@ -17,6 +17,6 @@ namespace LM {
 
 namespace Bindings { namespace Irrlicht {
 
-void add_values(LM::LangInterpreter&, LM::TypeSystem&);
+IRRLICHT_BINDINGS_API void add_values(LM::LangInterpreter&, LM::TypeSystem&);
 
 }}

@@ -35,7 +35,7 @@ void add_bindings_btTransform();
 void add_bindings_btTypedConstraint();
 void add_bindings_btVector3();
 
-void add_bindings()
+BULLET_BINDINGS_API void add_bindings()
 {
     TypeMirror& global_ns = type_system->global_namespace();
     TypeMirror& ns_bindings = register_namespace("Bindings", global_ns);

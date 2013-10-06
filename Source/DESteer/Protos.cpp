@@ -18,7 +18,7 @@ using namespace desteer::controller;
 
 namespace Bindings { namespace DESteer {
 
-void add_values(LangInterpreter& vm)
+DESTEER_BINDINGS_API void add_values(LangInterpreter& vm)
 {
     LM_ENUM_PROTOS(vm,
         (EBF_ARRIVE)

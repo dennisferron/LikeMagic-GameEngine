@@ -25,7 +25,7 @@
 
 #include <boost/preprocessor/repetition/repeat.hpp>
 
-//#include "IoObject.h"
+//#include "void.h"
 
 #include "Bindings/Custom/SceneNodePtrTest.hpp"
 
@@ -72,7 +72,7 @@ MESHTOOLS_BINDINGS_API void add_bindings()
 
     LM_CLASS(ns_custom, ScriptObjAnimator)
     LM_BASE(ScriptObjAnimator, ISceneNodeAnimator)
-    LM_CONSTR(ScriptObjAnimator, "new", IoObject*)
+    LM_CONSTR(ScriptObjAnimator, "new", void*)
     LM_FUNC(ScriptObjAnimator, (getScriptObj))
     LM_STATIC_MEMBER_FUNC(ScriptObjAnimator, (findIn))
 

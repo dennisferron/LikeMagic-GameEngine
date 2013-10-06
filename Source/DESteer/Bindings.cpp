@@ -29,7 +29,7 @@ using namespace desteer::behavior;
 
 namespace Bindings { namespace DESteer {
 
-void add_bindings()
+DESTEER_BINDINGS_API void add_bindings()
 {
     TypeMirror& global_ns = type_system->global_namespace();
     TypeMirror& ns_bindings = register_namespace("Bindings", global_ns);

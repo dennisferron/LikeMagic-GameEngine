@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include "LikeMagic/RuntimeTypeSystem.hpp"
+#include "Bindings/IrrKlang/IrrKlangBindingsDLL.hpp"
 
 namespace Bindings { namespace IrrKlang {
 
-void add_bindings();
+IRRKLANG_BINDINGS_API void add_bindings();
 
 }}

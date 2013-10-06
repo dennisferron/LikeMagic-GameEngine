@@ -6,7 +6,7 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-#include "Bindings/Irrlicht/Bindings.hpp"
+#include "Bindings/IrrKlang/Bindings.hpp"
 #include "LikeMagic/BindingMacros.hpp"
 
 #ifndef USE_IRRKLANG
@@ -14,7 +14,7 @@
 // Define the irrklang bindings as a dummy function.
 using namespace LM;
 namespace Bindings { namespace IrrKlang {
-void add_bindings() {}
+IRRKLANG_BINDINGS_API void add_bindings() {}
 }}
 
 #else
@@ -26,7 +26,7 @@ using namespace irrklang;
 
 namespace Bindings { namespace IrrKlang {
 
-void add_bindings(Namespace const& type_sys)
+IRRKLANG_BINDINGS_API void add_bindings(Namespace const& type_sys)
 {
     LM_STATIC_FUNC(irrklang, createIrrKlangDevice)
 

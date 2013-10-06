@@ -6,8 +6,9 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-
 #pragma once
+
+#include "Bindings/Irrlicht/IrrlichtBindingsDLL.hpp"
 
 namespace LM {
     class TypeSystem;
@@ -16,7 +17,7 @@ namespace LM {
 
 namespace Bindings { namespace Irrlicht {
 
-void add_bindings();
+IRRLICHT_BINDINGS_API void add_bindings();
 
 void add_bindings_irr();
 void add_bindings_gui();

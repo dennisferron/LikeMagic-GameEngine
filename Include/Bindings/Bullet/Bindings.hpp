@@ -9,9 +9,10 @@
 
 #pragma once
 
+#include "Bindings/Bullet/BulletBindingsDLL.hpp"
 
 namespace Bindings { namespace Bullet {
 
-void add_bindings();
+BULLET_BINDINGS_API void add_bindings();
 
 }}

@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include "LikeMagic/TypeSystem.hpp"
+#include "Bindings/DESteer/DESteerBindingsDLL.hpp"
 
 namespace Bindings { namespace DESteer {
 
-void add_bindings();
+DESTEER_BINDINGS_API void add_bindings();
 
 }}

@@ -26,16 +26,13 @@ using namespace irr::gui;
 
 namespace Bindings { namespace Irrlicht {
 
-void add_values(LangInterpreter& vm)
+IRRLICHT_BINDINGS_API void add_values(LangInterpreter& vm)
 {
     //LM_STATIC_FUNC(Bindings::Irrlicht, add_values_irr)
 }
 
 void add_values_irr(LangInterpreter& vm)
 {
-    // What?  Why would I add std::string as a proto?
-    //LM_CREATE_VALUES(vm, (std::string)(std::wstring))
-
     typedef core::string<fschar_t> irrFsStr;
     LM_CREATE_VALUE(vm, irrFsStr)
 

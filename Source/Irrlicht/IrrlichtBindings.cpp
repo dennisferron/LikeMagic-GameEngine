@@ -14,7 +14,7 @@ using namespace LM;
 
 namespace Bindings { namespace Irrlicht {
 
-void add_bindings()
+IRRLICHT_BINDINGS_API void add_bindings()
 {
     TypeMirror& global_ns = type_system->global_namespace();
     TypeMirror& ns_bindings = register_namespace("Bindings", global_ns);
