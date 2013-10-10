@@ -24,8 +24,6 @@
 
 namespace LM {
 
-typedef std::shared_ptr<AbstractTypeInfo const> TypeInfoPtr;
-
 class TypeIndex;
 LIKEMAGIC_API TypeIndex const& get_index(TypeInfoPtr type);
 LIKEMAGIC_API TypeInfoPtr get_info(TypeIndex const& index);

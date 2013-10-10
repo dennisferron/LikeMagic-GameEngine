@@ -7,7 +7,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug Windows">
-				<Option output="bin/Debug/LikeMagicUnitTests" prefix_auto="1" extension_auto="1" />
+				<Option output="../../bin/Debug/LikeMagicUnitTests" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../GameBindings" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -21,11 +22,6 @@
 					<Add library="..\libLikeMagic-Windows.a" />
 					<Add library="..\..\Common\UnitTest++\bin\Debug\libUnitTest++.a" />
 				</Linker>
-				<ExtraCommands>
-					<Add after="cmd /c copy /y ..\StdBindings\*.dll bin\Debug" />
-					<Add after="cmd /c copy /y ..\*.dll bin\Debug" />
-					<Mode after="always" />
-				</ExtraCommands>
 			</Target>
 			<Target title="Debug Mac">
 				<Option output="bin/Debug/LikeMagicUnitTests" prefix_auto="1" extension_auto="1" />

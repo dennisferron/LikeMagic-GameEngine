@@ -16,7 +16,7 @@ namespace LM {
 class AbstractTypeInfo
 {
 public:
-    typedef std::shared_ptr<AbstractTypeInfo const> TypeInfoPtr;
+    typedef AbstractTypeInfo const* TypeInfoPtr;
 
     virtual std::string get_system() const = 0;
     virtual bool less(const AbstractTypeInfo& that) const = 0;
@@ -37,7 +37,7 @@ public:
     virtual std::size_t hash_value() const = 0;
 };
 
-typedef std::shared_ptr<AbstractTypeInfo const> TypeInfoPtr;
+typedef AbstractTypeInfo::TypeInfoPtr TypeInfoPtr;
 typedef KeyWrapper<AbstractTypeInfo const> TypeInfoKey;
 
 inline std::size_t hash_value(AbstractTypeInfo const& info)

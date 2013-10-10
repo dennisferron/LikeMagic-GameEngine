@@ -10,6 +10,7 @@
 #pragma once
 
 #include "boost/shared_ptr.hpp"
+#include <stdexcept>
 
 namespace LM {
 
@@ -32,10 +33,32 @@ struct KeyWrapper
     KeyWrapper(std::shared_ptr<T const> key_) : key(key_) {}
 
     inline bool operator <(KeyWrapper<T> const& that) const
-        { return *this->key < *that.key; }
+    {
+        if (this->key == nullptr)
+            throw std::logic_error("this->key is null");
+
+        if (that.key == nullptr)
+            throw std::logic_error("this->key is null");
+
+        std::cout << "this->key->get_system() " << this->key->get_system() << std::endl;
+        std::cout << "that.key->get_system() " << that.key->get_system() << std::endl;
+
+        return *this->key < *that.key;
+    }
 
     inline bool operator ==(KeyWrapper<T> const& that) const
-        { return *this->key == *that.key; }
+    {
+        if (this->key == nullptr)
+            throw std::logic_error("this->key is null");
+
+        if (that.key == nullptr)
+            throw std::logic_error("this->key is null");
+
+        std::cout << "this->key->get_system() " << this->key->get_system() << std::endl;
+        std::cout << "that.key->get_system() " << that.key->get_system() << std::endl;
+
+        return *this->key == *that.key;
+    }
 };
 
 // Convenience function.

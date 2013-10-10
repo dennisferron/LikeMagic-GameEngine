@@ -30,6 +30,7 @@
 #endif
 
 #include "LikeMagic/BindingMacros.hpp"
+#include "LikeMagic/StdBindings/StdBindings.hpp"
 
 using namespace LM;
 
@@ -37,6 +38,9 @@ namespace Interpreter{
 
 void add_bindings()
 {
+    LM::type_system = LM::create_type_system();
+    LM::add_bindings();
+
     Bindings::Irrlicht::add_bindings();
     Bindings::IrrKlang::add_bindings();
     Bindings::Bullet::add_bindings();

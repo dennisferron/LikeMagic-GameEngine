@@ -122,7 +122,7 @@ TypeSystemInstance::TypeSystemInstance()
     impl->classes[ns_type] = impl->global_namespace;
 
     // Allow conversions from nil to any pointer.
-    static TypeIndex nil_expr_type = create_bottom_ptr_type_index();
+    TypeIndex nil_expr_type = create_bottom_ptr_type_index();
     impl->conv_graph.add_type(nil_expr_type);
 }
 

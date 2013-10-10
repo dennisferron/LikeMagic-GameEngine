@@ -19,10 +19,6 @@ using namespace Iocaste::LMAdapters;
 #include "boost/exception/info.hpp"
 #include "boost/exception/get_error_info.hpp"
 
-#ifdef USE_DMALLOC
-#include "dmalloc.h"
-#endif
-
 using namespace std;
 
 
@@ -58,6 +54,10 @@ double System_UserTime(void)
 	return r == -1 ? -1 : u.ru_utime.tv_sec + (((double)u.ru_utime.tv_usec)/1000000);
 }
 
+#endif
+
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
 #endif
 
 #include <iostream>

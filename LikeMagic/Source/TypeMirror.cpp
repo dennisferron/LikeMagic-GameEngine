@@ -97,12 +97,14 @@ void TypeMirrorImpl::set_deleter(std::unique_ptr<AbstractTermDeleter const> dele
 
 TypeMirrorImpl::~TypeMirrorImpl()
 {
+    /*
     for (auto it=impl->methods.begin(); it != impl->methods.end(); it++)
     {
         std::map<int, CallTarget*> const& overloads(it->second);
         for (auto it2=overloads.begin(); it2 != overloads.end(); it2++)
             delete it2->second;
     }
+    */
 }
 
 void TypeMirrorImpl::try_delete(Expr const* expr) const
