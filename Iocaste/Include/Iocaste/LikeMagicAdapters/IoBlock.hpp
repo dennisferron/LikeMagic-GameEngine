@@ -94,8 +94,8 @@ public:
                 errorPoint = "return value from_script";
                 ExprPtr expr = from_script(io_target, result, r_type);
                 errorPoint = "try_conv return value";
-                ExprPtr warden;
-                return EvalAs<R>::value(expr, warden);
+                ExprPtr ward;
+                return EvalAs<R>::value(expr, ward);
             }
             catch (Iocaste::ScriptException const& exc)
             {

@@ -33,11 +33,7 @@ struct TypeInfo
 };
 
 LIKEMAGIC_API TypeInfo create_namespace_type_info(std::string namespace_name);
-
 LIKEMAGIC_API TypeInfo create_bottom_ptr_type_info();
-
-LIKEMAGIC_API TypeInfo create_cpp_type_info(std::type_info const* info_, bool is_const_, bool is_ptr_);
-
 LIKEMAGIC_API TypeInfo create_cpp_type_info(std::type_info const* info_, bool is_const_, bool is_ptr_);
 
 

@@ -29,11 +29,15 @@
 #include <iostream>
 using namespace std;
 
+namespace LM { extern TypeInfoCache* type_info_cache_instance; }
+
 using namespace LM;
 
 namespace LM {
 
-TypeSystem::~TypeSystem() {}
+TypeSystem::~TypeSystem()
+{
+}
 
 class TypeSystemInstance : private TypeSystem
 {
@@ -132,37 +136,28 @@ TypeMirror& TypeSystemInstance::global_namespace() const
 
 void TypeSystemInstance::add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& namespace_)
 {
-    cout << "add_class " << index.description() << endl;
-    if (!index.is_class_type())
-        throw std::logic_error("add_class type index has to be a class type!");
-
-    if (!(index == class_ptr->get_class_type()))
-        throw std::logic_error("add_class: Index=" + index.description() + " not the same as class_ptr type=" + class_ptr->get_class_type().description());
+    TypeIndex class_index = get_class_index(index);
 
     // Add conversion to delegate type so that delegate call targets will work.
-    impl->conv_graph.add_conv(index.as_ptr_type(),
+    impl->conv_graph.add_conv(class_index.as_ptr_type(),
         TypId<LM::Delegate*>::get(), new NoChangeConv());
-    impl->conv_graph.add_conv(index.as_const_ptr_type(),
+    impl->conv_graph.add_conv(class_index.as_const_ptr_type(),
         TypId<LM::Delegate const*>::get(), new NoChangeConv());
 
     // Add conversion from nonconst pointer to const.
     impl->conv_graph.add_conv(
-        index.as_ptr_type(),
-        index.as_const_ptr_type(),
+        class_index.as_ptr_type(),
+        class_index.as_const_ptr_type(),
         new NoChangeConv());
 
-    TypeIndex x = index.as_ptr_type();
-    if (!impl->conv_graph.has_type(x))
-        throw std::logic_error(std::string("Type just added is missing from conv_graph: ") + x.description());
-
-    impl->classes[index] = class_ptr;
+    impl->classes[class_index] = class_ptr;
 
     auto deleter_target = new DeleterCallTarget();
     class_ptr->add_method("delete", deleter_target);
 
     namespace_.add_method(
         class_ptr->get_class_name(), new LM::ExprTarget(
-            create_expr(class_ptr, index)));
+            create_expr(class_ptr, class_index)));
 }
 
 TypeSystemInstance::~TypeSystemInstance()
@@ -192,15 +187,12 @@ bool TypeSystemInstance::has_conv(TypeIndex from_type, TypeIndex to_type) const
 
 TypeMirror* TypeSystemInstance::get_class(TypeIndex type) const
 {
-    auto iter = impl->classes.find(type.class_type());
+    TypeIndex class_type = get_class_index(type);
+    auto iter = impl->classes.find(class_type);
     if (iter != impl->classes.end())
-    {
         return iter->second;
-    }
     else
-    {
         return nullptr;
-    }
 }
 
 void TypeSystemInstance::add_converter_simple(TypeIndex from, TypeIndex to, p_conv_t conv)

@@ -16,9 +16,7 @@ DeleterCallTarget::DeleterCallTarget() {}
 
 ExprPtr DeleterCallTarget::call(ExprPtr target, ArgList args) const
 {
-    TypeMirror const* mirror =
-        type_system->get_class(
-            target->get_type().class_type());
+    TypeMirror const* mirror = type_system->get_class(target->get_type());
     mirror->try_delete(target.get());
     return 0;
 }

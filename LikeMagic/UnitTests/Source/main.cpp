@@ -17,6 +17,7 @@ int main()
         add_typesystem_test_bindings();
         add_term_test_bindings();
         int result = UnitTest::RunAllTests();
+        delete LM::type_system;
         std::cout << "Press enter..." << std::endl;
         std::cin.ignore( 99, '\n' );
         return result;

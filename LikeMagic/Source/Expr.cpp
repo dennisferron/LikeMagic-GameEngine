@@ -90,11 +90,10 @@ ExprImpl::~ExprImpl()
 
     if (get_auto_delete_ptr())
     {
-        TypeIndex class_type = this->get_type().class_type();
-        TypeMirror const* type_mirror = type_system->get_class(class_type);
+        TypeMirror const* type_mirror = type_system->get_class(get_type());
 
         if (type_mirror == nullptr)
-            throw std::logic_error("Cannot delete term or expr because no class found for " + class_type.description());
+            throw std::logic_error("Cannot delete term or expr because no class found for " + get_type().description());
 
         type_mirror->try_delete(this);
     }
@@ -125,8 +124,8 @@ void ExprImpl::mark() const
 {
     if (EvalAs<IMarkable const*>::has_conv(this))
     {
-        ExprPtr warden;
-        EvalAs<IMarkable const*>::value(const_cast<ExprImpl*>(this), warden)->mark();
+        ExprPtr ward;
+        EvalAs<IMarkable const*>::value(const_cast<ExprImpl*>(this), ward)->mark();
     }
 
     if (storage_location != nullptr)

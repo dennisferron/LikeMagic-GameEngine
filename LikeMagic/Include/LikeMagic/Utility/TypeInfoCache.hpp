@@ -10,12 +10,7 @@
 
 #include "LikeMagic/Utility/TypeIndex.hpp"
 #include "LikeMagic/Utility/TypeInfo.hpp"
-
-#ifdef BUILDING_DLL_STD_BINDINGS
-    #define BUILDING_DLL
-#endif
 #include "LikeMagic/Utility/DLLHelper.hpp"
-
 #include "boost/unordered_map.hpp"
 
 namespace LM {
@@ -35,6 +30,7 @@ class TypeInfoCache
 private:
     boost::unordered_map<TypeInfo, TypeIndex> info_to_index;
     std::vector<TypeInfo> index_to_info;
+    std::vector<TypeIndex> index_to_class;
 
 public:
 
@@ -44,7 +40,5 @@ public:
 
     void debug_dump();
 };
-
-LIKEMAGIC_API extern TypeInfoCache* type_info_cache_instance;
 
 }

@@ -34,11 +34,11 @@ private:
     template<int... Indices>
     void build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
-        ExprPtr wardens[sizeof...(Args)];
-        ExprPtr target_warden;
+        ExprPtr wards[sizeof...(Args)];
+        ExprPtr target_ward;
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_warden);
-        (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices], wardens[Indices])...);
+        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_ward);
+        (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices], wards[Indices])...);
     }
 
 public:
@@ -77,11 +77,11 @@ private:
     template<int... Indices>
     void build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
-        ExprPtr wardens[sizeof...(Args)];
-        ExprPtr target_warden;
+        ExprPtr wards[sizeof...(Args)];
+        ExprPtr target_ward;
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate const* target_obj = EvalAs<Delegate const*>::value(target_check, target_warden);
-        (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices], wardens[Indices])...);
+        Delegate const* target_obj = EvalAs<Delegate const*>::value(target_check, target_ward);
+        (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices], wards[Indices])...);
     }
 
 public:
@@ -119,12 +119,12 @@ private:
     template<int... Indices>
     ExprPtr build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
-        ExprPtr wardens[sizeof...(Args)];
-        ExprPtr target_warden;
+        ExprPtr wards[sizeof...(Args)];
+        ExprPtr target_ward;
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_warden);
+        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_ward);
         return Term<R>::create((target_obj->*func_ptr)(
-           EvalAs<Args>::value(args[Indices], wardens[Indices])...));
+           EvalAs<Args>::value(args[Indices], wards[Indices])...));
     }
 
 public:
@@ -161,12 +161,12 @@ private:
     template<int... Indices>
     ExprPtr build_method_call(ExprPtr target, ArgList args, IndexPack<Indices...>) const
     {
-        ExprPtr wardens[sizeof...(Args)];
-        ExprPtr target_warden;
+        ExprPtr wards[sizeof...(Args)];
+        ExprPtr target_ward;
         auto target_check = type_system->try_conv(target, actual_type);
-        Delegate const* target_obj = EvalAs<Delegate const*>::value(target_check, target_warden);
+        Delegate const* target_obj = EvalAs<Delegate const*>::value(target_check, target_ward);
         return Term<R>::create((target_obj->*func_ptr)(
-            EvalAs<Args>::value(args[Indices], wardens[Indices])...));
+            EvalAs<Args>::value(args[Indices], wards[Indices])...));
     }
 
 public:

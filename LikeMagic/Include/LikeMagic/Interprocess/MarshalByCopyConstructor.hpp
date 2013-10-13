@@ -14,8 +14,8 @@ struct MarshalByCopyConstructor : public AbstractSharedArgMarshaller
 
     virtual void write(void* location, ExprPtr arg)
     {
-        ExprPtr warden;
-        *(T*)location = EvalAs<T>::value(arg, warden);
+        ExprPtr ward;
+        *(T*)location = EvalAs<T>::value(arg, ward);
     }
 
     virtual ExprPtr read(void* location)

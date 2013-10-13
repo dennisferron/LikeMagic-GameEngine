@@ -32,8 +32,8 @@ public:
     T get_expr(LangInterpreter& interpreter, std::string script_code)
     {
         ExprPtr expr = eval(script_code);
-        ExprPtr warden;
-        return EvalAs<T>::value(expr, warden);
+        ExprPtr ward;
+        return EvalAs<T>::value(expr, ward);
     }
 
     // This is intended for pointers but I used "T" instead of "T*" so that you can specify a smart pointer instead.

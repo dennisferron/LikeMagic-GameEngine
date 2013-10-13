@@ -67,9 +67,9 @@ SUITE(TestTerms)
         ExprPtr result = method->call(nullptr, &args[0]);
         ASSERT_NOT_NULL(result);
         CHECK(EvalAs<ConstructorTestClass>::has_conv(result.get()));
-        ExprPtr warden;
-        CHECK_EQUAL(99, EvalAs<ConstructorTestClass>::value(result, warden).value);
-        delete EvalAs<ConstructorTestClass const*>::value(result, warden);
+        ExprPtr ward;
+        CHECK_EQUAL(99, EvalAs<ConstructorTestClass>::value(result, ward).value);
+        delete EvalAs<ConstructorTestClass const*>::value(result, ward);
     }
 
     TEST(TermDestructor)

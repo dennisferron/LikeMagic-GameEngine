@@ -74,8 +74,8 @@ std::vector<T> from_list(IoObject* io_obj)
     { \
         virtual ExprPtr wrap_expr(ExprPtr expr) const \
         { \
-            ExprPtr warden; \
-            return Term<cppType>::create(ioFunc(EvalAs<IoObject*>::value(expr, warden))); \
+            ExprPtr ward; \
+            return Term<cppType>::create(ioFunc(EvalAs<IoObject*>::value(expr, ward))); \
         } \
 \
         virtual std::string description() const { return "From " #scriptType " Conv"; } \
@@ -142,8 +142,8 @@ void add_convs_from_script(IoVM* iovm)
 
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            ExprPtr warden;
-            IoObject* io_obj = EvalAs<IoObject*>::value(expr, warden);
+            ExprPtr ward;
+            IoObject* io_obj = EvalAs<IoObject*>::value(expr, ward);
             return Term<IoBlock>::create(IoBlock(iovm, io_obj, io_obj));
         }
 
@@ -174,8 +174,8 @@ void add_convs_from_script(IoVM* iovm)
     {
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            ExprPtr warden;
-            bool value = ISTRUE(EvalAs<IoObject*>::value(expr, warden));
+            ExprPtr ward;
+            bool value = ISTRUE(EvalAs<IoObject*>::value(expr, ward));
             return Term<bool>::create(value);
         }
 

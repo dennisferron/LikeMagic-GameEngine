@@ -62,8 +62,8 @@ public:
 
     virtual IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m)
     {
-        ExprPtr warden;
-        return F::eval_in_context(self, locals, m, EvalAs<T>::value(from_expr, warden));
+        ExprPtr ward;
+        return F::eval_in_context(self, locals, m, EvalAs<T>::value(from_expr, ward));
     }
 
     virtual std::string description() const

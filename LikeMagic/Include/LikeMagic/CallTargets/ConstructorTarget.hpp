@@ -26,9 +26,9 @@ private:
     template<int... Indices>
     ExprPtr construct_obj(ArgList args, IndexPack<Indices...>) const
     {
-        ExprPtr wardens[sizeof...(Args)];
+        ExprPtr wards[sizeof...(Args)];
         ExprPtr term = Term<ObjT*>::create(new ObjT(
-            EvalAs<Args>::value(args[Indices], wardens[Indices])...));
+            EvalAs<Args>::value(args[Indices], wards[Indices])...));
         term->set_auto_delete_ptr(auto_delete);
         return term;
     }

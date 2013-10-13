@@ -45,16 +45,16 @@ SUITE(TestTypeSystem)
     {
         ExprPtr term = Term<int>::create(1234);
         CHECK(EvalAs<int>::has_conv(term.get()));
-        ExprPtr warden;
-        CHECK_EQUAL(1234, EvalAs<int>::value(term, warden));
+        ExprPtr ward;
+        CHECK_EQUAL(1234, EvalAs<int>::value(term, ward));
     }
 
     TEST(ConvIntToDouble)
     {
         ExprPtr term = Term<int>::create(1234);
         CHECK(EvalAs<double>::has_conv(term.get()));
-        ExprPtr warden;
-        double result = EvalAs<double>::value(term, warden);
+        ExprPtr ward;
+        double result = EvalAs<double>::value(term, ward);
         CHECK_CLOSE(1234.0, result, 0.01);
     }
 
@@ -74,5 +74,7 @@ SUITE(TestTypeSystem)
         ExprPtr result = method->call(nullptr, &args[0]);
         ASSERT_NOT_NULL(result);
         CHECK(EvalAs<ConvTestStruct>::has_conv(result.get()));
+        ExprPtr ward;
+        delete EvalAs<ConvTestStruct*>::value(result, ward);
     }
 }

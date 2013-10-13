@@ -558,20 +558,6 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPt
         IoObject* proto;
 
         proto = LM_Proxy;
-        /*
-        TypeIndex type = proxy->get_type().class_type();
-        auto iter = class_protos.find(type);
-        if (iter != class_protos.end())
-        {
-            proto = iter->second;
-        }
-        else
-        {
-            cout << "Warning: no class proto registered for type " << type.description() << endl;
-            proto = LM_Proxy;
-        }
-        */
-
         IoObject* clone = IOCLONE(proto);
         IoObject_setDataPointer_(clone, from_expr.get());
 

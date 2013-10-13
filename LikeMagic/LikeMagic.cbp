@@ -145,7 +145,6 @@
 		<Unit filename="Source/SharedArgTransporter.cpp" />
 		<Unit filename="Source/TypeConvGraph.cpp" />
 		<Unit filename="Source/TypeDescr.cpp" />
-		<Unit filename="Source/TypeIndex.cpp" />
 		<Unit filename="Source/TypeInfo.cpp" />
 		<Unit filename="Source/TypeInfoCache.cpp" />
 		<Unit filename="Source/TypeMirror.cpp" />

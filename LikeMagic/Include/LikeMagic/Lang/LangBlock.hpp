@@ -41,10 +41,10 @@ public:
         if (!empty())
         {
             ArgList argList = { Term<Args>::create(args)...};
-            ExprPtr warden;
+            ExprPtr ward;
             return EvalAs<R>::value(
                 call(argList, sizeof...(args))
-            , warden);
+            , ward);
         }
         else
             throw std::logic_error("Tried to eval an empty block.");

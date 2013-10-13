@@ -30,12 +30,12 @@ private:
     template<typename R_, int... Indices>
     ExprPtr build_method_call(ExprPtr target, ArgList args, TypePack<R_>, IndexPack<Indices...>) const
     {
-        ExprPtr target_warden;
-        ExprPtr wardens[sizeof...(Args)];
+        ExprPtr target_ward;
+        ExprPtr wards[sizeof...(Args)];
 
         ExprPtr result = Term<R>::create(
-            (*func_ptr)(EvalAs<FirstArg>::value(target, target_warden),
-                EvalAs<Args>::value(args[Indices], wardens[Indices])...)
+            (*func_ptr)(EvalAs<FirstArg>::value(target, target_ward),
+                EvalAs<Args>::value(args[Indices], wards[Indices])...)
         );
 
         return result;
@@ -46,11 +46,11 @@ private:
     ExprPtr
     build_method_call(ExprPtr target, ArgList args, TypePack<void>, IndexPack<Indices...>) const
     {
-        ExprPtr target_warden;
-        ExprPtr wardens[sizeof...(Args)];
+        ExprPtr target_ward;
+        ExprPtr wards[sizeof...(Args)];
 
-        (*func_ptr)(EvalAs<FirstArg>::value(target, target_warden),
-            EvalAs<Args>::value(args[Indices], wardens[Indices])...);
+        (*func_ptr)(EvalAs<FirstArg>::value(target, target_ward),
+            EvalAs<Args>::value(args[Indices], wards[Indices])...);
 
         return 0;
     }
