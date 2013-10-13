@@ -9,7 +9,7 @@
 #pragma once
 
 #include "LikeMagic/Exprs/Expr.hpp"
-#include "LikeMagic/Utility/BetterTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 
 // Using forward declarations here so that user of IoVM class doesn't
 // actually need to include Io headers to create an IoVM object.

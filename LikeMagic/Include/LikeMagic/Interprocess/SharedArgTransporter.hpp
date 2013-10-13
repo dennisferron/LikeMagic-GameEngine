@@ -5,7 +5,7 @@
 #include "boost/intrusive_ptr.hpp"
 
 #include "LikeMagic/Interprocess/AbstractSharedArgMarshaller.hpp"
-#include "LikeMagic/Utility/BetterTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
 
 namespace LM {

@@ -10,7 +10,7 @@
 
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Mirrors/TypeMirror.hpp"
-#include "LikeMagic/Utility/NamespaceTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 
 #include "LikeMagic/CallTargets/ExprTarget.hpp"
 #include "LikeMagic/CallTargets/ConstructorTarget.hpp"
@@ -29,7 +29,7 @@
 #include "LikeMagic/TypeConv/StaticCastConv.hpp"
 
 #include "LikeMagic/Utility/EnumHelper.hpp"
-#include "LikeMagic/Utility/NamespaceTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 
 namespace LM {
 

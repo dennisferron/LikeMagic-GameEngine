@@ -1,6 +1,6 @@
 
 #include "LikeMagic/Exprs/Term.hpp"
-#include "LikeMagic/Utility/BetterTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 
 template <typename T>
 std::vector<LM::ExprPtr> make_arg_list(T value)

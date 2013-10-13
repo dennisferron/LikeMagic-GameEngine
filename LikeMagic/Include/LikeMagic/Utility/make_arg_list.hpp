@@ -10,7 +10,7 @@
 
 #include "LikeMagic/Utility/TypeIndex.hpp"
 #include "LikeMagic/Utility/TypePack.hpp"
-#include "LikeMagic/Utility/BetterTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 
 namespace LM {
 

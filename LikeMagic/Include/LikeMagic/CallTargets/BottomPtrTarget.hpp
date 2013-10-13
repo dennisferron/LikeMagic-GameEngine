@@ -11,7 +11,7 @@
 #include "LikeMagic/Mirrors/CallTarget.hpp"
 #include "LikeMagic/Utility/TypePack.hpp"
 #include "LikeMagic/Utility/make_arg_list.hpp"
-#include "LikeMagic/Utility/BottomPtrTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 
 namespace LM {
 

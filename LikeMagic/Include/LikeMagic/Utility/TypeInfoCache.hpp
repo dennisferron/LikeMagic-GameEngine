@@ -9,26 +9,38 @@
 #pragma once
 
 #include "LikeMagic/Utility/TypeIndex.hpp"
-#include "LikeMagic/Utility/KeyWrapper.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 
 #ifdef BUILDING_DLL_STD_BINDINGS
     #define BUILDING_DLL
 #endif
 #include "LikeMagic/Utility/DLLHelper.hpp"
 
+#include "boost/unordered_map.hpp"
+
 namespace LM {
+
+inline std::size_t hash_value(TypeInfo const& info)
+{
+    std::size_t seed = 0;
+    boost::hash_combine(seed, info.system);
+    boost::hash_combine(seed, info.name);
+    boost::hash_combine(seed, info.is_const);
+    boost::hash_combine(seed, info.is_ptr);
+    return seed;
+}
 
 class TypeInfoCache
 {
 private:
-    std::map<KeyWrapper<AbstractTypeInfo>, TypeIndex> info_to_index;
-    std::vector<TypeInfoPtr> index_to_info;
+    boost::unordered_map<TypeInfo, TypeIndex> info_to_index;
+    std::vector<TypeInfo> index_to_info;
 
 public:
 
-    TypeIndex const& get_index(TypeInfoPtr candidate, TypeInfoPtr class_type);
-    TypeIndex const& get_index(TypeInfoPtr candidate);
-    TypeInfoPtr get_info(TypeIndex id) const;
+    TypeIndex const& get_index(TypeInfo candidate, TypeInfo class_type);
+    TypeIndex const& get_index(TypeInfo candidate);
+    TypeInfo get_info(TypeIndex id) const;
 
     void debug_dump();
 };

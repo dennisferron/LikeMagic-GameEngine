@@ -19,14 +19,15 @@
 #include "boost/functional/hash.hpp"
 #include "boost/unordered_map.hpp"
 
-#include "LikeMagic/Utility/AbstractTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/Utility/DLLHelper.hpp"
 
 namespace LM {
 
 class TypeIndex;
-LIKEMAGIC_API TypeIndex const& get_index(TypeInfoPtr type);
-LIKEMAGIC_API TypeInfoPtr get_info(TypeIndex const& index);
+class TypeInfo;
+LIKEMAGIC_API TypeIndex const& get_index(TypeInfo const& type);
+LIKEMAGIC_API TypeInfo get_info(TypeIndex const& index);
 
 class TypeInfoCache;
 
@@ -63,29 +64,29 @@ public:
     inline TypeIndex as_ptr_type() const
     {
         return get_index(
-            get_info()->as_ptr());
+            get_info().as_ptr());
     }
 
     inline TypeIndex as_const_ptr_type() const
     {
         return get_index(
-           get_info()->as_const()->as_ptr());
+           get_info().as_const().as_ptr());
     }
 
     inline TypeIndex as_const_type() const
     {
         return get_index(
-           get_info()->as_const());
+           get_info().as_const());
     }
 
-    inline TypeInfoPtr get_info() const
+    inline TypeInfo get_info() const
     {
         return LM::get_info(*this);
     }
 
     inline std::string description() const
     {
-        return get_info()->description();
+        return get_info().description();
     }
 };
 
@@ -96,5 +97,76 @@ inline std::size_t hash_value(TypeIndex info)
 
 typedef std::vector<TypeIndex> TypeInfoList;
 LIKEMAGIC_API extern const TypeInfoList& empty_arg_list;
+
+LIKEMAGIC_API TypeIndex create_cpp_type_index(std::type_info const* info_, bool is_const_, bool is_ptr_);
+LIKEMAGIC_API TypeIndex create_cpp_type_index(std::type_info const* info_, bool is_const_, bool is_ptr_);
+LIKEMAGIC_API TypeIndex create_bottom_ptr_type_index();
+LIKEMAGIC_API TypeIndex create_namespace_type_index(std::string namespace_name);
+
+// Value types - not const, not ptr
+template <typename T>
+struct TypId
+{
+    TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
+    static TypeIndex get()
+    {
+        return create_cpp_type_index(&typeid(T), false, false);
+    }
+};
+
+// Const value - is const, not ptr
+template <typename T>
+struct TypId<T const>
+{
+    TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
+    static TypeIndex get()
+    {
+        return create_cpp_type_index(&typeid(T), true, false);
+    }
+};
+
+// Nonconst ptr - not const, is ptr
+template <typename T>
+struct TypId<T*>
+{
+    TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
+    static TypeIndex get()
+    {
+        return create_cpp_type_index(&typeid(T), false, true);
+    }
+};
+
+// ptr to const - is const, is ptr
+template <typename T>
+struct TypId<T const*>
+{
+    TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
+    static TypeIndex get()
+    {
+        return create_cpp_type_index(&typeid(T), true, true);
+    }
+};
+
+// nonconst ref marshals as nonconst ptr
+template <typename T>
+struct TypId<T&>
+{
+    TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
+    static TypeIndex get()
+    {
+        return create_cpp_type_index(&typeid(T), false, true);
+    }
+};
+
+// const ref marshals as const ptr
+template <typename T>
+struct TypId<T const&>
+{
+    TypId() = delete; TypId(TypId const&) = delete; ~TypId() = delete;
+    static TypeIndex get()
+    {
+        return create_cpp_type_index(&typeid(T), true, true);
+    }
+};
 
 }

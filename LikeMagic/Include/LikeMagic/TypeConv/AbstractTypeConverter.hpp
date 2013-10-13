@@ -9,7 +9,8 @@
 
 #pragma once
 
-#include "LikeMagic/Utility/BetterTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
+#include "LikeMagic/Utility/TypeIndex.hpp"
 #include "boost/intrusive_ptr.hpp"
 
 namespace LM {

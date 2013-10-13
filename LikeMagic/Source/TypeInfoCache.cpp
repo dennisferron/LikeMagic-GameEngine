@@ -6,7 +6,7 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-#include "LikeMagic/Utility/AbstractTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/Utility/TypeInfoCache.hpp"
 
 #ifdef BUILDING_DLL_STD_BINDINGS
@@ -18,22 +18,26 @@ namespace LM {
 
 LIKEMAGIC_API TypeInfoCache* type_info_cache_instance = NULL;
 
-TypeIndex const& TypeInfoCache::get_index(TypeInfoPtr candidate)
+TypeIndex const& TypeInfoCache::get_index(TypeInfo candidate)
 {
-    return get_index(candidate, candidate->class_type());
+    return get_index(candidate, candidate.class_type());
 }
 
-TypeIndex const& TypeInfoCache::get_index(TypeInfoPtr candidate, TypeInfoPtr class_type)
+std::vector<TypeInfo> backup_list;
+
+TypeIndex const& TypeInfoCache::get_index(TypeInfo candidate, TypeInfo class_type)
 {
+    backup_list.push_back(candidate);
+
     TypeIndex const* index;
     TypeIndex class_index;
-    auto iter = info_to_index.find(KeyWrapper<AbstractTypeInfo>(candidate));
+    auto iter = info_to_index.find(TypeInfo(candidate));
 
     if (iter != info_to_index.end())
         index = &(iter->second);
     else
     {
-        auto class_iter = info_to_index.find(KeyWrapper<AbstractTypeInfo>(class_type));
+        auto class_iter = info_to_index.find(TypeInfo(class_type));
 
         if (class_iter != info_to_index.end())
             class_index = class_iter->second;
@@ -44,7 +48,7 @@ TypeIndex const& TypeInfoCache::get_index(TypeInfoPtr candidate, TypeInfoPtr cla
             index_to_info.push_back(class_type);
         }
 
-        if (*candidate == *class_type)
+        if (candidate == class_type)
             index = &(info_to_index[class_type]);
         else
         {
@@ -57,7 +61,7 @@ TypeIndex const& TypeInfoCache::get_index(TypeInfoPtr candidate, TypeInfoPtr cla
     return *index;
 }
 
-TypeInfoPtr TypeInfoCache::get_info(TypeIndex id) const
+TypeInfo TypeInfoCache::get_info(TypeIndex id) const
 {
     return index_to_info[id.id];
 }
@@ -65,10 +69,10 @@ TypeInfoPtr TypeInfoCache::get_info(TypeIndex id) const
 void TypeInfoCache::debug_dump()
 {
     for (size_t i=0; i<index_to_info.size(); i++)
-        std::cout << "index_to_info " << i << ": " << index_to_info[i]->description() << std::endl;
+        std::cout << "index_to_info " << i << ": " << index_to_info[i].description() << std::endl;
 
     for (auto& kv : info_to_index)
-        std::cout << "info_to_index " << kv.first.key->description() << " => " << kv.second.description() << std::endl;
+        std::cout << "info_to_index " << kv.first.description() << " => " << kv.second.description() << std::endl;
 }
 
 }

@@ -18,9 +18,9 @@
 					<Add option="-DUSE_DLL_BUILD" />
 				</Compiler>
 				<Linker>
-					<Add library="..\StdBindings\libStdBindings-Windows.a" />
-					<Add library="..\libLikeMagic-Windows.a" />
-					<Add library="..\..\Common\UnitTest++\bin\Debug\libUnitTest++.a" />
+					<Add library="../StdBindings/libStdBindings-Windows.a" />
+					<Add library="../libLikeMagic-Windows.a" />
+					<Add library="../../Common/UnitTest++/bin/Debug/libUnitTest++.a" />
 				</Linker>
 			</Target>
 			<Target title="Debug Mac">
@@ -33,9 +33,27 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="..\StdBindings\libStdBindings-Mac.a" />
-					<Add library="..\libLikeMagic-Mac.a" />
-					<Add library="..\..\Common\UnitTest++\bin\Debug\libUnitTest++.a" />
+					<Add library="../StdBindings/libStdBindings-Mac.a" />
+					<Add library="../libLikeMagic-Mac.a" />
+					<Add library="../../Common/UnitTest++/bin/Debug/libUnitTest++.a" />
+				</Linker>
+			</Target>
+			<Target title="Debug Linux">
+				<Option output="../../bin/Debug/LikeMagicUnitTests" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../bin/Debug" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add option="-fPIC" />
+				</Compiler>
+				<Linker>
+					<Add option="-lrt" />
+					<Add library="../../bin/Debug/libStdBindings-Linux.so" />
+					<Add library="../../bin/Debug/libLikeMagic-Linux.so" />
+					<Add library="../../Common/UnitTest++/bin/Debug/libUnitTest++.a" />
 				</Linker>
 			</Target>
 		</Build>
@@ -59,7 +77,12 @@
 		<Extensions>
 			<code_completion />
 			<envvars />
-			<debugger />
+			<debugger>
+				<search_path add="../Include" />
+				<search_path add="Include" />
+				<search_path add="../StdBindings/Include/LikeMagic" />
+				<search_path add="../../Iocaste/Include" />
+			</debugger>
 			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>

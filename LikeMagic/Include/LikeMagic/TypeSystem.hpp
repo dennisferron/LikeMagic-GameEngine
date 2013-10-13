@@ -10,7 +10,7 @@
 
 #include "boost/intrusive_ptr.hpp"
 #include "LikeMagic/Utility/TypeIndex.hpp"
-#include "LikeMagic/Utility/BetterTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
 #include "LikeMagic/Utility/DLLHelper.hpp"
 

@@ -13,12 +13,11 @@
 #include "LikeMagic/TypeConv/StaticCastConv.hpp"
 #include "LikeMagic/CallTargets/ExprTarget.hpp"
 #include "LikeMagic/Utility/TupleForEach.hpp"
-#include "LikeMagic/Utility/KeyWrapper.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 #include "LikeMagic/TypeConv/StaticCastConv.hpp"
 #include "LikeMagic/TypeConv/StaticCastConv.hpp"
-#include "LikeMagic/Utility/NamespaceTypeInfo.hpp"
-#include "LikeMagic/Utility/BottomPtrTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/CallTargets/Delegate.hpp"
 #include "LikeMagic/CallTargets/DeleterCallTarget.hpp"
 #include "LikeMagic/Utility/TypeInfoCache.hpp"
@@ -76,36 +75,36 @@ struct TypeSystemInstance::Impl
 
     void add_ptr_convs(TypeIndex index)
     {
-        TypeInfoPtr bare = index.get_info()->class_type();
+        TypeInfo bare = index.get_info().class_type();
         add_conv_track<void>(bare);
-        add_conv_track<void const>(bare->as_const());
+        add_conv_track<void const>(bare.as_const());
 
         // allow unsafe_ptr_cast to convert to any type and nil (NULL) to any pointer type
-        add_nochange_conv(create_bottom_ptr_type_info(), bare->as_ptr());
-        add_nochange_conv(create_bottom_ptr_type_info(), bare->as_ptr()->as_const());
+        add_nochange_conv(create_bottom_ptr_type_info(), bare.as_ptr());
+        add_nochange_conv(create_bottom_ptr_type_info(), bare.as_ptr().as_const());
 
         // allow any ptr to be converted to void* or void const*
-        add_nochange_conv(bare->as_ptr(), TypId<void*>::get().get_info());
-        add_nochange_conv(bare->as_ptr()->as_const(), TypId<void const*>::get().get_info());
+        add_nochange_conv(bare.as_ptr(), TypId<void*>::get().get_info());
+        add_nochange_conv(bare.as_ptr().as_const(), TypId<void const*>::get().get_info());
     }
 
-    void add_nochange_conv(TypeInfoPtr from, TypeInfoPtr to)
+    void add_nochange_conv(TypeInfo from, TypeInfo to)
     {
         if (!(get_index(from) == get_index(to)))
             conv_graph.add_conv(get_index(from), get_index(to), new NoChangeConv());
     }
 
     template <typename From, typename To>
-    void add_static_cast_conv(TypeInfoPtr from, TypeInfoPtr to)
+    void add_static_cast_conv(TypeInfo from, TypeInfo to)
     {
         conv_graph.add_conv(get_index(from), get_index(to), new StaticCastConv<From, To>(from, to));
     }
 
     template <typename T>
-    void add_conv_track(TypeInfoPtr type)
+    void add_conv_track(TypeInfo type)
     {
-        auto as_ptr = type->as_ptr();
-        auto as_ptr_const = as_ptr->as_const();
+        auto as_ptr = type.as_ptr();
+        auto as_ptr_const = as_ptr.as_const();
 
         // Making a ptr const does not change the implementation.
         add_nochange_conv(as_ptr, as_ptr_const);

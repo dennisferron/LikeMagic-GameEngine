@@ -21,8 +21,7 @@
 #include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
 
-#include "LikeMagic/Utility/AbstractTypeInfo.hpp"
-#include "LikeMagic/Utility/KeyWrapper.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 
 namespace LM {
 

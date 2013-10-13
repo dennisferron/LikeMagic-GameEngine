@@ -10,7 +10,7 @@
 
 #include "boost/shared_ptr.hpp"
 
-#include "LikeMagic/Utility/AbstractTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
 #include "LikeMagic/Exprs/TermDeleter.hpp"
 

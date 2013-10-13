@@ -55,11 +55,11 @@ protected:
 
 public:
 
-    static TypeInfoPtr create(std::string type_name) { return TypeInfoPtr(new FromIoTypeInfo(type_name)); }
+    static TypeInfo create(std::string type_name) { return TypeInfo(new FromIoTypeInfo(type_name)); }
 
     static TypeIndex create_index(std::string type_name)
     {
-        TypeInfoPtr info = create(type_name);
+        TypeInfo info = create(type_name);
         return get_index(
                 info
         );

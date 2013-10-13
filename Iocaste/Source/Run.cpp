@@ -21,6 +21,7 @@ using namespace Iocaste::LMAdapters;
 
 using namespace std;
 
+LM_DEFINE_ABSTRACTTYPEINFO_DESTRUCTOR
 
 namespace
 {

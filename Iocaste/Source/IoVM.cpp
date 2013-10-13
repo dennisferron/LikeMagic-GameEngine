@@ -18,7 +18,7 @@
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 
 #include "LikeMagic/Utility/TypeDescr.hpp"
-#include "LikeMagic/Utility/BetterTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/BindingMacros.hpp"
 
 #include "boost/lexical_cast.hpp"

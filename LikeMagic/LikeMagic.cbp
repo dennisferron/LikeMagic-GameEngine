@@ -8,15 +8,16 @@
 		<Build>
 			<Target title="Debug Linux">
 				<Option platforms="Unix;" />
-				<Option output="LikeMagic-Linux" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
+				<Option output="../bin/Debug/LikeMagic-Linux" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug-Linux/" />
-				<Option type="2" />
+				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add option="-fPIC" />
 					<Add option="-DNO_USE_DMALLOC" />
 				</Compiler>
 			</Target>
@@ -114,23 +115,18 @@
 		<Unit filename="Include/LikeMagic/TypeConv/StaticCastConv.hpp" />
 		<Unit filename="Include/LikeMagic/TypeConv/TypeConvGraph.hpp" />
 		<Unit filename="Include/LikeMagic/TypeSystem.hpp" />
-		<Unit filename="Include/LikeMagic/Utility/AbstractTypeInfo.hpp" />
-		<Unit filename="Include/LikeMagic/Utility/BetterTypeInfo.hpp" />
-		<Unit filename="Include/LikeMagic/Utility/BottomPtrTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/DLLHelper.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/EnumHelper.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/ICanHasMemberFunc.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/IndexPack.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/IsContainer.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/IsIterator.hpp" />
-		<Unit filename="Include/LikeMagic/Utility/KeyWrapper.hpp" />
-		<Unit filename="Include/LikeMagic/Utility/NamespaceTypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/ScriptFunc.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/StripModifiers.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TupleForEach.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeDescr.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeIndex.hpp" />
-		<Unit filename="Include/LikeMagic/Utility/TypeInfoBaseImpl.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/TypeInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeInfoCache.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypePack.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/make_arg_list.hpp" />
@@ -139,20 +135,18 @@
 		<Unit filename="Script/TestScripts/debugtest.io" />
 		<Unit filename="Source/AbstractSharedArgMarshaller.cpp" />
 		<Unit filename="Source/AbstractTypeConverter.cpp" />
-		<Unit filename="Source/BetterTypeInfo.cpp" />
-		<Unit filename="Source/BottomPtrTypeInfo.cpp" />
 		<Unit filename="Source/CallTarget.cpp" />
 		<Unit filename="Source/DeleterCallTarget.cpp" />
 		<Unit filename="Source/Expr.cpp" />
 		<Unit filename="Source/ExprTarget.cpp" />
 		<Unit filename="Source/IMarkable.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />
-		<Unit filename="Source/NamespaceTypeInfo.cpp" />
 		<Unit filename="Source/RequestBroker.cpp" />
 		<Unit filename="Source/SharedArgTransporter.cpp" />
 		<Unit filename="Source/TypeConvGraph.cpp" />
 		<Unit filename="Source/TypeDescr.cpp" />
 		<Unit filename="Source/TypeIndex.cpp" />
+		<Unit filename="Source/TypeInfo.cpp" />
 		<Unit filename="Source/TypeInfoCache.cpp" />
 		<Unit filename="Source/TypeMirror.cpp" />
 		<Unit filename="Source/TypeSystem.cpp" />

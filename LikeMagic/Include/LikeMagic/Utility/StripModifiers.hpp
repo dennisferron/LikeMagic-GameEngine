@@ -76,7 +76,7 @@ struct StripRef<T&> : public StripFirstConst<T>
 // Things like boost::remove_pointer get tripped up if it's something like a "reference to pointer".
 // And what if you want to convert a "value const &" to just value?  Nesting std::remove_x gets very wordy.
 // OTOH this utility recursively strips ALL the modifiers from a type to get down to the bare essentials.
-// In the process, it records what it stripped away so that the values can be used by BetterTypeInfo.
+// In the process, it records what it stripped away so that the values can be used by TypeInfo.
 // Example usages:
 //
 //  StripModifiers<some_type>::type  // a typedef; returns the bare type

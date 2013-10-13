@@ -13,7 +13,7 @@
 
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/IMarkable.hpp"
-#include "LikeMagic/Utility/AbstractTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/Utility/TypeInfoBaseImpl.hpp"
 
 #include <tuple>
@@ -60,18 +60,18 @@ protected:
 
 public:
 
-    static TypeInfoPtr create() { return TypeInfoPtr(new ToIoTypeInfo()); }
-    static TypeInfoPtr create(std::string type_name) { return TypeInfoPtr(new ToIoTypeInfo(type_name)); }
+    static TypeInfo create() { return TypeInfo(new ToIoTypeInfo()); }
+    static TypeInfo create(std::string type_name) { return TypeInfo(new ToIoTypeInfo(type_name)); }
 
     static TypeIndex create_index()
     {
-        static TypeInfoPtr info = create();
+        static TypeInfo info = create();
         return get_index(info);
     }
 
     static TypeIndex create_index(std::string type_name)
     {
-        TypeInfoPtr info = create(type_name);
+        TypeInfo info = create(type_name);
         return get_index(info);
     }
 

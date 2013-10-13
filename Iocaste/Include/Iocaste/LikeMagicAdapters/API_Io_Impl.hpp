@@ -9,7 +9,7 @@
 #pragma once
 
 #include "Iocaste/LikeMagicAdapters/API_Io.hpp"
-#include "LikeMagic/Utility/BetterTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 
 // The Io headers cause some compiler warnings; ignoring them to avoid cluttering error messages screen.
 #pragma GCC diagnostic ignored "-Wsign-compare"

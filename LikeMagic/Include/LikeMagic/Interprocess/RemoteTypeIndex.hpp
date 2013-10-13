@@ -29,7 +29,7 @@ public:
     inline std::size_t get_id() const { return id; }
     inline std::size_t get_class_id() const { return class_id; }
 
-    TypeInfoPtr get_info() const;
+    TypeInfo get_info() const;
     std::string description() const;
     */
 };

@@ -3,8 +3,6 @@
 #include "LikeMagic/StdBindings/StdBindings.hpp"
 #include <iostream>
 
-LM_DEFINE_ABSTRACTTYPEINFO_DESTRUCTOR
-
 void add_binding_test_bindings();
 void add_term_test_bindings();
 void add_typesystem_test_bindings();

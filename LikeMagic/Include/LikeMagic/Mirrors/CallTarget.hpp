@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "LikeMagic/Utility/AbstractTypeInfo.hpp"
+#include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
 
 namespace LM {
