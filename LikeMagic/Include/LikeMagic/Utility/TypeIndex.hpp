@@ -28,13 +28,9 @@ class TypeIndex;
 
 LIKEMAGIC_API TypeInfo get_info(TypeIndex const& index);
 
-class TypeInfoCache;
-
 class TypeIndex
 {
 private:
-    friend class TypeInfoCache;
-    friend std::size_t hash_value(TypeIndex info);
     std::size_t id;
 
 public:
@@ -51,25 +47,15 @@ public:
         { return this->id == that.id; }
 
     inline std::size_t get_id() const { return id; }
-
-    inline TypeIndex as_ptr_type() const;
-    inline TypeIndex as_const_ptr_type() const;
-    inline TypeIndex as_const_type() const;
     inline TypeInfo get_info() const { return LM::get_info(*this); }
     inline std::string description() const { return get_info().description(); }
 };
 
 LIKEMAGIC_API TypeIndex get_index(TypeInfo const& type);
 LIKEMAGIC_API TypeIndex get_class_index(TypeIndex index);
-
-inline TypeIndex TypeIndex::as_ptr_type() const { return get_index(get_info().as_ptr()); }
-inline TypeIndex TypeIndex::as_const_ptr_type() const { return get_index(get_info().as_const().as_ptr()); }
-inline TypeIndex TypeIndex::as_const_type() const { return get_index(get_info().as_const()); }
-
-inline std::size_t hash_value(TypeIndex info)
-{
-    return boost::hash_value(info.id);
-}
+LIKEMAGIC_API TypeIndex as_ptr_type(TypeIndex index);
+LIKEMAGIC_API TypeIndex as_const_ptr_type(TypeIndex index);
+LIKEMAGIC_API TypeIndex as_const_type(TypeIndex index);
 
 typedef std::vector<TypeIndex> TypeInfoList;
 LIKEMAGIC_API extern const TypeInfoList& empty_arg_list;

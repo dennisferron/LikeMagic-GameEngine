@@ -20,7 +20,6 @@
 #include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/CallTargets/Delegate.hpp"
 #include "LikeMagic/CallTargets/DeleterCallTarget.hpp"
-#include "LikeMagic/Utility/TypeInfoCache.hpp"
 
 #include <set>
 #include <map>
@@ -29,7 +28,11 @@
 #include <iostream>
 using namespace std;
 
-namespace LM { extern TypeInfoCache* type_info_cache_instance; }
+namespace LM
+{
+    void create_type_info_cache();
+    void delete_type_info_cache();
+}
 
 using namespace LM;
 
@@ -71,10 +74,9 @@ public:
 
 struct TypeSystemInstance::Impl
 {
-    boost::unordered_map<TypeIndex, TypeMirror*> classes;
+    boost::unordered_map<std::size_t, TypeMirror*> classes;
     TypeMirror* unknown_class;
     TypeConvGraph conv_graph;
-    TypeInfoCache type_info_cache;
     TypeMirror* global_namespace;
 
     void add_ptr_convs(TypeIndex index)
@@ -118,15 +120,24 @@ struct TypeSystemInstance::Impl
 TypeSystemInstance::TypeSystemInstance()
     : impl(new TypeSystemInstance::Impl)
 {
-    type_info_cache_instance = &(impl->type_info_cache);
+    create_type_info_cache();
 
     TypeIndex ns_type = create_namespace_type_index("");
     impl->global_namespace = create_type_mirror("", 0, ns_type);
-    impl->classes[ns_type] = impl->global_namespace;
+    impl->classes[ns_type.get_id()] = impl->global_namespace;
 
     // Allow conversions from nil to any pointer.
     TypeIndex nil_expr_type = create_bottom_ptr_type_index();
     impl->conv_graph.add_type(nil_expr_type);
+}
+
+TypeSystemInstance::~TypeSystemInstance()
+{
+    for (auto it=impl->classes.begin(); it != impl->classes.end(); it++)
+    {
+        delete it->second;
+    }
+    delete_type_info_cache();
 }
 
 TypeMirror& TypeSystemInstance::global_namespace() const
@@ -139,18 +150,18 @@ void TypeSystemInstance::add_class(TypeIndex index, TypeMirror* class_ptr, TypeM
     TypeIndex class_index = get_class_index(index);
 
     // Add conversion to delegate type so that delegate call targets will work.
-    impl->conv_graph.add_conv(class_index.as_ptr_type(),
+    impl->conv_graph.add_conv(as_ptr_type(class_index),
         TypId<LM::Delegate*>::get(), new NoChangeConv());
-    impl->conv_graph.add_conv(class_index.as_const_ptr_type(),
+    impl->conv_graph.add_conv(as_const_ptr_type(class_index),
         TypId<LM::Delegate const*>::get(), new NoChangeConv());
 
     // Add conversion from nonconst pointer to const.
     impl->conv_graph.add_conv(
-        class_index.as_ptr_type(),
-        class_index.as_const_ptr_type(),
+        as_ptr_type(class_index),
+        as_const_ptr_type(class_index),
         new NoChangeConv());
 
-    impl->classes[class_index] = class_ptr;
+    impl->classes[class_index.get_id()] = class_ptr;
 
     auto deleter_target = new DeleterCallTarget();
     class_ptr->add_method("delete", deleter_target);
@@ -158,14 +169,6 @@ void TypeSystemInstance::add_class(TypeIndex index, TypeMirror* class_ptr, TypeM
     namespace_.add_method(
         class_ptr->get_class_name(), new LM::ExprTarget(
             create_expr(class_ptr, class_index)));
-}
-
-TypeSystemInstance::~TypeSystemInstance()
-{
-    for (auto it=impl->classes.begin(); it != impl->classes.end(); it++)
-    {
-        delete it->second;
-    }
 }
 
 ExprPtr TypeSystemInstance::try_conv(ExprPtr from_expr, TypeIndex to_type) const
@@ -188,7 +191,7 @@ bool TypeSystemInstance::has_conv(TypeIndex from_type, TypeIndex to_type) const
 TypeMirror* TypeSystemInstance::get_class(TypeIndex type) const
 {
     TypeIndex class_type = get_class_index(type);
-    auto iter = impl->classes.find(class_type);
+    auto iter = impl->classes.find(class_type.get_id());
     if (iter != impl->classes.end())
         return iter->second;
     else
@@ -212,14 +215,14 @@ void TypeSystemInstance::add_converter_variations(TypeIndex from, TypeIndex to, 
     auto to_info = to.get_info();
 
     // Allow converting the object directly to its const form
-    impl->conv_graph.add_conv(from, from.as_const_type(), new NoChangeConv);
-    impl->conv_graph.add_conv(to, to.as_const_type(), new NoChangeConv);
+    impl->conv_graph.add_conv(from, as_const_type(from), new NoChangeConv);
+    impl->conv_graph.add_conv(to, as_const_type(to), new NoChangeConv);
 
     // Reuse this converter for just the "to" obj const
-    impl->conv_graph.add_conv(from, to.as_const_type(), conv);
+    impl->conv_graph.add_conv(from, as_const_type(to), conv);
 
     // Reuse this converter for both from and to as const
-    impl->conv_graph.add_conv(from.as_const_type(), to.as_const_type(), conv);
+    impl->conv_graph.add_conv(as_const_type(to), as_const_type(to), conv);
 }
 
 TypeMirror const* TypeSystemInstance::get_namespace(std::string full_name) const

@@ -61,7 +61,7 @@ private:
     // Mutable is for when the object is logically const, but technically a member needs
     // to sometimes change in a way that's not visible from outside the class.
     // Caching is a perfect example of this.
-    mutable boost::unordered_map<std::pair<TypeIndex, TypeIndex>, p_chain_t> conv_cache;
+    mutable boost::unordered_map<std::pair<std::size_t, std::size_t>, p_chain_t> conv_cache;
 
     ExprPtr build_conv_chain(ExprPtr from_expr, p_chain_t const& chain) const;
     p_chain_t const& search_for_conv(TypeIndex from, TypeIndex to) const;

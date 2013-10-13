@@ -17,7 +17,7 @@ public:
     typedef boost::shared_ptr<AbstractSharedArgMarshaller> ArgMarshaller;
 
 private:
-    boost::unordered_map<TypeIndex, ArgMarshaller> how_marshal;
+    boost::unordered_map<std::size_t, ArgMarshaller> how_marshal;
 
     AbstractSharedArgMarshaller& get_marshaller(TypeIndex arg_type) const;
 

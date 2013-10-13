@@ -50,8 +50,6 @@ add_conv<type const&, double const&, NumberConv>();
 #define add_all_num_conv_impl(r, data, elem) add_num_conv(elem);
 #define add_all_num_conv(SEQ) BOOST_PP_SEQ_FOR_EACH(add_all_num_conv_impl,, SEQ)
 
-#include "LikeMagic/Utility/TypeInfoCache.hpp"
-
 using namespace LM;
 using namespace std;
 

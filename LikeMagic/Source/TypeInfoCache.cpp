@@ -12,7 +12,11 @@
 #include "boost/unordered_map.hpp"
 #include <vector>
 
-namespace LM { TypeInfoCache* type_info_cache_instance = NULL; }
+namespace LM
+{
+    class TypeInfoCache;
+    TypeInfoCache* type_info_cache_instance = NULL;
+}
 
 namespace LM {
 
@@ -42,6 +46,16 @@ public:
 
     void debug_dump();
 };
+
+void create_type_info_cache()
+{
+    type_info_cache_instance = new TypeInfoCache();
+}
+
+void delete_type_info_cache()
+{
+    delete type_info_cache_instance;
+}
 
 TypeIndex TypeInfoCache::get_index_simple(TypeInfo candidate)
 {
@@ -73,12 +87,12 @@ TypeIndex TypeInfoCache::get_index(TypeInfo candidate)
 
 TypeInfo TypeInfoCache::get_info(TypeIndex id) const
 {
-    return index_to_info[id.id];
+    return index_to_info[id.get_id()];
 }
 
 TypeIndex TypeInfoCache::get_class_index(TypeIndex id) const
 {
-    return index_to_class[id.id];
+    return index_to_class[id.get_id()];
 }
 
 void TypeInfoCache::debug_dump()

@@ -15,6 +15,10 @@
 
 namespace LM {
 
+LIKEMAGIC_API TypeIndex as_ptr_type(TypeIndex index) { return get_index(get_info(index).as_ptr()); }
+LIKEMAGIC_API TypeIndex as_const_ptr_type(TypeIndex index) { return get_index(get_info(index).as_const().as_ptr()); }
+LIKEMAGIC_API TypeIndex as_const_type(TypeIndex index) { return get_index(get_info(index).as_const()); }
+
 LIKEMAGIC_API TypeInfo create_cpp_type_info(std::type_info const* info_, bool is_const_, bool is_ptr_)
 {
     return TypeInfo { "C++", demangle_name(info_->name()), is_const_, is_ptr_ };

@@ -127,7 +127,6 @@
 		<Unit filename="Include/LikeMagic/Utility/TypeDescr.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeIndex.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeInfo.hpp" />
-		<Unit filename="Include/LikeMagic/Utility/TypeInfoCache.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypePack.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/make_arg_list.hpp" />
 		<Unit filename="Include/LikeMagic/binding_functions.hpp" />

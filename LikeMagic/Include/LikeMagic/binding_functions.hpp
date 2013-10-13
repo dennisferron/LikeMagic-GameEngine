@@ -102,40 +102,6 @@ void bind_method(TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args.
            class_.get_class_type()));
 }
 
-/*
-#ifdef LM_BINDING_FUNCTIONS_CPP
-#define LM_DEF_BIND_METHOD_IMPL(RTYPE, ARGTYPE) \
-void bind_method_impl(TypeMirror& class_, std::string method_name, RTYPE (Delegate::*f)(ARGTYPE)) { \
-    class_.add_method(method_name, create_target(f, class_.get_class_type())); } \
-void bind_method_impl(TypeMirror& class_, std::string method_name, RTYPE (Delegate::*f)(ARGTYPE) const) { \
-    class_.add_method(method_name, create_target(f, class_.get_class_type())); }
-#else
-#define LM_DEF_BIND_METHOD_IMPL(RTYPE, ARGTYPE) \
-void bind_method_impl(TypeMirror& class_, std::string method_name, RTYPE (Delegate::*f)(ARGTYPE)); \
-void bind_method_impl(TypeMirror& class_, std::string method_name, RTYPE (Delegate::*f)(ARGTYPE) const);
-#endif
-
-#define LM_DECL_BIND_METHOD(RTYPE, ARGTYPE) \
-LM_DEF_BIND_METHOD_IMPL(RTYPE, ARGTYPE) \
-template <typename ObjT> void bind_method( \
-    TypeMirror& class_, std::string method_name, RTYPE (ObjT::*f)(ARGTYPE)) { \
-    bind_method_impl(class_, method_name, reinterpret_cast<RTYPE(Delegate::*)(ARGTYPE)>(f)); } \
-template <typename ObjT> void bind_method( \
-    TypeMirror& class_, std::string method_name, RTYPE (ObjT::*f)(ARGTYPE) const) { \
-        bind_method_impl(class_, method_name, reinterpret_cast<RTYPE(Delegate::*)(ARGTYPE) const>(f)); }
-
-LM_DECL_BIND_METHOD(void,)
-LM_DECL_BIND_METHOD(int,)
-LM_DECL_BIND_METHOD(unsigned int,)
-LM_DECL_BIND_METHOD(float,)
-LM_DECL_BIND_METHOD(double,)
-
-LM_DECL_BIND_METHOD(void, int)
-LM_DECL_BIND_METHOD(void, unsigned int)
-LM_DECL_BIND_METHOD(void, float)
-LM_DECL_BIND_METHOD(void, double)
-*/
-
 template <typename R, typename... Args>
 void bind_static_method(TypeMirror& class_, std::string method_name, R (*f)(Args...))
 {
@@ -154,8 +120,8 @@ template <typename T, typename R>
 void bind_field(TypeMirror& class_, std::string field_name, R(T::*f))
 {
     TypeIndex class_type = class_.get_class_type();
-    TypeIndex ptr_type = class_type.as_ptr_type();
-    TypeIndex const_ptr_type = class_type.as_const_ptr_type();
+    TypeIndex ptr_type = as_ptr_type(class_type);
+    TypeIndex const_ptr_type = as_const_ptr_type(class_type);
 
     typedef LM::FieldSetterTarget<R> SetterTarget;
     auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), ptr_type);
@@ -174,8 +140,8 @@ template <typename T, typename R, size_t N>
 void bind_array_field(TypeMirror& class_, std::string field_name, R(T::*f)[N])
 {
     TypeIndex class_type = class_.get_class_type();
-    TypeIndex ptr_type = class_type.as_ptr_type();
-    TypeIndex const_ptr_type = class_type.as_const_ptr_type();
+    TypeIndex ptr_type = as_ptr_type(class_type);
+    TypeIndex const_ptr_type = as_const_ptr_type(class_type);
 
     typedef LM::ArrayFieldSetterTarget<R> SetterTarget;
     auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), ptr_type, N);

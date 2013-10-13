@@ -44,7 +44,7 @@ private:
 public:
 
     DelegateCallTarget(F func_ptr_, TypeIndex class_type)
-        : func_ptr(func_ptr_), actual_type(class_type.as_ptr_type()) {}
+        : func_ptr(func_ptr_), actual_type(as_ptr_type(class_type)) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
@@ -87,7 +87,7 @@ private:
 public:
 
     DelegateCallTarget(F func_ptr_, TypeIndex class_type)
-        : func_ptr(func_ptr_), actual_type(class_type.as_const_ptr_type()) {}
+        : func_ptr(func_ptr_), actual_type(as_const_ptr_type(class_type)) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
@@ -130,7 +130,7 @@ private:
 public:
 
     DelegateCallTarget(F func_ptr_, TypeIndex class_type)
-        : func_ptr(func_ptr_), actual_type(class_type.as_ptr_type()) {}
+        : func_ptr(func_ptr_), actual_type(as_ptr_type(class_type)) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
@@ -172,7 +172,7 @@ private:
 public:
 
     DelegateCallTarget(F func_ptr_, TypeIndex class_type)
-        : func_ptr(func_ptr_), actual_type(class_type.as_const_ptr_type()) {}
+        : func_ptr(func_ptr_), actual_type(as_const_ptr_type(class_type)) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {

@@ -12,7 +12,7 @@ SharedArgTransporter::SharedArgTransporter()
 
 AbstractSharedArgMarshaller& SharedArgTransporter::get_marshaller(TypeIndex arg_type) const
 {
-    auto iter = how_marshal.find(arg_type);
+    auto iter = how_marshal.find(arg_type.get_id());
     if (iter != how_marshal.end())
     {
         return *(iter->second);
@@ -25,7 +25,7 @@ AbstractSharedArgMarshaller& SharedArgTransporter::get_marshaller(TypeIndex arg_
 
 void SharedArgTransporter::add_marshaller(TypeIndex type, ArgMarshaller marshaller)
 {
-    how_marshal[type] = marshaller;
+    how_marshal[type.get_id()] = marshaller;
 }
 
 void SharedArgTransporter::write_args(TypeInfoList arg_types, void* buffer, ArgList args)

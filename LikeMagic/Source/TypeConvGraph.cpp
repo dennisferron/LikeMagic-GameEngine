@@ -216,7 +216,7 @@ TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, T
 
     static int count = 0;
 
-    auto key = std::make_pair(from, to);
+    auto key = std::make_pair(from.get_id(), to.get_id());
 
     // If not cached
     if (conv_cache.find(key) == conv_cache.end())
