@@ -9,10 +9,10 @@
 #pragma once
 
 #include "LikeMagic/Lang/LangInterpreter.hpp"
-#include "Bindings/Bullet/BulletBindingsDLL.hpp"
+#include "Bindings/DESteer/DESteerBindingsDLL.hpp"
 
-namespace Bindings { namespace Bullet {
+namespace Bindings { namespace DESteer {
 
-BULLET_BINDINGS_API void add_values(LM::LangInterpreter& vm);
+DESTEER_BINDINGS_API void add_values();
 
 }}

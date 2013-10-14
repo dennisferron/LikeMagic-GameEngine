@@ -14,7 +14,6 @@
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/IMarkable.hpp"
 #include "LikeMagic/Utility/TypeInfo.hpp"
-#include "LikeMagic/Utility/TypeInfoBaseImpl.hpp"
 
 #include <tuple>
 
@@ -24,44 +23,19 @@ using LM::TypeSystem;
 using namespace LM;
 using namespace LM;
 
-class ToIoTypeInfo : public TypeInfoBaseImpl
+class ToIoTypeInfo
 {
-private:
-    std::string type_name;
-
-    ToIoTypeInfo() : type_name("<unspecified>") {}
-    ToIoTypeInfo(std::string type_name_) : type_name(type_name_) {}
-
-protected:
-
-    virtual std::string get_system() const
-    {
-        return "Io (to)";
-    }
-
-    virtual bool less(const AbstractTypeInfo& other) const
-    {
-        ToIoTypeInfo const& that = static_cast<ToIoTypeInfo const&>(other);
-        return this->type_name < that.type_name;
-    }
-
-    virtual bool equals(const AbstractTypeInfo& other) const
-    {
-        ToIoTypeInfo const& that = static_cast<ToIoTypeInfo const&>(other);
-        return this->type_name == that.type_name;
-    }
-
-    virtual std::size_t calc_hash() const
-    {
-        std::size_t seed = 0;
-        boost::hash_combine(seed, type_name);
-        return seed;
-    }
-
 public:
 
-    static TypeInfo create() { return TypeInfo(new ToIoTypeInfo()); }
-    static TypeInfo create(std::string type_name) { return TypeInfo(new ToIoTypeInfo(type_name)); }
+    static TypeInfo create()
+    {
+        return create("");
+    }
+
+    static TypeInfo create(std::string type_name)
+    {
+        return TypeInfo { "ToIo", type_name, false, false };
+    }
 
     static TypeIndex create_index()
     {
@@ -73,11 +47,6 @@ public:
     {
         TypeInfo info = create(type_name);
         return get_index(info);
-    }
-
-    virtual std::string description() const
-    {
-        return "To Io Type " + type_name;
     }
 };
 

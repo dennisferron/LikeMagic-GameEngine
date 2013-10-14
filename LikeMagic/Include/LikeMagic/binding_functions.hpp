@@ -31,6 +31,8 @@
 #include "LikeMagic/Utility/EnumHelper.hpp"
 #include "LikeMagic/Utility/TypeInfo.hpp"
 
+#include <utility>
+
 namespace LM {
 
 LIKEMAGIC_API std::string create_constructor_name(std::string prefix, std::string method_name);
@@ -188,5 +190,13 @@ TypeMirror& register_enum(std::string name, TypeMirror& namespace_)
 }
 
 LIKEMAGIC_API TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespace_);
+
+template <typename T>
+void add_value(TypeMirror& namespace_, std::string name, T&& value)
+{
+    ExprPtr expr = Term<T>::create(std::forward<T>(value));
+    CallTarget* target = new LM::ExprTarget(expr);
+    namespace_.add_method(name, target);
+}
 
 }

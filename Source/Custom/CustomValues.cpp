@@ -6,14 +6,14 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-#include "Bindings/Custom/Protos.hpp"
+#include "Bindings/Custom/CustomValues.hpp"
 #include "LikeMagic/BindingMacros.hpp"
 
 using namespace std;
 
 namespace Bindings { namespace Custom {
 
-MESHTOOLS_BINDINGS_API void add_values(LM::LangInterpreter& vm)
+MESHTOOLS_BINDINGS_API void add_values()
 {
 
 }

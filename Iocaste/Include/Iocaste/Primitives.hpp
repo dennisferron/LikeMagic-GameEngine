@@ -19,7 +19,7 @@ class Primitives
 {
 private:
 
-    boost::unordered_map<TypeIndex, IoObject*> protos;
+    boost::unordered_map<std::size_t, IoObject*> protos;
 
 public:
 

@@ -28,10 +28,33 @@
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
-					<Add library="LikeMagic\libLikeMagic-Windows.a" />
-					<Add library="Deps\tps-1.2\ThinPlateSpline\bin\Debug\libThinPlateSpline.a" />
-					<Add library=".\libBullet.a" />
-					<Add library="Deps\irrlicht-1.8\lib\Win32-gcc\libIrrlicht.a" />
+					<Add library="LikeMagic/libLikeMagic-Windows.a" />
+					<Add library="Deps/tps-1.2/ThinPlateSpline/bin/Debug/libThinPlateSpline.a" />
+					<Add library="./libBullet.a" />
+					<Add library="Deps/irrlicht-1.8/lib/Win32-gcc/libIrrlicht.a" />
+				</Linker>
+			</Target>
+			<Target title="Debug Linux">
+				<Option platforms="Unix;" />
+				<Option output="bin/Debug/MeshToolsBindings" imp_lib="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).def" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="./" />
+				<Option object_output="obj/Debug/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DBUILDING_MESHTOOLS_BINDINGS_DLL" />
+					<Add option="-DUSE_DLL_BUILD" />
+					<Add option="-D_DEBUG" />
+					<Add directory="Deps/irrlicht-1.8/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-m32" />
+					<Add library="bin/Debug/libLikeMagic-Linux.so" />
+					<Add library="Deps/tps-1.2/ThinPlateSpline/bin/Debug/libThinPlateSpline.a" />
+					<Add library="./libBullet.a" />
 				</Linker>
 			</Target>
 		</Build>
@@ -56,6 +79,7 @@
 		</Compiler>
 		<Unit filename="Include/Bindings/Custom/Bindings.hpp" />
 		<Unit filename="Include/Bindings/Custom/CustomAnimatorTypes.hpp" />
+		<Unit filename="Include/Bindings/Custom/CustomValues.hpp" />
 		<Unit filename="Include/Bindings/Custom/FlagBits.hpp" />
 		<Unit filename="Include/Bindings/Custom/GearConstraint.hpp" />
 		<Unit filename="Include/Bindings/Custom/IrrlichtBulletDebugDrawer.hpp" />
@@ -66,14 +90,14 @@
 		<Unit filename="Include/Bindings/Custom/MeshToolsBindingsDLL.hpp" />
 		<Unit filename="Include/Bindings/Custom/PhysicsAnimator.hpp" />
 		<Unit filename="Include/Bindings/Custom/PossibleVertex.hpp" />
-		<Unit filename="Include/Bindings/Custom/Protos.hpp" />
 		<Unit filename="Include/Bindings/Custom/SceneNodePtrTest.hpp" />
 		<Unit filename="Include/Bindings/Custom/ScriptObjAnimator.hpp" />
 		<Unit filename="Include/Bindings/Custom/SoftBodyMeshSynchronizer.hpp" />
 		<Unit filename="Include/Bindings/Custom/SurfaceQuadTree.hpp" />
 		<Unit filename="Include/Bindings/ThinPlateSpline/Bindings.hpp" />
-		<Unit filename="Include/Bindings/ThinPlateSpline/Protos.hpp" />
+		<Unit filename="Include/Bindings/ThinPlateSpline/TPSValues.hpp" />
 		<Unit filename="Source/Custom/CustomBindings.cpp" />
+		<Unit filename="Source/Custom/CustomValues.cpp" />
 		<Unit filename="Source/Custom/GearConstraint.cpp" />
 		<Unit filename="Source/Custom/HillMesh.cpp" />
 		<Unit filename="Source/Custom/IrrlichtBulletDebugDrawer.cpp" />
@@ -83,13 +107,12 @@
 		<Unit filename="Source/Custom/MeshTools.cpp" />
 		<Unit filename="Source/Custom/PhysicsAnimator.cpp" />
 		<Unit filename="Source/Custom/PossibleVertex.cpp" />
-		<Unit filename="Source/Custom/Protos.cpp" />
 		<Unit filename="Source/Custom/SceneNodePtrTest.cpp" />
 		<Unit filename="Source/Custom/ScriptObjAnimator.cpp" />
 		<Unit filename="Source/Custom/SoftBodyMeshSynchronizer.cpp" />
 		<Unit filename="Source/Custom/SurfaceQuadTree.cpp" />
 		<Unit filename="Source/ThinPlateSpline/TPSBindings.cpp" />
-		<Unit filename="Source/ThinPlateSpline/TPSProtos.cpp" />
+		<Unit filename="Source/ThinPlateSpline/TPSValues.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger>

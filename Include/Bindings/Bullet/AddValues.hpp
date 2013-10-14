@@ -9,10 +9,10 @@
 #pragma once
 
 #include "LikeMagic/Lang/LangInterpreter.hpp"
-#include "Bindings/Custom/MeshToolsBindingsDLL.hpp"
+#include "Bindings/Bullet/BulletBindingsDLL.hpp"
 
-namespace Bindings { namespace Custom {
+namespace Bindings { namespace Bullet {
 
-MESHTOOLS_BINDINGS_API void add_values(LM::LangInterpreter& vm);
+BULLET_BINDINGS_API void add_values();
 
 }}

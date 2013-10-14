@@ -7,7 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "Bindings/DESteer/Bindings.hpp"
-#include "Bindings/DESteer/Protos.hpp"
+#include "Bindings/DESteer/AddValues.hpp"
 
 #include "LikeMagic/BindingMacros.hpp"
 

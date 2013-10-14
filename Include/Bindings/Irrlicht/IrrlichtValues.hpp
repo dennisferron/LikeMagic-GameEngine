@@ -8,11 +8,15 @@
 
 #pragma once
 
-#include "LikeMagic/Lang/LangInterpreter.hpp"
-#include "Bindings/DESteer/DESteerBindingsDLL.hpp"
+#include "Bindings/Irrlicht/IrrlichtBindingsDLL.hpp"
 
-namespace Bindings { namespace DESteer {
+namespace LM {
+    class TypeSystem;
+    class LangInterpreter;
+}
 
-DESTEER_BINDINGS_API void add_values(LM::LangInterpreter& vm);
+namespace Bindings { namespace Irrlicht {
+
+IRRLICHT_BINDINGS_API void add_values();
 
 }}

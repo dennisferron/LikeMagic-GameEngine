@@ -21,8 +21,6 @@ using namespace Iocaste::LMAdapters;
 
 using namespace std;
 
-LM_DEFINE_ABSTRACTTYPEINFO_DESTRUCTOR
-
 namespace
 {
   const size_t ERROR_IN_COMMAND_LINE = 1;

@@ -16,12 +16,6 @@ namespace Bindings { namespace Irrlicht {
 
 IRRLICHT_BINDINGS_API void add_bindings()
 {
-    TypeMirror& global_ns = type_system->global_namespace();
-    TypeMirror& ns_bindings = register_namespace("Bindings", global_ns);
-    TypeMirror& ns_irrlicht = register_namespace("Irrlicht", ns_bindings);
-
-    LM_STATIC_FUNC_NAME(ns_irrlicht, "add_values_irr", Bindings::Irrlicht::add_values_irr)
-
     add_bindings_irr();
     add_bindings_gui();
     add_bindings_video();

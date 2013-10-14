@@ -7,7 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "Bindings/Bullet/Bindings.hpp"
-#include "Bindings/Bullet/Protos.hpp"
+#include "Bindings/Bullet/AddValues.hpp"
 
 #include "btBulletDynamicsCommon.h"
 

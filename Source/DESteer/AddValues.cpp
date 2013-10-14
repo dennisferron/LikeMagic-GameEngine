@@ -6,7 +6,7 @@
 // LikeMagic is BSD-licensed.
 // (See the license file in LikeMagic/Licenses.)
 
-#include "Bindings/DESteer/Protos.hpp"
+#include "Bindings/DESteer/AddValues.hpp"
 
 #include "LikeMagic/BindingMacros.hpp"
 
@@ -18,9 +18,13 @@ using namespace desteer::controller;
 
 namespace Bindings { namespace DESteer {
 
-DESTEER_BINDINGS_API void add_values(LangInterpreter& vm)
+DESTEER_BINDINGS_API void add_values()
 {
-    LM_ENUM_PROTOS(vm,
+    TypeMirror& global_ns = type_system->global_namespace();
+    TypeMirror& ns_desteer = register_namespace("desteer", global_ns);
+    auto& ns_controller = register_namespace("controller", ns_desteer);
+
+    LM_ENUM_VALUES(ns_controller,
         (EBF_ARRIVE)
         (EBF_EVADE)
         (EBF_FLEE)

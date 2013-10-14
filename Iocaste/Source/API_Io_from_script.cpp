@@ -18,14 +18,11 @@
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
-#include "LikeMagic/Utility/BottomPtrTypeInfo.hpp"
 
 #include <vector>
 #include <algorithm>
 
 using namespace LM;
-
-LM_DEFINE_ABSTRACTTYPEINFO_DESTRUCTOR
 
 namespace Iocaste { namespace LMAdapters {
 

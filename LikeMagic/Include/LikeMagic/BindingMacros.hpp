@@ -16,30 +16,29 @@
 #include "boost/preprocessor/seq/for_each.hpp"
 #include "boost/preprocessor/stringize.hpp"
 
-#define LM_ENUM_PROTOS_IMPL(r, data, elem) data.add_value(BOOST_PP_STRINGIZE(elem), elem);
-#define LM_ENUM_PROTOS(vm_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ENUM_PROTOS_IMPL, vm_name, SEQ)
+#define LM_ENUM_VALUES_IMPL(r, data, elem) add_value(data, BOOST_PP_STRINGIZE(elem), elem);
+#define LM_ENUM_VALUES(namespace_, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ENUM_VALUES_IMPL, namespace_, SEQ)
 
-#define LM_CREATE_VALUE(vm_name, class_name, ...) vm_name.add_value(#class_name, class_name(__VA_ARGS__));
+#define LM_CREATE_VALUE(namespace_, class_name, ...) add_value(namespace_, #class_name, class_name(__VA_ARGS__));
 
 // Like LM_CREATE_VALUE but doesn't add parens to make it a constructor call
-#define LM_ADD_VALUE(vm_name, value_name) vm_name.add_value(#value_name, value_name);
+#define LM_ADD_VALUE(namespace_, value_name) add_value(namespace_, #value_name, value_name);
 
-// Does a to-script conversion on the proto, turning doubles into IoNumber and strings into IoSeq, etc.
-#define LM_ADD_NATIVE_PROTO(vm_name, class_name, ...) vm_name.add_value(#class_name, class_name(__VA_ARGS__), true);
+#define LM_ADD_VALUE_NAME(namespace_, value_name, value) add_value(namespace_, value_name, value);
 
 #define LM_ADD_VALUES_IMPL(r, data, elem) LM_ADD_VALUE(data, elem)
-#define LM_ADD_VALUES(vm_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ADD_VALUES_IMPL, vm_name, SEQ)
+#define LM_ADD_VALUES(namespace_, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ADD_VALUES_IMPL, namespace_, SEQ)
 
 #define LM_CREATE_VALUES_IMPL(r, data, elem) LM_CREATE_VALUE(data, elem)
-#define LM_CREATE_VALUES(vm_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_CREATE_VALUES_IMPL, vm_name, SEQ)
+#define LM_CREATE_VALUES(namespace_, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_CREATE_VALUES_IMPL, namespace_, SEQ)
 
 // Add vector<class_name> to vm with name "vector_of_class_name"
 #include <vector>
-#define LM_ADD_VECTOR(vm_name, class_name) vm_name.add_value("vector_of_" #class_name, std::vector<class_name>());
+#define LM_ADD_VECTOR(namespace_, class_name) add_value(namespace_, "vector_of_" #class_name, std::vector<class_name>());
 
 // Add vectors for several classes.
 #define LM_ADD_VECTORS_IMPL(r, data, elem) LM_ADD_VECTOR(data, elem)
-#define LM_ADD_VECTORS(vm_name, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ADD_VECTORS_IMPL, vm_name, SEQ)
+#define LM_ADD_VECTORS(namespace_, SEQ) BOOST_PP_SEQ_FOR_EACH(LM_ADD_VECTORS_IMPL, namespace_, SEQ)
 
 #define LM_CLASS(namespace, class_name) auto& class_name##_LM = LM::register_class<class_name>(#class_name, namespace);
 #define LM_ENUM(namespace, class_name) auto& class_name##_LM = LM::register_enum<class_name>(#class_name, namespace);

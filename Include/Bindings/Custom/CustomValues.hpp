@@ -8,15 +8,11 @@
 
 #pragma once
 
-#include "Bindings/Irrlicht/IrrlichtBindingsDLL.hpp"
+#include "LikeMagic/Lang/LangInterpreter.hpp"
+#include "Bindings/Custom/MeshToolsBindingsDLL.hpp"
 
-namespace LM {
-    class TypeSystem;
-    class LangInterpreter;
-}
+namespace Bindings { namespace Custom {
 
-namespace Bindings { namespace Irrlicht {
-
-IRRLICHT_BINDINGS_API void add_values(LM::LangInterpreter&, LM::TypeSystem&);
+MESHTOOLS_BINDINGS_API void add_values();
 
 }}

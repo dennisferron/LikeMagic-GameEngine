@@ -22,12 +22,12 @@ Primitives::~Primitives()
 
 void Primitives::add(TypeIndex index, IoObject* proto)
 {
-    protos[index] = proto;
+    protos[index.get_id()] = proto;
 }
 
 IoObject* Primitives::get(TypeIndex index) const
 {
-    auto iter = protos.find(index);
+    auto iter = protos.find(index.get_id());
     if (iter != protos.end())
         return iter->second;
     else
