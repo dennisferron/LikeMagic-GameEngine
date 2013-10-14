@@ -7,7 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "Bindings/Custom/Bindings.hpp"
-#include "Bindings/Custom/Protos.hpp"
+#include "Bindings/Custom/CustomValues.hpp"
 #include "Bindings/Custom/ScriptObjAnimator.hpp"
 #include "Bindings/Custom/PhysicsAnimator.hpp"
 #include "Bindings/Custom/KinematicAnimator.hpp"

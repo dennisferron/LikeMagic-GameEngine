@@ -15,6 +15,7 @@ private:
 
 public:
     GdbResponseParser(AbstractOutput<GdbResponse>& sink_);
+    virtual ~GdbResponseParser();
     virtual void WriteData(StringWithPrompt const& input);
     void expectAltInput();
 };

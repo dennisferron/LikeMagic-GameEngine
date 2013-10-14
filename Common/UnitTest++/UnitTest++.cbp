@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug Windows">
-				<Option output="bin/Debug/libUnitTest++" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/UnitTest++" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
 				<Option type="2" />
@@ -20,7 +20,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Debug Mac">
-				<Option output="bin/Debug/libUnitTest++" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/UnitTest++" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
 				<Option type="2" />
@@ -33,7 +33,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Debug Linux">
-				<Option output="bin/Debug/libUnitTest++" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/UnitTest++" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
 				<Option type="2" />
@@ -42,7 +42,6 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add option="-DUNITTEST_POSIX" />
 				</Compiler>
 			</Target>
 		</Build>

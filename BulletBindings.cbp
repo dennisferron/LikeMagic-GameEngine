@@ -42,14 +42,13 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fPIC" />
 					<Add option="-DUSE_DLL_BUILD" />
 					<Add option="-DBUILDING_BULLET_BINDINGS_DLL" />
 					<Add option="-D_DEBUG" />
 				</Compiler>
 				<Linker>
-					<Add option="-m32" />
-					<Add library="bin/Debug/libLikeMagic-Linux.so" />
-					<Add library="./libBullet.a" />
+					<Add library="./libBullet-Linux.a" />
 				</Linker>
 			</Target>
 		</Build>

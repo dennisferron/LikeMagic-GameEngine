@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug Mac">
-				<Option platforms="Mac;" />
+				<Option platforms="Unix;Mac;" />
 				<Option output="bin/Debug/Debugger" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
@@ -15,6 +15,12 @@
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+					<Add library="../../Common/boost_1_49_0/build-gcc/libboost_thread.a" />
+					<Add library="../../Common/boost_1_49_0/build-gcc/libboost_system.a" />
+					<Add library="../../Common/boost_1_49_0/build-gcc/libboost_exception.a" />
+					<Add library="../../Common/boost_1_49_0/build-gcc/libboost_filesystem.a" />
+				</Linker>
 			</Target>
 			<Target title="Debug Linux">
 				<Option platforms="Unix;" />
@@ -27,10 +33,17 @@
 				</Compiler>
 				<Linker>
 					<Add option="-pthread" />
+					<Add library="librt" />
+					<Add library="../../Common/boost_1_54_0/stage/lib/libboost_exception.a" />
+					<Add library="../../Common/boost_1_54_0/stage/lib/libboost_filesystem.a" />
+					<Add library="../../Common/boost_1_54_0/stage/lib/libboost_system.a" />
+					<Add library="../../Common/boost_1_54_0/stage/lib/libboost_thread.a" />
+					<Add library="../../Common/boost_1_54_0/stage/lib/libboost_chrono.a" />
+					<Add library="librt" />
 				</Linker>
 			</Target>
 			<Target title="Debug Windows">
-				<Option platforms="Windows;" />
+				<Option platforms="Windows;Unix;" />
 				<Option output="bin/Debug/Debugger" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
@@ -51,12 +64,6 @@
 			<Add directory="../../Common/process" />
 			<Add directory="../../Common/boost_1_54_0" />
 		</Compiler>
-		<Linker>
-			<Add library="..\..\Common\boost_1_49_0\build-gcc\libboost_thread.a" />
-			<Add library="..\..\Common\boost_1_49_0\build-gcc\libboost_system.a" />
-			<Add library="..\..\Common\boost_1_49_0\build-gcc\libboost_exception.a" />
-			<Add library="..\..\Common\boost_1_49_0\build-gcc\libboost_filesystem.a" />
-		</Linker>
 		<Unit filename="Include/AbstractAdapter.hpp" />
 		<Unit filename="Include/AbstractInput.hpp" />
 		<Unit filename="Include/AbstractInputOutput.hpp" />
@@ -107,6 +114,7 @@
 		<Unit filename="Include/Worker.hpp" />
 		<Unit filename="Include/WriteGrammars.hpp" />
 		<Unit filename="Include/what_is_the_attr.hpp" />
+		<Unit filename="Source/AbstractDestructors.cpp" />
 		<Unit filename="Source/ActivityLog.cpp" />
 		<Unit filename="Source/ActivityLogLine.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />

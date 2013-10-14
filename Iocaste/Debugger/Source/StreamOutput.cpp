@@ -8,6 +8,8 @@ StreamOutput::StreamOutput(ostream& stream_, bool add_newline_) :
 {
 }
 
+StreamOutput::~StreamOutput() {}
+
 void StreamOutput::WriteData(string const& data)
 {
     stream << data;

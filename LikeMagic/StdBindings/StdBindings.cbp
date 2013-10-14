@@ -68,7 +68,8 @@
 					<Add option="-DBUILDING_STD_BINDINGS_DLL" />
 				</Compiler>
 				<Linker>
-					<Add library="../../bin/Debug/libLikeMagic-Windows.a" />
+					<Add option="-Lbin/Debug" />
+					<Add library="libLikeMagic-Windows" />
 				</Linker>
 			</Target>
 		</Build>

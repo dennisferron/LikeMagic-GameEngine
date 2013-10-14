@@ -7,7 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "Bindings/ThinPlateSpline/Bindings.hpp"
-#include "Bindings/ThinPlateSpline/Protos.hpp"
+#include "Bindings/ThinPlateSpline/TPSValues.hpp"
 
 #include "ThinPlateSpline/ThinPlateQuilt.hpp"
 

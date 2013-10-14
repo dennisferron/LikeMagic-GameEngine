@@ -57,17 +57,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fPIC" />
 				</Compiler>
-				<Linker>
-					<Add option="-ldl" />
-					<Add option="-framework Foundation" />
-					<Add option="-framework AppKit" />
-					<Add option="-framework Cocoa" />
-					<Add option="-framework OpenGL" />
-					<Add option="-framework Carbon" />
-					<Add option="-framework IOKit" />
-					<Add option="-framework GLUT" />
-				</Linker>
 			</Target>
 			<Target title="Debug Windows">
 				<Option platforms="Windows;" />

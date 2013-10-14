@@ -31,6 +31,8 @@ public:
             ActivityLog& log_,
             std::string label_);
 
+    virtual ~LogChannel();
+
     virtual void WriteData(std::string const& data);
 };
 

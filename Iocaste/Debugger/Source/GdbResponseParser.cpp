@@ -36,6 +36,10 @@ namespace ascii = boost::spirit::ascii;
 namespace Iocaste {
     namespace Debugger {
 
+GdbResponseParser::~GdbResponseParser()
+{
+}
+
 vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
 {
     using boost::spirit::ascii::space;

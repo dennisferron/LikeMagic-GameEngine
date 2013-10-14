@@ -28,16 +28,18 @@
 			</Target>
 			<Target title="Debug Linux">
 				<Option platforms="Unix;" />
-				<Option output="Iocaste-Linux" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
+				<Option output="../bin/Debug/Iocaste-Linux" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../bin/Debug" />
 				<Option object_output="obj/Debug-Linux/" />
-				<Option type="2" />
+				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="Debugger/TestProject/Test.io.inl" />
 				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add option="-fPIC" />
 					<Add option="-Dx_IO_USE_SIMD" />
 					<Add option="-D__SIMD_EMU__" />
 				</Compiler>
@@ -62,8 +64,8 @@
 					<Add option="-DNO_USE_DMALLOC" />
 				</Compiler>
 				<Linker>
-					<Add library="..\LikeMagic\libLikeMagic-Windows.a" />
-					<Add library="..\Common\boost_1_54_0\stage\lib\libboost_program_options-mgw47-mt-d-1_54.a" />
+					<Add library="../LikeMagic/libLikeMagic-Windows.a" />
+					<Add library="../Common/boost_1_54_0/stage/lib/libboost_program_options-mgw47-mt-d-1_54.a" />
 				</Linker>
 			</Target>
 		</Build>

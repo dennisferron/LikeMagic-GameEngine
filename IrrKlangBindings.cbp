@@ -43,15 +43,12 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-fPIC" />
 					<Add option="-DBUILDING_IRRKLANG_BINDINGS_DLL" />
 					<Add option="-DUSE_DLL_BUILD" />
 					<Add option="-D_DEBUG" />
 					<Add directory="Deps/irrlicht-1.8/include" />
 				</Compiler>
-				<Linker>
-					<Add option="-m32" />
-					<Add library="bin/Debug/libLikeMagic-Linux.so" />
-				</Linker>
 			</Target>
 		</Build>
 		<Compiler>

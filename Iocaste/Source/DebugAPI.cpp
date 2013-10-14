@@ -5,6 +5,8 @@ using namespace std;
 
 #include "IoObject.h"
 
+#include "Iocaste/IocasteDLL.hpp"
+
 #include "Iocaste/DebugAPI.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 #include "Iocaste/CShims/IoVMCpp.h"
@@ -17,7 +19,7 @@ extern "C"
 #pragma GCC push_options
 #pragma GCC optimize ("0")
 
-void io_debugger_init(void *io_state)
+IOCASTE_API void io_debugger_init(void *io_state)
 {
     cerr << "Io debugger init " << io_state << endl;
 

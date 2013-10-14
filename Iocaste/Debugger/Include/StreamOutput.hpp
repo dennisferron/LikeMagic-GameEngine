@@ -17,6 +17,7 @@ private:
 
 public:
     StreamOutput(std::ostream& stream_, bool add_newline_=false);
+    virtual ~StreamOutput();
     virtual void WriteData(std::string const& data);
 };
 

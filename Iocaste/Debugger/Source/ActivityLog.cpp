@@ -14,6 +14,8 @@ using namespace Iocaste::Debugger;
 namespace Iocaste {
     namespace Debugger {
 
+ActivityLog::~ActivityLog() {}
+
 AbstractOutput<std::string>& no_call_copy_constructor(ActivityLog& value)
 {
     return static_cast<AbstractOutput<std::string>&>(value);

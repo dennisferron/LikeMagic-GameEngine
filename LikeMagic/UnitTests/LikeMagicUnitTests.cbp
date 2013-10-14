@@ -18,9 +18,9 @@
 					<Add option="-DUSE_DLL_BUILD" />
 				</Compiler>
 				<Linker>
-					<Add library="..\..\Common\UnitTest++\bin\Debug\libUnitTest++.a" />
-					<Add library="..\..\bin\Debug\libStdBindings-Windows.a" />
-					<Add library="..\..\bin\Debug\libLikeMagic-Windows.a" />
+					<Add library="../../Common/UnitTest++/bin/Debug/libUnitTest++.a" />
+					<Add library="../../bin/Debug/libStdBindings-Windows.a" />
+					<Add library="../../bin/Debug/libLikeMagic-Windows.a" />
 				</Linker>
 			</Target>
 			<Target title="Debug Mac">
@@ -33,9 +33,9 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="..\StdBindings\libStdBindings-Mac.a" />
-					<Add library="..\libLikeMagic-Mac.a" />
-					<Add library="..\..\Common\UnitTest++\bin\Debug\libUnitTest++.a" />
+					<Add library="../StdBindings/libStdBindings-Mac.a" />
+					<Add library="../libLikeMagic-Mac.a" />
+					<Add library="../../Common/UnitTest++/bin/Debug/libUnitTest++.a" />
 				</Linker>
 			</Target>
 			<Target title="Debug Linux">
@@ -51,9 +51,12 @@
 				</Compiler>
 				<Linker>
 					<Add option="-lrt" />
-					<Add library="..\..\bin\Debug\libStdBindings-Linux.so" />
-					<Add library="..\..\bin\Debug\libLikeMagic-Linux.so" />
-					<Add library="..\..\Common\UnitTest++\bin\Debug\libUnitTest++.a" />
+					<Add option="-lpthread" />
+					<Add option="-L../../bin/Debug" />
+					<Add option="-Wl,-rpath=./" />
+					<Add library="../../Common/UnitTest++/bin/Debug/libUnitTest++.a" />
+					<Add library="libLikeMagic-Linux" />
+					<Add library="libStdBindings-Linux" />
 				</Linker>
 			</Target>
 		</Build>

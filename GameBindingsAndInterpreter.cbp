@@ -4,15 +4,14 @@
 	<Project>
 		<Option title="GameBindingsAndInterpreter" />
 		<Option pch_mode="2" />
+		<Option default_target="Debug Linux" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug Windows">
 				<Option platforms="Windows;" />
 				<Option output="bin/Debug/LikeMagicDebugBuild" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="./" />
+				<Option working_dir="bin/Debug/" />
 				<Option object_output="obj/Debug/" />
-				<Option external_deps="LikeMagic/libLikeMagic-Linux.a;Deps/irrlicht-1.7.3/lib/Win32-gcc/libIrrlicht.a;" />
-				<Option additional_output="bin/Debug/LikeMagicDebugBuild.exe;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
@@ -30,21 +29,54 @@
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
-					<Add library="Iocaste\libIocaste-Windows.a" />
-					<Add library="..\desteer\bindings\libDESteerBindings-Windows.a" />
-					<Add library="LikeMagic\StdBindings\libStdBindings-Windows.a" />
-					<Add library="Common\boost_1_54_0\stage\lib\libboost_program_options-mgw47-mt-d-1_54.a" />
-					<Add library="LikeMagic\libLikeMagic-Windows.a" />
-					<Add library="..\desteer\lib\libdesteer.a" />
-					<Add library="Deps\tps-1.2\ThinPlateSpline\bin\Debug\libThinPlateSpline.a" />
-					<Add library=".\libBullet.a" />
-					<Add library="Deps\irrlicht-1.8\lib\Win32-gcc\libIrrlicht.a" />
-					<Add library="bin\Debug\libBulletBindings.a" />
-					<Add library="bin\Debug\libDESteerBindings.a" />
-					<Add library="bin\Debug\libIrrKlangBindings.a" />
-					<Add library="bin\Debug\libIrrlichtBindings.a" />
-					<Add library="bin\Debug\libMeshToolsBindings.a" />
+					<Add library="Iocaste/libIocaste-Windows.a" />
+					<Add library="../desteer/bindings/libDESteerBindings-Windows.a" />
+					<Add library="LikeMagic/StdBindings/libStdBindings-Windows.a" />
+					<Add library="Common/boost_1_54_0/stage/lib/libboost_program_options-mgw47-mt-d-1_54.a" />
+					<Add library="LikeMagic/libLikeMagic-Windows.a" />
+					<Add library="../desteer/lib/libdesteer.a" />
+					<Add library="Deps/tps-1.2/ThinPlateSpline/bin/Debug/libThinPlateSpline.a" />
+					<Add library="./libBullet.a" />
+					<Add library="Deps/irrlicht-1.8/lib/Win32-gcc/libIrrlicht.a" />
+					<Add library="bin/Debug/libBulletBindings.a" />
+					<Add library="bin/Debug/libDESteerBindings.a" />
+					<Add library="bin/Debug/libIrrKlangBindings.a" />
+					<Add library="bin/Debug/libIrrlichtBindings.a" />
+					<Add library="bin/Debug/libMeshToolsBindings.a" />
 				</Linker>
+			</Target>
+			<Target title="Debug Linux">
+				<Option platforms="Unix;" />
+				<Option output="bin/Debug/LikeMagicDebugBuild" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="./bin/Debug/" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="--language ../../Iocaste/iovm/io/ --engine ../../Engine/Startup.io.inl --game ../../../../wayup/Startup.io.inl --assets ../../../../wayup/Media" />
+				<Compiler>
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add option="-fPIC" />
+				</Compiler>
+				<Linker>
+					<Add option="-pthread" />
+					<Add option="-Lbin/Debug" />
+					<Add option="-Wl,-rpath=./" />
+					<Add library="libMeshToolsBindings" />
+					<Add library="libIrrlichtBindings" />
+					<Add library="libBulletBindings" />
+					<Add library="libIrrKlangBindings" />
+					<Add library="libStdBindings-Linux" />
+					<Add library="libLikeMagic-Linux" />
+					<Add library="libIrrlicht" />
+					<Add library="libDESteerBindings" />
+					<Add library="libIocaste-Linux" />
+					<Add library="Common/boost_1_54_0/stage/lib/libboost_program_options.a" />
+					<Add directory="bin/Debug" />
+				</Linker>
+				<ExtraCommands>
+					<Add before="cp Deps/irrlicht-1.8/lib/Linux/libIrrlicht.so bin/Debug/" />
+				</ExtraCommands>
 			</Target>
 		</Build>
 		<Compiler>

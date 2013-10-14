@@ -142,14 +142,9 @@ IOCASTE_API int Iocaste_run(int argc, const char *argv[], void (*add_bindings)()
         vm->set_path("game", game_path);
         vm->set_path("assets", asset_path);
 
-        for (int i=2; i<argc; ++i)
-        {
-            cout << flush;
-            if (string(argv[i]) == "--runCLI")
-                do_cli(*vm);
-            else
-                do_file(*vm, argv[i]);
-        }
+        do_file(*vm, engine_path);
+        do_file(*vm, game_path);
+        //do_cli(*vm);
 
         delete vm;
         vm=NULL;
