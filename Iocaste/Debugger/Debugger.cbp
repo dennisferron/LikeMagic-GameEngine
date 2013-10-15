@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Debugger" />
+		<Option title="IocasteDebugger" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -39,7 +39,6 @@
 					<Add library="../../Common/boost_1_54_0/stage/lib/libboost_system.a" />
 					<Add library="../../Common/boost_1_54_0/stage/lib/libboost_thread.a" />
 					<Add library="../../Common/boost_1_54_0/stage/lib/libboost_chrono.a" />
-					<Add library="librt" />
 				</Linker>
 			</Target>
 			<Target title="Debug Windows">
