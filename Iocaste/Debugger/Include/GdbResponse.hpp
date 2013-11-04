@@ -167,6 +167,11 @@ struct OutputValue
     SharedTypes::GdbValue value;
 };
 
+struct SourceDirectoriesSearched
+{
+    std::string directory_list;
+};
+
 }
 
 typedef boost::variant
@@ -175,6 +180,7 @@ typedef boost::variant
     GdbResponses::Banner,
     GdbResponses::SquareBracketMsg,
     GdbResponses::SignalReceived,
+    GdbResponses::SourceDirectoriesSearched,
     GdbResponses::RawStr
 > GdbUnactionableType;
 

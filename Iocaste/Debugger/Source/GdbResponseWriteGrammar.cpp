@@ -95,13 +95,15 @@ struct GdbResponseWriteGrammar
         // Working directory /Users/dennisferron/code/LikeMagic-All/Iocaste.
         working_directory = karma::lit("Working directory ") << karma::string << ".";
 
+        src_dirs_srch = karma::lit("Source directories searched: ") << karma::string;
+
         type_equals = karma::lit("type = ") << karma::string;
 
         actionable_variant = locals_info | backtrace_line | banner | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited
                          | working_directory | type_equals | empty;
         actionable = actionable_variant << karma::lit("\n");
 
-        unactionable_variant = banner | reading_symbols | square_bracket_msg | signal_received | raw_str;
+        unactionable_variant = banner | reading_symbols | square_bracket_msg | signal_received | src_dirs_srch | raw_str;
         unactionable = unactionable_variant << karma::lit("\n");
 
         output_value = *gdb_value;
@@ -148,6 +150,7 @@ struct GdbResponseWriteGrammar
     karma::rule<OutputIterator, GdbResponses::SquareBracketMsg()> square_bracket_msg;
     karma::rule<OutputIterator, GdbResponses::SignalReceived()> signal_received;
     karma::rule<OutputIterator, GdbResponses::WorkingDirectory()> working_directory;
+    karma::rule<OutputIterator, GdbResponses::SourceDirectoriesSearched()> src_dirs_srch;
     karma::rule<OutputIterator, GdbActionableType()> actionable_variant;
     karma::rule<OutputIterator, GdbUnactionableType()> unactionable_variant;
     karma::rule<OutputIterator, GdbContextSensitiveType()> context_sens_variant;

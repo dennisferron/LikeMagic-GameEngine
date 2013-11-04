@@ -16,6 +16,11 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
+    GdbResponses::SourceDirectoriesSearched,
+    (std::string, directory_list)
+)
+
+BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::WorkingDirectory,
     (std::string, directory)
 )

@@ -137,6 +137,8 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
 
         type_equals = qi::lit("type = ") > +qi::char_;
 
+        src_dirs_srch = qi::lit("Source directories searched: ") > *qi::char_;
+
         empty = qi::lit("") >> -*qi::char_('`') >> qi::eoi;
 
         output_value = *gdb_value;
@@ -144,7 +146,7 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
         actionable =  breakpoint_set | breakpoint_pending | cursor_pos | breakpoint_hit | locals_info | address_in_function
                 | backtrace_line | value_history | program_exited | working_directory | type_equals | empty;
 
-        unactionable = reading_symbols | square_bracket_msg | signal_received;
+        unactionable = reading_symbols | square_bracket_msg | signal_received | src_dirs_srch;
 
         context_sens = output_value;
 
@@ -189,6 +191,7 @@ struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbRes
     qi::rule<Iterator, GdbResponses::CursorPos()> cursor_pos;
     qi::rule<Iterator, GdbResponses::TypeEquals()> type_equals;
     qi::rule<Iterator, GdbResponses::OutputValue()> output_value;
+    qi::rule<Iterator, GdbResponses::SourceDirectoriesSearched()> src_dirs_srch;
     qi::rule<Iterator, GdbResponses::Empty()> empty;
     qi::rule<Iterator, GdbActionable()> actionable;
     qi::rule<Iterator, GdbUnactionable()> unactionable;

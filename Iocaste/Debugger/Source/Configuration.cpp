@@ -19,12 +19,6 @@ namespace bp = ::boost::process;
     char const* logFileName = "./debug.log";
 #endif
 
-#if defined(_WIN32)
-    char const* replayFileName = ".\\gdb-sample.log";
-#else
-    char const* replayFileName = "./gdb-sample.log";
-#endif
-
 Configuration::~Configuration() {}
 
 class ReplayConfiguration : public Configuration
@@ -37,7 +31,7 @@ private:
 
 public:
 
-    ReplayConfiguration()
+    ReplayConfiguration(string replayFileName)
         : replay_file(replayFileName),
           log_file(logFileName, ofstream::out)
     {
@@ -209,7 +203,8 @@ public:
 
 boost::shared_ptr<Configuration> Iocaste::Debugger::getConfiguration(int argc, char* argv[])
 {
-    //return boost::shared_ptr<Configuration>(new ReplayConfiguration());
-    return boost::shared_ptr<Configuration>(new NormalConfiguration(argc, argv));
+    if (argc == 3 && string(argv[1]) == string("--replay-log"))
+        return boost::shared_ptr<Configuration>(new ReplayConfiguration(string(argv[2])));
+    else
+        return boost::shared_ptr<Configuration>(new NormalConfiguration(argc, argv));
 }
-
