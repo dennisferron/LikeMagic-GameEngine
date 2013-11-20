@@ -1,7 +1,7 @@
 
 #include <boost/spirit/include/karma.hpp>
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 namespace karma = boost::spirit::karma;
 
@@ -26,4 +26,4 @@ struct StringEscapeWriter
     karma::symbols<char, char const*> esc_char;
 };
 
-}}
+}

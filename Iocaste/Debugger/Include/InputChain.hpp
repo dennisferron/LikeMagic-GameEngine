@@ -3,13 +3,9 @@
 #include "StaticFuture.hpp"
 #include "ChainBuilder.hpp"
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
     struct InputChain : BeginFuture<ChainPolicy>
     {
     };
-
-
-    }
 }

@@ -3,13 +3,11 @@
 #include "AbstractInput.hpp"
 #include "AbstractOutput.hpp"
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 template <typename T>
 class AbstractInputOutput : public AbstractInput, public AbstractOutput
 {
 };
 
-    }
 }

@@ -3,111 +3,111 @@
 #include "UserCmd.hpp"
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::RawString,
+    Rules::RawString,
     (std::string, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::Return,
+    Rules::Return,
     (boost::optional<std::string>, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::WhatIs,
+    Rules::WhatIs,
     (std::string, cmd)
     (boost::optional<std::string>, expr)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::SetOptionWithModifier,
+    Rules::SetOptionWithModifier,
     (std::string, name)
     (std::string, modifier)
     (std::string, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::SetOptionNoModifier,
+    Rules::SetOptionNoModifier,
     (std::string, name)
     (std::string, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::SetOption,
+    Rules::SetOption,
     (std::string, name)
     (boost::optional<std::string>, modifier)
     (std::string, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::ShowOption,
+    Rules::ShowOption,
     (std::string, name)
     (boost::optional<std::string>, modifier)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::SetBreakpoint,
+    Rules::SetBreakpoint,
     (std::string, file_name)
     (int, line_number)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::SetBreakpointOnFunction,
+    Rules::SetBreakpointOnFunction,
     (std::string, function_name)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::Source,
+    Rules::Source,
     (std::string, file_name)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::Directory,
+    Rules::Directory,
     (std::string, file_name)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::TTY,
+    Rules::TTY,
     (std::string, device_name)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::Run,
+    Rules::Run,
     (boost::optional<std::string>, dummy)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::Info,
+    Rules::Info,
     (std::string, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::Backtrace,
+    Rules::Backtrace,
     (boost::optional<int>, num_frames)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::Quit,
+    Rules::Quit,
     (boost::optional<std::string>, dummy)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::StepMode,
+    Rules::StepMode,
     (std::string, cmd)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::PrintWorkingDirectory,
+    Rules::PrintWorkingDirectory,
     (boost::optional<std::string>, dummy)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::Empty,
+    Rules::Empty,
     (boost::optional<std::string>, dummy)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    UserCmds::PrintFunction,
+    Rules::PrintFunction,
     (std::string, function_name)
-    (std::vector<SharedTypes::GdbValue>, args)
+    (std::vector<Rules::GdbValue>, args)
 )
 

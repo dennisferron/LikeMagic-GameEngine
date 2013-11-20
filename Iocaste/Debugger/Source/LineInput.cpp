@@ -1,7 +1,7 @@
 #include "LineInput.hpp"
 
 using namespace std;
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 LineInput::LineInput(istream& stream_) :
     stream(stream_)

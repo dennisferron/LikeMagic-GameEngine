@@ -9,10 +9,9 @@ using namespace std;
 #include "TestPlan.hpp"
 #include "Exception.hpp"
 #include "LogChannel.hpp"
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 ActivityLog::~ActivityLog() {}
 
@@ -159,6 +158,4 @@ void ActivityLog::AddChannel(std::string label, AbstractOutput<ActivityLogLine>&
     }
 }
 
-    }
 }
-

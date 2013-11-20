@@ -1,7 +1,7 @@
 #include "UserCmd.hpp"
 #include "AbstractAdapter.hpp"
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 class UserCmdWriter : public AbstractAdapter<UserCmd>
 {
@@ -14,4 +14,4 @@ public:
     virtual void WriteData(UserCmd const& input);
 };
 
-}}
+}

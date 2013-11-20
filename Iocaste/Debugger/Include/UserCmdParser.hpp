@@ -4,7 +4,7 @@
 #include "UserCmd.hpp"
 #include <string>
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 class UserCmdParser : public AbstractAdapter<std::string>
 {
@@ -17,4 +17,4 @@ public:
     virtual void WriteData(std::string const& input);
 };
 
-}}
+}

@@ -2,7 +2,7 @@
 #include "StepStateManager.hpp"
 #include "WatchManager.hpp"
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 class GdbResponseHandler
 {
@@ -20,4 +20,4 @@ public:
 
 };
 
-}}
+}

@@ -1,5 +1,5 @@
 #include "UserCmdParser.hpp"
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 #if (defined(__MINGW32__) || defined(__MINGW64__)) && (__GNUC__ == 4)
 #include <stddef.h>
@@ -18,7 +18,7 @@ using namespace std;
 
 #include "Exception.hpp"
 
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
@@ -29,8 +29,7 @@ namespace ascii = boost::spirit::ascii;
 // Uncomment to pass otherwise unknown commands un-parsed
 //#define PARSE_RAW_STRING
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 template <typename Iterator>
 struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
@@ -75,7 +74,7 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
         ;
     }
 
-    unique_ptr<qi::grammar<Iterator, SharedTypes::GdbValue()>> gdb_value;
+    unique_ptr<qi::grammar<Iterator, Rules::GdbValue()>> gdb_value;
     qi::rule<Iterator, std::string()> raw_str;
     qi::rule<Iterator, std::string()> ident;
     qi::rule<Iterator, std::string()> value;
@@ -85,23 +84,23 @@ struct UserCmdParseGrammar : qi::grammar<Iterator, UserCmd(), ascii::space_type>
     qi::rule<Iterator, std::string()> next_str;
     qi::rule<Iterator, std::string()> finish_str;
     qi::rule<Iterator, std::string()> cont_str;
-    qi::rule<Iterator, UserCmds::SetOptionWithModifier(), ascii::space_type> set_option_with_modifier;
-    qi::rule<Iterator, UserCmds::SetOptionNoModifier(), ascii::space_type> set_option_no_modifier;
-    qi::rule<Iterator, UserCmds::SetOption(), ascii::space_type> set_option;
-    qi::rule<Iterator, UserCmds::ShowOption(), ascii::space_type> show_option;
-    qi::rule<Iterator, UserCmds::SetBreakpoint(), ascii::space_type> set_breakpoint;
-    qi::rule<Iterator, UserCmds::Source(), ascii::space_type> source;
-    qi::rule<Iterator, UserCmds::Directory(), ascii::space_type> directory;
-    qi::rule<Iterator, UserCmds::TTY(), ascii::space_type> tty;
-    qi::rule<Iterator, UserCmds::Run(), ascii::space_type> run;
-    qi::rule<Iterator, UserCmds::Info(), ascii::space_type> info;
-    qi::rule<Iterator, UserCmds::Backtrace(), ascii::space_type> backtrace;
-    qi::rule<Iterator, UserCmds::StepMode(), ascii::space_type> step_mode;
-    qi::rule<Iterator, UserCmds::Quit(), ascii::space_type> quit;
-    qi::rule<Iterator, UserCmds::PrintWorkingDirectory(), ascii::space_type> pwd;
-    qi::rule<Iterator, UserCmds::Return(), ascii::space_type> return_;
-    qi::rule<Iterator, UserCmds::WhatIs(), ascii::space_type> what_is;
-    qi::rule<Iterator, UserCmds::Empty(), ascii::space_type> empty;
+    qi::rule<Iterator, Rules::SetOptionWithModifier(), ascii::space_type> set_option_with_modifier;
+    qi::rule<Iterator, Rules::SetOptionNoModifier(), ascii::space_type> set_option_no_modifier;
+    qi::rule<Iterator, Rules::SetOption(), ascii::space_type> set_option;
+    qi::rule<Iterator, Rules::ShowOption(), ascii::space_type> show_option;
+    qi::rule<Iterator, Rules::SetBreakpoint(), ascii::space_type> set_breakpoint;
+    qi::rule<Iterator, Rules::Source(), ascii::space_type> source;
+    qi::rule<Iterator, Rules::Directory(), ascii::space_type> directory;
+    qi::rule<Iterator, Rules::TTY(), ascii::space_type> tty;
+    qi::rule<Iterator, Rules::Run(), ascii::space_type> run;
+    qi::rule<Iterator, Rules::Info(), ascii::space_type> info;
+    qi::rule<Iterator, Rules::Backtrace(), ascii::space_type> backtrace;
+    qi::rule<Iterator, Rules::StepMode(), ascii::space_type> step_mode;
+    qi::rule<Iterator, Rules::Quit(), ascii::space_type> quit;
+    qi::rule<Iterator, Rules::PrintWorkingDirectory(), ascii::space_type> pwd;
+    qi::rule<Iterator, Rules::Return(), ascii::space_type> return_;
+    qi::rule<Iterator, Rules::WhatIs(), ascii::space_type> what_is;
+    qi::rule<Iterator, Rules::Empty(), ascii::space_type> empty;
     qi::rule<Iterator, UserCmd(), ascii::space_type> start;
 };
 
@@ -152,5 +151,4 @@ void UserCmdParser::WriteData(std::string const& input)
     sink.WriteData(cmd);
 }
 
-    }
 }

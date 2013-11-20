@@ -1,5 +1,5 @@
 #include "GdbResponseParser.hpp"
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 #if (defined(__MINGW32__) || defined(__MINGW64__)) && (__GNUC__ == 4)
 #include <stddef.h>
@@ -25,7 +25,7 @@ namespace phx = boost::phoenix;
 #include "Exception.hpp"
 #include "ParseGrammars.hpp"
 
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
@@ -33,8 +33,9 @@ namespace ascii = boost::spirit::ascii;
 #include "GdbResponseFusion.hpp"
 #include "StringUnescapeParser.hpp"
 
-namespace Iocaste {
-    namespace Debugger {
+using namespace IoDbg::Rules;
+
+namespace IoDbg {
 
 GdbResponseParser::~GdbResponseParser()
 {
@@ -51,8 +52,8 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
 
     // The banner doesn't conform to the pattern of the other GdbResponses.
     // Rather than twist the grammar to handle it I just handle it with another parser.
-    unique_ptr<qi::grammar<iterator_type, GdbResponses::Banner()>> g_banner(gdb_banner_parse_grammar()); // Banner grammar
-    GdbResponses::Banner banner;
+    unique_ptr<qi::grammar<iterator_type, Rules::Banner()>> g_banner(gdb_banner_parse_grammar()); // Banner grammar
+    Rules::Banner banner;
 
     bool is_banner = false;
 
@@ -64,7 +65,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
     {
         cerr << "While checking for gdb banner, got parse error: " << exc.what() << " at ->" << std::string(exc.first, exc.last) << "<-" << endl;
         logError(exc);
-        result.push_back(GdbUnactionable {GdbResponses::RawStr {input}});
+        result.push_back(GdbUnactionable {Rules::RawStr {input}});
         return result;
     }
 
@@ -92,7 +93,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
         {
             if (line.size() == 0)
             {
-                result.push_back(GdbActionable {GdbResponses::Empty()});
+                result.push_back(GdbActionable {Rules::Empty()});
             }
             else
             {
@@ -113,7 +114,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                         ss << "GdbResponse failed to parse ->" << line << "<- in string ->" << input << "<-" << std::endl;
                         cerr << endl << ss.str() << endl;
                         logError(ParseException(ss.str()));
-                        result.push_back(GdbUnactionable { GdbResponses::RawStr {line}});
+                        result.push_back(GdbUnactionable { Rules::RawStr {line}});
                     }
                     else if (iter != end)
                     {
@@ -122,7 +123,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                             << "from input ->" << line << "<-" << endl;
                         cerr << endl << ss.str() << endl;
                         logError(ParseException(ss.str()));
-                        result.push_back(GdbUnactionable { GdbResponses::RawStr {line}});
+                        result.push_back(GdbUnactionable { Rules::RawStr {line}});
                     }
                     else
                     {
@@ -134,7 +135,7 @@ vector<GdbResponseType> GdbResponseParser::Parse(string const& input) const
                     stringstream ss;
                     ss << "While parsing ->" << line << "<- in string ->" << input << "<- got expectation failure: " << exc.what() << " at " << std::string(exc.first, exc.last) << endl;
                     logError(exc);
-                    result.push_back(GdbUnactionable { GdbResponses::RawStr {line} });
+                    result.push_back(GdbUnactionable { Rules::RawStr {line} });
                 }
             }
         }
@@ -164,5 +165,4 @@ void GdbResponseParser::WriteData(StringWithPrompt const& input)
     sink.WriteData(response);
 }
 
-    }
 }

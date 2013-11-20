@@ -1,14 +1,14 @@
 #include "GdbResponseHandler.hpp"
 
-using namespace Iocaste::Debugger;
-
+using namespace IoDbg;
+using namespace IoDbg::Rules;
 
 GdbResponseHandler::GdbResponseHandler(MainChannels const& channels_, BreakpointManager& brkpt_mgr_, StepStateManager& step_mgr_, WatchManager& watch_mgr_)
     : channels(channels_), brkpt_mgr(brkpt_mgr_), step_mgr(step_mgr_), watch_mgr(watch_mgr_) {}
 
 void GdbResponseHandler::handle(GdbResponse const& response)
 {
-    if (hasActionable<GdbResponses::BreakpointHit>(response.values))
+    if (hasActionable<Rules::BreakpointHit>(response.values))
     {
         bool at_script_breakpoint = brkpt_mgr.handle(response);
         channels.info.WriteData(std::string("at_script_breakpoint = ") + (at_script_breakpoint? "true" : "false"));

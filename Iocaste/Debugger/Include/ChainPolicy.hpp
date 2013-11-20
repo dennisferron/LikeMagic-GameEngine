@@ -2,8 +2,7 @@
 
 #include "TypePolicy.hpp"
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 struct ChainPolicy
 {
@@ -12,5 +11,4 @@ struct ChainPolicy
     struct Both {};
 };
 
-    }
 }

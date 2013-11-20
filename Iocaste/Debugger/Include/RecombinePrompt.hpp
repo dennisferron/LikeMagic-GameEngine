@@ -6,8 +6,7 @@
 
 #include <iostream>
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 class RecombinePrompt :
     public AbstractAdapter<StringWithPrompt>
@@ -22,5 +21,4 @@ public:
     virtual void WriteData(StringWithPrompt const& data);
 };
 
-    }
 }

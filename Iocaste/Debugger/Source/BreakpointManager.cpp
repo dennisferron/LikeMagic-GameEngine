@@ -1,7 +1,10 @@
+#include "Rules/RuleStructs.hpp"
+
 #include "BreakpointManager.hpp"
 #include "WatchManager.hpp"
 
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
+using namespace IoDbg::Rules;
 
 #include "boost/algorithm/string/predicate.hpp"
 #include "boost/lexical_cast.hpp"
@@ -14,7 +17,7 @@ using namespace std;
 
 #include <stdlib.h>
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 struct BreakpointResponseVisitor : boost::static_visitor<GdbActionable>
 {
@@ -31,28 +34,28 @@ struct BreakpointResponseVisitor : boost::static_visitor<GdbActionable>
         return {t};
     }
 
-    GdbActionable operator()(const GdbResponses::BreakpointSet& t)
+    GdbActionable operator()(const Rules::BreakpointSet& t)
     {
         return bkpt_mgr.gdbBreakpointSet(t);
     }
 
-    GdbActionable operator()(const GdbResponses::BreakpointPending& t)
+    GdbActionable operator()(const Rules::BreakpointPending& t)
     {
         return bkpt_mgr.gdbBreakpointPending(t);
     }
 
-    GdbActionable operator()(const GdbResponses::BreakpointHit& t)
+    GdbActionable operator()(const Rules::BreakpointHit& t)
     {
         return bkpt_mgr.gdbBreakpointHit(t, hit_io_breakpoint);
     }
 
-    GdbActionable operator()(const GdbResponses::CursorPos& t)
+    GdbActionable operator()(const Rules::CursorPos& t)
     {
         return bkpt_mgr.gdbCursorPos(t, hit_io_breakpoint);
     }
 };
 
-}}
+}
 
 
 BreakpointManager::BreakpointManager(MainChannels const& channels_, WatchManager& watch_mgr_)
@@ -77,7 +80,7 @@ bool BreakpointManager::handle(GdbResponse const& response)
 
     bool all_empty = true;
     for (auto item : output)
-        if (!boost::get<GdbResponses::Empty>(&item))
+        if (!boost::get<Rules::Empty>(&item))
             all_empty = false;
 
     if (!all_empty)
@@ -108,14 +111,14 @@ void BreakpointManager::toUser(GdbResponse const& response) const
 
 OurBreakpoint BreakpointManager::setIoDebuggerBreakpoint(std::string function_name)
 {
-    UserCmds::SetBreakpointOnFunction real_bkpt = { function_name };
+    Rules::SetBreakpointOnFunction real_bkpt = { function_name };
     UserCmd cmd;
     cmd = real_bkpt;
     channels.toGdb.WriteData( cmd );
 
     GdbResponse resp = channels.fromGdb.ReadData();
 
-    if (auto* bs = getActionable<GdbResponses::BreakpointSet>(&resp.values.at(0)))
+    if (auto* bs = getActionable<Rules::BreakpointSet>(&resp.values.at(0)))
     {
         GdbBreakpoint gb = { bs->breakpoint_number };
         OurBreakpoint result = brkpts.get_user_breakpoint<OurBreakpoint>(gb);
@@ -132,9 +135,9 @@ OurBreakpoint BreakpointManager::setIoDebuggerBreakpoint(std::string function_na
     }
 }
 
-void BreakpointManager::loadDeferredBreakpoint(SharedTypes::GdbAddress io_state, IoBreakpoint ib)
+void BreakpointManager::loadDeferredBreakpoint(Rules::GdbAddress io_state, IoBreakpoint ib)
 {
-    UserCmds::PrintFunction print;
+    Rules::PrintFunction print;
     print.function_name = "io_debugger_set_breakpoint";
     print.args.push_back( { io_state } );
     print.args.push_back( { ib.number } );
@@ -144,7 +147,7 @@ void BreakpointManager::loadDeferredBreakpoint(SharedTypes::GdbAddress io_state,
 
     GdbResponse resp = channels.fromGdb.ReadData();
 
-    if (auto* vh = getActionable<GdbResponses::ValueHistory>(&resp.values.at(0)))
+    if (auto* vh = getActionable<Rules::ValueHistory>(&resp.values.at(0)))
     {
         if (auto* breakpt_num = boost::get<int>(&(vh->value.value)))
         {
@@ -165,7 +168,7 @@ void BreakpointManager::loadDeferredBreakpoint(SharedTypes::GdbAddress io_state,
     }
 }
 
-IoBreakpoint BreakpointManager::setIoBreakpoint(UserCmds::SetBreakpoint const& stbk)
+IoBreakpoint BreakpointManager::setIoBreakpoint(Rules::SetBreakpoint const& stbk)
 {
     if (!io_init_breakpoint)
         io_init_breakpoint = setIoDebuggerBreakpoint("io_debugger_init");
@@ -182,12 +185,12 @@ IoBreakpoint BreakpointManager::setIoBreakpoint(UserCmds::SetBreakpoint const& s
     return ib;
 }
 
-void BreakpointManager::userSetIoBreakpoint(UserCmds::SetBreakpoint const& stbk)
+void BreakpointManager::userSetIoBreakpoint(Rules::SetBreakpoint const& stbk)
 {
     IoBreakpoint ib = setIoBreakpoint(stbk);
     UserBreakpoint ub = brkpts.get_user_breakpoint<UserBreakpoint>(ib);
 
-    GdbResponses::BreakpointSet bs;
+    Rules::BreakpointSet bs;
 
     bs.breakpoint_number = ub.number;
     bs.address = { "00000000" };
@@ -200,13 +203,13 @@ void BreakpointManager::userSetIoBreakpoint(UserCmds::SetBreakpoint const& stbk)
     toUser(resp);
 }
 
-GdbResponses::BreakpointSet BreakpointManager::setGdbBreakpoint(UserCmds::SetBreakpoint const& stbk)
+Rules::BreakpointSet BreakpointManager::setGdbBreakpoint(Rules::SetBreakpoint const& stbk)
 {
     channels.toGdb.WriteData(stbk);
 
     GdbResponse resp = channels.fromGdb.ReadData();
 
-    if (auto* bs = getActionable<GdbResponses::BreakpointSet>(&resp.values.at(0)))
+    if (auto* bs = getActionable<Rules::BreakpointSet>(&resp.values.at(0)))
     {
         return *bs;
     }
@@ -216,12 +219,12 @@ GdbResponses::BreakpointSet BreakpointManager::setGdbBreakpoint(UserCmds::SetBre
     }
 
     // Never get here
-    return GdbResponses::BreakpointSet();
+    return Rules::BreakpointSet();
 }
 
-void BreakpointManager::userSetGdbBreakpoint(UserCmds::SetBreakpoint const& stbk)
+void BreakpointManager::userSetGdbBreakpoint(Rules::SetBreakpoint const& stbk)
 {
-    GdbResponses::BreakpointSet bs = setGdbBreakpoint(stbk);
+    Rules::BreakpointSet bs = setGdbBreakpoint(stbk);
 
     GdbBreakpoint gb = { bs.breakpoint_number };
     UserBreakpoint ub = brkpts.get_user_breakpoint<UserBreakpoint>(gb);
@@ -238,18 +241,18 @@ void BreakpointManager::userSetGdbBreakpoint(UserCmds::SetBreakpoint const& stbk
 // but then realized I already could get the args from the BreakpointHit struct.
 BreakpointManager::FunctionArgs BreakpointManager::getArgs()
 {
-    toGdb( UserCmds::Info { "args" } );
+    toGdb( Rules::Info { "args" } );
     GdbResponse resp = channels.fromGdb.ReadData();
 
     BreakpointManager::FunctionArgs result;
 
     for (auto item : resp.values)
     {
-        if (auto* locals = getActionable<GdbResponses::LocalsInfo>(&item))
+        if (auto* locals = getActionable<Rules::LocalsInfo>(&item))
         {
-            if (auto* nl = boost::get<SharedTypes::NoLocals>(&(locals->value)))
-                result.push_back( std::make_pair(nl->text, SharedTypes::GdbValue()) );
-            else if (auto* veq = boost::get<SharedTypes::VariableEquals>(&(locals->value)))
+            if (auto* nl = boost::get<Rules::NoLocals>(&(locals->value)))
+                result.push_back( std::make_pair(nl->text, Rules::GdbValue()) );
+            else if (auto* veq = boost::get<Rules::VariableEquals>(&(locals->value)))
                 result.push_back({ veq->name, veq->value });
             else
                 raiseError(BadResponseError("Did not get expected LocalsInfo line from gdb when calling info locals."));
@@ -261,7 +264,7 @@ BreakpointManager::FunctionArgs BreakpointManager::getArgs()
     return result;
 }
 
-BreakpointManager::FunctionArgs BreakpointManager::getArgs(SharedTypes::GdbResponseFunction func)
+BreakpointManager::FunctionArgs BreakpointManager::getArgs(Rules::GdbResponseFunction func)
 {
     BreakpointManager::FunctionArgs result;
 
@@ -273,7 +276,7 @@ BreakpointManager::FunctionArgs BreakpointManager::getArgs(SharedTypes::GdbRespo
     return result;
 }
 
-SharedTypes::GdbValue BreakpointManager::getArg(BreakpointManager::FunctionArgs args, std::string arg_name)
+Rules::GdbValue BreakpointManager::getArg(BreakpointManager::FunctionArgs args, std::string arg_name)
 {
     for (auto arg : args)
         if (arg.first == arg_name)
@@ -311,25 +314,25 @@ std::string BreakpointManager::getValueAsString(BreakpointManager::FunctionArgs 
     return "";
 }
 
-SharedTypes::GdbAddress BreakpointManager::getPointer(BreakpointManager::FunctionArgs args, std::string arg_name)
+Rules::GdbAddress BreakpointManager::getPointer(BreakpointManager::FunctionArgs args, std::string arg_name)
 {
     auto value = getArg(args, arg_name);
 
-    if (auto* result = boost::get<SharedTypes::GdbAddress>(&(value.value)))
+    if (auto* result = boost::get<Rules::GdbAddress>(&(value.value)))
         return *result;
     else
         raiseError(BadResponseError("Did not get expected LocalsInfo variable type for arg " + arg_name + " from gdb when calling info locals."));
 
     // Never get here
-    return SharedTypes::GdbAddress();
+    return Rules::GdbAddress();
 }
 
-void BreakpointManager::ioDebuggerInit(const GdbResponses::BreakpointHit& bh)
+void BreakpointManager::ioDebuggerInit(const Rules::BreakpointHit& bh)
 {
     // At inferior function "io_debugger_init"
 
     auto args = getArgs(bh.function);
-    SharedTypes::GdbAddress io_state = getPointer(args, "io_state");
+    Rules::GdbAddress io_state = getPointer(args, "io_state");
 
     for (IoBreakpoint ib : deferred_breakpoints)
     {
@@ -337,10 +340,10 @@ void BreakpointManager::ioDebuggerInit(const GdbResponses::BreakpointHit& bh)
     }
 
     // Give the user the illusion the breakpoint was never hit.
-    toGdb( UserCmds::StepMode {"cont"} );
+    toGdb( Rules::StepMode {"cont"} );
 }
 
-GdbActionable BreakpointManager::ioDebuggerIoBreakpoint(const GdbResponses::BreakpointHit& bh)
+GdbActionable BreakpointManager::ioDebuggerIoBreakpoint(const Rules::BreakpointHit& bh)
 {
     // At inferior function "io_debugger_break_here"
 
@@ -359,13 +362,13 @@ GdbActionable BreakpointManager::ioDebuggerIoBreakpoint(const GdbResponses::Brea
     ScriptContext context = { self, locals, m };
     watch_mgr.setScriptContext(context);
 
-    GdbResponses::BreakpointHit bh_spoof;
+    Rules::BreakpointHit bh_spoof;
     bh_spoof.breakpoint_number = breakpoint_number;
     // bh_spoof.function = {}; TODO:  Get message name and argument names.
     bh_spoof.file_name = full_p.string();
     bh_spoof.line_number = line_number;
 
-    GdbResponses::CursorPos cp_spoof;
+    Rules::CursorPos cp_spoof;
     cp_spoof.file_name = full_p.string();
     cp_spoof.line_number = line_number;
     cp_spoof.char_number = 1;
@@ -374,13 +377,13 @@ GdbActionable BreakpointManager::ioDebuggerIoBreakpoint(const GdbResponses::Brea
 
     GdbResponse resp_spoof;
     resp_spoof.prompt = gdb_prompt;
-    resp_spoof.pushActionable(GdbResponses::Empty());
+    resp_spoof.pushActionable(Rules::Empty());
     resp_spoof.pushActionable(bh_spoof);
     resp_spoof.pushActionable(cp_spoof);
 
     channels.toUser.WriteData(resp_spoof);
 
-    return {GdbResponses::Empty()};
+    return {Rules::Empty()};
 }
 
 bool BreakpointManager::isIoBreakpoint(string file_name) const
@@ -390,7 +393,7 @@ bool BreakpointManager::isIoBreakpoint(string file_name) const
         boost::algorithm::ends_with(file_name, "io.inl");
 }
 
-void BreakpointManager::userSetBreakpoint(const UserCmds::SetBreakpoint& t)
+void BreakpointManager::userSetBreakpoint(const Rules::SetBreakpoint& t)
 {
     if (isIoBreakpoint(t.file_name))
         userSetIoBreakpoint(t);
@@ -398,23 +401,23 @@ void BreakpointManager::userSetBreakpoint(const UserCmds::SetBreakpoint& t)
         userSetGdbBreakpoint(t);
 }
 
-GdbActionable BreakpointManager::gdbBreakpointSet(const GdbResponses::BreakpointSet& t)
+GdbActionable BreakpointManager::gdbBreakpointSet(const Rules::BreakpointSet& t)
 {
-    GdbResponses::BreakpointSet bs(t);
+    Rules::BreakpointSet bs(t);
     GdbBreakpoint gb = {t.breakpoint_number};
     bs.breakpoint_number = brkpts.get_user_breakpoint<UserBreakpoint>(gb).number;
     return {bs};
 }
 
-GdbActionable BreakpointManager::gdbBreakpointPending(const GdbResponses::BreakpointPending& t)
+GdbActionable BreakpointManager::gdbBreakpointPending(const Rules::BreakpointPending& t)
 {
-    GdbResponses::BreakpointPending bp(t);
+    Rules::BreakpointPending bp(t);
     GdbBreakpoint gb = {t.breakpoint_number};
     bp.breakpoint_number = brkpts.get_user_breakpoint<UserBreakpoint>(gb).number;
     return {bp};
 }
 
-GdbActionable BreakpointManager::gdbBreakpointHit(const GdbResponses::BreakpointHit& t, bool& is_our_breakpoint)
+GdbActionable BreakpointManager::gdbBreakpointHit(const Rules::BreakpointHit& t, bool& is_our_breakpoint)
 {
     GdbBreakpoint gb = { t.breakpoint_number };
 
@@ -428,7 +431,7 @@ GdbActionable BreakpointManager::gdbBreakpointHit(const GdbResponses::Breakpoint
         if (ob == *io_init_breakpoint)
         {
             ioDebuggerInit(t);
-            return {GdbResponses::Empty()};
+            return {Rules::Empty()};
         }
         else if (ob == *io_debugger_breakpoint)
         {
@@ -437,22 +440,22 @@ GdbActionable BreakpointManager::gdbBreakpointHit(const GdbResponses::Breakpoint
         else
         {
             raiseError(LogicError("Hit one of 'our' internal debugger breakpoints, but it does not match the ones we set."));
-            return {GdbResponses::Empty()};
+            return {Rules::Empty()};
         }
     }
     else
     {
-        GdbResponses::BreakpointHit bh(t);
+        Rules::BreakpointHit bh(t);
         bh.breakpoint_number = brkpts.get_user_breakpoint<UserBreakpoint>(gb).number;
         return {bh};
     }
 }
 
-GdbActionable BreakpointManager::gdbCursorPos(const GdbResponses::CursorPos& t, bool hit_our_breakpoint)
+GdbActionable BreakpointManager::gdbCursorPos(const Rules::CursorPos& t, bool hit_our_breakpoint)
 {
     // Suppress returning the cursor position if the breakpoint is one of ours.
     if (hit_our_breakpoint)
-        return {GdbResponses::Empty()};
+        return {Rules::Empty()};
     else
         return {t};
 }

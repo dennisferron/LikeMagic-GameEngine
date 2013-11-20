@@ -23,7 +23,7 @@ using namespace std;
 #include "StringUnescapeParser.hpp"
 #include "StringEscapeWriter.hpp"
 
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
@@ -34,8 +34,7 @@ BOOST_FUSION_ADAPT_STRUCT(
     (std::string, content)
 )
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 template <typename Iterator>
 struct ActivityLogParser : qi::grammar<Iterator, ActivityLogLine()>
@@ -117,6 +116,5 @@ void ActivityLogLine::Write(std::string& generated) const
         raiseError(GeneratorException("Error writing activity log line."));
 }
 
-    }
 }
 

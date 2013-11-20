@@ -2,8 +2,7 @@
 
 #include "ChainPolicy.hpp"
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 template <typename T> class AbstractOutput;
 
@@ -58,5 +57,4 @@ struct ChainBuilder<T, LHS, RHS&, ChainPolicy::Both>
         { return new T(lhs.complete().tail(), rhs, std::forward<Args>(args)...); }
 };
 
-    }
 }

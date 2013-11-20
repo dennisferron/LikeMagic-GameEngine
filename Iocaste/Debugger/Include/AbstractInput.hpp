@@ -1,7 +1,6 @@
 #pragma once
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 template <typename T>
 class AbstractInput
@@ -12,5 +11,4 @@ public:
     virtual T ReadData() = 0;
 };
 
-    }
 }

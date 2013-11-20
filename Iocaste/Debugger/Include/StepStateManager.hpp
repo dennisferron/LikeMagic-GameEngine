@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 struct StepResponseVisitor;
 
@@ -23,8 +23,8 @@ public:
 
     StepStateManager(MainChannels const& channels_);
     void atScriptBreakpoint(bool value);
-    void handle(UserCmds::StepMode const& cmd);
+    void handle(Rules::StepMode const& cmd);
 };
 
-}}
+}
 

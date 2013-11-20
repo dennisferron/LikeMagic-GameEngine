@@ -1,6 +1,6 @@
 #include "Exception.hpp"
 #include "AbstractOutput.hpp"
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 #include "boost/thread.hpp"
 
@@ -15,7 +15,7 @@ using namespace std;
 
 AbstractOutput<std::string>* exception_log = nullptr;
 
-void Iocaste::Debugger::setExceptionLog(AbstractOutput<std::string>* log_output_)
+void IoDbg::setExceptionLog(AbstractOutput<std::string>* log_output_)
 {
     exception_log = log_output_;
 }
@@ -29,7 +29,7 @@ std::string demangle_name(char const* type_name)
     return result;
 }
 
-void Iocaste::Debugger::logException(std::type_info const& exception_type, std::string msg)
+void IoDbg::logException(std::type_info const& exception_type, std::string msg)
 {
     if (exception_log)
     {

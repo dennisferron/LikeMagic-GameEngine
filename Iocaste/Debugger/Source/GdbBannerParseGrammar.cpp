@@ -1,7 +1,9 @@
+#include "Rules/RuleStructs.hpp"
+using namespace IoDbg::Rules;
 
 #include "ParseGrammars.hpp"
 #include "GdbResponseParser.hpp"
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 #if (defined(__MINGW32__) || defined(__MINGW64__)) && (__GNUC__ == 4)
 #include <stddef.h>
@@ -30,47 +32,38 @@ namespace phx = boost::phoenix;
 
 #include "Exception.hpp"
 
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
-#include "GdbResponseFusion.hpp"
 #include "StringUnescapeParser.hpp"
 
-namespace Iocaste {
-    namespace Debugger {
+#define QI_DECL
+#include "Rules/GdbValue.hpp"
+#include "Rules/SharedTypes.hpp"
+#include "Rules/GdbBanner.hpp"
+using namespace IoDbg::Rules::qi_rules;
+#undef QI_DECL
 
-struct GdbBannerGrammar : qi::grammar<std::string::const_iterator, GdbResponses::Banner()>
+namespace IoDbg {
+
+struct GdbBannerGrammar : qi::grammar<std::string::const_iterator, Rules::Banner()>
 {
     typedef std::string::const_iterator Iterator;
 
     GdbBannerGrammar() : GdbBannerGrammar::base_type(banner)
     {
-        // GNU gdb 6.3.50-20050815 (Apple version gdb-1705) (Fri Jul  1 10:50:06 UTC 2011)\nCopyright 2004 Free Software Foundation, Inc.\n
-        // GNU gdb (Ubuntu/Linaro 7.2-1ubuntu11) 7.2
-        version_number = +(qi::alnum | qi::char_('.') | qi::char_('-') | qi::char_('/'));
-        paren_expr = qi::char_('(') > (version_number % qi::char_(' ')) > qi::char_(')');
-        version_or_expr = paren_expr | version_number;
-        banner_line = +(qi::char_ - '\n');
-        banner_message = banner_line > *(qi::char_('\n') >> banner_line);
-        banner = qi::lit("GNU gdb ") >> version_or_expr > banner_message > qi::lit("\n");
     }
-
-    qi::rule<Iterator, std::string()> paren_expr;
-    qi::rule<Iterator, std::string()> version_number;
-    qi::rule<Iterator, std::string()> version_or_expr;
-    qi::rule<Iterator, std::string()> banner_line;
-    qi::rule<Iterator, std::string()> banner_message;
-    qi::rule<Iterator, GdbResponses::Banner()> banner;
 };
 
-boost::spirit::qi::grammar<std::string::const_iterator, GdbResponses::Banner()>* gdb_banner_parse_grammar()
+boost::spirit::qi::grammar<std::string::const_iterator, Rules::Banner()>* gdb_banner_parse_grammar()
 {
+    #define QI_DEFN
+    #include "Rules/GdbBanner.hpp"
     return new GdbBannerGrammar();
 }
 
-    }
 }
 
 

@@ -3,7 +3,7 @@
 
 #include "SharedTypes.hpp"
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 // To add a new UserCmd:
 //  - Define its struct here
@@ -15,7 +15,7 @@ namespace Iocaste { namespace Debugger {
 //  - Add a write rule for it
 //  - Add it to the writer's start rule
 
-namespace UserCmds
+namespace Rules
 {
     struct RawString
     {
@@ -25,7 +25,7 @@ namespace UserCmds
     struct PrintFunction
     {
         std::string function_name;
-        std::vector<SharedTypes::GdbValue> args;
+        std::vector<Rules::GdbValue> args;
     };
 
     struct SetOptionWithModifier
@@ -138,33 +138,33 @@ namespace UserCmds
         std::string cmd;
         boost::optional<std::string> expr;
     };
-
+/*
     struct Empty
     {
         boost::optional<std::string> dummy;
     };
-}
+*/
 
 typedef  boost::variant
 <
-    UserCmds::RawString,
-    UserCmds::PrintFunction,
-    UserCmds::SetOption,
-    UserCmds::ShowOption,
-    UserCmds::SetBreakpoint,
-    UserCmds::SetBreakpointOnFunction,
-    UserCmds::Source,
-    UserCmds::Directory,
-    UserCmds::TTY,
-    UserCmds::Run,
-    UserCmds::Info,
-    UserCmds::Backtrace,
-    UserCmds::StepMode,
-    UserCmds::Quit,
-    UserCmds::Return,
-    UserCmds::PrintWorkingDirectory,
-    UserCmds::WhatIs,
-    UserCmds::Empty
+    Rules::RawString,
+    Rules::PrintFunction,
+    Rules::SetOption,
+    Rules::ShowOption,
+    Rules::SetBreakpoint,
+    Rules::SetBreakpointOnFunction,
+    Rules::Source,
+    Rules::Directory,
+    Rules::TTY,
+    Rules::Run,
+    Rules::Info,
+    Rules::Backtrace,
+    Rules::StepMode,
+    Rules::Quit,
+    Rules::Return,
+    Rules::PrintWorkingDirectory,
+    Rules::WhatIs,
+    Rules::Empty
 > UserCmd;
 
 }}

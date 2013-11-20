@@ -6,7 +6,7 @@
 #include "AbstractOutput.hpp"
 #include "Queue.hpp"
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 struct ActivityLogLine;
 class TestPlan;
@@ -48,4 +48,4 @@ public:
 };
 
 
-}}
+}

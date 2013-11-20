@@ -6,13 +6,13 @@
 
 #include <vector>
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 struct ScriptContext
 {
-    SharedTypes::GdbAddress self;
-    SharedTypes::GdbAddress locals;
-    SharedTypes::GdbAddress m;
+    Rules::GdbAddress self;
+    Rules::GdbAddress locals;
+    Rules::GdbAddress m;
 };
 
 class WatchManager
@@ -36,9 +36,9 @@ public:
     void setPrompt(std::string new_prompt);
     void setScriptContext(ScriptContext context);
     void atScriptBreakpoint(bool value);
-    void handle(UserCmds::Info const& cmd);
-    void handle(UserCmds::WhatIs const& cmd);
+    void handle(Rules::Info const& cmd);
+    void handle(Rules::WhatIs const& cmd);
 };
 
-}}
+}
 

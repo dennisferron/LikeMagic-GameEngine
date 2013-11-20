@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 enum class TestActionType
 {
@@ -23,4 +23,4 @@ public:
     void setAction(std::string label, TestActionType action);
 };
 
-}}
+}

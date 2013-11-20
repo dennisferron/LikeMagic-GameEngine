@@ -6,11 +6,9 @@ using namespace std;
 #include "ActivityLog.hpp"
 #include "LogChannel.hpp"
 #include "ActivityLogLine.hpp"
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
-
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 AbstractOutput<std::string>& no_call_copy_constructor(LogChannel& value)
 {
@@ -46,6 +44,5 @@ void LogChannel::WriteData(ActivityLogLine const& data)
     sink.WriteData(data.content);
 }
 
-    }
 }
 

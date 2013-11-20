@@ -3,7 +3,7 @@
 #include <sstream>
 
 using namespace std;
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 #ifndef NO_LOAD_GDB
 
@@ -201,7 +201,7 @@ public:
     }
 };
 
-boost::shared_ptr<Configuration> Iocaste::Debugger::getConfiguration(int argc, char* argv[])
+boost::shared_ptr<Configuration> IoDbg::getConfiguration(int argc, char* argv[])
 {
     if (argc == 3 && string(argv[1]) == string("--replay-log"))
         return boost::shared_ptr<Configuration>(new ReplayConfiguration(string(argv[2])));

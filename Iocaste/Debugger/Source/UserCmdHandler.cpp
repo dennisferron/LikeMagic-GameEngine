@@ -3,7 +3,7 @@
 #include <string>
 using namespace std;
 
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 UserCmdHandler::UserCmdHandler(MainChannels const& channels_,
     BreakpointManager& brkpt_mgr_, StepStateManager& step_mgr_,
@@ -22,7 +22,7 @@ void UserCmdHandler::operator()(const T& t) const
     channels.toGdb.WriteData(t);
 }
 
-void UserCmdHandler::operator()(const UserCmds::SetOption& t) const
+void UserCmdHandler::operator()(const Rules::SetOption& t) const
 {
     if (t.name == "prompt")
     {
@@ -35,22 +35,22 @@ void UserCmdHandler::operator()(const UserCmds::SetOption& t) const
     channels.toGdb.WriteData(t);
 }
 
-void UserCmdHandler::operator()(const UserCmds::SetBreakpoint& t) const
+void UserCmdHandler::operator()(const Rules::SetBreakpoint& t) const
 {
     brkpt_mgr.userSetBreakpoint(t);
 }
 
-void UserCmdHandler::operator()(const UserCmds::StepMode& t) const
+void UserCmdHandler::operator()(const Rules::StepMode& t) const
 {
     step_mgr.handle(t);
 }
 
-void UserCmdHandler::operator()(const UserCmds::Info& t) const
+void UserCmdHandler::operator()(const Rules::Info& t) const
 {
     watch_mgr.handle(t);
 }
 
-void UserCmdHandler::operator()(const UserCmds::WhatIs& t) const
+void UserCmdHandler::operator()(const Rules::WhatIs& t) const
 {
     watch_mgr.handle(t);
 }

@@ -1,3 +1,4 @@
+/*
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_object.hpp>
@@ -6,86 +7,88 @@
 #include "SharedTypes.hpp"
 
 // Ok because this header should only ever be included in implementation files:
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::GdbStruct,
+    Rules::GdbStruct,
     (std::string, contents)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::AddressIn,
-    (SharedTypes::GdbAddress, address)
+    Rules::AddressIn,
+    (Rules::GdbAddress, address)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::FromModule,
+    Rules::FromModule,
     (std::string, module_name)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::AtFile,
+    Rules::AtFile,
     (std::string, file_name)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::GdbAddress,
+    Rules::GdbAddress,
     (std::string, hex_value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::ValueAsString,
+    Rules::ValueAsString,
     (std::string, text)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::ValueElided,
+    Rules::ValueElided,
     (std::string, text)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::NoLocals,
+    Rules::NoLocals,
     (std::string, text)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::ValueAsFunctionPtr,
+    Rules::ValueAsFunctionPtr,
     (std::string, text)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::GdbValue,
-    (SharedTypes::GdbValue::value_type, value)
+    Rules::GdbValue,
+    (Rules::GdbValue_value_type, value)
     (boost::optional<
-        SharedTypes::ValueAsString
+        Rules::ValueAsString
     >, value_as_string)
     (boost::optional<
-        SharedTypes::ValueAsFunctionPtr
+        Rules::ValueAsFunctionPtr
     >, value_as_function_ptr)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::GdbResponseFunctionArg,
+    Rules::GdbResponseFunctionArg,
     (std::string, name)
     (std::string, equals)
-    (SharedTypes::GdbValue, value)
+    (GdbValue, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::GdbResponseFunction,
+    Rules::GdbResponseFunction,
     (std::string, name)
-    (std::vector<SharedTypes::GdbResponseFunctionArg>, args)
+    (std::vector<Rules::GdbResponseFunctionArg>, args)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::TypeCast,
+    Rules::TypeCast,
     (std::string, value)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    SharedTypes::VariableEquals,
+    Rules::VariableEquals,
     (std::string, name)
     (std::string, equals)
-    (boost::optional<SharedTypes::TypeCast>, type_cast)
-    (SharedTypes::GdbValue, value)
+    (boost::optional<Rules::TypeCast>, type_cast)
+    (GdbValue, value)
 )
+
+*/

@@ -2,13 +2,11 @@
 
 #include "LikeMagic/Utility/IndexPack.hpp"
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 using LM::IndexPack;
 using LM::MakeIndexPack;
 
 struct UnusedType {};
 
-    }
 }

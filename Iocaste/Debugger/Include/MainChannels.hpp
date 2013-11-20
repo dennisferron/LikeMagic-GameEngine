@@ -1,5 +1,7 @@
 #pragma once
 
+#include "boost/exception_ptr.hpp"
+
 #include "AbstractInput.hpp"
 #include "AbstractOutput.hpp"
 
@@ -8,9 +10,9 @@
 
 #include <string>
 
-#include "boost/exception/all.hpp"
+namespace IoDbg {
 
-namespace Iocaste { namespace Debugger {
+using namespace IoDbg::Rules;
 
 struct MainChannels
 {
@@ -28,4 +30,4 @@ struct MainChannels
         : fromUser(fromUser_), toUser(toUser_), fromGdb(fromGdb_), toGdb(toGdb_), info(info_), errors(errors_), end_markers(end_markers_) {}
 };
 
-}}
+}

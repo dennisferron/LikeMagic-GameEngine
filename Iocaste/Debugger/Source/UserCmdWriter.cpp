@@ -11,13 +11,13 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/fusion/include/io.hpp>
 #include <boost/spirit/include/karma.hpp>
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 #include <string>
 using namespace std;
 
 #include "UserCmdFusion.hpp"
-using namespace Iocaste::Debugger::UserCmds;
+using namespace IoDbg::UserCmds;
 
 #include "WriteGrammars.hpp"
 
@@ -63,39 +63,39 @@ struct UserCmdWriteGrammar
     }
 
     unique_ptr<
-        karma::grammar<OutputIterator, SharedTypes::GdbValue()>
+        karma::grammar<OutputIterator, Rules::GdbValue()>
     > gdb_value;
 
-    karma::rule<OutputIterator, std::vector<SharedTypes::GdbValue>()> gdb_value_list;
-    karma::rule<OutputIterator, SharedTypes::TypeCast()> type_cast;
-    karma::rule<OutputIterator, SharedTypes::ValueAsString()> value_as_string;
+    karma::rule<OutputIterator, std::vector<Rules::GdbValue>()> gdb_value_list;
+    karma::rule<OutputIterator, Rules::TypeCast()> type_cast;
+    karma::rule<OutputIterator, Rules::ValueAsString()> value_as_string;
     karma::rule<OutputIterator, string()> quoted_string;
-    karma::rule<OutputIterator, SharedTypes::GdbAddress()> address;
-    karma::rule<OutputIterator, SharedTypes::GdbStruct()> gdb_struct;
-    karma::rule<OutputIterator, UserCmds::PrintFunction()> print_function;
-    karma::rule<OutputIterator, UserCmds::RawString()> raw_str;
-    karma::rule<OutputIterator, UserCmds::SetOption()> set_option;
-    karma::rule<OutputIterator, UserCmds::ShowOption()> show_option;
-    karma::rule<OutputIterator, UserCmds::SetBreakpoint()> set_breakpoint;
-    karma::rule<OutputIterator, UserCmds::SetBreakpointOnFunction()> set_breakpoint_on_function;
-    karma::rule<OutputIterator, UserCmds::Source()> source;
-    karma::rule<OutputIterator, UserCmds::Directory()> directory;
-    karma::rule<OutputIterator, UserCmds::TTY()> tty;
-    karma::rule<OutputIterator, UserCmds::Run()> run;
-    karma::rule<OutputIterator, UserCmds::StepMode()> step_mode;
-    karma::rule<OutputIterator, UserCmds::Info()> info;
-    karma::rule<OutputIterator, UserCmds::Backtrace()> backtrace;
-    karma::rule<OutputIterator, UserCmds::Return()> return_;
-    karma::rule<OutputIterator, UserCmds::Quit()> quit;
-    karma::rule<OutputIterator, UserCmds::PrintWorkingDirectory()> pwd;
-    karma::rule<OutputIterator, UserCmds::WhatIs()> what_is;
-    karma::rule<OutputIterator, UserCmds::Empty()> empty;
+    karma::rule<OutputIterator, Rules::GdbAddress()> address;
+    karma::rule<OutputIterator, Rules::GdbStruct()> gdb_struct;
+    karma::rule<OutputIterator, Rules::PrintFunction()> print_function;
+    karma::rule<OutputIterator, Rules::RawString()> raw_str;
+    karma::rule<OutputIterator, Rules::SetOption()> set_option;
+    karma::rule<OutputIterator, Rules::ShowOption()> show_option;
+    karma::rule<OutputIterator, Rules::SetBreakpoint()> set_breakpoint;
+    karma::rule<OutputIterator, Rules::SetBreakpointOnFunction()> set_breakpoint_on_function;
+    karma::rule<OutputIterator, Rules::Source()> source;
+    karma::rule<OutputIterator, Rules::Directory()> directory;
+    karma::rule<OutputIterator, Rules::TTY()> tty;
+    karma::rule<OutputIterator, Rules::Run()> run;
+    karma::rule<OutputIterator, Rules::StepMode()> step_mode;
+    karma::rule<OutputIterator, Rules::Info()> info;
+    karma::rule<OutputIterator, Rules::Backtrace()> backtrace;
+    karma::rule<OutputIterator, Rules::Return()> return_;
+    karma::rule<OutputIterator, Rules::Quit()> quit;
+    karma::rule<OutputIterator, Rules::PrintWorkingDirectory()> pwd;
+    karma::rule<OutputIterator, Rules::WhatIs()> what_is;
+    karma::rule<OutputIterator, Rules::Empty()> empty;
     karma::rule<OutputIterator, UserCmd()> start;
 };
 
 struct UserCmdPrinter : SharedTypesPrinter
 {
-    void operator()(const UserCmds::PrintFunction& t) const
+    void operator()(const Rules::PrintFunction& t) const
     {
         cerr << "print function is " << t.function_name << "(";
         SharedTypesPrinter()(t.args);

@@ -1,7 +1,7 @@
 #include "Worker.hpp"
 
 using namespace std;
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 Worker::Worker(AbstractInput<string>& input_, AbstractOutput<string>& output_, string debug_name_, AbstractOutput<boost::exception_ptr>& errors_)
     :

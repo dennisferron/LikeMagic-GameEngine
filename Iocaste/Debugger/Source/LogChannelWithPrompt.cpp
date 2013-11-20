@@ -6,11 +6,10 @@ using namespace std;
 #include "ActivityLog.hpp"
 #include "LogChannelWithPrompt.hpp"
 #include "ActivityLogLine.hpp"
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 AbstractOutput<StringWithPrompt>& no_call_copy_constructor(LogChannelWithPrompt& value)
 {
@@ -48,6 +47,5 @@ void LogChannelWithPrompt::WriteData(ActivityLogLine const& data)
     sink.WriteData({msg, prompt});
 }
 
-    }
 }
 

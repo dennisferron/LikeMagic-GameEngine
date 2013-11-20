@@ -5,8 +5,7 @@
 #include <string>
 #include <iostream>
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 class LineInput :
     public AbstractInput<std::string>
@@ -20,6 +19,5 @@ public:
     virtual std::string ReadData();
 };
 
-    }
 }
 

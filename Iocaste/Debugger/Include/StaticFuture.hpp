@@ -6,9 +6,7 @@
 #include "boost/shared_ptr.hpp"
 #include <stdexcept>
 
-namespace Iocaste {
-    namespace Debugger {
-
+namespace IoDbg {
 /*
 
 After I wrote several input/output components, arranging the code in such a way
@@ -154,5 +152,4 @@ struct BeginFuture
     }
 };
 
-    }
 }

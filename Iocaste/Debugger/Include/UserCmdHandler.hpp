@@ -2,7 +2,7 @@
 #include "StepStateManager.hpp"
 #include "WatchManager.hpp"
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 class UserCmdHandler : public boost::static_visitor<>
 {
@@ -19,12 +19,12 @@ public:
                    WatchManager& watch_mgr_);
     void handle(UserCmd const& cmd);
     template <typename T> void operator()(const T& t) const;
-    void operator()(const UserCmds::SetOption& t) const;
-    void operator()(const UserCmds::SetBreakpoint& t) const;
-    void operator()(const UserCmds::StepMode& t) const;
-    void operator()(const UserCmds::Info& t) const;
-    void operator()(const UserCmds::WhatIs& t) const;
+    void operator()(const Rules::SetOption& t) const;
+    void operator()(const Rules::SetBreakpoint& t) const;
+    void operator()(const Rules::StepMode& t) const;
+    void operator()(const Rules::Info& t) const;
+    void operator()(const Rules::WhatIs& t) const;
 
 };
 
-}}
+}

@@ -2,8 +2,7 @@
 
 #include <string>
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 struct StringWithPrompt
 {
@@ -11,5 +10,4 @@ struct StringWithPrompt
     std::string prompt;
 };
 
-    }
 }

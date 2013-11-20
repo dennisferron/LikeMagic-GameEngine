@@ -1,7 +1,7 @@
 
 #include "StepStateManager.hpp"
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 struct StepResponseVisitor
 {
@@ -18,7 +18,7 @@ void StepStateManager::atScriptBreakpoint(bool value)
     at_script_breakpoint = value;
 }
 
-void StepStateManager::handle(UserCmds::StepMode const& cmd)
+void StepStateManager::handle(Rules::StepMode const& cmd)
 {
     if (cmd.cmd == "step")
         doStep("StepMode_StopOnAnyMessage", cmd);
@@ -38,10 +38,10 @@ void StepStateManager::doStep(std::string step_mode, UserCmd cmd)
     }
     else
     {
-        channels.toGdb.WriteData(UserCmds::Return {step_mode});
-        channels.toGdb.WriteData(UserCmds::StepMode {"cont"});
+        channels.toGdb.WriteData(Rules::Return {step_mode});
+        channels.toGdb.WriteData(Rules::StepMode {"cont"});
     }
 }
 
-}}
+}
 

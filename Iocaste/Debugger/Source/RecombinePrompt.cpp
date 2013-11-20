@@ -1,7 +1,7 @@
 #include "RecombinePrompt.hpp"
 
 using namespace std;
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 RecombinePrompt::RecombinePrompt(
      AbstractOutput<string>& output_)

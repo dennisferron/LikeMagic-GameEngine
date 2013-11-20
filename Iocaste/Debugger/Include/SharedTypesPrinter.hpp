@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 struct SharedTypesPrinter : boost::static_visitor<>
 {
@@ -19,34 +19,34 @@ struct SharedTypesPrinter : boost::static_visitor<>
         std::cerr << "int " << t;
     }
 
-    void operator()(const SharedTypes::ValueElided& t) const
+    void operator()(const Rules::ValueElided& t) const
     {
         std::cerr << "ValueElided " << t.text;
     }
 
-    void operator()(SharedTypes::GdbResponseFunctionArg const& t) const
+    void operator()(Rules::GdbResponseFunctionArg const& t) const
     {
         std::cerr << "Arg: " << t.name << t.equals;
         (*this)(t.value);
     }
 
-    void operator ()(const SharedTypes::AddressIn& t) const
+    void operator ()(const Rules::AddressIn& t) const
     {
         std::cerr << "AddressIn: ";
         (*this)(t.address);
     }
 
-    void operator ()(const SharedTypes::FromModule& t) const
+    void operator ()(const Rules::FromModule& t) const
     {
         std::cerr << "FromModule: " << t.module_name;
     }
 
-    void operator ()(const SharedTypes::AtFile& t) const
+    void operator ()(const Rules::AtFile& t) const
     {
         std::cerr << "AtFile: " << t.file_name;
     }
 
-    void operator ()(const SharedTypes::VariableEquals& t) const
+    void operator ()(const Rules::VariableEquals& t) const
     {
         std::cerr << "variable equals " << t.name << t.equals;
 
@@ -58,12 +58,12 @@ struct SharedTypesPrinter : boost::static_visitor<>
         (*this)(t.value);
     }
 
-    void operator ()(const SharedTypes::NoLocals& t) const
+    void operator ()(const Rules::NoLocals& t) const
     {
         std::cerr << "no locals: " << t.text;
     }
 
-    void operator ()(const SharedTypes::GdbStruct& t) const
+    void operator ()(const Rules::GdbStruct& t) const
     {
         std::cerr << "gdb struct {" << t.contents << "}";
     }
@@ -73,12 +73,12 @@ struct SharedTypesPrinter : boost::static_visitor<>
         std::cerr << "std::string " << t;
     }
 
-    void operator ()(const SharedTypes::TypeCast& t) const
+    void operator ()(const Rules::TypeCast& t) const
     {
         std::cerr << "type_cast " << t.value;
     }
 
-    void operator ()(const SharedTypes::GdbValue& t) const
+    void operator ()(const Rules::GdbValue& t) const
     {
         std::cerr << "GdbValue ";
         boost::apply_visitor(*this, t.value);
@@ -86,12 +86,12 @@ struct SharedTypesPrinter : boost::static_visitor<>
             std::cerr << " \"" << t.value_as_string->text << "\"";
     }
 
-    void operator ()(const SharedTypes::GdbAddress& t) const
+    void operator ()(const Rules::GdbAddress& t) const
     {
         std::cerr << "GdbAddress " << t.hex_value;
     }
 
-    void operator()(std::vector<SharedTypes::GdbValue> const& t) const
+    void operator()(std::vector<Rules::GdbValue> const& t) const
     {
         std::cerr << "vector<GdbValue> size " << t.size() << ": ";
         for (auto arg : t)
@@ -101,7 +101,7 @@ struct SharedTypesPrinter : boost::static_visitor<>
         }
     }
 
-    void operator()(std::vector<SharedTypes::GdbResponseFunctionArg> const& t) const
+    void operator()(std::vector<Rules::GdbResponseFunctionArg> const& t) const
     {
         std::cerr << "vector<Args> size " << t.size() << ": ";
         for (auto arg : t)
@@ -114,4 +114,4 @@ struct SharedTypesPrinter : boost::static_visitor<>
 };
 
 
-}}
+}

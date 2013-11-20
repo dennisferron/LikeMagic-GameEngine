@@ -78,8 +78,6 @@
 		<Unit filename="Include/CharInput.hpp" />
 		<Unit filename="Include/Configuration.hpp" />
 		<Unit filename="Include/Exception.hpp" />
-		<Unit filename="Include/GdbResponse.hpp" />
-		<Unit filename="Include/GdbResponseFusion.hpp" />
 		<Unit filename="Include/GdbResponseHandler.hpp" />
 		<Unit filename="Include/GdbResponseParser.hpp" />
 		<Unit filename="Include/GdbResponseWriter.hpp" />
@@ -93,9 +91,16 @@
 		<Unit filename="Include/ParseGrammars.hpp" />
 		<Unit filename="Include/Queue.hpp" />
 		<Unit filename="Include/RecombinePrompt.hpp" />
+		<Unit filename="Include/Rules/Actionable.hpp" />
+		<Unit filename="Include/Rules/GdbBanner.hpp" />
+		<Unit filename="Include/Rules/GdbValue.hpp" />
+		<Unit filename="Include/Rules/RuleStructs.hpp" />
+		<Unit filename="Include/Rules/SharedTypes.hpp" />
+		<Unit filename="Include/Rules/Unactionable.hpp" />
 		<Unit filename="Include/SharedTypes.hpp" />
 		<Unit filename="Include/SharedTypesFusion.hpp" />
 		<Unit filename="Include/SharedTypesPrinter.hpp" />
+		<Unit filename="Include/SpiritMacros.hpp" />
 		<Unit filename="Include/StaticFuture.hpp" />
 		<Unit filename="Include/StepStateManager.hpp" />
 		<Unit filename="Include/StreamOutput.hpp" />
@@ -119,7 +124,9 @@
 		<Unit filename="Source/ActivityLogLine.cpp">
 			<Option compiler="gcc" use="0" buildCommand="$compiler -Os -Wall -fexceptions --std=c++0x -DNO_LOAD_GDB -DBOOST_THREAD_USE_LIB $includes -c $file -o $object" />
 		</Unit>
-		<Unit filename="Source/BreakpointManager.cpp" />
+		<Unit filename="Source/BreakpointManager.cpp">
+			<Option compiler="gcc" use="0" buildCommand="gcc -E -dD $options $includes -c $file -o $object" />
+		</Unit>
 		<Unit filename="Source/CharInput.cpp" />
 		<Unit filename="Source/Configuration.cpp" />
 		<Unit filename="Source/Exception.cpp" />

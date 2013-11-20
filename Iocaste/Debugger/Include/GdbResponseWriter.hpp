@@ -4,7 +4,7 @@
 #include "StringWithPrompt.hpp"
 #include "UserCmd.hpp"
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 class GdbResponseWriter : public AbstractAdapter<GdbResponse>
 {
@@ -19,4 +19,4 @@ public:
     virtual void WriteData(GdbResponse const& input);
 };
 
-}}
+}

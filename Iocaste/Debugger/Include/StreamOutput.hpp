@@ -5,8 +5,7 @@
 #include <string>
 #include <iostream>
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 class StreamOutput :
     public AbstractOutput<std::string>
@@ -21,6 +20,5 @@ public:
     virtual void WriteData(std::string const& data);
 };
 
-    }
 }
 

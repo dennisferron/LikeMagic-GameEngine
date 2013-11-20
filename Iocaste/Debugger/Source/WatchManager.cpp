@@ -2,7 +2,7 @@
 #include "WatchManager.hpp"
 #include "Exception.hpp"
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 WatchManager::WatchManager(MainChannels const& channels_, GdbResponseParser& resp_parser_)
     : channels(channels_), at_script_breakpoint(false), has_script_context(false), resp_parser(resp_parser_)
@@ -54,15 +54,15 @@ void WatchManager::respUnactionable(GdbUnactionableType msg)
     channels.toUser.WriteData(resp);
 }
 
-void WatchManager::handle(UserCmds::Info const& cmd)
+void WatchManager::handle(Rules::Info const& cmd)
 {
     if (at_script_breakpoint && has_script_context && cmd.value == "locals")
     {
-        respActionable(GdbResponses::LocalsInfo { SharedTypes::NoLocals {"No locals."} });
+        respActionable(Rules::LocalsInfo { Rules::NoLocals {"No locals."} });
     }
     else if (at_script_breakpoint && has_script_context && cmd.value == "args")
     {
-        respActionable(GdbResponses::LocalsInfo { SharedTypes::NoLocals {"No arguments."} });
+        respActionable(Rules::LocalsInfo { Rules::NoLocals {"No arguments."} });
     }
     else
     {
@@ -70,17 +70,17 @@ void WatchManager::handle(UserCmds::Info const& cmd)
     }
 }
 
-void WatchManager::handle(UserCmds::WhatIs const& cmd)
+void WatchManager::handle(Rules::WhatIs const& cmd)
 {
     if (at_script_breakpoint && has_script_context && cmd.cmd == "whatis")
     {
-        GdbResponses::TypeEquals te;
+        Rules::TypeEquals te;
         te.type = "IoObject";
         respActionable(te);
     }
     else if (at_script_breakpoint && has_script_context && cmd.cmd == "output")
     {
-        UserCmds::PrintFunction print;
+        Rules::PrintFunction print;
         print.function_name = "io_debugger_watch_type";
         print.args.push_back( { context.locals } );
         print.args.push_back( { *(cmd.expr) } );
@@ -88,11 +88,11 @@ void WatchManager::handle(UserCmds::WhatIs const& cmd)
 
         GdbResponse resp = channels.fromGdb.ReadData();
 
-        if (auto* vh = getActionable<GdbResponses::ValueHistory>(&resp.values.at(0)))
+        if (auto* vh = getActionable<Rules::ValueHistory>(&resp.values.at(0)))
         {
             if (vh->value.value_as_string)
             {
-                GdbResponses::RawStr rs;
+                Rules::RawStr rs;
                 rs.value = vh->value.value_as_string->text;
                 respUnactionable(rs);
             }
@@ -116,5 +116,5 @@ void WatchManager::handle(UserCmds::WhatIs const& cmd)
 }
 
 
-}}
+}
 

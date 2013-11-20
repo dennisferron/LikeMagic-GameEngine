@@ -16,9 +16,7 @@
 #include "LogChannelWithPrompt.hpp"
 #include "RecombinePrompt.hpp"
 
-namespace Iocaste {
-    namespace Debugger {
-
+namespace IoDbg {
 template <typename T> ChainPolicy::None get(ChainPolicy, AbstractInput<T> const&);
 template <typename T> ChainPolicy::None get(ChainPolicy, AbstractOutput<T> const&);
 template <typename T> ChainPolicy::RHS  get(ChainPolicy, AbstractAdapter<T> const&);
@@ -27,6 +25,4 @@ template <typename T> ChainPolicy::None get(ChainPolicy, Queue<T> const&);
 ChainPolicy::RHS get(ChainPolicy, LogChannel const&);
 ChainPolicy::RHS get(ChainPolicy, LogChannelWithPrompt const&);
 ChainPolicy::RHS get(ChainPolicy, ActivityLog const&);
-
-    }
 }

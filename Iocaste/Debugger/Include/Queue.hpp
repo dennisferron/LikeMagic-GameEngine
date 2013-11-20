@@ -7,10 +7,7 @@
 #include <queue>
 
 
-namespace Iocaste
-{
-	namespace Debugger
-	{
+namespace IoDbg {
 
 template <typename T>
 class Queue : public AbstractInput<T>, public AbstractOutput<T>
@@ -67,4 +64,4 @@ public:
     }
 };
 
-}}
+}

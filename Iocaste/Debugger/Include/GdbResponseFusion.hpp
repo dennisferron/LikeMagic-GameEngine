@@ -1,3 +1,4 @@
+/*
 #include "SharedTypesFusion.hpp"
 #include "GdbResponse.hpp"
 
@@ -16,11 +17,6 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    GdbResponses::SourceDirectoriesSearched,
-    (std::string, directory_list)
-)
-
-BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::WorkingDirectory,
     (std::string, directory)
 )
@@ -31,28 +27,8 @@ BOOST_FUSION_ADAPT_STRUCT(
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    GdbResponses::RawStr,
-    (std::string, value)
-)
-
-BOOST_FUSION_ADAPT_STRUCT(
     GdbResponses::Empty,
     (boost::optional<std::string>, dummy)
-)
-
-BOOST_FUSION_ADAPT_STRUCT(
-    GdbResponses::ReadingSymbols,
-    (std::string, message)
-)
-
-BOOST_FUSION_ADAPT_STRUCT(
-    GdbResponses::SquareBracketMsg,
-    (std::string, msg)
-)
-
-BOOST_FUSION_ADAPT_STRUCT(
-    GdbResponses::SignalReceived,
-    (std::string, msg)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
@@ -150,3 +126,4 @@ BOOST_FUSION_ADAPT_STRUCT(
     GdbContextSensitive,
     (GdbContextSensitiveType, value)
 )
+*/

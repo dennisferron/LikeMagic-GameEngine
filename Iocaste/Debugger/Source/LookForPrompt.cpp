@@ -2,7 +2,7 @@
 #include "boost/algorithm/string/predicate.hpp"
 
 using namespace std;
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 LookForPrompt::LookForPrompt(
      AbstractOutput<StringWithPrompt>& output_,

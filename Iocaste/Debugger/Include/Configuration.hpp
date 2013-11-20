@@ -1,7 +1,7 @@
 #include <iostream>
 #include "boost/shared_ptr.hpp"
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 class Configuration
 {
@@ -19,5 +19,5 @@ public:
 
 boost::shared_ptr<Configuration> getConfiguration(int argc, char* argv[]);
 
-}}
+}
 

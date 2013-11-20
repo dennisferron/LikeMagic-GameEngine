@@ -7,8 +7,7 @@
 #include "AbstractOutput.hpp"
 #include "Exception.hpp"
 
-namespace Iocaste {
-    namespace Debugger {
+namespace IoDbg {
 
 class Worker
 {
@@ -32,5 +31,4 @@ public:
 	bool is_stopped() const;
 };
 
-    }
 }

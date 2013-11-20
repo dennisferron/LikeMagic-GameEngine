@@ -5,7 +5,7 @@
 #include "boost/shared_ptr.hpp"
 #include "boost/unordered_map.hpp"
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 class ActivityLog;
 struct ActivityLogLine;
@@ -36,4 +36,4 @@ public:
     virtual void WriteData(std::string const& data);
 };
 
-}}
+}

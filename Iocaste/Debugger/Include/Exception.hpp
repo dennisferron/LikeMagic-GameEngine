@@ -7,7 +7,7 @@
 #include <string>
 #include <typeinfo>
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 class Exception : public virtual boost::exception, public virtual std::exception
 {
@@ -98,4 +98,4 @@ void logError(T const& e)
     logException(typeid(T), e.what());
 }
 
-}}
+}

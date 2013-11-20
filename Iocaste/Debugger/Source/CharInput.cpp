@@ -3,7 +3,7 @@
 
 
 using namespace std;
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 CharInput::CharInput(istream& stream_) :
     stream(stream_)

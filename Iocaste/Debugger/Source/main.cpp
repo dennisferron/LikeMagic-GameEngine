@@ -15,7 +15,7 @@ using namespace std;
 #include "Configuration.hpp"
 #include "UserCmdHandler.hpp"
 #include "GdbResponseHandler.hpp"
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 
 void checkErrors(MainChannels channels)

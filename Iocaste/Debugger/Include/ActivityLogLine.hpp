@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 struct ActivityLogLine
 {
@@ -13,4 +13,4 @@ struct ActivityLogLine
     void Write(std::string& generated) const;
 };
 
-}}
+}

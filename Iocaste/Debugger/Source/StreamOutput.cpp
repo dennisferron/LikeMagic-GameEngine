@@ -1,7 +1,7 @@
 #include "StreamOutput.hpp"
 
 using namespace std;
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 StreamOutput::StreamOutput(ostream& stream_, bool add_newline_) :
     stream(stream_), add_newline(add_newline_)

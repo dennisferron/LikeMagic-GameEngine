@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 struct GdbBreakpoint
 {
@@ -168,4 +168,4 @@ public:
 
 };
 
-}}
+}

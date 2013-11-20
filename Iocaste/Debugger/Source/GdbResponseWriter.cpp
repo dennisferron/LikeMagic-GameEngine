@@ -10,16 +10,16 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 
 #include "WriteGrammars.hpp"
 
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 #include <string>
 using namespace std;
 
 #include "StringEscapeWriter.hpp"
 
-using namespace Iocaste::Debugger::GdbResponses;
+using namespace IoDbg::GdbResponses;
 
-namespace Iocaste { namespace Debugger {
+namespace IoDbg {
 
 struct GdbResponsePrinter : public SharedTypesPrinter
 {
@@ -206,4 +206,4 @@ void GdbResponseWriter::WriteData(GdbResponse const& input)
     sink.WriteData({result, last_prompt});
 }
 
-}}
+}

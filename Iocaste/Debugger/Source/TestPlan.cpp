@@ -1,6 +1,6 @@
 #include "TestPlan.hpp"
 using namespace std;
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 TestActionType TestPlan::actionType(ActivityLogLine entry) const
 {

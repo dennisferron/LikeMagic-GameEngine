@@ -2,7 +2,7 @@
 #include "AbstractInput.hpp"
 #include "AbstractOutput.hpp"
 
-using namespace Iocaste::Debugger;
+using namespace IoDbg;
 
 AbstractOutput::~AbstractOutput() {}
 AbstractInput::~AbstractInput() {}
