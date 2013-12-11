@@ -337,7 +337,7 @@ void IoVM::check_tracking_info(Expr* expr, IoObject* io_obj, IoObject* m) const
     else
     {
         ExprTrackingInfo info = iter->second;
-        cout << "debug tracking info found for expr=" << info.expr << " data=" << info.data << "name='" << info.name << "'" << endl;
+        cout << "debug tracking info found for expr=" << info.expr << " data=" << info.data << " name='" << info.name << "'" << endl;
     }
 }
 
@@ -352,7 +352,7 @@ void IoVM::set_tracking_info(Expr* expr, std::string name) const
     else
     {
         ExprTrackingInfo info = iter->second;
-        cout << "debug tracking info for expr=" << expr << " as '" << name << "' already exists as expr=" << info.expr << " data=" << info.data << "name='" << info.name << "'" << endl;
+        cout << "debug tracking info for expr=" << expr << " as '" << name << "' already exists as expr=" << info.expr << " data=" << info.data << " name='" << info.name << "'" << endl;
     }
 }
 
@@ -372,11 +372,13 @@ IoObject* IoVM::add_proto(std::string name, ExprPtr expr, string ns, bool conv_t
     {
         IoObject* proto = LM_Proxy;
         clone = API_io_rawClone(proto);
-        IoObject_setDataPointer_(clone, expr.get());
+        Expr* ptr = expr.get();
+        IoObject_setDataPointer_(clone, ptr);
+        intrusive_ptr_add_ref(ptr);
+        set_tracking_info(expr.get(), name.c_str());
     }
 
     IoObject_setSlot_to_(LM_Protos, IoState_symbolWithCString_(state, name.c_str()), clone);
-    set_tracking_info(expr.get(), name.c_str());
 
     return clone;
 }

@@ -15,8 +15,6 @@
 #include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
 
 using namespace LM;
-using namespace LM;
-using namespace LM;
 
 namespace Iocaste { namespace LMAdapters {
 

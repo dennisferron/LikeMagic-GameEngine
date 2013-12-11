@@ -24,6 +24,8 @@ IoBlock::IoBlock()
 IoBlock::IoBlock(IoVM* iovm_, IoObject* io_block_, IoObject* io_target_)
     : iovm(iovm_), io_block(io_block_), io_target(io_target_)
 {
+    // TODO:  Check for IoNil and throw ScriptException OR better yet,
+    // throw it in from-io-block type converter in FromScript.
     if (io_target && !io_target_->object)
         throw std::logic_error("Target has no object!");
 }

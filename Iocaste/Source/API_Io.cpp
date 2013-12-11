@@ -140,9 +140,8 @@ IoObject* API_io_rawClone(IoObject* proto)
     IoObject* clone = reinterpret_cast<IoObject*>(IoObject_rawClonePrimitive(
             reinterpret_cast<IoObject*>(proto)));
 
-    // LikeMagic objects are not really intended to be cloned, so I don't know whether
-    // to throw an exception here or just make the new Io object point at the same C++ object as I do here:
-    IoObject_setDataPointer_(clone, IoObject_dataPointer(proto));
+    // Intentionally NOT cloning the pointer to the C++ Expr, if there is one.
+    IoObject_setDataPointer_(clone, nullptr);
 
     return clone;
 }
@@ -169,8 +168,11 @@ void API_io_free_expr(IoObject* self)
 
         void* voidDataPtr = IoObject_dataPointer(self);
         Expr* exprDataPtr = reinterpret_cast<Expr*>(voidDataPtr);
-        intrusive_ptr_release(exprDataPtr);
-        IoObject_setDataPointer_(self, 0);
+
+        // For debugging, intentionally not releasing the pointer.
+        // TODO:  Put this back when done debugging.
+        //intrusive_ptr_release(exprDataPtr);
+        //IoObject_setDataPointer_(self, 0);
     }
 }
 

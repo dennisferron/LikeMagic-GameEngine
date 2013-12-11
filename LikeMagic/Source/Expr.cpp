@@ -81,7 +81,7 @@ void ExprImpl::release()
 
 ExprImpl::~ExprImpl()
 {
-    //std::cout << "~Expr " << this << std::endl;
+    std::cout << "~Expr " << this << std::endl;
     if (ref_count)
     {
         std::cout << "Fatal error:  Deleting abstract expression when ref_count is nonzero: ref_count = " << ref_count << std::endl;
@@ -102,6 +102,8 @@ ExprImpl::~ExprImpl()
 LIKEMAGIC_API Expr* create_expr(ValuePtr ptr_, TypeIndex type_)
 {
     ExprImpl* result = new ExprImpl(ptr_, type_, nullptr);
+    // TODO: Remove this when done debugging.
+    cout << "Created expr " << result << " type " << type_.get_id() << " " << type_.description() << " value_ptr=" << result->value_ptr.as_const << endl;
     return result;
 }
 
