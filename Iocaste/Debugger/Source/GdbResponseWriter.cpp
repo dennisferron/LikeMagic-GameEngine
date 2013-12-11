@@ -15,9 +15,7 @@ using namespace IoDbg;
 #include <string>
 using namespace std;
 
-#include "StringEscapeWriter.hpp"
-
-using namespace IoDbg::GdbResponses;
+using namespace IoDbg::Rules;
 
 namespace IoDbg {
 

@@ -52,6 +52,11 @@ void IoVM::set_script_path(string value)
     scriptPath = value;
 }
 
+extern "C" {
+    char const* likemagic_proto_id = "LikeMagic";
+    char const* likemagic_proto_data = "$$$ This is a dummy string to create a unique value for the LikeMagic proto's data pointer. $$$";
+}
+
 // CShims functions
 extern "C" {
 
@@ -214,11 +219,17 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
 
     IoObject* bootstrap = IoObject_new(state);
 
+    IoTag* bootstrap_tag = IoObject_tag(bootstrap);
+    cout << "bootstrap type is " << bootstrap_tag->name << endl;
+
+    IoState_retain_(state, bootstrap);
+
     IoObject_setSlot_to_(state->lobby,
         IoState_symbolWithCString_(state, "bootstrap"),
         bootstrap);
 
-    LM_Proxy = API_io_proto(state);
+    LM_Proxy = create_likemagic_proto();
+    IoState_retain_(state, LM_Proxy);
     IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "LikeMagicProxy"),
         LM_Proxy);
 
@@ -267,12 +278,45 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     Iocaste::LMAdapters::add_proto<IoVM&>(*this, "io_vm", *this);
 
     // Also make the abstract type system available by pointer.
-    Iocaste::LMAdapters::add_proto<TypeSystem*>(*this, "type_system", type_system);
+    IoObject* ts_io_obj = Iocaste::LMAdapters::add_proto<TypeSystem*>(*this, "type_system", type_system);
+    cout << "ts_io_obj " << ts_io_obj << endl;
+    cout << "data ptr " << IoObject_dataPointer(ts_io_obj) << endl;
 
     // The object that represents the global namespace.
     //add_proto("namespace", Namespace::global->register_functions().create_class_proxy(), false);
 
     return;
+}
+
+IoObject* IoVM::create_likemagic_proto()
+{
+    //std::cout << "Creating LikeMagic proto" <<std::endl;
+
+    IoObject *self = IoObject_new(state);
+
+    IoTag* tag = IoTag_newWithName_("LikeMagic");
+    IoTag_state_(tag, state);
+    IoTag_freeFunc_(tag, (IoTagFreeFunc*)API_io_free_expr);
+    IoTag_cloneFunc_(tag, (IoTagCloneFunc*)API_io_rawClone);
+    IoTag_markFunc_(tag, (IoTagMarkFunc*)API_io_mark);
+
+    // Added this so that instead of forward, the user func will be called directly.
+    // This should be faster because we don't have to wait for proto lookup, and has the advantage that
+    // it will work even for methods defined in Object, such as "==", so operator overloads will work.
+    IoTag_performFunc_(tag, (IoTagPerformFunc*)API_io_perform);
+
+    IoObject_tag_(self, tag);
+
+    IoObject_setDataPointer_(self, likemagic_proto_data);
+
+	IoState_registerProtoWithId_(state, self, likemagic_proto_id);
+
+    return self;
+}
+
+IoState* IoVM::iovm_get_io_state() const
+{
+    return state;
 }
 
 IoVM::~IoVM()
@@ -283,12 +327,41 @@ IoVM::~IoVM()
     //IoState_free(state);
 }
 
+
+void IoVM::check_tracking_info(Expr* expr, IoObject* io_obj, IoObject* m) const
+{
+    auto iter = debug_tracking.find(expr);
+
+    if (iter == debug_tracking.end())
+        throw IoStateError(io_obj, "Expr not found in tracking info.", m);
+    else
+    {
+        ExprTrackingInfo info = iter->second;
+        cout << "debug tracking info found for expr=" << info.expr << " data=" << info.data << "name='" << info.name << "'" << endl;
+    }
+}
+
+void IoVM::set_tracking_info(Expr* expr, std::string name) const
+{
+    auto iter = debug_tracking.find(expr);
+
+    if (iter == debug_tracking.end())
+    {
+        debug_tracking[expr] = ExprTrackingInfo(expr, name);
+    }
+    else
+    {
+        ExprTrackingInfo info = iter->second;
+        cout << "debug tracking info for expr=" << expr << " as '" << name << "' already exists as expr=" << info.expr << " data=" << info.data << "name='" << info.name << "'" << endl;
+    }
+}
+
 IoObject* IoVM::castToIoObjectPointer(void* p)
 {
     return reinterpret_cast<IoObject*>(p);
 }
 
-void IoVM::add_proto(std::string name, ExprPtr expr, string ns, bool conv_to_script) const
+IoObject* IoVM::add_proto(std::string name, ExprPtr expr, string ns, bool conv_to_script) const
 {
     IoObject* clone;
     if (conv_to_script)
@@ -302,10 +375,10 @@ void IoVM::add_proto(std::string name, ExprPtr expr, string ns, bool conv_to_scr
         IoObject_setDataPointer_(clone, expr.get());
     }
 
-    //if (onAddProto.empty())
-        IoObject_setSlot_to_(LM_Protos, IoState_symbolWithCString_(state, name.c_str()), clone);
-    //else
-    //    onAddProto(ns, name, clone);
+    IoObject_setSlot_to_(LM_Protos, IoState_symbolWithCString_(state, name.c_str()), clone);
+    set_tracking_info(expr.get(), name.c_str());
+
+    return clone;
 }
 
 IoObject* IoVM::do_string(std::string io_code) const
@@ -336,7 +409,9 @@ ExprPtr IoVM::get_abs_expr(std::string io_code) const
 {
     auto io_obj = do_string(io_code);
     static TypeIndex unspec_type = TypeIndex();  // id = -1, type not specified
-    return from_script(state->lobby, io_obj, unspec_type);
+    ExprPtr result = from_script(state->lobby, io_obj, unspec_type);
+    set_tracking_info(result.get(), io_code);
+    return result;
 }
 
 void IoVM::io_exception(void* context, IoObject* coroutine)
@@ -391,8 +466,11 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 {
  	IoVM* iovm = 0;
 
-    if (!IoObject_dataPointer(self))
+    std::cout << " (type " << IoObject_tag(self)->name << ") perform "  << CSTRING(IoMessage_name(m)) << std::endl << std::flush;
+
+    if (!is_Exprs_obj(self))
     {
+        std::cout << " object is not exprs object, calling IoObject_perform instead." << std::endl;
         return IoObject_perform(self, locals, m);
     }
 
@@ -407,15 +485,15 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
             throw std::logic_error("Failed to retrieve IoVM object from IoState callback context.");
 
         std::string method_name = CSTRING(IoMessage_name(m));
-        //std::cout << "perform "  << method_name << std::endl << std::flush;
 
-        //if (method_name == "unsafe_ptr_cast")
-        //    cout << "unsafe_ptr_cast used" << endl;
+        void* data_ptr = IoObject_dataPointer(self);
+        Expr* expr = reinterpret_cast<Expr*>(data_ptr);
 
-        auto expr = reinterpret_cast<Expr*>(IoObject_dataPointer(self));
+        iovm->check_tracking_info(expr, self, m);
 
         int arg_count = IoMessage_argCount(m);
-        TypeMirror* type_mirror = type_system->get_class(expr->get_type());
+        TypeIndex exprType = expr->get_type();
+        TypeMirror* type_mirror = type_system->get_class(exprType);
         auto* method = type_mirror->get_method(method_name, arg_count);
 
         // If it's not a C++ method, maybe it is an Io method.  If it is neither,
@@ -490,11 +568,10 @@ IoObject* IoVM::forward(IoObject *self, IoObject *locals, IoMessage *m)
     //if (!IoObject_dataPointer(self))
         //return IoObject_forward(self, locals, m);
 
-    if (!IoObject_dataPointer(self))
+    if (!is_Exprs_obj(self))
     {
-        string msg = "Lookup failed for method " + method_name + " with " + boost::lexical_cast<string>(arg_count) + " arguments and the object does not have a LikeMagic C++ Proxy attached.";
-        IOASSERT(IoObject_dataPointer(self), msg.c_str());
-        return IONIL(self);
+        string msg = "Slot lookup failed for method " + method_name + " with " + boost::lexical_cast<string>(arg_count) + " arguments, and there is no LikeMagic.";
+        throw IoStateError(self, msg, m);
     }
 
     try

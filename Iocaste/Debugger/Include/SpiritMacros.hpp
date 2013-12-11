@@ -2,15 +2,23 @@
 // Do NOT define #pragma once in rules headers.
 
 #if defined(QI_DEFN) || defined(KARMA_DEFN)
-    #if defined(QI_DECL)
+    #if defined(QI_DECL) || defined(QI_EXTERN)
         #error "Cannot do a QI_DECL and a *_DEFN in the same place."
     #endif
-    #if defined(KARMA_DECL)
+    #if defined(KARMA_DECL) || defined(KARMA_EXTERN)
         #error "Cannot do a KARMA_DECL and a *_DEFN in the same place."
     #endif
     #if defined(DECL_STRUCTS)
         #error "Cannot do a DECL_STRUCTS and a *_DEFN in the same place."
     #endif
+#endif
+
+#if defined(QI_DECL) && defined(QI_EXTERN)
+    #error "QI_DECL and QI_EXTERN are both defined; you must define only one (undef the mode you aren't using)."
+#endif
+
+#if defined(KARMA_DECL) && defined(KARMA_EXTERN)
+    #error "KARMA_DECL and KARMA_EXTERN are both defined; you must define only one (undef the mode you aren't using)."
 #endif
 
 #if defined(QI_DECL) || defined(KARMA_DECL) || defined(QI_EXTERN) || defined(KARMA_EXTERN)
@@ -23,12 +31,15 @@
 
 #if defined(QI_DECL) || defined(QI_EXTERN)
 #include "boost/spirit/include/qi.hpp"
+namespace qi = boost::spirit::qi;
+namespace ascii = boost::spirit::ascii;
 typedef std::string::const_iterator Iterator;
 #endif
 
 #if defined(KARMA_DECL) || defined(KARMA_EXTERN)
 #include "boost/spirit/include/karma.hpp"
 namespace karma = boost::spirit::karma;
+namespace ascii = boost::spirit::ascii;
 typedef std::back_insert_iterator<std::string> OutputIterator;
 #endif
 
@@ -39,19 +50,25 @@ typedef std::back_insert_iterator<std::string> OutputIterator;
 
 #undef DEFN_QI_RULE
 #undef DECL_QI_RULE
+#undef DECL_QI_SYMBOLS
 #undef DEFN_KARMA_RULE
 #undef DECL_KARMA_RULE
+#undef DECL_KARMA_SYMBOLS
 #undef SPIRIT_RULE
+#undef SPIRIT_SYMBOLS
 #undef SPIRIT_FUSION_IMPL
 #undef DEFINE_STRUCT
 #undef WITHIN_NAMESPACE
 
 #if defined(QI_DECL)
     #define DECL_QI_RULE(NAMESPACE_SEQ, rtype, rule_name) WITHIN_NAMESPACE(NAMESPACE_SEQ(qi_rules), qi::rule<Iterator, rtype()> rule_name; )
+    #define DECL_QI_SYMBOLS(NAMESPACE_SEQ, Char, T, rule_name) WITHIN_NAMESPACE(NAMESPACE_SEQ(qi_rules), qi::symbols<Char, T> rule_name; )
 #elif defined(QI_EXTERN)
     #define DECL_QI_RULE(NAMESPACE_SEQ, rtype, rule_name) WITHIN_NAMESPACE(NAMESPACE_SEQ(qi_rules), extern qi::rule<Iterator, rtype()> rule_name; )
+    #define DECL_QI_SYMBOLS(NAMESPACE_SEQ, Char, T, rule_name) WITHIN_NAMESPACE(NAMESPACE_SEQ(qi_rules), extern qi::symbols<Char, T> rule_name; )
 #else
     #define DECL_QI_RULE(NAMESPACE_SEQ, rtype, rule_name)
+    #define DECL_QI_SYMBOLS(NAMESPACE_SEQ, Char, T, rule_name)
 #endif
 
 #ifdef QI_DEFN
@@ -62,10 +79,13 @@ typedef std::back_insert_iterator<std::string> OutputIterator;
 
 #if defined(KARMA_DECL)
     #define DECL_KARMA_RULE(NAMESPACE_SEQ, rtype, rule_name) WITHIN_NAMESPACE(NAMESPACE_SEQ(karma_rules), karma::rule<OutputIterator, rtype()> rule_name; )
+    #define DECL_KARMA_SYMBOLS(NAMESPACE_SEQ, Char, T, rule_name) WITHIN_NAMESPACE(NAMESPACE_SEQ(karma_rules), karma::symbols<Char, T> rule_name; )
 #elif defined(KARMA_EXTERN)
     #define DECL_KARMA_RULE(NAMESPACE_SEQ, rtype, rule_name) WITHIN_NAMESPACE(NAMESPACE_SEQ(karma_rules), extern karma::rule<OutputIterator, rtype()> rule_name; )
+    #define DECL_KARMA_SYMBOLS(NAMESPACE_SEQ, Char, T, rule_name) WITHIN_NAMESPACE(NAMESPACE_SEQ(karma_rules), extern karma::symbols<Char, T> rule_name; )
 #else
     #define DECL_KARMA_RULE(NAMESPACE_SEQ, rtype, rule_name)
+    #define DECL_KARMA_SYMBOLS(NAMESPACE_SEQ, Char, T, rule_name)
 #endif
 
 #ifdef KARMA_DEFN
@@ -82,6 +102,16 @@ typedef std::back_insert_iterator<std::string> OutputIterator;
         DEFN_KARMA_RULE(RULE_NAME = KARMA_EXPR)
 #else
     #define SPIRIT_RULE(NAMESPACE_SEQ, RTYPE, RULE_NAME, QI_EXPR, KARMA_EXPR)
+#endif
+
+#if defined(QI_DECL) || defined(KARMA_DECL) || defined(QI_DEFN) || defined(KARMA_DEFN) || defined(QI_EXTERN) || defined(KARMA_EXTERN)
+    #define SPIRIT_SYMBOLS(NAMESPACE_SEQ, RULE_NAME, QI_EXPR, KARMA_EXPR) \
+        DECL_QI_SYMBOLS(NAMESPACE_SEQ, char const, char const, RULE_NAME) \
+        DEFN_QI_RULE(QI_EXPR) \
+        DECL_KARMA_SYMBOLS(NAMESPACE_SEQ, char, char const*, RULE_NAME) \
+        DEFN_KARMA_RULE(KARMA_EXPR)
+#else
+    #define SPIRIT_SYMBOLS(NAMESPACE_SEQ, RULE_NAME, QI_EXPR, KARMA_EXPR)
 #endif
 
 #if defined(QI_DECL) || defined(KARMA_DECL) || defined(QI_EXTERN) || defined(KARMA_EXTERN)

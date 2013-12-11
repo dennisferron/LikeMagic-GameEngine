@@ -28,10 +28,11 @@ When cloned, an Object will call its init slot (with no arguments).
 #include <string.h>
 #include <stddef.h>
 
-static const char *protoId = "Object";
+static const char *protoName_Object = "Object";
 
 #include "IoObjectImpl.h"
 
+void Iocaste_raiseError(IoObject* self, char* description, IoMessage* m);
 
 /* Was IoObject_inline: */
 
@@ -468,7 +469,7 @@ IoObject *IoObject_activateFunc(IoObject *self,
 
 IoTag *IoObject_newTag(void *state)
 {
-	IoTag *tag = IoTag_newWithName_(protoId);
+	IoTag *tag = IoTag_newWithName_(protoName_Object);
 	IoTag_state_(tag, state);
 	IoTag_cloneFunc_(tag, (IoTagCloneFunc *)IoObject_rawClone);
 	IoTag_activateFunc_(tag, (IoTagActivateFunc *)NULL); // IoObject_activateFunc;
@@ -509,7 +510,7 @@ IoObject *IoObject_proto(void *state)
 	IoObject_slots_(self, PHash_new());
 	IoObject_ownsSlots_(self, 1);
 	//IoObject_state_(self, state);
-	IoState_registerProtoWithId_((IoState *)state, self, protoId);
+	IoState_registerProtoWithId_((IoState *)state, self, protoName_Object);
 	return self;
 }
 
@@ -656,7 +657,7 @@ IoObject *IoObject_protoFinish(void *state)
 	{NULL, NULL},
 	};
 
-	IoObject *self = IoState_protoWithId_((IoState *)state, protoId);
+	IoObject *self = IoState_protoWithId_((IoState *)state, protoName_Object);
 
 	IoObject_addTaglessMethodTable_(self, methodTable);
 	return self;
@@ -726,7 +727,7 @@ void IoObject_addTaglessMethodTable_(IoObject *self, IoMethodTable *methodTable)
 
 IoObject *IoObject_new(void *state)
 {
-	IoObject *proto = IoState_protoWithId_((IoState *)state, protoId);
+	IoObject *proto = IoState_protoWithId_((IoState *)state, protoName_Object);
 	return IOCLONE(proto);
 }
 
@@ -744,7 +745,14 @@ void IoObject_createSlots(IoObject *self)
 //inline
 void IoObject_freeData(IoObject *self)
 {
-	IoTagFreeFunc *func = IoTag_freeFunc(IoObject_tag(self));
+    IoTag* tag = IoObject_tag(self);
+
+    if (tag == NULL)
+    {
+        Iocaste_raiseError(self, "Io object has no tag!", NULL);
+    }
+
+	IoTagFreeFunc *func = IoTag_freeFunc(tag);
 
 	if (func)
 	{
@@ -1472,10 +1480,9 @@ IoObject *IoObject_initClone_(IoObject *self, IoObject *locals, IoMessage *m, Io
 IoObject *IOCLONE(IoObject *self)
 {
 	IoState *state = IOSTATE;
-	IoObject *newObject;
-
 	IoState_pushCollectorPause(state);
-	newObject = IoObject_tag(self)->cloneFunc(self);
+	IoTag* tag = IoObject_tag(self);
+	IoObject* newObject = tag->cloneFunc(self);
 	IoState_addValueIfNecessary_(state, newObject);
 	IoState_popCollectorPause(state);
 	return newObject;
@@ -2294,7 +2301,7 @@ IO_METHOD(IoObject, setIsActivatableMethod)
 	*/
 
 	IoObject *v = IoMessage_locals_valueArgAt_(m, locals, 0);
-	IoObject *objectProto = IoState_protoWithId_(IOSTATE, protoId);
+	IoObject *objectProto = IoState_protoWithId_(IOSTATE, protoName_Object);
 
 	IoTag_activateFunc_(IoObject_tag(objectProto), (IoTagActivateFunc *)IoObject_activateFunc);
 

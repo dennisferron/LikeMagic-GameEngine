@@ -6,17 +6,17 @@
 
 namespace IoDbg {
 
-class GdbResponseWriter : public AbstractAdapter<GdbResponse>
+class GdbResponseWriter : public AbstractAdapter<Rules::GdbResponse>
 {
 private:
     AbstractOutput<StringWithPrompt>& sink;
-    AbstractInput<UserCmd>& fromUser;
-    std::string Write(std::vector<GdbResponseType> const& response) const;
+    AbstractInput<Rules::UserCmd>& fromUser;
+    std::string Write(std::vector<Rules::GdbResponseType> const& response) const;
     std::string last_prompt;
 
 public:
-    GdbResponseWriter(AbstractOutput<StringWithPrompt>& sink_, AbstractInput<UserCmd>& fromUser_);
-    virtual void WriteData(GdbResponse const& input);
+    GdbResponseWriter(AbstractOutput<StringWithPrompt>& sink_, AbstractInput<Rules::UserCmd>& fromUser_);
+    virtual void WriteData(Rules::GdbResponse const& input);
 };
 
 }

@@ -29,6 +29,33 @@ extern "C"
 
 namespace Iocaste { namespace LMAdapters {
 
+class ExprTrackingInfo
+{
+public:
+    Expr* expr;
+    void const* data;
+    std::string name;
+
+public:
+    ExprTrackingInfo()
+        : expr(nullptr), data(nullptr), name("no name") {}
+
+    ExprTrackingInfo(Expr* const expr_, std::string name_)
+        : expr(expr_), data(expr_->get_value_ptr().as_const), name(name_) {}
+
+    ExprTrackingInfo(ExprTrackingInfo const& that)
+        : expr(that.expr), data(that.data), name(that.name)
+    {
+    }
+
+    ExprTrackingInfo& operator =(ExprTrackingInfo const& that)
+    {
+        expr = that.expr;
+        data = that.data;
+        name = that.name;
+        return *this;
+    }
+};
 
 class IoVM : public IoState, public LM::MarkableObjGraph
 {
@@ -44,6 +71,10 @@ private:
     CollectorFreeFunc* original_free_func;
     mutable IoObject* last_exception;
     std::vector<Breakpoint> breakpoints;
+
+    mutable boost::unordered_map<Expr*, ExprTrackingInfo> debug_tracking;
+    void check_tracking_info(Expr* expr, IoObject* io_obj, IoObject* m) const;
+    void set_tracking_info(Expr* expr, std::string name) const;
 
     ExprPtr get_abs_expr(std::string io_code) const;
 
@@ -66,6 +97,8 @@ private:
 
     std::string scriptPath;
 
+    IoObject* create_likemagic_proto();
+
 public:
     IoVM(std::string bootstrap_path);
     ~IoVM();
@@ -82,7 +115,7 @@ public:
     std::string get_path(std::string path_identifier);
     void set_path(std::string path_identifier, std::string path_value);
 
-    void add_proto(std::string name, ExprPtr expr, std::string ns = "", bool conv_to_script=false) const;
+    IoObject* add_proto(std::string name, ExprPtr expr, std::string ns = "", bool conv_to_script=false) const;
 
     void run_cli() const;
     IoObject* do_string(std::string io_code) const;
@@ -119,12 +152,15 @@ public:
 
     static IoVM* get(IoState* state);
     static IoVM* get(IoMessage* m);
+
+
+    IoState* iovm_get_io_state() const;
 };
 
 template <typename T>
-void add_proto(IoVM& iovm, std::string name,  T obj=T(), std::string ns = "", bool to_script=false)
+IoObject* add_proto(IoVM& iovm, std::string name,  T obj=T(), std::string ns = "", bool to_script=false)
 {
-    iovm.add_proto
+    return iovm.add_proto
     (
         name,
         Term<T>::create

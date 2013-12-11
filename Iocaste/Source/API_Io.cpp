@@ -26,7 +26,10 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 
 using namespace LM;
 
-static char const* LikeMagic_protoId = "LikeMagic";
+extern "C" {
+    extern char const* likemagic_proto_id;
+    extern char const* likemagic_proto_data;
+}
 
 namespace Iocaste { namespace LMAdapters {
 
@@ -87,8 +90,12 @@ IoObject* get_io_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos)
 
 bool is_Exprs_obj(IoObject* io_obj)
 {
+    void* data_ptr = IoObject_dataPointer(io_obj);
+
     return
-        IoObject_dataPointer(io_obj)
+        data_ptr != nullptr
+    &&
+        data_ptr != (void const*)likemagic_proto_data
     &&
         std::string(IoObject_tag(io_obj)->name) == std::string("LikeMagic");
 }
@@ -135,7 +142,7 @@ IoObject* API_io_rawClone(IoObject* proto)
 
     // LikeMagic objects are not really intended to be cloned, so I don't know whether
     // to throw an exception here or just make the new Io object point at the same C++ object as I do here:
-    IoObject_setDataPointer_(clone, IoObject_dataPointer(reinterpret_cast<IoObject*>(proto)));
+    IoObject_setDataPointer_(clone, IoObject_dataPointer(proto));
 
     return clone;
 }
@@ -152,11 +159,11 @@ void API_io_free_expr(IoObject* self)
     {
         if (is_Exprs_obj(io_obj))
         {
-            //std::cout << "free Exprs proxy passed Exprs object with tag " << IoObject_tag(io_obj)->name << std::endl;
+            std::cout << "free Exprs proxy passed Exprs object with tag " << IoObject_tag(io_obj)->name << std::endl;
         }
         else
         {
-            //std::cout << "free Exprs proxy passed a NON-Exprs object with tag " << IoObject_tag(io_obj)->name << std::endl;
+            std::cout << "free Exprs proxy passed a NON-Exprs object with tag " << IoObject_tag(io_obj)->name << std::endl;
             throw std::logic_error("free Exprs proxy passed a NON-Exprs object");
         }
 
@@ -176,31 +183,6 @@ void API_io_mark(IoObject* self)
         expr->mark();
     }
 }
-
-IoObject *API_io_proto(IoState* state)
-{
-    //std::cout << "Creating LikeMagic proto" <<std::endl;
-
-    IoObject *self = IoObject_new(state);
-
-    IoTag* tag = IoTag_newWithName_("LikeMagic");
-    IoTag_state_(tag, state);
-    IoTag_freeFunc_(tag, (IoTagFreeFunc*)API_io_free_expr);
-    IoTag_cloneFunc_(tag, (IoTagCloneFunc*)API_io_rawClone);
-    IoTag_markFunc_(tag, (IoTagMarkFunc*)API_io_mark);
-
-    // Added this so that instead of forward, the user func will be called directly.
-    // This should be faster because we don't have to wait for proto lookup, and has the advantage that
-    // it will work even for methods defined in Object, such as "==", so operator overloads will work.
-    IoTag_performFunc_(tag, (IoTagPerformFunc*)API_io_perform);
-
-    IoObject_tag_(self, tag);
-
-	IoState_registerProtoWithId_(state, self, LikeMagic_protoId);
-
-    return self;
-}
-
 
 IoObject* API_io_perform(IoObject *self, IoObject *locals, IoMessage *m)
 {

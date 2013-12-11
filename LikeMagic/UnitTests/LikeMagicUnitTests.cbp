@@ -7,6 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug Windows">
+				<Option platforms="Windows;" />
 				<Option output="../../bin/Debug/LikeMagicUnitTests" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../../../GameBindings" />
 				<Option object_output="obj/Debug/" />
@@ -24,6 +25,7 @@
 				</Linker>
 			</Target>
 			<Target title="Debug Mac">
+				<Option platforms="Mac;" />
 				<Option output="bin/Debug/LikeMagicUnitTests" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
@@ -39,6 +41,7 @@
 				</Linker>
 			</Target>
 			<Target title="Debug Linux">
+				<Option platforms="Unix;" />
 				<Option output="../../bin/Debug/LikeMagicUnitTests" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../../bin/Debug" />
 				<Option object_output="obj/Debug/" />
@@ -54,9 +57,12 @@
 					<Add option="-lpthread" />
 					<Add option="-L../../bin/Debug" />
 					<Add option="-Wl,-rpath=./" />
+					<Add option="-ldl" />
 					<Add library="../../Common/UnitTest++/bin/Debug/libUnitTest++.a" />
 					<Add library="libLikeMagic-Linux" />
 					<Add library="libStdBindings-Linux" />
+					<Add library="libIocaste-Linux" />
+					<Add library="../../Common/boost_1_54_0/stage/lib/libboost_program_options.a" />
 				</Linker>
 			</Target>
 		</Build>
@@ -68,15 +74,22 @@
 			<Add directory="../StdBindings/Include" />
 			<Add directory="../../Common/boost_1_54_0" />
 			<Add directory="../../Common/UnitTest++/src" />
+			<Add directory="../../Iocaste/Include" />
+			<Add directory="../../Iocaste/iovm/source" />
+			<Add directory="../../Iocaste/basekit/source" />
+			<Add directory="../../Iocaste/garbagecollector/source" />
+			<Add directory="../../Iocaste/Include/Iocaste/CShims" />
 		</Compiler>
 		<Unit filename="Include/UnitTests/ArgListHelpers.hpp" />
 		<Unit filename="Include/UnitTests/TestHelpers.hpp" />
 		<Unit filename="Source/TestArgTransporter.cpp" />
 		<Unit filename="Source/TestBinding.cpp" />
+		<Unit filename="Source/TestIoVM.cpp" />
 		<Unit filename="Source/TestMarshalByCopyConstructor.cpp" />
 		<Unit filename="Source/TestTerms.cpp" />
 		<Unit filename="Source/TestTypeSystem.cpp" />
 		<Unit filename="Source/main.cpp" />
+		<Unit filename="Untitled13-94]U]V-C0IE" />
 		<Extensions>
 			<code_completion />
 			<envvars />

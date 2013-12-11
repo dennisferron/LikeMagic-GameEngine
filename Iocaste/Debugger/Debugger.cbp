@@ -96,7 +96,9 @@
 		<Unit filename="Include/Rules/GdbValue.hpp" />
 		<Unit filename="Include/Rules/RuleStructs.hpp" />
 		<Unit filename="Include/Rules/SharedTypes.hpp" />
+		<Unit filename="Include/Rules/StringEscaper.hpp" />
 		<Unit filename="Include/Rules/Unactionable.hpp" />
+		<Unit filename="Include/Rules/UserCmds.hpp" />
 		<Unit filename="Include/SharedTypes.hpp" />
 		<Unit filename="Include/SharedTypesFusion.hpp" />
 		<Unit filename="Include/SharedTypesPrinter.hpp" />
@@ -104,9 +106,6 @@
 		<Unit filename="Include/StaticFuture.hpp" />
 		<Unit filename="Include/StepStateManager.hpp" />
 		<Unit filename="Include/StreamOutput.hpp" />
-		<Unit filename="Include/StringEscapeWriter.hpp" />
-		<Unit filename="Include/StringEscaper.hpp" />
-		<Unit filename="Include/StringUnescapeParser.hpp" />
 		<Unit filename="Include/StringWithPrompt.hpp" />
 		<Unit filename="Include/TestPlan.hpp" />
 		<Unit filename="Include/TypePolicy.hpp" />

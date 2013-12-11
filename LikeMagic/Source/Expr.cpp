@@ -101,7 +101,8 @@ ExprImpl::~ExprImpl()
 
 LIKEMAGIC_API Expr* create_expr(ValuePtr ptr_, TypeIndex type_)
 {
-    return new ExprImpl(ptr_, type_, nullptr);
+    ExprImpl* result = new ExprImpl(ptr_, type_, nullptr);
+    return result;
 }
 
 LIKEMAGIC_API Expr* create_reference(ValuePtr ptr_, TypeIndex type_, ExprPtr storage_location_)

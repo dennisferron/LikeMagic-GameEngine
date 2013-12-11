@@ -1,3 +1,5 @@
+writeln("Loader.io")
+
 method(Scripts,
 
     Loader := Object clone lexicalDo(

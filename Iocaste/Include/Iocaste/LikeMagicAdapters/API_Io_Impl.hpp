@@ -41,7 +41,6 @@ extern "C"
     IoObject* API_io_rawClone(IoObject* proto);
     void API_io_free_expr(IoObject* self);
     void API_io_mark(IoObject* self);
-    IoObject* API_io_proto(IoState* state);
     IoObject* API_io_perform(IoObject *self, IoObject *locals, IoMessage *m);
     IoObject* API_io_forward(IoObject *self, IoObject *locals, IoMessage *m);
     void API_io_willFree(IoObject *self);

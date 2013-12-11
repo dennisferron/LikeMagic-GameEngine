@@ -1,3 +1,4 @@
+writeln("Scripts.io")
 method(Module,
 
     Scripts := Object clone do(

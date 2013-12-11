@@ -29,6 +29,8 @@ struct GdbValueParseGrammar : qi::grammar<std::string::const_iterator, Rules::Gd
 
 boost::spirit::qi::grammar<std::string::const_iterator, Rules::GdbValue()>* gdb_value_parse_grammar()
 {
+#define QI_DEFN
+//    #include "Rules/GdbValue.hpp"
     return new GdbValueParseGrammar();
 }
 

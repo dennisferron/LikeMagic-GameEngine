@@ -17,7 +17,7 @@ using namespace IoDbg;
 using namespace std;
 
 #include "UserCmdFusion.hpp"
-using namespace IoDbg::UserCmds;
+using namespace IoDbg::Rules;
 
 #include "WriteGrammars.hpp"
 

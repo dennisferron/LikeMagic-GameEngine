@@ -176,6 +176,17 @@ typedef  boost::variant
 }}
 #endif
 
+SPIRIT_RULE((IoDbg)(Rules), GdbActionableType,
+    actionable_variant,
+        locals_info | backtrace_line,
+        locals_info | backtrace_line
+)
+// TODO:  figure out which of these was causing the compile error, and restore the rule.
+//        locals_info | backtrace_line | banner | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited | working_directory | type_equals | empty,
+//        locals_info | backtrace_line | banner | breakpoint_set | breakpoint_hit | cursor_pos | address_in_function | program_exited | working_directory | type_equals | empty
+//)
+
+
 SPIRIT_STRUCT((IoDbg)(Rules),
     GdbActionable,
         (GdbActionableType, value),
@@ -195,6 +206,13 @@ typedef boost::variant
 
 }}
 #endif
+
+SPIRIT_RULE((IoDbg)(Rules), GdbContextSensitiveType,
+    context_sens_variant,
+        output_value | output_value,
+        output_value | output_value
+)
+
 
 SPIRIT_STRUCT((IoDbg)(Rules),
     GdbContextSensitive,
@@ -216,3 +234,9 @@ typedef boost::variant
 
 }}
 #endif
+
+SPIRIT_RULE((IoDbg)(Rules), GdbResponseType,
+    response_item,
+        actionable | unactionable | context_sens,
+        actionable | unactionable | context_sens
+)

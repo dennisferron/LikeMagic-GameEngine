@@ -11,12 +11,23 @@ LikeMagic := Object clone
 // io_vm C++ code to provide the minimum functionality necessary to bootstrap
 // the rest of the C++ namespace and classes system.
 
+writeln("bootstrap is ", bootstrap)
 appendProto(bootstrap)
 
-appendProto(bootstrap LM_Protos)
+LM_Protos := bootstrap LM_Protos
+writeln("LM_Protos slotNames: ", LM_Protos slotNames)
+
+writeln("LM_Protos type: ", LM_Protos type slotSummary)
+writeln("LM_Protos type_system: ", LM_Protos type_system slotSummary)
+writeln("LM_Protos io_vm: ", LM_Protos io_vm slotSummary)
+
+writeln("LM_Protos is ", LM_Protos)
 
 io_vm := LM_Protos io_vm
+writeln("io_vm is ", io_vm)
+
 type_system := LM_Protos type_system
+writeln("type_system is ", type_system)
 
 // Set up the root aka global namespace.
 // Later this will be supplanted by the LikeMagic static methods object

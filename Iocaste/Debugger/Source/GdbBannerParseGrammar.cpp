@@ -37,8 +37,6 @@ using namespace IoDbg;
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
-#include "StringUnescapeParser.hpp"
-
 #define QI_DECL
 #include "Rules/GdbValue.hpp"
 #include "Rules/SharedTypes.hpp"

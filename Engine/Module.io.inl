@@ -1,3 +1,4 @@
+writeln("Module.io")
 method(
 
     Module := Object clone lexicalDo(

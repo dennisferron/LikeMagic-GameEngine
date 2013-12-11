@@ -9,11 +9,11 @@ namespace IoDbg {
 class UserCmdParser : public AbstractAdapter<std::string>
 {
 private:
-    AbstractOutput<UserCmd>& sink;
-    UserCmd Parse(std::string str) const;
+    AbstractOutput<Rules::UserCmd>& sink;
+    Rules::UserCmd Parse(std::string str) const;
 
 public:
-    UserCmdParser(AbstractOutput<UserCmd>& sink_);
+    UserCmdParser(AbstractOutput<Rules::UserCmd>& sink_);
     virtual void WriteData(std::string const& input);
 };
 

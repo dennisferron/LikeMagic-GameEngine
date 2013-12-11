@@ -19,6 +19,7 @@ using namespace std;
 #include "Exception.hpp"
 
 using namespace IoDbg;
+using namespace IoDbg::Rules;
 
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;

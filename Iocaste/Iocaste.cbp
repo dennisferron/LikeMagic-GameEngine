@@ -43,6 +43,9 @@
 					<Add option="-Dx_IO_USE_SIMD" />
 					<Add option="-D__SIMD_EMU__" />
 				</Compiler>
+				<Linker>
+					<Add option="-ldl" />
+				</Linker>
 			</Target>
 			<Target title="Debug Windows">
 				<Option platforms="Windows;" />
@@ -115,7 +118,6 @@
 		<Unit filename="Include/Iocaste/Primitives.hpp" />
 		<Unit filename="Include/Iocaste/Run.hpp" />
 		<Unit filename="Include/Iocaste/Stack.hpp" />
-		<Unit filename="Iocaste.cbp" />
 		<Unit filename="Source/API_Io.cpp" />
 		<Unit filename="Source/API_Io_from_script.cpp" />
 		<Unit filename="Source/API_Io_to_script.cpp" />

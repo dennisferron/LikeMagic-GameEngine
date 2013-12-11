@@ -38,14 +38,12 @@ using namespace IoDbg;
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
-#include "StringUnescapeParser.hpp"
-
 #define QI_DECL
-#include "Rules/GdbValue.hpp"
 #include "Rules/SharedTypes.hpp"
 #undef QI_DECL
 
 #define QI_EXTERN
+#include "Rules/GdbValue.hpp"
 #include "Rules/GdbBanner.hpp"
 #undef QI_EXTERN
 
@@ -60,7 +58,7 @@ using namespace IoDbg::Rules::qi_rules;
 namespace Iocaste {
     namespace Debugger {
 
-StringUnescapeParser<Iterator> unesc_grammar;
+boost::spirit::qi::grammar<std::string::const_iterator, std::string()>* unesc_grammar;
 
 
 struct GdbResponseParseGrammar : qi::grammar<std::string::const_iterator, GdbResponseType()>

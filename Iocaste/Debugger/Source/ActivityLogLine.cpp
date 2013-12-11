@@ -20,8 +20,9 @@ using namespace std;
 
 #include "ActivityLogLine.hpp"
 #include "Exception.hpp"
-#include "StringUnescapeParser.hpp"
-#include "StringEscapeWriter.hpp"
+
+#include "ParseGrammars.hpp"
+#include "WriteGrammars.hpp"
 
 using namespace IoDbg;
 
@@ -36,20 +37,24 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 namespace IoDbg {
 
+boost::spirit::karma::grammar<std::back_insert_iterator<std::string>, std::string()>* esc_grammar;
+boost::spirit::qi::grammar<std::string::const_iterator, std::string()>* unesc_grammar;
+
 template <typename Iterator>
 struct ActivityLogParser : qi::grammar<Iterator, ActivityLogLine()>
 {
     ActivityLogParser() : ActivityLogParser::base_type(start)
     {
+        unesc_grammar = string_unescape_parse_grammar();
         label %=  +qi::alnum;
-        content %= unesc_grammar;
+        content %= *unesc_grammar;
         start %= label >> ":" >> (" " >> content | qi::eoi);
     }
 
     qi::rule<Iterator, std::string()> label;
     qi::rule<Iterator, std::string()> content;
     qi::rule<Iterator, ActivityLogLine()> start;
-    StringUnescapeParser<Iterator> unesc_grammar;
+    boost::spirit::qi::grammar<std::string::const_iterator, std::string()>* unesc_grammar;
 };
 
 
@@ -91,15 +96,16 @@ struct ActivityLogWriter
     ActivityLogWriter()
       : ActivityLogWriter::base_type(start)
     {
+        esc_grammar = string_escape_write_grammar();
         label %= +karma::print;
-        content %= esc_grammar;
+        content %= *esc_grammar;
         start %= label << ": " << content;
     }
 
     karma::rule<OutputIterator, std::string()> label;
     karma::rule<OutputIterator, std::string()> content;
     karma::rule<OutputIterator, ActivityLogLine()> start;
-    StringEscapeWriter<OutputIterator> esc_grammar;
+    boost::spirit::karma::grammar<std::back_insert_iterator<std::string>, std::string()>* esc_grammar;
 };
 
 void ActivityLogLine::Write(std::string& generated) const

@@ -31,7 +31,6 @@ namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
 #include "GdbResponseFusion.hpp"
-#include "StringUnescapeParser.hpp"
 
 using namespace IoDbg::Rules;
 

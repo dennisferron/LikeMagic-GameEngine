@@ -27,7 +27,10 @@ extern "C" void IoVMCodeInit(IoObject *context, char const* bootstrap_path)
 {
 	IoState *self = IoObject_state((IoObject *)context);
 
-	fprintf(stderr, "Loading startup scripts\n");
+	char buf[1024];
+	char* cwd = (char *)getcwd(buf, 1024);
+
+	cout << "Loading startup scripts, cwd is " << cwd << " and bootstrap path is " << bootstrap_path << endl;
 
 	std::string bootstrap_path_as_string(bootstrap_path);
 
