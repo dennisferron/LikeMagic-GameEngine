@@ -20,6 +20,7 @@
 #include "boost/unordered_set.hpp"
 
 #include "IoState.h"
+#include "IoCall.h"
 
 extern "C"
 {
@@ -102,7 +103,6 @@ private:
 public:
     IoVM(std::string bootstrap_path);
     ~IoVM();
-
 
     std::string get_script_path();
     void set_script_path(std::string value);

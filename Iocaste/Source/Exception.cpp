@@ -88,6 +88,9 @@ std::string ScriptException::getErrorText(IoObject* self)
 
 std::string ScriptException::getBackTraceString(IoObject* self)
 {
+    if (self == nullptr)
+        return "no backtrace - Io object is null";
+
     IoObject* coro = IoState_on_doCString_withLabel_(IOSTATE, self, "coroutine", "[Exception.cpp]");
 	IoObject *backt = coro? IoObject_rawGetSlot_(coro, IOSYMBOL("backTraceString")) : NULL;
 
@@ -111,6 +114,9 @@ std::string ScriptException::getBackTraceString(IoObject* self)
 
 int ScriptException::getLineNumber(IoObject* self)
 {
+    if (self == nullptr)
+        return 0;
+
     IoObject* message = IoObject_getSlot_(self, IOSYMBOL("caughtMessage"));
     IoObject* lineNumberObj = IoObject_getSlot_(self, IOSYMBOL("lineNumber"));
     int lineNumber = IoNumber_asInt(lineNumberObj);

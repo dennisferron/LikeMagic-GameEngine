@@ -10,6 +10,12 @@ Call stores slots related to activation.
 #include "IoState.h"
 #include "IoObject.h"
 
+#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+using namespace Iocaste;
+using namespace Iocaste::LMAdapters;
+
+extern "C" {
+
 static const char *protoId = "Call";
 
 #define DATA(self) ((IoCallData *)IoObject_dataPointer(self))
@@ -77,8 +83,28 @@ IoCall *IoCall_rawClone(IoCall *proto)
 
 IoCall *IoCall_new(IoState *state)
 {
+    IoVM* io_vm = IoVM::get(state);
+
 	IoObject *proto = IoState_protoWithId_((IoState *)state, protoId);
-	return IOCLONE(proto);
+
+	IoState_pushCollectorPause(state);
+
+	IoObject *newObject = IoObject_rawClonePrimitive(proto);
+
+    //auto& stk = io_vm->io_call_stack;
+	//stk.push_back(IoCallData());
+	//IoCallData* new_frame = &stk.back();
+	//IoObject_setDataPointer_(newObject, new_frame);
+	IoObject_setDataPointer_(newObject, io_calloc(1, sizeof(IoCallData)));
+
+	IoCall_initSlots(newObject);
+
+	IoState_addValueIfNecessary_(state, newObject);
+	IoState_popCollectorPause(state);
+
+	return newObject;
+
+	//return IOCLONE(proto);
 }
 
 IoCall *IoCall_with(void *state,
@@ -89,7 +115,7 @@ IoCall *IoCall_with(void *state,
 					IoObject *activated,
 					IoObject *coroutine)
 {
-	IoCall *self = IoCall_new(state);
+	IoCall *self = IoCall_new(reinterpret_cast<IoState*>(state));
 
 	DATA(self)->sender      = sender;
 	DATA(self)->target      = target;
@@ -115,6 +141,9 @@ void IoCall_mark(IoCall *self)
 
 void IoCall_free(IoCall *self)
 {
+    // TODO:  Instead of freeing the data mark it as freed, or do nothing.
+    // TODO:  Create an "IoCallDataReference" indirection that will allow
+    // IoCall to do things like no longer reference old stack frame.
 	io_free(IoObject_dataPointer(self));
 }
 
@@ -123,7 +152,7 @@ IO_METHOD(IoCall, sender)
 	/*doc Call sender
 	Returns the sender value.
 	*/
-	
+
 	return DATA(self)->sender;
 }
 
@@ -132,7 +161,7 @@ IO_METHOD(IoCall, message)
 	/*doc Call message
 	Returns the message value.
 	*/
-	
+
 	return DATA(self)->message;
 }
 
@@ -141,7 +170,7 @@ IO_METHOD(IoCall, target)
 	/*doc Call target
 	Returns the target value.
 	*/
-	
+
 	return DATA(self)->target;
 }
 
@@ -150,7 +179,7 @@ IO_METHOD(IoCall, slotContext)
 	/*doc Call slotContext
 	Returns the slotContext value.
 	*/
-	
+
 	return DATA(self)->slotContext;
 }
 
@@ -159,7 +188,7 @@ IO_METHOD(IoCall, activated)
 	/*doc Call activated
 	Returns the activated value.
 	*/
-	
+
 	return DATA(self)->activated;
 }
 
@@ -168,7 +197,7 @@ IO_METHOD(IoCall, coroutine)
 	/*doc Call coroutine
 	Returns the coroutine in which the message was sent.
 	*/
-	
+
 	return DATA(self)->coroutine;
 }
 
@@ -177,7 +206,7 @@ IO_METHOD(IoCall, evalArgAt)
 	/*doc Call evalArgAt(argNumber)
 	Evaluates the specified argument of the Call's message in the context of it's sender.
 	*/
-	
+
 	int n = IoMessage_locals_intArgAt_(m, locals, 0);
 	IoCallData *data = DATA(self);
 	return IoMessage_locals_valueArgAt_(data->message, data->sender, n);
@@ -188,7 +217,7 @@ IO_METHOD(IoCall, argAt)
 	/*doc Call argAt(argNumber)
 	Returns the message's argNumber arg. Shorthand for same as call message argAt(argNumber).
 	*/
-	
+
 	return IoMessage_argAt(DATA(self)->message, locals, m);
 }
 
@@ -200,7 +229,7 @@ int IoCall_rawStopStatus(IoCall *self)
 IO_METHOD(IoCall, stopStatus)
 {
 	/*doc Call stopStatus
-	Returns the stop status on the call. (description of stopStatus will 
+	Returns the stop status on the call. (description of stopStatus will
 	be added once we decide whether or not to keep it)
 	*/
 	return IoState_stopStatusObject(IOSTATE, DATA(self)->stopStatus);
@@ -214,4 +243,6 @@ IO_METHOD(IoCall, setStopStatus)
 	IoObject *status = IoMessage_locals_valueArgAt_(m, locals, 0);
 	DATA(self)->stopStatus = IoState_stopStatusNumber(IOSTATE, status);
 	return self;
+}
+
 }

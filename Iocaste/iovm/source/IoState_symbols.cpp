@@ -32,7 +32,7 @@ IoObject *IoState_numberWithDouble_(IoState *self, double n)
 
 	if (self->cachedNumbers && i == n && i >= MIN_CACHED_NUMBER && i <= MAX_CACHED_NUMBER)
 	{
-		return List_at_(self->cachedNumbers, i - MIN_CACHED_NUMBER);
+		return (IoObject*)List_at_(self->cachedNumbers, i - MIN_CACHED_NUMBER);
 	}
 
 	return IoNumber_newWithDouble_(self, n);
@@ -43,7 +43,7 @@ IoObject *IoState_numberWithDouble_(IoState *self, double n)
 
 IoSymbol *IoState_symbolWithUArray_copy_(IoState *self, UArray *ba, int copy)
 {
-	IoSymbol *ioSymbol = CHash_at_(self->symbols, ba);
+	IoSymbol *ioSymbol = (IoSymbol*)CHash_at_(self->symbols, ba);
 
 	if (!ioSymbol)
 	{

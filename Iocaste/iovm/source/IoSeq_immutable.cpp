@@ -212,7 +212,7 @@ IO_METHOD(IoSeq, asBinaryNumber)
 		bc = IoNumber_asInt(byteCount);
 	}
 
-	if (max < bc)
+	if ((int)max < bc)
 	{
 		IoState_error_(IOSTATE, m, "requested first %i bytes, but Sequence only contians %i bytes", bc, max);
 	}
@@ -503,10 +503,10 @@ IO_METHOD(IoSeq, findSeqs)
 
 			index = UArray_find_from_(DATA(self), DATA(((IoSeq *)s)), f);
 
-			if(index != -1 && (firstIndex == -1 || index < firstIndex)) 
-			{ 
-				firstIndex = (long)index; 
-				match = i; 
+			if(index != -1 && (firstIndex == -1 || index < firstIndex))
+			{
+				firstIndex = (long)index;
+				match = i;
 			}
 		);
 	}
@@ -745,11 +745,11 @@ IoObject *IoSeq_splitToFunction(IoSeq *self,
 {
 	IoList *output = IoList_new(IOSTATE);
 	List *others = IoSeq_byteArrayListForSeqList(self, locals, m, IoSeq_stringListForArgs(self, locals, m));
-	int i;
+	size_t i;
 
 	for (i = 0; i < List_size(others); i ++)
 	{
-		if (UArray_size(List_at_(others, i)) == 0)
+		if (UArray_size((const UArray*)List_at_(others, i)) == 0)
 		{
 			IoState_error_(IOSTATE, m, "empty string argument");
 		}
@@ -761,7 +761,7 @@ IoObject *IoSeq_splitToFunction(IoSeq *self,
 
 		for (i = 0; i < UArray_size(results); i ++)
 		{
-			UArray *ba = UArray_pointerAt_(results, i);
+			UArray *ba = (UArray*)UArray_pointerAt_(results, i);
 			IoObject *item = (*func)(IOSTATE, ba, 0);
 			IoList_rawAppend_(output, item);
 		}
@@ -1368,8 +1368,8 @@ The output pointObject would contain x and y slots with Number objects.
 
 	for (memberIndex = 0; memberIndex < List_size(members) / 2 && offset < size; memberIndex ++)
 	{
-		IoSeq *memberType = List_at_(members, memberIndex*2);
-		IoSeq *memberName = List_at_(members, memberIndex*2 + 1);
+		IoSeq *memberType = (IoSeq*)List_at_(members, memberIndex*2);
+		IoSeq *memberName = (IoSeq*)List_at_(members, memberIndex*2 + 1);
 		char *mt;
 		IoObject *v = NULL;
 
@@ -1435,8 +1435,8 @@ The output pointStructSeq would contain 2 raw 32 bit floats.
 
 	for (memberIndex = 0; memberIndex < List_size(members) / 2 && offset < maxSize; memberIndex ++)
 	{
-		IoSeq *memberType = List_at_(members, memberIndex*2);
-		IoSeq *memberValue = List_at_(members, memberIndex*2 + 1);
+		IoSeq *memberType = (IoSeq*)List_at_(members, memberIndex*2);
+		IoSeq *memberValue = (IoSeq*)List_at_(members, memberIndex*2 + 1);
 		char *mt;
 
 		IOASSERT(ISSEQ(memberType), "memberTypes must be strings");
@@ -1482,7 +1482,7 @@ static char to_hex(char code)
 static char *url_encode(const char *str, int isPercentEncoded)
 {
 	const char *pstr = str;
-	char *buf = malloc(strlen(str) * 3 + 1);
+	char *buf = (char*)malloc(strlen(str) * 3 + 1);
 	char *pbuf = buf;
 
 	while (*pstr)
@@ -1512,7 +1512,7 @@ static char *url_encode(const char *str, int isPercentEncoded)
 static char *url_decode(const char *str, int isPercentEncoded)
 {
 	const char *pstr = str;
-	char *buf = malloc(strlen(str) + 1);
+	char *buf = (char*)malloc(strlen(str) + 1);
 	char *pbuf = buf;
 
 	while (*pstr)

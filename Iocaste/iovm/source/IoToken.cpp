@@ -44,7 +44,7 @@ const char *IoToken_typeName(IoToken *self)
 
 void IoToken_name_length_(IoToken *self, const char *name, size_t len)
 {
-	self->name = strncpy(io_realloc(self->name, len + 1), name, len);
+	self->name = strncpy((char*)io_realloc(self->name, len + 1), name, len);
 	self->name[len] = (char)0;
 	self->length = len;
 }
@@ -99,7 +99,7 @@ void IoToken_quoteName_(IoToken *self, const char *name)
 {
 	char *old = self->name;
 	size_t length = strlen(name) + 3;
-	self->name = io_calloc(1, length);
+	self->name = (char*)io_calloc(1, length);
 	snprintf(self->name, length, "\"%s\"", name);
 
 	if (old)

@@ -1,11 +1,11 @@
 //metadoc CFunction copyright Steve Dekorte 2002
 //metadoc CFunction license BSD revised
 /*metadoc CFunction description
-A container for a pointer to a C function binding. 
-CFunction's can only be defined from the C side and act 
-like blocks in that when placed in a slot, are called when the 
-slot is activated. The for, if, while and clone methods of the Lobby 
-are examples of CFunctions. CFunctions are useful for implementing 
+A container for a pointer to a C function binding.
+CFunction's can only be defined from the C side and act
+like blocks in that when placed in a slot, are called when the
+slot is activated. The for, if, while and clone methods of the Lobby
+are examples of CFunctions. CFunctions are useful for implementing
 methods that require the speed of C or binding to a C library.
 */
 //metadoc CFunction category Core
@@ -15,6 +15,8 @@ methods that require the speed of C or binding to a C library.
 #include "IoState.h"
 #include "IoNumber.h"
 #include <stddef.h>
+
+extern "C" {
 
 static const char *protoId = "CFunction";
 
@@ -92,7 +94,7 @@ IoCFunction *IoCFunction_newWithFunctionPointer_tag_name_(void *state,
 IO_METHOD(IoCFunction, id)
 {
 	/*doc CFunction id
-	Returns a number containing a unique id for the receiver's internal C function. 
+	Returns a number containing a unique id for the receiver's internal C function.
 	*/
 
 	return IONUMBER(((uintptr_t)self));
@@ -129,7 +131,7 @@ IO_METHOD(IoCFunction, typeName)
 IO_METHOD(IoCFunction, equals)
 {
 	/*doc CFunction ==(anObject)
-	Returns self if the argument is a CFunction with the same internal C function pointer. 
+	Returns self if the argument is a CFunction with the same internal C function pointer.
 	*/
 
 	IoObject *v = IoMessage_locals_valueArgAt_(m, locals, 0);
@@ -159,19 +161,19 @@ IO_METHOD(IoCFunction, setProfilerOn)
 	/*doc IoCFunction setProfilerOn(aBool)
 	If aBool is true, the global block profiler is enabled, if false it is disabled. Returns self.
 	*/
-	
+
 	IoObject *aBool = IoMessage_locals_valueArgAt_(m, locals, 0);
 	IoTag *tag = IoObject_tag(self);
-	
+
 	if(ISTRUE(aBool))
 	{
 		IoTag_activateFunc_(tag, (IoTagActivateFunc *)IoCFunction_activateWithProfiler);
 	}
-	else 
+	else
 	{
 		IoTag_activateFunc_(tag, (IoTagActivateFunc *)IoCFunction_activate);
 	}
-	
+
 	return self;
 }
 
@@ -243,4 +245,4 @@ void IoCFunction_protoFinish(void *state)
 	IoObject_addMethodTable_(self, methodTable);
 }
 
-
+}

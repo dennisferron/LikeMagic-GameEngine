@@ -56,6 +56,8 @@ static char* getcwd(char* buf, int size) { return 0; }
 #define DT_LNK 10
 #define MKDIR mkdir_win32
 
+extern "C" {
+
 struct dirent {
 	char d_name[MAX_PATH];
 	unsigned char d_type;
@@ -149,7 +151,12 @@ int chdir(const char *path)
 	return SetCurrentDirectory(lpPathName) ? 1 : -1;
 }
 */
+
+}
+
 #endif
+
+extern "C" {
 
 int isDirectory(struct dirent *dp, char *path)
 {
@@ -272,14 +279,14 @@ IO_METHOD(IoDirectory, path)
 	/*doc Directory path
 	Returns the directory path. The default path is '.'.
 	*/
-	
+
 	return DATA(self)->path;
 }
 
 IO_METHOD(IoDirectory, setPath)
 {
 	/*doc Directory setPath(aString)
-	Sets the directory path. Returns self. 
+	Sets the directory path. Returns self.
 	*/
 
 	DATA(self)->path = IOREF(IoMessage_locals_symbolArgAt_(m, locals, 0));
@@ -296,7 +303,7 @@ IO_METHOD(IoDirectory, setPath)
 IO_METHOD(IoDirectory, name)
 {
 	/*doc Directory name
-	Returns the receiver's last path component.  
+	Returns the receiver's last path component.
 	*/
 
 	return IoSeq_lastPathComponent(DATA(self)->path, locals, m);
@@ -335,7 +342,7 @@ IO_METHOD(IoDirectory, exists)
 {
 	/*doc Directory exists(optionalPath)
 	Returns true if the Directory path exists, and false otherwise.
-	If optionalPath string is provided, it tests the existence of that path instead. 
+	If optionalPath string is provided, it tests the existence of that path instead.
 	*/
 
 	IoSymbol *path = DATA(self)->path;
@@ -368,7 +375,7 @@ IO_METHOD(IoDirectory, items)
 {
 	/*doc Directory items
 	Returns a list object containing File and Directory objects
-	for the files and directories of the receiver's path. 
+	for the files and directories of the receiver's path.
 	*/
 
 	IoList *items = IoList_new(IOSTATE);
@@ -424,7 +431,7 @@ IO_METHOD(IoDirectory, at)
 {
 	/*doc Directory at(aString)
 	Returns a File or Directory object matching the name specified
-	by aString or Nil if no such file or directory exists. 
+	by aString or Nil if no such file or directory exists.
 	*/
 
 	IoSymbol *name = IoMessage_locals_symbolArgAt_(m, locals, 0);
@@ -513,17 +520,17 @@ IO_METHOD(IoDirectory, createSubdirectory)
 IO_METHOD(IoDirectory, create)
 {
 	/*doc Directory create
-	Create the directory if it doesn't exist. 
+	Create the directory if it doesn't exist.
 	Returns self on success (or if the directory already exists), nil on failure.
 	*/
-	
+
 	if (!opendir(CSTRING(DATA(self)->path)))
 	{
 		// not there, so make it
 		int r = MKDIR(CSTRING(DATA(self)->path), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 		return (r == 0) ? self : IONIL(self);
 	}
-	
+
 	return self;
 }
 
@@ -531,7 +538,7 @@ IO_METHOD(IoDirectory, size)
 {
 	/*doc Directory size
 	Returns a Number containing the number of file and directory
-	objects at the receiver's path. 
+	objects at the receiver's path.
 	*/
 
 	int count = 0;
@@ -561,7 +568,7 @@ UArray *IoDirectory_CurrentWorkingDirectoryAsUArray(void)
 	char *buf = getcwd(NULL, FILENAME_MAX + 1);
 #else
 	char *buf = NULL;
-	buf = (char *)getcwd(buf, 1024);
+	buf = getcwd(buf, 1024);
 #endif /* sparc || _sparc */
 
 	if (!buf)
@@ -615,4 +622,6 @@ IO_METHOD(IoDirectory, setCurrentWorkingDirectory)
 	}
 
 	return IOSUCCESS(self);
+}
+
 }

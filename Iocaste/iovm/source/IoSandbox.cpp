@@ -78,7 +78,7 @@ void IoSandbox_addPrintCallback(IoSandbox *self)
 
 void IoSandbox_printCallback(void *voidSelf, const UArray *ba)
 {
-	IoSandbox *self = voidSelf;
+	IoSandbox *self = (IoSandbox*)voidSelf;
 
 	IoState *state = IOSTATE;
 	IoSeq *buf = IoSeq_newWithUArray_copy_(IOSTATE, (UArray *)ba, 1);

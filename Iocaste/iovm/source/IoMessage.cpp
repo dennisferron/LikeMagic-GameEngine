@@ -47,6 +47,8 @@ But the cost to performance seems to outweigh the need to cover this case for no
 
 #define DATA(self) ((IoMessageData *)IoObject_dataPointer(self))
 
+extern "C" {
+
 static const char *protoId = "Message";
 
 /*
@@ -144,7 +146,7 @@ IoMessage *IoMessage_proto(void *state)
 	IoObject *self = IoObject_new(state);
 	IoMessageData *d;
 	IoObject_setDataPointer_(self, io_calloc(1, sizeof(IoMessageData)));
-	d = IoObject_dataPointer(self);
+	d = reinterpret_cast<IoMessageData*>(IoObject_dataPointer(self));
 
 	IoObject_tag_(self, IoMessage_newTag(state));
 	d->args  = List_new();
@@ -218,7 +220,7 @@ IoMessage *IoMessage_deepCopyOf_(IoMessage *self)
 	for (i = 0; i < IoMessage_argCount(self); i ++)
 	{
 		List_append_(DATA(child)->args,
-					 IOREF(IoMessage_deepCopyOf_(LIST_AT_(DATA(self)->args, i))));
+					 IOREF(IoMessage_deepCopyOf_(reinterpret_cast<IoMessage *>(LIST_AT_(DATA(self)->args, i)))));
 	}
 
 	IoMessage_rawSetName_(child, DATA(self)->name);
@@ -269,7 +271,7 @@ void IoMessage_mark(IoMessage *self)
 
 	if (DATA(self)->args)
 	{
-		LIST_FOREACH(DATA(self)->args, i, v, IoObject_shouldMark(v));
+		LIST_FOREACH(DATA(self)->args, i, v, IoObject_shouldMark(reinterpret_cast<IoObject*>(v)));
 	}
 
 	IoObject_shouldMarkIfNonNull((IoObject *)DATA(self)->next);
@@ -378,7 +380,7 @@ void IoMessage_setCachedArg_to_(IoMessage *self, int n, IoObject *v)
 {
 	IoMessage *arg;
 
-	while (!(arg = List_at_(DATA(self)->args, n)))
+	while (!(arg = reinterpret_cast<IoMessage*>(List_at_(DATA(self)->args, n))))
 	{
 		IoMessage_addArg_(self, IoMessage_new(IOSTATE));
 	}
@@ -392,7 +394,7 @@ void IoMessage_setCachedArg_toInt_(IoMessage *self, int n, int anInt)
 
 	IoMessage *arg = NULL;
 
-	while (!(arg = List_at_(DATA(self)->args, n)))
+	while (!(arg = reinterpret_cast<IoMessage*>(List_at_(DATA(self)->args, n))))
 	{
 		List_append_(DATA(self)->args, IOREF(IoMessage_new(IOSTATE)));
 	}
@@ -600,7 +602,7 @@ IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObjec
 				}
 				else
 				{
-					result = IoObject_tag(target)->performFunc(target, locals, m);
+					result = reinterpret_cast<IoObject*>(IoObject_tag(target)->performFunc(target, locals, m));
 				}
 
 #else
@@ -627,7 +629,7 @@ IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObjec
                     hereStepOut && state->stepMode == StepMode_RunOut)
                     state->stepMode = StepMode_StopOnAnyMessage;
 
-                return state->returnValue;
+                return reinterpret_cast<IoObject*>(state->returnValue);
 			}
 		}
 
@@ -650,7 +652,7 @@ int IoMessage_argCount(IoMessage *self)
 
 void IoMessage_assertArgCount_receiver_(IoMessage *self, int n, IoObject *receiver)
 {
-	if (List_size(DATA(self)->args) < n)
+	if ((int)List_size(DATA(self)->args) < n)
 	{
 		IoState_error_(IOSTATE, self, "[%s %s] requires %i arguments\n",
 					   IoObject_name(receiver), CSTRING(DATA(self)->name), n);
@@ -856,7 +858,7 @@ void IoMessage_appendDescriptionTo_follow_(IoMessage *self, UArray *ba, int foll
 
 				for (i = 0; i < max; i ++)
 				{
-					IoMessage *arg = List_at_(DATA(self)->args, i);
+					IoMessage *arg = reinterpret_cast<IoMessage*>(List_at_(DATA(self)->args, i));
 					IoMessage_appendDescriptionTo_follow_(arg, ba, 1);
 
 					if (i != max - 1)
@@ -1118,7 +1120,7 @@ IO_METHOD(IoMessage, argAt)
 	*/
 
 	int index =  IoNumber_asInt(IoMessage_locals_numberArgAt_(m , locals, 0));
-	IoObject *v = List_at_(DATA(self)->args, index);
+	IoObject *v = reinterpret_cast<IoMessage*>(List_at_(DATA(self)->args, index));
 	return v ? v : IONIL(self);
 }
 
@@ -1273,7 +1275,7 @@ IO_METHOD(IoMessage, argsEvaluatedIn)
 	IoList *args = IoList_new(IOSTATE);
 	int i;
 
-	for (i = 0; i < List_size(DATA(self)->args); i ++)
+	for (i = 0; i < (int)List_size(DATA(self)->args); i ++)
 	{
 		IoObject *arg = IoMessage_locals_valueArgAt_(self, context, i);
 		IoList_rawAppend_(args, arg);
@@ -1290,7 +1292,7 @@ IO_METHOD(IoMessage, evaluatedArgs)
 	IoList *args = IoList_new(IOSTATE);
 	int i;
 
-	for (i = 0; i < List_size(DATA(self)->args); i ++)
+	for (i = 0; i < (int)List_size(DATA(self)->args); i ++)
 	{
 		IoObject *arg = IoMessage_locals_valueArgAt_(self, locals, i);
 		IoList_rawAppend_(args, arg);
@@ -1320,7 +1322,7 @@ List *IoMessage_rawArgs(IoMessage *self)
 
 IoMessage *IoMessage_rawArgAt_(IoMessage *self, int n)
 {
-	IoMessage *result = List_at_(DATA(self)->args, n);
+	IoMessage *result = reinterpret_cast<IoMessage*>(List_at_(DATA(self)->args, n));
 	IoState_stackRetain_(IOSTATE, result);
 	return result;
 }
@@ -1399,3 +1401,5 @@ IoMessage *IoMessage_asMessageWithEvaluatedArgs(IoMessage *self, IoObject *local
 
 	return sendMessage;
 }
+
+} // extern "C"

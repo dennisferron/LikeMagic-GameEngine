@@ -17,6 +17,8 @@ A DLL Loader by Kentaro A. Kurahone.
 #include "IoDynLib.h"
 #include "DynLib.h"
 
+extern "C" {
+
 static const char *protoId = "DynLib";
 
 #define DATA(self) ((DynLib *)IoObject_dataPointer(self))
@@ -148,7 +150,7 @@ IoDynLib *IoDynLib_freeFuncName(IoDynLib *self, IoObject *locals, IoMessage *m)
 IoDynLib *IoDynLib_open(IoDynLib *self, IoObject *locals, IoMessage *m)
 {
 	/*doc DynLib open
-	Opens the dynamic library and returns self or raises a DynLoad.open Error if there is an error. 
+	Opens the dynamic library and returns self or raises a DynLoad.open Error if there is an error.
 	*/
 
 	if (IoMessage_argCount(m))
@@ -231,9 +233,9 @@ intptr_t marshal(IoDynLib *self, IoObject *arg)
 	else if (ISLIST(arg))
 	{
 		int i;
-		intptr_t *l = io_calloc(1, IoList_rawSize(arg) * sizeof(intptr_t));
-		for (i = 0; i < IoList_rawSize(arg); i ++)
-			l[i] = marshal(self, List_rawAt_(IoList_rawList(arg), i));
+		intptr_t *l = (intptr_t *)io_calloc(1, IoList_rawSize(arg) * sizeof(intptr_t));
+		for (i = 0; i < (int)IoList_rawSize(arg); i ++)
+			l[i] = marshal(self, (IoObject*)List_rawAt_(IoList_rawList(arg), i));
 		n = (intptr_t)l;
 	}
 	else if (ISBUFFER(arg))
@@ -242,7 +244,7 @@ intptr_t marshal(IoDynLib *self, IoObject *arg)
 	}
 	else if (ISBLOCK(arg))
 	{
-		unsigned char *blk = io_calloc(1, 20), *p = blk;
+		unsigned char *blk = (unsigned char *)io_calloc(1, 20), *p = blk;
 		// FIXME: need trampoline code for other architectures
 		*p++ = 0x68;
 		*((intptr_t *)p) = (intptr_t)arg;
@@ -283,9 +285,9 @@ IoObject *demarshal(IoObject *self, IoObject *arg, intptr_t n)
 		intptr_t *values = (intptr_t *)n;
 		int i;
 
-		for (i = 0; i < IoList_rawSize(arg); i ++)
+		for (i = 0; i < (int)IoList_rawSize(arg); i ++)
 		{
-			IoObject *value = List_at_(IoList_rawList(arg), i);
+			IoObject *value = (IoObject *)List_at_(IoList_rawList(arg), i);
 			List_at_put_(IoList_rawList(arg), i, demarshal(self, value, values[i]));
 		}
 
@@ -401,7 +403,7 @@ IoDynLib *IoDynLib_justCall(IoDynLib *self, IoObject *locals, IoMessage *m, int 
 
 	if (IoMessage_argCount(m) > 1)
 	{
-		params = io_calloc(1, IoMessage_argCount(m) * sizeof(unsigned int));
+		params = (intptr_t *)io_calloc(1, IoMessage_argCount(m) * sizeof(unsigned int));
 	}
 
 	for (n = 0; n < IoMessage_argCount(m) - 1; n++)
@@ -457,7 +459,7 @@ IoDynLib *IoDynLib_justCall(IoDynLib *self, IoObject *locals, IoMessage *m, int 
 IoDynLib *IoDynLib_call(IoDynLib *self, IoObject *locals, IoMessage *m)
 {
 	/*doc DynLib call(functionName, <arg1>, <arg2>, ...)
-	Call's the dll function of the specified name with the arguments provided. 
+	Call's the dll function of the specified name with the arguments provided.
 	Returns the a Number with the result value.
 	*/
 	return IoDynLib_justCall(self, locals, m, 0);
@@ -468,17 +470,17 @@ IoDynLib *IoDynLib_voidCall(IoDynLib *self, IoObject *locals, IoMessage *m)
 	/*doc DynLib voidCall(functionName, <arg1>, <arg2>, ...)
 	Same as call but for functions with no return value. Returns nil.
 	*/
-	
+
 	return IoDynLib_justCall(self, locals, m, 1);
 }
 
 IoDynLib *IoDynLib_callPluginInitFunc(IoDynLib *self, IoObject *locals, IoMessage *m)
 {
 	/*doc DynLib callPluginInit(functionName)
-	Call's the dll function of the specified name. 
+	Call's the dll function of the specified name.
 	Returns the result as a Number or raises an exception on error.
 	*/
-	
+
 	intptr_t rc = 0;
 	intptr_t *params = NULL;
 	void *f = DynLib_pointerForSymbolName_(DATA(self),
@@ -496,7 +498,7 @@ IoDynLib *IoDynLib_callPluginInitFunc(IoDynLib *self, IoObject *locals, IoMessag
 		return IONIL(self);
 	}
 
-	params = io_calloc(1, sizeof(intptr_t) * 2);
+	params = (intptr_t*)io_calloc(1, sizeof(intptr_t) * 2);
 
 	params[0] = (intptr_t)IOSTATE;
 	params[1] = (intptr_t)IOSTATE->lobby;
@@ -508,7 +510,7 @@ IoDynLib *IoDynLib_callPluginInitFunc(IoDynLib *self, IoObject *locals, IoMessag
 
 /*
 IoSeq *IoDynLib_returnsString(IoDynLib *self, IoObject *locals, IoMessage *m)
-{	
+{
 	intptr_t n = IoNumber_asInt(IoMessage_locals_numberArgAt_(m, locals, 0));
 
 	if (n == 0)
@@ -520,3 +522,4 @@ IoSeq *IoDynLib_returnsString(IoDynLib *self, IoObject *locals, IoMessage *m)
 }
 */
 
+}

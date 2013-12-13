@@ -141,6 +141,8 @@ void add_convs_from_script(IoVM* iovm)
         {
             ExprPtr ward;
             IoObject* io_obj = EvalAs<IoObject*>::value(expr, ward);
+            if (io_obj->object == nullptr)
+                throw std::runtime_error("Source Io object is missing object pointer.");
             return Term<IoBlock>::create(IoBlock(iovm, io_obj, io_obj));
         }
 

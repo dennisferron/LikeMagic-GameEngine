@@ -11,11 +11,11 @@ int ISVECTOR(IoObject *self)
 
 void *IoMessage_locals_vectorArgAt_(IoMessage *self, void *locals, int n)
 {
-	IoObject *v = IoMessage_locals_valueArgAt_(self, locals, n);
+	IoObject *v = IoMessage_locals_valueArgAt_(self, (IoObject*)locals, n);
 
 	if (!ISVECTOR(v))
 	{
-		IoMessage_locals_numberArgAt_errorForType_(self, locals, n, "Vector");
+		IoMessage_locals_numberArgAt_errorForType_(self, (IoObject*)locals, n, "Vector");
 	}
 
 	return v;
@@ -23,7 +23,7 @@ void *IoMessage_locals_vectorArgAt_(IoMessage *self, void *locals, int n)
 
 void *IoMessage_locals_pointArgAt_(IoMessage *m, void *locals, int n)
 {
-	IoSeq *self = IoMessage_locals_vectorArgAt_(m, locals, n);
+	IoSeq *self = (IoSeq*)IoMessage_locals_vectorArgAt_(m, (IoObject*)locals, n);
 	IOASSERT(IoSeq_rawSize(self) > 1, "Vector not long enough to be used as point argument");
 	return self;
 }

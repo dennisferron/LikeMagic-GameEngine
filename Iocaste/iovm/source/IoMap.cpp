@@ -114,7 +114,7 @@ void IoMap_free(IoMap *self)
 void IoMap_mark(IoMap *self)
 {
 	//PHash_doOnKeyAndValue_(DATA(self), (ListDoCallback *)IoObject_shouldMark);
-	PHASH_FOREACH(DATA(self), k, v, IoObject_shouldMark(k); IoObject_shouldMark(v));
+	PHASH_FOREACH(DATA(self), k, v, IoObject_shouldMark((IoObject *)k); IoObject_shouldMark((IoObject *)v));
 }
 
 void IoMap_rawAtPut(IoMap *self, IoSymbol *k, IoObject *v)
@@ -141,17 +141,17 @@ IO_METHOD(IoMap, empty)
 
 IoObject *IoMap_rawAt(IoMap *self, IoSymbol *k)
 {
-	return PHash_at_(DATA(self), k);
+	return (IoObject *)PHash_at_(DATA(self), k);
 }
 
 IO_METHOD(IoMap, at)
 {
 	/*doc Map at(keyString, optionalDefaultValue)
-	Returns the value for the key keyString. Returns nil if the key is absent. 
+	Returns the value for the key keyString. Returns nil if the key is absent.
 	*/
 
 	IoSymbol *k = IoMessage_locals_symbolArgAt_(m, locals, 0);
-	void *result = PHash_at_(DATA(self), k);
+	IoObject *result = (IoObject *)PHash_at_(DATA(self), k);
 
 	if (!result && IoMessage_argCount(m) > 1)
 	{
@@ -164,7 +164,7 @@ IO_METHOD(IoMap, at)
 IO_METHOD(IoMap, atPut)
 {
 	/*doc Map atPut(keyString, aValue)
-	Inserts/sets aValue with the key keyString. Returns self. 
+	Inserts/sets aValue with the key keyString. Returns self.
 	*/
 
 	IoSymbol *k = IoMessage_locals_symbolArgAt_(m, locals, 0);
@@ -176,8 +176,8 @@ IO_METHOD(IoMap, atPut)
 IO_METHOD(IoMap, atIfAbsentPut)
 {
 	/*doc Map atIfAbsentPut(keyString, aValue)
-	If a value is present at the specified key, the value is returned. 
-	Otherwise, inserts/sets aValue and returns aValue. 
+	If a value is present at the specified key, the value is returned.
+	Otherwise, inserts/sets aValue and returns aValue.
 	*/
 
 	IoSymbol *k = IoMessage_locals_symbolArgAt_(m, locals, 0);
@@ -188,7 +188,7 @@ IO_METHOD(IoMap, atIfAbsentPut)
 		IoMap_rawAtPut(self, k, v);
 	}
 
-	return PHash_at_(DATA(self), k);
+	return (IoObject *)PHash_at_(DATA(self), k);
 }
 
 IO_METHOD(IoMap, size)
@@ -213,7 +213,7 @@ IO_METHOD(IoMap, hasKey)
 IO_METHOD(IoMap, removeAt)
 {
 	/*doc Map removeAt(keyString)
-	Removes the specified keyString if present. Returns self. 
+	Removes the specified keyString if present. Returns self.
 	*/
 
 	IoSymbol *k = IoMessage_locals_symbolArgAt_(m, locals, 0);
@@ -236,7 +236,7 @@ IO_METHOD(IoMap, hasValue)
 IoList *IoMap_rawKeys(IoMap *self)
 {
 	IoList *list = IoList_new(IOSTATE);
-	PHASH_FOREACH(DATA(self), k, v, IoList_rawAppend_(list, k));
+	PHASH_FOREACH(DATA(self), k, v, IoList_rawAppend_(list, (IoObject *)k));
 	return list;
 }
 
@@ -256,7 +256,7 @@ IO_METHOD(IoMap, values)
 	*/
 
 	IoList *list = IoList_new(IOSTATE);
-	PHASH_FOREACH(DATA(self), k, v, IoList_rawAppend_(list, v));
+	PHASH_FOREACH(DATA(self), k, v, IoList_rawAppend_(list, (IoObject *)v));
 	return list;
 }
 
@@ -267,12 +267,12 @@ IO_METHOD(IoMap, foreach)
 the key and value to the value and executes message.
 Example:
 <pre>	aMap foreach(k, v, writeln(k, " = ", v))
-aMap foreach(v, write(v))</pre>	
+aMap foreach(v, write(v))</pre>
 
 Example use with a block:
 
 <pre>	myBlock = block(k, v, write(k, " = ", v, "\n"))
-aMap foreach(k, v, myBlock(k, v))</pre>	
+aMap foreach(k, v, myBlock(k, v))</pre>
 */
 
 	IoState *state = IOSTATE;
@@ -288,10 +288,10 @@ aMap foreach(k, v, myBlock(k, v))</pre>
 		IoState_clearTopPool(state);
 		if (keyName)
 		{
-			IoObject_setSlot_to_(locals, keyName, key);
+			IoObject_setSlot_to_(locals, keyName, (IoObject *)key);
 		}
 
-		IoObject_setSlot_to_(locals, valueName, value);
+		IoObject_setSlot_to_(locals, valueName, (IoObject *)value);
 		IoMessage_locals_performOn_(doMessage, locals, locals);
 
 		if (IoState_handleStatus(IOSTATE))

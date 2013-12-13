@@ -367,7 +367,7 @@ IO_METHOD(IoNumber, asNumber)
 	/*doc Number asNumber
 	Returns self.
 	*/
-	
+
 	return self;
 }
 
@@ -376,7 +376,7 @@ IO_METHOD(IoNumber, add_)
 	/*doc Number +(aNumber)
 	Returns a new number that is the sum of the receiver and aNumber.
 	*/
-	
+
 	IoNumber *other = IoMessage_locals_numberArgAt_(m, locals, 0);
 	return IONUMBER(DATA(self) + DATA(other));
 }
@@ -387,7 +387,7 @@ IO_METHOD(IoNumber, subtract)
 	/*doc Number -(aNumber)
 	Returns a new number that is the difference of the receiver and aNumber.
 	*/
-	
+
 	IoNumber *other = IoMessage_locals_numberArgAt_(m, locals, 0);
 	return IONUMBER(DATA(self) - DATA(other));
 }
@@ -397,7 +397,7 @@ IO_METHOD(IoNumber, divide)
 	/*doc Number /(aNumber)
 	Returns a new number with the value of the receiver divided by aNumber.
 	*/
-	
+
 	IoNumber *other = IoMessage_locals_numberArgAt_(m, locals, 0);
 	return IONUMBER(DATA(self) / DATA(other));
 }
@@ -407,7 +407,7 @@ IO_METHOD(IoNumber, multiply)
 	/*doc Number *(aNumber)
 	Returns a new number that is the product of the receiver and aNumber.
 	*/
-	
+
 	IoNumber *other = IoMessage_locals_numberArgAt_(m, locals, 0);
 	return IONUMBER(DATA(self) * DATA(other));
 }
@@ -426,7 +426,7 @@ IO_METHOD(IoNumber, printNumber)
 	/*doc Number print
 	Prints the number.
 	*/
-	
+
 	char *s = IoNumber_asAllocedCString(self);
 	IoState_print_((IoState *)IOSTATE, s);
 	io_free(s);
@@ -463,52 +463,52 @@ IO_METHOD(IoNumber, asCharacter)
 	value is the value of the first byte of the receiver.
 	Returns nil if the number has no valid UCS mapping.
 	*/
-	
+
 	double d =DATA(self);
 	long ld = d;
-	
+
 	if (d < 0 || d != ld)
 	{
 		return IONIL(self);
 	}
 	else
-	{	
+	{
 		uint32_t i = io_uint32InBigEndian((uint32_t)d);
 		int bytes = countBytes(ld);
 		IoSeq *s;
-		
-		if (bytes == 0) 
-		{ 
+
+		if (bytes == 0)
+		{
 			bytes = 1;
 		}
-		
-		if (bytes == 3) 
-		{ 
+
+		if (bytes == 3)
+		{
 			bytes = 4;
 		}
-		
-		if (bytes > 4) 
+
+		if (bytes > 4)
 		{
 			// no valid UCS encoding for this value
 			return IONIL(self);
 		}
-		
+
 		s = IoSeq_newWithData_length_(IOSTATE, (unsigned char *)&i, bytes);
-		
+
 		{
 			UArray *u = IoSeq_rawUArray(s);
-			int e = CENCODING_ASCII;
-			
+			CENCODING e = CENCODING_ASCII;
+
 			switch (bytes)
 			{
 				case 1: e = CENCODING_ASCII; break;
 				case 2: e = CENCODING_UCS2; break;
 				case 4: e = CENCODING_UCS4; break;
 			}
-			
+
 			UArray_setEncoding_(u, e);
 		}
-		
+
 		return s;
 	}
 }
@@ -518,7 +518,7 @@ IO_METHOD(IoNumber, asUint32Buffer)
 	/*doc Number asUint32Buffer
 	Returns a Sequence containing a 4 byte representation of the uint32 value of the receiver.
 	*/
-	
+
 	uint32_t i = (int)DATA(self);
 	return IoSeq_newWithData_length_(IOSTATE, (unsigned char *)&i, sizeof(uint32_t));
 }
@@ -547,13 +547,13 @@ IO_METHOD(IoNumber, asString)
 Returns a string representation of the receiver. For example:
 <pre>
 1234.5678 asString(0, 2)
-</pre>	
+</pre>
 would return:
 <pre>
 1234.57
-</pre>	
+</pre>
 */
-	
+
 	if (IoMessage_argCount(m) >= 1)
 	{
 		int whole = IoMessage_locals_intArgAt_(m, locals, 0);
@@ -574,7 +574,7 @@ would return:
 		// If whole == 0, printf might need an arbitary size string. Instead of
 		// second guessing the size, pick a really big size: 1024.
 		length = 1024;
-		s = io_calloc(1, length);
+		s = (char*)io_calloc(1, length);
 
 		snprintf(s, length, "%*.*f", whole, part, DATA(self));
 
@@ -600,7 +600,7 @@ IO_METHOD(IoNumber, abs)
 	/*doc Number abs
 	Returns a number with the absolute value of the receiver.
 	*/
-	
+
 	return (DATA(self) < 0) ? (IoObject *)IONUMBER(-DATA(self)) : (IoObject *)self;
 }
 
@@ -609,7 +609,7 @@ IO_METHOD(IoNumber, acos)
 	/*doc Number acos
 	Returns a number with the arc cosine of the receiver.
 	*/
-	
+
 	return IONUMBER(acos(DATA(self)));
 }
 
@@ -618,7 +618,7 @@ IO_METHOD(IoNumber, asin)
 	/*doc Number asin
 	Returns a number with the arc sine of the receiver.
 	*/
-	
+
 	return IONUMBER(asin(DATA(self)));
 }
 
@@ -627,7 +627,7 @@ IO_METHOD(IoNumber, atan)
 	/*doc Number atan
 	Returns a number with the arc tangent of the receiver.
 	*/
-	
+
 	return IONUMBER(atan(DATA(self)));
 }
 
@@ -636,7 +636,7 @@ IO_METHOD(IoNumber, atan2)
 	/*doc Number atan2(aNumber)
 	Returns a number with the arc tangent of y/x where y is the receiver and x is aNumber.
 	*/
-	
+
 	IoNumber *other = IoMessage_locals_numberArgAt_(m, locals, 0);
 	return IONUMBER(atan2(DATA(self), DATA(other)));
 }
@@ -647,7 +647,7 @@ IO_METHOD(IoNumber, ceil)
 	Returns the a number with the receiver's value rounded up to
 	the nearest integer if its fractional component is greater than 0.
 	*/
-	
+
 	return IONUMBER(ceil(DATA(self)));
 }
 
@@ -656,7 +656,7 @@ IO_METHOD(IoNumber, cos)
 	/*doc Number cos
 	Returns the cosine of the receiver.
 	*/
-	
+
 	return IONUMBER(cos(DATA(self)));
 }
 
@@ -672,7 +672,7 @@ IO_METHOD(IoNumber, exp)
 	/*doc Number exp
 	Returns e to the power of the receiver.
 	*/
-	
+
 	return IONUMBER(exp(DATA(self)));
 }
 
@@ -681,7 +681,7 @@ IO_METHOD(IoNumber, factorial)
 	/*doc Number factorial
 	Returns the factorial of the receiver.
 	*/
-	
+
 	int n = DATA(self);
 	double v = 1;
 	while (n)
@@ -698,7 +698,7 @@ IO_METHOD(IoNumber, floor)
 	Returns a number with the receiver's value rounded
 	down to the nearest integer if its fractional component is not 0.
 	*/
-	
+
 	return IONUMBER(floor(DATA(self)));
 }
 
@@ -788,11 +788,11 @@ IO_METHOD(IoNumber, pow)
 	/*doc Number pow(aNumber)
 	Returns the value of the receiver to the aNumber power.
 	*/
-	
+
 	/*doc Number **(aNumber)
 	Same as pow(aNumber).
 	*/
-	
+
 	IoNumber *other = IoMessage_locals_numberArgAt_(m, locals, 0);
 	return IONUMBER(pow(DATA(self), DATA(other)));
 }
@@ -803,7 +803,7 @@ IO_METHOD(IoNumber, round)
 	Returns a number with the receiver's value rounded up to
 	the nearest integer if its fraction component is >= .5 or rounded up to the nearest integer otherwise.
 	*/
-	
+
 	double x = DATA(self);
 	if (x < 0.0)
 		return IONUMBER(ceil(x - 0.5));
@@ -817,7 +817,7 @@ IO_METHOD(IoNumber, roundDown)
 	Returns a number with the receiver's value rounded down to
 	the nearest integer if its fraction component is <= .5 or rounded up the the nearest integer otherwise.
 	*/
-	
+
 	return IONUMBER(floor(DATA(self) + 0.5));
 }
 
@@ -975,7 +975,7 @@ IO_METHOD(IoNumber, bitShiftRight)
 IO_METHOD(IoNumber, isEven)
 {
 	/*doc Number isEven
-	Returns true if 
+	Returns true if
 	integer form of the receiver is even
 	, false otherwise.
 	*/
@@ -987,7 +987,7 @@ IO_METHOD(IoNumber, isEven)
 IO_METHOD(IoNumber, isOdd)
 {
 	/*doc Number isOdd
-	Returns true if 
+	Returns true if
 	integer form of the receiver is odd
 	, false otherwise.
 	*/
@@ -1001,7 +1001,7 @@ IO_METHOD(IoNumber, isOdd)
 IO_METHOD(IoNumber, isAlphaNumeric)
 {
 	/*doc Number isAlphaNumeric
-	Returns true if 
+	Returns true if
 	receiver is an alphanumeric character value
 	, false otherwise.
 	*/
@@ -1012,7 +1012,7 @@ IO_METHOD(IoNumber, isAlphaNumeric)
 IO_METHOD(IoNumber, isLetter)
 {
 	/*doc Number isLetter
-	Returns true if 
+	Returns true if
 	receiver is a letter character value
 	, false otherwise.
 	*/
@@ -1023,7 +1023,7 @@ IO_METHOD(IoNumber, isLetter)
 IO_METHOD(IoNumber, isControlCharacter)
 {
 	/*doc Number isControlCharacter
-	Returns true if 
+	Returns true if
 	receiver is a control character value
 	, false otherwise.
 	*/
@@ -1034,7 +1034,7 @@ IO_METHOD(IoNumber, isControlCharacter)
 IO_METHOD(IoNumber, isDigit)
 {
 	/*doc Number isDigit
-	Returns true if 
+	Returns true if
 	receiver is a numeric digit value
 	, false otherwise.
 	*/
@@ -1045,7 +1045,7 @@ IO_METHOD(IoNumber, isDigit)
 IO_METHOD(IoNumber, isGraph)
 {
 	/*doc Number isGraph
-	Returns true if 
+	Returns true if
 	the receiver is a printing character value except space
 	, false otherwise.
 	*/
@@ -1056,7 +1056,7 @@ IO_METHOD(IoNumber, isGraph)
 IO_METHOD(IoNumber, isLowercase)
 {
 	/*doc Number isLowercase
-	Returns true if 
+	Returns true if
 	the receiver is a lowercase character value
 	, false otherwise.
 	*/
@@ -1067,7 +1067,7 @@ IO_METHOD(IoNumber, isLowercase)
 IO_METHOD(IoNumber, isUppercase)
 {
 	/*doc Number isUppercase
-	Returns true if 
+	Returns true if
 	the receiver is a uppercase character value
 	, false otherwise.
 	*/
@@ -1078,7 +1078,7 @@ IO_METHOD(IoNumber, isUppercase)
 IO_METHOD(IoNumber, isPrint)
 {
 	/*doc Number isPrint
-	Returns true if 
+	Returns true if
 	the receiver is a printing character value, including space
 	, false otherwise.
 	*/
@@ -1089,7 +1089,7 @@ IO_METHOD(IoNumber, isPrint)
 IO_METHOD(IoNumber, isPunctuation)
 {
 	/*doc Number isPunctuation
-	Returns true if 
+	Returns true if
 	the receiver is a punctuation character value
 	, false otherwise.
 
@@ -1101,7 +1101,7 @@ IO_METHOD(IoNumber, isPunctuation)
 IO_METHOD(IoNumber, isSpace)
 {
 	/*doc Number isSpace
-	Returns true if 
+	Returns true if
 	the receiver is a space, formfeed, newline carriage return, tab or vertical tab character value
 	, false otherwise.
 	*/
@@ -1112,7 +1112,7 @@ IO_METHOD(IoNumber, isSpace)
 IO_METHOD(IoNumber, isHexDigit)
 {
 	/*doc Number isHexDigit
-	Returns true if 
+	Returns true if
 	the receiver is a hexadecimal character value
 	, false otherwise.
 	*/

@@ -13,6 +13,8 @@ A container for a duration of time.
 #include "IoNumber.h"
 #include <time.h>
 
+extern "C" {
+
 static const char *protoId = "Duration";
 
 #define DATA(self) ((Duration *)IoObject_dataPointer(self))
@@ -135,7 +137,7 @@ double IoDuration_asSeconds(IoDuration *self)
 IO_METHOD(IoDuration, years)
 {
 	/*doc Duration years
-	Returns a number containing the year of the receiver. 
+	Returns a number containing the year of the receiver.
 	*/
 
 	return IONUMBER(Duration_years(DATA(self)));
@@ -156,7 +158,7 @@ IO_METHOD(IoDuration, setYears)
 IO_METHOD(IoDuration, days)
 {
 	/*doc Duration days
-	Returns a number containing the day of the month of the receiver. 
+	Returns a number containing the day of the month of the receiver.
 	*/
 
 	return IONUMBER(Duration_days(DATA(self)));
@@ -177,7 +179,7 @@ IO_METHOD(IoDuration, setDays)
 IO_METHOD(IoDuration, hours)
 {
 	/*doc Duration hours
-	Returns a number containing the hour of the day(0-23) of the receiver. 
+	Returns a number containing the hour of the day(0-23) of the receiver.
 	*/
 
 	return IONUMBER(Duration_hours(DATA(self)));
@@ -198,7 +200,7 @@ IO_METHOD(IoDuration, setHours)
 IO_METHOD(IoDuration, minutes)
 {
 	/*doc Duration minutes
-	Returns a number containing the minute of the hour(0-59) of the receiver. 
+	Returns a number containing the minute of the hour(0-59) of the receiver.
 	*/
 
 	return IONUMBER(Duration_minutes(DATA(self)));
@@ -220,7 +222,7 @@ IO_METHOD(IoDuration, seconds)
 {
 	/*doc Duration seconds
 	Returns a number containing the seconds of the minute(0-59) of the receiver.
-	This number may contain fractions of seconds. 
+	This number may contain fractions of seconds.
 	*/
 
 	return IONUMBER(Duration_seconds(DATA(self)));
@@ -243,7 +245,7 @@ IO_METHOD(IoDuration, asString)
 /*doc Duration asString(formatString)
 Returns a string representation of the receiver. The formatString argument is optional. If present, the returned string will be formatted according to ANSI C date formating rules.
 <p>
-<pre>	
+<pre>
 %y years without century as two-digit decimal number (00-99)
 %Y year with century as four-digit decimal number
 
@@ -280,12 +282,12 @@ IO_METHOD(IoDuration, printDuration)
 /*doc Duration totalSeconds
 Same as a asNumber.
 */
-	
+
 IO_METHOD(IoDuration, asNumber)
 {
 	/*doc Duration asNumber
 	Returns a number representation of the receiver.
-	(where 1 is equal to one second) 
+	(where 1 is equal to one second)
 	*/
 
 	return IONUMBER(Duration_asSeconds(DATA(self)));
@@ -295,7 +297,7 @@ IO_METHOD(IoDuration, fromNumber)
 {
 	/*doc Duration fromNumber(aNumber)
 	Sets the receiver to the Duration specified by
-	aNumber(same format number as returned by Duration asNumber). Returns self. 
+	aNumber(same format number as returned by Duration asNumber). Returns self.
 	*/
 
 	Duration_fromSeconds_(DATA(self), IoMessage_locals_doubleArgAt_(m, locals, 0));
@@ -307,7 +309,7 @@ IO_METHOD(IoDuration, fromNumber)
 IO_METHOD(IoDuration, add)
 {
 	/*doc Duration +=(aDuration)
-	Add aDuration to the receiver. Returns self. 
+	Add aDuration to the receiver. Returns self.
 	*/
 
 	IoDuration *d = IoMessage_locals_durationArgAt_(m, locals, 0);
@@ -318,7 +320,7 @@ IO_METHOD(IoDuration, add)
 IO_METHOD(IoDuration, subtract)
 {
 	/*doc Duration -=(aDuration)
-	Subtract aDuration to the receiver. Returns self. 
+	Subtract aDuration to the receiver. Returns self.
 	*/
 
 	IoDuration *d = IoMessage_locals_durationArgAt_(m, locals, 0);
@@ -326,3 +328,4 @@ IO_METHOD(IoDuration, subtract)
 	return self;
 }
 
+}

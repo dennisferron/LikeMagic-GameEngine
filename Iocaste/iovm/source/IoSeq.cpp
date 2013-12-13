@@ -212,7 +212,7 @@ IoSymbol *IoSeq_newSymbolWithFormat_(void *state, const char *format, ...)
 	va_start(ap, format);
 	ba = UArray_newWithVargs_(format, ap);
 	va_end(ap);
-	return IoState_symbolWithUArray_copy_(state, ba, 0);
+	return IoState_symbolWithUArray_copy_((IoState*)state, ba, 0);
 }
 
 // -----------------------------------------------------

@@ -337,7 +337,7 @@ BASEKIT_API UArray UArray_stackAllocedEmptyUArray(void)
 	return self;
 }
 
-UArray *UArray_newWithCString_copy_(char *s, int copy)
+UArray *UArray_newWithCString_copy_(const char *s, int copy)
 {
 	return UArray_newWithData_type_size_copy_(s, CTYPE_uint8_t, strlen(s), copy);
 }

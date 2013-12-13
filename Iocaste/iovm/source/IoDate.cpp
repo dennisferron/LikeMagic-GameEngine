@@ -16,6 +16,8 @@
 #include <string.h>
 #include <time.h>
 
+extern "C" {
+
 static const char *protoId = "Date";
 
 #define DATA(self) ((Date *)IoObject_dataPointer(self))
@@ -86,7 +88,7 @@ IoDate *IoDate_proto(void *state)
 	/*doc Date format
 	Returns the format string for the receiver. The default is "%Y-%m-%d %H:%M:%S %Z".
 	*/
-	
+
 	IoObject_setSlot_to_(self, IOSYMBOL("format"), IOSYMBOL("%Y-%m-%d %H:%M:%S %Z"));
 	IoState_registerProtoWithId_((IoState *)state, self, protoId);
 
@@ -156,20 +158,20 @@ IoDate *IoDate_fromSerialization(IoDate *self, IoObject *locals, IoMessage *m)
 	/*doc Date fromSerialization
 	Sets the date based on the serialization sequence.  Return self.
 	*/
-	
+
 	IoSeq *serializationSeq = IoMessage_locals_seqArgAt_(m, locals, 0);
 	UArray *serialization = UArray_clone(IoSeq_rawUArray(serializationSeq));
-	
+
 	UArray_setItemType_(serialization, CTYPE_int32_t);
 	if(UArray_size(serialization) != 4)
 	{
 		IoState_error_(IOSTATE, self, "Expected a serialization sequence comprising 4 int32 items.");
 	}
-	
+
 	Date_fromSerialization(DATA(self), serialization);
-	
+
 	UArray_free(serialization);
-	
+
 	return self;
 }
 
@@ -199,7 +201,7 @@ IO_METHOD(IoDate, clock)
 {
 	/*doc Date clock
 	Returns a number containing the number of seconds
-	of processor time since the beginning of the program or -1 if unavailable. 
+	of processor time since the beginning of the program or -1 if unavailable.
 	*/
 
 	return IONUMBER(Date_Clock());
@@ -208,7 +210,7 @@ IO_METHOD(IoDate, clock)
 IO_METHOD(IoDate, cpuSecondsToRun)
 {
 	/*doc Date cpuSecondsToRun(expression)
-	Evaluates message and returns a Number whose value 
+	Evaluates message and returns a Number whose value
 	is the cpu seconds taken to do the evaluation.
 	*/
 
@@ -226,7 +228,7 @@ IO_METHOD(IoDate, cpuSecondsToRun)
 IO_METHOD(IoDate, year)
 {
 	/*doc Date year
-	Returns a number containing the year of the receiver. 
+	Returns a number containing the year of the receiver.
 	*/
 
 	return IONUMBER(Date_year(DATA(self)));
@@ -235,7 +237,7 @@ IO_METHOD(IoDate, year)
 IO_METHOD(IoDate, setYear)
 {
 	/*doc Date setYear(aNumber)
-	Sets the year of the receiver. 
+	Sets the year of the receiver.
 	*/
 
 	Date_setYear_(DATA(self), IoMessage_locals_intArgAt_(m, locals, 0));
@@ -245,7 +247,7 @@ IO_METHOD(IoDate, setYear)
 IO_METHOD(IoDate, month)
 {
 	/*doc Date month
-	Returns a number containing the month(1-12) of the year of the receiver. 
+	Returns a number containing the month(1-12) of the year of the receiver.
 	*/
 
 	return IONUMBER(Date_month(DATA(self)) + 1);
@@ -254,7 +256,7 @@ IO_METHOD(IoDate, month)
 IO_METHOD(IoDate, setMonth)
 {
 	/*doc Date setMonth(aNumber)
-	Sets the month(1-12) of the receiver. Returns self. 
+	Sets the month(1-12) of the receiver. Returns self.
 	*/
 
 	int v = IoMessage_locals_intArgAt_(m, locals, 0);
@@ -266,7 +268,7 @@ IO_METHOD(IoDate, setMonth)
 IO_METHOD(IoDate, day)
 {
 	/*doc Date day
-	Returns a number containing the day of the month of the receiver. 
+	Returns a number containing the day of the month of the receiver.
 	*/
 
 	return IONUMBER(Date_day(DATA(self)));
@@ -311,7 +313,7 @@ IO_METHOD(IoDate, setDay)
 IO_METHOD(IoDate, hour)
 {
 	/*doc Date hour
-	Returns a number containing the hour of the day(0-23) of the receiver. 
+	Returns a number containing the hour of the day(0-23) of the receiver.
 	*/
 
 	return IONUMBER(Date_hour(DATA(self)));
@@ -333,7 +335,7 @@ IO_METHOD(IoDate, setHour)
 IO_METHOD(IoDate, minute)
 {
 	/*doc Date minute
-	Returns a number containing the minute of the hour(0-59) of the receiver. 
+	Returns a number containing the minute of the hour(0-59) of the receiver.
 	*/
 
 	return IONUMBER(Date_minute(DATA(self)));
@@ -356,7 +358,7 @@ IO_METHOD(IoDate, setMinute)
 IO_METHOD(IoDate, second)
 {
 	/*doc Date second
-	Returns a number containing the seconds of the minute(0-59) of the receiver. This number may contain fractions of seconds. 
+	Returns a number containing the seconds of the minute(0-59) of the receiver. This number may contain fractions of seconds.
 	*/
 
 	return IONUMBER(Date_second(DATA(self)));
@@ -379,7 +381,7 @@ IO_METHOD(IoDate, setSecond)
 IO_METHOD(IoDate, zone)
 {
 	/*doc Date zone
-	Returns a string containing the system's time zone code. 
+	Returns a string containing the system's time zone code.
 	*/
 
 	time_t t = time(NULL);
@@ -431,7 +433,7 @@ IO_METHOD(IoDate, setGmtOffset)
 	IoObject_isDirty_(self, 1);
 	return self;
 }
-	
+
 IO_METHOD(IoDate, gmtOffset)
 {
 	/*doc Date gmtOffset
@@ -473,10 +475,10 @@ IO_METHOD(IoDate, convertToZone)
 	*/
 
 	struct timezone tz;
-	
+
 	int mw = IoMessage_locals_intArgAt_(m, locals, 0);
 	int dst = IoMessage_locals_boolArgAt_(m, locals, 1);
-	
+
 	tz.tz_minuteswest = mw;
 	tz.tz_dsttime = dst;
 	Date_convertToTimeZone_(DATA(self), tz);
@@ -492,9 +494,9 @@ IO_METHOD(IoDate, convertToLocal)
 
 	struct timeval tv;
 	struct timezone tz;
-	
+
 	gettimeofday(&tv, &tz);
-	
+
 	Date_convertToTimeZone_(DATA(self), tz);
 	IoObject_isDirty_(self, 1);
 	return self;
@@ -509,17 +511,17 @@ IO_METHOD(IoDate, setToUTC)
 	struct timezone tz;
 	tz.tz_minuteswest = 0;
 	tz.tz_dsttime = 0;
-	
+
 	Date_setTimeZone_(DATA(self), tz);
 	IoObject_isDirty_(self, 1);
-	
+
 	return self;
 }
 
 IO_METHOD(IoDate, isDaylightSavingsTime)
 {
 	/*doc Date isDaylightSavingsTime
-	Returns self if Daylight Saving Time is in effect for the receiver, otherwise returns Nil. 
+	Returns self if Daylight Saving Time is in effect for the receiver, otherwise returns Nil.
 	*/
 
 	return IOBOOL(self, Date_isDaylightSavingsTime(DATA(self)));
@@ -528,9 +530,9 @@ IO_METHOD(IoDate, isDaylightSavingsTime)
 IO_METHOD(IoDate, isValidTime)
 {
 	/*doc Date isValidTime(hour, min, sec)
-	Returns self if the specified time is valid, otherwise returns Nil. 
-	A negative value will count back; i.e., a value of -5 for the hour, 
-	will count back 5 hours to return a value of 19. No adjustment is 
+	Returns self if the specified time is valid, otherwise returns Nil.
+	A negative value will count back; i.e., a value of -5 for the hour,
+	will count back 5 hours to return a value of 19. No adjustment is
 	done for values above 24.
 	*/
 
@@ -550,7 +552,7 @@ IO_METHOD(IoDate, isValidTime)
 IO_METHOD(IoDate, secondsSince_)
 {
 	/*doc Date secondsSince(aDate)
-	Returns a number of seconds of between aDate and the receiver. 
+	Returns a number of seconds of between aDate and the receiver.
 	*/
 
 	IoDate *date = IoMessage_locals_dateArgAt_(m, locals, 0);
@@ -560,7 +562,7 @@ IO_METHOD(IoDate, secondsSince_)
 IO_METHOD(IoDate, secondsSinceNow)
 {
 	/*doc Date secondsSinceNow(aDate)
-	Returns the number of seconds since aDate. 
+	Returns the number of seconds since aDate.
 	*/
 
 	return IONUMBER(Date_secondsSinceNow(DATA(self)));
@@ -569,7 +571,7 @@ IO_METHOD(IoDate, secondsSinceNow)
 IO_METHOD(IoDate, isPast)
 {
 	/*doc Date isPast
-	Returns true if the receiver is a date in the past. 
+	Returns true if the receiver is a date in the past.
 	*/
 
 	return IOBOOL(self, Date_secondsSinceNow(DATA(self)) > 0);
@@ -580,7 +582,7 @@ IO_METHOD(IoDate, dateAfterSeconds_)
 {
 	// doc Date dateAfterSeconds(secondsNumber)
 	Returns a new date that is secondsNumber seconds after the receiver.
-	
+
 
 	IoDate *newDate = IoDate_new(IOSTATE);
 	Date_addSeconds_(DATA(newDate), IoMessage_locals_doubleArgAt_(m, locals, 0));
@@ -596,7 +598,7 @@ receivers format. If the optionalFormatString argument is present, the
 receiver's format is set to it first. Formatting is according to ANSI C
 date formatting rules.
 <p>
-<pre>	
+<pre>
 %a abbreviated weekday name (Sun, Mon, etc.)
 %A full weekday name (Sunday, Monday, etc.)
 %b abbreviated month name (Jan, Feb, etc.)
@@ -621,10 +623,10 @@ to "%m/%d/%y".
 %Z time zone name (e.g. EST);
 null string if no time zone can be obtained
 %% stands for '%' character in output string.
-</pre>	
+</pre>
 */
 
-	char *format = "%Y-%m-%d %H:%M:%S %Z";
+	const char *format = "%Y-%m-%d %H:%M:%S %Z";
 
 	if (IoMessage_argCount(m) == 1)
 	{
@@ -676,7 +678,7 @@ IO_METHOD(IoDate, fromNumber)
 IO_METHOD(IoDate, fromString)
 {
 	/*doc Date fromString(aString, formatString)
-	Sets the receiver to the date specified by aString as parsed according to the given formatString. See the Date asString method for formatting rules. Returns self. 
+	Sets the receiver to the date specified by aString as parsed according to the given formatString. See the Date asString method for formatting rules. Returns self.
 	*/
 
 	IoMessage_assertArgCount_receiver_(m, 2, self);
@@ -694,7 +696,7 @@ IO_METHOD(IoDate, fromString)
 IO_METHOD(IoDate, subtract)
 {
 	/*doc Date -(aDurationOrDate)
-	Return a new Date with the receiver's value minus an amount of time specified by aDuration to the receiver. Returns self. 
+	Return a new Date with the receiver's value minus an amount of time specified by aDuration to the receiver. Returns self.
 	*/
 
 	IoObject *v = IoMessage_locals_valueArgAt_(m, locals, 0);
@@ -731,7 +733,7 @@ IO_METHOD(IoDate, subtractInPlace)
 IO_METHOD(IoDate, addInPlace)
 {
 	/*doc Date +=(aDuration)
-	Add aDuration to the receiver. Returns self. 
+	Add aDuration to the receiver. Returns self.
 	*/
 
 	IoDuration *d = IoMessage_locals_durationArgAt_(m, locals, 0);
@@ -743,10 +745,12 @@ IO_METHOD(IoDate, addInPlace)
 IO_METHOD(IoDate, add)
 {
 	/*doc Date +(aDuration)
-	Return a new Date with the receiver's value plus an amount 
-	of time specified by aDuration object to the receiver. 
+	Return a new Date with the receiver's value plus an amount
+	of time specified by aDuration object to the receiver.
 	*/
 
 	IoDate *newDate = IOCLONE(self);
 	return IoDate_addInPlace(newDate, locals, m);
+}
+
 }

@@ -526,7 +526,7 @@ IO_METHOD(IoObject, symbols)
 	*/
 
 	IoList *list = IoList_new(IOSTATE);
-	CHASH_FOREACH(IOSTATE->symbols, i, v, IoList_rawAppend_(list, v));
+	CHASH_FOREACH(IOSTATE->symbols, i, v, IoList_rawAppend_(list, (IoObject*)v));
 	return list;
 }
 

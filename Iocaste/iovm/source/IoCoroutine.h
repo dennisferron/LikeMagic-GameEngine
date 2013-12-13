@@ -24,6 +24,7 @@ typedef IoObject IoCoroutine;
 typedef struct
 {
 	//Coro *cid;
+    //std::vector<IoCallData> io_call_stack;
 	Stack *ioStack;
 	int debuggingOn;
 } IoCoroutineData;

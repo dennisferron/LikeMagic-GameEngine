@@ -9,6 +9,8 @@ Contains methods related to the IoVM debugger.
 #include "IoDebugger.h"
 #include "IoMessage_parser.h"
 
+extern "C" {
+
 IoObject *IoDebugger_proto(void *state)
 {
 	IoMethodTable methodTable[] =
@@ -22,3 +24,4 @@ IoObject *IoDebugger_proto(void *state)
 	return self;
 }
 
+}

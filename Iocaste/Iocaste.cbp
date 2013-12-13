@@ -323,126 +323,126 @@
 		<Unit filename="iovm/io/Y_Path.io" />
 		<Unit filename="iovm/io/Z_CLI.io" />
 		<Unit filename="iovm/io/Z_Importer.io" />
-		<Unit filename="iovm/source/IoBlock.c">
+		<Unit filename="iovm/source/IoBlock.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoBlock.h" />
-		<Unit filename="iovm/source/IoCFunction.c">
+		<Unit filename="iovm/source/IoCFunction.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoCFunction.h" />
-		<Unit filename="iovm/source/IoCall.c">
+		<Unit filename="iovm/source/IoCall.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoCall.h" />
-		<Unit filename="iovm/source/IoCollector.c">
+		<Unit filename="iovm/source/IoCollector.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoCollector.h" />
-		<Unit filename="iovm/source/IoCompiler.c">
+		<Unit filename="iovm/source/IoCompiler.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoCompiler.h" />
 		<Unit filename="iovm/source/IoConfig.h" />
 		<Unit filename="iovm/source/IoContext.h" />
-		<Unit filename="iovm/source/IoCoroutine.c">
+		<Unit filename="iovm/source/IoCoroutine.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoCoroutine.h" />
-		<Unit filename="iovm/source/IoDate.c">
+		<Unit filename="iovm/source/IoDate.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoDate.h" />
-		<Unit filename="iovm/source/IoDebugger.c">
+		<Unit filename="iovm/source/IoDebugger.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoDebugger.h" />
-		<Unit filename="iovm/source/IoDirectory.c">
+		<Unit filename="iovm/source/IoDirectory.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoDirectory.h" />
-		<Unit filename="iovm/source/IoDuration.c">
+		<Unit filename="iovm/source/IoDuration.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoDuration.h" />
-		<Unit filename="iovm/source/IoDynLib.c">
+		<Unit filename="iovm/source/IoDynLib.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoDynLib.h" />
-		<Unit filename="iovm/source/IoError.c">
+		<Unit filename="iovm/source/IoError.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoError.h" />
-		<Unit filename="iovm/source/IoFile.c">
+		<Unit filename="iovm/source/IoFile.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoFile.h" />
-		<Unit filename="iovm/source/IoFile_stat.c">
+		<Unit filename="iovm/source/IoFile_stat.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoFile_stat.h" />
 		<Unit filename="iovm/source/IoInstallPrefix.h" />
-		<Unit filename="iovm/source/IoLexer.c">
+		<Unit filename="iovm/source/IoLexer.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoLexer.h" />
-		<Unit filename="iovm/source/IoList.c">
+		<Unit filename="iovm/source/IoList.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoList.h" />
-		<Unit filename="iovm/source/IoMap.c">
+		<Unit filename="iovm/source/IoMap.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoMap.h" />
-		<Unit filename="iovm/source/IoMessage.c">
+		<Unit filename="iovm/source/IoMessage.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoMessage.h" />
 		<Unit filename="iovm/source/IoMessage_inline.h" />
-		<Unit filename="iovm/source/IoMessage_opShuffle.c">
+		<Unit filename="iovm/source/IoMessage_opShuffle.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoMessage_opShuffle.h" />
-		<Unit filename="iovm/source/IoMessage_parser.c">
+		<Unit filename="iovm/source/IoMessage_parser.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoMessage_parser.h" />
-		<Unit filename="iovm/source/IoNumber.c">
+		<Unit filename="iovm/source/IoNumber.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoNumber.h" />
-		<Unit filename="iovm/source/IoObject.c">
+		<Unit filename="iovm/source/IoObject.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoObject.h" />
-		<Unit filename="iovm/source/IoObject_flow.c">
+		<Unit filename="iovm/source/IoObject_flow.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoObject_flow.h" />
 		<Unit filename="iovm/source/IoObject_inline.h" />
 		<Unit filename="iovm/source/IoObject_struct.h" />
-		<Unit filename="iovm/source/IoProfiler.c">
+		<Unit filename="iovm/source/IoProfiler.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoProfiler.h" />
-		<Unit filename="iovm/source/IoSandbox.c">
+		<Unit filename="iovm/source/IoSandbox.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoSandbox.h" />
-		<Unit filename="iovm/source/IoSeq.c">
+		<Unit filename="iovm/source/IoSeq.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoSeq.h" />
-		<Unit filename="iovm/source/IoSeq_immutable.c">
+		<Unit filename="iovm/source/IoSeq_immutable.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoSeq_immutable.h" />
 		<Unit filename="iovm/source/IoSeq_inline.h" />
-		<Unit filename="iovm/source/IoSeq_mutable.c">
+		<Unit filename="iovm/source/IoSeq_mutable.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoSeq_mutable.h" />
-		<Unit filename="iovm/source/IoSeq_vector.c">
+		<Unit filename="iovm/source/IoSeq_vector.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoSeq_vector.h" />
@@ -450,52 +450,52 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoState.h" />
-		<Unit filename="iovm/source/IoState_callbacks.c">
+		<Unit filename="iovm/source/IoState_callbacks.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoState_callbacks.h" />
-		<Unit filename="iovm/source/IoState_coros.c">
+		<Unit filename="iovm/source/IoState_coros.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoState_coros.h" />
-		<Unit filename="iovm/source/IoState_debug.c">
+		<Unit filename="iovm/source/IoState_debug.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoState_debug.h" />
-		<Unit filename="iovm/source/IoState_eval.c">
+		<Unit filename="iovm/source/IoState_eval.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoState_eval.h" />
-		<Unit filename="iovm/source/IoState_exceptions.c">
+		<Unit filename="iovm/source/IoState_exceptions.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoState_exceptions.h" />
 		<Unit filename="iovm/source/IoState_inline.h" />
-		<Unit filename="iovm/source/IoState_symbols.c">
+		<Unit filename="iovm/source/IoState_symbols.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoState_symbols.h" />
-		<Unit filename="iovm/source/IoSystem.c">
+		<Unit filename="iovm/source/IoSystem.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoSystem.h" />
-		<Unit filename="iovm/source/IoTag.c">
+		<Unit filename="iovm/source/IoTag.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoTag.h" />
 		<Unit filename="iovm/source/IoTag_inline.h" />
-		<Unit filename="iovm/source/IoToken.c">
+		<Unit filename="iovm/source/IoToken.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoToken.h" />
 		<Unit filename="iovm/source/IoVM.h" />
 		<Unit filename="iovm/source/IoVMApi.h" />
 		<Unit filename="iovm/source/IoVersion.h" />
-		<Unit filename="iovm/source/IoWeakLink.c">
+		<Unit filename="iovm/source/IoWeakLink.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/IoWeakLink.h" />
-		<Unit filename="iovm/source/PHash.c">
+		<Unit filename="iovm/source/PHash.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="iovm/source/PHash.h" />

@@ -87,7 +87,7 @@ IO_METHOD(IoFile, stat)
 		DATA(self)->info = io_calloc(1, sizeof(struct stat));
 	}
 
-	statInfo = DATA(self)->info;
+	statInfo = reinterpret_cast<decltype(statInfo)>(DATA(self)->info);
 
 	if (stat(CSTRING(DATA(self)->path), (struct stat *)(DATA(self)->info)) != 0)
 	{
@@ -278,7 +278,7 @@ IO_METHOD(IoFile, isUserExecutable)
 	/*doc File isUserExecutable
 	Returns true if the receiver is user group executable, false otherwise.
 	*/
-	
+
 #ifdef ON_WINDOWS
 	return IOFALSE(self);
 #else

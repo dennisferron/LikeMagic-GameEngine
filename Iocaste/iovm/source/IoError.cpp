@@ -9,6 +9,8 @@ An object that contains error information and flow control based on errors.
 #include "IoState.h"
 #include "IoSeq.h"
 
+extern "C" {
+
 static const char *protoId = "Error";
 
 IoTag *IoError_newTag(void *state)
@@ -24,7 +26,7 @@ IoError *IoError_proto(void *state)
 	IoError *self = IoObject_new(state);
 	IoObject_tag_(self, IoError_newTag(state));
 
-	IoState_registerProtoWithId_(state, self, protoId);
+	IoState_registerProtoWithId_((IoState*)state, self, protoId);
 
 	{
 		IoMethodTable methodTable[] = {
@@ -43,7 +45,7 @@ IoError *IoError_rawClone(IoError *proto)
 
 IoError *IoError_new(void *state)
 {
-	IoError *proto = IoState_protoWithId_(state, protoId);
+	IoError *proto = IoState_protoWithId_((IoState*)state, protoId);
 	return IOCLONE(proto);
 }
 
@@ -52,12 +54,12 @@ IoError *IoError_new(void *state)
 IoError *IoError_newWithMessageFormat_(void *state, const char *format, ...)
 {
 	IoSymbol *message;
-	
+
 	va_list ap;
 	va_start(ap, format);
-	message = IoState_symbolWithUArray_copy_(state, UArray_newWithVargs_(format, ap), 0);
+	message = IoState_symbolWithUArray_copy_((IoState*)state, UArray_newWithVargs_(format, ap), 0);
 	va_end(ap);
-	
+
 	{
 		IoError *error = IoError_new(state);
 		IoObject_setSlot_to_(error, IoState_symbolWithCString_((IoState*)state, (char *)("message")), message);
@@ -73,4 +75,6 @@ IoError *IoError_newWithCStringMessage_(IoState *state, char *cString)
 		IoSeq_newWithCString_(state, cString)
 	);
 	return error;
+}
+
 }

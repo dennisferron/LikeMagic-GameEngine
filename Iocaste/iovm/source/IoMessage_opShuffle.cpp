@@ -13,7 +13,7 @@
 IoMap *IoState_createOperatorTable(IoState *state)
 {
 	typedef struct OpTable {
-		char *symbol;
+		const char *symbol;
 		int precedence;
 	} OpTable;
 
@@ -156,7 +156,7 @@ IoMap *getOpTable(IoObject *self, const char *slotName, IoMap *create(IoState *s
 		OperatorTable slot, we'll create one for it instead of using
 		Core Message OperatorTable operators. Oh well.
 		*/
-		
+
 		IoMap *result = create(IOSTATE);
 		IoObject_setSlot_to_(self, symbol, result);
 		return result;
@@ -165,7 +165,7 @@ IoMap *getOpTable(IoObject *self, const char *slotName, IoMap *create(IoState *s
 
 Levels *Levels_new(IoMessage *msg)
 {
-	Levels *self = io_calloc(1, sizeof(Levels));
+	Levels *self = (Levels *)io_calloc(1, sizeof(Levels));
 
 	IoState *state = IoObject_state(msg);
 	IoSymbol *operatorTableSymbol = IoState_symbolWithCString_(state, "OperatorTable");
@@ -176,7 +176,7 @@ Levels *Levels_new(IoMessage *msg)
 	// Otherwise, use Core OperatorTable, and if that does not exist, create it.
 	if (opTable == NULL)
 	{
-		/* 
+		/*
 		There is a chance the message didn't have it, but the core did---due
 		to the Core not being part of the message's protos. Use Core
 		Message's OperatorTable
@@ -208,16 +208,16 @@ void Levels_free(Levels *self)
 
 Level *Levels_currentLevel(Levels *self)
 {
-	return List_top(self->stack);
+	return (Level *)List_top(self->stack);
 }
 
 void Levels_popDownTo(Levels *self, int targetLevel)
 {
 	Level *level;
 
-	while (level = List_top(self->stack), level->precedence <= targetLevel && level->type != ARG)
+	while (level = (Level *)List_top(self->stack), level->precedence <= targetLevel && level->type != ARG)
 	{
-		Level_finish(List_pop(self->stack));
+		Level_finish((Level *)List_pop(self->stack));
 		self->currentLevel--;
 	}
 }
@@ -226,7 +226,7 @@ void Levels_attachToTopAndPush(Levels *self, IoMessage *msg, int precedence)
 {
 	Level *level = NULL;
 	{
-		Level *top = List_top(self->stack);
+		Level *top = (Level *)List_top(self->stack);
 		Level_attachAndReplace(top, msg);
 	}
 
@@ -332,15 +332,15 @@ int Levels_levelForOp(Levels *self, char *messageName, IoSymbol *messageSymbol, 
 	}
 }
 
-int Levels_isAssignOperator(Levels *self, IoSymbol *operator)
+int Levels_isAssignOperator(Levels *self, IoSymbol *op)
 {
-	return IoMap_rawAt(self->assignOperatorTable, operator) != NULL;
+	return IoMap_rawAt(self->assignOperatorTable, op) != NULL;
 }
 
-IoSymbol *Levels_nameForAssignOperator(Levels *self, IoState *state, IoSymbol *operator, IoSymbol *slotName, IoMessage *msg)
+IoSymbol *Levels_nameForAssignOperator(Levels *self, IoState *state, IoSymbol *op, IoSymbol *slotName, IoMessage *msg)
 {
-	IoObject *value = IoMap_rawAt(self->assignOperatorTable, operator);
-	char *operatorString = CSTRING(operator);
+	IoObject *value = IoMap_rawAt(self->assignOperatorTable, op);
+	char *operatorString = CSTRING(op);
 
 	if (value != NULL && ISSYMBOL(value))
 	{
@@ -378,7 +378,7 @@ void Levels_attach(Levels *self, IoMessage *msg, List *expressions)
 	// :=     msg
 	// b c    msg->next
 	*/
-	
+
 	if (Levels_isAssignOperator(self, messageSymbol))
 	{
 		Level *currentLevel = Levels_currentLevel(self);
@@ -527,7 +527,7 @@ void Levels_nextMessage(Levels *self)
 {
 	Level *level;
 
-	while ((level = List_pop(self->stack)))
+	while ((level = (Level *)List_pop(self->stack)))
 	{
 		Level_finish(level);
 	}
@@ -552,7 +552,7 @@ IoMessage *IoMessage_opShuffle(IoMessage *self, IoObject *locals, IoMessage *m)
 
 	while (List_size(expressions) >= 1)
 	{
-		IoMessage *n = List_pop(expressions);
+		IoMessage *n = (IoMessage *)List_pop(expressions);
 
 		do
 		{

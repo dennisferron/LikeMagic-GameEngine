@@ -15,6 +15,8 @@ Object wrapper for an Io coroutine.
 #include "IoList.h"
 #include "IoBlock.h"
 
+extern "C" {
+
 //#define DEBUG
 
 static const char *protoId = "Coroutine";
@@ -553,4 +555,6 @@ void IoCoroutine_rawPrintBackTrace(IoCoroutine *self)
 			UArray_free(ba);
 		}
 	}
+}
+
 }

@@ -106,7 +106,7 @@ IoList *IoList_proto(void *state)
 	{"foreach",         IoList_foreach},
 	{"reverseInPlace",	IoList_reverseInPlace},
 	{"reverseForeach",  IoList_reverseForeach},
-	
+
 	{"asEncodedList",   IoList_asEncodedList},
 	{"fromEncodedList", IoList_fromEncodedList},
 	{"join", IoList_join},
@@ -141,7 +141,7 @@ IoList *IoList_newWithList_(void *state, List *list)
 {
 	IoList *self = IoList_new(state);
 	//printf("IoList_newWithList_ %p %p\n", (void *)self, (void *)list);
-	List_free(IoObject_dataPointer(self));
+	List_free((List*)IoObject_dataPointer(self));
 	IoObject_setDataPointer_(self, list);
 	return self;
 }
@@ -162,7 +162,7 @@ void IoList_free(IoList *self)
 
 void IoList_mark(IoList *self)
 {
-	LIST_FOREACH(DATA(self), i, item, IoObject_shouldMark(item));
+	LIST_FOREACH(DATA(self), i, item, IoObject_shouldMark((IoObject*)item));
 }
 
 int IoList_compare(IoList *self, IoList *otherList)
@@ -184,8 +184,8 @@ int IoList_compare(IoList *self, IoList *otherList)
 
 		for (i = 0; i < s1; i ++)
 		{
-			IoObject *v1 = LIST_AT_(DATA(self), i);
-			IoObject *v2 = LIST_AT_(DATA(otherList), i);
+			IoObject *v1 = (IoObject *)LIST_AT_(DATA(self), i);
+			IoObject *v2 = (IoObject *)LIST_AT_(DATA(otherList), i);
 			int c = IoObject_compare(v1, v2);
 
 			if (c)
@@ -204,7 +204,7 @@ List *IoList_rawList(IoList *self)
 
 IoObject *IoList_rawAt_(IoList *self, int i)
 {
-	return List_at_(DATA(self), i);
+	return (IoObject *)List_at_(DATA(self), i);
 }
 
 void IoList_rawAt_put_(IoList *self, int i, IoObject *v)
@@ -266,7 +266,7 @@ void IoList_checkIndex(IoList *self, IoMessage *m, char allowsExtending, int ind
 		max += 1;
 	}
 
-	if (index < 0 || index >= max)
+	if (index < 0 || (size_t)index >= max)
 	{
 		IoState_error_(IOSTATE, m, "index out of bounds\n");
 	}
@@ -277,7 +277,7 @@ void IoList_checkIndex(IoList *self, IoMessage *m, char allowsExtending, int ind
 IO_METHOD(IoList, with)
 {
 	/*doc List with(anObject, ...)
-	Returns a new List containing the arguments. 
+	Returns a new List containing the arguments.
 	*/
 
 	int n, argCount = (int)IoMessage_argCount(m);
@@ -297,7 +297,7 @@ IO_METHOD(IoList, indexOf)
 {
 	/*doc List indexOf(anObject)
 	Returns the index of the first occurrence of anObject
-	in the receiver. Returns Nil if the receiver doesn't contain anObject. 
+	in the receiver. Returns Nil if the receiver doesn't contain anObject.
 	*/
 
 	int count = IoMessage_argCount(m);
@@ -308,7 +308,7 @@ IO_METHOD(IoList, indexOf)
 		IoObject *v = IoMessage_locals_valueArgAt_(m, locals, 0);
 		size_t i = IoList_rawIndexOf_(self, v);
 
-		return i == -1 ? IONIL(self) :
+		return (int)i == -1 ? IONIL(self) :
 			(IoObject *)IONUMBER(IoList_rawIndexOf_(self, v));
 	}
 }
@@ -316,7 +316,7 @@ IO_METHOD(IoList, indexOf)
 IO_METHOD(IoList, contains)
 {
 	/*doc List contains(anObject)
-	Returns true if the receiver contains anObject, otherwise returns false. 
+	Returns true if the receiver contains anObject, otherwise returns false.
 	*/
 
 	IoObject *v = IoMessage_locals_valueArgAt_(m, locals, 0);
@@ -326,7 +326,7 @@ IO_METHOD(IoList, contains)
 IO_METHOD(IoList, containsIdenticalTo)
 {
 	/*doc List containsIdenticalTo(anObject)
-	Returns true if the receiver contains a value identical to anObject, otherwise returns false. 
+	Returns true if the receiver contains a value identical to anObject, otherwise returns false.
 	*/
 
 	IoObject *v = IoMessage_locals_valueArgAt_(m, locals, 0);
@@ -338,14 +338,14 @@ IO_METHOD(IoList, capacity)
 	/*doc List capacity
 	Returns the number of potential elements the receiver can hold before it needs to grow.
 	*/
-	
+
 	return IONUMBER(DATA(self)->memSize / sizeof(void *));
 }
 
 IO_METHOD(IoList, size)
 {
 	/*doc List size
-	Returns the number of items in the receiver. 
+	Returns the number of items in the receiver.
 	*/
 
 	return IONUMBER(List_size(DATA(self)));
@@ -354,13 +354,13 @@ IO_METHOD(IoList, size)
 IO_METHOD(IoList, at)
 {
 	/*doc List at(index)
-	Returns the value at index. Returns Nil if the index is out of bounds. 
+	Returns the value at index. Returns Nil if the index is out of bounds.
 	*/
 
 	int index = IoMessage_locals_intArgAt_(m, locals, 0);
 	IoObject *v;
 	/*IoList_checkIndex(self, m, 0, index, "Io List at");*/
-	v = List_at_(DATA(self), index);
+	v = (IoObject*)List_at_(DATA(self), index);
 	return (v) ? v : IONIL(self);
 }
 
@@ -368,10 +368,10 @@ IO_METHOD(IoList, first)
 {
 	/*doc List first(optionalSize)
 	Returns the first item or Nil if the list is empty.
-	If optionalSize is provided, that number of the first items in the list are returned. 
+	If optionalSize is provided, that number of the first items in the list are returned.
 	*/
 
-    IoObject *result = List_at_(DATA(self), 0);
+    IoObject *result = (IoObject *)List_at_(DATA(self), 0);
     return result ? result : IONIL(self);
 }
 
@@ -379,10 +379,10 @@ IO_METHOD(IoList, last)
 {
 	/*doc List last(optionalSize)
 	Returns the last item or Nil if the list is empty.
-	If optionalSize is provided, that number of the last items in the list are returned. 
+	If optionalSize is provided, that number of the last items in the list are returned.
 	*/
 
-    IoObject *result = List_at_(DATA(self), List_size(DATA(self)) - 1);
+    IoObject *result = (IoObject *)List_at_(DATA(self), List_size(DATA(self)) - 1);
     return result ? result : IONIL(self);
 }
 
@@ -421,9 +421,9 @@ void IoList_sliceArguments(IoList *self, IoObject *locals, IoMessage *m, int *st
 IO_METHOD(IoList, slice)
 {
 	/*doc List slice(startIndex, endIndex, step)
-	Returns a new string containing the subset of the receiver 
+	Returns a new string containing the subset of the receiver
     from the startIndex to the endIndex. The endIndex argument
-	is optional. If not given, it is assumed to be the end of the string. 
+	is optional. If not given, it is assumed to be the end of the string.
     Step argument is also optional and defaults to 1, if not given.
     However, since Io supports positional arguments only, you need to
     explicitly specify endIndex, if you need a custom step.
@@ -433,7 +433,7 @@ IO_METHOD(IoList, slice)
 
 	IoList_sliceArguments(self, locals, m, &start, &end, &step);
 
-	if ((step > 0 && end < start) || 
+	if ((step > 0 && end < start) ||
         (step < 0 && end > start))
 	{
       return IoList_new(IOSTATE);
@@ -450,7 +450,7 @@ IO_METHOD(IoList, sliceInPlace)
 	/*doc List sliceInPlace(startIndex, endIndex, step)
 	Returns the receiver containing the subset of the
 	receiver from the startIndex to the endIndex. The endIndex argument
-	is optional. If not given, it is assumed to be the end of the string. 
+	is optional. If not given, it is assumed to be the end of the string.
     Step argument is also optional and defaults to 1.
 	*/
 
@@ -458,7 +458,7 @@ IO_METHOD(IoList, sliceInPlace)
 
 	IoList_sliceArguments(self, locals, m, &start, &end, &step);
 
-	if ((step > 0 && end < start) || 
+	if ((step > 0 && end < start) ||
         (step < 0 && end > start))
 	{
       return IoList_new(IOSTATE);
@@ -467,7 +467,7 @@ IO_METHOD(IoList, sliceInPlace)
 	{
 		List_sliceInPlace(DATA(self), start, end, step);
 	}
-	
+
 	IoObject_isDirty_(self, 1);
 
 	return self;
@@ -503,7 +503,7 @@ execution of the message. Example:
 <p>
 <pre>
 list(1, 2, 3) foreach(i, v, writeln(i, " = ", v))
-list(1, 2, 3) foreach(v, writeln(v))</pre>	
+list(1, 2, 3) foreach(v, writeln(v))</pre>
 */
 
 	IoState *state = IOSTATE;
@@ -594,7 +594,7 @@ done:
 IO_METHOD(IoList, appendIfAbsent)
 {
 	/*doc List appendIfAbsent(anObject)
-	Adds each value not already contained by the receiver, returns self. 
+	Adds each value not already contained by the receiver, returns self.
 	*/
 
 	int n;
@@ -640,13 +640,13 @@ IO_METHOD(IoList, appendSeq)
 
 			for (i = 0; i < max; i ++)
 			{
-				IoObject *v = List_at_(otherList, i);
+				IoObject *v = (IoObject *)List_at_(otherList, i);
 				List_append_(selfList, IOREF(v));
 			}
 			IoObject_isDirty_(self, 1);
 		}
 	}
-	
+
 	return self;
 }
 
@@ -655,7 +655,7 @@ IO_METHOD(IoList, append)
 	/*doc List append(anObject1, anObject2, ...)
 	Appends the arguments to the end of the list. Returns self.
 	*/
-	
+
 	/*doc List push(anObject1, anObject2, ...)
 	Same as add(anObject1, anObject2, ...).
 	*/
@@ -669,7 +669,7 @@ IO_METHOD(IoList, append)
 		IoObject *v = IoMessage_locals_valueArgAt_(m, locals, n);
 		List_append_(DATA(self), IOREF(v));
 	}
-	
+
 	IoObject_isDirty_(self, 1);
 
 	return self;
@@ -690,7 +690,7 @@ IO_METHOD(IoList, prepend)
 		IoObject *v = IoMessage_locals_valueArgAt_(m, locals, n);
 		List_at_insert_(DATA(self), 0, IOREF(v));
 	}
-	
+
 	IoObject_isDirty_(self, 1);
 
 	return self;
@@ -700,7 +700,7 @@ IO_METHOD(IoList, prepend)
 IO_METHOD(IoList, remove)
 {
 	/*doc List remove(anObject, ...)
-	Removes all occurrences of the arguments from the receiver. Returns self. 
+	Removes all occurrences of the arguments from the receiver. Returns self.
 	*/
 
 	int count = IoMessage_argCount(m);
@@ -728,7 +728,7 @@ IO_METHOD(IoList, remove)
 			List_removeIndex_(DATA(self), i);
 		}
 	}
-	
+
 	IoObject_isDirty_(self, 1);
 
 	return self;
@@ -738,10 +738,10 @@ IO_METHOD(IoList, pop)
 {
 	/*doc List pop
 	Returns the last item in the list and removes it
-	from the receiver. Returns nil if the receiver is empty. 
+	from the receiver. Returns nil if the receiver is empty.
 	*/
 
-	IoObject *v = List_pop(DATA(self));
+	IoObject *v = (IoObject *)List_pop(DATA(self));
 	return (v) ? v : IONIL(self);
 }
 
@@ -750,7 +750,7 @@ IO_METHOD(IoList, atInsert)
 	/*doc List atInsert(index, anObject)
 	Inserts anObject at the index specified by index.
 	Adds anObject if the index equals the current count of the receiver.
-	Raises an exception if the index is out of bounds. Returns self. 
+	Raises an exception if the index is out of bounds. Returns self.
 	*/
 
 	int index = IoMessage_locals_intArgAt_(m, locals, 0);
@@ -766,11 +766,11 @@ IO_METHOD(IoList, removeAt)
 {
 	/*doc List removeAt(index)
 	Removes the item at the specified index and returns the value removed.
-	Raises an exception if the index is out of bounds. 
+	Raises an exception if the index is out of bounds.
 	*/
 
 	int index = IoMessage_locals_intArgAt_(m, locals, 0);
-	IoObject *v = List_at_(DATA(self), index);
+	IoObject *v = (IoObject *)List_at_(DATA(self), index);
 
 	IoList_checkIndex(self, m, 0, index, "Io List atInsert");
 	List_removeIndex_(DATA(self), index);
@@ -780,7 +780,7 @@ IO_METHOD(IoList, removeAt)
 
 void IoList_rawAtPut(IoList *self, int i, IoObject *v)
 {
-	while (List_size(DATA(self)) < i) /* not efficient */
+	while (List_size(DATA(self)) < (size_t)i) /* not efficient */
 	{
 		List_append_(DATA(self), IONIL(self));
 	}
@@ -810,7 +810,7 @@ IO_METHOD(IoList, setSize)
 	/*doc List setSize
 	Sets the size of the receiver by either removing excess items or adding nils as needed.
 	*/
-	
+
 	List *list = DATA(self);
 	size_t newSize = IoMessage_locals_sizetArgAt_(m, locals, 0);
 	size_t oldSize =  List_size(list);
@@ -895,8 +895,8 @@ typedef struct
 
 int MSortContext_compareForSort(MSortContext *self, void *ap, void *bp)
 {
-	IoObject *a = *(void **)ap;
-	IoObject *b = *(void **)bp;
+	IoObject *a = *(IoObject **)ap;
+	IoObject *b = *(IoObject **)bp;
 	int r;
 
 	IoState_pushRetainPool(self->state);
@@ -950,8 +950,8 @@ typedef struct
 
 int SortContext_compareForSort(SortContext *self, void *ap, void *bp)
 {
-	IoObject *a = *(void **)ap;
-	IoObject *b = *(void **)bp;
+	IoObject *a = *(IoObject **)ap;
+	IoObject *b = *(IoObject **)bp;
 	IoObject *cr;
 	IoState_pushRetainPool(self->state);
 
@@ -999,11 +999,11 @@ typedef enum
 IO_METHOD(IoList, asEncodedList)
 {
 	/*doc List asEncodedList
-	Returns a Sequence with an encoding of the list. 
+	Returns a Sequence with an encoding of the list.
 	Nil, Number and Symbol objects are copied into the encoding, for other object
-	types, referenceIdForObject(item) will be called to request a reference id for 
+	types, referenceIdForObject(item) will be called to request a reference id for
 	the object.
-	
+
 	Also see: List fromEncodedList.
 	*/
 
@@ -1011,15 +1011,15 @@ IO_METHOD(IoList, asEncodedList)
 	List *list = IoList_rawList(self);
 	size_t i, max = List_size(list);
 	IoMessage *rm = IOSTATE->referenceIdForObjectMessage;
-		
-	UArray_setItemType_(u, CTYPE_uint8_t); 
+
+	UArray_setItemType_(u, CTYPE_uint8_t);
 	UArray_setEncoding_(u, CENCODING_NUMBER);
 
 	//UArray_appendBytes_size_(u, "    ", 4); // placeholder until we know the size
-	
+
 	for(i = 0; i < max; i ++)
 	{
-		IoObject *item = List_at_(list, i);
+		IoObject *item = (IoObject *)List_at_(list, i);
 
 		if(ISNIL(item))
 		{
@@ -1030,7 +1030,7 @@ IO_METHOD(IoList, asEncodedList)
 		else if(ISNUMBER(item))
 		{
 			float32_t f = CNUMBER(item);
-			
+
 			UArray_appendLong_(u, IOLIST_ENCODING_TYPE_NUMBER);
 			UArray_appendLong_(u, CENCODING_NUMBER);
 			UArray_appendLong_(u, CTYPE_float32_t);
@@ -1044,22 +1044,22 @@ IO_METHOD(IoList, asEncodedList)
 			UArray_appendLong_(u, IOLIST_ENCODING_TYPE_SYMBOL);
 			UArray_appendLong_(u, UArray_encoding(s));
 			UArray_appendLong_(u, UArray_itemType(s));
-			UArray_appendBytes_size_(u, (const uint8_t *)(&size), sizeof(uint32_t));		
-			UArray_appendBytes_size_(u, (const uint8_t *)UArray_bytes(s), UArray_sizeInBytes(s));		
+			UArray_appendBytes_size_(u, (const uint8_t *)(&size), sizeof(uint32_t));
+			UArray_appendBytes_size_(u, (const uint8_t *)UArray_bytes(s), UArray_sizeInBytes(s));
 		}
 		else
 		{
 			IoObject *result;
-			
+
 			IoMessage_setCachedArg_to_(rm, 0, item);
 			result = IoObject_perform(locals, locals, rm);
 			IoMessage_setCachedArg_to_(rm, 0, IONIL(self));
-			
+
 			IOASSERT(ISNUMBER(result), "referenceIdForObject() must return a Number");
-			 
+
 			{
 				uint32_t id = CNUMBER(result);
-				
+
 				UArray_appendLong_(u, IOLIST_ENCODING_TYPE_REFERENCE);
 				UArray_appendLong_(u, 0);
 				UArray_appendLong_(u, 0);
@@ -1067,7 +1067,7 @@ IO_METHOD(IoList, asEncodedList)
 			}
 		}
 	}
-	
+
 	return IoSeq_newWithUArray_copy_(IOSTATE, u, 0);
 }
 
@@ -1075,10 +1075,10 @@ IO_METHOD(IoList, asEncodedList)
 IO_METHOD(IoList, fromEncodedList)
 {
 	/*doc List fromEncodedList(aSeq)
-	Returns a List with the decoded Nils, Symbols and Numbers from the input raw array. 
-	For each object reference encounters, objectForReferenceId(id) will be called to 
-	allow the reference to be resolved. 
-	
+	Returns a List with the decoded Nils, Symbols and Numbers from the input raw array.
+	For each object reference encounters, objectForReferenceId(id) will be called to
+	allow the reference to be resolved.
+
 	Also see: List asEncodedList.
 	*/
 
@@ -1089,9 +1089,9 @@ IO_METHOD(IoList, fromEncodedList)
 	const uint8_t *d = UArray_bytes(u);
 	size_t uSize = UArray_sizeInBytes(u);
 	size_t index = 0;
-	
-	// add bounds checks 
-	
+
+	// add bounds checks
+
 	while (index <= uSize - 7)
 	{
 		uint8_t type     = d[index + 0];
@@ -1106,7 +1106,7 @@ IO_METHOD(IoList, fromEncodedList)
 		else if(type == IOLIST_ENCODING_TYPE_NUMBER)
 		{
 			float32_t f = *((float32_t *)(d + index));
-			
+
 			index += sizeof(float32_t);
 			List_append_(list, IONUMBER(f));
 		}
@@ -1114,19 +1114,19 @@ IO_METHOD(IoList, fromEncodedList)
 		{
 			uint32_t size = *((uint32_t *)(d + index));
 			UArray *o;
-			
+
 			index += sizeof(uint32_t);
-			
+
 			if (index + size > uSize)
 			{
 				List_free(list);
 				return IONIL(self);
 			}
 
-			o = UArray_newWithData_type_size_copy_((void *)(d + index), itemType, size, 1);
-			UArray_setEncoding_(o, encoding);
+			o = UArray_newWithData_type_size_copy_((void *)(d + index), (CTYPE)itemType, size, 1);
+			UArray_setEncoding_(o, (CENCODING)encoding);
 			List_append_(list, IoSeq_newWithUArray_copy_(IOSTATE, o, 0));
-			
+
 			index += size;
 		}
 		else if(type == IOLIST_ENCODING_TYPE_REFERENCE)
@@ -1135,9 +1135,9 @@ IO_METHOD(IoList, fromEncodedList)
 			uint32_t id = *((uint32_t *)(d + index));
 			IoMessage_setCachedArg_to_(rm, 0, IONUMBER(id));
 			IoMessage_setCachedArg_to_(rm, 0, IONIL(self));
-			
+
 			index += sizeof(uint32_t);
-			
+
 			{
 				IoObject *result = IoObject_perform(locals, locals, rm);
 				List_append_(list, result);
@@ -1148,14 +1148,14 @@ IO_METHOD(IoList, fromEncodedList)
 			IOASSERT(0, "unrecognized encoded type");
 		}
 	}
-	
+
 	return IoList_newWithList_(IOSTATE, list);
 }
 
 IO_METHOD(IoList, join)
 {
 	/*doc List join(optionalSeparator)
-	Returns a String with the elements of the receiver concatenated into one String. 
+	Returns a String with the elements of the receiver concatenated into one String.
 	If optionalSeparator is provided, it is used to separate the concatenated strings.
 	This operation does not respect string encodings.
 	*/
@@ -1167,40 +1167,40 @@ IO_METHOD(IoList, join)
 	int totalSize = 0;
 	int hasSeparator = !ISNIL(separator);
 	size_t separatorSize = hasSeparator ? IOSEQ_LENGTH(separator) : 0;
-	uint8_t *bytes; 
+	uint8_t *bytes;
 	IOASSERT(ISSEQ(separator), "separator must be of type Sequence");
-	
+
 	LIST_FOREACH(items, i, v,
-			if(!ISSEQ(v))
+			if(!ISSEQ((IoObject *)v))
 			{
 				//printf("type: %s\n", IoObject_name(v));
-				IOASSERT(ISSEQ(v), "values must be of type Sequence");
+				IOASSERT(ISSEQ((IoObject *)v), "values must be of type Sequence");
 			}
-			totalSize += IoSeq_rawSizeInBytes(v);
+			totalSize += IoSeq_rawSizeInBytes((IoObject *)v);
 			//printf("UArray_sizeInBytes(v): %i\n", (int) IoSeq_rawSizeInBytes(v));
 			if(hasSeparator) totalSize += separatorSize;
 	)
-	
+
 	if(hasSeparator) totalSize -= separatorSize;
-	
+
 	//printf("separatorSize: %i\n", (int) separatorSize);
 	//printf("totalSize: %i\n", (int) totalSize);
 	UArray_sizeTo_(out, totalSize+1);
-	
+
 	bytes = UArray_mutableBytes(out);
-	
+
 	LIST_FOREACH(items, i, v,
-		size_t vsize = IoSeq_rawSizeInBytes(v);
-		memcpy((char *)bytes, (char *)IoSeq_rawBytes(v), (int)vsize);
+		size_t vsize = IoSeq_rawSizeInBytes((IoObject *)v);
+		memcpy((char *)bytes, (char *)IoSeq_rawBytes((IoObject *)v), (int)vsize);
 		bytes += vsize;
-		
-		if(hasSeparator && i != itemCount-1) 
+
+		if(hasSeparator && i != itemCount-1)
 		{
 			memcpy(bytes, (char *)IoSeq_rawBytes(separator), separatorSize);
 			bytes += separatorSize;
 		}
 	)
-	
+
 	return IoSeq_newWithUArray_copy_(IOSTATE, out, 0);
 }
 

@@ -29,7 +29,7 @@ IoObject *IoState_replacePerformFunc_with_(IoState *self,
 {
 	POINTERHASH_FOREACH(self->primitives, k, v,
 		{
-		IoObject *proto = v;
+		IoObject *proto = (IoObject*)v;
 		IoTag *tag = IoObject_tag(proto);
 		if (tag->performFunc == oldFunc || !tag->performFunc)
 		{

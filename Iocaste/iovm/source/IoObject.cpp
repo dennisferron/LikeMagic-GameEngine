@@ -479,7 +479,7 @@ IoTag *IoObject_newTag(void *state)
 IoObject *IoObject_justAlloc(IoState *state)
 {
 	IoObject *child = Collector_newMarker(state->collector);
-	CollectorMarker_setObject_(child, io_calloc(1, sizeof(IoObjectData)));
+	CollectorMarker_setObject_(child, (IoObjectData *)io_calloc(1, sizeof(IoObjectData)));
 	IoObject_protos_(child, (IoObject **)io_calloc(2, sizeof(IoObject *)));
 	return child;
 }
@@ -503,9 +503,9 @@ IoObject *IoObject_alloc(IoObject *self)
 
 IoObject *IoObject_proto(void *state)
 {
-	IoObject *self = IoObject_justAlloc(state);
+	IoObject *self = IoObject_justAlloc((IoState *)state);
 
-	IoObject_tag_(self, IoObject_newTag(state));
+	IoObject_tag_(self, IoObject_newTag((IoState *)state));
 
 	IoObject_slots_(self, PHash_new());
 	IoObject_ownsSlots_(self, 1);
@@ -733,7 +733,7 @@ IoObject *IoObject_new(void *state)
 
 IoObject *IoObject_justClone(IoObject *self)
 {
-	return (IoObject_tag(self)->cloneFunc)(self);
+	return (IoObject *)((IoObject_tag(self)->cloneFunc)(self));
 }
 
 void IoObject_createSlots(IoObject *self)
@@ -842,7 +842,7 @@ int IoObject_rawProtosCount(IoObject *self)
 void IoObject_rawAppendProto_(IoObject *self, IoObject *p)
 {
 	int count = IoObject_rawProtosCount(self);
-	IoObject_protos_(self, io_realloc(IoObject_protos(self), (count + 2) * sizeof(IoObject *)));
+	IoObject_protos_(self, (IoObject**)io_realloc(IoObject_protos(self), (count + 2) * sizeof(IoObject *)));
 	IoObject_protos(self)[count] = IOREF(p);
 	IoObject_protos(self)[count + 1] = NULL;
 }
@@ -853,7 +853,7 @@ void IoObject_rawPrependProto_(IoObject *self, IoObject *p)
 	int oldSize = (count + 1) * sizeof(IoObject *);
 	int newSize = oldSize + sizeof(IoObject *);
 
-	IoObject_protos_(self, io_realloc(IoObject_protos(self), newSize));
+	IoObject_protos_(self, (IoObject**)io_realloc(IoObject_protos(self), newSize));
 
 	{
 		void *src = IoObject_protos(self);
@@ -1307,7 +1307,7 @@ IO_METHOD(IoObject, localsForward)
 	*/
 
 	//IoObject *selfDelegate = IoObject_rawGetSlot_(self, IOSTATE->selfSymbol);
-	IoObject *selfDelegate = PHash_at_(IoObject_slots(self), IOSTATE->selfSymbol); // cheating a bit here
+	IoObject *selfDelegate = (IoObject*)PHash_at_(IoObject_slots(self), IOSTATE->selfSymbol); // cheating a bit here
 
 	if (selfDelegate && selfDelegate != self)
 	{
@@ -1393,7 +1393,7 @@ IO_METHOD(IoObject, protoPerform)
 
 			for (i = 1; i < List_size(args); i ++)
 			{
-				IoMessage_addArg_(newMessage, IoMessage_deepCopyOf_(List_at_(args, i)));
+				IoMessage_addArg_(newMessage, IoMessage_deepCopyOf_((IoMessage*)List_at_(args, i)));
 			}
 
 			return IoObject_activate(v, self, locals, newMessage, context);
@@ -1424,7 +1424,7 @@ IO_METHOD(IoObject, protoPerformWithArgList)
 
 		for (i = 0; i < max; i ++)
 		{
-			IoMessage_addCachedArg_(newMessage, LIST_AT_(argList, i));
+			IoMessage_addCachedArg_(newMessage, (IoObject*)LIST_AT_(argList, i));
 		}
 
 		return IoObject_activate(v, self, locals, newMessage, context);
@@ -1482,7 +1482,7 @@ IoObject *IOCLONE(IoObject *self)
 	IoState *state = IOSTATE;
 	IoState_pushCollectorPause(state);
 	IoTag* tag = IoObject_tag(self);
-	IoObject* newObject = tag->cloneFunc(self);
+	IoObject* newObject = (IoObject*)tag->cloneFunc(self);
 	IoState_addValueIfNecessary_(state, newObject);
 	IoState_popCollectorPause(state);
 	return newObject;
@@ -1517,7 +1517,7 @@ IO_METHOD(IoObject, shallowCopy)
 
 	{
 	IoObject *newObject = IoObject_new(IOSTATE);
-	PHASH_FOREACH(IoObject_slots(self), k, v, IoObject_setSlot_to_(newObject, k, v) );
+	PHASH_FOREACH(IoObject_slots(self), k, v, IoObject_setSlot_to_(newObject, (IoSymbol*)k, (IoObject*)v) );
 	return newObject;
 	}
 }
@@ -1636,7 +1636,7 @@ IO_METHOD(IoObject, protoGetLocalSlot_)
 
 	if (IoObject_ownsSlots(self))
 	{
-		IoObject *v = PHash_at_(IoObject_slots(self), slotName);
+		IoObject *v = (IoObject*)PHash_at_(IoObject_slots(self), slotName);
 		if (v) return v;
 	}
 
@@ -1687,7 +1687,7 @@ IO_METHOD(IoObject, protoSlotNames)
 
 	{
 		IoList *slotNames = IoList_new(IOSTATE);
-		PHASH_FOREACH(IoObject_slots(self), key, value, IoList_rawAppend_(slotNames, key); );
+		PHASH_FOREACH(IoObject_slots(self), key, value, IoList_rawAppend_(slotNames, (IoObject*)key); );
 		return slotNames;
 	}
 }
@@ -1702,7 +1702,7 @@ IO_METHOD(IoObject, protoSlotValues)
 
 	{
 		IoList *slotNames = IoList_new(IOSTATE);
-		PHASH_FOREACH(IoObject_slots(self), key, value, IoList_rawAppend_(slotNames, value); );
+		PHASH_FOREACH(IoObject_slots(self), key, value, IoList_rawAppend_(slotNames, (IoObject*)value); );
 		return slotNames;
 	}
 
@@ -1924,10 +1924,10 @@ myObject foreach(v,
 
 		if (keyName)
 		{
-			IoObject_setSlot_to_(locals, keyName, key);
+			IoObject_setSlot_to_(locals, keyName, (IoObject*)key);
 		}
 
-		IoObject_setSlot_to_(locals, valueName, value);
+		IoObject_setSlot_to_(locals, valueName, (IoObject*)value);
 		result = IoMessage_locals_performOn_(doMessage, locals, locals);
 
 		if (IoState_handleStatus(IOSTATE))
@@ -2288,7 +2288,7 @@ void IoObject_show(IoObject *self)
 {
 	printf("  %p %s\n", (void *)self, IoObject_name(self));
 	//PHash_doOnKeys_(IoObject_slots(self), (PHashDoCallback *)IoSymbol_println);
-	PHASH_FOREACH(IoObject_slots(self), k, v, IoSymbol_println(k));
+	PHASH_FOREACH(IoObject_slots(self), k, v, IoSymbol_println((IoObject*)k));
 }
 
 IO_METHOD(IoObject, setIsActivatableMethod)

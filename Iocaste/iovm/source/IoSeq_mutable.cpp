@@ -41,10 +41,10 @@ static void IoAssertNotSymbol(IoSeq *self, IoMessage *m)
 IO_METHOD(IoSeq, setItemType)
 {
 	/*doc Sequence setItemType(aTypeName)
-	Sets the underlying machine type for the elements. 
-	Valid names are uint8, uint16, uint32, uint64, int8, int16, int32, 
-	int64, float32, and float64. Note that 64 bit types are only available 
-	on platforms that support such types. Returns self. 
+	Sets the underlying machine type for the elements.
+	Valid names are uint8, uint16, uint32, uint64, int8, int16, int32,
+	int64, float32, and float64. Note that 64 bit types are only available
+	on platforms that support such types. Returns self.
 	*/
 
 	CTYPE itemType;
@@ -53,7 +53,7 @@ IO_METHOD(IoSeq, setItemType)
 	IO_ASSERT_NOT_SYMBOL(self);
 
 	typeName = IoMessage_locals_symbolArgAt_(m, locals, 0);
-	itemType = CTYPE_forName(CSTRING(typeName));
+	itemType = (CTYPE)CTYPE_forName(CSTRING(typeName));
 
 	IOASSERT(itemType != -1, "invalid item type name");
 
@@ -66,13 +66,13 @@ IO_METHOD(IoSeq, convertToItemType)
 {
 	/*doc Sequence convertToItemType(aTypeName)
 	Converts the underlying machine type for the elements, expanding or contracting
-	the size of the Sequence as needed. 
-	Valid names are uint8, uint16, uint32, uint64, int8, int16, int32, 
-	int64, float32, and float64. Note that 64 bit types are only available 
-	on platforms that support such types. Returns self. 
+	the size of the Sequence as needed.
+	Valid names are uint8, uint16, uint32, uint64, int8, int16, int32,
+	int64, float32, and float64. Note that 64 bit types are only available
+	on platforms that support such types. Returns self.
 	*/
 	IoSymbol *typeName = IoMessage_locals_symbolArgAt_(m, locals, 0);
-	CTYPE itemType = CTYPE_forName(CSTRING(typeName));
+	CTYPE itemType = (CTYPE)CTYPE_forName(CSTRING(typeName));
 
 	IO_ASSERT_NOT_SYMBOL(self);
 
@@ -94,10 +94,10 @@ IO_METHOD(IoSeq, convertToFixedSizeType)
 IO_METHOD(IoSeq, setEncoding)
 {
 	/*doc Sequence setEncoding(encodingName)
-	Sets the encoding flag of the receiver (only the encoding flag, 
+	Sets the encoding flag of the receiver (only the encoding flag,
 	itemSize and itemType will change, no conversion is done between UTF
-	encodings - you can use convertToUTF8, etc methods for conversions). 
-	Valid encodings are number, utf8, utf16, and utf32. Returns self. 
+	encodings - you can use convertToUTF8, etc methods for conversions).
+	Valid encodings are number, utf8, utf16, and utf32. Returns self.
 	*/
 
 	CENCODING encoding;
@@ -106,7 +106,7 @@ IO_METHOD(IoSeq, setEncoding)
 	IO_ASSERT_NOT_SYMBOL(self);
 
 	encodingName = IoMessage_locals_symbolArgAt_(m, locals, 0);
-	encoding = CENCODING_forName(CSTRING(encodingName));
+	encoding = (CENCODING)CENCODING_forName(CSTRING(encodingName));
 
 	IOASSERT(encoding != -1, "invalid encoding name");
 
@@ -124,7 +124,7 @@ void IoSeq_rawCopy_(IoSeq *self, IoSeq *other)
 IO_METHOD(IoSeq, copy)
 {
 	/*doc Sequence copy(aSequence)
-	Replaces the bytes of the receiver with a copy of those in aSequence. Returns self. 
+	Replaces the bytes of the receiver with a copy of those in aSequence. Returns self.
 	*/
 
 	IO_ASSERT_NOT_SYMBOL(self);
@@ -136,7 +136,7 @@ IO_METHOD(IoSeq, copy)
 IO_METHOD(IoSeq, appendSeq)
 {
 	/*doc Sequence appendSeq(object1, object2, ...)
-	Calls asString on the arguments and appends the string to the receiver. Returns self. 
+	Calls asString on the arguments and appends the string to the receiver. Returns self.
 	*/
 
 	int i;
@@ -154,7 +154,7 @@ IO_METHOD(IoSeq, appendSeq)
 IO_METHOD(IoSeq, append)
 {
 	/*doc Sequence append(aNumber)
-	Appends aNumber (cast to a byte) to the receiver. Returns self. 
+	Appends aNumber (cast to a byte) to the receiver. Returns self.
 	*/
 
 	int i;
@@ -201,7 +201,7 @@ IO_METHOD(IoSeq, insertSeqEvery)
 
 	IOASSERT(itemCount > 0, "aNumberOfItems must be > 0");
 	IOASSERT(itemCount <= UArray_size(DATA(self)), "aNumberOfItems out of sequence bounds");
-	
+
 	UArray_insert_every_(DATA(self), DATA(otherSeq), itemCount);
 
 	return self;
@@ -284,7 +284,7 @@ IO_METHOD(IoSeq, leaveThenRemove)
 	IO_ASSERT_NOT_SYMBOL(self);
 
 	IOASSERT(itemsToLeave > 0 || itemsToRemove > 0, "either aNumberToLeave or aNumberToRemove must be > 0");
-	
+
 	UArray_leave_thenRemove_(DATA(self), itemsToLeave, itemsToRemove);
 
 	return self;
@@ -391,7 +391,7 @@ IO_METHOD(IoSeq, replaceFirstSeq)
 IO_METHOD(IoSeq, atPut)
 {
 	/*doc Sequence atPut(aNumberIndex, aNumber)
-	Sets the value at the index specified by aNumberIndex to aNumber. Returns self. 
+	Sets the value at the index specified by aNumberIndex to aNumber. Returns self.
 	*/
 
 	size_t i = IoMessage_locals_longArgAt_(m, locals, 0);
@@ -416,7 +416,7 @@ IO_METHOD(IoSeq, atPut)
 IO_METHOD(IoSeq, lowercase)
 {
 	/*doc Sequence lowercase
-	Makes all the uppercase characters in the receiver lowercase. Returns self. 
+	Makes all the uppercase characters in the receiver lowercase. Returns self.
 	*/
 
 	IO_ASSERT_NOT_SYMBOL(self);
@@ -427,7 +427,7 @@ IO_METHOD(IoSeq, lowercase)
 IO_METHOD(IoSeq, uppercase)
 {
 	/*doc Sequence uppercase
-	Makes all characters of the receiver uppercase. 
+	Makes all characters of the receiver uppercase.
 	*/
 
 	IO_ASSERT_NOT_SYMBOL(self);
@@ -528,7 +528,7 @@ int IoSeq_byteCompare(const void *a, const void *b)
 IO_METHOD(IoSeq, sort)
 {
 	//doc Sequence sort Sorts the characters/numbers in the array. Returns self.
-	
+
 	UArray *a = DATA(self);
 	IO_ASSERT_NOT_SYMBOL(self);
 
@@ -557,8 +557,8 @@ IO_METHOD(IoSeq, replaceMap)
 
 	PHASH_FOREACH(IoMap_rawHash(map), k, v,
 		{
-		IoSymbol *subSeq = k;
-		IoSymbol *otherSeq = v;
+		IoSymbol *subSeq = (IoSymbol*)k;
+		IoSymbol *otherSeq = (IoSymbol*)v;
 
 		if (ISSEQ(otherSeq))
 		{
@@ -622,10 +622,10 @@ IO_METHOD(IoSeq, strip)
 /*doc Sequence strip(optionalSequence)
 Trims the whitespace (or optionalSequence) off both ends:
 <p>
-<pre>	
+<pre>
 "   Trim this string   \r\n" strip
 ==> "Trim this string"
-</pre>	
+</pre>
 */
 
 	IO_ASSERT_NOT_SYMBOL(self);
@@ -650,10 +650,10 @@ IO_METHOD(IoSeq, lstrip)
 Strips the characters in aSequence
 stripped from the beginning of the receiver. Example:
 <p>
-<pre>	
+<pre>
 "Keep the tail" lstrip(" eKp")
 ==> "the tail"
-</pre>	
+</pre>
 */
 
 	IO_ASSERT_NOT_SYMBOL(self);
@@ -677,10 +677,10 @@ IO_METHOD(IoSeq, rstrip)
 /*doc Sequence rstrip(aSequence)
 Strips the characters in
 aSequence stripped from the end of the receiver. Example:
-<pre>	
+<pre>
 "Cut the tail off" rstrip(" afilot")
 ==> "Cut the"
-</pre>	
+</pre>
 */
 
 	IO_ASSERT_NOT_SYMBOL(self);
@@ -794,7 +794,7 @@ IO_METHOD(IoSeq, appendPathSeq)
 IO_METHOD(IoSeq, interpolateInPlace)
 {
 	/*doc Sequence interpolateInPlace(optionalContext)
-	Replaces all #{expression} with expression evaluated in the optionalContext. 
+	Replaces all #{expression} with expression evaluated in the optionalContext.
 	If optionalContext not given, the current context is used.  Returns self.
 	*/
 
@@ -832,7 +832,7 @@ IO_METHOD(IoSeq, interpolateInPlace)
 
 		code = UArray_slice(string, from + 2, to);
 		codeString = IoSeq_newWithUArray_copy_(IOSTATE, code, 0);
-		
+
 		if (UArray_size(code) == 0)
 		{
 			// we do not want "#{}" to interpolate into "nil"
@@ -843,7 +843,7 @@ IO_METHOD(IoSeq, interpolateInPlace)
 			IoMessage *em = IoMessage_newWithName_andCachedArg_(IOSTATE, IOSYMBOL("doString"), codeString);
 			evaluatedCode = IoObject_perform(context, context, em);
 			evaluatedCode = IoObject_perform(evaluatedCode, context, IOSTATE->asStringMessage);
-			
+
 			if (ISSEQ(evaluatedCode))
 			{
 				evaluatedCodeAsString = DATA(evaluatedCode);
@@ -880,7 +880,7 @@ IO_METHOD(IoSeq, addEquals)
 	Vector addition - adds the values of aSeq to those of the receiver.
 	Only works on Sequences whose item type is numeric. Returns self.
 	*/
-	
+
 	IoObject *other = IoMessage_locals_valueArgAt_(m, locals, 0);
 
 	IO_ASSERT_NOT_SYMBOL(self);
@@ -921,7 +921,7 @@ IO_METHOD(IoSeq, subtractEquals)
 	Vector subtraction - subtracts the values of aSeq to those of the receiver.
 	Only works on Sequences whose item type is numeric. Returns self.
 	*/
-	
+
 	IoObject *other = IoMessage_locals_valueArgAt_(m, locals, 0);
 
 	IO_ASSERT_NOT_SYMBOL(self);
@@ -950,7 +950,7 @@ IO_METHOD(IoSeq, multiplyEquals)
 	Multiplies the values of aSeq to the corresponding values of the receiver.
 	Only works on Sequences whose item type is numeric. Returns self.
 	*/
-	
+
 	IoObject *other = IoMessage_locals_valueArgAt_(m, locals, 0);
 
 	IO_ASSERT_NOT_SYMBOL(self);
@@ -979,7 +979,7 @@ IO_METHOD(IoSeq, divideEquals)
 	Divides the values of aSeq to the corresponding values of the receiver.
 	Only works on Sequences whose item type is numeric. Returns self.
 	*/
-	
+
 	IoObject *other = IoMessage_locals_valueArgAt_(m, locals, 0);
 
 	IO_ASSERT_NOT_SYMBOL(self);
@@ -1010,44 +1010,44 @@ IoObject *IoSeq_clone(IoSeq *self)
 IO_METHOD(IoSeq, add)
 {
 	/*doc Sequence +(aSeq)
-	Vector addition - Adds the values of aSeq to the corresponding values of the receiver 
+	Vector addition - Adds the values of aSeq to the corresponding values of the receiver
 	returning a new vector with the result.
 	Only works on Sequences whose item type is numeric.
 	*/
-	
+
 	return IoSeq_addEquals(IoSeq_clone(self), locals, m);
 }
 
 IO_METHOD(IoSeq, subtract)
 {
 	/*doc Sequence +(aSeq)
-	Vector addition - Adds the values of aSeq to the corresponding values of the receiver 
+	Vector addition - Adds the values of aSeq to the corresponding values of the receiver
 	returning a new vector with the result.
 	Only works on Sequences whose item type is numeric.
 	*/
-	
+
 	return IoSeq_subtractEquals(IoSeq_clone(self), locals, m);
 }
 
 IO_METHOD(IoSeq, multiply)
 {
 	/*doc Sequence *(aSeq)
-	Multiplies the values of aSeq to the corresponding values of the receiver 
+	Multiplies the values of aSeq to the corresponding values of the receiver
 	returning a new vector with the result.
 	Only works on Sequences whose item type is numeric.
 	*/
-	
+
 	return IoSeq_multiplyEquals(IoSeq_clone(self), locals, m);
 }
 
 IO_METHOD(IoSeq, divide)
 {
 	/*doc Sequence /(aSeq)
-	Divides the values of aSeq to the corresponding values of the receiver 
+	Divides the values of aSeq to the corresponding values of the receiver
 	returning a new vector with the result.
-	Only works on Sequences whose item type is numeric. 
+	Only works on Sequences whose item type is numeric.
 	*/
-	
+
 	return IoSeq_divideEquals(IoSeq_clone(self), locals, m);
 }
 
@@ -1056,7 +1056,7 @@ IO_METHOD(IoSeq, dotProduct)
 	/*doc Sequence dotProduct(aSeq)
 	Returns a new Sequence containing the dot product of the receiver with aSeq.
 	*/
-	
+
 	IoSeq *other = IoMessage_locals_seqArgAt_(m, locals, 0);
 	IO_ASSERT_NOT_SYMBOL(self);
 	return IONUMBER(UArray_dotProduct_(DATA(self), DATA(other)));
@@ -1067,7 +1067,7 @@ IO_METHOD(IoSeq, setItemsToLong_)
 	/*doc Sequence setItemsToLong(aNumber)
 	Sets all items in the Sequence to the long integer value of aNumber.
 	*/
-	
+
 	long v = IoMessage_locals_longArgAt_(m, locals, 0);
 	IO_ASSERT_NOT_SYMBOL(self);
 	UArray_setItemsToLong_(DATA(self), v);
@@ -1079,7 +1079,7 @@ IO_METHOD(IoSeq, setItemsToDouble_)
 	/*doc Sequence setItemsToDouble(aNumber)
 	Sets all items in the Sequence to the double floating point value of aNumber.
 	*/
-	
+
 	double v = IoMessage_locals_doubleArgAt_(m, locals, 0);
 	IO_ASSERT_NOT_SYMBOL(self);
 	UArray_setItemsToLong_(DATA(self), v);
@@ -1093,7 +1093,7 @@ IO_METHOD(IoSeq, set_)
 	Unset values will remain unchanged.
 	Returns self.
 	*/
-	
+
 	double i, max = IoMessage_argCount(m);
 	IO_ASSERT_NOT_SYMBOL(self);
 
@@ -1113,7 +1113,7 @@ IoObject *IoSeq_ ## name (IoSeq *self, IoObject *locals, IoMessage *m) \
 /*doc Sequence negate
 Negates the values of the receiver.
 Returns self.
-*/	
+*/
 IoSeqMutateNoArgNoResultOp(negate);
 
 /*doc Sequence rangeFill

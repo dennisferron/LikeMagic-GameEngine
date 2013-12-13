@@ -19,7 +19,7 @@ Aug 2004 - removed {} from op chars
 
 static IoToken *IoLexer_currentToken(IoLexer *self)
 {
-	return List_top(self->tokenStream);
+	return (IoToken*)List_top(self->tokenStream);
 }
 
 IoLexer *IoLexer_new(void)
@@ -52,7 +52,7 @@ char *IoLexer_errorDescription(IoLexer *self)
 
 	if (!self->errorDescription)
 	{
-		self->errorDescription = io_calloc(1, 1024);
+		self->errorDescription = (char*)io_calloc(1, 1024);
 		self->errorDescription[0] = 0;
 	}
 
@@ -317,7 +317,7 @@ void IoLexer_printLast_(IoLexer *self, int max)
 
 char *IoLexer_lastPos(IoLexer *self)
 {
-	return Stack_top(self->posStack);
+	return (char*)Stack_top(self->posStack);
 }
 
 TEST_INLINE void IoLexer_pushPos(IoLexer *self)
@@ -368,7 +368,7 @@ TEST_INLINE void IoLexer_popPosBack(IoLexer *self)
 		}
 	}
 
-	self->current = Stack_pop(self->posStack);
+	self->current = (char*)Stack_pop(self->posStack);
 #ifdef LEXER_DEBUG
 	printf("back: "); IoLexer_print(self);
 #endif
@@ -411,14 +411,14 @@ int IoLexer_lex(IoLexer *self)
 
 IoToken *IoLexer_top(IoLexer *self)
 {
-	return List_at_(self->tokenStream, self->resultIndex);
+	return (IoToken*)List_at_(self->tokenStream, self->resultIndex);
 }
 
 IoTokenType IoLexer_topType(IoLexer *self)
 {
 	if (!IoLexer_top(self))
 	{
-		return 0;
+		return (IoTokenType)0;
 	}
 
 	return IoLexer_top(self)->type;
@@ -435,7 +435,7 @@ IoToken *IoLexer_pop(IoLexer *self)
 
 void IoLexer_print(IoLexer *self)
 {
-	IoToken *first = List_first(self->tokenStream);
+	IoToken *first = (IoToken*)List_first(self->tokenStream);
 
 	if (first)
 	{
@@ -451,7 +451,7 @@ void IoLexer_printTokens(IoLexer *self)
 
 	for (i = 0; i < List_size(self->tokenStream); i ++)
 	{
-		IoToken *t = List_at_(self->tokenStream, i);
+		IoToken *t = (IoToken*)List_at_(self->tokenStream, i);
 
 		printf("'%s'", t->name);
 		printf(" %s ", IoToken_typeName(t));

@@ -15,6 +15,8 @@ They are typically used to represent object methods.
 #include "IoList.h"
 #include "UArray.h"
 
+extern "C" {
+
 static const char *protoId = "Block";
 
 #define DATA(self) ((IoBlockData *)IoObject_dataPointer(self))
@@ -163,7 +165,8 @@ void IoBlock_mark(IoBlock *self)
 	IoBlockData *bd = DATA(self);
 	IoObject_shouldMark(bd->message);
 	IoObject_shouldMarkIfNonNull(bd->scope);
-	LIST_DO_(bd->argNames, IoObject_shouldMark);
+#define MARK_IO_OBJ(obj) IoObject_shouldMark(reinterpret_cast<IoObject*>(obj))
+	LIST_DO_(bd->argNames, MARK_IO_OBJ);
 }
 
 void IoBlock_free(IoBlock *self)
@@ -249,7 +252,7 @@ IoObject *IoBlock_activate(IoBlock *self, IoObject *target, IoObject *locals, Io
 	LIST_FOREACH(argNames, i, name,
 		IoObject *arg = IoMessage_locals_valueArgAt_(m, locals, (int)i);
 		// gc may kick in while evaling locals, so we need to be safe
-		IoObject_setSlot_to_(blockLocals, name, arg);
+		IoObject_setSlot_to_(blockLocals, reinterpret_cast<IoSymbol*>(name), arg);
 	);
 
 //	if (Coro_stackSpaceAlmostGone(IoCoroutine_cid(state->currentCoroutine)))
@@ -587,3 +590,4 @@ clock_t IoBlock_rawProfilerTime(IoBlock *self)
 	return DATA(self)->profilerTime;
 }
 
+}

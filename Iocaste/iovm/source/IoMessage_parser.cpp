@@ -79,7 +79,7 @@ IoMessage *IoMessage_newFromText_labelSymbol_(void *state, const char *text, IoS
 	IoLexer *lexer;
 	IoMessage *msg;
 
-	IoState_pushCollectorPause(state); // needed?
+	IoState_pushCollectorPause((IoState *)state); // needed?
 
 	lexer = IoLexer_new();
 
@@ -98,7 +98,7 @@ IoMessage *IoMessage_newFromText_labelSymbol_(void *state, const char *text, IoS
 
 	IoLexer_free(lexer);
 
-	IoState_popCollectorPause(state);
+	IoState_popCollectorPause((IoState *)state);
 
 	return msg;
 }
@@ -113,11 +113,11 @@ IoMessage *IoMessage_newParse(void *state, IoLexer *lexer)
 		IoSymbol *errorString;
 
 		// Maybe the nil message could be used here. Or even a NULL.
-		IoSymbol *error = IoState_symbolWithCString_(state, "Error");
+		IoSymbol *error = IoState_symbolWithCString_((IoState *)state, "Error");
 		m = IoMessage_newWithName_returnsValue_(state, error, error);
 		errorString = IoState_symbolWithCString_((IoState *)state, IoLexer_errorDescription(lexer));
 		IoLexer_free(lexer); // hack for now - the caller should be responsible for this
-		IoState_error_(state, m, "compile error: %s", CSTRING(errorString));
+		IoState_error_((IoState *)state, m, "compile error: %s", CSTRING(errorString));
 	}
 
 	if (IoLexer_topType(lexer) == TERMINATOR_TOKEN)
@@ -132,7 +132,7 @@ IoMessage *IoMessage_newParse(void *state, IoLexer *lexer)
 		if (IoLexer_topType(lexer) != NO_TOKEN)
 		{
 			// TODO: Exception as the end was expected
-			IoState_error_(state, self, "compile error: %s", "unused tokens");
+			IoState_error_((IoState *)state, self, "compile error: %s", "unused tokens");
 		}
 
 		return self;
