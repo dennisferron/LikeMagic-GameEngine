@@ -16,8 +16,6 @@
 #include <string.h>
 #include <time.h>
 
-extern "C" {
-
 static const char *protoId = "Date";
 
 #define DATA(self) ((Date *)IoObject_dataPointer(self))
@@ -751,6 +749,4 @@ IO_METHOD(IoDate, add)
 
 	IoDate *newDate = IOCLONE(self);
 	return IoDate_addInPlace(newDate, locals, m);
-}
-
 }

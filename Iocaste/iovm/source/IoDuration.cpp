@@ -13,8 +13,6 @@ A container for a duration of time.
 #include "IoNumber.h"
 #include <time.h>
 
-extern "C" {
-
 static const char *protoId = "Duration";
 
 #define DATA(self) ((Duration *)IoObject_dataPointer(self))
@@ -326,6 +324,4 @@ IO_METHOD(IoDuration, subtract)
 	IoDuration *d = IoMessage_locals_durationArgAt_(m, locals, 0);
 	Duration_subtract_(DATA(self), DATA(d));
 	return self;
-}
-
 }

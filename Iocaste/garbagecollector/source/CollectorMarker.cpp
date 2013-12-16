@@ -89,7 +89,7 @@ void CollectorMarker_check(CollectorMarker *self)
 
 CollectorMarker *CollectorMarker_new(void)
 {
-	CollectorMarker *self = io_calloc(1, sizeof(CollectorMarker));
+	CollectorMarker *self = (CollectorMarker*)io_calloc(1, sizeof(CollectorMarker));
 	return self;
 }
 

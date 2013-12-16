@@ -15,7 +15,7 @@ void Collector_makeFree_(Collector *self, CollectorMarker *v);
 void Collector_makeWhite_(Collector *self, CollectorMarker *v);
 void Collector_makeGray_(Collector *self, CollectorMarker *v);
 void Collector_makeBlack_(Collector *self, CollectorMarker *v);
-void Collector_makeGrayIfWhite_(Collector *self, void *v);
+void Collector_makeGrayIfWhite_(Collector *self, CollectorMarker *v);
 
 /*
 void Collector_makeFreed_(Collector *self, void *v);
@@ -27,7 +27,7 @@ void Collector_makeFreed_(Collector *self, void *v);
 #else
 
 	#define Collector_value_addingRefTo_(self, v, ref) XIMPLX_Collector_value_addingRefTo_(self, v, ref)
-    void *XIMPLX_Collector_value_addingRefTo_(Collector *self, void *v, void *ref);
+    void *XIMPLX_Collector_value_addingRefTo_(Collector *self, CollectorMarker *v, void *ref);
 
 #endif
 

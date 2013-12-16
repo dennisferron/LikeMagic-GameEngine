@@ -16,8 +16,6 @@ methods that require the speed of C or binding to a C library.
 #include "IoNumber.h"
 #include <stddef.h>
 
-extern "C" {
-
 static const char *protoId = "CFunction";
 
 #define DATA(self) ((IoCFunctionData *)IoObject_dataPointer(self))
@@ -243,6 +241,4 @@ void IoCFunction_protoFinish(void *state)
 	IoObject *self = IoState_protoWithId_((IoState *)state, protoId);
 	IoObject_setSlot_to_(self, IOSYMBOL("type"), IOSYMBOL("CFunction"));
 	IoObject_addMethodTable_(self, methodTable);
-}
-
 }

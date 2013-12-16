@@ -13,9 +13,6 @@
 #include <stdio.h>
 #include <stddef.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #if !defined(float32_t)
 	typedef float  float32_t;
@@ -102,20 +99,20 @@ BASEKIT_API int CENCODING_forName(const char *name);
 BASEKIT_API int CENCODING_isText(CENCODING encoding);
 
 BASEKIT_API void UArray_unsupported_with_(const UArray *self, const char *methodName, const UArray *other);
-BASEKIT_API void UArray_error_(const UArray *self, char *e);
+BASEKIT_API void UArray_error_(const UArray *self, char const* e);
 
 BASEKIT_API UArray *UArray_new(void);
-BASEKIT_API UArray *UArray_newWithData_type_size_copy_(void *data, CTYPE type, size_t size, int copy);
+BASEKIT_API UArray *UArray_newWithData_type_size_copy_(void* data, CTYPE type, size_t size, int copy);
 BASEKIT_API UArray *UArray_newWithData_type_encoding_size_copy_(void *bytes, CTYPE type, CENCODING encoding, size_t size, int copy);
 BASEKIT_API UArray *UArray_newWithCString_copy_(const char *s, int copy);
 BASEKIT_API UArray *UArray_newWithCString_(const char *s);
 BASEKIT_API void UArray_setCString_(UArray *self, const char *s);
-BASEKIT_API void UArray_setData_type_size_copy_(UArray *self, void *data, CTYPE type, size_t size, int copy);
+BASEKIT_API void UArray_setData_type_size_copy_(UArray *self, uint8_t* data, CTYPE type, size_t size, int copy);
 BASEKIT_API UArray *UArray_clone(const UArray *self);
 BASEKIT_API void UArray_show(const UArray *self);
 BASEKIT_API void UArray_print(const UArray *self);
 
-BASEKIT_API UArray UArray_stackAllocedWithData_type_size_(void *data, CTYPE type, size_t size);
+BASEKIT_API UArray UArray_stackAllocedWithData_type_size_(uint8_t* data, CTYPE type, size_t size);
 BASEKIT_API UArray UArray_stackAllocedWithCString_(char *s);
 BASEKIT_API UArray UArray_stackAllocedEmptyUArray(void);
 
@@ -487,7 +484,4 @@ BASEKIT_API void UArray_sortBy_(UArray *self, UArraySortCallback *cmp);
 #include "UArray_string.h"
 #include "UArray_utf.h"
 
-#ifdef __cplusplus
-}
-#endif
 #endif

@@ -104,6 +104,8 @@
 		<Unit filename="Include/Iocaste/Error.hpp" />
 		<Unit filename="Include/Iocaste/Exception.hpp" />
 		<Unit filename="Include/Iocaste/ExceptionSystem.hpp" />
+		<Unit filename="Include/Iocaste/IoCallData.hpp" />
+		<Unit filename="Include/Iocaste/IoCallStack.hpp" />
 		<Unit filename="Include/Iocaste/IocasteDLL.hpp" />
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/API_Io.hpp" />
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/API_Io_Impl.hpp" />
@@ -125,6 +127,7 @@
 		<Unit filename="Source/DebugAPI.cpp" />
 		<Unit filename="Source/Exception.cpp" />
 		<Unit filename="Source/IoBlock.cpp" />
+		<Unit filename="Source/IoCallStack.cpp" />
 		<Unit filename="Source/IoObjectExpr.cpp" />
 		<Unit filename="Source/IoObjectImpl.cpp" />
 		<Unit filename="Source/IoVM.cpp" />
@@ -132,133 +135,133 @@
 		<Unit filename="Source/Primitives.cpp" />
 		<Unit filename="Source/Run.cpp" />
 		<Unit filename="Source/Stack.cpp" />
-		<Unit filename="basekit/source/BStream.c">
+		<Unit filename="basekit/source/BStream.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/BStream.h" />
-		<Unit filename="basekit/source/BStreamTag.c">
+		<Unit filename="basekit/source/BStreamTag.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/BStreamTag.h" />
 		<Unit filename="basekit/source/Base.h" />
-		<Unit filename="basekit/source/CHash.c">
+		<Unit filename="basekit/source/CHash.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/CHash.h" />
 		<Unit filename="basekit/source/CHash_inline.h" />
-		<Unit filename="basekit/source/Common.c">
+		<Unit filename="basekit/source/Common.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/Common.h" />
 		<Unit filename="basekit/source/Common_inline.h" />
-		<Unit filename="basekit/source/Date.c">
+		<Unit filename="basekit/source/Date.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/Date.h" />
-		<Unit filename="basekit/source/Duration.c">
+		<Unit filename="basekit/source/Duration.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/Duration.h" />
-		<Unit filename="basekit/source/DynLib.c">
+		<Unit filename="basekit/source/DynLib.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/DynLib.h" />
-		<Unit filename="basekit/source/Hash_fnv.c">
+		<Unit filename="basekit/source/Hash_fnv.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/Hash_fnv.h" />
-		<Unit filename="basekit/source/Hash_murmur.c">
+		<Unit filename="basekit/source/Hash_murmur.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/Hash_murmur.h" />
-		<Unit filename="basekit/source/Hash_superfast.c">
+		<Unit filename="basekit/source/Hash_superfast.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/Hash_superfast.h" />
-		<Unit filename="basekit/source/List.c">
+		<Unit filename="basekit/source/List.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/List.h" />
 		<Unit filename="basekit/source/List_inline.h" />
-		<Unit filename="basekit/source/MainArgs.c">
+		<Unit filename="basekit/source/MainArgs.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/MainArgs.h" />
-		<Unit filename="basekit/source/PointerHash.c">
+		<Unit filename="basekit/source/PointerHash.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/PointerHash.h" />
 		<Unit filename="basekit/source/PointerHash_inline.h" />
 		<Unit filename="basekit/source/PointerHash_struct.h" />
-		<Unit filename="basekit/source/PortableGettimeofday.c">
+		<Unit filename="basekit/source/PortableGettimeofday.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/PortableGettimeofday.h" />
-		<Unit filename="basekit/source/PortableSnprintf.c">
+		<Unit filename="basekit/source/PortableSnprintf.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit/source/PortableSorting.c">
+		<Unit filename="basekit/source/PortableSorting.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/PortableSorting.h" />
 		<Unit filename="basekit/source/PortableStdint.h" />
-		<Unit filename="basekit/source/PortableStrlcpy.c">
+		<Unit filename="basekit/source/PortableStrlcpy.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/PortableStrlcpy.h" />
-		<Unit filename="basekit/source/PortableStrptime.c">
+		<Unit filename="basekit/source/PortableStrptime.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/PortableStrptime.h" />
-		<Unit filename="basekit/source/PortableTruncate.c">
+		<Unit filename="basekit/source/PortableTruncate.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/PortableTruncate.h" />
-		<Unit filename="basekit/source/PortableUsleep.c">
+		<Unit filename="basekit/source/PortableUsleep.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/PortableUsleep.h" />
-		<Unit filename="basekit/source/RandomGen.c">
+		<Unit filename="basekit/source/RandomGen.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/RandomGen.h" />
-		<Unit filename="basekit/source/UArray.c">
+		<Unit filename="basekit/source/UArray.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/UArray.h" />
-		<Unit filename="basekit/source/UArray_character.c">
+		<Unit filename="basekit/source/UArray_character.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/UArray_character.h" />
-		<Unit filename="basekit/source/UArray_format.c">
+		<Unit filename="basekit/source/UArray_format.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/UArray_format.h" />
-		<Unit filename="basekit/source/UArray_math.c">
+		<Unit filename="basekit/source/UArray_math.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/UArray_math.h" />
-		<Unit filename="basekit/source/UArray_path.c">
+		<Unit filename="basekit/source/UArray_path.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/UArray_path.h" />
-		<Unit filename="basekit/source/UArray_stream.c">
+		<Unit filename="basekit/source/UArray_stream.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/UArray_stream.h" />
-		<Unit filename="basekit/source/UArray_string.c">
+		<Unit filename="basekit/source/UArray_string.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/UArray_string.h" />
-		<Unit filename="basekit/source/UArray_utf.c">
+		<Unit filename="basekit/source/UArray_utf.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/UArray_utf.h" />
-		<Unit filename="basekit/source/cdecode.c">
+		<Unit filename="basekit/source/cdecode.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/cdecode.h" />
-		<Unit filename="basekit/source/cencode.c">
+		<Unit filename="basekit/source/cencode.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/cencode.h" />
@@ -266,29 +269,29 @@
 		<Unit filename="basekit/source/simd_cph/include/simd_cp_arm-iwmmx.h" />
 		<Unit filename="basekit/source/simd_cph/include/simd_cp_emu.h" />
 		<Unit filename="basekit/source/simd_cph/include/simd_cp_x86.h" />
-		<Unit filename="basekit/source/simd_cph/test/test_simd.c">
+		<Unit filename="basekit/source/simd_cph/test/test_simd.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit/source/ucs2.c">
+		<Unit filename="basekit/source/ucs2.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit/source/ucs4.c">
+		<Unit filename="basekit/source/ucs4.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="basekit/source/utf8.c">
+		<Unit filename="basekit/source/utf8.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/utf8.h" />
 		<Unit filename="basekit/source/utf8internal.h" />
-		<Unit filename="basekit/source/utf_convert.c">
+		<Unit filename="basekit/source/utf_convert.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="basekit/source/utf_convert.h" />
-		<Unit filename="garbagecollector/source/Collector.c">
+		<Unit filename="garbagecollector/source/Collector.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="garbagecollector/source/Collector.h" />
-		<Unit filename="garbagecollector/source/CollectorMarker.c">
+		<Unit filename="garbagecollector/source/CollectorMarker.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="garbagecollector/source/CollectorMarker.h" />

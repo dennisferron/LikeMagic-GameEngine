@@ -35,6 +35,7 @@
 //#include "IoEditLine.h"
 
 #include "Iocaste/CShims/Exception.h"
+#include "Iocaste/IoCallStack.hpp"
 
 #include <stdlib.h>
 
@@ -45,9 +46,9 @@ using namespace std;
 using namespace Iocaste;
 using namespace Iocaste::LMAdapters;
 
-extern "C" IoDirectory *IoDirectory_proto(void *state);
+IoDirectory *IoDirectory_proto(void *state);
 
-extern "C" {
+typedef Iocaste::IoCallStack::mark_type mark_type;
 
 // BEGIN IoState_inline
 
@@ -97,7 +98,7 @@ void *IoState_unreferencedStackRetain_(IoState *self, IoObject *v)
 		Collector_value_addingRefTo_(self->collector, self->currentCoroutine, v);
 	}
 
-	Stack_push_(self->currentIoStack, v);
+	self->currentIoStack->push(v);
 	return v;
 }
 
@@ -135,41 +136,35 @@ void IoState_popCollectorPause(IoState *self)
 
 void IoState_clearRetainStack(IoState *self)
 {
-	Stack_clear(((IoState *)self)->currentIoStack);
+	self->currentIoStack->clear();
 }
 
 uintptr_t IoState_pushRetainPool(void *self)
 {
-	uintptr_t m = Stack_pushMarkPoint(((IoState *)self)->currentIoStack);
-	return m;
+	mark_type m = ((IoState *)self)->currentIoStack->push_mark_point();
+	return (uintptr_t)m;
 }
 
 void IoState_clearTopPool(void *self)
 {
-	Stack *stack = ((IoState *)self)->currentIoStack;
-	//Stack_popMark(stack);
-	//Stack_pushMark(stack);
-	Stack_clearTop(stack);
+	((IoState *)self)->currentIoStack->clear_to_last_mark();
 }
 
 void IoState_popRetainPool(void *self)
 {
-	Stack *stack = ((IoState *)self)->currentIoStack;
-	Stack_popMark(stack);
+	((IoState *)self)->currentIoStack->pop_mark();
 }
 
 void IoState_popRetainPool_(void *self, uintptr_t mark)
 {
-	Stack *stack = ((IoState *)self)->currentIoStack;
-	Stack_popMarkPoint_(stack, mark);
+    Stack *stack = ((IoState *)self)->currentIoStack
+        ->pop_to_mark_point(
+            *reinterpret_cast<mark_type*>(&mark));
 }
 
 void IoState_popRetainPoolExceptFor_(void *state, void *obj)
 {
 	IoState *self = (IoState *)state;
-#ifdef STACK_POP_CALLBACK
-	IoObject_isReferenced_(((IoObject *)obj), 1);
-#endif
 	IoState_popRetainPool(self);
 	IoState_stackRetain_(self, (IoObject *)obj);
 }
@@ -383,15 +378,14 @@ void IoState_new_atAddress(void *address, char const * bootstrap_path)
 	- then add methods to Object, CFunction and String
 	*/
 
-	self->currentIoStack = Stack_new(); // temp retain stack until coro is up
+	self->currentIoStack = new IoCallStack(); // temp retain stack until coro is up
 
 	self->objectProto = IoObject_proto(self); // need to do this first, so we have a retain stack
 	//IoState_retain_(self, self->objectProto);
 
 	self->mainCoroutine = IoCoroutine_proto(self);
-	Stack_free(self->currentIoStack);
-	self->currentIoStack = NULL;
-
+    delete self->currentIoStack;
+	self->currentIoStack = nullptr;
 	IoState_setCurrentCoroutine_(self, self->mainCoroutine);
 
 	seqProto = IoSeq_proto(self);
@@ -878,5 +872,3 @@ IOVM_API int IoState_exitResult(IoState *self)
 {
 	return self->exitResult;
 }
-
-} // extern "C"

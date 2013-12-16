@@ -145,7 +145,7 @@ void PointerHash_copy_(PointerHash *self, const PointerHash *other)
 {
 	io_free(self->records);
 	memcpy(self, other, sizeof(PointerHash));
-	self->records = malloc(self->size * sizeof(PointerHashRecord));
+	self->records = (unsigned char*)malloc(self->size * sizeof(PointerHashRecord));
 	memcpy(self->records, other->records, self->size * sizeof(PointerHashRecord));
 }
 
@@ -158,7 +158,7 @@ PointerHash *PointerHash_clone(PointerHash *self)
 
 void PointerHash_setSize_(PointerHash *self, size_t size)
 {
-	self->records = realloc(self->records, size * sizeof(PointerHashRecord));
+	self->records = (unsigned char*)realloc(self->records, size * sizeof(PointerHashRecord));
 
 	if(size > self->size)
 	{
@@ -235,7 +235,7 @@ void PointerHash_resizeTo_(PointerHash *self, size_t newSize)
 	unsigned char *oldRecords = self->records;
 	size_t oldSize = self->size;
 	self->size = newSize;
-	self->records = io_calloc(1, sizeof(PointerHashRecord) * self->size);
+	self->records = (unsigned char*)io_calloc(1, sizeof(PointerHashRecord) * self->size);
 	self->keyCount = 0;
 	PointerHash_updateMask(self);
 	PointerHash_insertRecords(self, oldRecords, oldSize);

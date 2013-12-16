@@ -9,9 +9,6 @@ Structure for copying and storing command line arguments.")
 
 #include "Common.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct
 {
@@ -26,9 +23,6 @@ BASEKIT_API void MainArgs_argc_argv_(MainArgs *self, int argc, const char **argv
 #define MainArgs_argCount(self) self->argc
 #define MainArgs_argAt_(self, index) self->argv[index]
 
-#ifdef __cplusplus
-}
-#endif
 #endif
 
 

@@ -8,9 +8,6 @@
 
 #include "Common.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef void DynLibNoArgFunction(void);
 typedef void DynLibOneArgFunction(void *arg);
@@ -49,7 +46,4 @@ BASEKIT_API unsigned char DynLib_isOpen(DynLib *self);
 BASEKIT_API void DynLib_close(DynLib *self);
 BASEKIT_API void *DynLib_pointerForSymbolName_(DynLib *self, const char *symbolName);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

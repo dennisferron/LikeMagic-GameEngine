@@ -8,9 +8,6 @@ license
 #ifndef BSTREAMTAG_DEFINED
 #define BSTREAMTAG_DEFINED 1
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define BSTREAM_UNSIGNED_INT 0
 #define BSTREAM_SIGNED_INT   1
@@ -32,10 +29,7 @@ BStreamTag BStreamTag_TagArray_type_byteCount_(unsigned int a, unsigned int t, u
 int BStreamTag_isEqual_(BStreamTag *self, BStreamTag *other);
 void BStreamTag_print(BStreamTag *self);
 
-char *BStreamTag_typeName(BStreamTag *self);
+const char *BStreamTag_typeName(BStreamTag *self);
 
-#ifdef __cplusplus
-}
-#endif
 #endif
 

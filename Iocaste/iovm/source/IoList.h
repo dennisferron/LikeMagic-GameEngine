@@ -11,9 +11,6 @@
 #include "IoObject.h"
 #include "List.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define ISLIST(self) \
 	IoObject_hasCloneFunc_(self, (IoTagCloneFunc *)IoList_rawClone)
@@ -92,7 +89,4 @@ IOVM_API IO_METHOD(IoList, fromEncodedList);
 IOVM_API IO_METHOD(IoList, join);
 
 
-#ifdef __cplusplus
-}
-#endif
 #endif

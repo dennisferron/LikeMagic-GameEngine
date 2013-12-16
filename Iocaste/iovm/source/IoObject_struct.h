@@ -10,9 +10,6 @@
 #include "IoTag.h"
 #include "Collector.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // Shortcut for method definitons in C code
 #define IO_METHOD(CLASS, NAME) IoObject * CLASS ## _ ## NAME (CLASS  *self, IoObject *locals, IoMessage *m)
@@ -145,7 +142,4 @@ typedef struct
 	IoMethodFunc *func;
 } IoMethodTable;
 
-#ifdef __cplusplus
-}
-#endif
 #endif

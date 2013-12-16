@@ -2,20 +2,19 @@
 //metadoc Coroutine copyright Steve Dekorte 2002
 //metadoc Coroutine license BSD revised
 
-#ifndef IoCoroutine_DEFINED
-#define IoCoroutine_DEFINED 1
+#pragma once
+
 #include "IoVMApi.h"
 
 #include "IoState.h"
 
+#include "Iocaste/IoCallStack.hpp"
+
 #include "Common.h"
 //#include "Coro.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define ISCOROUTINE(self) IoObject_hasCloneFunc_(self, (IoTagCloneFunc *)IoCoroutine_rawClone)
+
 
 typedef void Coro;
 
@@ -23,9 +22,7 @@ typedef IoObject IoCoroutine;
 
 typedef struct
 {
-	//Coro *cid;
-    //std::vector<IoCallData> io_call_stack;
-	Stack *ioStack;
+    Iocaste::IoCallStack* ioStack;
 	int debuggingOn;
 } IoCoroutineData;
 
@@ -36,7 +33,7 @@ IOVM_API IoCoroutine *IoCoroutine_new(void *state);
 
 IOVM_API void IoCoroutine_free(IoCoroutine *self);
 IOVM_API void IoCoroutine_mark(IoCoroutine *self);
-Stack *IoCoroutine_rawIoStack(IoCoroutine *self);
+Iocaste::IoCallStack *IoCoroutine_rawIoStack(IoCoroutine *self);
 IOVM_API void IoCoroutine_rawShow(IoCoroutine *self);
 
 IOVM_API IO_METHOD(IoCoroutine, main);
@@ -144,7 +141,3 @@ IOVM_API IoObject *IoObject_performWithDebugger(IoCoroutine *self, IoObject *loc
 IOVM_API IO_METHOD(IoCoroutine, callStack);
 IOVM_API void IoCoroutine_rawPrintBackTrace(IoCoroutine *self);
 
-#ifdef __cplusplus
-}
-#endif
-#endif

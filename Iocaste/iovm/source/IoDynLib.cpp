@@ -17,8 +17,6 @@ A DLL Loader by Kentaro A. Kurahone.
 #include "IoDynLib.h"
 #include "DynLib.h"
 
-extern "C" {
-
 static const char *protoId = "DynLib";
 
 #define DATA(self) ((DynLib *)IoObject_dataPointer(self))
@@ -521,5 +519,3 @@ IoSeq *IoDynLib_returnsString(IoDynLib *self, IoObject *locals, IoMessage *m)
 	return IOSYMBOL((char *)n);
 }
 */
-
-}

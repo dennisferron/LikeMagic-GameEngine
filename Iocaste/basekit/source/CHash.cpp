@@ -6,9 +6,7 @@
 #include "CHash.h"
 #undef CHASH_C
 #include <stdlib.h>
-#warning "foo"
 #include <stdio.h>
-#warning "bar"
 #include <string.h>
 #include <assert.h>
 
@@ -140,7 +138,7 @@ void CHash_copy_(CHash *self, const CHash *other)
 {
 	io_free(self->records);
 	memcpy(self, other, sizeof(CHash));
-	self->records = malloc(self->size * sizeof(CHashRecord));
+	self->records = (unsigned char*)malloc(self->size * sizeof(CHashRecord));
 	memcpy(self->records, other->records, self->size * sizeof(CHashRecord));
 }
 
@@ -153,7 +151,7 @@ CHash *CHash_clone(CHash *self)
 
 void CHash_setSize_(CHash *self, size_t size)
 {
-	self->records = realloc(self->records, size * sizeof(CHashRecord));
+	self->records = (unsigned char*)realloc(self->records, size * sizeof(CHashRecord));
 
 	if(size > self->size)
 	{
@@ -264,7 +262,7 @@ int CHash_resizeTo_(CHash *self, size_t newSize)
 	do
 	{
 		self->size = newSize;
-		self->records = io_calloc(1, sizeof(CHashRecord) * self->size);
+		self->records = (unsigned char*)io_calloc(1, sizeof(CHashRecord) * self->size);
 		self->keyCount = 0;
 		CHash_updateMask(self);
 		if(CHash_insertRecords(self, oldRecords, oldSize) == 0)

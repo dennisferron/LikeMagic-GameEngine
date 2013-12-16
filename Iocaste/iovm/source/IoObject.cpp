@@ -1483,7 +1483,10 @@ IoObject *IOCLONE(IoObject *self)
 	IoState_pushCollectorPause(state);
 	IoTag* tag = IoObject_tag(self);
 	IoObject* newObject = (IoObject*)tag->cloneFunc(self);
+
+    // This also puts it on the stack - why?
 	IoState_addValueIfNecessary_(state, newObject);
+
 	IoState_popCollectorPause(state);
 	return newObject;
 }

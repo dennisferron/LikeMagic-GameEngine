@@ -22,11 +22,8 @@
 #include "IoState.h"
 #include "IoCall.h"
 
-extern "C"
-{
-    typedef void (CollectorFreeFunc)(void *);
-    List* IoState_tagList(IoState *self);
-}
+typedef void (CollectorFreeFunc)(void *);
+List* IoState_tagList(IoState *self);
 
 namespace Iocaste { namespace LMAdapters {
 

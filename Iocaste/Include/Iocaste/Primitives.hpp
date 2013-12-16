@@ -5,11 +5,8 @@
 
 #include <vector>
 
-extern "C"
-{
-    struct CollectorMarker;
-    typedef CollectorMarker IoObject;
-}
+struct CollectorMarker;
+typedef CollectorMarker IoObject;
 
 namespace Iocaste {
 

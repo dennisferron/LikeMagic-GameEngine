@@ -11,9 +11,6 @@
 
 #define ISDIRECTORY(self) IoObject_hasCloneFunc_(self, (IoTagCloneFunc *)IoDirectory_rawClone)
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef IoObject IoDirectory;
 
@@ -51,7 +48,4 @@ IOVM_API int IoDirectory_SetCurrentWorkingDirectory(const char *path);
 IOVM_API IO_METHOD(IoDirectory, currentWorkingDirectory);
 IOVM_API IO_METHOD(IoDirectory, setCurrentWorkingDirectory);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

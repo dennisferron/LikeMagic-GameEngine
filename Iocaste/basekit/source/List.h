@@ -14,9 +14,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #ifdef LOW_MEMORY_SYSTEM
 	#define LIST_START_SIZE 1
@@ -92,7 +89,4 @@ BASEKIT_API void *List_removeLast(List *self);
 
 #include "List_inline.h"
 
-#ifdef __cplusplus
-}
-#endif
 #endif

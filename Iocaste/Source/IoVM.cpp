@@ -52,13 +52,9 @@ void IoVM::set_script_path(string value)
     scriptPath = value;
 }
 
-extern "C" {
-    char const* likemagic_proto_id = "LikeMagic";
-    char const* likemagic_proto_data = "$$$ This is a dummy string to create a unique value for the LikeMagic proto's data pointer. $$$";
-}
+char const* likemagic_proto_id = "LikeMagic";
+char const* likemagic_proto_data = "$$$ This is a dummy string to create a unique value for the LikeMagic proto's data pointer. $$$";
 
-// CShims functions
-extern "C" {
 
 void iovm_set_pending_breakpoints(IoMessage *self)
 {
@@ -98,8 +94,6 @@ StepMode_t iovm_step_stop(
     cout << "iovm_step_stop returns " << mode << endl;
 
     return mode;
-}
-
 }
 
 std::string IoVM::get_path(std::string path_identifier)

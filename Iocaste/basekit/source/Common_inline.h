@@ -13,16 +13,6 @@ Kudos to Daniel A. Koepke
 #undef IO_DECLARE_INLINES
 #undef IOINLINE
 
-/*
-#if defined(__cplusplus)
-	#ifdef IO_IN_C_FILE
-	#else
-		#define IO_DECLARE_INLINES
-		#define IOINLINE extern inline
-	#endif
-#else
-*/
-
 #if defined(__APPLE__)
 	#include "TargetConditionals.h"
 #endif
@@ -40,46 +30,42 @@ Kudos to Daniel A. Koepke
 #ifdef NON_EXTERN_INLINES
 
 #ifdef IO_IN_C_FILE
-	// in .c 
+	// in .c
 	#define IO_DECLARE_INLINES
-	#define IOINLINE 
+	#define IOINLINE
 #else
-	// in .h 
+	// in .h
 	#define IO_DECLARE_INLINES
 	#define IOINLINE inline
-#endif 
+#endif
 
 #else
 
 #ifdef __MINGW32__
 
 #ifdef IO_IN_C_FILE
-	// in .c 
+	// in .c
 	#define IO_DECLARE_INLINES
 	#define IOINLINE inline
 #else
-	// in .h 
+	// in .h
 	#define IO_DECLARE_INLINES
 	#define IOINLINE static inline
-#endif 
+#endif
 
 #else //__MINGW32__
 
 #ifdef IO_IN_C_FILE
-	// in .c 
+	// in .c
 	#define IO_DECLARE_INLINES
 	#define IOINLINE inline
 #else
-	// in .h 
+	// in .h
 	#define IO_DECLARE_INLINES
 	//#define IOINLINE extern inline
 	#define IOINLINE  inline
-#endif 
+#endif
 
 #endif //__MINGW32__
 
 #endif
-
-/*
-#endif
-*/

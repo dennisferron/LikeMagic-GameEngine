@@ -11,9 +11,6 @@
 
 #include "IoVMApi.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef void * (IoTagCloneFunc)(void *); // self
 typedef void   (IoTagFreeFunc)(void *); // self
@@ -68,13 +65,13 @@ typedef struct
 	IoTagPerformFunc *performFunc; // lookup and activate, return result
 	IoTagActivateFunc *activateFunc; // return the receiver or compute and return a value
 	IoTagCompareFunc *compareFunc;
-	
+
 	/*
 	IoTagSetFunc *setFunc
 	IoTagGetFunc *getFunc
 	IoTagCursorFunc *cursorFunc
 	*/
-	
+
 	// persistence
 
 	IoTagWriteToStreamFunc   *writeToStreamFunc;
@@ -98,7 +95,4 @@ IOVM_API void IoTag_mark(IoTag *self);
 
 #include "IoTag_inline.h"
 
-#ifdef __cplusplus
-}
-#endif
 #endif

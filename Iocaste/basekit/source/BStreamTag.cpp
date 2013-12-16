@@ -59,7 +59,7 @@ void BStreamTag_print(BStreamTag *self)
 	printf("]");
 }
 
-char *BStreamTag_typeName(BStreamTag *self)
+const char *BStreamTag_typeName(BStreamTag *self)
 {
 	switch (self->type)
 	{

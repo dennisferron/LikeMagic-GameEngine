@@ -10,9 +10,6 @@
 #include "IoSeq.h"
 #include "Date.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define ISDATE(self) IoObject_hasCloneFunc_(self, (IoTagCloneFunc *)IoDate_rawClone)
 #define IODATE(time) IoDate_newWithTime_((IoState*)IOSTATE, (time_t)time)
@@ -89,7 +86,4 @@ IO_METHOD(IoDate, subtractInPlace);
 IO_METHOD(IoDate, add);
 IO_METHOD(IoDate, addInPlace);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

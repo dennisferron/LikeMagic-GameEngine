@@ -19,21 +19,21 @@ int UArray_MachineIsLittleEndian(void)
 }
 
 /*
-int strlenUTF8(char *s) 
+int strlenUTF8(char *s)
 {
 	int i = 0;
 	int len = 0;
-	
-	while (s[i]) 
+
+	while (s[i])
 	{
-		if ((s[i] & 0xc0) != 0x80) 
+		if ((s[i] & 0xc0) != 0x80)
 		{
 			len ++;
 		}
-		
+
 		i ++;
 	}
-	
+
 	return len;
 }
 */
@@ -126,11 +126,11 @@ int UArray_isMultibyte(const UArray *self)
 {
 	if (self->encoding == CENCODING_UTF8)
 	{
-		size_t i, max = UArray_sizeInBytes(self); 
+		size_t i, max = UArray_sizeInBytes(self);
 		const uint8_t *bytes = UArray_bytes(self);
 		for (i = 0; i < max; i ++)
 		{
-			if (UArray_SizeOfUTF8Char(bytes + i) > 1) return 1; 
+			if (UArray_SizeOfUTF8Char(bytes + i) > 1) return 1;
 		}
 		//UARRAY_INTFOREACH(self, i, v, if (ismbchar((int)v)) return 1; );
 	}
@@ -140,8 +140,8 @@ int UArray_isMultibyte(const UArray *self)
 
 int UArray_isLegalUTF8(const UArray *self)
 {
-	void *sourceStart = self->data;
-	void *sourceEnd   = self->data + self->size * self->itemSize;
+	uint8_t* sourceStart = self->data;
+	uint8_t* sourceEnd   = self->data + self->size * self->itemSize;
 
 	return isLegalUTF8Sequence(sourceStart, sourceEnd);
 }
@@ -179,7 +179,7 @@ UArray *UArray_asUTF8(const UArray *self)
 
 	{
 		//ConversionFlags options = lenientConversion;
-		void *sourceStart = self->data;
+		void* sourceStart = self->data;
 		//void *sourceEnd   = self->data + self->size * self->itemSize;
 		UTF8 *targetStart = out->data;
 		//UTF8 *targetEnd   = out->data + out->size * out->itemSize;
@@ -203,12 +203,12 @@ UArray *UArray_asUTF8(const UArray *self)
 				*/
 			case CENCODING_UCS2:
 				// should the size be the num of chars or num of bytes??????????
-				outSize = ucs2encode(targetStart, sourceStart, self->size, NULL); // ucs2 to utf8
+				outSize = ucs2encode(targetStart, (const ucs2*)sourceStart, self->size, NULL); // ucs2 to utf8
 				UArray_setSize_(out, outSize - 1);
 				break;
 			case CENCODING_UCS4:
 				// should the size be the num of chars or num of bytes??????????
-				outSize = ucs4encode(targetStart, sourceStart, self->size, NULL); // ucs4 to utf8
+				outSize = ucs4encode(targetStart, (const ucs4*)sourceStart, self->size, NULL); // ucs4 to utf8
 				UArray_setSize_(out, outSize - 1);
 				break;
 			case CENCODING_NUMBER:
@@ -238,23 +238,23 @@ UArray *UArray_asUCS2(const UArray *self)
 	const UArray *utf8Array = convertToUtf8First ? UArray_asUTF8(self) : self;
 	size_t countedChars = UArray_numberOfCharacters(self);
 	size_t numChars;
-	
+
 	UArray *out = UArray_new();
 	UArray_setItemType_(out, CTYPE_uint16_t);
 	UArray_setEncoding_(out, CENCODING_UCS2);
 	UArray_setSize_(out, countedChars*2);
 
 	numChars = ucs2decode((ucs2 *)(out->data), out->size, utf8Array->data);
-	
+
 	if ((numChars > 0) && (numChars > countedChars*2))
 	{
 		printf("UArray_asUCS2 error: numChars (%i) > countedChars (2*%i)\n", (int)numChars, (int)countedChars);
 		printf("Exiting because we may have overwritten the usc2 decode output buffer.");
 		exit(-1);
 	}
-	
+
 	UArray_setSize_(out, numChars);
-	
+
 	if (convertToUtf8First) UArray_free((UArray *)utf8Array);
 	return out;
 }
@@ -265,7 +265,7 @@ UArray *UArray_asUCS4(const UArray *self)
 	const UArray *utf8Array = convertToUtf8First ? UArray_asUTF8(self) : self;
 	size_t countedChars = UArray_numberOfCharacters(self);
 	size_t numChars;
-	
+
 	UArray *out = UArray_new();
 	UArray_setItemType_(out, CTYPE_uint32_t);
 	UArray_setEncoding_(out, CENCODING_UCS4);
@@ -278,9 +278,9 @@ UArray *UArray_asUCS4(const UArray *self)
 		printf("UArray_asUCS4 error: numChars %i != countedChars %i\n", (int)numChars, (int)countedChars);
 		exit(-1);
 	}
-	
+
 	UArray_setSize_(out, numChars);
-	
+
 	if (convertToUtf8First) UArray_free((UArray *)utf8Array);
 	return out;
 }

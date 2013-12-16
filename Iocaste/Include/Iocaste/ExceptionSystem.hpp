@@ -9,5 +9,5 @@ namespace Iocaste
 
 }
 
-extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m);
-extern "C" IoObject* raiseException(IoObject *self, IoObject *locals, IoMessage *m);
+IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m);
+IoObject* raiseException(IoObject *self, IoObject *locals, IoMessage *m);

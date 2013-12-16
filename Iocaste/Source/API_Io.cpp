@@ -26,10 +26,8 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 
 using namespace LM;
 
-extern "C" {
-    extern char const* likemagic_proto_id;
-    extern char const* likemagic_proto_data;
-}
+extern char const* likemagic_proto_id;
+extern char const* likemagic_proto_data;
 
 namespace Iocaste { namespace LMAdapters {
 
@@ -127,10 +125,6 @@ ExprPtr get_expr_arg_at(IoObject *self, IoObject *locals, IoMessage *m, int pos,
 
 
 }}
-
-//////////////////////////////////////////
-// Some extern "C" functions below.
-////////////////////////////////////////////
 
 IoObject* API_io_rawClone(IoObject* proto)
 {

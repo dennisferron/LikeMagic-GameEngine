@@ -3,9 +3,6 @@
 #ifndef RANDOMGEN_DEFINED
 #define RANDOMGEN_DEFINED 1
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include "Common.h"
 
@@ -32,7 +29,4 @@ BASEKIT_API int RandomGen_randomInt(RandomGen *self);
 
 BASEKIT_API double RandomGen_gaussian(RandomGen *self, double mean, double standardDeviation);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

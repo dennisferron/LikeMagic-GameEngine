@@ -19,9 +19,6 @@
 #include <stddef.h>
 #include "List.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef void (StackDoCallback)(void *);
 //typedef void (StackDoOnCallback)(void *, void *);
@@ -31,26 +28,6 @@ typedef struct
 	void* impl;
 } Stack;
 
-//#define Stack_popCallback_(self, callback) self->popCallback = callback;
-
-/*
-BASEKIT_API Stack *Stack_clone(const Stack *self);
-BASEKIT_API void Stack_copy_(Stack *self, const Stack *other);
-
-BASEKIT_API size_t Stack_memorySize(const Stack *self);
-BASEKIT_API void Stack_compact(Stack *self);
-
-BASEKIT_API void Stack_resize(Stack *self);
-
-BASEKIT_API void Stack_popToMark_(Stack *self, intptr_t mark);
-
-// not high performance
-
-BASEKIT_API void Stack_makeMarksNull(Stack *self);
-BASEKIT_API Stack *Stack_newCopyWithNullMarks(const Stack *self);
-BASEKIT_API void Stack_do_on_(const Stack *self, StackDoOnCallback *callback, void *target);
-
-*/
 
 // Used in IO_METHOD(IoCoroutine, ioStack)
 BASEKIT_API List *Stack_asList(const Stack *self);
@@ -79,7 +56,4 @@ BASEKIT_API void Stack_free(Stack *self);
 //BASEKIT_API void Stack_do_on_(const Stack *self, StackDoOnCallback *callback, void *target);
 
 
-#ifdef __cplusplus
-}
-#endif
 #endif

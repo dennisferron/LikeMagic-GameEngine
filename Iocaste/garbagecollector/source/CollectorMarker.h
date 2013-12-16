@@ -8,9 +8,6 @@
 #include "Common.h"
 #include "List.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #if defined NO_USE_DLL_BUILD
 #define COLLECTOR_API
@@ -106,7 +103,4 @@ int CollectorMarker_colorSetIsEmpty(CollectorMarker *self);
 
 #include "CollectorMarker_inline.h"
 
-#ifdef __cplusplus
-}
-#endif
 #endif

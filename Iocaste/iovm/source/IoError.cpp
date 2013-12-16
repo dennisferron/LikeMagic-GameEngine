@@ -9,8 +9,6 @@ An object that contains error information and flow control based on errors.
 #include "IoState.h"
 #include "IoSeq.h"
 
-extern "C" {
-
 static const char *protoId = "Error";
 
 IoTag *IoError_newTag(void *state)
@@ -75,6 +73,4 @@ IoError *IoError_newWithCStringMessage_(IoState *state, char *cString)
 		IoSeq_newWithCString_(state, cString)
 	);
 	return error;
-}
-
 }

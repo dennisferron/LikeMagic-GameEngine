@@ -7,9 +7,6 @@
 
 #include "IoObject.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 IoObject *IoCompiler_proto(void *state);
 
@@ -18,7 +15,4 @@ IO_METHOD(IoObject, messageForTokens);
 IO_METHOD(IoObject, messageForString);
 IO_METHOD(IoObject, messageForString2);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

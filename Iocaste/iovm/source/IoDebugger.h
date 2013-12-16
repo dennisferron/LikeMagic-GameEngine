@@ -7,13 +7,7 @@
 
 #include "IoObject.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 IoObject *IoDebugger_proto(void *state);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

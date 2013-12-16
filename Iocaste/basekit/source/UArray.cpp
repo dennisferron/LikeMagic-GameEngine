@@ -119,7 +119,7 @@ void UArray_unsupported_with_(const UArray *self, const char *methodName, const 
 	exit(-1);
 }
 
-void UArray_error_(const UArray *self, char *e)
+void UArray_error_(const UArray *self, char const*e)
 {
 	printf("%s\n", e);
 	exit(-1);
@@ -185,7 +185,7 @@ void UArray_setItemType_(UArray *self, CTYPE type)
 
 CENCODING UArray_encoding(const UArray *self)
 {
-	return self->encoding;
+	return (CENCODING)self->encoding;
 }
 
 void UArray_setEncoding_(UArray *self, CENCODING encoding)
@@ -240,7 +240,7 @@ void UArray_convertToEncoding_(UArray *self, CENCODING encoding)
 UArray *UArray_newWithData_type_encoding_size_copy_(void *bytes, CTYPE type, CENCODING encoding, size_t size, int copy)
 {
 	UArray *self = (UArray *)io_calloc(1, sizeof(UArray));
-	UArray_setData_type_size_copy_(self, bytes, type, size, copy);
+	UArray_setData_type_size_copy_(self, (uint8_t*)bytes, type, size, copy);
 	self->encoding = encoding;
 	return self;
 }
@@ -248,14 +248,14 @@ UArray *UArray_newWithData_type_encoding_size_copy_(void *bytes, CTYPE type, CEN
 UArray *UArray_newWithData_type_size_copy_(void *bytes, CTYPE type, size_t size, int copy)
 {
 	UArray *self = (UArray *)io_calloc(1, sizeof(UArray));
-	UArray_setData_type_size_copy_(self, bytes, type, size, copy);
+	UArray_setData_type_size_copy_(self, (uint8_t*)bytes, type, size, copy);
 	self->encoding = CENCODING_ASCII;
 	return self;
 }
 
 UArray *UArray_new(void)
 {
-	return UArray_newWithData_type_size_copy_("", CTYPE_uint8_t, 0, 1);
+	return UArray_newWithData_type_size_copy_((uint8_t *)"", CTYPE_uint8_t, 0, 1);
 }
 
 UArray *UArray_clone(const UArray *self)
@@ -305,7 +305,7 @@ void UArray_print(const UArray *self)
 	}
 }
 
-UArray UArray_stackAllocedWithData_type_size_(void *data, CTYPE type, size_t size)
+UArray UArray_stackAllocedWithData_type_size_(uint8_t* data, CTYPE type, size_t size)
 {
 	UArray self;
 	memset(&self, 0, sizeof(UArray));
@@ -339,7 +339,7 @@ BASEKIT_API UArray UArray_stackAllocedEmptyUArray(void)
 
 UArray *UArray_newWithCString_copy_(const char *s, int copy)
 {
-	return UArray_newWithData_type_size_copy_(s, CTYPE_uint8_t, strlen(s), copy);
+	return UArray_newWithData_type_size_copy_((void*)s, CTYPE_uint8_t, strlen(s), copy);
 }
 
 UArray *UArray_newWithCString_(const char *s)
@@ -370,7 +370,7 @@ void UArray_checkIfOkToRelloc(UArray *self)
 }
 #endif
 
-void UArray_setData_type_size_copy_(UArray *self, void *data, CTYPE type, size_t size, int copy)
+void UArray_setData_type_size_copy_(UArray *self, uint8_t* data, CTYPE type, size_t size, int copy)
 {
 	size_t sizeInBytes;
 
@@ -385,7 +385,7 @@ void UArray_setData_type_size_copy_(UArray *self, void *data, CTYPE type, size_t
 
 	if (copy)
 	{
-		self->data = io_realloc(self->data, sizeInBytes + 1);
+		self->data = (uint8_t *)io_realloc(self->data, sizeInBytes + 1);
 		memmove(self->data, data, sizeInBytes);
 		self->data[sizeInBytes] = 0x0;
 	}
@@ -399,7 +399,7 @@ void UArray_setData_type_size_copy_(UArray *self, void *data, CTYPE type, size_t
 
 UArray UArray_stackAllocedWithCString_(char *s)
 {
-	return UArray_stackAllocedWithData_type_size_(s, CTYPE_uint8_t, strlen(s));
+	return UArray_stackAllocedWithData_type_size_((uint8_t *)s, CTYPE_uint8_t, strlen(s));
 }
 
 const void *UArray_data(const UArray *self)
@@ -446,7 +446,7 @@ void UArray_setSize_(UArray *self, size_t size)
 #ifdef UARRAY_DEBUG
 			UArray_checkIfOkToRelloc(self);
 #endif
-		self->data = io_realloc(self->data, newSizeInBytes + 1);
+		self->data = (uint8_t *)io_realloc(self->data, newSizeInBytes + 1);
 
 
 		self->data[newSizeInBytes] = 0x0;
@@ -520,9 +520,9 @@ void UArray_convertToItemType_(UArray *self, CTYPE newItemType)
 		CENCODING encoding = UArray_encoding(self);
 		UArray_setItemType_(tmp, newItemType);
 
-		if(CENCODING_isText(self->encoding))
+		if(CENCODING_isText((CENCODING)self->encoding))
 		{
-			encoding = CTYPE_fixedWidthTextEncodingForType(newItemType);
+			encoding = (CENCODING)CTYPE_fixedWidthTextEncodingForType(newItemType);
 		}
 
 		UArray_setEncoding_(tmp, encoding);
@@ -713,7 +713,7 @@ void UArray_leave_thenRemove_(UArray *self, size_t itemsToLeave, size_t itemsToR
 		{
 			size_t chunkCount = UArray_size(self) / period;
 			size_t newItemCount = chunkCount * itemsToLeave + tailChunkSizeInBytes / itemSize;
-			uint8_t *newData = malloc(newItemCount * itemSize);
+			uint8_t *newData = (uint8_t*)malloc(newItemCount * itemSize);
 
 			{
 				size_t chunkPos;

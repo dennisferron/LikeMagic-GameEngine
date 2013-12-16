@@ -14,8 +14,6 @@ Call stores slots related to activation.
 using namespace Iocaste;
 using namespace Iocaste::LMAdapters;
 
-extern "C" {
-
 static const char *protoId = "Call";
 
 #define DATA(self) ((IoCallData *)IoObject_dataPointer(self))
@@ -99,7 +97,9 @@ IoCall *IoCall_new(IoState *state)
 
 	IoCall_initSlots(newObject);
 
+    // This also pushes the call onto the currentIoStack
 	IoState_addValueIfNecessary_(state, newObject);
+
 	IoState_popCollectorPause(state);
 
 	return newObject;
@@ -243,6 +243,4 @@ IO_METHOD(IoCall, setStopStatus)
 	IoObject *status = IoMessage_locals_valueArgAt_(m, locals, 0);
 	DATA(self)->stopStatus = IoState_stopStatusNumber(IOSTATE, status);
 	return self;
-}
-
 }

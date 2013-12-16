@@ -7,9 +7,6 @@
 
 #include "IoObject_struct.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct
 {
@@ -36,9 +33,6 @@ becomes:
 	IoObject *IoDuration_days(IoContext *context);
 */
 
-#ifdef __cplusplus
-}
-#endif
 #endif
 
 

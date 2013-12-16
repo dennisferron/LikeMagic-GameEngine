@@ -1,8 +1,8 @@
-/*metadoc System copyright 
+/*metadoc System copyright
 	Steve Dekorte 2002
 */
 
-/*metadoc System license 
+/*metadoc System license
 	BSD revised
 */
 
@@ -11,9 +11,6 @@
 
 #include "IoObject.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 IoObject *IoSystem_proto(void *state);
 
@@ -44,7 +41,4 @@ IO_METHOD(IoObject, symbols);
 IO_METHOD(IoObject, setLobby);
 IO_METHOD(IoObject, thisProcessPid);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

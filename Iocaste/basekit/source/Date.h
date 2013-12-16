@@ -11,9 +11,6 @@
 #include "PortableGettimeofday.h"
 #include <time.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct
 {
@@ -91,7 +88,4 @@ BASEKIT_API double Date_secondsSinceNow(const Date *self);
 
 BASEKIT_API UArray *Date_asString(const Date *self, const char *format);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

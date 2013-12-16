@@ -16,9 +16,9 @@ void UArray_append_(UArray *self, const UArray *other)
 {
 	if(UArray_itemSize(self) < UArray_itemSize(other))
 	{
-		UArray_convertToItemType_(self, (int)UArray_itemType(other));
+		UArray_convertToItemType_(self, (CTYPE)UArray_itemType(other));
 	}
-	
+
 	UArray_at_putAll_(self, self->size, other);
 }
 
@@ -50,7 +50,7 @@ void UArray_replace_with_(UArray *self, const UArray *a1, const UArray *a2)
 	UArray visible = UArray_stackRange(self, start, self->size);
 
 	if (UArray_size(a1) == 0) return;
-	
+
 	while ((i = UArray_find_(&visible, a1)) != -1)
 	{
 		size_t index = start + i;
@@ -296,7 +296,7 @@ PtrUArray *UArray_split_(const UArray *self, const PtrUArray *delims)
 
 		for (j = 0; j < delims->size; j ++)
 		{
-			UArray *delim = UArray_rawPointerAt_(delims, j);
+			UArray *delim = (UArray*)UArray_rawPointerAt_(delims, j);
 
 			if (UArray_beginsWith_(&slice, delim))
 			{
@@ -337,7 +337,7 @@ BASEKIT_API int UArray_beginsWith_(UArray *self, const UArray *other)
 		/* A common case seems to be comparing against a single byte, which
 		 * happens all of the place internally (not sure why yet, but it would
 		 * be good to investigate this)*/
-		if (osize == 1) 
+		if (osize == 1)
 		{
 			return (*(self->data) == *(other->data));
 		}
@@ -487,7 +487,7 @@ void UArray_translate(UArray *self, UArray *fromChars, UArray *toChars)
 	if ((0 < fromMax && fromMax < max) && (0 < toMax && toMax < 256))
 	{
 		size_t i;
-		uint8_t *map = io_calloc(1, fromMax);
+		uint8_t *map = (uint8_t*)io_calloc(1, fromMax);
 		memset(map, 0x0, fromMax);
 
 		for(i = 0; i < UArray_size(fromChars); i ++)
@@ -540,24 +540,24 @@ UArray *UArray_asBase64(const UArray *self, int charsPerLine)
 	uint8_t *encodedBytes;
 	size_t encodedBytesSize;
 	UArray *encoded;
-	
+
 	base64_init_encodestate(&state);
 	state.chars_per_line = charsPerLine;
-	
+
 	unencodedBytesSize = UArray_sizeInBytes(self);
-	encodedBytes = io_calloc(2 * unencodedBytesSize, 1);
-	
+	encodedBytes = (uint8_t *)io_calloc(2 * unencodedBytesSize, 1);
+
 	encoded = UArray_new();
 	UArray_setItemType_(encoded, CTYPE_uint8_t);
-	
+
 	encodedBytesSize = base64_encode_block((char *)UArray_bytes(self), (int)unencodedBytesSize, (char *)encodedBytes, &state);
 	UArray_appendBytes_size_(encoded, encodedBytes, encodedBytesSize);
-	
+
 	encodedBytesSize = base64_encode_blockend((char *)encodedBytes, &state);
 	UArray_appendBytes_size_(encoded, encodedBytes, encodedBytesSize);
-	
+
 	io_free(encodedBytes);
-	
+
 	return encoded;
 }
 
@@ -568,19 +568,19 @@ UArray *UArray_fromBase64(const UArray *self)
 	uint8_t *decodedBytes;
 	size_t decodedBytesSize;
 	UArray *decoded;
-	
+
 	base64_init_decodestate(&state);
 	undecodedBytesSize = UArray_sizeInBytes(self);
-	decodedBytes = io_calloc(2 * undecodedBytesSize, 1);
-	
+	decodedBytes = (uint8_t *)io_calloc(2 * undecodedBytesSize, 1);
+
 	decoded = UArray_new();
 	UArray_setItemType_(decoded, CTYPE_uint8_t);
-	
+
 	decodedBytesSize = base64_decode_block((char *)UArray_bytes(self), (int)undecodedBytesSize, (char *)decodedBytes, &state);
 	UArray_appendBytes_size_(decoded, decodedBytes, decodedBytesSize);
-		
+
 	io_free(decodedBytes);
-	
+
 	return decoded;
 }
 

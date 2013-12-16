@@ -64,7 +64,7 @@ void Collector_makeBlack_(Collector *self, CollectorMarker *v)
 	CollectorMarker_removeAndInsertAfter_((CollectorMarker *)v, self->blacks);
 }
 
-void Collector_makeGrayIfWhite_(Collector *self, void *v)
+void Collector_makeGrayIfWhite_(Collector *self, CollectorMarker* v)
 {
 	if (Collector_markerIsWhite_(self, (CollectorMarker *)v))
 	{
@@ -73,13 +73,13 @@ void Collector_makeGrayIfWhite_(Collector *self, void *v)
 }
 
 /*
-void Collector_makeFreed_(Collector *self, void *v)
+void Collector_makeFreed_(Collector *self, CollectorMarker* v)
 {
 	CollectorMarker_removeAndInsertAfter_(v, self->freed);
 }
 */
 
-void *XIMPLX_Collector_value_addingRefTo_(Collector *self, void *v, void *ref)
+void *XIMPLX_Collector_value_addingRefTo_(Collector *self, CollectorMarker* v, void *ref)
 {
 	if (Collector_markerIsBlack_(self, (CollectorMarker *)v) && Collector_markerIsWhite_(self, (CollectorMarker *)ref))
 	//if (self->safeMode || (Collector_markerIsBlack_(self, (CollectorMarker *)v) && Collector_markerIsWhite_(self, (CollectorMarker *)ref)))
@@ -193,7 +193,7 @@ void Collector_free(Collector *self)
 	io_free(self);
 }
 
-void Collector_setMarkBeforeSweepValue_(Collector *self, void *v)
+void Collector_setMarkBeforeSweepValue_(Collector *self, CollectorMarker* v)
 {
 	self->markBeforeSweepValue = v;
 }
@@ -252,14 +252,14 @@ void Collector_setSafeModeOn_(Collector *self, int b)
 
 // retain/release --------------------------------------------
 
-void *Collector_retain_(Collector *self, void *v)
+void *Collector_retain_(Collector *self, CollectorMarker* v)
 {
 	List_append_(self->retainedValues, v);
 	CollectorMarker_removeIfNeededAndInsertAfter_(v, self->grays);
 	return v;
 }
 
-void Collector_stopRetaining_(Collector *self, void *v)
+void Collector_stopRetaining_(Collector *self, CollectorMarker* v)
 {
 	List_removeLast_(self->retainedValues, v);
 }
@@ -347,7 +347,7 @@ CollectorMarker *Collector_newMarker(Collector *self)
 	return m;
 }
 
-void Collector_addValue_(Collector *self, void *v)
+void Collector_addValue_(Collector *self, CollectorMarker* v)
 {
 	CollectorMarker_removeIfNeededAndInsertAfter_(v, self->whites);
 
@@ -434,7 +434,7 @@ size_t Collector_freeWhites(Collector *self)
 
 void Collector_initPhase(Collector *self)
 {
-	LIST_FOREACH(self->retainedValues, i, v, Collector_makeGray_(self, v));
+	LIST_FOREACH(self->retainedValues, i, v, Collector_makeGray_(self, (CollectorMarker*)v));
 }
 
 void Collector_markForTimePeriod_(Collector *self, double seconds)
@@ -505,7 +505,7 @@ size_t Collector_sweepPhase(Collector *self)
 
 	if (self->markBeforeSweepValue)
 	{
-		Collector_makeGray_(self, self->markBeforeSweepValue);
+		Collector_makeGray_(self, (CollectorMarker*)self->markBeforeSweepValue);
 	}
 
 	while (!CollectorMarker_isEmpty(self->grays))
@@ -574,7 +574,7 @@ void Collector_show(Collector *self)
 	printf("white: %i\n", (int)CollectorMarker_count(self->whites));
 }
 
-char *Collector_colorNameFor_(Collector *self, void *v)
+char *Collector_colorNameFor_(Collector *self, CollectorMarker* v)
 {
 	if (self->whites->color == MARKER(v)->color) return "white";
 	if (self->grays->color  == MARKER(v)->color) return "gray";

@@ -47,8 +47,6 @@ But the cost to performance seems to outweigh the need to cover this case for no
 
 #define DATA(self) ((IoMessageData *)IoObject_dataPointer(self))
 
-extern "C" {
-
 static const char *protoId = "Message";
 
 /*
@@ -1401,5 +1399,3 @@ IoMessage *IoMessage_asMessageWithEvaluatedArgs(IoMessage *self, IoObject *local
 
 	return sendMessage;
 }
-
-} // extern "C"

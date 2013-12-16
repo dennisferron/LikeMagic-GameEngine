@@ -10,9 +10,6 @@
 #include "Common.h"
 #include "PHash.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define IoObject_clean(self) PHash_clean(IoObject_slots(self));
 #define IOREF(value) IoObject_addingRef_((IoObject *)self, (IoObject *)value)
@@ -241,7 +238,4 @@ IOVM_API IoSeq *IoObject_asString_(IoObject *self, IoMessage *m);
 #include "IoObject_flow.h"
 #include "IoObject_inline.h"
 
-#ifdef __cplusplus
-}
-#endif
 #endif

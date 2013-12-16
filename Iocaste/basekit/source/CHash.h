@@ -8,12 +8,9 @@
 #include <stddef.h>
 #include "PortableStdint.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define CHASH_MAXLOOP 5
-	
+
 typedef int (CHashEqualFunc)(void *, void *);
 typedef intptr_t (CHashHashFunc)(void *);
 
@@ -22,7 +19,7 @@ typedef struct
 	void *k;
 	void *v;
 } CHashRecord;
-	
+
 typedef struct
 {
 	unsigned char *records;
@@ -53,18 +50,15 @@ BASEKIT_API void CHash_compact(CHash *self);
 
 // private methods -------------------------------
 
-BASEKIT_API void CHash_setSize_(CHash *self, size_t size); 
-BASEKIT_API int CHash_insert_(CHash *self, CHashRecord *x); 
-BASEKIT_API void CHash_grow(CHash *self); 
-BASEKIT_API void CHash_shrink(CHash *self); 
+BASEKIT_API void CHash_setSize_(CHash *self, size_t size);
+BASEKIT_API int CHash_insert_(CHash *self, CHashRecord *x);
+BASEKIT_API void CHash_grow(CHash *self);
+BASEKIT_API void CHash_shrink(CHash *self);
 BASEKIT_API void CHash_show(CHash *self);
-BASEKIT_API void CHash_updateMask(CHash *self); 
-BASEKIT_API float CHash_density(CHash *self); 
+BASEKIT_API void CHash_updateMask(CHash *self);
+BASEKIT_API float CHash_density(CHash *self);
 
 #include "CHash_inline.h"
 
 
-#ifdef __cplusplus
-}
-#endif
 #endif

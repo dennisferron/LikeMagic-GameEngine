@@ -5,16 +5,13 @@
 #ifndef PHASH_STRUCT_DEFINED
 #define PHASH_STRUCT_DEFINED 1
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct
 {
 	void *k;
 	void *v;
 } PHashRecord;
-	
+
 typedef struct
 {
 	unsigned char *records;
@@ -23,7 +20,4 @@ typedef struct
 	intptr_t mask;
 } PHash;
 
-#ifdef __cplusplus
-}
-#endif
 #endif

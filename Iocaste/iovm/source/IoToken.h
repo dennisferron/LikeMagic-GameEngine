@@ -6,9 +6,6 @@
 #include "List.h"
 #include <string.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef enum
 {
@@ -69,7 +66,4 @@ void IoToken_printSelf(IoToken *self);
 
 int IoTokenType_isValidMessageName(IoTokenType self);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

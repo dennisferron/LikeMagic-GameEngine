@@ -12,9 +12,6 @@
 #include "IoTag.h"
 #include "IoObject_struct.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define MESSAGE_STOP_STATUS_NORMAL   0
 #define MESSAGE_STOP_STATUS_BREAK    1
@@ -213,7 +210,4 @@ IOVM_API List *IoMessage_rawArgs(IoMessage *self);
 
 IOVM_API UArray *IoMessage_asMinimalStackEntryDescription(IoMessage *self);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

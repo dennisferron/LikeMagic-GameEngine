@@ -94,7 +94,7 @@ void Date_setTimeZone_(Date *self, struct timezone tz)
 void Date_convertToTimeZone_(Date *self, struct timezone tz)
 {
 	double s = Date_asSeconds(self) + 60*(self->tz.tz_minuteswest - (self->tz.tz_dsttime ? 60 : 0)) - 60*(tz.tz_minuteswest - (tz.tz_dsttime ? 60 : 0));
-	
+
 	Date_fromSeconds_(self, s);
 	Date_setTimeZone_(self, tz);
 }
@@ -239,13 +239,13 @@ void Date_setSecond_(Date *self, double v)
 
 UArray *Date_asSerialization(Date *self)
 {
-	int32_t *data = malloc(4 * sizeof(int32_t));
-	
+	int32_t *data = (int32_t*)malloc(4 * sizeof(int32_t));
+
 	data[0] = (int32_t)self->tv.tv_sec;
 	data[1] = self->tv.tv_usec;
 	data[2] = self->tz.tz_minuteswest;
 	data[3] = self->tz.tz_dsttime;
-	
+
 	return UArray_newWithData_type_encoding_size_copy_(data, CTYPE_int32_t, CENCODING_NUMBER, 4, 0);
 }
 
@@ -255,7 +255,7 @@ Date *Date_fromSerialization(Date *self, UArray *serialization)
 	self->tv.tv_usec = (int)UArray_longAt_(serialization, 1);
 	self->tz.tz_minuteswest = (int)UArray_longAt_(serialization, 2);
 	self->tz.tz_dsttime = (int)UArray_longAt_(serialization, 3);
-	
+
 	return self;
 }
 

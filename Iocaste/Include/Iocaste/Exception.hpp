@@ -11,7 +11,7 @@ typedef CollectorMarker IoObject;
 typedef IoObject IoMessage;
 typedef IoObject IoError;
 
-extern "C" IoObject *IocasteException_proto(void *state);
+IoObject *IocasteException_proto(void *state);
 
 namespace Iocaste
 {

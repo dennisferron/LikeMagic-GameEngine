@@ -11,7 +11,7 @@
 using namespace Iocaste;
 
 
-extern "C" IO_METHOD(IoObject, doFile)
+IO_METHOD(IoObject, doFile)
 {
 	/*doc Object doFile(pathString)
 	Evaluates the File in the context of the receiver. Returns the result.

@@ -10,9 +10,6 @@
 #include "Duration.h"
 #include "IoObject.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // extend message object
 
@@ -67,7 +64,4 @@ IO_METHOD(IoDuration, fromString);
 IO_METHOD(IoDuration, add);
 IO_METHOD(IoDuration, subtract);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

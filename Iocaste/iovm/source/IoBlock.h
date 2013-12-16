@@ -11,9 +11,6 @@
 #include "IoCall.h"
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define ISBLOCK(self) IoObject_hasCloneFunc_(self, (IoTagCloneFunc *)IoBlock_rawClone)
 
@@ -74,7 +71,4 @@ IoObject *IoObject_block(IoObject *target, IoObject *locals, IoMessage *m);
 IO_METHOD(IoBlock, performOn);
 IO_METHOD(IoBlock, call);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

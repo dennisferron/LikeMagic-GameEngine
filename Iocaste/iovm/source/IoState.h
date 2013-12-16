@@ -27,9 +27,10 @@
 //#define IOSTATE_RECYCLING_ON 1
 #define IOSTATE_DEFAULT_MAX_RECYCLED_OBJECTS 1000
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace Iocaste
+{
+    class IoCallStack;
+}
 
 typedef struct IoState IoState;
 
@@ -48,7 +49,7 @@ struct IoState
 	IoObject *objectProto;
 	IoObject *mainCoroutine;    // the object that represents the main "thread"
 	IoObject *currentCoroutine; // the object whose coroutine is active
-	Stack *currentIoStack;      // quick access to current coro's retain stack
+	Iocaste::IoCallStack *currentIoStack;      // quick access to current coro's retain stack
 
 	// quick access objects
 
@@ -200,7 +201,4 @@ IOVM_API int IoState_exitResult(IoState *self);
 #include "IoState_exceptions.h"
 #include "IoState_inline.h"
 
-#ifdef __cplusplus
-}
-#endif
 #endif

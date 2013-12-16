@@ -1,7 +1,4 @@
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 
 #ifdef _WIN32
@@ -16,6 +13,3 @@ BASEKIT_API    int truncate(const char *path, long length);
 #endif
 
 
-#ifdef __cplusplus
-}
-#endif

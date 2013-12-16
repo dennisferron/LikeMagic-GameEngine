@@ -15,9 +15,6 @@
 #include "IoSeq.h"
 #include "IoMessage.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 //void (*initFunc)(void);
 
@@ -51,8 +48,5 @@ IoDynLib *IoDynLib_voidCall(IoDynLib *self, IoObject *locals, IoMessage *m);
 IoDynLib *IoDynLib_callPluginInitFunc(IoDynLib *self, IoObject *locals, IoMessage *m);
 //IoSeq *IoDynLib_returnsString(IoDynLib *self, IoObject *locals, IoMessage *m);
 
-#ifdef __cplusplus
-}
-#endif
 #endif
 

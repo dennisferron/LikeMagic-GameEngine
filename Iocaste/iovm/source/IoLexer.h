@@ -10,9 +10,6 @@
 #include "Stack.h"
 #include "IoToken.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef int uchar_t;
 
@@ -139,7 +136,4 @@ int IoLexer_readHexNumber(IoLexer *self);
 
 IoToken *IoLexer_rootMessageToken(IoLexer *self, IoToken **error);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

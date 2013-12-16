@@ -1,10 +1,6 @@
 #ifndef PORTABLEGETTIMEOFDAY_DEFINED
 	#define PORTABLEGETTIMEOFDAY_DEFINED 1
 
-	#ifdef __cplusplus
-		extern "C" {
-	#endif
-
 	#if defined(__WIN32__) || defined(WIN32) || defined(_WIN32) || defined(_MSC_VER)
 		#if defined(_MSC_VER)
 			#include <winsock2.h>
@@ -32,10 +28,6 @@
 
 	#else
 		#include <sys/time.h>
-	#endif
-
-	#ifdef __cplusplus
-		}
 	#endif
 
 #endif

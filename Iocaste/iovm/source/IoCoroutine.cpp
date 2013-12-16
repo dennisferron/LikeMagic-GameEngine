@@ -15,8 +15,6 @@ Object wrapper for an Io coroutine.
 #include "IoList.h"
 #include "IoBlock.h"
 
-extern "C" {
-
 //#define DEBUG
 
 static const char *protoId = "Coroutine";
@@ -46,20 +44,8 @@ IoCoroutine *IoCoroutine_proto(void *state)
 
 	IoObject_tag_(self, IoCoroutine_newTag(state));
 	IoObject_setDataPointer_(self, io_calloc(1, sizeof(IoCoroutineData)));
-	DATA(self)->ioStack = Stack_new();
-#ifdef STACK_POP_CALLBACK
-	Stack_popCallback_(DATA(self)->ioStack, IoObject_freeIfUnreferenced);
-#endif
+	DATA(self)->ioStack = new Iocaste::IoCallStack();
     IoState_registerProtoWithId_((IoState *)state, self, protoId);
-
-	/* init Coroutine proto's coro as the main one */
-/*
-	{
-	Coro *coro = Coro_new();
-	DATA(self)->cid = coro;
-	Coro_initializeMainCoro(coro);
-	}
-*/
 
 	return self;
 }
@@ -86,11 +72,7 @@ IoCoroutine *IoCoroutine_rawClone(IoCoroutine *proto)
 {
 	IoObject *self = IoObject_rawClonePrimitive(proto);
 	IoObject_setDataPointer_(self, io_calloc(1, sizeof(IoCoroutineData)));
-	DATA(self)->ioStack = Stack_new();
-#ifdef STACK_POP_CALLBACK
-	Stack_popCallback_(DATA(self)->ioStack, IoObject_freeIfUnreferenced);
-#endif
-	//DATA(self)->cid = (Coro *)NULL;
+	DATA(self)->ioStack = new Iocaste::IoCallStack();
 	return self;
 }
 
@@ -105,31 +87,39 @@ void IoCoroutine_free(IoCoroutine *self)
 {
 	//Coro *coro = DATA(self)->cid;
 	//if (coro) Coro_free(coro);
-	Stack_free(DATA(self)->ioStack);
+	delete DATA(self)->ioStack;
 	io_free(DATA(self));
 }
 
 void IoCoroutine_mark(IoCoroutine *self)
 {
-	Stack_do_(DATA(self)->ioStack, (ListDoCallback *)IoObject_shouldMark);
+    for (auto& call_data : *(DATA(self)->ioStack))
+    {
+        IoObject_shouldMark(call_data.sender);
+        IoObject_shouldMark(call_data.target);
+        IoObject_shouldMark(call_data.message);
+        IoObject_shouldMark(call_data.slotContext);
+        IoObject_shouldMark(call_data.activated);
+        IoObject_shouldMark(call_data.coroutine);
+    }
 }
 
 // raw
 
-Stack *IoCoroutine_rawIoStack(IoCoroutine *self)
+Iocaste::IoCallStack *IoCoroutine_rawIoStack(IoCoroutine *self)
 {
 	return DATA(self)->ioStack;
 }
 
 void IoCoroutine_rawShow(IoCoroutine *self)
 {
-	Stack_do_(DATA(self)->ioStack, (StackDoCallback *)IoObject_show);
-	printf("\n");
+	printf("TODO: IoCoroutine_rawShow\n");
+	//DATA(self)->ioStack->do_(IoObject_show);
+	//printf("\n");
 }
 
 void *IoCoroutine_cid(IoCoroutine *self)
 {
-	//return DATA(self)->cid;
 	return 0;
 }
 
@@ -218,7 +208,18 @@ IO_METHOD(IoCoroutine, ioStack)
 	Returns List of values on this coroutine's stack.
 	*/
 
-	return IoList_newWithList_(IOSTATE, Stack_asList(DATA(self)->ioStack));
+	List *list = List_new();
+
+	Iocaste::IoCallStack* call_stack = DATA(self)->ioStack;
+
+    for (auto rit = call_stack->rbegin(); rit != call_stack->rend(); ++rit)
+    {
+        IoCall* call_obj = IoCall_new(IOSTATE);
+        IoObject_setDataPointer_(call_obj, new Iocaste::IoCallData(*rit));
+        List_append_(list, call_obj);
+    }
+
+	return IoList_newWithList_(IOSTATE, list);
 }
 
 void IoCoroutine_rawReturnToParent(IoCoroutine *self)
@@ -261,21 +262,6 @@ void IoCoroutine_coroStart(void *context) // Called by Coro_Start()
 	IoCoroutine_rawReturnToParent(self);
 }
 
-/*
-void IoCoroutine_coroStartWithContextAndCFunction(void *context, CoroStartCallback *func)
-{
-	IoCoroutine *self = (IoCoroutine *)context;
-	IoObject *result;
-
-	IoState_setCurrentCoroutine_(IOSTATE, self);
-	//printf("%p-%p start\n", (void *)self, (void *)DATA(self)->cid);
-	result = IoMessage_locals_performOn_(IOSTATE->mainMessage, self, self);
-
-	IoCoroutine_rawSetResult_(self, result);
-	IoCoroutine_rawReturnToParent(self);
-}
-*/
-
 IO_METHOD(IoCoroutine, freeStack)
 {
 	/*doc Coroutine freeStack
@@ -283,13 +269,6 @@ IO_METHOD(IoCoroutine, freeStack)
 	*/
 
 	IoCoroutine *current = IoState_currentCoroutine(IOSTATE);
-/*
-	if (current != self && DATA(self)->cid)
-	{
-		Coro_free(DATA(self)->cid);
-		DATA(self)->cid = NULL;
-	}
-*/
 	return self;
 }
 
@@ -314,12 +293,11 @@ IO_METHOD(IoCoroutine, main)
 Coro *IoCoroutine_rawCoro(IoCoroutine *self)
 {
     return 0;
-	//return DATA(self)->cid;
 }
 
 void IoCoroutine_clearStack(IoCoroutine *self)
 {
-	Stack_clear(DATA(self)->ioStack);
+	DATA(self)->ioStack->clear();
 }
 
 void IoCoroutine_rawRun(IoCoroutine *self)
@@ -367,25 +345,6 @@ IoCoroutine *IoCoroutine_newWithTry(void *state,
 	IoCoroutine_try(self, target, locals, message);
 	return self;
 }
-
-/*
-// Iocaste uses C++ exceptions or Iocaste::Exception functions or CShims to raise C++ exceptions instead.
-void IoCoroutine_raiseError(IoCoroutine *self, IoSymbol *description, IoMessage *m)
-{
-	IoObject *e = IoObject_rawGetSlot_(self, IOSYMBOL("Exception"));
-
-	if (e)
-	{
-		e = IOCLONE(e);
-		IoObject_setSlot_to_(e, IOSYMBOL("error"), description);
-		if (m) IoObject_setSlot_to_(e, IOSYMBOL("caughtMessage"), m);
-		IoObject_setSlot_to_(e, IOSYMBOL("coroutine"), self);
-		IoCoroutine_rawSetException_(self, e);
-	}
-
-	IoCoroutine_rawReturnToParent(self);
-}
-*/
 
 // methods
 
@@ -454,7 +413,7 @@ IO_METHOD(IoCoroutine, currentCoroutine)
 
 int IoCoroutine_rawIoStackSize(IoCoroutine *self)
 {
-	return Stack_count(DATA(self)->ioStack);
+	return (int)DATA(self)->ioStack->size();
 }
 
 void IoCoroutine_rawPrint(IoCoroutine *self)
@@ -555,6 +514,4 @@ void IoCoroutine_rawPrintBackTrace(IoCoroutine *self)
 			UArray_free(ba);
 		}
 	}
-}
-
 }

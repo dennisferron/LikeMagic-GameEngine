@@ -17,10 +17,8 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 
 char const* Iocaste::Exception::protoId = "IocasteException";
 
-extern "C" {
 intptr_t Stack_pushMarkPoint(Stack *self);
 int Stack_popMarkPoint_(Stack *self, intptr_t mark);
-}
 
 #include <iostream>
 using namespace std;
@@ -143,7 +141,7 @@ char const* IoStateError::what() const throw()
 }
 
 
-extern "C" IoObject *IocasteException_proto(void *state)
+IoObject *IocasteException_proto(void *state)
 {
 	IoObject *self = IoObject_new(state);
 	IoTag *tag = IoTag_newWithName_("Exception");
@@ -164,7 +162,7 @@ extern "C" IoObject *IocasteException_proto(void *state)
 	return self;
 }
 
-extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
+IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
 {
     // Disambiguating stack frames for this function to try to figure
     // out why CLI try is not catching final exception.
@@ -180,7 +178,7 @@ extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
         // Should marking the stack go before or after getting the runTarget, runLocals, runMessage?
         // Calling valueArgAt can do performOn, don't know if the stack state is significant.  I am
         // thinking it is safest to mark the stack first so it all gets reversed on a caught exception.
-        mark = Stack_pushMarkPoint(IOSTATE->currentIoStack);
+        mark = (intptr_t)IOSTATE->currentIoStack->push_mark_point();
 
         IoObject *runTarget  = IoMessage_locals_valueArgAt_(m, locals, 2);
         IoObject *runLocals  = IoMessage_locals_valueArgAt_(m, locals, 1);
@@ -188,18 +186,18 @@ extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
         IoMessage_locals_performOn_(runMessage, runLocals, runTarget);
 
         if (mark)
-            Stack_popMarkPoint_(IOSTATE->currentIoStack, mark);
+            IOSTATE->currentIoStack->pop_mark_point(mark);
     }
     catch (ScriptException const& ex)
     {
         if (mark)
-            Stack_popMarkPoint_(IOSTATE->currentIoStack, mark);
+            IOSTATE->currentIoStack->pop_mark_point(mark);
         return ex.getSelf();
     }
     catch (...)
     {
         if (mark)
-            Stack_popMarkPoint_(IOSTATE->currentIoStack, mark);
+            IOSTATE->currentIoStack->pop_mark_point(mark);
         throw;
     }
 
@@ -207,7 +205,7 @@ extern "C" IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
 }
 
 
-extern "C" IoObject* throwScriptException(IoObject *self, IoObject *locals, IoMessage *m)
+IoObject* throwScriptException(IoObject *self, IoObject *locals, IoMessage *m)
 {
     ScriptException se(self);
     //cout << "throwScriptException: " << se.what() << endl;
@@ -216,7 +214,7 @@ extern "C" IoObject* throwScriptException(IoObject *self, IoObject *locals, IoMe
 
 // replaces IoCoroutine_raiseError
 // need iocoroutine for Exception proto slot and to set exception coroutine slot
-extern "C" void Iocaste_raiseError(IoObject* self, char* description, IoMessage* m)
+void Iocaste_raiseError(IoObject* self, char* description, IoMessage* m)
 {
     // IoState_error does this:
     //IoCoroutine *coroutine = IoState_currentCoroutine(state);

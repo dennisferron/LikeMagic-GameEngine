@@ -1,10 +1,6 @@
 
 #include "IoMessage.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // Step Next and Step Out have (have to have) doppelganger
 // run-modes.  This is because the command to step-next
 // or step-out must be converted to a local variable
@@ -31,6 +27,3 @@ StepMode_t iovm_hit_breakpoint(void* bp,
 StepMode_t iovm_step_stop(
     void *target, void *locals, void *m);
 
-#ifdef __cplusplus
-}
-#endif

@@ -7,9 +7,6 @@
 
 #include "CollectorMarker.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define COLLECTOR_FOREACH(self, v, code) \
 	COLLECTMARKER_FOREACH(self->whites,  v, code;); \
@@ -59,7 +56,7 @@ typedef struct
 	size_t sweepCount;
 	int debugOn;
 	int safeMode;
-	
+
 	#ifdef COLLECTOR_USE_NONINCREMENTAL_MARK_SWEEP
 	int newMarkerCount;
 	int allocsPerSweep;
@@ -73,7 +70,7 @@ COLLECTOR_API void Collector_check(Collector *self);
 COLLECTOR_API void Collector_checkObjectPointers(Collector *self); // if not 0, then memory is hosed
 COLLECTOR_API void Collector_checkObjectsWith_(Collector *self, CollectorCheckFunc *func);
 
-COLLECTOR_API void Collector_setMarkBeforeSweepValue_(Collector *self, void *v);
+COLLECTOR_API void Collector_setMarkBeforeSweepValue_(Collector *self, CollectorMarker* v);
 
 // callbacks
 
@@ -103,19 +100,19 @@ COLLECTOR_API void Collector_setSafeModeOn_(Collector *self, int b);
 
 // retaining
 
-COLLECTOR_API void *Collector_retain_(Collector *self, void *v);
-COLLECTOR_API void Collector_stopRetaining_(Collector *self, void *v);
+COLLECTOR_API void *Collector_retain_(Collector *self, CollectorMarker* v);
+COLLECTOR_API void Collector_stopRetaining_(Collector *self, CollectorMarker* v);
 COLLECTOR_API void Collector_removeAllRetainedValues(Collector *self);
 
 // adding
 
 COLLECTOR_API CollectorMarker *Collector_newMarker(Collector *self);
-COLLECTOR_API void Collector_addValue_(Collector *self, void *v);
+COLLECTOR_API void Collector_addValue_(Collector *self, CollectorMarker* v);
 
 // collection
 
 COLLECTOR_API void Collector_initPhase(Collector *self);
-COLLECTOR_API size_t Collector_sweep(Collector *self); 
+COLLECTOR_API size_t Collector_sweep(Collector *self);
 COLLECTOR_API size_t Collector_sweepPhase(Collector *self);
 COLLECTOR_API void Collector_markPhase(Collector *self);
 
@@ -125,7 +122,7 @@ COLLECTOR_API size_t Collector_freeAllValues(Collector *self);
 // changing colors
 
 #define Collector_shouldMark_(self, v) Collector_makeGrayIfWhite_(self, v)
-//void Collector_makeGrayIfWhite_(Collector *self, void *v);
+//void Collector_makeGrayIfWhite_(Collector *self, CollectorMarker* v);
 
 //void Collector_makeWhite_(Collector *self, CollectorMarker *v);
 //void Collector_makeGray_(Collector *self, CollectorMarker *v);
@@ -135,9 +132,9 @@ COLLECTOR_API size_t Collector_freeAllValues(Collector *self);
 //int Collector_markerIsGray_(Collector *self, CollectorMarker *m);
 //int Collector_markerIsBlack_(Collector *self, CollectorMarker *m);
 
-COLLECTOR_API char *Collector_colorNameFor_(Collector *self, void *v);
+COLLECTOR_API char *Collector_colorNameFor_(Collector *self, CollectorMarker* v);
 
-//void *Collector_value_addingRefTo_(Collector *self, void *v, void *ref);
+//void *Collector_value_addingRefTo_(Collector *self, CollectorMarker* v, void *ref);
 
 // pause/resume stack
 
@@ -149,7 +146,4 @@ COLLECTOR_API double Collector_timeUsed(Collector *self);
 
 #include "Collector_inline.h"
 
-#ifdef __cplusplus
-}
-#endif
 #endif

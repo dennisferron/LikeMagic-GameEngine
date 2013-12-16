@@ -28,8 +28,6 @@ Generally, the more objects in your heap, the larger you'll want this number.
 #include "IoList.h"
 #include "IoBlock.h"
 
-extern "C" {
-
 //static const char *protoId = "IoCollector";
 
 typedef IoObject IoCollector;
@@ -290,6 +288,4 @@ IoObject *IoCollector_proto(void *state)
 	IoObject_setSlot_to_(self, IOSYMBOL("type"), IOSYMBOL("Collector"));
 	IoObject_addMethodTable_(self, methodTable);
 	return self;
-}
-
 }

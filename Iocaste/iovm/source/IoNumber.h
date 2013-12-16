@@ -11,9 +11,6 @@
 #include "IoState.h"
 #include "IoObject.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define ISNUMBER(self) IoObject_hasCloneFunc_(self, (IoTagCloneFunc *)IoNumber_rawClone)
 #define IONUMBER(num) IoState_numberWithDouble_((IoState*)IOSTATE, (double)num)
@@ -166,7 +163,4 @@ IOVM_API IO_METHOD(IoNumber, isNan);
 
 IOVM_API IO_METHOD(IoNumber, repeat);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

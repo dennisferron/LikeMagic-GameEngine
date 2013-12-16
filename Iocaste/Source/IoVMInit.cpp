@@ -23,7 +23,7 @@ void doInitFile(IoState* state, IoObject* context, std::string file_path)
     }
 }
 
-extern "C" void IoVMCodeInit(IoObject *context, char const* bootstrap_path)
+void IoVMCodeInit(IoObject *context, char const* bootstrap_path)
 {
 	IoState *self = IoObject_state((IoObject *)context);
 

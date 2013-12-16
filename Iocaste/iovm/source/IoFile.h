@@ -11,9 +11,6 @@
 #include "IoNumber.h"
 #include "IoSeq.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define ISFILE(self) \
 	IoObject_hasCloneFunc_(self, (IoTagCloneFunc *)IoFile_rawClone)
@@ -111,7 +108,4 @@ IO_METHOD(IoFile, makeLineBuffered);
 IO_METHOD(IoFile, makeFullyBuffered);
 */
 
-#ifdef __cplusplus
-}
-#endif
 #endif

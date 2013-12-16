@@ -10,9 +10,6 @@
 #include "Common.h"
 #include "IoObject.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define ISCFUNCTION(self) \
 	IoObject_hasCloneFunc_(self, (IoTagCloneFunc *)IoCFunction_rawClone)
@@ -49,8 +46,5 @@ IOVM_API IoObject *IoCFunction_activate(IoCFunction *self, IoObject *target, IoO
 
 IOVM_API IO_METHOD(IoCFunction, performOn);
 
-#ifdef __cplusplus
-}
-#endif
 #endif
 

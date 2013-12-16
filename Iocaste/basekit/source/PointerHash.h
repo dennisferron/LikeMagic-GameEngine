@@ -14,9 +14,6 @@
 #include <stddef.h>
 #include "PortableStdint.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define POINTERHASH_MAXLOOP 10
 
@@ -36,20 +33,17 @@ BASEKIT_API void PointerHash_compact(PointerHash *self);
 
 // --- private methods ----------------------------------------
 
-BASEKIT_API void PointerHash_setSize_(PointerHash *self, size_t size); 
-BASEKIT_API void PointerHash_insert_(PointerHash *self, PointerHashRecord *x); 
-BASEKIT_API void PointerHash_grow(PointerHash *self); 
-//BASEKIT_API void PointerHash_shrinkIfNeeded(PointerHash *self); 
-BASEKIT_API void PointerHash_shrink(PointerHash *self); 
+BASEKIT_API void PointerHash_setSize_(PointerHash *self, size_t size);
+BASEKIT_API void PointerHash_insert_(PointerHash *self, PointerHashRecord *x);
+BASEKIT_API void PointerHash_grow(PointerHash *self);
+//BASEKIT_API void PointerHash_shrinkIfNeeded(PointerHash *self);
+BASEKIT_API void PointerHash_shrink(PointerHash *self);
 BASEKIT_API void PointerHash_show(PointerHash *self);
-BASEKIT_API void PointerHash_updateMask(PointerHash *self); 
+BASEKIT_API void PointerHash_updateMask(PointerHash *self);
 
 #include "PointerHash_inline.h"
 
 #define PointerHash_cleanSlots(self)
 #define PointerHash_hasDirtyKey_(self, k) 0
 
-#ifdef __cplusplus
-}
-#endif
 #endif

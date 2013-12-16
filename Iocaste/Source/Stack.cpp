@@ -15,8 +15,6 @@ Iocaste::Stack<void*>& get_stack(Stack const* stack)
 
 typedef Iocaste::Stack<void*>::mark_type mark_type;
 
-extern "C" {
-
 // Used in IO_METHOD(IoCoroutine, ioStack)
 List *Stack_asList(const Stack *self)
 {
@@ -115,7 +113,3 @@ void *Stack_top(const Stack *self)
 {
     return get_stack(self).top();
 }
-
-
-}
-

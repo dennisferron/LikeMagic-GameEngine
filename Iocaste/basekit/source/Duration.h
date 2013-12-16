@@ -8,9 +8,6 @@
 #include "UArray.h"
 #include "PortableGettimeofday.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct
 {
@@ -57,7 +54,4 @@ BASEKIT_API void Duration_print(const Duration *self);
 BASEKIT_API void Duration_add_(Duration *self, const Duration *other);
 BASEKIT_API void Duration_subtract_(Duration *self, const Duration *other);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

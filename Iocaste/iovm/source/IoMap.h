@@ -9,9 +9,6 @@
 #include "IoList.h"
 #include "PHash.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define ISMAP(self) IoObject_hasCloneFunc_(self, (IoTagCloneFunc *)IoMap_rawClone)
 
@@ -51,7 +48,4 @@ IO_METHOD(IoMap, keys);
 IO_METHOD(IoMap, values);
 IO_METHOD(IoMap, foreach);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

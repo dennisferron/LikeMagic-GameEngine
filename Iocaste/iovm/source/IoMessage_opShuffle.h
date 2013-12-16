@@ -1,7 +1,7 @@
 /*
-copyright 
+copyright
 	Jonathan Wright, 2006
-licence 
+licence
 	BSD revised
 */
 
@@ -10,14 +10,8 @@ licence
 
 #include "IoMessage.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 IoMessage *IoMessage_opShuffle(IoMessage *self, IoObject *locals, IoMessage *m);
 void IoMessage_opShuffle_(IoMessage *self);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

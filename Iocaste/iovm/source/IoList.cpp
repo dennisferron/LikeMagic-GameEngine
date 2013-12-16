@@ -1123,7 +1123,7 @@ IO_METHOD(IoList, fromEncodedList)
 				return IONIL(self);
 			}
 
-			o = UArray_newWithData_type_size_copy_((void *)(d + index), (CTYPE)itemType, size, 1);
+			o = UArray_newWithData_type_size_copy_((uint8_t *)(d + index), (CTYPE)itemType, size, 1);
 			UArray_setEncoding_(o, (CENCODING)encoding);
 			List_append_(list, IoSeq_newWithUArray_copy_(IOSTATE, o, 0));
 

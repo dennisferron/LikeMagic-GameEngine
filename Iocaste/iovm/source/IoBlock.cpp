@@ -15,8 +15,6 @@ They are typically used to represent object methods.
 #include "IoList.h"
 #include "UArray.h"
 
-extern "C" {
-
 static const char *protoId = "Block";
 
 #define DATA(self) ((IoBlockData *)IoObject_dataPointer(self))
@@ -590,4 +588,3 @@ clock_t IoBlock_rawProfilerTime(IoBlock *self)
 	return DATA(self)->profilerTime;
 }
 
-}

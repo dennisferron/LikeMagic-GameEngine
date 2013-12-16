@@ -56,8 +56,6 @@ static char* getcwd(char* buf, int size) { return 0; }
 #define DT_LNK 10
 #define MKDIR mkdir_win32
 
-extern "C" {
-
 struct dirent {
 	char d_name[MAX_PATH];
 	unsigned char d_type;
@@ -152,11 +150,7 @@ int chdir(const char *path)
 }
 */
 
-}
-
 #endif
-
-extern "C" {
 
 int isDirectory(struct dirent *dp, char *path)
 {
@@ -622,6 +616,4 @@ IO_METHOD(IoDirectory, setCurrentWorkingDirectory)
 	}
 
 	return IOSUCCESS(self);
-}
-
 }

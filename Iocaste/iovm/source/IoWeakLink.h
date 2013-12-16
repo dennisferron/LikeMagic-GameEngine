@@ -9,9 +9,6 @@
 #include "IoMessage.h"
 #include "BStream.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define ISWEAKLINK(self) IOOBJECT_ISTYPE(self, WeakLink)
 
@@ -42,7 +39,4 @@ IO_METHOD(IoWeakLink, link);
 
 void IoWeakLink_notification(IoWeakLink *self, void *notification);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

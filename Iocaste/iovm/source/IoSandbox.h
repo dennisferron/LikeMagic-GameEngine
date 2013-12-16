@@ -11,9 +11,6 @@
 #include "IoNumber.h"
 //#include "IoSeq.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define ISSANDBOX(self) \
 	IoObject_hasCloneFunc_(self, (IoTagCloneFunc *)IoSandbox_rawClone)
@@ -38,7 +35,4 @@ void IoSandbox_cleanState(IoSandbox *self);
 void IoSandbox_addPrintCallback(IoSandbox *self);
 void IoSandbox_printCallback(void *voidSelf, const UArray *ba);
 
-#ifdef __cplusplus
-}
-#endif
 #endif

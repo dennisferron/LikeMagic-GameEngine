@@ -12,9 +12,6 @@
 #include "IoObject_struct.h"
 #include "IoMessage.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 IOVM_API int ISMUTABLESEQ(IoObject *self);
 #define ISSEQ(self)    IOOBJECT_ISTYPE(self, Seq)
@@ -114,7 +111,4 @@ uintptr_t IoSeq_rawHash(IoSeq *self);
 #include "IoSeq_vector.h"
 #include "IoSeq_inline.h"
 
-#ifdef __cplusplus
-}
-#endif
 #endif

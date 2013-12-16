@@ -16,16 +16,13 @@
 #include "PortableStdint.h"
 
 /*
-#define BASEKIT_API 
+#define BASEKIT_API
 #define io_calloc calloc
 #define io_free free
 #define io_malloc malloc
 #define IOINLINE
 */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define PHASH_MAXLOOP 10
 
@@ -45,20 +42,17 @@ void PHash_compact(PHash *self);
 
 // --- private methods ----------------------------------------
 
-IOVM_API void PHash_setSize_(PHash *self, size_t size); 
-IOVM_API void PHash_insert_(PHash *self, PHashRecord *x); 
-IOVM_API void PHash_grow(PHash *self); 
-//void PHash_shrinkIfNeeded(PHash *self); 
-IOVM_API void PHash_shrink(PHash *self); 
+IOVM_API void PHash_setSize_(PHash *self, size_t size);
+IOVM_API void PHash_insert_(PHash *self, PHashRecord *x);
+IOVM_API void PHash_grow(PHash *self);
+//void PHash_shrinkIfNeeded(PHash *self);
+IOVM_API void PHash_shrink(PHash *self);
 IOVM_API void PHash_show(PHash *self);
-IOVM_API void PHash_updateMask(PHash *self); 
+IOVM_API void PHash_updateMask(PHash *self);
 
 #include "PHash_inline.h"
 
 #define PHash_cleanSlots(self)
 #define PHash_hasDirtyKey_(self, k) 0
 
-#ifdef __cplusplus
-}
-#endif
 #endif

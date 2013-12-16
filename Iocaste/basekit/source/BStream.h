@@ -1,5 +1,5 @@
 /*
-copyright 
+copyright
 	Steve Dekorte, 2004
 license
 	BSD revised
@@ -14,9 +14,6 @@ description
 #include "UArray.h"
 #include "BStreamTag.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 //typedef struct UArray UArray;
 
@@ -124,8 +121,5 @@ BASEKIT_API const char *BStream_readTaggedCString(BStream *self);
 
 BASEKIT_API void BStream_show(BStream *self);
 
-#ifdef __cplusplus
-}
-#endif
 #endif
 
