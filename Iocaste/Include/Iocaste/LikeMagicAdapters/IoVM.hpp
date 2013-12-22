@@ -80,12 +80,6 @@ private:
 
     friend class IoBlock;
 
-    IoBlock onRegisterMethod;
-    IoBlock onRegisterClass;
-    IoBlock onRegisterBase;
-
-    IoBlock onAddProto;
-
     IoObject* LM_Proxy;
     IoObject* LM_Protos;
 
@@ -113,6 +107,7 @@ public:
     void set_path(std::string path_identifier, std::string path_value);
 
     IoObject* add_proto(std::string name, ExprPtr expr, std::string ns = "", bool conv_to_script=false) const;
+    IoObject* add_value(IoObject* slot_holder, std::string slot_name, ExprPtr expr, bool conv_to_script=false) const;
 
     void run_cli() const;
     IoObject* do_string(std::string io_code) const;

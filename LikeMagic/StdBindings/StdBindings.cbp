@@ -91,6 +91,7 @@
 			<Add directory="../../Iocaste/basekit/source" />
 			<Add directory="../../Iocaste/garbagecollector/source" />
 			<Add directory="../../Iocaste/Include/Iocaste/CShims" />
+			<Add directory="../../Iocaste/Include" />
 		</Compiler>
 		<Unit filename="Include/LikeMagic/StdBindings/ScriptUtil.hpp" />
 		<Unit filename="Include/LikeMagic/StdBindings/StdBindings.hpp" />

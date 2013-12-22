@@ -34,8 +34,7 @@ public:
     {
         ExprPtr wards[2];
         ExprPtr target_ward;
-        auto target_check = type_system->try_conv(target, actual_type);
-        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_ward);
+        Delegate* target_obj = eval_as_target(target, actual_type, target_ward);
         (target_obj->*f_ptr)[EvalAs<size_t>::value(args[0], wards[0])]
             = EvalAs<R const&>::value(args[1], wards[1]);
         return 0;

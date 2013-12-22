@@ -98,7 +98,7 @@ void *IoState_unreferencedStackRetain_(IoState *self, IoObject *v)
 		Collector_value_addingRefTo_(self->collector, self->currentCoroutine, v);
 	}
 
-	self->currentIoStack->push(v);
+	self->currentIoStack->stack_retain(v);
 	return v;
 }
 
@@ -157,8 +157,8 @@ void IoState_popRetainPool(void *self)
 
 void IoState_popRetainPool_(void *self, uintptr_t mark)
 {
-    Stack *stack = ((IoState *)self)->currentIoStack
-        ->pop_to_mark_point(
+    IoCallStack *stack = ((IoState *)self)->currentIoStack;
+    stack->pop_to_mark_point(
             *reinterpret_cast<mark_type*>(&mark));
 }
 

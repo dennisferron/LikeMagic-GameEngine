@@ -31,9 +31,8 @@ public:
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
-        ExprPtr target_check = type_system->try_conv(target, actual_type);
         ExprPtr target_ward;
-        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_ward);
+        Delegate* target_obj = eval_as_target(target, actual_type, target_ward);
         return create_reference(&(target_obj->*f_ptr), TypId<R*>::get(), target);
     }
 

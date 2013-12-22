@@ -1,45 +1,20 @@
 writeln("Engine startup")
 
+LM_Protos := namespace
+PredefinedValues := LM_Protos
+
 Module := doRelativeFile("Module.io.inl")
 Scripts := doRelativeFile("Scripts.io.inl")
 Loader :=  doRelativeFile("Loader.io.inl")
 
-LikeMagicModule := Module clone
-LikeMagicModule doRelativeFile("./LikeMagic/bootstrap.io.inl")
-
-LikeMagicModule appendProto(LikeMagicModule LikeMagic)
-thisScriptPath := method(LikeMagicModule namespace ScriptUtil get_script_path)
+thisScriptPath := method(namespace ScriptUtil get_script_path)
+writeln("thisScriptPath is ", thisScriptPath)
 
 rootLoader := Loader clone setDirectory(
     Directory clone setPath(
         thisScriptPath
     )
 )
-
-LikeMagicModule do(
-
-    loadBindings := method(componentName,
-        if(namespace hasSlot("Bindings") and namespace Bindings hasSlot(componentName),
-            component := doRelativeFile("./LikeMagic/" .. componentName .. "Bindings.io.inl")
-            component(type_system, io_vm, namespace Bindings getSlot(componentName), LikeMagic)
-        ,
-            writeln("Warning: did not find any LikeMagic bindings for " .. componentName)
-        )
-    )
-
-    loadBindings("Irrlicht")
-    loadBindings("Custom")
-    loadBindings("Bullet")
-    loadBindings("DESteer")
-    loadBindings("ThinPlateSpline")
-
-    appendProto(bootstrap LM_Protos)
-    PredefinedValues := bootstrap LM_Protos
-)
-
-writeln("Done loading LikeMagicModule")
-
-LM_Protos := LikeMagicModule bootstrap LM_Protos
 
 Constants := Object clone lexicalDo(
     TAU := if(LM_Protos hasSlot("TAU"), LM_Protos TAU, 2*3.1459)    // Comes from Custom

@@ -7,18 +7,18 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "LikeMagic/Mirrors/CallTarget.hpp"
+#include "LikeMagic/TypeSystem.hpp"
+#include "LikeMagic/Exceptions/Exception.hpp"
 
 using namespace LM;
 
-/*
-CallTarget::~CallTarget()
+Delegate* CallTarget::eval_as_target(ExprPtr target, TypeIndex actual_type, ExprPtr& target_ward)
 {
-}
+    ExprPtr target_check = type_system->try_conv(target, actual_type);
+    Delegate* result = EvalAs<Delegate*>::value(target_check, target_ward);
 
-// Some methods (like constructors) should not be inherited.
-bool CallTarget::is_inherited() const
-{
-    return true;
-}
+    if (result == nullptr)
+        throw LM::Exception("Target of call is null!");
 
-*/
+    return result;
+}

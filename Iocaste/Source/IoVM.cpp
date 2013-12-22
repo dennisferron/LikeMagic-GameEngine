@@ -20,6 +20,7 @@
 #include "LikeMagic/Utility/TypeDescr.hpp"
 #include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/BindingMacros.hpp"
+#include "LikeMagic/Exceptions/Exception.hpp"
 
 #include "boost/lexical_cast.hpp"
 
@@ -211,20 +212,11 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
 
     IoState_exceptionCallback_(state, &io_exception);
 
-    IoObject* bootstrap = IoObject_new(state);
-
-    IoTag* bootstrap_tag = IoObject_tag(bootstrap);
-    cout << "bootstrap type is " << bootstrap_tag->name << endl;
-
-    IoState_retain_(state, bootstrap);
-
-    IoObject_setSlot_to_(state->lobby,
-        IoState_symbolWithCString_(state, "bootstrap"),
-        bootstrap);
+    IoObject* lobby = state->lobby;
 
     LM_Proxy = create_likemagic_proto();
     IoState_retain_(state, LM_Proxy);
-    IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "LikeMagicProxy"),
+    IoObject_setSlot_to_(lobby, IoState_symbolWithCString_(state, "LikeMagicProxy"),
         LM_Proxy);
 
     // We want forward to work so that we can suggest method fixes when a method lookup fails.
@@ -232,7 +224,7 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     IoObject_addMethod_(LM_Proxy, method_symbol, &API_io_forward);
 
     LM_Protos = IoObject_new(state);
-    IoObject_setSlot_to_(bootstrap, IoState_symbolWithCString_(state, "LM_Protos"),
+    IoObject_setSlot_to_(lobby, IoState_symbolWithCString_(state, "LikeMagic"),
         LM_Protos);
 
     add_convs_from_script(this);
@@ -244,7 +236,6 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     LM_CLASS(global_ns, IoVM)
 
     LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(expr_to_io_obj)(setShowAllMessages))
-    LM_FIELD(IoVM, (onRegisterMethod)(onRegisterClass)(onRegisterBase)(onAddProto))
 
     LM_CLASS(global_ns, TypeSystem)
 
@@ -273,11 +264,11 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
 
     // Also make the abstract type system available by pointer.
     IoObject* ts_io_obj = Iocaste::LMAdapters::add_proto<TypeSystem*>(*this, "type_system", type_system);
-    cout << "ts_io_obj " << ts_io_obj << endl;
-    cout << "data ptr " << IoObject_dataPointer(ts_io_obj) << endl;
+
+    ExprPtr global_ns_expr = create_expr(nullptr, global_ns.get_class_type());
 
     // The object that represents the global namespace.
-    //add_proto("namespace", Namespace::global->register_functions().create_class_proxy(), false);
+    add_value(lobby, "namespace", global_ns_expr, false);
 
     return;
 }
@@ -331,7 +322,7 @@ void IoVM::check_tracking_info(Expr* expr, IoObject* io_obj, IoObject* m) const
     else
     {
         ExprTrackingInfo info = iter->second;
-        cout << "debug tracking info found for expr=" << info.expr << " data=" << info.data << " name='" << info.name << "'" << endl;
+        //cout << "debug tracking info found for expr=" << info.expr << " data=" << info.data << " name='" << info.name << "'" << endl;
     }
 }
 
@@ -346,7 +337,7 @@ void IoVM::set_tracking_info(Expr* expr, std::string name) const
     else
     {
         ExprTrackingInfo info = iter->second;
-        cout << "debug tracking info for expr=" << expr << " as '" << name << "' already exists as expr=" << info.expr << " data=" << info.data << " name='" << info.name << "'" << endl;
+        //cout << "debug tracking info for expr=" << expr << " as '" << name << "' already exists as expr=" << info.expr << " data=" << info.data << " name='" << info.name << "'" << endl;
     }
 }
 
@@ -356,6 +347,11 @@ IoObject* IoVM::castToIoObjectPointer(void* p)
 }
 
 IoObject* IoVM::add_proto(std::string name, ExprPtr expr, string ns, bool conv_to_script) const
+{
+    return add_value(LM_Protos, name, expr, conv_to_script);
+}
+
+IoObject* IoVM::add_value(IoObject* slot_holder, std::string slot_name, ExprPtr expr, bool conv_to_script) const
 {
     IoObject* clone;
     if (conv_to_script)
@@ -369,10 +365,10 @@ IoObject* IoVM::add_proto(std::string name, ExprPtr expr, string ns, bool conv_t
         Expr* ptr = expr.get();
         IoObject_setDataPointer_(clone, ptr);
         intrusive_ptr_add_ref(ptr);
-        set_tracking_info(expr.get(), name.c_str());
+        set_tracking_info(expr.get(), slot_name.c_str());
     }
 
-    IoObject_setSlot_to_(LM_Protos, IoState_symbolWithCString_(state, name.c_str()), clone);
+    IoObject_setSlot_to_(slot_holder, IoState_symbolWithCString_(state, slot_name.c_str()), clone);
 
     return clone;
 }
@@ -462,11 +458,11 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 {
  	IoVM* iovm = 0;
 
-    std::cout << " (type " << IoObject_tag(self)->name << ") perform "  << CSTRING(IoMessage_name(m)) << std::endl << std::flush;
+    //std::cout << " (type " << IoObject_tag(self)->name << ") perform "  << CSTRING(IoMessage_name(m)) << std::endl << std::flush;
 
     if (!is_Exprs_obj(self))
     {
-        std::cout << " object is not exprs object, calling IoObject_perform instead." << std::endl;
+        //std::cout << " object is not exprs object, calling IoObject_perform instead." << std::endl;
         return IoObject_perform(self, locals, m);
     }
 
@@ -522,18 +518,23 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 
         return result_obj;
     }
+    catch (LM::Exception const& ex)
+    {
+        cerr << "Caught LikeMagic exception: " << ex.what() << endl << flush;
+        throw;
+    }
     catch (Iocaste::Exception& e)
     {
         std::cout << "Caught script exception: " << e.what() << std::endl;
         throw;
     }
-    catch (std::logic_error le)
+    catch (std::logic_error const& le)
     {
         //std::cout << "Caught exception: " << le.what() << std::endl;
         IoState_error_(IOSTATE,  m, "C++ %s, %s", LM::demangle_name(typeid(le).name()).c_str(), le.what());
         return IONIL(self);
     }
-    catch (std::exception e)
+    catch (std::exception const& e)
     {
         std::cout << "Caught exception: " << e.what() << std::endl;
         IoState_error_(IOSTATE,  m, "C++ %s, %s", LM::demangle_name(typeid(e).name()).c_str(), e.what());

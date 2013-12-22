@@ -23,6 +23,7 @@ namespace Iocaste
     private:
         std::vector<IoCallData> items;
         std::vector<std::size_t> marks;
+        std::vector<IoObject*> stack_retained;
 
     public:
 
@@ -33,6 +34,7 @@ namespace Iocaste
         void pop_mark();
 
         IoCallData const& top() const;
+        IoCallData& top();
 
         std::size_t size();
 
@@ -50,5 +52,9 @@ namespace Iocaste
         mark_type push_mark_point();
 
         void clearTop();
+
+        void stack_retain(IoObject* io_obj);
+
+        void mark() const;
     };
 }

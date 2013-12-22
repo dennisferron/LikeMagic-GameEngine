@@ -186,18 +186,18 @@ IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
         IoMessage_locals_performOn_(runMessage, runLocals, runTarget);
 
         if (mark)
-            IOSTATE->currentIoStack->pop_mark_point(mark);
+            IOSTATE->currentIoStack->pop_to_mark_point(mark);
     }
     catch (ScriptException const& ex)
     {
         if (mark)
-            IOSTATE->currentIoStack->pop_mark_point(mark);
+            IOSTATE->currentIoStack->pop_to_mark_point(mark);
         return ex.getSelf();
     }
     catch (...)
     {
         if (mark)
-            IOSTATE->currentIoStack->pop_mark_point(mark);
+            IOSTATE->currentIoStack->pop_to_mark_point(mark);
         throw;
     }
 

@@ -11,6 +11,8 @@
 #include "boost/graph/dijkstra_shortest_paths.hpp"
 #include <iostream>
 
+#include "LikeMagic/Exceptions/Exception.hpp"
+
 #include "boost/config.hpp"
 
 #include <algorithm>
@@ -18,6 +20,7 @@
 #include <utility>
 #include <iostream>
 #include <limits>
+#include <sstream>
 using namespace std;
 
 #include "boost/graph/visitors.hpp"
@@ -205,9 +208,18 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to
 
 bool TypeConvGraph::has_conv(TypeIndex from_type, TypeIndex to_type) const
 {
-    return search_for_conv(from_type, to_type) != NULL;
+    return has_type(from_type) && has_type(to_type)
+        && (search_for_conv(from_type, to_type) != nullptr);
 }
 
+static string describe_type(TypeIndex type)
+{
+    stringstream ss;
+    ss << type.description();
+    ss << " type id:";
+    ss << type.get_id();
+    return ss.str();
+}
 
 TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, TypeIndex to) const
 {
@@ -226,11 +238,14 @@ TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, T
             if (!has_vertex[i])
                 ++count;
 
+        if (!has_type(from) && !has_type(to))
+            throw LM::Exception("From and To types not found in TypeConvGraph in search_for_conv from " + describe_type(from) + " to " + describe_type(to));
+
         if (!has_type(from))
-            throw std::logic_error("From type not found in TypeConvGraph in search_for_conv from " + from.description() + " to " + to.description());
+            throw LM::Exception("From type not found in TypeConvGraph in search_for_conv from " + describe_type(from) + " to " + describe_type(to));
 
         if (!has_type(to))
-            throw std::logic_error("To type not found in TypeConvGraph in search_for_conv from " + from.description() + " to " + to.description());
+            throw LM::Exception("To type not found in TypeConvGraph in search_for_conv from " + describe_type(from) + " to " + describe_type(to));
 
         vertex_t source = vertex_map[from.get_id()];
         vertex_t dest = vertex_map[to.get_id()];

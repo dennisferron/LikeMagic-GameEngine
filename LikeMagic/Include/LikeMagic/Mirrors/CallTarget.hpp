@@ -11,11 +11,15 @@
 
 #include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
+#include "LikeMagic/CallTargets/Delegate.hpp"
 
 namespace LM {
 
 class CallTarget
 {
+protected:
+    static Delegate* eval_as_target(ExprPtr target, TypeIndex actual_type, ExprPtr& target_ward);
+
 public:
     virtual ~CallTarget() = 0;
 

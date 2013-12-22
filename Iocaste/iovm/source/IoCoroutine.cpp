@@ -93,15 +93,7 @@ void IoCoroutine_free(IoCoroutine *self)
 
 void IoCoroutine_mark(IoCoroutine *self)
 {
-    for (auto& call_data : *(DATA(self)->ioStack))
-    {
-        IoObject_shouldMark(call_data.sender);
-        IoObject_shouldMark(call_data.target);
-        IoObject_shouldMark(call_data.message);
-        IoObject_shouldMark(call_data.slotContext);
-        IoObject_shouldMark(call_data.activated);
-        IoObject_shouldMark(call_data.coroutine);
-    }
+    DATA(self)->ioStack->mark();
 }
 
 // raw

@@ -150,23 +150,23 @@ void API_io_free_expr(IoObject* self)
         throw std::logic_error("free Exprs proxy passed an IoSeq instead!");
     else if (IoObject_dataPointer(self))
     {
+        void* voidDataPtr = IoObject_dataPointer(self);
+
         if (is_Exprs_obj(io_obj))
         {
             std::cout << "free Exprs proxy passed Exprs object with tag " << IoObject_tag(io_obj)->name << std::endl;
+            Expr* exprDataPtr = reinterpret_cast<Expr*>(voidDataPtr);
+            intrusive_ptr_release(exprDataPtr);
+            IoObject_setDataPointer_(self, 0);
+        }
+        else if (voidDataPtr == nullptr)
+        {
+            std::cout << "free Exprs proxy passed a nullptr object with tag " << IoObject_tag(io_obj)->name << std::endl;
         }
         else
         {
             std::cout << "free Exprs proxy passed a NON-Exprs object with tag " << IoObject_tag(io_obj)->name << std::endl;
-            throw std::logic_error("free Exprs proxy passed a NON-Exprs object");
         }
-
-        void* voidDataPtr = IoObject_dataPointer(self);
-        Expr* exprDataPtr = reinterpret_cast<Expr*>(voidDataPtr);
-
-        // For debugging, intentionally not releasing the pointer.
-        // TODO:  Put this back when done debugging.
-        //intrusive_ptr_release(exprDataPtr);
-        //IoObject_setDataPointer_(self, 0);
     }
 }
 

@@ -33,8 +33,7 @@ public:
     {
         ExprPtr ward;
         ExprPtr target_ward;
-        auto target_check = type_system->try_conv(target, actual_type);
-        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_ward);
+        Delegate* target_obj = eval_as_target(target, actual_type, target_ward);
         return Term<R>::create(
             (target_obj->*f_ptr)[EvalAs<size_t>::value(args[0], ward)]);
     }

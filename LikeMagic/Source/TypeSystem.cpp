@@ -168,7 +168,7 @@ void TypeSystemInstance::add_class(TypeIndex index, TypeMirror* class_ptr, TypeM
 
     namespace_.add_method(
         class_ptr->get_class_name(), new LM::ExprTarget(
-            create_expr(class_ptr, class_index)));
+            create_expr(nullptr, class_index)));
 }
 
 ExprPtr TypeSystemInstance::try_conv(ExprPtr from_expr, TypeIndex to_type) const

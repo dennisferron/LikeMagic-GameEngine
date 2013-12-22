@@ -16,6 +16,7 @@ using namespace Iocaste::LMAdapters;
 #include "boost/program_options.hpp"
 
 #include "Iocaste/Exception.hpp"
+#include "LikeMagic/Exceptions/Exception.hpp"
 #include "boost/exception/info.hpp"
 #include "boost/exception/get_error_info.hpp"
 
@@ -161,6 +162,10 @@ IOCASTE_API int Iocaste_run(int argc, const char *argv[], void (*add_bindings)()
         std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
         std::cerr << desc << std::endl;
         return ERROR_IN_COMMAND_LINE;
+    }
+    catch (LM::Exception const& ex)
+    {
+        cerr << "main.cpp caught unhandled LikeMagic exception: " << ex.what() << endl << flush;
     }
     catch (Iocaste::ScriptException const& ex)
     {

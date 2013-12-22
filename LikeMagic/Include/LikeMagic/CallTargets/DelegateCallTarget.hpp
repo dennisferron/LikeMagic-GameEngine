@@ -36,8 +36,7 @@ private:
     {
         ExprPtr wards[sizeof...(Args)];
         ExprPtr target_ward;
-        auto target_check = type_system->try_conv(target, actual_type);
-        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_ward);
+        Delegate* target_obj = eval_as_target(target, actual_type, target_ward);
         (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices], wards[Indices])...);
     }
 
