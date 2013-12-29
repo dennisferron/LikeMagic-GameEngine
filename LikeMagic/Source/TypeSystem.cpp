@@ -166,9 +166,14 @@ void TypeSystemInstance::add_class(TypeIndex index, TypeMirror* class_ptr, TypeM
     auto deleter_target = new DeleterCallTarget();
     class_ptr->add_method("delete", deleter_target);
 
+    ExprPtr class_expr = create_expr(nullptr, class_index);
+
+    // TODO:  Create a "bool is_class_expr" field for expr.
+    class_expr->set_disable_to_script(true);
+
     namespace_.add_method(
         class_ptr->get_class_name(), new LM::ExprTarget(
-            create_expr(nullptr, class_index)));
+            class_expr));
 }
 
 ExprPtr TypeSystemInstance::try_conv(ExprPtr from_expr, TypeIndex to_type) const

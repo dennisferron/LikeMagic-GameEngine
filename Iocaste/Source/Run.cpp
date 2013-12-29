@@ -81,7 +81,6 @@ void do_file(IoVM& vm, string file_name)
 {
     std::string scriptPath(file_name);
     boost::algorithm::trim_right_if(scriptPath, IsNotDirChar());
-    //vm.add_proto("scriptPath", scriptPath, NamespacePath::global(), true);
     vm.set_script_path(scriptPath);
     std::stringstream code;
     code << "doFile(\"" << file_name << "\")";

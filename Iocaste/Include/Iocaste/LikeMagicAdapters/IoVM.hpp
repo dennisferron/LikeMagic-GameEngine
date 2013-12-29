@@ -70,10 +70,6 @@ private:
     mutable IoObject* last_exception;
     std::vector<Breakpoint> breakpoints;
 
-    mutable boost::unordered_map<Expr*, ExprTrackingInfo> debug_tracking;
-    void check_tracking_info(Expr* expr, IoObject* io_obj, IoObject* m) const;
-    void set_tracking_info(Expr* expr, std::string name) const;
-
     ExprPtr get_abs_expr(std::string io_code) const;
 
     IoObject* to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPtr expr) const;
@@ -106,7 +102,6 @@ public:
     std::string get_path(std::string path_identifier);
     void set_path(std::string path_identifier, std::string path_value);
 
-    IoObject* add_proto(std::string name, ExprPtr expr, std::string ns = "", bool conv_to_script=false) const;
     IoObject* add_value(IoObject* slot_holder, std::string slot_name, ExprPtr expr, bool conv_to_script=false) const;
 
     void run_cli() const;
@@ -148,20 +143,5 @@ public:
 
     IoState* iovm_get_io_state() const;
 };
-
-template <typename T>
-IoObject* add_proto(IoVM& iovm, std::string name,  T obj=T(), std::string ns = "", bool to_script=false)
-{
-    return iovm.add_proto
-    (
-        name,
-        Term<T>::create
-        (
-            obj
-        ),
-        ns,
-        to_script
-    );
-}
 
 }}

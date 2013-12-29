@@ -124,11 +124,13 @@ ValuePtr ExprImpl::get_value_ptr() const
 
 void ExprImpl::mark() const
 {
-    if (EvalAs<IMarkable const*>::has_conv(this))
+    if (value_ptr.as_const != nullptr && EvalAs<IMarkable const*>::has_conv(this))
     {
         ExprPtr ward;
         EvalAs<IMarkable const*>::value(const_cast<ExprImpl*>(this), ward)->mark();
     }
+
+    // TODO:  Mark class members!
 
     if (storage_location != nullptr)
         storage_location->mark();

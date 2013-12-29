@@ -154,7 +154,7 @@ void API_io_free_expr(IoObject* self)
 
         if (is_Exprs_obj(io_obj))
         {
-            std::cout << "free Exprs proxy passed Exprs object with tag " << IoObject_tag(io_obj)->name << std::endl;
+            //std::cout << "free Exprs proxy passed Exprs object with tag " << IoObject_tag(io_obj)->name << std::endl;
             Expr* exprDataPtr = reinterpret_cast<Expr*>(voidDataPtr);
             intrusive_ptr_release(exprDataPtr);
             IoObject_setDataPointer_(self, 0);

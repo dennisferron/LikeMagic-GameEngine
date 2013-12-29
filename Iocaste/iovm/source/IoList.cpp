@@ -557,7 +557,7 @@ IO_METHOD(IoList, reverseForeach)
 	IoObject *result = IONIL(self);
 	IoSymbol *slotName, *valueName;
 	IoMessage *doMessage;
-	long i;
+	size_t i;
 
 	IoMessage_foreachArgs(m, self, &slotName, &valueName, &doMessage);
 

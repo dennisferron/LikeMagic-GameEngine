@@ -57,6 +57,10 @@ void IoState_popRetainPool(void *self);
 void IoState_popRetainPool_(void *self, uintptr_t mark);
 void IoState_popRetainPoolExceptFor_(void *state, void *obj);
 
+typedef IoObject IoCall;
+void IoState_retainCall_(IoState *self, IoCall *v);
+
+
 // message args --------------------------------------------------------
 
 #define IOMESSAGEDATA(self) ((IoMessageData *)IoObject_dataPointer(self))

@@ -98,7 +98,7 @@ void *IoState_unreferencedStackRetain_(IoState *self, IoObject *v)
 		Collector_value_addingRefTo_(self->collector, self->currentCoroutine, v);
 	}
 
-	self->currentIoStack->stack_retain(v);
+	self->currentIoStack->retain_data(v);
 	return v;
 }
 
@@ -124,6 +124,15 @@ void IoState_addValueIfNecessary_(IoState *self, IoObject *v)
 	IoState_unreferencedStackRetain_(self, v);
 }
 
+void IoState_retainCall_(IoState *self, IoCall *v)
+{
+	if (v->prev)
+	{
+		Collector_addValue_(self->collector, v);
+	}
+	self->currentIoStack->retain_call(v);
+}
+
 void IoState_pushCollectorPause(IoState *self)
 {
 	Collector_pushPause(self->collector);
@@ -141,8 +150,7 @@ void IoState_clearRetainStack(IoState *self)
 
 uintptr_t IoState_pushRetainPool(void *self)
 {
-	mark_type m = ((IoState *)self)->currentIoStack->push_mark_point();
-	return (uintptr_t)m;
+	return ((IoState*)self)->currentIoStack->push_mark(MarkReason::Unspecified);
 }
 
 void IoState_clearTopPool(void *self)
@@ -165,7 +173,7 @@ void IoState_popRetainPool_(void *self, uintptr_t mark)
 void IoState_popRetainPoolExceptFor_(void *state, void *obj)
 {
 	IoState *self = (IoState *)state;
-	IoState_popRetainPool(self);
+	self->currentIoStack->pop_mark();
 	IoState_stackRetain_(self, (IoObject *)obj);
 }
 

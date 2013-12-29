@@ -6,6 +6,7 @@ struct CollectorMarker;
 typedef CollectorMarker IoObject;
 typedef IoObject IoMessage;
 typedef IoObject IoError;
+typedef IoObject IoCall;
 
 #include <vector>
 
@@ -13,28 +14,34 @@ typedef IoObject IoError;
 
 namespace Iocaste
 {
+    enum class MarkReason
+    {
+        TryBlock,
+        MessageFrame,
+        Unspecified
+    };
+
     class IoCallStack
     {
     public:
         typedef std::size_t mark_type;
-        typedef typename std::vector<IoCallData>::const_reverse_iterator const_reverse_iterator;
-        typedef typename std::vector<IoCallData>::const_iterator const_iterator;
+        typedef typename std::vector<IoObject*>::const_reverse_iterator const_reverse_iterator;
+        typedef typename std::vector<IoObject*>::const_iterator const_iterator;
 
     private:
-        std::vector<IoCallData> items;
-        std::vector<std::size_t> marks;
-        std::vector<IoObject*> stack_retained;
+
+        struct Mark
+        {
+            std::size_t index;
+            MarkReason reason;
+        };
+
+        std::vector<IoObject*> items;
+        std::vector<Mark> marks;
 
     public:
 
-        void push(IoCallData const& item);
-        IoCallData pop();
-
-        void pop_to_mark_point(mark_type mark);
-        void pop_mark();
-
-        IoCallData const& top() const;
-        IoCallData& top();
+        IoObject* top() const;
 
         std::size_t size();
 
@@ -43,17 +50,28 @@ namespace Iocaste
         const_iterator begin() const;
         const_iterator end() const;
 
+        // Replaces IoState_clearRetainStack
         void clear();
 
-        // Same as Stack_clearTop
+        // Replaces IoState_clearTopPool
         void clear_to_last_mark();
 
+        // Replaces IoState_popRetainPool_( , uintptr_t mark)
+        void pop_to_mark_point(mark_type mark);
+
+        // Replaces IoState_popRetainPool
+        void pop_mark();
+
         void do_(StackDoCallback *callback) const;
-        mark_type push_mark_point();
 
-        void clearTop();
+        // Replaces IoState_pushRetainPool
+        mark_type push_mark(MarkReason reason);
 
-        void stack_retain(IoObject* io_obj);
+        // Used in IoState_unreferencedStackRetain_
+        void retain_data(IoObject* io_obj);
+
+        // Used in IoState_retainCall_ to replace IoState_addValueIfNecessary_ for IoCall_new
+        void retain_call(IoCall* io_call);
 
         void mark() const;
     };

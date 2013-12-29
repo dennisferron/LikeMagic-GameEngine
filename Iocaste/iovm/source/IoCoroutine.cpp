@@ -204,11 +204,10 @@ IO_METHOD(IoCoroutine, ioStack)
 
 	Iocaste::IoCallStack* call_stack = DATA(self)->ioStack;
 
-    for (auto rit = call_stack->rbegin(); rit != call_stack->rend(); ++rit)
+    for (auto iter = call_stack->rbegin(); iter != call_stack->rend(); ++iter)
     {
-        IoCall* call_obj = IoCall_new(IOSTATE);
-        IoObject_setDataPointer_(call_obj, new Iocaste::IoCallData(*rit));
-        List_append_(list, call_obj);
+        IoObject* io_obj = *iter;
+        List_append_(list, io_obj);
     }
 
 	return IoList_newWithList_(IOSTATE, list);

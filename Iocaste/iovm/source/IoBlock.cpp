@@ -229,6 +229,7 @@ IoObject *IoBlock_activate(IoBlock *self, IoObject *target, IoObject *locals, Io
 
 	IoObject_createSlotsIfNeeded(blockLocals);
 
+    // This also causes the IoCall object to be pushed onto the stack (in the IoCall_new function).
 	callObject = IoCall_with(state,
 							 locals,
 							 target,

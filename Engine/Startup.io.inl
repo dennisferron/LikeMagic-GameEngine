@@ -7,7 +7,10 @@ Module := doRelativeFile("Module.io.inl")
 Scripts := doRelativeFile("Scripts.io.inl")
 Loader :=  doRelativeFile("Loader.io.inl")
 
-thisScriptPath := method(namespace ScriptUtil get_script_path)
+writeln("io_vm is ", io_vm)
+writeln("io_vm get_script_path is ", io_vm get_script_path)
+
+thisScriptPath := io_vm get_script_path
 writeln("thisScriptPath is ", thisScriptPath)
 
 rootLoader := Loader clone setDirectory(

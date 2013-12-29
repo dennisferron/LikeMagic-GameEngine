@@ -586,8 +586,8 @@ IoObject *IoMessage_locals_performOn_(IoMessage *self, IoObject *locals, IoObjec
 			{
 			    // There was not a cached result so perform the message.
 
-			    // Is the stack frame pushed here?
-				IoState_pushRetainPool(state);
+			    // Message Frame
+			    state->currentIoStack->push_mark(Iocaste::MarkReason::MessageFrame);
 
 #ifdef IOMESSAGE_INLINE_PERFORM
 

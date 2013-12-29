@@ -223,10 +223,6 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     IoSymbol* method_symbol = IoState_symbolWithCString_(state, "forward");
     IoObject_addMethod_(LM_Proxy, method_symbol, &API_io_forward);
 
-    LM_Protos = IoObject_new(state);
-    IoObject_setSlot_to_(lobby, IoState_symbolWithCString_(state, "LikeMagic"),
-        LM_Protos);
-
     add_convs_from_script(this);
     add_convs_to_script(this);
 
@@ -235,7 +231,8 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     // Register this vm
     LM_CLASS(global_ns, IoVM)
 
-    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(expr_to_io_obj)(setShowAllMessages))
+    LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(expr_to_io_obj)(setShowAllMessages)
+        (get_script_path)(set_script_path))
 
     LM_CLASS(global_ns, TypeSystem)
 
@@ -257,18 +254,14 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     // Allow conversion of Io blocks to IoObject*
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), TypId<IoObject*>::get(), new LM::NoChangeConv);
 
-    // You have to have registered the types before you can add protos for them.
-
-    // Make this vm accessible in the bootstrap environment
-    Iocaste::LMAdapters::add_proto<IoVM&>(*this, "io_vm", *this);
-
-    // Also make the abstract type system available by pointer.
-    IoObject* ts_io_obj = Iocaste::LMAdapters::add_proto<TypeSystem*>(*this, "type_system", type_system);
-
     ExprPtr global_ns_expr = create_expr(nullptr, global_ns.get_class_type());
 
     // The object that represents the global namespace.
     add_value(lobby, "namespace", global_ns_expr, false);
+
+    // Make this vm accessible to script
+    ExprPtr io_vm_expr = Term<IoVM*>::create(this);
+    add_value(lobby, "io_vm", io_vm_expr, false);
 
     return;
 }
@@ -312,44 +305,11 @@ IoVM::~IoVM()
     //IoState_free(state);
 }
 
-
-void IoVM::check_tracking_info(Expr* expr, IoObject* io_obj, IoObject* m) const
-{
-    auto iter = debug_tracking.find(expr);
-
-    if (iter == debug_tracking.end())
-        throw IoStateError(io_obj, "Expr not found in tracking info.", m);
-    else
-    {
-        ExprTrackingInfo info = iter->second;
-        //cout << "debug tracking info found for expr=" << info.expr << " data=" << info.data << " name='" << info.name << "'" << endl;
-    }
-}
-
-void IoVM::set_tracking_info(Expr* expr, std::string name) const
-{
-    auto iter = debug_tracking.find(expr);
-
-    if (iter == debug_tracking.end())
-    {
-        debug_tracking[expr] = ExprTrackingInfo(expr, name);
-    }
-    else
-    {
-        ExprTrackingInfo info = iter->second;
-        //cout << "debug tracking info for expr=" << expr << " as '" << name << "' already exists as expr=" << info.expr << " data=" << info.data << " name='" << info.name << "'" << endl;
-    }
-}
-
 IoObject* IoVM::castToIoObjectPointer(void* p)
 {
     return reinterpret_cast<IoObject*>(p);
 }
 
-IoObject* IoVM::add_proto(std::string name, ExprPtr expr, string ns, bool conv_to_script) const
-{
-    return add_value(LM_Protos, name, expr, conv_to_script);
-}
 
 IoObject* IoVM::add_value(IoObject* slot_holder, std::string slot_name, ExprPtr expr, bool conv_to_script) const
 {
@@ -365,7 +325,6 @@ IoObject* IoVM::add_value(IoObject* slot_holder, std::string slot_name, ExprPtr 
         Expr* ptr = expr.get();
         IoObject_setDataPointer_(clone, ptr);
         intrusive_ptr_add_ref(ptr);
-        set_tracking_info(expr.get(), slot_name.c_str());
     }
 
     IoObject_setSlot_to_(slot_holder, IoState_symbolWithCString_(state, slot_name.c_str()), clone);
@@ -402,7 +361,6 @@ ExprPtr IoVM::get_abs_expr(std::string io_code) const
     auto io_obj = do_string(io_code);
     static TypeIndex unspec_type = TypeIndex();  // id = -1, type not specified
     ExprPtr result = from_script(state->lobby, io_obj, unspec_type);
-    set_tracking_info(result.get(), io_code);
     return result;
 }
 
@@ -480,8 +438,6 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 
         void* data_ptr = IoObject_dataPointer(self);
         Expr* expr = reinterpret_cast<Expr*>(data_ptr);
-
-        iovm->check_tracking_info(expr, self, m);
 
         int arg_count = IoMessage_argCount(m);
         TypeIndex exprType = expr->get_type();

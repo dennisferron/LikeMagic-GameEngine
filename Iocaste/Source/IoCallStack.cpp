@@ -11,56 +11,34 @@ using namespace Iocaste;
 
 #include <stdexcept>
 #include <vector>
+#include <iostream>
 using namespace std;
 
-void IoCallStack::stack_retain(IoObject* io_obj)
+void IoCallStack::retain_data(IoObject* io_obj)
 {
-    if (items.size() == 0)
-        this->stack_retained.push_back(io_obj);
-    else
-        top().stack_retained.push_back(io_obj);
+    items.push_back(io_obj);
+}
+
+void IoCallStack::retain_call(IoObject* io_call)
+{
+    items.push_back(io_call);
 }
 
 void IoCallStack::mark() const
 {
-    for (auto& retained_objs : this->stack_retained)
-        IoObject_shouldMark(retained_objs);
-
-    for (auto& call_data : items)
-    {
-        IoObject_shouldMark(call_data.sender);
-        IoObject_shouldMark(call_data.target);
-        IoObject_shouldMark(call_data.message);
-        IoObject_shouldMark(call_data.slotContext);
-        IoObject_shouldMark(call_data.activated);
-        IoObject_shouldMark(call_data.coroutine);
-
-        for (auto& retained_objs : call_data.stack_retained)
-            IoObject_shouldMark(retained_objs);
-    }
+    for (auto& obj : this->items)
+        IoObject_shouldMark(obj);
 }
 
-void IoCallStack::push(IoCallData const& item)
+IoCallStack::mark_type IoCallStack::push_mark(MarkReason reason)
 {
-    items.push_back(item);
-}
-
-IoCallStack::mark_type IoCallStack::push_mark_point()
-{
-    marks.push_back(items.size());
+    marks.push_back({items.size(), reason});
     return marks.size()-1;
-}
-
-IoCallData IoCallStack::pop()
-{
-    IoCallData result = items.back();
-    items.pop_back();
-    return result;
 }
 
 void IoCallStack::pop_to_mark_point(mark_type mark)
 {
-    items.erase(items.begin() + marks[mark], items.end());
+    items.erase(items.begin() + marks[mark].index, items.end());
     marks.erase(marks.begin() + mark, marks.end());
 }
 
@@ -69,16 +47,8 @@ void IoCallStack::pop_mark()
     pop_to_mark_point(marks.size()-1);
 }
 
-IoCallData const& IoCallStack::top() const
+IoObject* IoCallStack::top() const
 {
-    return items.back();
-}
-
-IoCallData& IoCallStack::top()
-{
-    if (items.size() == 0)
-        throw std::logic_error("tried to get top of empty stack");
-
     return items.back();
 }
 
@@ -113,7 +83,8 @@ void IoCallStack::clear()
     marks.clear();
 }
 
+// TODO:  Possibly require mark value to verify correct mark.
 void IoCallStack::clear_to_last_mark()
 {
-    items.erase(items.begin() + marks.back(), items.end());
+    items.erase(items.begin() + marks.back().index, items.end());
 }

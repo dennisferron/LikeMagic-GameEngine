@@ -164,21 +164,14 @@ IoObject *IocasteException_proto(void *state)
 
 IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
 {
-    // Disambiguating stack frames for this function to try to figure
-    // out why CLI try is not catching final exception.
-    static int instanceCounter = 0;
-    int thisInstance = ++instanceCounter;
-
-    //cout << "doTry " << thisInstance << endl;
-
-    intptr_t mark = 0;
+    size_t mark = 0;
 
     try
     {
         // Should marking the stack go before or after getting the runTarget, runLocals, runMessage?
         // Calling valueArgAt can do performOn, don't know if the stack state is significant.  I am
         // thinking it is safest to mark the stack first so it all gets reversed on a caught exception.
-        mark = (intptr_t)IOSTATE->currentIoStack->push_mark_point();
+        mark = IOSTATE->currentIoStack->push_mark(MarkReason::TryBlock);
 
         IoObject *runTarget  = IoMessage_locals_valueArgAt_(m, locals, 2);
         IoObject *runLocals  = IoMessage_locals_valueArgAt_(m, locals, 1);
@@ -203,7 +196,6 @@ IoObject* doTry(IoObject *self, IoObject *locals, IoMessage *m)
 
     return IONIL(self);
 }
-
 
 IoObject* throwScriptException(IoObject *self, IoObject *locals, IoMessage *m)
 {

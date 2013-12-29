@@ -98,7 +98,7 @@ IoCall *IoCall_new(IoState *state)
 	IoCall_initSlots(newObject);
 
     // This also pushes the call onto the currentIoStack
-	IoState_addValueIfNecessary_(state, newObject);
+	IoState_retainCall_(state, (IoCall*)newObject);
 
 	IoState_popCollectorPause(state);
 
