@@ -30,15 +30,7 @@ protected:
 
 public:
     AbstractToIoObjectExpr(ValuePtr ptr, TypeIndex type) : io_type(type) {}
-
-    virtual bool is_terminal() const { return true; }
-    virtual bool is_lazy() const { return false; }
-
     virtual IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m) = 0;
-
-    // It's already a script object, so don't need to try to convert it a second time.
-    virtual bool disable_to_script_conv() const { return true; }
-
     virtual TypeIndex get_type() const { return io_type; }
 };
 
@@ -47,23 +39,24 @@ class ToIoObjectExpr : public AbstractToIoObjectExpr
 {
 private:
     ExprPtr from_expr;
+    F io_func;
 
-private:
-    ToIoObjectExpr(ExprPtr from_expr_)
-        : AbstractToIoObjectExpr(nullptr, ToIoTypeInfo::create_index()), from_expr(from_expr_) {}
+    ToIoObjectExpr(ExprPtr from_expr_, F io_func_)
+        : AbstractToIoObjectExpr(nullptr, ToIoTypeInfo::create_index()),
+            from_expr(from_expr_), io_func(io_func_) {}
 
 public:
 
-    static ExprPtr create(ExprPtr from_expr)
+    static ExprPtr create(ExprPtr from_expr, F io_func)
     {
-        auto* result = new ToIoObjectExpr<T, F>(from_expr);
+        AbstractToIoObjectExpr* result = new ToIoObjectExpr<T, F>(from_expr, io_func);
         return create_expr(result, result->get_type());
     }
 
     virtual IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m)
     {
         ExprPtr ward;
-        return F::eval_in_context(self, locals, m, EvalAs<T>::value(from_expr, ward));
+        return io_func(self, locals, m, EvalAs<T>::value(from_expr, ward));
     }
 
     virtual std::string description() const
@@ -72,7 +65,6 @@ public:
     }
 
     virtual void mark() const { from_expr->mark(); }
-
 };
 
 }}

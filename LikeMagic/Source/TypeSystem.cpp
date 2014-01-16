@@ -26,6 +26,7 @@
 #include <stdexcept>
 #include <string>
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 namespace LM
@@ -184,7 +185,7 @@ ExprPtr TypeSystemInstance::try_conv(ExprPtr from_expr, TypeIndex to_type) const
     }
     catch (std::logic_error const& le)
     {
-        throw std::logic_error(le.what() + std::string(" From expression was ") + from_expr->description());
+        throw std::logic_error(le.what() + std::string(" (try_conv error, from expression was ") + from_expr->description() + ")");
     }
 }
 
@@ -203,9 +204,35 @@ TypeMirror* TypeSystemInstance::get_class(TypeIndex type) const
         return nullptr;
 }
 
-void TypeSystemInstance::add_converter_simple(TypeIndex from, TypeIndex to, p_conv_t conv)
+void TypeSystemInstance::add_converter_simple(TypeIndex from_type, TypeIndex to_type, p_conv_t conv)
 {
-    impl->conv_graph.add_conv(from, to, conv);
+    impl->conv_graph.add_conv(from_type, to_type, conv);
+
+    if (!impl->conv_graph.has_type(from_type))
+    {
+        stringstream msg;
+        msg << "add_converter_simple missing just-added from type for conversion from " << from_type.description() << " " << from_type.get_id() << " to " << to_type.description() << " " << to_type.get_id() << " conv='" << conv->description() << "'";
+        cout << msg.str() << endl;
+        //throw std::logic_error(msg.str());
+    }
+
+    if (!impl->conv_graph.has_type(to_type))
+    {
+        stringstream msg;
+        msg << "add_converter_simple missing just-added to type for conversion from " << from_type.description() << " " << from_type.get_id() << " to " << to_type.description() << " " << to_type.get_id() << " conv='" << conv->description() << "'";
+        cout << msg.str() << endl;
+        //throw std::logic_error(msg.str());
+    }
+
+    if (!has_conv(from_type, to_type))
+    {
+        bool test_again = has_conv(from_type, to_type);
+        stringstream msg;
+        msg << test_again;
+        msg << "add_converter_simple missing just-added conversion from " << from_type.description() << " " << from_type.get_id() << " to " << to_type.description() << " " << to_type.get_id() << " conv='" << conv->description() << "'";
+        cout << msg.str() << endl;
+        //throw std::logic_error(msg.str());
+    }
 }
 
 void TypeSystemInstance::add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv)

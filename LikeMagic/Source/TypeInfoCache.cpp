@@ -87,11 +87,21 @@ TypeIndex TypeInfoCache::get_index(TypeInfo candidate)
 
 TypeInfo TypeInfoCache::get_info(TypeIndex id) const
 {
-    return index_to_info[id.get_id()];
+    size_t pos = id.get_id();
+
+    if (pos >= index_to_info.size())
+        throw std::out_of_range("Type index is out of range.");
+
+    return index_to_info[pos];
 }
 
 TypeIndex TypeInfoCache::get_class_index(TypeIndex id) const
 {
+    size_t pos = id.get_id();
+
+    if (pos >= index_to_info.size())
+        throw std::out_of_range("Type index is out of range.");
+
     return index_to_class[id.get_id()];
 }
 

@@ -45,7 +45,7 @@ public:
 
     static TypeIndex create_index(std::string type_name)
     {
-        TypeInfo info = create(type_name);
+        static TypeInfo info = create(type_name);
         return get_index(info);
     }
 };

@@ -26,6 +26,7 @@ using namespace std;
 #include "boost/graph/visitors.hpp"
 #include "boost/graph/adjacency_list.hpp"
 #include "boost/graph/graph_utility.hpp"
+#include "boost/graph/graphviz.hpp"
 
 #if (defined(__MINGW32__) || defined(__MINGW64__)) && (__GNUC__ == 4)
 #include <stddef.h>
@@ -57,9 +58,40 @@ TypeConvGraph::~TypeConvGraph()
     //xx     delete graph[*it].conv;
 }
 
+class EdgePropertyWriter {
+public:
+     EdgePropertyWriter(TypeConvGraph::graph_t graph_, TypeConvGraph::vertex_map_t const& vertex_map_)
+        : graph(graph_), vertex_map(vertex_map_) {}
+     template <class VertexOrEdge>
+     void operator()(std::ostream& out, const VertexOrEdge& v) const {
+            TypeIndex from = graph[v.m_source].type;
+            TypeIndex to = graph[v.m_target].type;
+
+            //TypeIndex from2 = graph[vertex_map[v.m_source]].type;
+            //TypeIndex to2 = graph[vertex_map[v.m_target]].type;
+
+            std::string from_descr;
+            try { from_descr = from.description(); } catch (...) { from_descr = "invalid"; }
+
+            std::string to_descr;
+            try { to_descr = to.description(); } catch (...) { to_descr = "invalid"; }
+
+            out << "[description=\"" << graph[v].conv->description()
+                << " from " /*<< v.m_source*/ << from_descr << " (" << from.get_id() << ")"
+                << " to " /*<< v.m_target*/ << to_descr << " (" << to.get_id() << ")"
+                << "\"]";
+     }
+private:
+     TypeConvGraph::graph_t& graph;
+     TypeConvGraph::vertex_map_t const& vertex_map;
+};
+
 void TypeConvGraph::print_graph() const
 {
-    boost::print_graph(graph);
+    //boost::print_graph(graph);
+    EdgePropertyWriter w(graph, vertex_map);
+    //ofstream outf("net.gv");
+    boost::write_graphviz(cout, graph, boost::default_writer(), w);
 }
 
 bool TypeConvGraph::has_type(TypeIndex type) const
@@ -93,6 +125,7 @@ TypeConvGraph::vertex_t TypeConvGraph::add_type(TypeIndex type)
 
         vertex_map[pos] = add_vertex(graph);
         has_vertex[pos] = true;
+        graph[vertex_map[pos]].type = type;
     }
 
     return vertex_map[pos];
@@ -108,6 +141,25 @@ void TypeConvGraph::add_conv(TypeIndex from, TypeIndex to, p_conv_t conv)
         auto new_edge = add_edge(from_vert, to_vert, graph).first;
         graph[new_edge].conv = conv;
         graph[new_edge].cost = conv->cost();
+    }
+}
+
+TypeConvGraph::p_conv_t TypeConvGraph::get_conv(TypeIndex from, TypeIndex to) const
+{
+    std::size_t from_pos = from.get_id();
+    auto from_vert = vertex_map[from_pos];
+
+    std::size_t to_pos = to.get_id();
+    auto to_vert = vertex_map[to_pos];
+
+    if (edge(from_vert, to_vert, graph).second)
+    {
+        auto new_edge = edge(from_vert, to_vert, graph).first;
+        return graph[new_edge].conv;
+    }
+    else
+    {
+        return nullptr;
     }
 }
 
@@ -169,11 +221,12 @@ void TypeConvGraph::print_conv_chain(TypeIndex from, TypeIndex to) const
 
 void TypeConvGraph::print_conv_chain(p_chain_t const& chain) const
 {
+    cout << "TypeConv chain, length " << chain->size() << " chain is {";
     for (size_t i=0; i < chain->size(); i++)
     {
-        cout  << " -> "<< (*chain)[i]->description();
+        cout  << " -> " << (*chain)[i]->description();
     }
-    cout << endl;
+    cout << " }" << endl;
 }
 
 
@@ -200,11 +253,11 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to
     }
 
     // Debugging
-    //print_conv_chain(result);
+    cout << "Type conversion chain from " << from.description() << " to " << to.description() << " ";
+    print_conv_chain(result);
 
     return build_conv_chain(from_expr, result);
 }
-
 
 bool TypeConvGraph::has_conv(TypeIndex from_type, TypeIndex to_type) const
 {
@@ -223,21 +276,14 @@ static string describe_type(TypeIndex type)
 
 TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, TypeIndex to) const
 {
-    // Why was this set if not used?
-    //static TypeIndex bot = TypId<BottomPtrType>::get();
-
-    static int count = 0;
-
     auto key = std::make_pair(from.get_id(), to.get_id());
 
-    // If not cached
-    if (conv_cache.find(key) == conv_cache.end())
-    {
-        int count=0;
-        for (std::size_t i=0; i<has_vertex.size();i++)
-            if (!has_vertex[i])
-                ++count;
+    bool not_in_cache = false;
+    bool null_in_cache = false;
 
+    // If not cached
+    if ( (not_in_cache = (conv_cache.find(key) == conv_cache.end())) || (null_in_cache = (conv_cache[key] == nullptr)) || true)
+    {
         if (!has_type(from) && !has_type(to))
             throw LM::Exception("From and To types not found in TypeConvGraph in search_for_conv from " + describe_type(from) + " to " + describe_type(to));
 
@@ -255,7 +301,7 @@ TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, T
         // Clear dest so we know if we reached it or not.
         pred[dest] = no_vertex;
 
-        // Optional?
+        // Clear other vertices. Optional?
         for (size_t i=0; i<pred.size(); i++)
             pred[i] = no_vertex;
 
@@ -307,7 +353,16 @@ TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, T
 
         if (!finder.found_conv || pred[dest] == no_vertex)
         {
-            conv_cache[key] = std::move(p_chain_t()); // NULL
+            p_conv_t direct_conv = get_conv(from, to);
+
+            if (direct_conv == nullptr)
+                cout << "No conv chain from " << from.description() << " to " << to.description() << " and no direct conv." << endl;
+            else
+                cout << "No conv chain from " << from.description() << " to " << to.description() << " but a direct conversion exists." << endl;
+
+            //print_graph();
+
+            conv_cache[key] = std::move(p_chain_t());
             return conv_cache[key];
         }
         else
@@ -325,8 +380,5 @@ TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, T
 
     return conv_cache[key];
 }
-
-
-
 
 }

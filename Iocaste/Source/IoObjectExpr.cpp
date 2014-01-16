@@ -11,13 +11,23 @@
 #include "Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp"
 
 using namespace LM;
+using namespace std;
 
 namespace Iocaste { namespace LMAdapters {
 
 ExprPtr IoObjectExpr::create(IoObject* io_object)
 {
-    auto* result = new IoObjectExpr(io_object);
-    return create_expr(result, result->get_type());
+    IoObjectExpr* io_obj_expr = new IoObjectExpr(io_object);
+    ExprPtr result = create_expr(io_obj_expr, io_obj_expr->get_type());
+
+    cout
+        << " ExprPtr=" << result.get()
+        << " io_obj_expr=" << io_obj_expr
+        << " io_object=" << io_object
+        << endl;
+
+    //result->set_auto_delete_ptr(true);
+    return result;
 }
 
 IoObjectExpr::IoObjectExpr(IoObject* io_object_) :
@@ -38,6 +48,11 @@ std::string IoObjectExpr::description() const
 void IoObjectExpr::mark() const
 {
     IoObject_shouldMarkIfNonNull(io_object);
+}
+
+IoObject* IoObjectExpr::get_io_object() const
+{
+    return io_object;
 }
 
 }}

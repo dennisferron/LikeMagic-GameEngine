@@ -1,11 +1,26 @@
 #include "UnitTest++.h"
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/StdBindings/StdBindings.hpp"
+
+#include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+
 #include <iostream>
+
+using namespace Iocaste;
+using namespace Iocaste::LMAdapters;
+using namespace std;
 
 void add_binding_test_bindings();
 void add_term_test_bindings();
 void add_typesystem_test_bindings();
+
+IoVM* io_vm = nullptr;
+
+void setup_io_vm()
+{
+    string bootstrap_path = "../../Iocaste/iovm/io/";
+    io_vm = new IoVM(bootstrap_path);
+}
 
 int main()
 {
@@ -16,7 +31,9 @@ int main()
         add_binding_test_bindings();
         add_typesystem_test_bindings();
         add_term_test_bindings();
+        setup_io_vm();
         int result = UnitTest::RunAllTests();
+        delete io_vm;
         delete LM::type_system;
         //std::cout << "Done" << std::endl;
         std::cout << "Press enter..." << std::endl;

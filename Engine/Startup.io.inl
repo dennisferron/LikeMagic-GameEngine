@@ -7,6 +7,9 @@ Module := doRelativeFile("Module.io.inl")
 Scripts := doRelativeFile("Scripts.io.inl")
 Loader :=  doRelativeFile("Loader.io.inl")
 
+writeln("namespace ScriptUtil is ", namespace ScriptUtil)
+writeln("namespace ScriptUtil get_float(2.1) is ", namespace ScriptUtil get_float(2.1))
+
 writeln("io_vm is ", io_vm)
 writeln("io_vm get_script_path is ", io_vm get_script_path)
 

@@ -76,7 +76,9 @@ void ExprImpl::add_ref()
 void ExprImpl::release()
 {
     if (!--ref_count)
+    {
         delete this;
+    }
 }
 
 ExprImpl::~ExprImpl()

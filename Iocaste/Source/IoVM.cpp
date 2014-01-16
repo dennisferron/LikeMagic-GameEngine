@@ -167,14 +167,17 @@ Breakpoint* IoVM::find_pending_breakpoint(IoMessage* m)
 // The difference between this and a no-change or implicit conv is this evals in context to return IoObject* directly.
 struct PtrToIoObjectConv : public LM::AbstractTypeConverter
 {
-    static IoObject* eval_in_context(IoObject *self, IoObject *locals, IoMessage *m, IoObject* value)
+    template <typename F>
+    static ExprPtr wrap_expr(ExprPtr expr, F io_func)
     {
-        return value;
+        return ToIoObjectExpr<IoObject*, F>::create(expr, io_func);
     }
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        return ToIoObjectExpr<IoObject*, PtrToIoObjectConv>::create(expr);
+        return wrap_expr(expr,
+            [](IoObject *self, IoObject *locals, IoMessage *m, IoObject* value)
+                { return value; });
     }
 
     virtual std::string description() const { return "PtrToIoObjectConv"; }
@@ -568,16 +571,29 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPt
 
     bool is_terminal = from_expr->is_terminal();
     bool disable_to_script = from_expr->disable_to_script_conv();
-    bool expr_has_conv = is_terminal && !disable_to_script
-        && type_system->has_conv(from_expr->get_type(), to_io_type);
+    bool has_type_sys_conv = type_system->has_conv(from_expr->get_type(), to_io_type);
+    bool expr_has_conv = is_terminal && !disable_to_script && has_type_sys_conv;
 
-    if (!disable_to_script && from_expr->get_value_ptr().as_const == NULL)
+    /*
+    cout << " is_terminal=" << is_terminal
+        << " disable_to_script=" << disable_to_script
+        << " has_type_sys_conv=" << has_type_sys_conv
+        << " from_expr-type=" << from_expr->get_type().description()
+        << " to_io_type=" << to_io_type.description()
+        << endl;
+    */
+
+    if (!disable_to_script && from_expr->get_value_ptr().as_const == nullptr)
     {
         return IOSTATE->ioNil;
     }
     else if (expr_has_conv)
     {
-        ExprPtr to_expr = type_system->try_conv(from_expr, LM::TypId<AbstractToIoObjectExpr*>::get());
+        ExprPtr to_expr = type_system->try_conv(from_expr, to_io_type);
+
+        cout << "from_expr=" << from_expr.get() << " to_expr=" << to_expr.get()
+            << " to_expr type=" << to_expr->get_type().description() << endl;
+
         AbstractToIoObjectExpr* io_expr =
             reinterpret_cast<AbstractToIoObjectExpr*>(to_expr->get_value_ptr().as_nonconst);
         IoObject* io_obj = io_expr->eval_in_context(self, locals, m);
@@ -590,7 +606,7 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPt
         proto = LM_Proxy;
         IoObject* clone = IOCLONE(proto);
         IoObject_setDataPointer_(clone, from_expr.get());
-
+        intrusive_ptr_add_ref(from_expr.get());
         return clone;
     }
 }

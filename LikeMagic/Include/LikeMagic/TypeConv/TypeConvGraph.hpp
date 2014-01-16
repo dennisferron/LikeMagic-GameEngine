@@ -28,12 +28,14 @@ namespace LM {
 using namespace boost::graph;
 
 struct FindType;
+struct EdgePropertyWriter;
 
 class TypeConvGraph
 {
 private:
     // To give it acess to our private typedefs.
     friend struct FindType;
+    friend struct EdgePropertyWriter;
 
     typedef boost::intrusive_ptr<AbstractTypeConverter const> p_conv_t;
     typedef boost::shared_ptr<std::vector<p_conv_t>> p_chain_t;
@@ -47,6 +49,8 @@ private:
     struct vertex_info
     {
         TypeIndex type;
+
+        vertex_info() : type(TypId<char>::get()) { }
     };
 
     typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, vertex_info, edge_info> graph_t;
@@ -65,6 +69,7 @@ private:
 
     ExprPtr build_conv_chain(ExprPtr from_expr, p_chain_t const& chain) const;
     p_chain_t const& search_for_conv(TypeIndex from, TypeIndex to) const;
+    p_conv_t get_conv(TypeIndex from, TypeIndex to) const;
 
     // Don't allow TypeConvGraph to be copied accidently.
     TypeConvGraph(TypeConvGraph const&)=delete;

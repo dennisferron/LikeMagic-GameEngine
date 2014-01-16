@@ -62,26 +62,43 @@ std::vector<T> from_list(IoObject* io_obj)
 //    virtual std::string description() const { return "From Number Conv"; }
 //};
 
+template <typename T, typename F>
+struct FromIoConv : public AbstractTypeConverter
+{
+    std::string script_type;
+    F io_func;
 
+    FromIoConv(std::string script_type_, F io_func_)
+        : script_type(script_type_), io_func(io_func_) {}
 
+    virtual ExprPtr wrap_expr(ExprPtr expr) const
+    {
+        //cout << " ExprPtr=" << expr.get();
+
+        // The TypeSystem (should) guarantee the source is already an IoObjectExpr.
+        IoObjectExpr* io_obj_expr = reinterpret_cast<IoObjectExpr*>(expr->get_value_ptr().as_nonconst);
+
+        //cout << " io_obj_expr=" << io_obj_expr;
+
+        IoObject* io_obj = io_obj_expr->get_io_object();
+
+        //cout << " io_object=" << io_obj << endl;
+        return Term<T>::create(io_func(io_obj));
+    }
+
+    virtual std::string description() const { return "From " + script_type + " Conv"; }
+    virtual float cost() const { return 5.0f; }
+};
+
+template <typename T, typename F>
+void add_from_io_converter(std::string script_type, F io_func)
+{
+    auto conv = new FromIoConv<T, F>(script_type, io_func);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index(script_type), TypId<T*>::get(), conv);
+}
 
 #define MKCONV(scriptType, cppType, ioFunc) \
-{\
-    struct From##scriptType : public AbstractTypeConverter \
-    { \
-        virtual ExprPtr wrap_expr(ExprPtr expr) const \
-        { \
-            ExprPtr ward; \
-            return Term<cppType>::create(ioFunc(EvalAs<IoObject*>::value(expr, ward))); \
-        } \
-\
-        virtual std::string description() const { return "From " #scriptType " Conv"; } \
-        \
-        virtual float cost() const { return 5.0f; } \
-    }; \
-\
-    type_system->add_converter_simple(FromIoTypeInfo::create_index(#scriptType), TypId<cppType&>::get(), new From##scriptType); \
-}
+    add_from_io_converter<cppType>(#scriptType, [](IoObject* io_obj) { return ioFunc(io_obj); });
 
 void add_convs_from_script(IoVM* iovm)
 {
@@ -123,7 +140,7 @@ void add_convs_from_script(IoVM* iovm)
     {
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            return 0;
+            return nullptr;
         }
 
         virtual std::string description() const { return "From Nil to void Conv"; }
@@ -139,8 +156,9 @@ void add_convs_from_script(IoVM* iovm)
 
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            ExprPtr ward;
-            IoObject* io_obj = EvalAs<IoObject*>::value(expr, ward);
+            // The TypeSystem (should) guarantee the source is already an IoObjectExpr.
+            IoObjectExpr* io_obj_expr = reinterpret_cast<IoObjectExpr*>(expr->get_value_ptr().as_nonconst);
+            IoObject* io_obj = io_obj_expr->get_io_object();
             if (io_obj->object == nullptr)
                 throw std::runtime_error("Source Io object is missing object pointer.");
             return Term<IoBlock>::create(IoBlock(iovm, io_obj, io_obj));
@@ -173,8 +191,10 @@ void add_convs_from_script(IoVM* iovm)
     {
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            ExprPtr ward;
-            bool value = ISTRUE(EvalAs<IoObject*>::value(expr, ward));
+            // The TypeSystem (should) guarantee the source is already an IoObjectExpr.
+            IoObjectExpr* io_obj_expr = reinterpret_cast<IoObjectExpr*>(expr->get_value_ptr().as_nonconst);
+            IoObject* io_obj = io_obj_expr->get_io_object();
+            bool value = ISTRUE(io_obj);
             return Term<bool>::create(value);
         }
 

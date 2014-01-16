@@ -35,6 +35,7 @@ public:
     virtual std::string description() const;
     virtual void mark() const;
     virtual TypeIndex get_type() const;
+    virtual IoObject* get_io_object() const;
 };
 
 }}
