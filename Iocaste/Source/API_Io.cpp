@@ -12,6 +12,8 @@
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 
+#include "LikeMagic/Exprs/ExprTrackingInfo.hpp"
+
 #if (defined(__MINGW32__) || defined(__MINGW64__)) && (__GNUC__ == 4)
 #include <stddef.h>
 // workaround a mingw bug, http://sourceforge.net/tracker/index.php?func=detail&aid=2373234&group_id=2435&atid=102435
@@ -172,10 +174,15 @@ void API_io_free_expr(IoObject* self)
 
 void API_io_mark(IoObject* self)
 {
-    if (self && IoObject_dataPointer(self))
-    {
+    if (self)
         IoObject_shouldMark(self);
-        auto expr = reinterpret_cast<Expr*>(IoObject_dataPointer(self));
+
+    void* data_pointer = IoObject_dataPointer(self);
+
+    if (data_pointer != nullptr && data_pointer != likemagic_proto_data)
+    {
+        auto expr = reinterpret_cast<Expr*>(data_pointer);
+        assert_expr(expr);
         expr->mark();
     }
 }

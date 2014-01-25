@@ -84,6 +84,7 @@
 		<Unit filename="Include/LikeMagic/CallTargets/StaticMethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Exceptions/Exception.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/Expr.hpp" />
+		<Unit filename="Include/LikeMagic/Exprs/ExprTrackingInfo.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/Term.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/TermDeleter.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/TermStoreAs.hpp" />
@@ -140,6 +141,7 @@
 		<Unit filename="Source/Exception.cpp" />
 		<Unit filename="Source/Expr.cpp" />
 		<Unit filename="Source/ExprTarget.cpp" />
+		<Unit filename="Source/ExprTrackingInfo.cpp" />
 		<Unit filename="Source/IMarkable.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/RequestBroker.cpp" />

@@ -1,3 +1,8 @@
+writeln("PlayerStyle1")
+Collector collect
+Collector collect
+Collector collect
+writeln("PlayerStyle1.5")
 
 method(Styles,
 

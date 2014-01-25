@@ -188,7 +188,11 @@ IOCASTE_API int Iocaste_run(int argc, const char *argv[], void (*add_bindings)()
     }
     catch (std::logic_error const& e)
     {
-        cerr << "LikeMagic exited with exception '" << e.what() << "'" << std::endl;
+        cerr << "LikeMagic exited with logic_error exception '" << e.what() << "'" << std::endl;
+    }
+    catch (std::runtime_error const& e)
+    {
+        cerr << "LikeMagic exited with runtime_error exception '" << e.what() << "'" << std::endl;
     }
     catch (std::exception const& e)
     {

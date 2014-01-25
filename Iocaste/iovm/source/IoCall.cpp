@@ -124,6 +124,10 @@ IoCall *IoCall_with(void *state,
 	DATA(self)->activated   = activated;
 	DATA(self)->coroutine   = coroutine;
 	DATA(self)->stopStatus  = MESSAGE_STOP_STATUS_NORMAL;
+
+    // For debugging, collect after every operation.
+    size_t gc_count = Collector_collect(IOSTATE->collector);
+
 	return self;
 }
 

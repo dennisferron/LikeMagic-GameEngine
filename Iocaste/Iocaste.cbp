@@ -93,7 +93,11 @@
 			<Add directory="basekit/source/simd_cph/include" />
 			<Add directory="../Common/boost_1_54_0" />
 			<Add directory="../LikeMagic/Include" />
+			<Add directory="../Common/segvcatch-0.9.1/lib" />
 		</Compiler>
+		<Linker>
+			<Add library="../Common/segvcatch-0.9.1/bin/Debug/libsegvcatch.a" />
+		</Linker>
 		<Unit filename="Include/Iocaste/Breakpoint.hpp" />
 		<Unit filename="Include/Iocaste/CShims/Exception.h" />
 		<Unit filename="Include/Iocaste/CShims/IoObjectImpl.h" />

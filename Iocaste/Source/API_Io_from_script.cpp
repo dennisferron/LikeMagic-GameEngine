@@ -18,6 +18,7 @@
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
+#include "LikeMagic/Exprs/ExprTrackingInfo.hpp"
 
 #include <vector>
 #include <algorithm>
@@ -245,6 +246,7 @@ ExprPtr from_script(IoObject* self, IoObject* io_obj, TypeIndex to_type)
         Expr* expr =
                 reinterpret_cast<Expr*>
                     (IoObject_dataPointer(io_obj));
+        assert_expr(expr);
         return expr;
     }
     else

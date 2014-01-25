@@ -7,6 +7,12 @@ Module := doRelativeFile("Module.io.inl")
 Scripts := doRelativeFile("Scripts.io.inl")
 Loader :=  doRelativeFile("Loader.io.inl")
 
+writeln("Startup1")
+Collector collect
+Collector collect
+Collector collect
+writeln("Startup2")
+
 writeln("namespace ScriptUtil is ", namespace ScriptUtil)
 writeln("namespace ScriptUtil get_float(2.1) is ", namespace ScriptUtil get_float(2.1))
 

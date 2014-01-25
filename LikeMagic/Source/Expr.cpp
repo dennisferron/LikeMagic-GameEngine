@@ -37,6 +37,7 @@ protected:
 
     friend LIKEMAGIC_API Expr* create_expr(ValuePtr ptr_, TypeIndex type_);
     friend LIKEMAGIC_API Expr* create_reference(ValuePtr ptr_, TypeIndex type_, ExprPtr storage_location_);
+    friend class ExprAllocator;
 
 protected:
 
@@ -67,6 +68,7 @@ LIKEMAGIC_API void intrusive_ptr_release(Expr* p)
 {
     p->release();
 }
+
 
 void ExprImpl::add_ref()
 {
@@ -100,11 +102,17 @@ ExprImpl::~ExprImpl()
     }
 }
 
+void track_expr(Expr* ptr);
+
 LIKEMAGIC_API Expr* create_expr(ValuePtr ptr_, TypeIndex type_)
 {
     ExprImpl* result = new ExprImpl(ptr_, type_, nullptr);
+
     // TODO: Remove this when done debugging.
-    //cout << "Created expr " << result << " type " << type_.get_id() << " " << type_.description() << " value_ptr=" << result->value_ptr.as_const << endl;
+    cout << "Created expr " << result << " type " << type_.get_id() << " " << type_.description() << " value_ptr=" << result->value_ptr.as_const << endl;
+
+    track_expr(result);
+
     return result;
 }
 

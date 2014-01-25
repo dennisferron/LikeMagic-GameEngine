@@ -27,34 +27,6 @@ List* IoState_tagList(IoState *self);
 
 namespace Iocaste { namespace LMAdapters {
 
-class ExprTrackingInfo
-{
-public:
-    Expr* expr;
-    void const* data;
-    std::string name;
-
-public:
-    ExprTrackingInfo()
-        : expr(nullptr), data(nullptr), name("no name") {}
-
-    ExprTrackingInfo(Expr* const expr_, std::string name_)
-        : expr(expr_), data(expr_->get_value_ptr().as_const), name(name_) {}
-
-    ExprTrackingInfo(ExprTrackingInfo const& that)
-        : expr(that.expr), data(that.data), name(that.name)
-    {
-    }
-
-    ExprTrackingInfo& operator =(ExprTrackingInfo const& that)
-    {
-        expr = that.expr;
-        data = that.data;
-        name = that.name;
-        return *this;
-    }
-};
-
 class IoVM : public IoState, public LM::MarkableObjGraph
 {
 private:

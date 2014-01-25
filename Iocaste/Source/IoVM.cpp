@@ -21,8 +21,11 @@
 #include "LikeMagic/Utility/TypeInfo.hpp"
 #include "LikeMagic/BindingMacros.hpp"
 #include "LikeMagic/Exceptions/Exception.hpp"
+#include "LikeMagic/Exprs/ExprTrackingInfo.hpp"
 
 #include "boost/lexical_cast.hpp"
+
+#include "segvcatch.h"
 
 #include <iostream>
 #include <vector>
@@ -190,8 +193,27 @@ void IoVM::setShowAllMessages(bool value)
     state->showAllMessages = value;
 }
 
+void handle_segv()
+{
+    throw std::runtime_error("A SEGV occurred.");
+}
+
+void handle_fpe()
+{
+    throw std::runtime_error("An FPE occurred.");
+}
+
 IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
 {
+    static bool signals_hooked = false;
+
+    if (!signals_hooked)
+    {
+        segvcatch::init_segv(&handle_segv);
+        segvcatch::init_fpe(&handle_fpe);
+        signals_hooked = true;
+    }
+
     set_path("language", bootstrap_path);
 
     // It's very important you static_cast here, if you use
@@ -313,9 +335,11 @@ IoObject* IoVM::castToIoObjectPointer(void* p)
     return reinterpret_cast<IoObject*>(p);
 }
 
-
 IoObject* IoVM::add_value(IoObject* slot_holder, std::string slot_name, ExprPtr expr, bool conv_to_script) const
 {
+    // For debugging, marking expr before adding it.
+    expr->mark();
+
     IoObject* clone;
     if (conv_to_script)
     {
@@ -331,6 +355,9 @@ IoObject* IoVM::add_value(IoObject* slot_holder, std::string slot_name, ExprPtr 
     }
 
     IoObject_setSlot_to_(slot_holder, IoState_symbolWithCString_(state, slot_name.c_str()), clone);
+
+    // For debugging, marking expr after adding it.
+    expr->mark();
 
     return clone;
 }
@@ -419,7 +446,7 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 {
  	IoVM* iovm = 0;
 
-    //std::cout << " (type " << IoObject_tag(self)->name << ") perform "  << CSTRING(IoMessage_name(m)) << std::endl << std::flush;
+    std::cout << " (type " << IoObject_tag(self)->name << ") perform "  << CSTRING(IoMessage_name(m)) << std::endl << std::flush;
 
     if (!is_Exprs_obj(self))
     {
@@ -442,6 +469,8 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
         void* data_ptr = IoObject_dataPointer(self);
         Expr* expr = reinterpret_cast<Expr*>(data_ptr);
 
+        assert_expr(expr);
+
         int arg_count = IoMessage_argCount(m);
         TypeIndex exprType = expr->get_type();
         TypeMirror* type_mirror = type_system->get_class(exprType);
@@ -460,6 +489,7 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
             try
             {
                 ExprPtr expr = get_expr_arg_at(self, locals, m, i, arg_types[i]);
+                assert_expr(expr.get());
                 args.push_back(expr);
             }
             catch (ScriptException const&)
@@ -474,6 +504,9 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 
         auto result = method->call(expr, &args[0]);
         IoObject* result_obj = iovm->to_script(self, locals, m, result);
+
+        // For debugging, collect after every operation.
+        size_t gc_count = Collector_collect(IOSTATE->collector);
 
         return result_obj;
     }
@@ -491,6 +524,12 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
     {
         //std::cout << "Caught exception: " << le.what() << std::endl;
         IoState_error_(IOSTATE,  m, "C++ %s, %s", LM::demangle_name(typeid(le).name()).c_str(), le.what());
+        return IONIL(self);
+    }
+    catch (std::runtime_error const& re)
+    {
+        //std::cout << "Caught exception: " << le.what() << std::endl;
+        IoState_error_(IOSTATE,  m, "C++ %s, %s", LM::demangle_name(typeid(re).name()).c_str(), re.what());
         return IONIL(self);
     }
     catch (std::exception const& e)
@@ -564,6 +603,8 @@ IoObject* IoVM::forward(IoObject *self, IoObject *locals, IoMessage *m)
 
 IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPtr from_expr) const
 {
+    assert_expr(from_expr.get());
+
     static TypeIndex to_io_type = ToIoTypeInfo::create_index();
 
     if (!from_expr)
@@ -590,6 +631,8 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPt
     else if (expr_has_conv)
     {
         ExprPtr to_expr = type_system->try_conv(from_expr, to_io_type);
+
+        assert_expr(to_expr.get());
 
         cout << "from_expr=" << from_expr.get() << " to_expr=" << to_expr.get()
             << " to_expr type=" << to_expr->get_type().description() << endl;
