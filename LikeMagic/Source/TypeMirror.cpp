@@ -44,6 +44,7 @@ public:
     virtual ~TypeMirrorImpl();
 
     virtual std::string get_class_name() const;
+    virtual std::string description() const;
 
     virtual CallTarget* get_method(std::string method_name, int num_args, bool in_base_class=false) const;
     virtual void add_method(std::string method_name, CallTarget* method);
@@ -147,7 +148,7 @@ void TypeMirrorImpl::suggest_method(std::string method_name, int num_args) const
 
         if (has_c || has_nc)
         {
-            std::string msg = "Class " + get_class_name() + " does not have a method named " + method_name
+            std::string msg = description() + " does not have a method named " + method_name
                     + " but there is a method named "
                     + (has_c? method_name + "_c which is the const version of this method" : "")
                     + (has_c && has_nc? " and " : "")
@@ -157,12 +158,12 @@ void TypeMirrorImpl::suggest_method(std::string method_name, int num_args) const
         }
         else if (has_get)
         {
-            std::string msg ="Class " + get_class_name() + " does not have a method named " + method_name
+            std::string msg = description() + " does not have a method named " + method_name
                 + " but it does have a field by that name. Fields must be called with a prefix of get_, set_, or ref_ such as: get_" + method_name;
             throw std::logic_error(msg);
         }
         else
-            throw std::logic_error("Class " + get_class_name() + " does not have any method named " + method_name);
+            throw std::logic_error(description() + " does not have any method named " + method_name);
     }
     else
     {
@@ -180,7 +181,7 @@ void TypeMirrorImpl::suggest_method(std::string method_name, int num_args) const
             arg_nums_list += boost::lexical_cast<std::string>(it->first);
         }
 
-        std::string msg = "Class " + get_class_name() + " does have a method called " + method_name
+        std::string msg = description() + " does have a method called " + method_name
                 + " but that method does not have any overload that takes " + boost::lexical_cast<std::string>(num_args)
                 + " arguments.  There is/are " + boost::lexical_cast<std::string>(candidates->second.size())
                 + " version(s) of that method taking " + arg_nums_list + " argument(s).";
@@ -240,6 +241,25 @@ void TypeMirrorImpl::add_base(TypeMirror const* base)
 std::string TypeMirrorImpl::get_class_name() const
 {
     return impl->name;
+}
+
+std::string TypeMirrorImpl::description() const
+{
+    TypeInfo info = impl->class_type.get_info();
+    string system = info.system;
+    string name = impl->name;
+
+    if (system == "namespace")
+    {
+        if (name == "")
+            return "Global namespace";
+        else
+            return "C++ namespace " + name;
+    }
+    else if (system == "C++")
+        return "C++ class " + name;
+    else
+        return name + "( of type " + info.description() + ")";
 }
 
 size_t TypeMirrorImpl::get_instance_size() const

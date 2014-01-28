@@ -21,6 +21,8 @@ LM::TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespac
 {
     std::string full_name = parent_namespace_.get_class_name() + "::" + name;
 
+    std::cout << "Registering namespace " << full_name << endl;
+
     const TypeIndex namespace_type(LM::create_namespace_type_index(full_name));
 
     if (type_system->get_class(namespace_type))
@@ -29,7 +31,7 @@ LM::TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespac
     }
     else
     {
-        auto result = create_type_mirror(full_name, size_t(0), namespace_type);
+        auto result = create_type_mirror(name, size_t(0), namespace_type);
         type_system->add_class(namespace_type, result, parent_namespace_);
         return *result;
     }

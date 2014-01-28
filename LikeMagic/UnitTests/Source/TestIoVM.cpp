@@ -4,6 +4,8 @@
 #include "IoObject.h"
 #include "Iocaste/LikeMagicAdapters/ToIoObjectExpr.hpp"
 
+#include "UnitTests/TestHelpers.hpp"
+
 using namespace std;
 using namespace Iocaste;
 using namespace Iocaste::LMAdapters;
@@ -52,5 +54,15 @@ SUITE(TestIoVM)
         bool has_type_sys_conv = type_system->has_conv(from_type, to_type);
         cout << "has_type_sys_conv " << has_type_sys_conv << " from " << from_type.description() << " " << from_type.get_id() << " to " << to_type.description() << " " << to_type.get_id() << endl;
         CHECK(has_type_sys_conv);
+    }
+
+    TEST(HasNamespaceStd)
+    {
+        string io_code = "namespace std";
+        auto expr = io_vm->get_abs_expr(io_code);
+        ASSERT_NOT_NULL(expr);
+        TypeInfo expr_type = expr->get_type().get_info();
+        CHECK_EQUAL("namespace", expr_type.system);
+        CHECK_EQUAL("::std", expr_type.name);
     }
 }

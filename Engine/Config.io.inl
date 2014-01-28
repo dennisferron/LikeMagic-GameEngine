@@ -1,9 +1,8 @@
-method(rootModule, LikeMagicModule, Constants, FileSystem,
+method(rootModule, namespace, Constants, FileSystem,
 
     rootModule lexicalDo(
 
         scripts := self scripts
-        namespace := LikeMagicModule LikeMagic namespace
 
         SharedTypes := scripts SharedTypes             requiredConfig( namespace std )
         Model := scripts Model                   requiredConfig( namespace std )

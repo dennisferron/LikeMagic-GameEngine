@@ -42,8 +42,6 @@ private:
     mutable IoObject* last_exception;
     std::vector<Breakpoint> breakpoints;
 
-    ExprPtr get_abs_expr(std::string io_code) const;
-
     IoObject* to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPtr expr) const;
 
     friend class IoBlock;
@@ -78,6 +76,8 @@ public:
 
     void run_cli() const;
     IoObject* do_string(std::string io_code) const;
+
+    ExprPtr get_abs_expr(std::string io_code) const;
 
     template <typename T>
     T get_expr(std::string io_code) const

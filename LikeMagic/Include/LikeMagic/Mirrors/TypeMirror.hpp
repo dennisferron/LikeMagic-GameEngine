@@ -25,6 +25,7 @@ class TypeMirror
 public:
     virtual ~TypeMirror() = 0;
     virtual std::string get_class_name() const = 0;
+    virtual std::string description() const = 0;
     virtual CallTarget* get_method(std::string method_name, int num_args, bool in_base_class=false) const = 0;
     virtual void add_method(std::string method_name, CallTarget* method) = 0;
     virtual void add_base(TypeMirror const* base) = 0;

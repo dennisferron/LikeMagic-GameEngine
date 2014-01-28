@@ -68,7 +68,7 @@ rootScripts := rootLoader loadAllScriptsExcept(list("Startup.io.inl", "Module.io
 writeln("Done loading scripts")
 
 writeln("Creating game protos")
-rootScripts Config( RootModule, LikeMagicModule, Constants )
+rootScripts Config( RootModule, namespace, Constants )
 writeln("Done creating game protos")
 
 e := try(
