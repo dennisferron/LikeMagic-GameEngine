@@ -8,6 +8,8 @@ method(namespace_Bullet, namespace_irr, namespace_Custom, Structure, Styles,
         appendProto(namespace_Custom)
         appendProto(namespace_Bullet)
 
+        SColor := namespace_irr video SColor
+
         engine ::= nil
         driver ::= nil
         gui ::= nil

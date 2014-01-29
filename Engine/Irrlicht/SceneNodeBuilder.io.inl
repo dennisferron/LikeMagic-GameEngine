@@ -6,6 +6,8 @@ method(namespace_irr, namespace_Custom, PredefinedValues, Constants,
         appendProto(namespace_irr core)
         appendProto(PredefinedValues)
 
+        SColor := namespace_irr video SColor
+
         shapeBuilder ::= nil
         sceneNodes ::= nil
         assets ::= nil

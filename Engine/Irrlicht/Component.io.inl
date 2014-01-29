@@ -15,6 +15,8 @@ method(module, namespace_irr, namespace_Custom, MainWindow, PredefinedValues, Sc
         appendProto(namespace_irr video)
         appendProto(namespace_Custom)
 
+        SColor := namespace_irr video SColor
+
         // Configuration args aren't visible after lexicalDo finishes,
         // so we must store them in the proto for the init method to use them.
         namespace_irr := namespace_irr

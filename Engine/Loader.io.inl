@@ -21,7 +21,7 @@ method(Scripts,
 
         _loadScript := method(fName, path,
             method_name := fName clone removeSuffix(".io.inl")
-            writeln("Loader loading ", method_name, " at ", path)
+            //writeln("Loader loading ", method_name, " at ", path)
             scripts load(method_name, path)
         )
 

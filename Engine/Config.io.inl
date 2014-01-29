@@ -7,11 +7,11 @@ method(rootModule, namespace, Constants, FileSystem,
         SharedTypes := scripts SharedTypes             requiredConfig( namespace std )
         Model := scripts Model                   requiredConfig( namespace std )
         Styles := scripts Styles                  requiredConfig( Constants, Model Structure, namespace irr video SColor )
-        Avatar := scripts Avatar                  requiredConfig( namespace Bullet, namespace irr, namespace Custom, Styles, LikeMagicModule PredefinedValues )
-        UserInterface := scripts UserInterface           requiredConfig
+        Avatar := scripts Avatar                  requiredConfig( namespace Bullet, namespace irr, namespace Custom, Styles, namespace )
+        UserInterface := scripts UserInterface           requiredConfig( namespace irr )
         Desteer := scripts Desteer                 optionalConfig( namespace irr, namespace desteer )
-        Bullet := scripts Bullet                  optionalConfig( namespace Bullet, namespace Custom, Constants, LikeMagicModule PredefinedValues, Styles )
-        Irrlicht := scripts Irrlicht                optionalConfig( namespace, SharedTypes, UserInterface MainWindow, LikeMagicModule PredefinedValues, Constants, namespace ScriptUtil, Styles )
+        Bullet := scripts Bullet                  optionalConfig( namespace Bullet, namespace Custom, Constants, namespace, Styles )
+        Irrlicht := scripts Irrlicht                optionalConfig( namespace, SharedTypes, UserInterface MainWindow, namespace, Constants, namespace ScriptUtil, Styles )
         EditorGUI := scripts EditorGUI               requiredConfig( namespace irr )
 
         Subsystems := Module clone

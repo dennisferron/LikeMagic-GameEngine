@@ -8,6 +8,8 @@ method(namespace_irr,
         appendProto(namespace_irr gui)
         appendProto(namespace_irr video)
 
+        SColor := namespace_irr video SColor
+
         context ::= nil
         path ::= nil
         engine ::= nil

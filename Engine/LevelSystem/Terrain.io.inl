@@ -32,6 +32,7 @@ method(namespace_irr, namespace_Custom, namespace_TPS, Tile, Styles, ScriptUtil,
         skyCutZ ::= -9.0
 
         minFitSizeLen ::= 0.5 + 0.01
+
         minFitSize ::= dimension2df tmp(minFitSizeLen, minFitSizeLen)
     )
 

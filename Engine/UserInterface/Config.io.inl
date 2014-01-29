@@ -1,4 +1,5 @@
 method(namespace_irr,
+
     Module clone lexicalDo(
         scripts := self scripts
         UserInterfaceRepresentation := scripts UserInterfaceRepresentation()

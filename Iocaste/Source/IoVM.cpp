@@ -506,7 +506,7 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
         IoObject* result_obj = iovm->to_script(self, locals, m, result);
 
         // For debugging, collect after every operation.
-        size_t gc_count = Collector_collect(IOSTATE->collector);
+        //size_t gc_count = Collector_collect(IOSTATE->collector);
 
         return result_obj;
     }
