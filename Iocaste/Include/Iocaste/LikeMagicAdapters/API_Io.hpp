@@ -21,7 +21,6 @@ typedef IoObject IoMessage;
 namespace Iocaste { namespace LMAdapters {
 
 using namespace LM;
-using namespace LM;
 
 class IoVM;
 

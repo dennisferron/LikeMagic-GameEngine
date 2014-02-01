@@ -97,7 +97,7 @@ bool is_Exprs_obj(IoObject* io_obj)
     &&
         data_ptr != (void const*)likemagic_proto_data
     &&
-        std::string(IoObject_tag(io_obj)->name) == std::string("LikeMagic");
+        IoTag_cloneFunc(IoObject_tag(io_obj)) == (IoTagCloneFunc*)API_io_rawClone;
 }
 
 

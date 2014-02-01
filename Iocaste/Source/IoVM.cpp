@@ -338,7 +338,7 @@ IoObject* IoVM::castToIoObjectPointer(void* p)
 IoObject* IoVM::add_value(IoObject* slot_holder, std::string slot_name, ExprPtr expr, bool conv_to_script) const
 {
     // For debugging, marking expr before adding it.
-    expr->mark();
+    //expr->mark();
 
     IoObject* clone;
     if (conv_to_script)
@@ -347,17 +347,21 @@ IoObject* IoVM::add_value(IoObject* slot_holder, std::string slot_name, ExprPtr 
     }
     else
     {
+    /*
         IoObject* proto = LM_Proxy;
         clone = API_io_rawClone(proto);
         Expr* ptr = expr.get();
+        IoObject_tag_(clone, get_io_tag(expr->get_type());
         IoObject_setDataPointer_(clone, ptr);
         intrusive_ptr_add_ref(ptr);
+    */
+        clone = expr_to_io_obj(expr);
     }
 
     IoObject_setSlot_to_(slot_holder, IoState_symbolWithCString_(state, slot_name.c_str()), clone);
 
     // For debugging, marking expr after adding it.
-    expr->mark();
+    //expr->mark();
 
     return clone;
 }
@@ -423,14 +427,16 @@ void IoVM::mark() const
     }
 }
 
-IoObject* IoVM::expr_to_io_obj(ExprPtr expr)
+IoObject* IoVM::expr_to_io_obj(ExprPtr expr) const
 {
     if (!expr)
         throw logic_error("IoVM::expr_to_io_obj: expr argument was NULL.");
 
     IoObject* proto = LM_Proxy;
     IoObject* clone = API_io_rawClone(proto);
+    IoObject_tag_(clone, get_io_tag(expr->get_type()));
     IoObject_setDataPointer_(clone, expr.get());
+    intrusive_ptr_add_ref(expr.get());
     return clone;
 }
 
@@ -644,12 +650,37 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPt
     }
     else
     {
+    /*
         IoObject* proto;
-
         proto = LM_Proxy;
         IoObject* clone = IOCLONE(proto);
         IoObject_setDataPointer_(clone, from_expr.get());
+        IoObject_tag_(clone, get_io_tag(from_expr->get_type());
         intrusive_ptr_add_ref(from_expr.get());
         return clone;
+    */
+        return expr_to_io_obj(from_expr);
+    }
+}
+
+IoTag* IoVM::get_io_tag(TypeIndex type) const
+{
+    auto iter = likemagic_tags.find(type.get_id());
+
+    if (iter != likemagic_tags.end())
+    {
+        return iter->second;
+    }
+    else
+    {
+        IoTag* tag = IoTag_newWithName_(type.get_info().name.c_str());
+        IoTag_state_(tag, state);
+        IoTag_freeFunc_(tag, (IoTagFreeFunc*)API_io_free_expr);
+        IoTag_cloneFunc_(tag, (IoTagCloneFunc*)API_io_rawClone);
+        IoTag_markFunc_(tag, (IoTagMarkFunc*)API_io_mark);
+        IoTag_performFunc_(tag, (IoTagPerformFunc*)API_io_perform);
+        tag->likemagic_type = type_system->get_class(type);
+        likemagic_tags[type.get_id()] = tag;
+        return tag;
     }
 }

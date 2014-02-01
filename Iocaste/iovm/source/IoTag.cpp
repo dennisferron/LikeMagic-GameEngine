@@ -164,6 +164,9 @@ IoTagPerformFunc *IoTag_performFunc(IoTag *self)
 
 // END IoTag_inline
 
+IoTag::IoTag() : likemagic_type(nullptr)
+{
+}
 
 IoTag *IoTag_new(void)
 {

@@ -28,6 +28,13 @@ When cloned, an Object will call its init slot (with no arguments).
 #include <string.h>
 #include <stddef.h>
 
+#include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
+using namespace Iocaste;
+using namespace Iocaste::LMAdapters;
+
+#include "LikeMagic/Mirrors/TypeMirror.hpp"
+using namespace LM;
+
 static const char *protoName_Object = "Object";
 
 #include "IoObjectImpl.h"
@@ -441,6 +448,50 @@ IO_METHOD(IoObject, forward)
 	return self;
 }
 
+IoObject* try_call_likemagic_method(IoObject *self, IoObject *locals, IoMessage *m)
+{
+    IoTag* tag = IoObject_tag(self);
+
+    TypeMirror* tm = tag->likemagic_type;
+    if (tm != nullptr)
+    {
+        std::string method_name = CSTRING(IoMessage_name(m));
+        int arg_count = IoMessage_argCount(m);
+        CallTarget* method = tm->get_method(method_name, arg_count);
+        if (method != nullptr)
+        {
+            return API_io_perform(self, locals, m);
+        }
+    }
+
+    IoObject* result = nullptr;
+
+	IoObject_hasDoneLookup_(self, 1);
+
+	{
+		IoObject** protos = IoObject_protos(self);
+
+		for (; *protos; protos ++)
+		{
+			if (IoObject_hasDoneLookup(*protos))
+			{
+				continue;
+			}
+
+			result = try_call_likemagic_method(*protos, locals, m);
+
+			if (result)
+			{
+				break;
+			}
+		}
+	}
+
+	IoObject_hasDoneLookup_(self, 0);
+
+	return result;
+}
+
 IO_METHOD(IoObject, perform)
 {
 	IoObject *context;
@@ -449,6 +500,12 @@ IO_METHOD(IoObject, perform)
 	if (slotValue)
 	{
 		return IoObject_activate(slotValue, self, locals, m, context);
+	}
+
+	IoObject* likemagic_result = try_call_likemagic_method(self, locals, m);
+	if (likemagic_result != nullptr)
+	{
+        return likemagic_result;
 	}
 
 	if (IoObject_isLocals(self))

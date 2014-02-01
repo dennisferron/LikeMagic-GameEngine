@@ -36,8 +36,8 @@ private:
 
     IoState* state;  // It was dangerous when this was named "self" - Io macros referencing self are defined for an IoObject, not an IoState
     Primitives primitives;
-    std::set<TypeIndex> registered_classes;
-    boost::unordered_map<TypeIndex, IoObject*> class_protos;
+    //std::set<TypeIndex> registered_classes;
+    //boost::unordered_map<TypeIndex, IoObject*> class_protos;
     CollectorFreeFunc* original_free_func;
     mutable IoObject* last_exception;
     std::vector<Breakpoint> breakpoints;
@@ -51,11 +51,14 @@ private:
 
     std::map<std::string, std::string> paths;
 
-    IoObject* expr_to_io_obj(ExprPtr expr);
+    IoObject* expr_to_io_obj(ExprPtr expr) const;
 
     std::string scriptPath;
 
     IoObject* create_likemagic_proto();
+
+    mutable boost::unordered_map<int, IoTag*> likemagic_tags;
+    IoTag* get_io_tag(TypeIndex type) const;
 
 public:
     IoVM(std::string bootstrap_path);

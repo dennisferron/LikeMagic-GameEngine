@@ -11,6 +11,7 @@
 
 #include "IoVMApi.h"
 
+namespace LM { class TypeMirror; }
 
 typedef void * (IoTagCloneFunc)(void *); // self
 typedef void   (IoTagFreeFunc)(void *); // self
@@ -46,7 +47,7 @@ typedef void   (IoTagWriteToStreamFunc)(void *, BStream *);   // self, store, st
 typedef void * (IoTagAllocFromStreamFunc)(void *, BStream *); // self, store, stream
 typedef void   (IoTagReadFromStreamFunc)(void *, BStream *);  // self, store, stream
 
-typedef struct
+struct IoTag
 {
 	void *state;
 	char *name;
@@ -81,7 +82,11 @@ typedef struct
 	// Stack *recyclableInstances;
 	// int maxRecyclableInstances;
 	int referenceCount;
-} IoTag;
+
+	LM::TypeMirror* likemagic_type;
+
+	IoTag();
+};
 
 IOVM_API IoTag *IoTag_new(void);
 IOVM_API IoTag *IoTag_newWithName_(const char *name);
