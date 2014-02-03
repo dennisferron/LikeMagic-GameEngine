@@ -195,6 +195,7 @@ template <typename T>
 void add_value(TypeMirror& namespace_, std::string name, T&& value)
 {
     ExprPtr expr = Term<T>::create(std::forward<T>(value));
+    std::cout << "add_value " << name << " " << expr->description() << std::endl;
     CallTarget* target = new LM::ExprTarget(expr);
     namespace_.add_method(name, target);
 }

@@ -8,11 +8,8 @@
 
 #pragma once
 
-#include "LikeMagic/Lang/LangInterpreter.hpp"
-#include "Bindings/Bullet/BulletBindingsDLL.hpp"
-
 namespace Bindings { namespace Bullet {
 
-BULLET_BINDINGS_API void add_values();
+void add_values();
 
 }}

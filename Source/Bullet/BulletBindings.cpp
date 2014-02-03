@@ -59,7 +59,7 @@ BULLET_BINDINGS_API void add_bindings()
     Bindings::Bullet::add_bindings_btTypedConstraint();
     Bindings::Bullet::add_bindings_btVector3();
 
-    LM_STATIC_FUNC_NAME(ns_bullet_bindings, "add_values", Bindings::Bullet::add_values)
+    Bindings::Bullet::add_values();
 }
 
 }}

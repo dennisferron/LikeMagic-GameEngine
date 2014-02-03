@@ -11,9 +11,8 @@
 #ifndef USE_IRRKLANG
 
 // Replace protos with empty dummy function.
-using namespace LM;
 namespace Bindings { namespace IrrKlang {
-IRRKLANG_BINDINGS_API void add_values() {}
+void add_values() {}
 }}
 
 #else
@@ -22,13 +21,14 @@ IRRKLANG_BINDINGS_API void add_values() {}
 
 #include "LikeMagic/BindingMacros.hpp"
 
+using namespace LM;
 using namespace std;
 using namespace Iocaste::LMAdapters;
 using namespace irrklang;
 
 namespace Bindings { namespace IrrKlang {
 
-IRRKLANG_BINDINGS_API void add_values()
+void add_values()
 {
     auto& ns = type_system->global_namespace();
 

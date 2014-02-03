@@ -18,7 +18,7 @@ using namespace desteer::controller;
 
 namespace Bindings { namespace DESteer {
 
-DESTEER_BINDINGS_API void add_values()
+void add_values()
 {
     TypeMirror& global_ns = type_system->global_namespace();
     TypeMirror& ns_desteer = register_namespace("desteer", global_ns);

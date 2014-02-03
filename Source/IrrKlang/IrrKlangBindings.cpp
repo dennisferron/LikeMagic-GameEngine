@@ -7,6 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "Bindings/IrrKlang/Bindings.hpp"
+#include "Bindings/IrrKlang/IrrKlangValues.hpp"
 #include "LikeMagic/BindingMacros.hpp"
 
 #ifndef USE_IRRKLANG
@@ -61,6 +62,8 @@ IRRKLANG_BINDINGS_API void add_bindings(Namespace const& type_sys)
     type_system->add_conv<E_SOUND_OUTPUT_DRIVER, int>();
 
     LM_CLASS(E_STREAM_MODE)
+
+    add_values();
 }
 
 }}

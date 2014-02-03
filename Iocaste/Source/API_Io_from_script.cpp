@@ -171,7 +171,7 @@ void add_convs_from_script(IoVM* iovm)
     };
 
     TypeIndex from_script_block_type = FromIoTypeInfo::create_index("Block");
-    TypeIndex to_block_wrapper_type = TypId<IoBlock&>::get();
+    TypeIndex to_block_wrapper_type = TypId<IoBlock*>::get();
     p_conv_t block_converter = new FromIoBlock(iovm);
 
     type_system->add_converter_simple(
@@ -204,7 +204,7 @@ void add_convs_from_script(IoVM* iovm)
         virtual float cost() const { return 5.0f; }
     };
 
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Bool"), TypId<bool&>::get(), new FromBool);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Bool"), TypId<bool*>::get(), new FromBool);
 
 
     //MKCONV(Vector, std::vector<long double>, from_vector<long double>)

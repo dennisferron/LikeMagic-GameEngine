@@ -191,6 +191,7 @@ DESTEER_BINDINGS_API void add_bindings()
 
     auto& ns_behavior = register_namespace("behavior", ns_desteer);
 
+    add_values();
 }
 
 }}

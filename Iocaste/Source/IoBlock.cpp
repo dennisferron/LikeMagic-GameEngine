@@ -9,6 +9,7 @@
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 #include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+#include "Iocaste/LikeMagicAdapters/IoObjectExpr.hpp"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -105,6 +106,43 @@ void IoBlock::mark() const
 bool IoBlock::empty() const
 {
     return !io_block;
+}
+
+ExprPtr IoBlock::call(ArgList args, std::size_t num_args)
+{
+    if (!empty())
+    {
+        char const* errorPoint = "before eval";
+        IoMessage* m;
+        try
+        {
+            m = new_message(io_target, "IoBlock");
+            errorPoint = "while adding args";
+
+            for (int i = 0; i < num_args; ++i)
+                add_arg(m, args[i]);
+
+            errorPoint = "on activate";
+            IoObject* result = activate(m);
+            errorPoint = "create IoObjectExpr";
+            ExprPtr expr = IoObjectExpr::create(result);
+            return expr;
+        }
+        catch (Iocaste::ScriptException const& exc)
+        {
+            // TODO:  assoc addn'l info w/exp.
+            throw;
+        }
+        // TODO:  Create LikeMagic exception object.
+        catch (std::exception const& e)
+        {
+            throw Iocaste::IoStateError(io_block, std::string() + "Error in IoBlock " + errorPoint + ": " + e.what(), m);
+        }
+    }
+    else
+    {
+        throw std::logic_error("Tried to eval an empty block.");
+    }
 }
 
 }}

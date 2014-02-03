@@ -8,15 +8,8 @@
 
 #pragma once
 
-#include "Bindings/Irrlicht/IrrlichtBindingsDLL.hpp"
-
-namespace LM {
-    class TypeSystem;
-    class LangInterpreter;
-}
-
 namespace Bindings { namespace Irrlicht {
 
-IRRLICHT_BINDINGS_API void add_values();
+void add_values();
 
 }}

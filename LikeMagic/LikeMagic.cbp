@@ -143,6 +143,7 @@
 		<Unit filename="Source/ExprTarget.cpp" />
 		<Unit filename="Source/ExprTrackingInfo.cpp" />
 		<Unit filename="Source/IMarkable.cpp" />
+		<Unit filename="Source/LangBlock.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/RequestBroker.cpp" />
 		<Unit filename="Source/SharedArgTransporter.cpp" />

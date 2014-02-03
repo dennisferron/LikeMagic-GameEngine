@@ -21,7 +21,7 @@ using namespace LM;
 
 namespace Bindings { namespace Bullet {
 
-BULLET_BINDINGS_API void add_values()
+void add_values()
 {
     TypeMirror& global_ns = type_system->global_namespace();
     TypeMirror& ns_bullet = register_namespace("Bullet", global_ns);

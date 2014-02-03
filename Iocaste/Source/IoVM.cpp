@@ -203,6 +203,25 @@ void handle_fpe()
     throw std::runtime_error("An FPE occurred.");
 }
 
+class IoBlockToLangBlockPtrConv : public AbstractTypeConverter
+{
+public:
+
+    virtual ExprPtr wrap_expr(ExprPtr expr) const
+    {
+        return Term<BlockPtr*>::create(
+            new BlockPtr(
+                reinterpret_cast<Iocaste::LMAdapters::IoBlock*>(
+                    expr->get_value_ptr().as_nonconst
+            )));
+    }
+
+    virtual std::string description() const { return "IoBlockToLangBlockPtrConv"; }
+
+    virtual float cost() const { return 2.0f; }
+};
+
+
 IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
 {
     static bool signals_hooked = false;
@@ -274,7 +293,19 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     // Allow LikeMagic proxy objects to be converted to the C/C++ type IoObject*
     type_system->add_converter_simple(FromIoTypeInfo::create_index("LikeMagic"), TypId<IoObject*>::get(), new LM::NoChangeConv);
 
+    LM_CLASS(global_ns, LangBlock)
     LM_CLASS(global_ns, IoBlock)
+    LM_BASE(IoBlock, LangBlock)
+
+    // Allow conversion of IoBlock to BlockPtr (shared_ptr<LangBlock>)
+    type_system->add_converter_simple(
+        TypId<IoBlock*>::get(),
+        TypId<BlockPtr*>::get(),
+        new IoBlockToLangBlockPtrConv);
+    type_system->add_converter_simple(
+        TypId<IoBlock*>::get(),
+        TypId<BlockPtr const*>::get(),
+        new IoBlockToLangBlockPtrConv);
 
     // Allow conversion of Io blocks to IoObject*
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), TypId<IoObject*>::get(), new LM::NoChangeConv);
@@ -452,7 +483,14 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
 {
  	IoVM* iovm = 0;
 
-    std::cout << " (type " << IoObject_tag(self)->name << ") perform "  << CSTRING(IoMessage_name(m)) << std::endl << std::flush;
+    IoTag* tag = IoObject_tag(self);
+
+    std::cout << " (tag '" << tag->name << "'";
+
+    if (tag->likemagic_type != nullptr)
+        cout << " type " << tag->likemagic_type->description();
+
+    cout << ") perform "  << CSTRING(IoMessage_name(m)) << std::endl << std::flush;
 
     if (!is_Exprs_obj(self))
     {
@@ -640,8 +678,8 @@ IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPt
 
         assert_expr(to_expr.get());
 
-        cout << "from_expr=" << from_expr.get() << " to_expr=" << to_expr.get()
-            << " to_expr type=" << to_expr->get_type().description() << endl;
+        //cout << "from_expr=" << from_expr.get() << " to_expr=" << to_expr.get()
+        //    << " to_expr type=" << to_expr->get_type().description() << endl;
 
         AbstractToIoObjectExpr* io_expr =
             reinterpret_cast<AbstractToIoObjectExpr*>(to_expr->get_value_ptr().as_nonconst);

@@ -13,7 +13,7 @@
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
 
-#include "LikeMagic/IMarkable.hpp"
+#include "LikeMagic/Lang/LangBlock.hpp"
 
 #include "Iocaste/Exception.hpp"
 
@@ -22,11 +22,10 @@
 namespace Iocaste { namespace LMAdapters {
 
 using namespace LM;
-using namespace LM;
 
 class IoVM;
 
-class IoBlock : public LM::IMarkable
+class IoBlock : public LM::LangBlock
 {
 private:
     IoVM* iovm;
@@ -114,8 +113,8 @@ public:
         }
     }
 
-    bool empty() const;
-
+    virtual ExprPtr call(ArgList args, std::size_t num_args);
+    virtual bool empty() const;
     virtual void mark() const;
 };
 

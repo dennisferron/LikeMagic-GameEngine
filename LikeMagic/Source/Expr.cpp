@@ -11,7 +11,7 @@
 #include "LikeMagic/Mirrors/TypeMirror.hpp"
 
 #include <stdexcept>
-
+#include <sstream>
 #include <iostream>
 using namespace std;
 
@@ -98,7 +98,7 @@ ExprImpl::~ExprImpl()
         if (type_mirror == nullptr)
             throw std::logic_error("Cannot delete term or expr because no class found for " + get_type().description());
 
-        type_mirror->try_delete(this);
+        //type_mirror->try_delete(this);
     }
 }
 
@@ -109,7 +109,7 @@ LIKEMAGIC_API Expr* create_expr(ValuePtr ptr_, TypeIndex type_)
     ExprImpl* result = new ExprImpl(ptr_, type_, nullptr);
 
     // TODO: Remove this when done debugging.
-    cout << "Created expr " << result << " type " << type_.get_id() << " " << type_.description() << " value_ptr=" << result->value_ptr.as_const << endl;
+    //cout << "Created expr " << result << " type " << type_.get_id() << " " << type_.description() << " value_ptr=" << result->value_ptr.as_const << endl;
 
     track_expr(result);
 
@@ -153,7 +153,9 @@ bool ExprImpl::get_auto_delete_ptr() const
 
 std::string ExprImpl::description() const
 {
-    return "Expression<" + get_type().description() + ">";
+    stringstream ss;
+    ss << "Expr of " << get_type().description() << " (" << get_type().get_id() << ")";
+    return ss.str();
 }
 
 void ExprImpl::set_disable_to_script(bool value_)

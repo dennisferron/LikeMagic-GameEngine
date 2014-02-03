@@ -8,11 +8,8 @@
 
 #pragma once
 
-#include "LikeMagic/Lang/LangInterpreter.hpp"
-#include "Bindings/DESteer/DESteerBindingsDLL.hpp"
-
 namespace Bindings { namespace DESteer {
 
-DESTEER_BINDINGS_API void add_values();
+void add_values();
 
 }}

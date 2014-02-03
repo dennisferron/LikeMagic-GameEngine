@@ -13,6 +13,7 @@ using namespace std;
 void add_binding_test_bindings();
 void add_term_test_bindings();
 void add_typesystem_test_bindings();
+void add_enum_test_bindings();
 
 IoVM* io_vm = nullptr;
 
@@ -31,6 +32,7 @@ int main()
         add_binding_test_bindings();
         add_typesystem_test_bindings();
         add_term_test_bindings();
+        add_enum_test_bindings();
         setup_io_vm();
         int result = UnitTest::RunAllTests();
         delete io_vm;

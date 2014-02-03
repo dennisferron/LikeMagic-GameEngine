@@ -52,7 +52,7 @@ SUITE(TestIoVM)
         TypeIndex to_type = ToIoTypeInfo::create_index();
         TypeIndex from_type = from_expr->get_type();
         bool has_type_sys_conv = type_system->has_conv(from_type, to_type);
-        cout << "has_type_sys_conv " << has_type_sys_conv << " from " << from_type.description() << " " << from_type.get_id() << " to " << to_type.description() << " " << to_type.get_id() << endl;
+        //cout << "has_type_sys_conv " << has_type_sys_conv << " from " << from_type.description() << " " << from_type.get_id() << " to " << to_type.description() << " " << to_type.get_id() << endl;
         CHECK(has_type_sys_conv);
     }
 

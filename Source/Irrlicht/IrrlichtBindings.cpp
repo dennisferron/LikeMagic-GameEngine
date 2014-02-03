@@ -7,10 +7,7 @@
 // (See the license file in LikeMagic/Licenses.)
 
 #include "Bindings/Irrlicht/Bindings.hpp"
-#include "LikeMagic/BindingMacros.hpp"
-#include "LikeMagic/Lang/LangInterpreter.hpp"
-
-using namespace LM;
+#include "Bindings/Irrlicht/IrrlichtValues.hpp"
 
 namespace Bindings { namespace Irrlicht {
 
@@ -23,6 +20,7 @@ IRRLICHT_BINDINGS_API void add_bindings()
     add_bindings_core();
     add_bindings_custom();
     add_bindings_irr_io();
+    add_values();
 }
 
 }}

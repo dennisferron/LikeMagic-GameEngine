@@ -84,6 +84,7 @@
 		<Unit filename="Include/UnitTests/TestHelpers.hpp" />
 		<Unit filename="Source/TestArgTransporter.cpp" />
 		<Unit filename="Source/TestBinding.cpp" />
+		<Unit filename="Source/TestEnums.cpp" />
 		<Unit filename="Source/TestIoVM.cpp" />
 		<Unit filename="Source/TestMarshalByCopyConstructor.cpp" />
 		<Unit filename="Source/TestTerms.cpp" />

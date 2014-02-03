@@ -8,11 +8,8 @@
 
 #pragma once
 
-#include "LikeMagic/Lang/LangInterpreter.hpp"
-#include "Bindings/IrrKlang/IrrKlangBindingsDLL.hpp"
-
 namespace Bindings { namespace IrrKlang {
 
-IRRKLANG_BINDINGS_API void add_values(LM::LangInterpreter& vm);
+void add_values();
 
 }}

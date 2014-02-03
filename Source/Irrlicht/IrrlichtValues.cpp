@@ -26,7 +26,7 @@ using namespace irr::gui;
 
 namespace Bindings { namespace Irrlicht {
 
-IRRLICHT_BINDINGS_API void add_values()
+void add_values()
 {
     auto& ns = type_system->global_namespace();
 

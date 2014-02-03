@@ -19,13 +19,13 @@ ExprPtr IoObjectExpr::create(IoObject* io_object)
 {
     IoObjectExpr* io_obj_expr = new IoObjectExpr(io_object);
     ExprPtr result = create_expr(io_obj_expr, io_obj_expr->get_type());
-
+/*
     cout
         << " ExprPtr=" << result.get()
         << " io_obj_expr=" << io_obj_expr
         << " io_object=" << io_object
         << endl;
-
+*/
     //result->set_auto_delete_ptr(true);
     return result;
 }

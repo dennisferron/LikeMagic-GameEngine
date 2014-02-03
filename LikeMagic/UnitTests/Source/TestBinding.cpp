@@ -211,6 +211,7 @@ SUITE(TestBinding)
         CHECK_EQUAL(33, EvalAs<int>::value(result3, ward));
     }
 
+/*
     TEST(DiscernNsFuncIntUsingGetNamespace)
     {
         std::vector<ExprPtr> args;
@@ -254,4 +255,5 @@ SUITE(TestBinding)
         CHECK(EvalAs<int>::has_conv(result3.get()));
         CHECK_EQUAL(33, EvalAs<int>::value(result3, ward));
     }
+*/
 }
