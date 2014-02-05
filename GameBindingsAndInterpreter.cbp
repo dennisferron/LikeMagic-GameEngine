@@ -52,7 +52,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="--language ../../Iocaste/iovm/io/ --engine ../../Engine/Startup.io.inl --game ../../../../wayup/Startup.io.inl --assets ../../../..wayup/Media" />
+				<Option parameters="--language ../../Iocaste/iovm/io/ --engine ../../Engine/Startup.io.inl --game ../../../../wayup/Engine/Startup.io.inl --assets ../../../..wayup/Media" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-g" />

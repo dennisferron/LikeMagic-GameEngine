@@ -17,6 +17,8 @@ method(namespace_std,
         )
 
         atPut := method(id, obj,
+            writeln("atPut _map is: ")
+            writeln(_map)
             _map atPut(id, obj)
             _list append(obj)
             obj

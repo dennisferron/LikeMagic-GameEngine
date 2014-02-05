@@ -86,6 +86,7 @@
 		<Unit filename="Source/TestBinding.cpp" />
 		<Unit filename="Source/TestEnums.cpp" />
 		<Unit filename="Source/TestIoVM.cpp" />
+		<Unit filename="Source/TestMapIntIoObject.cpp" />
 		<Unit filename="Source/TestMarshalByCopyConstructor.cpp" />
 		<Unit filename="Source/TestTerms.cpp" />
 		<Unit filename="Source/TestTypeSystem.cpp" />
