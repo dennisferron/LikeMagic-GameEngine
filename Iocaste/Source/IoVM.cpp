@@ -9,12 +9,12 @@
 #include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
-#include "Iocaste/LikeMagicAdapters/IoObjectExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/ToIoObjectExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp"
 #include "Iocaste/Exception.hpp"
 #include "Iocaste/Breakpoint.hpp"
 #include "Iocaste/DebugAPI.hpp"
+#include "Iocaste/MapIntToIoObject.hpp"
 #include "LikeMagic/TypeConv/NoChangeConv.hpp"
 
 #include "LikeMagic/Utility/TypeDescr.hpp"
@@ -318,6 +318,10 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     // Make this vm accessible to script
     ExprPtr io_vm_expr = Term<IoVM*>::create(this);
     add_value(lobby, "io_vm", io_vm_expr, false);
+
+    LM_CLASS(global_ns, MapIntToIoObject)
+    LM_CONSTR(MapIntToIoObject, "new")
+    LM_FUNC(MapIntToIoObject, (at)(atPut)(removeAt))
 
     return;
 }

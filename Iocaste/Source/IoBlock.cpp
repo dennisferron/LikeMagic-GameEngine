@@ -9,7 +9,7 @@
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 #include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
-#include "Iocaste/LikeMagicAdapters/IoObjectExpr.hpp"
+#include "Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -123,10 +123,14 @@ ExprPtr IoBlock::call(ArgList args, std::size_t num_args)
                 add_arg(m, args[i]);
 
             errorPoint = "on activate";
-            IoObject* result = activate(m);
+            IoObject* io_obj = activate(m);
             errorPoint = "create IoObjectExpr";
-            ExprPtr expr = IoObjectExpr::create(result);
-            return expr;
+
+            TypeIndex from_type = FromIoTypeInfo::create_index(get_type_name(io_obj));
+            if (type_system->has_type(from_type))
+                return create_expr(io_obj, from_type);
+            else
+                return Term<IoObject*>::create(io_obj);
         }
         catch (Iocaste::ScriptException const& exc)
         {

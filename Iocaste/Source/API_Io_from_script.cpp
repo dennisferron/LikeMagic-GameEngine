@@ -9,7 +9,6 @@
 #include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
 #include "LikeMagic/Exprs/Term.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
-#include "Iocaste/LikeMagicAdapters/IoObjectExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp"
 
 #include "Iocaste/LikeMagicAdapters/IoListSTL.hpp"
@@ -17,6 +16,7 @@
 
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
+#include "LikeMagic/TypeConv/NoChangeConv.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
 #include "LikeMagic/Exprs/ExprTrackingInfo.hpp"
 
@@ -74,16 +74,7 @@ struct FromIoConv : public AbstractTypeConverter
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
-        //cout << " ExprPtr=" << expr.get();
-
-        // The TypeSystem (should) guarantee the source is already an IoObjectExpr.
-        IoObjectExpr* io_obj_expr = reinterpret_cast<IoObjectExpr*>(expr->get_value_ptr().as_nonconst);
-
-        //cout << " io_obj_expr=" << io_obj_expr;
-
-        IoObject* io_obj = io_obj_expr->get_io_object();
-
-        //cout << " io_object=" << io_obj << endl;
+        IoObject* io_obj = reinterpret_cast<IoObject*>(expr->get_value_ptr().as_nonconst);
         return Term<T>::create(io_func(io_obj));
     }
 
@@ -95,7 +86,10 @@ template <typename T, typename F>
 void add_from_io_converter(std::string script_type, F io_func)
 {
     auto conv = new FromIoConv<T, F>(script_type, io_func);
-    type_system->add_converter_simple(FromIoTypeInfo::create_index(script_type), TypId<T*>::get(), conv);
+    TypeIndex from_type = FromIoTypeInfo::create_index(script_type);
+    type_system->add_converter_simple(from_type, TypId<T*>::get(), conv);
+    type_system->add_converter_simple(from_type, TypId<IoObject*>::get(), new NoChangeConv);
+    type_system->add_converter_simple(from_type, TypId<IoObject const*>::get(), new NoChangeConv);
 }
 
 #define MKCONV(scriptType, cppType, ioFunc) \
@@ -157,9 +151,7 @@ void add_convs_from_script(IoVM* iovm)
 
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            // The TypeSystem (should) guarantee the source is already an IoObjectExpr.
-            IoObjectExpr* io_obj_expr = reinterpret_cast<IoObjectExpr*>(expr->get_value_ptr().as_nonconst);
-            IoObject* io_obj = io_obj_expr->get_io_object();
+            IoObject* io_obj = reinterpret_cast<IoObject*>(expr->get_value_ptr().as_nonconst);
             if (io_obj->object == nullptr)
                 throw std::runtime_error("Source Io object is missing object pointer.");
             return Term<IoBlock>::create(IoBlock(iovm, io_obj, io_obj));
@@ -192,9 +184,7 @@ void add_convs_from_script(IoVM* iovm)
     {
         virtual ExprPtr wrap_expr(ExprPtr expr) const
         {
-            // The TypeSystem (should) guarantee the source is already an IoObjectExpr.
-            IoObjectExpr* io_obj_expr = reinterpret_cast<IoObjectExpr*>(expr->get_value_ptr().as_nonconst);
-            IoObject* io_obj = io_obj_expr->get_io_object();
+            IoObject* io_obj = reinterpret_cast<IoObject*>(expr->get_value_ptr().as_nonconst);
             bool value = ISTRUE(io_obj);
             return Term<bool>::create(value);
         }
@@ -251,7 +241,21 @@ ExprPtr from_script(IoObject* self, IoObject* io_obj, TypeIndex to_type)
     }
     else
     {
-        return IoObjectExpr::create(io_obj);
+        // Since the range of possible Io type values is unbounded,
+        // there's no way to guarantee a generic converter for any FromIoType
+        // to a parameter of C++ IoObject*.  The solution is to only
+        // return something as a FromIoType if it's a known type (and we
+        // make sure to always add both the FromIoType converter and a
+        // converter from that to IoObject).  Otherwise we don't know what
+        // to do with the io_obj *anyway* so return it as a Term<IoObject*>
+        // with the hope that it may get used as a C++ IoObject* parameter.
+        // This enables IoObjects to be passed as C++ parameters, even if the
+        // Io type of the object isn't among those blessed with other type convs.
+        TypeIndex from_type = FromIoTypeInfo::create_index(get_type_name(io_obj));
+        if (type_system->has_type(from_type))
+            return create_expr(io_obj, from_type);
+        else
+            return Term<IoObject*>::create(io_obj);
     }
 }
 

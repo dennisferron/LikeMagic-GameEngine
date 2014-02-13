@@ -108,6 +108,7 @@
 		<Unit filename="Interpreter/Include/Interpreter/Bindings.hpp" />
 		<Unit filename="Interpreter/Source/Bindings.cpp" />
 		<Unit filename="Interpreter/Source/main.cpp" />
+		<Unit filename="Iocaste/Include/Iocaste/MapIntToIoObject.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger>

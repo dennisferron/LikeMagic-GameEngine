@@ -12,13 +12,11 @@ method(namespace_std,
         _list ::= nil
 
         init := method(
-            set_map(map_of_s32_IoObject tmp)
+            set_map(namespace MapIntToIoObject tmp)
             set_list(list())
         )
 
         atPut := method(id, obj,
-            writeln("atPut _map is: ")
-            writeln(_map)
             _map atPut(id, obj)
             _list append(obj)
             obj

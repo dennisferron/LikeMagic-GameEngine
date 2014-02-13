@@ -10,7 +10,6 @@
 #include "LikeMagic/Exprs/Term.hpp"
 #include "Iocaste/LikeMagicAdapters/IoBlock.hpp"
 #include "Iocaste/LikeMagicAdapters/ToIoObjectExpr.hpp"
-#include "Iocaste/LikeMagicAdapters/IoObjectExpr.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 #include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
 

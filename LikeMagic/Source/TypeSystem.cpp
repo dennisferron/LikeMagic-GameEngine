@@ -67,6 +67,7 @@ public:
     virtual bool has_conv(TypeIndex  from_type, TypeIndex to_type) const;
     virtual TypeMirror& global_namespace() const;
     virtual TypeMirror const* get_namespace(std::string full_name) const;
+    virtual bool has_type(TypeIndex type) const;
 };
 
     LIKEMAGIC_API TypeSystem* create_type_system() { return new TypeSystemInstance(); }
@@ -192,6 +193,11 @@ ExprPtr TypeSystemInstance::try_conv(ExprPtr from_expr, TypeIndex to_type) const
 bool TypeSystemInstance::has_conv(TypeIndex from_type, TypeIndex to_type) const
 {
     return impl->conv_graph.has_conv(from_type, to_type);
+}
+
+bool TypeSystemInstance::has_type(TypeIndex type) const
+{
+    return impl->conv_graph.has_type(type);
 }
 
 TypeMirror* TypeSystemInstance::get_class(TypeIndex type) const

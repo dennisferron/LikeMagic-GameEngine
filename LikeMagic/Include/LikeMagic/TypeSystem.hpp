@@ -35,10 +35,20 @@ public:
     virtual bool has_conv(TypeIndex  from_type, TypeIndex to_type) const = 0;
     virtual TypeMirror& global_namespace() const = 0;
     virtual TypeMirror const* get_namespace(std::string full_name) const = 0;
+    virtual bool has_type(TypeIndex type) const = 0;
 };
 
 LIKEMAGIC_API extern TypeSystem* type_system;
 LIKEMAGIC_API TypeSystem* create_type_system();
+
+template <typename T>
+T& deref(T* ptr, Expr* expr)
+{
+    if (ptr == nullptr)
+        throw std::logic_error(expr->description() + " is null");
+    else
+        return *ptr;
+}
 
 template <typename T> struct EvalAs // by value
 {
@@ -46,7 +56,7 @@ template <typename T> struct EvalAs // by value
 
     inline static T const& value(ExprPtr from, ExprPtr& ward)
     {
-        return *EvalAs<T const*>::value(from, ward);
+        return deref(EvalAs<T const*>::value(from, ward), from.get());
     }
 
     inline static bool has_conv(Expr const* from)
@@ -95,7 +105,7 @@ template <typename T> struct EvalAs<T const&> // by const ref
 
     inline static T const& value(ExprPtr from, ExprPtr& ward)
     {
-        return *EvalAs<T const*>::value(from, ward);
+        return deref(EvalAs<T const*>::value(from, ward), from.get());
     }
 
     inline static bool has_conv(Expr const* from)
@@ -111,7 +121,7 @@ template <typename T> struct EvalAs<T&> // by nonconst ref
 
     inline static T& value(ExprPtr from, ExprPtr& ward)
     {
-        return *EvalAs<T*>::value(from, ward);
+        return deref(EvalAs<T*>::value(from, ward), from.get());
     }
 
     inline static bool has_conv(Expr const* from)

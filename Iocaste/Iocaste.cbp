@@ -116,11 +116,11 @@
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/FromIoTypeInfo.hpp" />
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoBlock.hpp" />
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoListSTL.hpp" />
-		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoObjectExpr.hpp" />
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoVM.hpp" />
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/IoVectorSTL.hpp" />
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/ToIoObjectExpr.hpp" />
 		<Unit filename="Include/Iocaste/LikeMagicAdapters/ToIoTypeInfo.hpp" />
+		<Unit filename="Include/Iocaste/MapIntToIoObject.hpp" />
 		<Unit filename="Include/Iocaste/Primitives.hpp" />
 		<Unit filename="Include/Iocaste/Run.hpp" />
 		<Unit filename="Include/Iocaste/Stack.hpp" />
@@ -132,10 +132,10 @@
 		<Unit filename="Source/Exception.cpp" />
 		<Unit filename="Source/IoBlock.cpp" />
 		<Unit filename="Source/IoCallStack.cpp" />
-		<Unit filename="Source/IoObjectExpr.cpp" />
 		<Unit filename="Source/IoObjectImpl.cpp" />
 		<Unit filename="Source/IoVM.cpp" />
 		<Unit filename="Source/IoVMInit.cpp" />
+		<Unit filename="Source/MapIntToIoObject.cpp" />
 		<Unit filename="Source/Primitives.cpp" />
 		<Unit filename="Source/Run.cpp" />
 		<Unit filename="Source/Stack.cpp" />

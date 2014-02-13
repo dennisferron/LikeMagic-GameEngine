@@ -53,29 +53,6 @@ add_conv<type const&, double const&, NumberConv>();
 using namespace LM;
 using namespace std;
 
-typedef int s32;
-
-// Extension methods
-
-IoObject* at(std::map<s32, IoObject*> const& self, s32 key)
-{
-    auto result = self.find(key);
-    if (result == self.end())
-        return NULL;
-    else
-        return result->second;
-}
-
-IoObject* atPut(std::map<s32, IoObject*>& self, s32 key, IoObject* value)
-{
-    return self[key] = value;
-}
-
-void removeAt(std::map<s32, IoObject*>& self, s32 key)
-{
-    self.erase(key);
-}
-
 
 // Vector helper.  Assignment in Io cannot (?) be overloaded; it creates new
 // slots rather than copying values.  This allows us to assign values to vector elements.
@@ -89,12 +66,6 @@ STD_BINDINGS_API void LM::add_bindings()
 {
     TypeMirror& global_ns = type_system->global_namespace();
     TypeMirror& ns_std = register_namespace("std", global_ns);
-
-    typedef std::map<s32, IoObject*> map_of_s32_IoObject;
-    LM_CLASS(ns_std, map_of_s32_IoObject)
-    LM_CONSTR(map_of_s32_IoObject, "new")
-
-    LM_EXTENSION_METHOD(map_of_s32_IoObject, (at)(atPut)(removeAt))
 
     // Add the abstract type system itself as a class.
     LM_CLASS(global_ns, TypeSystem)

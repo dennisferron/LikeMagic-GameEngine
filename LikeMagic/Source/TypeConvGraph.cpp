@@ -378,6 +378,9 @@ TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, T
         }
     }
 
+    cout << "Conversion chain from " << from.description() << " to " << to.description() << " is ";
+    print_conv_chain(conv_cache[key]);
+
     return conv_cache[key];
 }
 
