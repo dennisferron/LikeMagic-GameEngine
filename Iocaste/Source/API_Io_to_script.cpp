@@ -21,7 +21,7 @@ namespace Iocaste { namespace LMAdapters {
 template <typename T>
 IoObject* to_seq(std::vector<T> const* vect, IoState* self)
 {
-    TypeIndex to_type = TypId<T>::get();
+    TypeIndex to_type = TypId<T>::restricted();
 
     // Yuck!  C-style memory alloc!  NAasty...  At least Io frees it for us (I *think*...)
     T* c_buf = reinterpret_cast<T*>(io_calloc(vect->size(), sizeof(T)));
@@ -29,9 +29,9 @@ IoObject* to_seq(std::vector<T> const* vect, IoState* self)
     // TODO:  change CTYPE depending on T.
     UArray* uarray;
 
-    if (to_type == TypId<int>::get())
+    if (to_type == TypId<int>::restricted())
         uarray = UArray_newWithData_type_encoding_size_copy_(c_buf, CTYPE_int32_t, CENCODING_NUMBER, vect->size(), 0);
-    else if (to_type == TypId<unsigned int>::get())
+    else if (to_type == TypId<unsigned int>::restricted())
         uarray = UArray_newWithData_type_encoding_size_copy_(c_buf, CTYPE_uint32_t, CENCODING_NUMBER, vect->size(), 0);
     else
         throw std::logic_error(std::string("No code implemented yet in LikeMagic for converting to IoSeq from ") + to_type.description());
@@ -66,12 +66,13 @@ struct ToIoConv : public AbstractTypeConverter
 template <typename T, typename F>
 void add_to_io_converter(std::string to_type_name, F io_func)
 {
-    TypeIndex from_type = TypId<T const*>::get();
+    TypeIndex from_type = TypId<T const>::liberal();
     TypeIndex to_type = ToIoTypeInfo::create_index();
     auto conv = new ToIoConv<T, F>(to_type_name, io_func);
     type_system->add_converter_simple(from_type, to_type, conv);
     bool has_type_sys_conv = type_system->has_conv(from_type, to_type);
     cout << "add_to_io_converter" << " has_type_sys_conv " << has_type_sys_conv << " from " << from_type.description() << " " << from_type.get_id() << " to " << to_type.description() << " " << to_type.get_id() << " conv " << conv->description() << endl;
+    cout << endl;
 }
 
 #define DECL_CONV(name, type, code) \
@@ -84,7 +85,7 @@ struct ToNumberFromT : public AbstractTypeConverter
     {
         IoObject* io_obj = IONUMBER(value);
         cout <<
-            "To Io Number from " + TypId<T>::get().description() + " Conv"
+            "To Io Number from " + TypId<T>::liberal().description() + " Conv"
             << " from value = " << value << " and to io_obj = " << IoNumber_asDouble(io_obj) << endl;
         return io_obj;
     }
@@ -102,11 +103,11 @@ struct ToNumberFromT : public AbstractTypeConverter
                 { return IONUMBER(value); });
     }
 
-    virtual std::string description() const { return "To Io Number from " + TypId<T>::get().description() + " Conv"; }
+    virtual std::string description() const { return "To Io Number from " + TypId<T>::liberal().description() + " Conv"; }
 
     static void add_conv()
     {
-        type_system->add_converter_simple(TypId<T*>::get(), ToIoTypeInfo::create_index(), new ToNumberFromT<T>());
+        type_system->add_converter_simple(TypId<T*>::liberal(), ToIoTypeInfo::create_index(), new ToNumberFromT<T>());
     }
 
     virtual float cost() const { return 5.0f; }
@@ -147,6 +148,27 @@ struct ToIoNil : public AbstractTypeConverter
     virtual float cost() const { return 5.0f; }
 };
 
+// The difference between this and a no-change or implicit conv is this evals in context to return IoObject* directly.
+struct PtrToIoObjectConv : public LM::AbstractTypeConverter
+{
+    template <typename F>
+    static ExprPtr wrap_expr(ExprPtr expr, F io_func)
+    {
+        return ToIoObjectExpr<IoObject*, F>::create(expr, io_func);
+    }
+
+    virtual ExprPtr wrap_expr(ExprPtr expr) const
+    {
+        return wrap_expr(expr,
+            [](IoObject *self, IoObject *locals, IoMessage *m, IoObject* value)
+                { return value; });
+    }
+
+    virtual std::string description() const { return "PtrToIoObjectConv"; }
+
+    virtual float cost() const { return 5.0f; }
+};
+
 void add_convs_to_script(IoVM* iovm)
 {
     DECL_CONV(Number, double, IONUMBER(value))
@@ -156,7 +178,10 @@ void add_convs_to_script(IoVM* iovm)
     DECL_CONV(Vector_of_Int, std::vector<int> const*, to_seq<int>(value, IOSTATE))
     DECL_CONV(Vector_of_UInt, std::vector<unsigned int> const*, to_seq<unsigned int>(value, IOSTATE))
 
-    type_system->add_converter_simple(TypId<void*>::get(), ToIoTypeInfo::create_index(), new ToIoNil);
+    // TODO:  nullptr type.
+    //type_system->add_converter_simple(TypId<void*>::get(), ToIoTypeInfo::create_index(), new ToIoNil);
+
+    type_system->add_converter_simple(TypId<IoObject*>::liberal(), ToIoTypeInfo::create_index(), new PtrToIoObjectConv);
 
     ToNumberFromT<double>::add_conv();
     ToNumberFromT<float>::add_conv();

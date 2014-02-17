@@ -40,6 +40,7 @@ public:
 
 LIKEMAGIC_API extern TypeSystem* type_system;
 LIKEMAGIC_API TypeSystem* create_type_system();
+//LIKEMAGIC_API void throw_argument_null(Expr* expr, int arg_num, std::string const& method_name);
 
 template <typename T>
 T& deref(T* ptr, Expr* expr)
@@ -56,12 +57,15 @@ template <typename T> struct EvalAs // by value
 
     inline static T const& value(ExprPtr from, ExprPtr& ward)
     {
-        return deref(EvalAs<T const*>::value(from, ward), from.get());
+        ward = type_system->try_conv(from, LM::TypId<T>::restricted());
+        T const* ptr = reinterpret_cast<T const*>(ward->get_value_ptr().as_const);
+        return deref(ptr, from.get());
     }
 
     inline static bool has_conv(Expr const* from)
     {
-        return EvalAs<T const*>::has_conv(from);
+        return type_system->has_conv(from->get_type(),
+             LM::TypId<T>::restricted());
     }
 };
 
@@ -71,14 +75,14 @@ template <typename T> struct EvalAs<T const*> // by const ptr
 
     inline static T const* value(ExprPtr from, ExprPtr& ward)
     {
-        ward = type_system->try_conv(from, LM::TypId<T const*>::get());
+        ward = type_system->try_conv(from, LM::TypId<T const*>::restricted());
         return reinterpret_cast<T const*>(ward->get_value_ptr().as_const);
     }
 
     inline static bool has_conv(LM::Expr const* from)
     {
         return type_system->has_conv(from->get_type(),
-             LM::TypId<T const*>::get());
+             LM::TypId<T const*>::restricted());
     }
 };
 
@@ -88,14 +92,14 @@ template <typename T> struct EvalAs<T*> // by nonconst ptr
 
     inline static T* value(ExprPtr from, ExprPtr& ward)
     {
-        ward = type_system->try_conv(from, LM::TypId<T*>::get());
+        ward = type_system->try_conv(from, LM::TypId<T*>::restricted());
         return reinterpret_cast<T*>(ward->get_value_ptr().as_nonconst);
     }
 
     inline static bool has_conv(LM::Expr const* from)
     {
         return type_system->has_conv(from->get_type(),
-             LM::TypId<T*>::get());
+             LM::TypId<T*>::restricted());
     }
 };
 
@@ -105,13 +109,15 @@ template <typename T> struct EvalAs<T const&> // by const ref
 
     inline static T const& value(ExprPtr from, ExprPtr& ward)
     {
-        return deref(EvalAs<T const*>::value(from, ward), from.get());
+        ward = type_system->try_conv(from, LM::TypId<T const&>::restricted());
+        T const* ptr = reinterpret_cast<T const*>(ward->get_value_ptr().as_const);
+        return deref(ptr, from.get());
     }
 
     inline static bool has_conv(Expr const* from)
     {
         return type_system->has_conv(from->get_type(),
-             LM::TypId<T const*>::get());
+             LM::TypId<T const&>::restricted());
     }
 };
 
@@ -121,13 +127,15 @@ template <typename T> struct EvalAs<T&> // by nonconst ref
 
     inline static T& value(ExprPtr from, ExprPtr& ward)
     {
-        return deref(EvalAs<T*>::value(from, ward), from.get());
+        ward = type_system->try_conv(from, LM::TypId<T&>::restricted());
+        T* ptr = reinterpret_cast<T*>(ward->get_value_ptr().as_nonconst);
+        return deref(ptr, from.get());
     }
 
     inline static bool has_conv(Expr const* from)
     {
         return type_system->has_conv(from->get_type(),
-             LM::TypId<T*>::get());
+             LM::TypId<T&>::restricted());
     }
 };
 

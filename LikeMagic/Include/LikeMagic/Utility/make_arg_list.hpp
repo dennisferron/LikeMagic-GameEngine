@@ -54,7 +54,7 @@ struct MakeArgList<FirstArg, Args...>
     static TypeInfoList value()
     {
         TypeInfoList result = MakeArgList<Args...>::value();
-        result.insert(result.begin(), TypId<FirstArg>::get());
+        result.insert(result.begin(), TypId<FirstArg>::restricted());
         return result;
     }
 };

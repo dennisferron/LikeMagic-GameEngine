@@ -25,7 +25,7 @@ public:
 
     static TypeInfo create(std::string type_name)
     {
-        return TypeInfo { "FromIo", type_name, false, false };
+        return TypeInfo { "FromIo", type_name, LM::PtrType::NotPtr, LM::RefType::ValueNonconst, false };
     }
 
     static TypeIndex create_index(std::string type_name)

@@ -34,7 +34,7 @@ public:
 
     static TypeInfo create(std::string type_name)
     {
-        return TypeInfo { "ToIo", type_name, false, false };
+        return TypeInfo { "ToIo", type_name, LM::PtrType::NotPtr, LM::RefType::ValueNonconst, true };
     }
 
     static TypeIndex create_index()

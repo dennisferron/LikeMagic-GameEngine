@@ -33,9 +33,9 @@ public:
     {
         ExprPtr ward;
         ExprPtr target_ward;
-        Delegate* target_obj = eval_as_target(target, actual_type, target_ward);
+        Delegate const& target_obj = eval_as_const_target(target, actual_type, target_ward);
         return Term<R>::create(
-            (target_obj->*f_ptr)[EvalAs<size_t>::value(args[0], ward)]);
+            (target_obj.*f_ptr)[EvalAs<size_t>::value(args[0], ward)]);
     }
 
     virtual TypeInfoList const& get_arg_types() const

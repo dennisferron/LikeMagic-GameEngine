@@ -36,10 +36,10 @@ bool ScriptedEventReceiver::OnEvent(SEvent const& event)
     if (event.EventType == irr::EET_KEY_INPUT_EVENT)
             KeyStates[event.KeyInput.Key] = event.KeyInput.PressedDown;
 
-    if (on_OnEvent->empty())
+    //if (on_OnEvent->empty())
         return false;
-    else
-        return on_OnEvent->eval<bool>(event);
+    //else
+    //F    return on_OnEvent->eval<bool>(event);
 }
 
 bool ScriptedEventReceiver::isKeyDown(EKEY_CODE keyCode)

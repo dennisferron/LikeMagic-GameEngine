@@ -26,7 +26,7 @@ template <typename T>
 LM::TypeInfoList make_type_list()
 {
     LM::TypeIndex type_index
-        = LM::TypId<T>::get();
+        = LM::TypId<T>::restricted();
     LM::TypeInfoList arg_types;
     arg_types.push_back(type_index);
     return arg_types;
@@ -36,17 +36,11 @@ template <typename T, typename U>
 LM::TypeInfoList make_type_list()
 {
     LM::TypeIndex type_index
-        = LM::TypId<T>::get();
+        = LM::TypId<T>::restricted();
     LM::TypeIndex other_type_index
-        = LM::TypId<U>::get();
+        = LM::TypId<U>::restricted();
     LM::TypeInfoList arg_types;
     arg_types.push_back(type_index);
     arg_types.push_back(other_type_index);
     return arg_types;
-}
-
-template <typename T>
-LM::TypeIndex get_type_index()
-{
-    return LM::TypId<T>::get();
 }

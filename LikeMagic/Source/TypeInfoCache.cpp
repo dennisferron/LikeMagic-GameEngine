@@ -25,8 +25,9 @@ inline std::size_t hash_value(TypeInfo const& info)
     std::size_t seed = 0;
     boost::hash_combine(seed, info.system);
     boost::hash_combine(seed, info.name);
-    boost::hash_combine(seed, info.is_const);
-    boost::hash_combine(seed, info.is_ptr);
+    boost::hash_combine(seed, info.ptr_type);
+    boost::hash_combine(seed, info.ref_type);
+    boost::hash_combine(seed, info.is_restricted);
     return seed;
 }
 

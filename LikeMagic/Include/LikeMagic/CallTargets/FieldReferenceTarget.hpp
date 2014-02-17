@@ -32,8 +32,8 @@ public:
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         ExprPtr target_ward;
-        Delegate* target_obj = eval_as_target(target, actual_type, target_ward);
-        return create_reference(&(target_obj->*f_ptr), TypId<R*>::get(), target);
+        Delegate& target_obj = eval_as_nonconst_target(target, actual_type, target_ward);
+        return create_reference(&(target_obj.*f_ptr), TypId<R&>::liberal(), target);
     }
 
     virtual TypeInfoList const& get_arg_types() const

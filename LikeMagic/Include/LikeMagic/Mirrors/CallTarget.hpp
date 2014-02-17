@@ -10,6 +10,7 @@
 #pragma once
 
 #include "LikeMagic/Utility/TypeInfo.hpp"
+#include "LikeMagic/Utility/TypeIndex.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
 #include "LikeMagic/CallTargets/Delegate.hpp"
 
@@ -17,9 +18,6 @@ namespace LM {
 
 class CallTarget
 {
-protected:
-    static Delegate* eval_as_target(ExprPtr target, TypeIndex actual_type, ExprPtr& target_ward);
-
 public:
     virtual ~CallTarget() = 0;
 
@@ -31,5 +29,8 @@ public:
 };
 
 inline CallTarget::~CallTarget() {}
+
+LIKEMAGIC_API Delegate& eval_as_nonconst_target(ExprPtr target, TypeIndex from_type, ExprPtr& target_ward);
+LIKEMAGIC_API Delegate const& eval_as_const_target(ExprPtr target, TypeIndex from_type, ExprPtr& target_ward);
 
 }

@@ -8,20 +8,14 @@
 
 #pragma once
 
-namespace LM {
+#include "LikeMagic/TypeConv/AbstractTypeConverter.hpp"
 
-// By-value case is same as a StaticCastConv.
-template <typename From, typename To>
-class NumberConv
-{
-    static_assert(sizeof(From) && sizeof(To) && false, "Only use converter by pointer types.");
-};
+namespace LM {
 
 // A major difference between NumberConv and StaticCast conv is that the
 // number converter casts by value, creating an all-new term; it does not need the expr after.
-
 template <typename From, typename To>
-class NumberConv<From*, To*> : public AbstractTypeConverter
+class NumberConv : public AbstractTypeConverter
 {
 public:
 

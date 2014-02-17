@@ -34,11 +34,11 @@ SUITE(TestTypeSystem)
 {
     TEST(TypeIndex)
     {
-        CHECK(TypId<ConvTestStruct>::get() == TypId<ConvTestStruct>::get());
-        CHECK(!(TypId<ConvTestStruct*>::get() == TypId<ConvTestStruct>::get()));
-        CHECK(TypId<ConvTestStruct*>::get() == TypId<ConvTestStruct*>::get());
-        CHECK(!(TypId<ConvTestStruct const>::get() == TypId<ConvTestStruct>::get()));
-        CHECK(TypId<ConvTestStruct const*>::get() == TypId<ConvTestStruct const*>::get());
+        CHECK(TypId<ConvTestStruct>::liberal() == TypId<ConvTestStruct>::liberal());
+        CHECK(!(TypId<ConvTestStruct*>::liberal() == TypId<ConvTestStruct>::liberal()));
+        CHECK(TypId<ConvTestStruct*>::liberal() == TypId<ConvTestStruct*>::liberal());
+        CHECK(!(TypId<ConvTestStruct const>::liberal() == TypId<ConvTestStruct>::liberal()));
+        CHECK(TypId<ConvTestStruct const*>::liberal() == TypId<ConvTestStruct const*>::liberal());
     }
 
     TEST(ConvIntToInt)

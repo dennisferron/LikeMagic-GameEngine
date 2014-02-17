@@ -33,8 +33,8 @@ public:
     {
         ExprPtr target_ward;
         ExprPtr arg_ward;
-        Delegate* target_obj = eval_as_target(target, actual_type, target_ward);
-        (target_obj->*f_ptr) = EvalAs<R const&>::value(args[0], arg_ward);
+        Delegate& target_obj = eval_as_nonconst_target(target, actual_type, target_ward);
+        (target_obj.*f_ptr) = EvalAs<R const&>::value(args[0], arg_ward);
         return 0;
     }
 

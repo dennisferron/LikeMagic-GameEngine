@@ -50,7 +50,7 @@ private:
     {
         TypeIndex type;
 
-        vertex_info() : type(TypId<char>::get()) { }
+        vertex_info() : type(TypId<void>::liberal()) { }
     };
 
     typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, vertex_info, edge_info> graph_t;

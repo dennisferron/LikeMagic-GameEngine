@@ -87,9 +87,12 @@ void add_from_io_converter(std::string script_type, F io_func)
 {
     auto conv = new FromIoConv<T, F>(script_type, io_func);
     TypeIndex from_type = FromIoTypeInfo::create_index(script_type);
-    type_system->add_converter_simple(from_type, TypId<T*>::get(), conv);
-    type_system->add_converter_simple(from_type, TypId<IoObject*>::get(), new NoChangeConv);
-    type_system->add_converter_simple(from_type, TypId<IoObject const*>::get(), new NoChangeConv);
+    type_system->add_converter_simple(from_type, TypId<T>::liberal(), conv);
+
+    if (!type_system->has_conv(from_type, TypId<IoObject*>::restricted()))
+    {
+        type_system->add_converter_simple(from_type, TypId<IoObject*>::restricted(), new NoChangeConv("Io Type to IoObject*"));
+    }
 }
 
 #define MKCONV(scriptType, cppType, ioFunc) \
@@ -128,7 +131,7 @@ void add_convs_from_script(IoVM* iovm)
 
         virtual float cost() const { return 5.0f; }
     };
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), TypId<bool>::get(), new FromNilToFalse);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), TypId<bool>::restricted(), new FromNilToFalse);
 
     // Allow nil to convert to void (for IoBlock eval<void>)
     struct FromNilToVoid : public AbstractTypeConverter
@@ -142,7 +145,7 @@ void add_convs_from_script(IoVM* iovm)
 
         virtual float cost() const { return 5.0f; }
     };
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), TypId<void>::get(), new FromNilToVoid);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), TypId<void>::restricted(), new FromNilToVoid);
 
     struct FromIoBlock : public AbstractTypeConverter
     {
@@ -163,7 +166,7 @@ void add_convs_from_script(IoVM* iovm)
     };
 
     TypeIndex from_script_block_type = FromIoTypeInfo::create_index("Block");
-    TypeIndex to_block_wrapper_type = TypId<IoBlock*>::get();
+    TypeIndex to_block_wrapper_type = TypId<IoBlock>::liberal();
     p_conv_t block_converter = new FromIoBlock(iovm);
 
     type_system->add_converter_simple(
@@ -194,7 +197,7 @@ void add_convs_from_script(IoVM* iovm)
         virtual float cost() const { return 5.0f; }
     };
 
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Bool"), TypId<bool*>::get(), new FromBool);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Bool"), TypId<bool>::liberal(), new FromBool);
 
 
     //MKCONV(Vector, std::vector<long double>, from_vector<long double>)
@@ -229,7 +232,7 @@ void add_convs_from_script(IoVM* iovm)
 
 ExprPtr from_script(IoObject* self, IoObject* io_obj, TypeIndex to_type)
 {
-    TypeIndex wants_io_obj = TypId<IoObject*>::get();
+    TypeIndex wants_io_obj = TypId<IoObject*>::restricted();
 
     if (is_Exprs_obj(io_obj) && !(to_type == wants_io_obj))
     {

@@ -61,7 +61,7 @@ void add_bindings_btCollisionWorld()
 
     typedef btIDebugDraw::DebugDrawModes DebugDrawModes;
     LM_CLASS(ns_bullet, DebugDrawModes)
-    add_conv<DebugDrawModes*, int*, LM::NumberConv>();
+    add_conv<DebugDrawModes, int, LM::NumberConv>();
 
     typedef btCollisionWorld::RayResultCallback btCollisionWorld_RayResultCallback;
     LM_CLASS(ns_bullet, btCollisionWorld_RayResultCallback)

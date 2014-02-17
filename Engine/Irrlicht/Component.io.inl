@@ -66,6 +66,10 @@ method(module, namespace_irr, namespace_Custom, MainWindow, PredefinedValues, Sc
             setEvents(eventDispatch eventReceiver)
 
             setGuiEvents(UserInterface GuiEvents clone)
+            writeln("EET_GUI_EVENT is >>>", EET_GUI_EVENT value)
+            writeln("<<<")
+            writeln("EDT_BURNINGSVIDEO is >>>", EDT_BURNINGSVIDEO value)
+            writeln("<<<")
             eventDispatch addHandler(EET_GUI_EVENT,
                 block(event,
                     guiEvents handle(event)
@@ -73,7 +77,7 @@ method(module, namespace_irr, namespace_Custom, MainWindow, PredefinedValues, Sc
             )
 
             windowSize := dimension2du tmp(MainWindow sizeX, MainWindow sizeY)
-            deviceType := list(EDT_OPENGL, EDT_BURNINGSVIDEO, EDT_SOFTWARE, EDT_NULL) at(0)
+            deviceType := list(EDT_OPENGL, EDT_BURNINGSVIDEO, EDT_SOFTWARE, EDT_NULL) at(3)
             setDevice(namespace_irr createDevice(deviceType, windowSize, 16, false, false, false, events))
 
             if (device == nil,

@@ -14,14 +14,19 @@ namespace LM {
 
 class NoChangeConv : public AbstractTypeConverter
 {
+private:
+    std::string name;
+
 public:
+
+    NoChangeConv(std::string name_) : name(name_) {}
 
     virtual ExprPtr wrap_expr(ExprPtr expr) const
     {
         return expr;
     }
 
-    virtual std::string description() const { return "NoChangeConv"; }
+    virtual std::string description() const { return "NoChangeConv(" + name + ")"; }
 
     // A no-change conversion is virtually free.
     virtual float cost() const { return 0.01; }

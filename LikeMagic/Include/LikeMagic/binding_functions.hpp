@@ -39,12 +39,23 @@ LIKEMAGIC_API std::string create_constructor_name(std::string prefix, std::strin
 
 template <typename From, typename To,
     template <typename From, typename To>
-        class Converter = StaticCastConv>
+        class Converter>
+void add_conv(std::string conv_name)
+{
+    type_system->add_converter_variations(
+        TypId<From>::liberal(),
+        TypId<To>::liberal(),
+            new Converter<From, To>(TypId<To>::liberal(), conv_name));
+}
+
+template <typename From, typename To,
+    template <typename From, typename To>
+        class Converter>
 void add_conv()
 {
     type_system->add_converter_variations(
-        TypId<From>::get(),
-        TypId<To>::get(),
+        TypId<From>::liberal(),
+        TypId<To>::liberal(),
             new Converter<From, To>);
 }
 
@@ -79,7 +90,7 @@ template <typename T, typename Base, template <typename From, typename To>
 void add_base(TypeMirror& class_, TypeMirror const& base_class)
 {
     class_.add_base(&base_class);
-    add_conv<T*, Base*, Converter>();
+    add_conv<T*, Base*, Converter>("conv to base");
 }
 
 template <typename ObjT, typename R, typename... Args>
@@ -122,19 +133,17 @@ template <typename T, typename R>
 void bind_field(TypeMirror& class_, std::string field_name, R(T::*f))
 {
     TypeIndex class_type = class_.get_class_type();
-    TypeIndex ptr_type = as_ptr_type(class_type);
-    TypeIndex const_ptr_type = as_const_ptr_type(class_type);
 
     typedef LM::FieldSetterTarget<R> SetterTarget;
-    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), ptr_type);
+    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), class_type);
     class_.add_method("set_" + field_name, setter);
 
     typedef LM::FieldGetterTarget<R> GetterTarget;
-    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), const_ptr_type);
+    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), class_type);
     class_.add_method("get_" + field_name, getter);
 
     typedef LM::FieldReferenceTarget<R> RefferTarget;
-    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), ptr_type);
+    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), class_type);
     class_.add_method("ref_" + field_name, reffer);
 }
 
@@ -142,26 +151,24 @@ template <typename T, typename R, size_t N>
 void bind_array_field(TypeMirror& class_, std::string field_name, R(T::*f)[N])
 {
     TypeIndex class_type = class_.get_class_type();
-    TypeIndex ptr_type = as_ptr_type(class_type);
-    TypeIndex const_ptr_type = as_const_ptr_type(class_type);
 
     typedef LM::ArrayFieldSetterTarget<R> SetterTarget;
-    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), ptr_type, N);
+    auto setter = new SetterTarget(reinterpret_cast<typename SetterTarget::F>(f), class_type, N);
     class_.add_method("set_" + field_name, setter);
 
     typedef LM::ArrayFieldGetterTarget<R> GetterTarget;
-    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), const_ptr_type, N);
+    auto getter = new GetterTarget(reinterpret_cast<typename GetterTarget::F>(f), class_type, N);
     class_.add_method("get_" + field_name, getter);
 
     typedef LM::ArrayFieldReferenceTarget<R> RefferTarget;
-    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), ptr_type, N);
+    auto reffer = new RefferTarget(reinterpret_cast<typename RefferTarget::F>(f), class_type, N);
     class_.add_method("ref_" + field_name, reffer);
 }
 
 template <typename T>
 TypeMirror& register_class(std::string name, TypeMirror& namespace_)
 {
-    const TypeIndex class_type(TypId<T>::get());
+    const TypeIndex class_type(TypId<T>::liberal());
 
     if (type_system->get_class(class_type))
         return *(type_system->get_class(class_type));

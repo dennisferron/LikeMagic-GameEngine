@@ -13,28 +13,102 @@
 
 namespace LM {
 
+enum class PtrType
+{
+    NotPtr,
+    PtrToNonconst,
+    PtrToConst
+};
+
+enum class RefType
+{
+    ValueNonconst,
+    ValueConst,
+    RefToNonconst,
+    RefToConst
+};
+
 struct TypeInfo
 {
+private:
+
+    inline static RefType as_const(RefType ref_type)
+    {
+        switch (ref_type)
+        {
+            case RefType::ValueNonconst: return RefType::ValueConst;
+            case RefType::RefToNonconst: return RefType::RefToConst;
+            default: return ref_type; // already const so no change
+        };
+    }
+
+    inline static RefType as_nonconst(RefType ref_type)
+    {
+        switch (ref_type)
+        {
+            case RefType::ValueConst: return RefType::ValueNonconst;
+            case RefType::RefToConst: return RefType::RefToNonconst;
+            default: return ref_type; // already nonconst so no change
+        };
+    }
+
+public:
     std::string system;
     std::string name;
-    bool is_const;
-    bool is_ptr;
+    PtrType ptr_type;
+    RefType ref_type;
+    bool is_restricted;
 
     inline bool operator ==(const TypeInfo& that) const
-        { return system==that.system && name==that.name && is_const==that.is_const && is_ptr==that.is_ptr; }
-    inline bool get_is_const() const { return is_const; }
-    inline TypeInfo as_const() const { return { system, name, true, is_ptr }; }
-    inline TypeInfo as_nonconst() const { return { system, name, false, is_ptr }; }
-    inline TypeInfo as_ptr() const { return { system, name, is_const, true }; }
-    inline TypeInfo as_value() const { return { system, name, is_const, false }; }
-    inline TypeInfo class_type() const { return { system, name, false, false }; }
+        { return system==that.system && name==that.name
+            && ptr_type==that.ptr_type
+            && ref_type==that.ref_type
+            && is_restricted==that.is_restricted; }
+
+    inline TypeInfo as_const_value() const
+    {
+        return { system, name, ptr_type, as_const(ref_type), is_restricted };
+    }
+
+    inline TypeInfo as_nonconst_value() const
+    {
+        return { system, name, ptr_type, as_nonconst(ref_type), is_restricted };
+    }
+
+    inline TypeInfo as_ptr_to_const() const
+    {
+        return { system, name, PtrType::PtrToConst, ref_type, is_restricted };
+    }
+
+    inline TypeInfo as_ptr_to_nonconst() const
+    {
+        return { system, name, PtrType::PtrToNonconst, ref_type, is_restricted };
+    }
+
+    inline TypeInfo as_ref_to_nonconst() const
+    {
+        return { system, name, ptr_type, RefType::RefToNonconst, is_restricted };
+    }
+
+    inline TypeInfo as_ref_to_const() const
+    {
+        return { system, name, ptr_type, RefType::RefToConst, is_restricted };
+    }
+
+    inline TypeInfo as_restricted() const { return { system, name, ptr_type, ref_type, true }; }
+
+    inline TypeInfo class_type() const { return { system, name, PtrType::NotPtr, RefType::ValueNonconst, false }; }
+
     inline std::string description() const
-        { return system + " " + name + (is_const?" const":"") + (is_ptr?"*":""); }
+        { return system + " " + name
+            + (ptr_type == PtrType::PtrToConst?" const":"") + (ptr_type != PtrType::NotPtr?"*":"")
+            + (ref_type == RefType::ValueConst || ref_type == RefType::RefToConst? " const" : "")
+            + (ref_type == RefType::RefToNonconst || ref_type == RefType::RefToConst? "&":"")
+            + (is_restricted? " (end)" : ""); }
 };
 
 LIKEMAGIC_API TypeInfo create_namespace_type_info(std::string namespace_name);
 LIKEMAGIC_API TypeInfo create_bottom_ptr_type_info();
-LIKEMAGIC_API TypeInfo create_cpp_type_info(std::type_info const* info_, bool is_const_, bool is_ptr_);
-
+LIKEMAGIC_API TypeInfo create_cpp_type_info(std::type_info const* info_, PtrType ptr_type_, RefType ref_type_, bool is_restricted_);
 
 }

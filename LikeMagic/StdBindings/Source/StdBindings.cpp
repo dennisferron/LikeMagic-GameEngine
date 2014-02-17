@@ -85,46 +85,49 @@ STD_BINDINGS_API void LM::add_bindings()
     LM_CLASS(global_ns, string)
     LM_CLASS(global_ns, wstring)
 
-    // Register number types as copyable but do not auto-deref
-    register_class<short>("short", global_ns);
-    register_class<unsigned short>("ushort", global_ns);
-    register_class<int>("int", global_ns);
-    register_class<unsigned int>("uint", global_ns);
-    register_class<long>("long", global_ns);
-    register_class<unsigned long>("ulong", global_ns);
-    register_class<double>("double", global_ns);
-    register_class<float>("float", global_ns);
-
-    // Do auto-deref bool though
-    register_class<bool>("bool", global_ns);
-
-    register_class<unsigned char>("uchar", global_ns);
+    LM_CLASS(global_ns, short)
+    typedef unsigned short ushort;
+    LM_CLASS(global_ns, ushort)
+    LM_CLASS(global_ns, int)
+    typedef unsigned int uint;
+    LM_CLASS(global_ns, uint)
+    LM_CLASS(global_ns, long)
+    typedef unsigned long ulong;
+    LM_CLASS(global_ns, ulong)
+    LM_CLASS(global_ns, double)
+    LM_CLASS(global_ns, float)
+    LM_CLASS(global_ns, bool)
+    typedef unsigned char uchar;
+    LM_CLASS(global_ns, uchar)
 
     LM_CLASS(global_ns, wchar_t)
 
     LM_CLASS(global_ns, Delegate)
 
-    add_conv<float*, double*, NumberConv>();
-    add_conv<short*, double*, NumberConv>();
-    add_conv<int*, double*, NumberConv>();
-    add_conv<long*, double*, NumberConv>();
-    add_conv<unsigned short*, double*, NumberConv>();
-    add_conv<unsigned int*, double*, NumberConv>();
-    add_conv<unsigned long*, double*, NumberConv>();
+    add_conv<float, double, NumberConv>();
+    add_conv<short, double, NumberConv>();
+    add_conv<int, double, NumberConv>();
+    add_conv<long, double, NumberConv>();
+    add_conv<unsigned short, double, NumberConv>();
+    add_conv<unsigned int, double, NumberConv>();
+    add_conv<unsigned long, double, NumberConv>();
 
-    add_conv<short*, int*, NumberConv>();
-    add_conv<short*, long*, NumberConv>();
-    add_conv<int*, long*, NumberConv>();
-    add_conv<unsigned short*, int*, NumberConv>();
-    add_conv<unsigned short*, long*, NumberConv>();
-    add_conv<unsigned int*, long*, NumberConv>();
+    add_conv<short, int, NumberConv>();
+    add_conv<short, long, NumberConv>();
+    //add_conv<int, long, NumberConv>();
+    add_conv<unsigned short, int, NumberConv>();
+    add_conv<unsigned short, long, NumberConv>();
+    //add_conv<unsigned int, long, NumberConv>();
 
     // enable std::vector conversions to pointers for primitives
-    //register_collection<unsigned short>("ushort");
-    register_class<std::vector<int>>("vector_of_int", ns_std);
-    register_class<std::vector<unsigned int>>("vector_of_uint", ns_std);
-    register_class<std::vector<short>>("vector_of_short", ns_std);
-    register_class<std::vector<unsigned short>>("vector_of_ushort", ns_std);
+    typedef std::vector<int> vector_of_int;
+    LM_CLASS(ns_std, vector_of_int)
+    typedef std::vector<unsigned int> vector_of_uint;
+    LM_CLASS(ns_std, vector_of_uint)
+    typedef std::vector<short> vector_of_short;
+    LM_CLASS(ns_std, vector_of_short)
+    typedef std::vector<unsigned short> vector_of_ushort;
+    LM_CLASS(ns_std, vector_of_ushort)
 
     typedef vector<string> vector_of_string;
     LM_CLASS(ns_std, vector_of_string)

@@ -167,27 +167,6 @@ Breakpoint* IoVM::find_pending_breakpoint(IoMessage* m)
         data->charNumber);
 }
 
-// The difference between this and a no-change or implicit conv is this evals in context to return IoObject* directly.
-struct PtrToIoObjectConv : public LM::AbstractTypeConverter
-{
-    template <typename F>
-    static ExprPtr wrap_expr(ExprPtr expr, F io_func)
-    {
-        return ToIoObjectExpr<IoObject*, F>::create(expr, io_func);
-    }
-
-    virtual ExprPtr wrap_expr(ExprPtr expr) const
-    {
-        return wrap_expr(expr,
-            [](IoObject *self, IoObject *locals, IoMessage *m, IoObject* value)
-                { return value; });
-    }
-
-    virtual std::string description() const { return "PtrToIoObjectConv"; }
-
-    virtual float cost() const { return 5.0f; }
-};
-
 void IoVM::setShowAllMessages(bool value)
 {
     state->showAllMessages = value;
@@ -283,15 +262,10 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     LM_CLASS(global_ns, IoObject)
 
     // To convert an Io object to a void*
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), TypId<void*>::get(), new LM::StaticCastConv<IoObject*, void*>);
-
-    // Make general Io objects convertible with IoObject*.
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), TypId<IoObject*>::get(), new LM::NoChangeConv);
-    type_system->add_converter_simple(TypId<IoObject*>::get(), ToIoTypeInfo::create_index("Object"), new PtrToIoObjectConv);
-    type_system->add_converter_simple(ToIoTypeInfo::create_index("Object"), ToIoTypeInfo::create_index(), new LM::NoChangeConv);
+    //type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), TypId<void*>::get(), new LM::StaticCastConv<IoObject*, void*>);
 
     // Allow LikeMagic proxy objects to be converted to the C/C++ type IoObject*
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("LikeMagic"), TypId<IoObject*>::get(), new LM::NoChangeConv);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("LikeMagic"), TypId<IoObject*>::restricted(), new LM::NoChangeConv("Io type LikeMagic to IoObject*"));
 
     LM_CLASS(global_ns, LangBlock)
     LM_CLASS(global_ns, IoBlock)
@@ -299,16 +273,12 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
 
     // Allow conversion of IoBlock to BlockPtr (shared_ptr<LangBlock>)
     type_system->add_converter_simple(
-        TypId<IoBlock*>::get(),
-        TypId<BlockPtr*>::get(),
-        new IoBlockToLangBlockPtrConv);
-    type_system->add_converter_simple(
-        TypId<IoBlock*>::get(),
-        TypId<BlockPtr const*>::get(),
+        TypId<IoBlock>::liberal(),
+        TypId<BlockPtr>::restricted(),
         new IoBlockToLangBlockPtrConv);
 
     // Allow conversion of Io blocks to IoObject*
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), TypId<IoObject*>::get(), new LM::NoChangeConv);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), TypId<IoObject*>::restricted(), new LM::NoChangeConv("Io type Block to IoObject*"));
 
     ExprPtr global_ns_expr = create_expr(nullptr, global_ns.get_class_type());
 

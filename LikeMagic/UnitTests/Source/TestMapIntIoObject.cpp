@@ -9,12 +9,13 @@
 #include "IoObject.h"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 
+#include "Iocaste/MapIntToIoObject.hpp"
+
 #include <map>
 
 using namespace std;
 using namespace LM;
-
-typedef std::map<int, IoObject*> map_of_s32_IoObject;
+using namespace Iocaste;
 
 extern Iocaste::LMAdapters::IoVM* io_vm;
 
@@ -22,7 +23,7 @@ SUITE(TestMapIntIoObject)
 {
     TEST(TermAtPut)
     {
-        ExprPtr term = Term<map_of_s32_IoObject>::create(map_of_s32_IoObject());
+        ExprPtr term = Term<MapIntToIoObject>::create(MapIntToIoObject());
         TypeMirror const* type_mirror = type_system->get_class(term->get_type());
         ASSERT_NOT_NULL(type_mirror);
 
@@ -50,7 +51,7 @@ SUITE(TestMapIntIoObject)
     TEST(IoCodeAtPut)
     {
         std::string result = io_vm->get_expr<std::string>(std::string() +
-            "m := namespace std map_of_s32_IoObject tmp; " +
+            "m := namespace MapIntToIoObject tmp; " +
             "a := 99;" +
             "o := Object clone do( v := \"y\" ); "
             "m atPut(a, o); " +

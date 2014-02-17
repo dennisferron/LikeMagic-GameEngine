@@ -36,20 +36,20 @@ private:
     {
         ExprPtr wards[sizeof...(Args)];
         ExprPtr target_ward;
-        Delegate* target_obj = eval_as_target(target, actual_type, target_ward);
-        (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices], wards[Indices])...);
+        Delegate& target_obj = eval_as_nonconst_target(target, actual_type, target_ward);
+        (target_obj.*func_ptr)(EvalAs<Args>::value(args[Indices], wards[Indices])...);
     }
 
 public:
 
     DelegateCallTarget(F func_ptr_, TypeIndex class_type)
-        : func_ptr(func_ptr_), actual_type(as_ptr_type(class_type)) {}
+        : func_ptr(func_ptr_), actual_type(class_type) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
         build_method_call(target, args, IPack());
-        return 0;
+        return nullptr;
     }
 
     virtual TypeInfoList const& get_arg_types() const
@@ -78,21 +78,20 @@ private:
     {
         ExprPtr wards[sizeof...(Args)];
         ExprPtr target_ward;
-        auto target_check = type_system->try_conv(target, actual_type);
-        Delegate const* target_obj = EvalAs<Delegate const*>::value(target_check, target_ward);
-        (target_obj->*func_ptr)(EvalAs<Args>::value(args[Indices], wards[Indices])...);
+        Delegate const& target_obj = eval_as_const_target(target, actual_type, target_ward);
+        (target_obj.*func_ptr)(EvalAs<Args>::value(args[Indices], wards[Indices])...);
     }
 
 public:
 
     DelegateCallTarget(F func_ptr_, TypeIndex class_type)
-        : func_ptr(func_ptr_), actual_type(as_const_ptr_type(class_type)) {}
+        : func_ptr(func_ptr_), actual_type(class_type) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
         typedef typename MakeIndexPack<sizeof...(Args)>::type IPack;
         build_method_call(target, args, IPack());
-        return 0;
+        return nullptr;
     }
 
     virtual TypeInfoList const& get_arg_types() const
@@ -120,16 +119,15 @@ private:
     {
         ExprPtr wards[sizeof...(Args)];
         ExprPtr target_ward;
-        auto target_check = type_system->try_conv(target, actual_type);
-        Delegate* target_obj = EvalAs<Delegate*>::value(target_check, target_ward);
-        return Term<R>::create((target_obj->*func_ptr)(
+        Delegate& target_obj = eval_as_nonconst_target(target, actual_type, target_ward);
+        return Term<R>::create((target_obj.*func_ptr)(
            EvalAs<Args>::value(args[Indices], wards[Indices])...));
     }
 
 public:
 
     DelegateCallTarget(F func_ptr_, TypeIndex class_type)
-        : func_ptr(func_ptr_), actual_type(as_ptr_type(class_type)) {}
+        : func_ptr(func_ptr_), actual_type(class_type) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {
@@ -162,16 +160,15 @@ private:
     {
         ExprPtr wards[sizeof...(Args)];
         ExprPtr target_ward;
-        auto target_check = type_system->try_conv(target, actual_type);
-        Delegate const* target_obj = EvalAs<Delegate const*>::value(target_check, target_ward);
-        return Term<R>::create((target_obj->*func_ptr)(
+        Delegate const& target_obj = eval_as_const_target(target, actual_type, target_ward);
+        return Term<R>::create((target_obj.*func_ptr)(
             EvalAs<Args>::value(args[Indices], wards[Indices])...));
     }
 
 public:
 
     DelegateCallTarget(F func_ptr_, TypeIndex class_type)
-        : func_ptr(func_ptr_), actual_type(as_const_ptr_type(class_type)) {}
+        : func_ptr(func_ptr_), actual_type(class_type) {}
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const
     {

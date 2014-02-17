@@ -52,8 +52,8 @@ std::string describe_converter(std::string converter_name)
 {
     return
             converter_name +
-            " from " + TypId<From>::get().description() +
-            " to " + TypId<To>::get().description();
+            " from " + TypId<From>::liberal().description() +
+            " to " + TypId<To>::liberal().description();
 }
 
 typedef boost::intrusive_ptr<AbstractTypeConverter const> p_conv_t;

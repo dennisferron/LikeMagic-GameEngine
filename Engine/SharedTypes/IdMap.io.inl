@@ -17,16 +17,28 @@ method(namespace_std,
         )
 
         atPut := method(id, obj,
+            if (id == nil,
+                Exception raise("id cannot be nil")
+            )
+            if (obj == nil,
+                Exception raise("obj cannot be nil")
+            )
             _map atPut(id, obj)
             _list append(obj)
             obj
         )
 
         at := method(id,
+            if (id == nil,
+                Exception raise("id cannot be nil")
+            )
             _map at(id)
         )
 
         removeAt := method(id,
+            if (id == nil,
+                Exception raise("id cannot be nil")
+            )
             _map removeAt(id)
         )
     )

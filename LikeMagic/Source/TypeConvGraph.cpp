@@ -46,7 +46,7 @@ using namespace LM;
 namespace LM {
 
 TypeConvGraph::TypeConvGraph()
-    : no_vertex(std::numeric_limits<vertex_t>::max()), bot_conv(new NoChangeConv())
+    : no_vertex(std::numeric_limits<vertex_t>::max()), bot_conv(new NoChangeConv("Bottom type conv"))
 {
 }
 
@@ -135,12 +135,26 @@ void TypeConvGraph::add_conv(TypeIndex from, TypeIndex to, p_conv_t conv)
 {
     auto from_vert = add_type(from);
     auto to_vert = add_type(to);
+    auto existing_edge = edge(from_vert, to_vert, graph);
 
-    if (!edge(from_vert, to_vert, graph).second)
+    if (existing_edge.second)
+    {
+        std::string msg = "Already have a type converter from "
+            + from.description() + " to " + to.description()
+            + " called " + graph[existing_edge.first].conv->description()
+            + " when trying to add " + conv->description();
+        cout << msg << endl;
+        throw std::logic_error(msg);
+    }
+    else
     {
         auto new_edge = add_edge(from_vert, to_vert, graph).first;
         graph[new_edge].conv = conv;
         graph[new_edge].cost = conv->cost();
+
+        cout << "Added type converter from "
+            << from.description() << " to " << to.description()
+            << " called " << conv->description() << endl;
     }
 }
 
@@ -240,7 +254,7 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to
 
         try
         {
-            if (search_for_conv(get_index(from.get_info().as_nonconst()), to))
+            if (search_for_conv(get_index(from.get_info().as_ref_to_nonconst()), to))
                 msg += "I notice the conversion would work if the from-type were not const.  Did you use get_fieldName (const version) when you meant to use ref_fieldName (nonconst version)?  Or call functionName_nc (nonconst version) when you meant to call functioname_c (const version)?  Don't forget that a member of a const object is also const.";
         }
         catch (...)

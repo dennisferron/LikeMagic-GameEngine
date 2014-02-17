@@ -56,6 +56,9 @@ private:
     TypeSystemInstance(TypeSystem const&) = delete;
     TypeSystem& operator =(TypeSystem const&) = delete;
 
+    void add_conv(TypeInfo from_info, TypeInfo to_info);
+    void add_common_conversions(TypeIndex type);
+
 public:
 
     virtual ~TypeSystemInstance();
@@ -84,22 +87,22 @@ struct TypeSystemInstance::Impl
     void add_ptr_convs(TypeIndex index)
     {
         TypeInfo bare = index.get_info().class_type();
-        add_conv_track<void>(bare);
-        add_conv_track<void const>(bare.as_const());
+        //add_conv_track<void>(bare);
+        //add_conv_track<void const>(bare.as_const_value());
 
         // allow unsafe_ptr_cast to convert to any type and nil (NULL) to any pointer type
-        add_nochange_conv(create_bottom_ptr_type_info(), bare.as_ptr());
-        add_nochange_conv(create_bottom_ptr_type_info(), bare.as_ptr().as_const());
+        add_nochange_conv(create_bottom_ptr_type_info(), bare.as_ptr_to_nonconst(), "bottom ptr unsafe cast to any ptr");
+        add_nochange_conv(create_bottom_ptr_type_info(), bare.as_ptr_to_const(), "bottom ptr unsafe cast to any const ptr");
 
         // allow any ptr to be converted to void* or void const*
-        add_nochange_conv(bare.as_ptr(), TypId<void*>::get().get_info());
-        add_nochange_conv(bare.as_ptr().as_const(), TypId<void const*>::get().get_info());
+        add_nochange_conv(bare.as_ptr_to_nonconst(), TypId<void*>::restricted().get_info(), "any ptr to void ptr");
+        add_nochange_conv(bare.as_ptr_to_const(), TypId<void const*>::restricted().get_info(), "any ptr to const void ptr");
     }
 
-    void add_nochange_conv(TypeInfo from, TypeInfo to)
+    void add_nochange_conv(TypeInfo from, TypeInfo to, std::string conv_name)
     {
         if (!(get_index(from) == get_index(to)))
-            conv_graph.add_conv(get_index(from), get_index(to), new NoChangeConv());
+            conv_graph.add_conv(get_index(from), get_index(to), new NoChangeConv(conv_name));
     }
 
     template <typename From, typename To>
@@ -108,15 +111,17 @@ struct TypeSystemInstance::Impl
         conv_graph.add_conv(get_index(from), get_index(to), new StaticCastConv<From, To>(from, to));
     }
 
+/*
     template <typename T>
     void add_conv_track(TypeInfo type)
     {
-        auto as_ptr = type.as_ptr();
-        auto as_ptr_const = as_ptr.as_const();
+        auto as_ptr = type.as_ptr_to_nonconst();
+        auto as_ptr_const = as_ptr.as_ptr_to_const();
 
         // Making a ptr const does not change the implementation.
-        add_nochange_conv(as_ptr, as_ptr_const);
+        add_nochange_conv(as_ptr, as_ptr_const, "ptr to const ptr");
     }
+*/
 };
 
 TypeSystemInstance::TypeSystemInstance()
@@ -150,18 +155,22 @@ TypeMirror& TypeSystemInstance::global_namespace() const
 void TypeSystemInstance::add_class(TypeIndex index, TypeMirror* class_ptr, TypeMirror& namespace_)
 {
     TypeIndex class_index = get_class_index(index);
+    TypeInfo class_info = class_index.get_info();
+    TypeInfo ptr_to_nonconst = class_info.as_ptr_to_nonconst();
+    TypeInfo ptr_to_const = class_info.as_ptr_to_const();
+    TypeInfo ref_to_nonconst = class_info.as_ref_to_nonconst();
+    TypeInfo ref_to_const = class_info.as_ref_to_const();
+    TypeInfo const_value = class_info.as_const_value();
 
     // Add conversion to delegate type so that delegate call targets will work.
-    impl->conv_graph.add_conv(as_ptr_type(class_index),
-        TypId<LM::Delegate*>::get(), new NoChangeConv());
-    impl->conv_graph.add_conv(as_const_ptr_type(class_index),
-        TypId<LM::Delegate const*>::get(), new NoChangeConv());
+    add_conv(ref_to_nonconst.as_restricted(), TypId<LM::Delegate&>::restricted().get_info());
+    add_conv(ref_to_nonconst.as_restricted(), TypId<LM::Delegate const&>::restricted().get_info());
+    add_conv(ref_to_const.as_restricted(), TypId<LM::Delegate const&>::restricted().get_info());
+    add_conv(class_info.as_restricted(), TypId<LM::Delegate&>::restricted().get_info());
+    add_conv(class_info.as_restricted(), TypId<LM::Delegate const&>::restricted().get_info());
+    add_conv(const_value.as_restricted(), TypId<LM::Delegate const&>::restricted().get_info());
 
-    // Add conversion from nonconst pointer to const.
-    impl->conv_graph.add_conv(
-        as_ptr_type(class_index),
-        as_const_ptr_type(class_index),
-        new NoChangeConv());
+    add_common_conversions(class_index);
 
     impl->classes[class_index.get_id()] = class_ptr;
 
@@ -212,7 +221,18 @@ TypeMirror* TypeSystemInstance::get_class(TypeIndex type) const
 
 void TypeSystemInstance::add_converter_simple(TypeIndex from_type, TypeIndex to_type, p_conv_t conv)
 {
+    if (from_type.get_info().is_restricted)
+    {
+        stringstream msg;
+        msg << "add_converter_simple error from_type is restricted " << from_type.description() << " " << from_type.get_id()
+            << " to " << to_type.description() << " " << to_type.get_id() << " conv='" << conv->description() << "'";
+        cout << msg.str() << endl;
+        throw std::logic_error(msg.str());
+    }
+
     impl->conv_graph.add_conv(from_type, to_type, conv);
+    //impl->conv_graph.add_conv(from_type, get_index(from_type.get_info().as_restricted()), conv);
+    //impl->conv_graph.add_conv(to_type, get_index(to_type.get_info().as_restricted()), conv);
 
     if (!impl->conv_graph.has_type(from_type))
     {
@@ -241,26 +261,88 @@ void TypeSystemInstance::add_converter_simple(TypeIndex from_type, TypeIndex to_
     }
 }
 
+void TypeSystemInstance::add_conv(TypeInfo from_info, TypeInfo to_info)
+{
+    impl->conv_graph.add_conv(
+        get_index(from_info), get_index(to_info),
+        new NoChangeConv("from " + from_info.description() + " to " + to_info.description()));
+}
+
+void TypeSystemInstance::add_common_conversions(TypeIndex type)
+{
+    TypeInfo type_info = type.get_info();
+    TypeInfo value_nonconst = type_info;
+    TypeInfo value_const = type_info.as_const_value();
+
+    add_conv(value_nonconst, value_nonconst.as_restricted());
+    add_conv(value_nonconst, value_const.as_restricted());
+    add_conv(value_const, value_const.as_restricted());
+
+    TypeInfo ptr_to_nonconst = type_info.as_ptr_to_nonconst();
+    TypeInfo ref_to_nonconst = type_info.as_ref_to_nonconst();
+
+    add_conv(ptr_to_nonconst, ref_to_nonconst.as_restricted());
+    add_conv(ref_to_nonconst, ptr_to_nonconst.as_restricted());
+
+    TypeInfo ptr_to_const = type_info.as_ptr_to_const();
+    TypeInfo ref_to_const = type_info.as_ref_to_const();
+
+    add_conv(ptr_to_const, ref_to_const.as_restricted());
+    add_conv(ref_to_const, ptr_to_const.as_restricted());
+
+    add_conv(ptr_to_nonconst, ref_to_const.as_restricted());
+    add_conv(ref_to_nonconst, ptr_to_const.as_restricted());
+
+    add_conv(ptr_to_const, ptr_to_const.as_restricted());
+    add_conv(ref_to_const, ref_to_const.as_restricted());
+    add_conv(ptr_to_nonconst, ptr_to_nonconst.as_restricted());
+    add_conv(ref_to_nonconst, ref_to_nonconst.as_restricted());
+
+    // These have to be restricted because if refs can be converted
+    // to value then they can be auto-converted to script which we don't want.
+    add_conv(ref_to_const, value_nonconst.as_restricted());
+    add_conv(ref_to_const, value_const.as_restricted());
+    add_conv(ref_to_nonconst, value_nonconst.as_restricted());
+    add_conv(ref_to_nonconst, value_const.as_restricted());
+    add_conv(ptr_to_const, value_nonconst.as_restricted());
+    add_conv(ptr_to_const, value_const.as_restricted());
+    add_conv(ptr_to_nonconst, value_nonconst.as_restricted());
+    add_conv(ptr_to_nonconst, value_const.as_restricted());
+
+    // These are allowed because Term<T> can be called as ref.
+    add_conv(value_nonconst, ref_to_nonconst.as_restricted());
+    add_conv(value_nonconst, ref_to_const.as_restricted());
+    add_conv(value_const, ref_to_const.as_restricted());
+    add_conv(value_nonconst, ptr_to_nonconst.as_restricted());
+    add_conv(value_nonconst, ptr_to_const.as_restricted());
+    add_conv(value_const, ptr_to_const.as_restricted());
+
+    // Anything can be converted to it's const form without restriction.
+    add_conv(ref_to_nonconst, ref_to_const);
+    add_conv(ptr_to_nonconst, ptr_to_const);
+    add_conv(value_nonconst, value_const);
+
+    add_conv(ref_to_nonconst, ref_to_const.as_restricted());
+    add_conv(ptr_to_nonconst, ptr_to_const.as_restricted());
+}
+
 void TypeSystemInstance::add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv)
 {
     impl->conv_graph.add_conv(from, to, conv);
 
+/*
     // Add converters to make either type const.
     impl->add_ptr_convs(from);
     impl->add_ptr_convs(to);
-
+*/
     auto from_info = from.get_info();
     auto to_info = to.get_info();
 
-    // Allow converting the object directly to its const form
-    impl->conv_graph.add_conv(from, as_const_type(from), new NoChangeConv);
-    impl->conv_graph.add_conv(to, as_const_type(to), new NoChangeConv);
-
     // Reuse this converter for just the "to" obj const
-    impl->conv_graph.add_conv(from, as_const_type(to), conv);
+    impl->conv_graph.add_conv(from, get_index(to_info.as_const_value()), conv);
 
     // Reuse this converter for both from and to as const
-    impl->conv_graph.add_conv(as_const_type(to), as_const_type(to), conv);
+    impl->conv_graph.add_conv(get_index(from_info.as_const_value()), get_index(to_info.as_const_value()), conv);
 }
 
 TypeMirror const* TypeSystemInstance::get_namespace(std::string full_name) const

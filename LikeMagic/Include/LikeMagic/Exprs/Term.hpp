@@ -20,7 +20,7 @@ struct Term
 {
     static ExprPtr create(R func_result)
     {
-        Expr* result = create_expr(new R(func_result), TypId<R*>::get());
+        Expr* result = create_expr(new R(func_result), TypId<R>::liberal());
         result->set_auto_delete_ptr(true);
         return result;
     }
@@ -32,7 +32,7 @@ struct Term<R&>
 {
     static ExprPtr create(R& func_result)
     {
-        return create_expr(&func_result, TypId<R*>::get());
+        return create_expr(&func_result, TypId<R&>::liberal());
     }
 };
 
@@ -42,7 +42,7 @@ struct Term<R*>
 {
     static ExprPtr create(R* func_result)
     {
-        return create_expr(func_result, TypId<R*>::get());
+        return create_expr(func_result, TypId<R*>::liberal());
     }
 };
 
@@ -52,8 +52,27 @@ struct Term<R*&>
 {
     static ExprPtr create(R*& func_result)
     {
-        return create_expr(&func_result, TypId<R*>::get());
+        return create_expr(&func_result, TypId<R*&>::liberal());
     }
 };
 
+// Pointer const case
+template <typename R>
+struct Term<R* const>
+{
+    static ExprPtr create(R* const func_result)
+    {
+        return create_expr(func_result, TypId<R* const>::liberal());
+    }
+};
+
+// Reference to pointer const case
+template <typename R>
+struct Term<R* const&>
+{
+    static ExprPtr create(R* const& func_result)
+    {
+        return create_expr(&func_result, TypId<R* const&>::liberal());
+    }
+};
 }

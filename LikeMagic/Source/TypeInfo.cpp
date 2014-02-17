@@ -15,23 +15,19 @@
 
 namespace LM {
 
-LIKEMAGIC_API TypeIndex as_ptr_type(TypeIndex index) { return get_index(get_info(index).as_ptr()); }
-LIKEMAGIC_API TypeIndex as_const_ptr_type(TypeIndex index) { return get_index(get_info(index).as_const().as_ptr()); }
-LIKEMAGIC_API TypeIndex as_const_type(TypeIndex index) { return get_index(get_info(index).as_const()); }
-
-LIKEMAGIC_API TypeInfo create_cpp_type_info(std::type_info const* info_, bool is_const_, bool is_ptr_)
+LIKEMAGIC_API TypeInfo create_cpp_type_info(std::type_info const* info_, PtrType ptr_type_, RefType ref_type_, bool is_end_)
 {
-    return TypeInfo { "C++", demangle_name(info_->name()), is_const_, is_ptr_ };
+    return TypeInfo { "C++", demangle_name(info_->name()), ptr_type_, ref_type_, is_end_ };
 }
 
-LIKEMAGIC_API TypeIndex create_cpp_type_index(std::type_info const* info_, bool is_const_, bool is_ptr_)
+LIKEMAGIC_API TypeIndex create_cpp_type_index(std::type_info const* info_, PtrType ptr_type_, RefType ref_type_, bool is_end_)
 {
-    return get_index(create_cpp_type_info(info_, is_const_, is_ptr_));
+    return get_index(create_cpp_type_info(info_, ptr_type_, ref_type_, is_end_));
 }
 
 LIKEMAGIC_API TypeInfo create_namespace_type_info(std::string namespace_name)
 {
-    return TypeInfo { "namespace", namespace_name, false, false };
+    return TypeInfo { "namespace", namespace_name, PtrType::NotPtr, RefType::ValueNonconst, false };
 }
 
 LIKEMAGIC_API TypeIndex create_namespace_type_index(std::string namespace_name)
@@ -41,7 +37,7 @@ LIKEMAGIC_API TypeIndex create_namespace_type_index(std::string namespace_name)
 
 LIKEMAGIC_API TypeInfo create_bottom_ptr_type_info()
 {
-    return TypeInfo { "NULL", "", false, false };
+    return TypeInfo { "bottom ptr system", "", PtrType::NotPtr, RefType::ValueNonconst, false };
 }
 
 LIKEMAGIC_API TypeIndex create_bottom_ptr_type_index()

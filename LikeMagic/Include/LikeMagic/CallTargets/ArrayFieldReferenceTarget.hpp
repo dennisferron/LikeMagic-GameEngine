@@ -33,9 +33,9 @@ public:
     {
         ExprPtr ward;
         ExprPtr target_ward;
-        Delegate* target_obj = eval_as_target(target, actual_type, target_ward);
+        Delegate& target_obj = eval_as_nonconst_target(target, actual_type, target_ward);
         return create_reference(
-            &((target_obj->*f_ptr)[EvalAs<size_t>::value(args[0], ward)]), TypId<R>::get(), target);
+            &((target_obj.*f_ptr)[EvalAs<size_t>::value(args[0], ward)]), TypId<R>::liberal(), target);
     }
 
     virtual TypeInfoList const& get_arg_types() const
