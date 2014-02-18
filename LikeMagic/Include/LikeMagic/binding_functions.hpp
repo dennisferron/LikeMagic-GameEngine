@@ -197,13 +197,14 @@ TypeMirror& register_enum(std::string name, TypeMirror& namespace_)
 }
 
 LIKEMAGIC_API TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespace_);
+LIKEMAGIC_API CallTarget* create_expr_target(ExprPtr expr);
 
 template <typename T>
 void add_value(TypeMirror& namespace_, std::string name, T&& value)
 {
     ExprPtr expr = Term<T>::create(std::forward<T>(value));
     std::cout << "add_value " << name << " " << expr->description() << std::endl;
-    CallTarget* target = new LM::ExprTarget(expr);
+    CallTarget* target = create_expr_target(expr);
     namespace_.add_method(name, target);
 }
 

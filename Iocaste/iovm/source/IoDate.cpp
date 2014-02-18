@@ -16,6 +16,13 @@
 #include <string.h>
 #include <time.h>
 
+// F**king MinGW headers not handling C++0x right...
+#if defined(_WIN32) && defined(__GNUC__)
+extern _CRTIMP void __cdecl	_tzset (void);
+__MINGW_IMPORT int	_daylight;
+__MINGW_IMPORT long	_timezone;
+#endif
+
 static const char *protoId = "Date";
 
 #define DATA(self) ((Date *)IoObject_dataPointer(self))

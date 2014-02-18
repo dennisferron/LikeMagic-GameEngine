@@ -69,6 +69,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="-Lbin/Debug" />
+					<Add option="-L../bin/Debug" />
+					<Add option="-L../../bin/Debug" />
 					<Add library="libLikeMagic-Windows" />
 				</Linker>
 			</Target>

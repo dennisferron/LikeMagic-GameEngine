@@ -59,6 +59,7 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-msse" />
+					<Add option="--std=gnu++11" />
 					<Add option="-DNO_IO_USE_SIMD" />
 					<Add option="-D__SIMD_EMU__" />
 					<Add option="-DBUILDING_IOVMALL_DLL" />
@@ -67,8 +68,8 @@
 					<Add option="-DNO_USE_DMALLOC" />
 				</Compiler>
 				<Linker>
-					<Add library="../LikeMagic/libLikeMagic-Windows.a" />
-					<Add library="../Common/boost_1_54_0/stage/lib/libboost_program_options-mgw47-mt-d-1_54.a" />
+					<Add library="..\bin\Debug\libLikeMagic-Windows.a" />
+					<Add library="..\Common\boost_1_54_0\stage\lib\libboost_program_options-mgw48-mt-d-1_54.a" />
 				</Linker>
 			</Target>
 		</Build>
@@ -96,7 +97,7 @@
 			<Add directory="../Common/segvcatch-0.9.1/lib" />
 		</Compiler>
 		<Linker>
-			<Add library="../Common/segvcatch-0.9.1/bin/Debug/libsegvcatch.a" />
+			<Add library="..\Common\segvcatch-0.9.1\bin\Debug\libsegvcatch.a" />
 		</Linker>
 		<Unit filename="Include/Iocaste/Breakpoint.hpp" />
 		<Unit filename="Include/Iocaste/CShims/Exception.h" />
@@ -215,6 +216,7 @@
 		<Unit filename="basekit/source/PortableStrlcpy.h" />
 		<Unit filename="basekit/source/PortableStrptime.cpp">
 			<Option compilerVar="CC" />
+			<Option compiler="gcc" use="1" buildCommand="$compiler $includes -c $file -o $object" />
 		</Unit>
 		<Unit filename="basekit/source/PortableStrptime.h" />
 		<Unit filename="basekit/source/PortableTruncate.cpp">
@@ -358,6 +360,7 @@
 		<Unit filename="iovm/source/IoCoroutine.h" />
 		<Unit filename="iovm/source/IoDate.cpp">
 			<Option compilerVar="CC" />
+			<Option compiler="gcc" use="0" buildCommand="$compiler $includes -c $file -o $object" />
 		</Unit>
 		<Unit filename="iovm/source/IoDate.h" />
 		<Unit filename="iovm/source/IoDebugger.cpp">

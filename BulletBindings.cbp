@@ -17,6 +17,7 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-Wno-unused-local-typedefs" />
 					<Add option="-DUSE_DLL_BUILD" />
 					<Add option="-DBUILDING_BULLET_BINDINGS_DLL" />
 					<Add option="-D_DEBUG" />
@@ -27,8 +28,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="-m32" />
-					<Add library="LikeMagic/libLikeMagic-Windows.a" />
-					<Add library="./libBullet.a" />
+					<Add library="bin\Debug\libLikeMagic-Windows.a" />
+					<Add library=".\libBullet.a" />
 				</Linker>
 			</Target>
 			<Target title="Debug Linux">
@@ -48,7 +49,7 @@
 					<Add option="-D_DEBUG" />
 				</Compiler>
 				<Linker>
-					<Add library="./libBullet-Linux.a" />
+					<Add library=".\libBullet-Linux.a" />
 				</Linker>
 			</Target>
 		</Build>

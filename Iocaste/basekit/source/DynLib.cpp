@@ -31,7 +31,7 @@ static void *dlopen(const char *path, int mode)
 
 static int dlclose(void *handle)
 {
-	return FreeLibrary((HANDLE)handle);
+	return FreeLibrary((HMODULE)handle);
 }
 
 static const char *dlerror(void)
@@ -55,7 +55,7 @@ static const char *dlerror(void)
 
 static void *dlsym(void *handle, const char *symbol)
 {
-	return (void*)GetProcAddress((HANDLE)handle, symbol);
+	return (void*)GetProcAddress((HMODULE)handle, symbol);
 }
 
 

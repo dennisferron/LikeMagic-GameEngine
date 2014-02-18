@@ -15,6 +15,11 @@
 #include "dmalloc.h"
 #endif
 
+namespace LM {
+    // Have to define the virtual destructors used, even if they are abstract.
+    LangBlock::~LangBlock() {}
+}
+
 namespace Iocaste { namespace LMAdapters {
 
 IoBlock::IoBlock()

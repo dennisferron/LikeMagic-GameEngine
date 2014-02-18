@@ -70,8 +70,8 @@ typedef struct {
 
 static DIR *opendir(char *pSpec)
 {
-	DIR *pDir = io_calloc(1, sizeof *pDir);
-	char *longer_string = io_calloc(1, (strlen(pSpec) + 3) * sizeof *longer_string);
+	DIR *pDir = (DIR*)io_calloc(1, sizeof *pDir);
+	char *longer_string = (char*)io_calloc(1, (strlen(pSpec) + 3) * sizeof *longer_string);
 
 	strcpy(longer_string, pSpec);
 	strcat(longer_string, "/*");

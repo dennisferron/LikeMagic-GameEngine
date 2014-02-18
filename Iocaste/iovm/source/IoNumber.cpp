@@ -7,6 +7,19 @@ A container for a double (a 64bit floating point number on most platforms).
 */
 
 #define _GNU_SOURCE // for round
+
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
+
+// Grrr...MinGW/C++0x problems again!!!!!!
+#if defined(_WIN32) && defined(__GNUC__)
+#undef __STRICT_ANSI__
+#undef NO_OLDNAMES
+#endif
+
+#include <math.h>
+
 #include "IoNumber.h"
 #include "IoObject.h"
 #include "IoState.h"
@@ -15,11 +28,6 @@ A container for a double (a 64bit floating point number on most platforms).
 #include "IoDate.h"
 #include "IoState.h"
 
-#ifdef _MSC_VER
-#define _USE_MATH_DEFINES
-#endif
-
-#include <math.h>
 #include <ctype.h>
 #include <assert.h>
 

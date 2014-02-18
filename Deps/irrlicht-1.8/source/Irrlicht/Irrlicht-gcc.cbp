@@ -8,7 +8,7 @@
 		<Build>
 			<Target title="Win32 - Debug - dll">
 				<Option platforms="Windows;" />
-				<Option output="../../lib/Win32-gcc/Irrlicht" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../../bin/Debug/Irrlicht" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../obj/win32-gcc-debug-dll" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -45,10 +45,6 @@
 					<Add library="opengl32" />
 					<Add library="winmm" />
 				</Linker>
-				<ExtraCommands>
-					<Add after="cmd /c del ..\..\bin\Win32-gcc\Irrlicht.dll" />
-					<Add after="cmd /c move ..\..\lib\Win32-gcc\Irrlicht.dll ..\..\bin\Win32-gcc\Irrlicht.dll" />
-				</ExtraCommands>
 			</Target>
 			<Target title="Win32 - Release - accurate math - dll">
 				<Option platforms="Windows;" />

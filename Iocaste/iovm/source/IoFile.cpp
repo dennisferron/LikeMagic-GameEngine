@@ -14,6 +14,13 @@ file close
 </pre>
 */
 
+// Grrr...MinGW/C++0x problems again!!!!!!
+#if defined(_WIN32) && defined(__GNUC__)
+#undef __STRICT_ANSI__
+#undef NO_OLDNAMES
+#endif
+#include <stdio.h>
+
 #include "IoDate.h"
 #include "IoFile.h"
 #include "IoFile_stat.h"
@@ -26,7 +33,6 @@ file close
 #include "UArray.h"
 #include "PortableTruncate.h"
 #include <errno.h>
-#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 /*#include <sys/wait.h>*/
