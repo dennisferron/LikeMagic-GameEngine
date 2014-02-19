@@ -24,7 +24,8 @@ method(module, namespace_irr, namespace_Custom, MainWindow, PredefinedValues, Sc
         UserInterface := module UserInterface
         ScriptUtil := ScriptUtil
 
-        mediaPath := method(ScriptUtil get_script_path .. "../")
+        writeln("Engine io_vm get script path")
+        mediaPath := method(io_vm get_script_path .. "../")
 
         events ::= nil
         eventDispatch ::= nil
@@ -77,7 +78,7 @@ method(module, namespace_irr, namespace_Custom, MainWindow, PredefinedValues, Sc
             )
 
             windowSize := dimension2du tmp(MainWindow sizeX, MainWindow sizeY)
-            deviceType := list(EDT_OPENGL, EDT_BURNINGSVIDEO, EDT_SOFTWARE, EDT_NULL) at(3)
+            deviceType := list(EDT_OPENGL, EDT_BURNINGSVIDEO, EDT_SOFTWARE, EDT_NULL) at(0)
             setDevice(namespace_irr createDevice(deviceType, windowSize, 16, false, false, false, events))
 
             if (device == nil,
