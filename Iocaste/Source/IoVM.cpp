@@ -632,12 +632,12 @@ IoObject* IoVM::forward(IoObject *self, IoObject *locals, IoMessage *m)
 
 IoObject* IoVM::to_script(IoObject *self, IoObject *locals, IoMessage *m, ExprPtr from_expr) const
 {
+    if (!from_expr)
+        return IOSTATE->ioNil;
+
     assert_expr(from_expr.get());
 
     static TypeIndex to_io_type = ToIoTypeInfo::create_index();
-
-    if (!from_expr)
-        return IOSTATE->ioNil;
 
     bool is_terminal = from_expr->is_terminal();
     bool disable_to_script = from_expr->disable_to_script_conv();

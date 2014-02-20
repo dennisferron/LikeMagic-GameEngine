@@ -41,11 +41,15 @@ namespace LM
 
     LIKEMAGIC_API void assert_expr(Expr* ptr)
     {
+        if (ptr == nullptr)
+            throw std::runtime_error("Expr* is null");
+
         if (expr_tracking.find(ptr) == expr_tracking.end())
         {
             stringstream ss;
             ss << "No tracking info for expr "
                 << ptr << endl;
+            cout << ss.str() << endl;
             throw std::runtime_error(ss.str());
         }
     }

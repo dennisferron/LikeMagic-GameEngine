@@ -100,6 +100,7 @@ STD_BINDINGS_API void LM::add_bindings()
     typedef unsigned char uchar;
     LM_CLASS(global_ns, uchar)
 
+    // TODO:  String convertsions for wchar_t
     LM_CLASS(global_ns, wchar_t)
 
     LM_CLASS(global_ns, Delegate)
