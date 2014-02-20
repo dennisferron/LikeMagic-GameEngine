@@ -46,6 +46,15 @@ using namespace std;
 using namespace Iocaste;
 using namespace Iocaste::LMAdapters;
 
+namespace Iocaste {
+
+IOCASTE_API ::Iocaste::LMAdapters::IoVM* create_iovm(std::string bootstrap_path)
+{
+    return new IoVM(bootstrap_path);
+}
+
+}
+
 string IoVM::get_script_path()
 {
     return scriptPath;

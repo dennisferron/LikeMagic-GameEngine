@@ -112,10 +112,8 @@ void add_convs_from_script(IoVM* iovm)
 
         virtual float cost() const { return 5.0f; }
     };
-    static const char* name1 = "Nil";
-    static std::string name2(name1);
-    static auto from_type(FromIoTypeInfo::create_index(name2));
-    auto to_type = FromNil().wrap_expr(0)->get_type();
+    TypeIndex from_type(FromIoTypeInfo::create_index("Nil"));
+    TypeIndex to_type = create_bottom_ptr_type_index();
     auto conv = new FromNil;
     type_system->add_converter_simple(from_type, to_type, conv);
 

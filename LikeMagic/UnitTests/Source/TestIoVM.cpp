@@ -65,4 +65,13 @@ SUITE(TestIoVM)
         CHECK_EQUAL("namespace", expr_type.system);
         CHECK_EQUAL("::std", expr_type.name);
     }
+
+    TEST(FromIoNilToPtr)
+    {
+        string io_code = "nil";
+        auto expr = io_vm->get_abs_expr(io_code);
+        CHECK(EvalAs<int*>::has_conv(expr.get()));
+        ExprPtr ward;
+        CHECK_EQUAL((int*)nullptr, EvalAs<int*>::value(expr, ward));
+    }
 }

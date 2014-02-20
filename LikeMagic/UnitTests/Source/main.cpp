@@ -20,7 +20,7 @@ IoVM* io_vm = nullptr;
 void setup_io_vm()
 {
     string bootstrap_path = "../../Iocaste/iovm/io/";
-    io_vm = new IoVM(bootstrap_path);
+    io_vm = create_iovm(bootstrap_path);
 }
 
 int main()

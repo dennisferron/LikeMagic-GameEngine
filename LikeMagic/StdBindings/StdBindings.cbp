@@ -85,6 +85,7 @@
 			<Add option="-Wno-unused-parameter" />
 			<Add option="-Wno-deprecated" />
 			<Add option="-Wno-ignored-qualifiers" />
+			<Add option="-Wno-unused-local-typedefs" />
 			<Add option="-DBUILDING_DLL_STD_BINDINGS" />
 			<Add directory="Include" />
 			<Add directory="../Include" />

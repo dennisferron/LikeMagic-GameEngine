@@ -324,6 +324,10 @@ void TypeSystemInstance::add_common_conversions(TypeIndex type)
 
     add_conv(ref_to_nonconst, ref_to_const.as_restricted());
     add_conv(ptr_to_nonconst, ptr_to_const.as_restricted());
+
+    TypeInfo nil_expr_type = create_bottom_ptr_type_info();
+    add_conv(nil_expr_type, ptr_to_nonconst.as_restricted());
+    add_conv(nil_expr_type, ptr_to_const.as_restricted());
 }
 
 void TypeSystemInstance::add_converter_variations(TypeIndex from, TypeIndex to, p_conv_t conv)

@@ -9,7 +9,7 @@
 			<Target title="Debug Windows">
 				<Option platforms="Windows;" />
 				<Option output="../../bin/Debug/LikeMagicUnitTests" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../../../GameBindings" />
+				<Option working_dir="../../bin/Debug" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -22,6 +22,7 @@
 					<Add library="..\..\Common\UnitTest++\bin\Debug\libUnitTest++.a" />
 					<Add library="..\..\bin\Debug\libStdBindings-Windows.a" />
 					<Add library="..\..\bin\Debug\libLikeMagic-Windows.a" />
+					<Add library="..\..\bin\Debug\libIocaste-Windows.a" />
 				</Linker>
 			</Target>
 			<Target title="Debug Mac">
@@ -69,6 +70,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-Wno-unused-local-typedefs" />
 			<Add directory="Include" />
 			<Add directory="../Include" />
 			<Add directory="../StdBindings/Include" />

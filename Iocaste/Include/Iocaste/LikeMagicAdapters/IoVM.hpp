@@ -13,6 +13,8 @@
 #include "Iocaste/LikeMagicAdapters/API_Io.hpp"
 #include "LikeMagic/MarkableObjGraph.hpp"
 
+#include "Iocaste/IocasteDLL.hpp"
+
 #include "Iocaste/Breakpoint.hpp"
 #include "Iocaste/Primitives.hpp"
 
@@ -80,7 +82,7 @@ public:
     void run_cli() const;
     IoObject* do_string(std::string io_code) const;
 
-    ExprPtr get_abs_expr(std::string io_code) const;
+    virtual ExprPtr get_abs_expr(std::string io_code) const;
 
     template <typename T>
     T get_expr(std::string io_code) const
@@ -121,3 +123,9 @@ public:
 };
 
 }}
+
+namespace Iocaste {
+
+IOCASTE_API ::Iocaste::LMAdapters::IoVM* create_iovm(std::string bootstrap_path);
+
+}

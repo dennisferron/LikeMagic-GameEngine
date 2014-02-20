@@ -45,7 +45,6 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add option="-Wno-unused-local-typedefs" />
 					<Add option="-DUSE_DLL_BUILD" />
 					<Add option="-DBUILDING_LIKEMAGIC_DLL" />
 				</Compiler>
@@ -61,6 +60,7 @@
 			<Add option="-Wno-unused-parameter" />
 			<Add option="-Wno-deprecated" />
 			<Add option="-Wno-ignored-qualifiers" />
+			<Add option="-Wno-unused-local-typedefs" />
 			<Add directory="../Common/boost_1_54_0" />
 			<Add directory="../Iocaste/basekit/source" />
 			<Add directory="../Iocaste/garbagecollector/source" />
