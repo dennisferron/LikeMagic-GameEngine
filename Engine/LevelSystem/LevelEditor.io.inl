@@ -50,8 +50,8 @@ method(namespace_Bullet, namespace_irr, namespace_Custom, Structure, Styles,
         radiusKnob setStepSize(0.1)
         radiusKnob setRange(0.1, 1000)
 
-        setHitTriangle(triangle3df ref)
-        setCollisionPoint(vector3df ref(1, 2, 3))
+        setHitTriangle(triangle3df tmp)
+        setCollisionPoint(vector3df tmp(1, 2, 3))
     )
 
     LevelEditor loadTexture := method(fileName,
@@ -109,7 +109,7 @@ method(namespace_Bullet, namespace_irr, namespace_Custom, Structure, Styles,
     LevelEditor selectTriangle := method(X, Y,
 
         // This has been promoted to an object level slot so it can be displayed each frame.
-        //hitTriangle := triangle3df ref
+        //hitTriangle := triangle3df tmp
 
         ray := collMan getRayFromScreenCoordinates(vector2di tmp(X, Y), nil) //engine camera node)
 
@@ -144,8 +144,8 @@ method(namespace_Bullet, namespace_irr, namespace_Custom, Structure, Styles,
     LevelEditor selectNode := method(X, Y,
 
         selectedSceneNode := nil
-        collisionPoint := vector3df ref(1, 2, 3)
-        hitTriangle := triangle3df ref
+        collisionPoint := vector3df tmp(1, 2, 3)
+        hitTriangle := triangle3df tmp
 
         selectedSceneNode = collMan getSceneNodeFromScreenCoordinatesBB(
             vector2di tmp(X, Y),  // pos

@@ -109,18 +109,15 @@ void track_expr(Expr* ptr);
 LIKEMAGIC_API Expr* create_expr(ValuePtr ptr_, TypeIndex type_)
 {
     ExprImpl* result = new ExprImpl(ptr_, type_, nullptr);
-
-    // TODO: Remove this when done debugging.
-    //cout << "Created expr " << result << " type " << type_.get_id() << " " << type_.description() << " value_ptr=" << result->value_ptr.as_const << endl;
-
     track_expr(result);
-
     return result;
 }
 
 LIKEMAGIC_API Expr* create_reference(ValuePtr ptr_, TypeIndex type_, ExprPtr storage_location_)
 {
-    return new ExprImpl(ptr_, type_, storage_location_);
+    ExprImpl* result = new ExprImpl(ptr_, type_, storage_location_);
+    track_expr(result);
+    return result;
 }
 
 ExprImpl::ExprImpl(ValuePtr ptr_, TypeIndex type_, ExprPtr storage_location_)

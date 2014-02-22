@@ -62,6 +62,28 @@ void at_put(vector<T>& target, size_t pos, T const& value)
     target.at(pos) = value;
 }
 
+std::string wchar_to_string(wchar_t const* char_ptr)
+{
+    std::string result;
+
+    while (*char_ptr++)
+        result += (char)*char_ptr;
+
+    return result;
+}
+
+std::wstring string_to_wstring(std::string const& src)
+{
+    std::wstring result;
+
+    for (char ch : src)
+        result += (wchar_t)ch;
+
+    return result;
+}
+
+void add_string_convs();
+
 STD_BINDINGS_API void LM::add_bindings()
 {
     TypeMirror& global_ns = type_system->global_namespace();
@@ -70,6 +92,9 @@ STD_BINDINGS_API void LM::add_bindings()
     // Add the abstract type system itself as a class.
     LM_CLASS(global_ns, TypeSystem)
     LM_FUNC(TypeSystem, (global_namespace))
+
+    LM_STATIC_FUNC_NAME(global_ns, "wchar_to_string", wchar_to_string)
+    LM_STATIC_FUNC_NAME(global_ns, "string_to_wstring", string_to_wstring)
 
     LM_CLASS(global_ns, CallTarget)
 
@@ -83,7 +108,10 @@ STD_BINDINGS_API void LM::add_bindings()
     LM_FUNC(MarkableObjGraph, (number_of_parents)(number_of_children))
 
     LM_CLASS(global_ns, string)
+    LM_FUNC(string, (c_str))
+
     LM_CLASS(global_ns, wstring)
+    LM_FUNC(wstring, (c_str))
 
     LM_CLASS(global_ns, short)
     typedef unsigned short ushort;
@@ -99,11 +127,12 @@ STD_BINDINGS_API void LM::add_bindings()
     LM_CLASS(global_ns, bool)
     typedef unsigned char uchar;
     LM_CLASS(global_ns, uchar)
-
-    // TODO:  String convertsions for wchar_t
-    LM_CLASS(global_ns, wchar_t)
+    LM_CLASS(global_ns, char)
 
     LM_CLASS(global_ns, Delegate)
+
+    LM_CLASS(global_ns, wchar_t)
+    LM_EXTENSION_METHOD(wchar_t, (wchar_to_string))
 
     add_conv<float, double, NumberConv>();
     add_conv<short, double, NumberConv>();

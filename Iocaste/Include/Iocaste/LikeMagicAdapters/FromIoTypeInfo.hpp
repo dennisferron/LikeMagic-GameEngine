@@ -31,9 +31,18 @@ public:
     static TypeIndex create_index(std::string type_name)
     {
         TypeInfo info = create(type_name);
-        return get_index(
+        TypeIndex result = get_index(
                 info
         );
+
+        /*
+        if (type_name == "Sequence")
+        {
+            std::cout << "Created FromIo type index " << result.description() << " " << result.get_id() << std::endl;            std::cout << "Created FromIo type index " << result.description() << " " << result.get_id() << std::endl;
+        }
+        */
+
+        return result;
     }
 };
 

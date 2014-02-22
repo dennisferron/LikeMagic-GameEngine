@@ -152,9 +152,10 @@ void TypeConvGraph::add_conv(TypeIndex from, TypeIndex to, p_conv_t conv)
         graph[new_edge].conv = conv;
         graph[new_edge].cost = conv->cost();
 
+        /*
         cout << "Added type converter from "
             << from.description() << " to " << to.description()
-            << " called " << conv->description() << endl;
+            << " called " << conv->description() << endl; */
     }
 }
 
@@ -243,6 +244,14 @@ void TypeConvGraph::print_conv_chain(p_chain_t const& chain) const
     cout << " }" << endl;
 }
 
+static string describe_type(TypeIndex type)
+{
+    stringstream ss;
+    ss << type.description();
+    ss << " type id:";
+    ss << type.get_id();
+    return ss.str();
+}
 
 ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to) const
 {
@@ -250,18 +259,18 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to
 
     if (!result)
     {
-        std::string msg  = std::string("No type conversion path from ") + from.description() + " to " + to.description() + ".  ";
+        std::string msg  = std::string("No type conversion path from ") + describe_type(from)
+            + " to " + describe_type(to) + ".  ";
+        cout << msg << endl;
 
-        try
+        TypeInfo from_info = from.get_info();
+        if (from_info.ref_type == RefType::RefToConst || from_info.ptr_type == PtrType::PtrToConst)
         {
-            if (search_for_conv(get_index(from.get_info().as_ref_to_nonconst()), to))
+            // TODO:  This actually only accounts for ref, so also add ptr to nonconst if it is a ptr.
+            TypeIndex from_as_nonconst = get_index(from_info.as_ref_to_nonconst());
+            if (has_type(from_as_nonconst) && search_for_conv(from_as_nonconst, to))
                 msg += "I notice the conversion would work if the from-type were not const.  Did you use get_fieldName (const version) when you meant to use ref_fieldName (nonconst version)?  Or call functionName_nc (nonconst version) when you meant to call functioname_c (const version)?  Don't forget that a member of a const object is also const.";
         }
-        catch (...)
-        {
-            // as_nonconst_type can fail for types that are not C++ types.  We need to catch that exception and ignore it so that we don't lose the more important original exception message.
-        }
-
 
         throw std::logic_error(msg);
     }
@@ -279,15 +288,6 @@ bool TypeConvGraph::has_conv(TypeIndex from_type, TypeIndex to_type) const
         && (search_for_conv(from_type, to_type) != nullptr);
 }
 
-static string describe_type(TypeIndex type)
-{
-    stringstream ss;
-    ss << type.description();
-    ss << " type id:";
-    ss << type.get_id();
-    return ss.str();
-}
-
 TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, TypeIndex to) const
 {
     auto key = std::make_pair(from.get_id(), to.get_id());
@@ -299,13 +299,25 @@ TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, T
     if ( (not_in_cache = (conv_cache.find(key) == conv_cache.end())) || (null_in_cache = (conv_cache[key] == nullptr)) || true)
     {
         if (!has_type(from) && !has_type(to))
-            throw LM::Exception("From and To types not found in TypeConvGraph in search_for_conv from " + describe_type(from) + " to " + describe_type(to));
+        {
+            string msg = "From and To types not found in TypeConvGraph in search_for_conv from " + describe_type(from) + " to " + describe_type(to);
+            cout << msg << endl;
+            throw LM::Exception(msg);
+        }
 
         if (!has_type(from))
-            throw LM::Exception("From type not found in TypeConvGraph in search_for_conv from " + describe_type(from) + " to " + describe_type(to));
+        {
+            string msg = "From type not found in TypeConvGraph in search_for_conv from " + describe_type(from) + " to " + describe_type(to);
+            cout << msg << endl;
+            throw LM::Exception(msg);
+        }
 
         if (!has_type(to))
-            throw LM::Exception("To type not found in TypeConvGraph in search_for_conv from " + describe_type(from) + " to " + describe_type(to));
+        {
+            string msg = "To type not found in TypeConvGraph in search_for_conv from " + describe_type(from) + " to " + describe_type(to);
+            cout << msg << endl;
+            throw LM::Exception(msg);
+        }
 
         vertex_t source = vertex_map[from.get_id()];
         vertex_t dest = vertex_map[to.get_id()];

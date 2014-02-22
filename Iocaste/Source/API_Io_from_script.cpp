@@ -179,6 +179,7 @@ void add_convs_from_script(IoVM* iovm)
     MKCONV(Number, unsigned char, (unsigned char)IoNumber_asInt)
     MKCONV(Number, float, IoNumber_asFloat)
     MKCONV(Sequence, std::string, IoSeq_asCString)
+    MKCONV(Sequence, char const*, IoSeq_asCString)
     //MKCONV(Bool, bool, ISTRUE)
 
     struct FromBool : public AbstractTypeConverter
@@ -197,6 +198,33 @@ void add_convs_from_script(IoVM* iovm)
 
     type_system->add_converter_simple(FromIoTypeInfo::create_index("Bool"), TypId<bool>::liberal(), new FromBool);
 
+    struct FromSequenceToWCharConstPtrConv : public AbstractTypeConverter
+    {
+        virtual ExprPtr wrap_expr(ExprPtr expr) const
+        {
+            IoObject* io_obj = reinterpret_cast<IoObject*>(expr->get_value_ptr().as_nonconst);
+            char const* src = IoSeq_asCString(io_obj);
+
+            ExprPtr result = Term<std::wstring>::create(std::wstring());
+
+            std::wstring* dst =
+                reinterpret_cast<std::wstring*>(
+                    expr->get_value_ptr().as_nonconst);
+
+            while (*src++)
+                *dst += (wchar_t)*src;
+
+            return create_reference(dst->c_str(), TypId<wchar_t const*>::restricted(), result);
+        }
+
+        virtual std::string description() const { return "FromSequenceToWCharConstPtrConv"; }
+
+        virtual float cost() const { return 500.0f; }
+    };
+
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Sequence"),
+                                      TypId<wchar_t const*>::restricted(),
+                                      new FromSequenceToWCharConstPtrConv);
 
     //MKCONV(Vector, std::vector<long double>, from_vector<long double>)
     MKCONV(Vector, std::vector<double>, from_vector<double>)

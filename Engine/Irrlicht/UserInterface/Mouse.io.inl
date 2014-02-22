@@ -42,8 +42,8 @@ method(namespace_Bullet, namespace_irr, namespace_Custom, PredefinedValues, Cons
     Mouse init := method(
 
         setCodeInputBoxes(list())
-        setHitTriangle(triangle3df ref)
-        setCollisionPoint(vector3df ref(1, 2, 3))
+        setHitTriangle(triangle3df tmp)
+        setCollisionPoint(vector3df tmp(1, 2, 3))
     )
 
     Mouse handle := method(event,
@@ -131,7 +131,7 @@ method(namespace_Bullet, namespace_irr, namespace_Custom, PredefinedValues, Cons
     Mouse selectTriangle := method(X, Y,
 
         // This has been promoted to an object level slot so it can be displayed each frame.
-        //hitTriangle := triangle3df ref
+        //hitTriangle := triangle3df tmp
 
         ray := collMan getRayFromScreenCoordinates(vector2di tmp(X, Y), nil) //engine camera node)
 
@@ -220,8 +220,8 @@ method(namespace_Bullet, namespace_irr, namespace_Custom, PredefinedValues, Cons
         writeln("Mouse selectNode self is ", self)
 
         selectedSceneNode := nil
-        collisionPoint := vector3df ref(1, 2, 3)
-        hitTriangle := triangle3df ref
+        collisionPoint := vector3df tmp(1, 2, 3)
+        hitTriangle := triangle3df tmp
         idBitMask := Constants mouseDraggableBitMask
 
         selectedSceneNode = collMan getSceneNodeFromScreenCoordinatesBB(

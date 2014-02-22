@@ -298,6 +298,13 @@ void TypeSystemInstance::add_common_conversions(TypeIndex type)
     add_conv(ptr_to_nonconst, ptr_to_nonconst.as_restricted());
     add_conv(ref_to_nonconst, ref_to_nonconst.as_restricted());
 
+    TypeInfo const_ref_to_ptr_to_nonconst = ptr_to_nonconst.as_ref_to_nonconst();
+    TypeInfo const_ref_to_ptr_to_const = ptr_to_nonconst.as_ref_to_const();
+
+    add_conv(ptr_to_nonconst, const_ref_to_ptr_to_nonconst.as_restricted());
+    add_conv(ptr_to_nonconst, const_ref_to_ptr_to_const.as_restricted());
+    add_conv(ptr_to_const, const_ref_to_ptr_to_const.as_restricted());
+
     // These have to be restricted because if refs can be converted
     // to value then they can be auto-converted to script which we don't want.
     add_conv(ref_to_const, value_nonconst.as_restricted());

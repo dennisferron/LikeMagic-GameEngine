@@ -40,7 +40,6 @@
 					<Add library=".\libBullet.a" />
 					<Add library="Deps\irrlicht-1.8\lib\Win32-gcc\libIrrlicht.a" />
 					<Add library="bin\Debug\libBulletBindings.a" />
-					<Add library="bin\Debug\libDESteerBindings.a" />
 					<Add library="bin\Debug\libIrrKlangBindings.a" />
 					<Add library="bin\Debug\libIrrlichtBindings.a" />
 					<Add library="bin\Debug\libMeshToolsBindings.a" />

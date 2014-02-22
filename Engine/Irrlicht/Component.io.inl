@@ -67,10 +67,6 @@ method(module, namespace_irr, namespace_Custom, MainWindow, PredefinedValues, Sc
             setEvents(eventDispatch eventReceiver)
 
             setGuiEvents(UserInterface GuiEvents clone)
-            writeln("EET_GUI_EVENT is >>>", EET_GUI_EVENT value)
-            writeln("<<<")
-            writeln("EDT_BURNINGSVIDEO is >>>", EDT_BURNINGSVIDEO value)
-            writeln("<<<")
             eventDispatch addHandler(EET_GUI_EVENT,
                 block(event,
                     guiEvents handle(event)
@@ -132,7 +128,7 @@ method(module, namespace_irr, namespace_Custom, MainWindow, PredefinedValues, Sc
             setCollMan(smgr getSceneCollisionManager)
             setMeshMan(smgr getMeshManipulator)
 
-            setTitle(ScriptUtil get_string(driver getName) .. "  FPS: ")
+            setTitle(ScriptUtil get_string(driver getName wchar_to_string) .. "  FPS: ")
 
             setKeyboard(module UserInterface Keyboard clone)
             eventDispatch addHandler(EET_KEY_INPUT_EVENT,
