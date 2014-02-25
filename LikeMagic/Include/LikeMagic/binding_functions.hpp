@@ -147,6 +147,13 @@ void bind_field(TypeMirror& class_, std::string field_name, R(T::*f))
     class_.add_method("ref_" + field_name, reffer);
 }
 
+template <typename T, typename R>
+void bind_bit_field(TypeMirror& class_, std::string field_name, R(*getter)(T const&), void(*setter)(T&,R))
+{
+    bind_nonmember_op(class_, "get_" + field_name, getter);
+    bind_nonmember_op(class_, "set_" + field_name, setter);
+}
+
 template <typename T, typename R, size_t N>
 void bind_array_field(TypeMirror& class_, std::string field_name, R(T::*f)[N])
 {
@@ -165,6 +172,9 @@ void bind_array_field(TypeMirror& class_, std::string field_name, R(T::*f)[N])
     class_.add_method("ref_" + field_name, reffer);
 }
 
+template <typename T> struct GetSizeOf { enum { value = sizeof(T) }; };
+template <> struct GetSizeOf<void> { enum { value = 0 }; };
+
 template <typename T>
 TypeMirror& register_class(std::string name, TypeMirror& namespace_)
 {
@@ -174,7 +184,7 @@ TypeMirror& register_class(std::string name, TypeMirror& namespace_)
         return *(type_system->get_class(class_type));
     else
     {
-        auto result = create_type_mirror(name, sizeof(T), class_type);
+        auto result = create_type_mirror(name, GetSizeOf<T>::value, class_type);
         type_system->add_class(class_type, result, namespace_);
 
         result->set_deleter(
@@ -203,7 +213,6 @@ template <typename T>
 void add_value(TypeMirror& namespace_, std::string name, T&& value)
 {
     ExprPtr expr = Term<T>::create(std::forward<T>(value));
-    std::cout << "add_value " << name << " " << expr->description() << std::endl;
     CallTarget* target = create_expr_target(expr);
     namespace_.add_method(name, target);
 }

@@ -83,3 +83,8 @@ template <typename T> struct LM_InsertConst<T&> { typedef T const& type; };
 
 #define LM_STATIC_FUNC_NAME(namespace, given_func_name, actual_func) LM::bind_static_method(namespace, given_func_name, actual_func);
 #define LM_STATIC_FUNC_OVERLOAD(namespace, given_func_name, actual_func, ret_type, ...) LM::bind_static_method(namespace, given_func_name, static_cast<ret_type (*)(__VA_ARGS__)>(actual_func));
+
+#define LM_BIT_FIELD(class_name, field_name) \
+LM::bind_bit_field<class_name, decltype(((class_name*)nullptr)->field_name)>(class_name##_LM, BOOST_PP_STRINGIZE(field_name), \
+    [](class_name const& target) { return target.field_name; }, \
+    [](class_name& target, decltype(target.field_name) value) { target.field_name = value; });

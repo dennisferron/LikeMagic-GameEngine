@@ -469,14 +469,14 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
     IoTag* tag = IoObject_tag(self);
     int arg_count = IoMessage_argCount(m);
 
-    std::cout << " (tag '" << tag->name << "'";
+    //std::cout << " (tag '" << tag->name << "'";
 
-    if (tag->likemagic_type != nullptr)
-        cout << " type " << tag->likemagic_type->description();
+    //if (tag->likemagic_type != nullptr)
+    //    cout << " type " << tag->likemagic_type->description();
 
-    cout << ") perform "  << CSTRING(IoMessage_name(m));
-    cout << "(" << arg_count << ")";
-    cout << std::endl << std::flush;
+    //cout << ") perform "  << CSTRING(IoMessage_name(m));
+    //cout << "(" << arg_count << ")";
+    //cout << std::endl << std::flush;
 
     if (!is_Exprs_obj(self))
     {
@@ -508,7 +508,14 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
         // If it's not a C++ method, maybe it is an Io method.  If it is neither,
         // it will end up coming back to us via IoVM::forward where we can throw the method not found exception.
         if (!method)
-            return IoObject_perform(self, locals, m);
+        {
+            // Don't pass on to IoObject_perform if the problem is just wrong number of args;
+            // use suggest method to give a good error message instead.
+            if (type_mirror->has_method_named(method_name))
+                type_mirror->suggest_method(method_name, arg_count);
+            else
+                return IoObject_perform(self, locals, m);
+        }
 
         std::vector<ExprPtr> args;
         TypeInfoList arg_types = method->get_arg_types();

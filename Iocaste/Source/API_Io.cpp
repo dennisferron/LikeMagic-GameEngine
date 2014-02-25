@@ -165,6 +165,10 @@ void API_io_free_expr(IoObject* self)
         {
             std::cout << "free Exprs proxy passed a nullptr object with tag " << IoObject_tag(io_obj)->name << std::endl;
         }
+        else if (voidDataPtr == (void const*)likemagic_proto_data)
+        {
+            std::cout << "LikeMagic proto freed." << std::endl;
+        }
         else
         {
             std::cout << "free Exprs proxy passed a NON-Exprs object with tag " << IoObject_tag(io_obj)->name << std::endl;

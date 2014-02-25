@@ -71,6 +71,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="-Wno-unused-local-typedefs" />
+			<Add option="-Wno-unused-variable" />
 			<Add directory="Include" />
 			<Add directory="../Include" />
 			<Add directory="../StdBindings/Include" />

@@ -79,6 +79,15 @@ private:
 
     p_conv_t bot_conv;
 
+    /*
+    Testing for a conversion can record a nullptr in the cache if the conversion fails.
+    However if we later add a converter it may enable new conversions so we need to re-check.
+    On the other hand we don't want to re-test every conversion to-script every time we
+    return a value to Io.  So as a performance optimization we may want to turn this
+    variable from true to false only after all type converters have been added.
+    */
+    bool recheck_failed_convs;
+
 public:
     TypeConvGraph();
     ~TypeConvGraph();

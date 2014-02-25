@@ -61,6 +61,7 @@ public:
 
     virtual void try_delete(Expr const* expr) const;
     virtual void set_deleter(std::unique_ptr<AbstractTermDeleter const> deleter);
+    virtual bool has_method_named(std::string method_name, bool in_base_class=false) const;
 };
 
 LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type)
@@ -130,9 +131,8 @@ void TypeMirrorImpl::add_method(std::string method_name, CallTarget* method)
     }
     else
     {
-        /*
-        std::cout << impl->name + "::" + method_name
-            + "(" + boost::lexical_cast<std::string>(num_args) + " args)" << std::endl; */
+        //std::cout << impl->name + "::" + method_name
+        //    + "(" + boost::lexical_cast<std::string>(num_args) + " args)" << std::endl;
         impl->methods[method_name][num_args] = method;
     }
 }
@@ -204,9 +204,8 @@ CallTarget* TypeMirrorImpl::get_method(std::string method_name, int num_args, bo
             CallTarget* method = num_iter->second;
 
             // Methods that cannot be inherited (like constructors) must not be returned from base class search.
-            if (in_base_class && !method->is_inherited())
-                return 0;
-            else
+            // But do allow further base lookup if in_base_class and this one is not inheritable
+            if (!(in_base_class && !method->is_inherited()))
                 return num_iter->second;
         }
     }
@@ -224,6 +223,36 @@ CallTarget* TypeMirrorImpl::get_method(std::string method_name, int num_args, bo
 
     // Lastly return null if not found.
     return 0;
+}
+
+bool TypeMirrorImpl::has_method_named(std::string method_name, bool in_base_class) const
+{
+    // First try to find the name and arg number method in this class.
+    auto name_iter = impl->methods.find(method_name);
+    if (name_iter != impl->methods.end())
+    {
+        auto overloads = name_iter->second;
+        for (auto method : overloads)
+        {
+            // Methods that cannot be inherited (like constructors) must not be returned from base class search.
+            // But do allow further base lookup if in_base_class and this one is not inheritable
+            if (!(in_base_class && !method.second->is_inherited()))
+                return true;
+        }
+    }
+
+    // Second try to find it in the bases.
+    for (auto it=impl->bases.begin(); it != impl->bases.end(); it++)
+    {
+        if (it->second == this)
+            throw std::logic_error("The class " + get_class_name() + " is registered as a base of itself!");
+
+        if (it->second->has_method_named(method_name, true))
+            return true;
+    }
+
+    // Lastly return false if not found.
+    return false;
 }
 
 bool TypeMirrorImpl::has_base(TypeMirror const* base) const

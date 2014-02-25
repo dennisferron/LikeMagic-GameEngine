@@ -35,6 +35,7 @@ public:
     virtual void suggest_method(std::string method_name, int num_args) const = 0;
     virtual void try_delete(Expr const* expr) const = 0;
     virtual void set_deleter(std::unique_ptr<AbstractTermDeleter const> deleter) = 0;
+    virtual bool has_method_named(std::string method_name, bool in_base_class=false) const = 0;
 };
 
 inline TypeMirror::~TypeMirror() {}

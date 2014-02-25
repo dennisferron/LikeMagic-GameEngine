@@ -107,6 +107,8 @@ STD_BINDINGS_API void LM::add_bindings()
     LM_CLASS(global_ns, MarkableObjGraph)
     LM_FUNC(MarkableObjGraph, (number_of_parents)(number_of_children))
 
+    LM_CLASS(global_ns, void)
+
     LM_CLASS(global_ns, string)
     LM_FUNC(string, (c_str))
 

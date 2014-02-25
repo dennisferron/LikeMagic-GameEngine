@@ -24,6 +24,10 @@ void add_bindings_btTransform()
     LM_CONSTR(btTransform, "new", btTransform const&)
     LM_CONSTR(btTransform, "new", btQuaternion const&, btVector3 const&)
     LM_STATIC_FUNC_OVERLOAD(btTransform_LM, "getIdentityTransform", btTransform::getIdentity, btTransform const&)
+
+    // For compatibility with scripts that expect this in namespace Bullet.
+    LM_STATIC_FUNC_OVERLOAD(ns_bullet, "getIdentityTransform", btTransform::getIdentity, btTransform const&)
+
     LM_FUNC(btTransform, (getOpenGLMatrix)(getRotation)(inverse)(inverseTimes)(invXform)(mult)(serialize)
             (serializeFloat)(setBasis)(setFromOpenGLMatrix)(setIdentity)(setOrigin)(setRotation))
 

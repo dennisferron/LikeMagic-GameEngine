@@ -29,6 +29,7 @@
 					<Add directory="Deps/irrlicht-1.8/include" />
 				</Compiler>
 				<Linker>
+					<Add option="-s" />
 					<Add option="-m32" />
 					<Add library="bin\Debug\libIocaste-Windows.a" />
 					<Add library="bin\Debug\libDESteerBindings.a" />

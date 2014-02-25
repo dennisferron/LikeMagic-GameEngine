@@ -28,6 +28,7 @@
 					<Add directory="Deps/irrlicht-1.8/include" />
 				</Compiler>
 				<Linker>
+					<Add option="-s" />
 					<Add option="-m32" />
 					<Add library="bin\Debug\libLikeMagic-Windows.a" />
 					<Add library="..\desteer\lib\libdesteer.a" />

@@ -143,7 +143,24 @@ void add_convs_from_script(IoVM* iovm)
 
         virtual float cost() const { return 5.0f; }
     };
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), TypId<void>::restricted(), new FromNilToVoid);
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Nil"), TypId<void*>::restricted(), new FromNilToVoid);
+
+    struct FromIoObjectToVoidPtr : public AbstractTypeConverter
+    {
+        virtual ExprPtr wrap_expr(ExprPtr expr) const
+        {
+            IoObject* self = reinterpret_cast<IoObject*>(expr->get_value_ptr().as_nonconst);
+            if (ISNIL(self))
+                return Term<void*>::create(nullptr);
+            else
+                return expr;  // expr already points to an IoObject.
+        }
+
+        virtual std::string description() const { return "From Nil to void Conv"; }
+
+        virtual float cost() const { return 10.0f; }
+    };
+    type_system->add_converter_simple(TypId<IoObject*>::liberal(), TypId<void*>::restricted(), new FromIoObjectToVoidPtr);
 
     struct FromIoBlock : public AbstractTypeConverter
     {

@@ -46,7 +46,7 @@ using namespace LM;
 namespace LM {
 
 TypeConvGraph::TypeConvGraph()
-    : no_vertex(std::numeric_limits<vertex_t>::max()), bot_conv(new NoChangeConv("Bottom type conv"))
+    : no_vertex(std::numeric_limits<vertex_t>::max()), bot_conv(new NoChangeConv("Bottom type conv")), recheck_failed_convs(true)
 {
 }
 
@@ -98,15 +98,23 @@ bool TypeConvGraph::has_type(TypeIndex type) const
 {
     std::size_t pos = type.get_id();
     std::size_t sz = has_vertex.size();
+
+    bool result = pos < sz && has_vertex[pos];
+
     /*
-    cout << "pos=" << pos << " sz=" << sz;
-    if (pos < sz)
-        cout << " has_vertex=" << has_vertex[pos];
-    else
-        cout << " !(pos<sz)";
-    cout << endl;
+    if (!result)
+    {
+        cout << "has_type pos=" << pos << " sz=" << sz;
+        if (pos < sz)
+            cout << " has_vertex=" << has_vertex[pos];
+        else
+            cout << " !(pos<sz)";
+        cout << endl;
+        cout << "has_type result = " << result << endl;
+    }
     */
-    return pos < sz && has_vertex[pos];
+
+    return result;
 }
 
 TypeConvGraph::vertex_t TypeConvGraph::add_type(TypeIndex type)
@@ -133,6 +141,8 @@ TypeConvGraph::vertex_t TypeConvGraph::add_type(TypeIndex type)
 
 void TypeConvGraph::add_conv(TypeIndex from, TypeIndex to, p_conv_t conv)
 {
+    //cout << "about to add_conv from typeindex " << from.get_id() << " to typeindex " << to.get_id() << endl;
+
     auto from_vert = add_type(from);
     auto to_vert = add_type(to);
     auto existing_edge = edge(from_vert, to_vert, graph);
@@ -152,10 +162,24 @@ void TypeConvGraph::add_conv(TypeIndex from, TypeIndex to, p_conv_t conv)
         graph[new_edge].conv = conv;
         graph[new_edge].cost = conv->cost();
 
-        /*
+    /*
         cout << "Added type converter from "
-            << from.description() << " to " << to.description()
-            << " called " << conv->description() << endl; */
+            << from.description() << " " << from.get_id() << " to " << to.description() << " " << to.get_id()
+            << " called " << conv->description() << endl;
+    */
+
+        if (!has_conv(from, to))
+        {
+            auto from_vert2 = add_type(from);
+            auto to_vert2 = add_type(to);
+            auto existing_edge2 = edge(from_vert2, to_vert2, graph);
+            bool test_again = existing_edge2.second;
+            stringstream msg;
+            msg << "double checked has conv is " << test_again << endl;
+            msg << "add_conv missing just-added conversion from " << from.description() << " " << from.get_id() << " to " << to.description() << " " << to.get_id() << " conv='" << conv->description() << "'";
+            cout << msg.str() << endl;
+            throw std::logic_error(msg.str());
+        }
     }
 }
 
@@ -296,7 +320,7 @@ TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, T
     bool null_in_cache = false;
 
     // If not cached
-    if ( (not_in_cache = (conv_cache.find(key) == conv_cache.end())) || (null_in_cache = (conv_cache[key] == nullptr)) || true)
+    if ( (not_in_cache = (conv_cache.find(key) == conv_cache.end())) || ((null_in_cache = (conv_cache[key] == nullptr) && recheck_failed_convs)))
     {
         if (!has_type(from) && !has_type(to))
         {
@@ -382,7 +406,7 @@ TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, T
             p_conv_t direct_conv = get_conv(from, to);
 
             if (direct_conv == nullptr)
-                cout << "No conv chain from " << from.description() << " to " << to.description() << " and no direct conv." << endl;
+                ;//cout << "No conv chain from " << from.description() << " to " << to.description() << " and no direct conv." << endl;
             else
                 cout << "No conv chain from " << from.description() << " to " << to.description() << " but a direct conversion exists." << endl;
 
@@ -404,8 +428,8 @@ TypeConvGraph::p_chain_t const& TypeConvGraph::search_for_conv(TypeIndex from, T
         }
     }
 
-    cout << "Conversion chain from " << from.description() << " to " << to.description() << " is ";
-    print_conv_chain(conv_cache[key]);
+    //cout << "Conversion chain from " << from.description() << " to " << to.description() << " is ";
+    //print_conv_chain(conv_cache[key]);
 
     return conv_cache[key];
 }
