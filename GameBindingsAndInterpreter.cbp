@@ -15,7 +15,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
-				<Option parameters="--language ../../Iocaste/iovm/io/ --engine ../../Engine/Startup.io.inl --game ../../../../wayup/Engine/Startup.io.inl --assets ../../../..wayup/Media" />
+				<Option parameters="--language ../../Iocaste/iovm/io/ --engine ../../Engine/Startup.io.inl --game ../../../../wayup/Engine/Startup.io.inl --assets ../../../../wayup/Media/" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-Wno-unused-local-typedefs" />

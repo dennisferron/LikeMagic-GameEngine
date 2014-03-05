@@ -469,14 +469,14 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
     IoTag* tag = IoObject_tag(self);
     int arg_count = IoMessage_argCount(m);
 
-    //std::cout << " (tag '" << tag->name << "'";
+    std::cout << " (tag '" << tag->name << "'";
 
-    //if (tag->likemagic_type != nullptr)
-    //    cout << " type " << tag->likemagic_type->description();
+    if (tag->likemagic_type != nullptr)
+        cout << " type " << tag->likemagic_type->description();
 
-    //cout << ") perform "  << CSTRING(IoMessage_name(m));
-    //cout << "(" << arg_count << ")";
-    //cout << std::endl << std::flush;
+    cout << ") perform "  << CSTRING(IoMessage_name(m));
+    cout << "(" << arg_count << ")";
+    cout << std::endl << std::flush;
 
     if (!is_Exprs_obj(self))
     {

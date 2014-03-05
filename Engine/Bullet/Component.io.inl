@@ -125,7 +125,8 @@ method(module, namespace_Bullet, namespace_Custom,
     )
 
     Component onPhysics := method(timeElapsed,
-        dynamicsWorld stepSimulation(timeElapsed/1000.0, subframes, fixedTimeStep)
+        // TODO: Find out why stepSimulation causes segfault.
+        nil;// dynamicsWorld stepSimulation(timeElapsed/1000.0, subframes, fixedTimeStep)
     )
 
     Component onGraphics := method(timeElapsed,
