@@ -9,6 +9,7 @@
 #include "LikeMagic/Exprs/Expr.hpp"
 #include "LikeMagic/TypeSystem.hpp"
 #include "LikeMagic/Mirrors/TypeMirror.hpp"
+#include "LikeMagic/Lang/LangBlock.hpp"
 
 #include <stdexcept>
 #include <sstream>
@@ -96,7 +97,10 @@ ExprImpl::~ExprImpl()
         TypeMirror const* type_mirror = type_system->get_class(get_type());
 
         if (type_mirror == nullptr)
+        {
+            cout << "Cannot delete term or expr because no class found for " + get_type().description() << endl;
             throw std::logic_error("Cannot delete term or expr because no class found for " + get_type().description());
+        }
 
         //cout << "try_delete " << type_mirror->get_class_name() << endl;
 
@@ -133,13 +137,24 @@ ValuePtr ExprImpl::get_value_ptr() const
 
 void ExprImpl::mark() const
 {
-    if (value_ptr.as_const != nullptr && EvalAs<IMarkable const*>::has_conv(this))
+    if (value_ptr.as_const != nullptr)
     {
-        ExprPtr ward;
-        EvalAs<IMarkable const*>::value(const_cast<ExprImpl*>(this), ward)->mark();
+        if (EvalAs<IMarkable const*>::has_conv(this))
+        {
+            ExprPtr ward;
+            EvalAs<IMarkable const*>::value(const_cast<ExprImpl*>(this), ward)->mark();
+        }
     }
 
-    // TODO:  Mark class members!
+    TypeMirror const* type_mirror = type_system->get_class(get_type());
+
+    if (type_mirror == nullptr)
+    {
+        cout << "Cannot mark term or expr because no class found for " + get_type().description() << endl;
+        throw std::logic_error("Cannot mark term or expr because no class found for " + get_type().description());
+    }
+
+    type_mirror->mark();
 
     if (storage_location != nullptr)
         storage_location->mark();

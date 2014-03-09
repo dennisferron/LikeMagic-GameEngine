@@ -20,7 +20,7 @@ class TypeSystem;
 class Expr;
 class CallTarget;
 
-class TypeMirror
+class TypeMirror : public IMarkable
 {
 public:
     virtual ~TypeMirror() = 0;

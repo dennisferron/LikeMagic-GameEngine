@@ -41,6 +41,8 @@ public:
     }
 
     virtual bool is_inherited() const { return true; }
+
+    virtual void mark() const { /* do nothing */ }
 };
 
 }

@@ -191,25 +191,6 @@ void handle_fpe()
     throw std::runtime_error("An FPE occurred.");
 }
 
-class IoBlockToLangBlockPtrConv : public AbstractTypeConverter
-{
-public:
-
-    virtual ExprPtr wrap_expr(ExprPtr expr) const
-    {
-        return Term<BlockPtr*>::create(
-            new BlockPtr(
-                reinterpret_cast<Iocaste::LMAdapters::IoBlock*>(
-                    expr->get_value_ptr().as_nonconst
-            )));
-    }
-
-    virtual std::string description() const { return "IoBlockToLangBlockPtrConv"; }
-
-    virtual float cost() const { return 2.0f; }
-};
-
-
 IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
 {
     static bool signals_hooked = false;
@@ -270,24 +251,18 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
 
     LM_CLASS(global_ns, IoObject)
 
+    LM_CLASS(global_ns, LangBlock)
+    typedef Iocaste::LMAdapters::IoBlock BlockWrapper;
+    LM_CLASS(global_ns, BlockWrapper)
+    LM_BASE(BlockWrapper, LangBlock)
+
+    LM_CLASS(global_ns, BlockPtr)
+
     // To convert an Io object to a void*
     //type_system->add_converter_simple(FromIoTypeInfo::create_index("Object"), TypId<void*>::get(), new LM::StaticCastConv<IoObject*, void*>);
 
     // Allow LikeMagic proxy objects to be converted to the C/C++ type IoObject*
     type_system->add_converter_simple(FromIoTypeInfo::create_index("LikeMagic"), TypId<IoObject*>::restricted(), new LM::NoChangeConv("Io type LikeMagic to IoObject*"));
-
-    LM_CLASS(global_ns, LangBlock)
-    LM_CLASS(global_ns, IoBlock)
-    LM_BASE(IoBlock, LangBlock)
-
-    // Allow conversion of IoBlock to BlockPtr (shared_ptr<LangBlock>)
-    type_system->add_converter_simple(
-        TypId<IoBlock>::liberal(),
-        TypId<BlockPtr>::restricted(),
-        new IoBlockToLangBlockPtrConv);
-
-    // Allow conversion of Io blocks to IoObject*
-    type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), TypId<IoObject*>::restricted(), new LM::NoChangeConv("Io type Block to IoObject*"));
 
     ExprPtr global_ns_expr = create_expr(nullptr, global_ns.get_class_type());
 
@@ -542,7 +517,7 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
         IoObject* result_obj = iovm->to_script(self, locals, m, result);
 
         // For debugging, collect after every operation.
-        //size_t gc_count = Collector_collect(IOSTATE->collector);
+        size_t gc_count = Collector_collect(IOSTATE->collector);
 
         return result_obj;
     }

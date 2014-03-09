@@ -62,6 +62,8 @@ public:
     virtual void try_delete(Expr const* expr) const;
     virtual void set_deleter(std::unique_ptr<AbstractTermDeleter const> deleter);
     virtual bool has_method_named(std::string method_name, bool in_base_class=false) const;
+
+    virtual void mark() const;
 };
 
 LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type)
@@ -301,4 +303,14 @@ size_t TypeMirrorImpl::get_instance_size() const
 TypeIndex TypeMirrorImpl::get_class_type() const
 {
     return impl->class_type;
+}
+
+void TypeMirrorImpl::mark() const
+{
+    for (auto it1=impl->methods.begin(); it1 != impl->methods.end(); it1++)
+        for (auto it2=it1->second.begin(); it2 != it1->second.end(); it2++)
+            it2->second->mark();
+
+    for (auto it=impl->bases.begin(); it != impl->bases.end(); it++)
+        it->second->mark();
 }

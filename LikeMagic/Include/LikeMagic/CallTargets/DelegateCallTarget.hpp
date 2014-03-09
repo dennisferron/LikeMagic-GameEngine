@@ -59,6 +59,8 @@ public:
     }
 
     virtual bool is_inherited() const { return true; }
+
+    virtual void mark() const { /* do nothing */ }
 };
 
 template <typename... Args>
@@ -101,6 +103,8 @@ public:
     }
 
     virtual bool is_inherited() const { return true; }
+
+    virtual void mark() const { /* do nothing */ }
 };
 
 template <typename R, typename... Args>
@@ -142,6 +146,8 @@ public:
     }
 
     virtual bool is_inherited() const { return true; }
+
+    virtual void mark() const { /* do nothing */ }
 };
 
 template <typename R, typename... Args>
@@ -183,6 +189,8 @@ public:
     }
 
     virtual bool is_inherited() const { return true; }
+
+    virtual void mark() const { /* do nothing */ }
 };
 
 template <typename R, typename... Args>

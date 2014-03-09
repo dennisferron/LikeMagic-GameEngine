@@ -16,7 +16,7 @@
 
 namespace LM {
 
-class CallTarget
+class CallTarget : public IMarkable
 {
 public:
     virtual ~CallTarget() = 0;

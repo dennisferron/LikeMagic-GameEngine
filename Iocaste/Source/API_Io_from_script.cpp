@@ -51,6 +51,28 @@ std::vector<T> from_list(IoObject* io_obj)
     return cpp_vector;
 }
 
+class IoBlockToLangBlockPtrConv : public AbstractTypeConverter
+{
+public:
+
+    virtual ExprPtr wrap_expr(ExprPtr expr) const
+    {
+        IoObject* io_obj = reinterpret_cast<IoObject*>(
+                    expr->get_value_ptr().as_nonconst);
+
+        IoState* state = IoObject_state(io_obj);
+        IoVM* io_vm = static_cast<IoVM*>(state);
+        typedef Iocaste::LMAdapters::IoBlock BlockWrapper;
+        BlockWrapper* block_wrapper = new BlockWrapper(io_vm, io_obj, io_obj);
+        BlockPtr sh_ptr(block_wrapper);
+        return Term<BlockPtr>::create(sh_ptr);
+    }
+
+    virtual std::string description() const { return "IoBlockToLangBlockPtrConv"; }
+
+    virtual float cost() const { return 5.0f; }
+};
+
 
 //struct FromNumber : public AbstractTypeConverter
 //{
@@ -162,32 +184,14 @@ void add_convs_from_script(IoVM* iovm)
     };
     type_system->add_converter_simple(TypId<IoObject*>::liberal(), TypId<void*>::restricted(), new FromIoObjectToVoidPtr);
 
-    struct FromIoBlock : public AbstractTypeConverter
-    {
-        IoVM* iovm;
-        FromIoBlock(IoVM* iovm_) : iovm(iovm_) {}
-
-        virtual ExprPtr wrap_expr(ExprPtr expr) const
-        {
-            IoObject* io_obj = reinterpret_cast<IoObject*>(expr->get_value_ptr().as_nonconst);
-            if (io_obj->object == nullptr)
-                throw std::runtime_error("Source Io object is missing object pointer.");
-            return Term<IoBlock>::create(IoBlock(iovm, io_obj, io_obj));
-        }
-
-        virtual std::string description() const { return "From Block Conv"; }
-
-        virtual float cost() const { return 5.0f; }
-    };
-
-    TypeIndex from_script_block_type = FromIoTypeInfo::create_index("Block");
-    TypeIndex to_block_wrapper_type = TypId<IoBlock>::liberal();
-    p_conv_t block_converter = new FromIoBlock(iovm);
-
+    // Allow conversion of IoBlock to BlockPtr (shared_ptr<LangBlock>)
     type_system->add_converter_simple(
-          from_script_block_type,
-          to_block_wrapper_type,
-          block_converter);
+        FromIoTypeInfo::create_index("Block"),
+        TypId<BlockPtr>::restricted(),
+        new IoBlockToLangBlockPtrConv);
+
+    // Allow conversion of Io blocks to IoObject*
+    type_system->add_converter_simple(FromIoTypeInfo::create_index("Block"), TypId<IoObject*>::restricted(), new LM::NoChangeConv("Io type Block to IoObject*"));
 
     MKCONV(Number, double, IoNumber_asDouble)
     MKCONV(Number, int, IoNumber_asInt)

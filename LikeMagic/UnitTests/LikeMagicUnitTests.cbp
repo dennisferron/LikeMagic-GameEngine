@@ -88,6 +88,7 @@
 		<Unit filename="Source/TestArgTransporter.cpp" />
 		<Unit filename="Source/TestBinding.cpp" />
 		<Unit filename="Source/TestEnums.cpp" />
+		<Unit filename="Source/TestIoBlock.cpp" />
 		<Unit filename="Source/TestIoVM.cpp" />
 		<Unit filename="Source/TestMapIntIoObject.cpp" />
 		<Unit filename="Source/TestMarshalByCopyConstructor.cpp" />
