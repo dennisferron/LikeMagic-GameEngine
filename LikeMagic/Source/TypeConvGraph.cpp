@@ -317,8 +317,8 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to
     }
 
     // Debugging
-    cout << "Type conversion chain from " << from.description() << " to " << to.description() << " ";
-    print_conv_chain(result);
+    //cout << "Type conversion chain from " << from.description() << " to " << to.description() << " ";
+    //print_conv_chain(result);
 
     return build_conv_chain(from_expr, result);
 }
