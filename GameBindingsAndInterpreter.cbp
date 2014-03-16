@@ -19,7 +19,7 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-Wno-unused-local-typedefs" />
-					<Add option="-DUSE_DMALLOC" />
+					<Add option="-DNO_USE_DMALLOC" />
 					<Add option="-DUSE_DLL_BUILD" />
 					<Add option="-D_DEBUG" />
 					<Add option="-DWIN32" />
@@ -27,7 +27,6 @@
 					<Add option="-D_CRT_SECURE_NO_DEPRECATE_" />
 					<Add option="-D__GNUWIN32__" />
 					<Add directory="Deps/irrlicht-1.8/include" />
-					<Add directory="Common/dmalloc" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -45,7 +44,6 @@
 					<Add library="bin\Debug\libIrrKlangBindings.a" />
 					<Add library="bin\Debug\libIrrlichtBindings.a" />
 					<Add library="bin\Debug\libMeshToolsBindings.a" />
-					<Add library="Common\dmalloc\libdmallocxx.a" />
 				</Linker>
 			</Target>
 			<Target title="Debug Linux">

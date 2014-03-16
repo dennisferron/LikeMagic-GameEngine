@@ -80,7 +80,7 @@ void ExprImpl::release()
 {
     if (!--ref_count)
     {
-        // DLF COMMENTED OUT FOR DEBUGGING
+        // DLF COMMENT OUT FOR DEBUGGING
         delete this;
     }
 }

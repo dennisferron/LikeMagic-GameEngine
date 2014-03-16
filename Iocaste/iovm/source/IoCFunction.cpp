@@ -177,6 +177,10 @@ IO_METHOD(IoCFunction, setProfilerOn)
 
 IoObject *IoCFunction_activate(IoCFunction *self, IoObject *target, IoObject *locals, IoMessage *m, IoObject *slotContext)
 {
+    // DLF For Debugging
+    //char const* method_name = CSTRING(IoMessage_name(m));
+    //printf("IoCFunction_activate %s\n", method_name);
+
 	IoCFunctionData *selfData = DATA(self);
 	IoTag *t = selfData->typeTag;
 	//IoObject_waitOnFutureIfNeeded(target); future forward will already deal with this?
@@ -186,6 +190,9 @@ IoObject *IoCFunction_activate(IoCFunction *self, IoObject *target, IoObject *lo
 	{
 		char *a = (char *)IoTag_name(t);
 		char *b = (char *)IoTag_name(IoObject_tag(target));
+        char const* method_name = CSTRING(IoMessage_name(m));
+        printf("IoCFunction_activate message name = %s defined for type %s but called on type %s\n",
+               method_name, a, b);
 		IoState_error_(IOSTATE, m, "CFunction defined for type %s but called on type %s", a, b);
 	}
 
