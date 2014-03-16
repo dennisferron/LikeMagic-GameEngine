@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="DMalloc" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Windows">
+				<Option output="DMalloc" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-DHAVE_STDARG_H=1" />
+					<Add option="-DHAVE_STDLIB_H=1" />
+					<Add option="-DHAVE_STRING_H=1" />
+					<Add option="-DHAVE_UNISTD_H=1" />
+					<Add option="-DHAVE_SYS_MMAN_H=0" />
+					<Add option="-DHAVE_SYS_TYPES_H=1" />
+					<Add option="-DHAVE_W32API_WINBASE_H=0" />
+					<Add option="-DHAVE_W32API_WINDEF_H=0" />
+					<Add option="-DHAVE_SYS_CYGWIN_H=0" />
+					<Add option="-DHAVE_SIGNAL_H=1" />
+					<Add directory="../dmalloc" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Unit filename="arg_check.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="arg_check.h" />
+		<Unit filename="chunk.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="chunk.h" />
+		<Unit filename="chunk_loc.h" />
+		<Unit filename="compat.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="compat.h" />
+		<Unit filename="conf.h" />
+		<Unit filename="contrib/Xmalloc.c">
+			<Option compilerVar="CC" />
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="contrib/atexit.c">
+			<Option compilerVar="CC" />
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="debug_tok.h" />
+		<Unit filename="dmalloc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="dmalloc.h" />
+		<Unit filename="dmalloc_argv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="dmalloc_argv.h" />
+		<Unit filename="dmalloc_argv_loc.h" />
+		<Unit filename="dmalloc_fc_t.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="dmalloc_loc.h" />
+		<Unit filename="dmalloc_rand.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="dmalloc_rand.h" />
+		<Unit filename="dmalloc_t.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="dmalloc_tab.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="dmalloc_tab.h" />
+		<Unit filename="dmalloc_tab_loc.h" />
+		<Unit filename="dmallocc.cc" />
+		<Unit filename="env.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="env.h" />
+		<Unit filename="error.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="error.h" />
+		<Unit filename="error_val.h" />
+		<Unit filename="heap.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="heap.h" />
+		<Unit filename="malloc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="malloc_funcs.h" />
+		<Unit filename="return.h" />
+		<Unit filename="settings.h" />
+		<Unit filename="version.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

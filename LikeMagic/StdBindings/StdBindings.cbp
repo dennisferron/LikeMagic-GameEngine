@@ -65,6 +65,7 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-DUSE_DLL_BUILD" />
+					<Add option="-DUSE_DMALLOC" />
 					<Add option="-DBUILDING_STD_BINDINGS_DLL" />
 				</Compiler>
 				<Linker>

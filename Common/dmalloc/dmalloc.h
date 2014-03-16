@@ -28,8 +28,8 @@
 /* produced by configure, inserted into dmalloc.h */
 
 /* const is available */
-/* strdup is a macro */
-#define DMALLOC_STRDUP_MACRO
+/* strdup is not a macro */
+#undef DMALLOC_STRDUP_MACRO
 
 /*
  * the definition of DMALLOC_SIZE

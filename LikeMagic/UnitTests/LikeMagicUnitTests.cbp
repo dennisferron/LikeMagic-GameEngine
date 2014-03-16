@@ -17,6 +17,7 @@
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add option="-DUSE_DLL_BUILD" />
+					<Add option="-DUSE_DMALLOC" />
 				</Compiler>
 				<Linker>
 					<Add library="..\..\Common\UnitTest++\bin\Debug\libUnitTest++.a" />

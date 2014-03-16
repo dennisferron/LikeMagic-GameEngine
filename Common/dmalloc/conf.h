@@ -36,7 +36,7 @@
  * PROT_READ, and PROT_WRITE defines were found in sys/mman.h.  This
  * is so that we can restrict access to certain blocks of memory.
  */
-#define PROTECT_ALLOWED 1
+#define PROTECT_ALLOWED 0
 
 /*
  * (char *)sbrk(const int incr) is the main heap-memory allocation
@@ -47,7 +47,7 @@
  * system, you should see the INTERNAL_MEMORY_SPACE setting in the
  * settings.h file which is created from the settings.dist file.
  */
-#define HAVE_SBRK 1
+#define HAVE_SBRK 0
 
 /*
  * (void *)mmap(...) is another heap-memory allocation routine that
@@ -59,8 +59,8 @@
  * system, you should see the INTERNAL_MEMORY_SPACE setting in the
  * settings.h file which is created from the settings.dist file.
  */
-#define HAVE_MMAP 1
-#define USE_MMAP 1
+#define HAVE_MMAP 0
+#define USE_MMAP 0
 
 /*
  * This is the basic block size in bits.  If possible, the configure
@@ -107,7 +107,7 @@
  * you can have the library do an automatic shutdown if we see the
  * above signals.
  */
-#define SIGNAL_OKAY 1
+#define SIGNAL_OKAY 0
 #define RETSIGTYPE void
 
 /*
@@ -208,7 +208,7 @@
  * your system.
  */
 #define HAVE_ATEXIT 1
-#define HAVE_ON_EXIT 1
+#define HAVE_ON_EXIT 0
 
 /* Is the DMALLOC_SIZE type unsigned? */
 #define DMALLOC_SIZE_UNSIGNED 1
@@ -218,10 +218,10 @@
  * functions, or knows how to work around their absence.
  */
 /* bells and whistles */
-#define HAVE_FORK 1
-#define HAVE_GETHOSTNAME 1
+#define HAVE_FORK 0
+#define HAVE_GETHOSTNAME 0
 #define HAVE_GETPID 1
-#define HAVE_GETUID 1
+#define HAVE_GETUID 0
 #define HAVE_TIME 1
 #define HAVE_CTIME 1
 
@@ -230,24 +230,24 @@
 #define HAVE_VSNPRINTF 1
 
 #define HAVE_RECALLOC 0
-#define HAVE_MEMALIGN 1
-#define HAVE_VALLOC 1
+#define HAVE_MEMALIGN 0
+#define HAVE_VALLOC 0
 
 /* various functions for arg checking and/or internal use */
 
 #define HAVE_ATOI 1
 #define HAVE_ATOL 1
-#define HAVE_BCMP 1
-#define HAVE_BCOPY 1
-#define HAVE_BZERO 1
-#define HAVE_INDEX 1
+#define HAVE_BCMP 0
+#define HAVE_BCOPY 0
+#define HAVE_BZERO 0
+#define HAVE_INDEX 0
 #define HAVE_MEMCCPY 1
 #define HAVE_MEMCHR 1
 #define HAVE_MEMCMP 1
 #define HAVE_MEMCPY 1
 #define HAVE_MEMMOVE 1
 #define HAVE_MEMSET 1
-#define HAVE_RINDEX 1
+#define HAVE_RINDEX 0
 #define HAVE_STRCASECMP 1
 #define HAVE_STRCAT 1
 #define HAVE_STRCHR 1
@@ -263,7 +263,7 @@
 #define HAVE_STRNDUP 0
 #define HAVE_STRPBRK 1
 #define HAVE_STRRCHR 1
-#define HAVE_STRSEP 1
+#define HAVE_STRSEP 0
 #define HAVE_STRSPN 1
 #define HAVE_STRSTR 1
 #define HAVE_STRTOK 1

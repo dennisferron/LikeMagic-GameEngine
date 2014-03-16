@@ -65,11 +65,13 @@
 					<Add option="-DBUILDING_IOVMALL_DLL" />
 					<Add option="-DUSE_DLL_BUILD" />
 					<Add option="-DBUILDING_IOCASTE_DLL" />
-					<Add option="-DNO_USE_DMALLOC" />
+					<Add option="-DUSE_DMALLOC" />
+					<Add directory="../Common/dmalloc" />
 				</Compiler>
 				<Linker>
-					<Add library="../bin/Debug/libLikeMagic-Windows.a" />
-					<Add library="../Common/boost_1_54_0/stage/lib/libboost_program_options-mgw48-mt-d-1_54.a" />
+					<Add library="..\bin\Debug\libLikeMagic-Windows.a" />
+					<Add library="..\Common\boost_1_54_0\stage\lib\libboost_program_options-mgw48-mt-d-1_54.a" />
+					<Add library="..\Common\dmalloc\libdmallocxx.a" />
 				</Linker>
 			</Target>
 		</Build>
@@ -98,7 +100,7 @@
 			<Add directory="../Common/segvcatch-0.9.1/lib" />
 		</Compiler>
 		<Linker>
-			<Add library="../Common/segvcatch-0.9.1/bin/Debug/libsegvcatch.a" />
+			<Add library="..\Common\segvcatch-0.9.1\bin\Debug\libsegvcatch.a" />
 		</Linker>
 		<Unit filename="Include/Iocaste/Breakpoint.hpp" />
 		<Unit filename="Include/Iocaste/CShims/Exception.h" />
