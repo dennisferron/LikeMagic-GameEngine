@@ -80,6 +80,7 @@ void ExprImpl::release()
 {
     if (!--ref_count)
     {
+        // DLF COMMENTED OUT FOR DEBUGGING
         delete this;
     }
 }
@@ -141,8 +142,18 @@ void ExprImpl::mark() const
     {
         if (EvalAs<IMarkable const*>::has_conv(this))
         {
+            cout << "About to mark " + this->description() << endl;
+
             ExprPtr ward;
-            EvalAs<IMarkable const*>::value(const_cast<ExprImpl*>(this), ward)->mark();
+            auto* ptr = EvalAs<IMarkable const*>::value(const_cast<ExprImpl*>(this), ward);
+            if (ptr == nullptr)
+            {
+                cout << "When marking an IMarkable, value_ptr was not null but casted ptr was!" << endl;
+            }
+            else
+            {
+                ptr->mark();
+            }
         }
     }
 

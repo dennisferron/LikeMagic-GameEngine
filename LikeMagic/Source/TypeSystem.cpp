@@ -161,13 +161,14 @@ void TypeSystemInstance::add_class(TypeIndex index, TypeMirror* class_ptr, TypeM
     TypeInfo ref_to_nonconst = class_info.as_ref_to_nonconst();
     TypeInfo ref_to_const = class_info.as_ref_to_const();
     TypeInfo const_value = class_info.as_const_value();
+    TypeInfo nonconst_value = class_info.as_nonconst_value();
 
     // Add conversion to delegate type so that delegate call targets will work.
     add_conv(ref_to_nonconst.as_restricted(), TypId<LM::Delegate&>::restricted().get_info());
     add_conv(ref_to_nonconst.as_restricted(), TypId<LM::Delegate const&>::restricted().get_info());
     add_conv(ref_to_const.as_restricted(), TypId<LM::Delegate const&>::restricted().get_info());
-    add_conv(class_info.as_restricted(), TypId<LM::Delegate&>::restricted().get_info());
-    add_conv(class_info.as_restricted(), TypId<LM::Delegate const&>::restricted().get_info());
+    add_conv(nonconst_value.as_restricted(), TypId<LM::Delegate&>::restricted().get_info());
+    add_conv(nonconst_value.as_restricted(), TypId<LM::Delegate const&>::restricted().get_info());
     add_conv(const_value.as_restricted(), TypId<LM::Delegate const&>::restricted().get_info());
 
     add_common_conversions(class_index);
@@ -271,7 +272,7 @@ void TypeSystemInstance::add_conv(TypeInfo from_info, TypeInfo to_info)
 void TypeSystemInstance::add_common_conversions(TypeIndex type)
 {
     TypeInfo type_info = type.get_info();
-    TypeInfo value_nonconst = type_info;
+    TypeInfo value_nonconst = type_info.as_nonconst_value();
     TypeInfo value_const = type_info.as_const_value();
 
     add_conv(value_nonconst, value_nonconst.as_restricted());

@@ -20,10 +20,8 @@ std::string create_constructor_name(std::string prefix, std::string method_name)
 LM::TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespace_)
 {
     std::string full_name = parent_namespace_.get_class_name() + "::" + name;
-
-    std::cout << "Registering namespace " << full_name << endl;
-
     const TypeIndex namespace_type(LM::create_namespace_type_index(full_name));
+    std::cout << "Registering namespace " << full_name << " as type " << namespace_type.description() << endl;
 
     if (type_system->get_class(namespace_type))
     {

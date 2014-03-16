@@ -251,7 +251,9 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
 
     LM_CLASS(global_ns, IoObject)
 
-    LM_CLASS(global_ns, LangBlock)
+    TypeMirror& ns_LM = register_namespace("LM", global_ns);
+
+    LM_CLASS(ns_LM, LangBlock)
     typedef Iocaste::LMAdapters::IoBlock BlockWrapper;
     LM_CLASS(global_ns, BlockWrapper)
     LM_BASE(BlockWrapper, LangBlock)
@@ -517,7 +519,7 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
         IoObject* result_obj = iovm->to_script(self, locals, m, result);
 
         // For debugging, collect after every operation.
-        size_t gc_count = Collector_collect(IOSTATE->collector);
+        //size_t gc_count = Collector_collect(IOSTATE->collector);
 
         return result_obj;
     }

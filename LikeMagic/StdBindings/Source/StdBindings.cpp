@@ -26,6 +26,7 @@
 #include "LikeMagic/BindingMacros.hpp"
 #include "boost/preprocessor/seq/for_each.hpp"
 #include "LikeMagic/StdBindings/ScriptUtil.hpp"
+#include "LikeMagic/Lang/LangBlock.hpp"
 
 #include <sstream>
 
@@ -50,9 +51,34 @@ add_conv<type const&, double const&, NumberConv>();
 #define add_all_num_conv_impl(r, data, elem) add_num_conv(elem);
 #define add_all_num_conv(SEQ) BOOST_PP_SEQ_FOR_EACH(add_all_num_conv_impl,, SEQ)
 
+#include "LikeMagic/Exprs/TermDeleter.hpp"
+//LM_CUSTOM_DELETER(LM::Expr, /* do nothing */)
+
+namespace LM {
+template <>
+struct TermDeleter<LM::Expr> : public AbstractTermDeleter
+{
+    virtual void delete_if_possible(void const* value) const
+    {
+        throw std::logic_error("Cannot auto-delete Expr*.");
+    }
+};
+}
+
+namespace LM {
+template <>
+struct TermDeleter<LM::IMarkable> : public AbstractTermDeleter
+{
+    virtual void delete_if_possible(void const* value) const
+    {
+        throw std::logic_error("Cannot auto-delete IMarkable*.");
+    }
+};
+}
+
+
 using namespace LM;
 using namespace std;
-
 
 // Vector helper.  Assignment in Io cannot (?) be overloaded; it creates new
 // slots rather than copying values.  This allows us to assign values to vector elements.
@@ -96,15 +122,28 @@ STD_BINDINGS_API void LM::add_bindings()
     LM_STATIC_FUNC_NAME(global_ns, "wchar_to_string", wchar_to_string)
     LM_STATIC_FUNC_NAME(global_ns, "string_to_wstring", string_to_wstring)
 
-    LM_CLASS(global_ns, CallTarget)
+    TypeMirror& ns_LM = register_namespace("LM", global_ns);
 
-    LM_CLASS(global_ns, TypeMirror)
-    LM_FUNC(TypeMirror, (get_class_name)(get_class_type)(get_instance_size))
-
-    LM_CLASS(global_ns, TypeIndex)
+    LM_CLASS(ns_LM, TypeIndex)
     LM_FUNC(TypeIndex, (description))
 
-    LM_CLASS(global_ns, MarkableObjGraph)
+    LM_CLASS(ns_LM, IMarkable)
+
+    LM_CLASS(ns_LM, Expr)
+    //LM_BASE(Expr, IMarkable)
+
+    LM_CLASS(ns_LM, LangBlock)
+    //LM_BASE(LangBlock, IMarkable)
+
+    LM_CLASS(ns_LM, CallTarget)
+    //LM_BASE(CallTarget, IMarkable)
+
+    LM_CLASS(ns_LM, TypeMirror)
+    //LM_BASE(TypeMirror, IMarkable)
+    LM_FUNC(TypeMirror, (get_class_name)(get_class_type)(get_instance_size))
+
+    LM_CLASS(ns_LM, MarkableObjGraph)
+    //LM_BASE(MarkableObjGraph, IMarkable)
     LM_FUNC(MarkableObjGraph, (number_of_parents)(number_of_children))
 
     LM_CLASS(global_ns, void)

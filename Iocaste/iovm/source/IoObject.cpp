@@ -1111,6 +1111,8 @@ void IoObject_free(IoObject *self) // prepare for io_free and possibly recycle
 #endif
 	{
 		IoObject_dealloc(self);
+
+		// This has always been commented out, not part of comment out for debugging.
 		//CollectorMarker_free((CollectorMarker *)self);
 	}
 #ifdef IOSTATE_RECYCLING_ON

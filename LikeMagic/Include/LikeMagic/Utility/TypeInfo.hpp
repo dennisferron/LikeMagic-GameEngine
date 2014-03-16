@@ -25,7 +25,8 @@ enum class RefType
     ValueNonconst,
     ValueConst,
     RefToNonconst,
-    RefToConst
+    RefToConst,
+    Metaclass
 };
 
 struct TypeInfo
@@ -38,6 +39,7 @@ private:
         {
             case RefType::ValueNonconst: return RefType::ValueConst;
             case RefType::RefToNonconst: return RefType::RefToConst;
+            case RefType::Metaclass: return RefType::ValueConst;
             default: return ref_type; // already const so no change
         };
     }
@@ -48,6 +50,16 @@ private:
         {
             case RefType::ValueConst: return RefType::ValueNonconst;
             case RefType::RefToConst: return RefType::RefToNonconst;
+            case RefType::Metaclass: return RefType::ValueNonconst;
+            default: return ref_type; // already nonconst so no change
+        };
+    }
+
+    inline static RefType as_not_meta(RefType ref_type)
+    {
+        switch (ref_type)
+        {
+            case RefType::Metaclass: return RefType::ValueNonconst;
             default: return ref_type; // already nonconst so no change
         };
     }
@@ -77,12 +89,12 @@ public:
 
     inline TypeInfo as_ptr_to_const() const
     {
-        return { system, name, PtrType::PtrToConst, ref_type, is_restricted };
+        return { system, name, PtrType::PtrToConst, as_not_meta(ref_type), is_restricted };
     }
 
     inline TypeInfo as_ptr_to_nonconst() const
     {
-        return { system, name, PtrType::PtrToNonconst, ref_type, is_restricted };
+        return { system, name, PtrType::PtrToNonconst, as_not_meta(ref_type), is_restricted };
     }
 
     inline TypeInfo as_ref_to_nonconst() const
@@ -97,10 +109,12 @@ public:
 
     inline TypeInfo as_restricted() const { return { system, name, ptr_type, ref_type, true }; }
 
-    inline TypeInfo class_type() const { return { system, name, PtrType::NotPtr, RefType::ValueNonconst, false }; }
+    inline TypeInfo class_type() const { return { system, name, PtrType::NotPtr, RefType::Metaclass, false }; }
 
     inline std::string description() const
-        { return system + " " + name
+        { return
+              (ref_type == RefType::Metaclass? "(metaclass) ":"")
+            + system + " " + name
             + (ptr_type == PtrType::PtrToConst?" const":"") + (ptr_type != PtrType::NotPtr?"*":"")
             + (ref_type == RefType::ValueConst || ref_type == RefType::RefToConst? " const" : "")
             + (ref_type == RefType::RefToNonconst || ref_type == RefType::RefToConst? "&":"")

@@ -41,7 +41,15 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 using namespace boost;
 
 using namespace LM;
-using namespace LM;
+
+static string describe_type(TypeIndex type)
+{
+    stringstream ss;
+    ss << type.description();
+    ss << " type id:";
+    ss << type.get_id();
+    return ss.str();
+}
 
 namespace LM {
 
@@ -119,7 +127,7 @@ bool TypeConvGraph::has_type(TypeIndex type) const
 
 TypeConvGraph::vertex_t TypeConvGraph::add_type(TypeIndex type)
 {
-    //cout << "add_type " << type.description() << endl;
+    //cout << "add_type " << describe_type(type) << endl;
 
     std::size_t pos = type.get_id();
 
@@ -141,6 +149,24 @@ TypeConvGraph::vertex_t TypeConvGraph::add_type(TypeIndex type)
 
 void TypeConvGraph::add_conv(TypeIndex from, TypeIndex to, p_conv_t conv)
 {
+    if (from.get_info().ref_type == RefType::Metaclass)
+    {
+        std::string msg = "add_conv from_type is metaclass when adding type converter from "
+            + describe_type(from) + " to " + describe_type(to)
+            + " called " + conv->description();
+        cout << msg << endl;
+        throw std::logic_error(msg);
+    }
+
+    if (to.get_info().ref_type == RefType::Metaclass)
+    {
+        std::string msg = "add_conv to_type is metaclass when adding type converter from "
+            + describe_type(from) + " to " + describe_type(to)
+            + " called " + conv->description();
+        cout << msg << endl;
+        throw std::logic_error(msg);
+    }
+
     //cout << "about to add_conv from typeindex " << from.get_id() << " to typeindex " << to.get_id() << endl;
 
     auto from_vert = add_type(from);
@@ -162,11 +188,11 @@ void TypeConvGraph::add_conv(TypeIndex from, TypeIndex to, p_conv_t conv)
         graph[new_edge].conv = conv;
         graph[new_edge].cost = conv->cost();
 
-    /*
+/*
         cout << "Added type converter from "
             << from.description() << " " << from.get_id() << " to " << to.description() << " " << to.get_id()
             << " called " << conv->description() << endl;
-    */
+*/
 
         if (!has_conv(from, to))
         {
@@ -268,15 +294,6 @@ void TypeConvGraph::print_conv_chain(p_chain_t const& chain) const
     cout << " }" << endl;
 }
 
-static string describe_type(TypeIndex type)
-{
-    stringstream ss;
-    ss << type.description();
-    ss << " type id:";
-    ss << type.get_id();
-    return ss.str();
-}
-
 ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to) const
 {
     p_chain_t const& result = search_for_conv(from, to);
@@ -300,8 +317,8 @@ ExprPtr TypeConvGraph::wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to
     }
 
     // Debugging
-    //cout << "Type conversion chain from " << from.description() << " to " << to.description() << " ";
-    //print_conv_chain(result);
+    cout << "Type conversion chain from " << from.description() << " to " << to.description() << " ";
+    print_conv_chain(result);
 
     return build_conv_chain(from_expr, result);
 }

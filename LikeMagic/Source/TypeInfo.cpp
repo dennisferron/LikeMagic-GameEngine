@@ -27,7 +27,7 @@ LIKEMAGIC_API TypeIndex create_cpp_type_index(std::type_info const* info_, PtrTy
 
 LIKEMAGIC_API TypeInfo create_namespace_type_info(std::string namespace_name)
 {
-    return TypeInfo { "namespace", namespace_name, PtrType::NotPtr, RefType::ValueNonconst, false };
+    return TypeInfo { "namespace", namespace_name, PtrType::NotPtr, RefType::Metaclass, false };
 }
 
 LIKEMAGIC_API TypeIndex create_namespace_type_index(std::string namespace_name)
