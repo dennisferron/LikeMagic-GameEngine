@@ -23,7 +23,7 @@
 #ifdef _MSC_VER
 #pragma message("Uncomment the IO_USE_SIMD define to turn on SIMD acceleration")
 #else
-#warning Uncomment the IO_USE_SIMD define to turn on SIMD acceleration
+//#warning Uncomment the IO_USE_SIMD define to turn on SIMD acceleration
 #endif
 
 #define __UNK__EMU__
@@ -710,31 +710,31 @@ void UArray_reverseItemByteOrders(UArray *self)
 
 //
 void UArray_addEqualsOffsetXScaleYScale(UArray *self, UArray *other, float offset, float xscale, float yscale)
-{	
+{
 	if (self->itemType == CTYPE_float32_t && other->itemType == CTYPE_float32_t)
 	{
 		float32_t *d1 = (float32_t *)self->data;
 		float32_t *d2 = (float32_t *)other->data;
-		
+
 		long i = offset;
 		long j = 0;
-		
+
 		while (i < (long)self->size)
-		{			
+		{
 			size_t jj = j/xscale;
-			
+
 			//printf("self->size: %i i: %i jj: %i\n", self->size, i, jj);
 			if (jj > other->size - 1) break;
-			
+
 			if (i >= 0) //&& jj < other->size - 1)
-			{			
+			{
 				d1[i] += d2[jj] * yscale;
 			}
-			
+
 			j ++;
 			i ++;
 		}
-		
+
 		UArray_changed(self);
 	}
 	else

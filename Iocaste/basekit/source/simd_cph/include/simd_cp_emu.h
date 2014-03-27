@@ -3,7 +3,7 @@
 
   Non SIMD or Unknown System/Emulation - Don't use SIMD, and hope the
   compiler can vectorize if the CPU and compiler support SIMD.
-  
+
 */
 
 /*
@@ -51,8 +51,8 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
 	short  s[8];  /* short access */
 	char   c[16]; /* char access */
    } simd_m128 ;
-   
-   
+
+
 #endif /* __UNK__EMU__ */
 
 
@@ -78,7 +78,7 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
 #ifdef _MSC_VER
 #pragma message("using SIMD Emulation")
 #else
-#warning "using SIMD Emulation"
+//#warning "using SIMD Emulation"
 #endif
 
    /* v0 = v1 {mask} v2, where mask controlls which packed values are copied */
@@ -117,7 +117,7 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
    #define simd_4i_div(v1,v2,v0)  v0.i[0]=v1.i[0]/v2.i[0]; v0.i[1]=v1.i[1]/v2.i[1]; v0.i[2]=v1.i[2]/v2.i[2]; v0.i[3]=v1.i[3]/v2.i[3]
 
    /* ints logical/bitwise */
-   
+
    /* v0 = 4 ints in v1 & 4 ints in v2 */
    #define simd_4i_band(v1,v2,v0) v0.i[0]=v1.i[0]&v2.i[0]; v0.i[1]=v1.i[1]&v2.i[1]; v0.i[2]=v1.i[2]&v2.i[2]; v0.i[3]=v1.i[3]&v2.i[3]
 
@@ -126,7 +126,7 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
 
    /* v0 = 4 ints in v1 & 4 ints in v2 */
    #define simd_4i_bxor(v1,v2,v0) v0.i[0]=v1.i[0]^v2.i[0]; v0.i[1]=v1.i[1]^v2.i[1]; v0.i[2]=v1.i[2]^v2.i[2]; v0.i[3]=v1.i[3]^v2.i[3]
-   
+
    /* V0 = 4 ints in V1, each shifted left  (<<) X bits */
    #define simd_4i_shftl(v1,x,v0) v0.i[0]=v1.i[0]<<x; v0.i[1]=v1.i[1]<<x; v0.i[2]=v1.i[2]<<x; v0.i[3]=v1.i[3]<<x
 
@@ -134,7 +134,7 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
    #define simd_4i_shftr(v1,x,v0) v0.i[0]=v1.i[0]>>x; v0.i[1]=v1.i[1]>>x; v0.i[2]=v1.i[2]>>x; v0.i[3]=v1.i[3]>>x
 
 
-   
+
    /* Signed shorts (8 packed shorts) */
 
    /* v0 = 8 shorts in v1 added to 8 shorts in v2 */
@@ -161,7 +161,7 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
 				  v0.s[4]=v1.s[4]>>x;v0.s[5]=v1.s[5]>>x; \
 				  v0.s[6]=v1.s[6]>>x;v0.s[7]=v1.s[7]>>x
 
-   
+
    /* Signed chars (16 packed chars) */
 
    /* v0 = 16 chars in v1 added to 16 chars in v2 */
@@ -183,7 +183,7 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
                                   v0.c[10]=v1.c[10]-v2.c[10];v0.c[11]=v1.c[11]-v2.c[11]; \
 				  v0.c[12]=v1.c[12]-v2.c[12];v0.c[13]=v1.c[13]-v2.c[13]; \
 				  v0.c[14]=v1.c[14]-v2.c[14];v0.c[15]=v1.c[15]-v2.c[15]
-				  
+
    /* V0 = 16 chars in V1, each shifted left  (<<) X bits */
    #define simd_4c_shftl(v1,x,v0) v0.c[0]=v1.c[0]<<x;v0.c[1]=v1.c[1]<<x; \
                                   v0.c[2]=v1.c[2]<<x;v0.c[3]=v1.c[3]<<x; \
@@ -233,18 +233,18 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
 
    /* v0 = 4 floats in v1 sqrt */
    #define simd_4f_sqrt(v1,v0)   v0.f[0]=sqrtf(v1.f[0]);v0.f[1]=sqrtf(v1.f[1]);v0.f[2]=sqrtf(v1.f[2]);v0.f[3]=sqrtf(v1.f[3])
-   
+
    /* v0 = 1/(4 floats in v1) */
    #define simd_4f_recp(v1,v0)   v0.f[0]=1/v1.f[0]; v0.f[1]=1/v1.f[1]; v0.f[2]=1/v1.f[2]; v0.f[3]=1/v1.f[3]
-   
+
    /* compares */
-   
+
    /* v0 = 4 floats min(v1,v2) */
    #define simd_4f_min(v1,v2,v0)  v0.f[0]=( v2.f[0] <= v1.f[0] ? v2.f[0] : v1.f[0] ); \
    				  v0.f[1]=( v2.f[1] <= v1.f[1] ? v2.f[1] : v1.f[1] ); \
    				  v0.f[2]=( v2.f[2] <= v1.f[2] ? v2.f[2] : v1.f[2] ); \
 				  v0.f[3]=( v2.f[3] <= v1.f[3] ? v2.f[3] : v1.f[3] )
-   
+
    /* v0 = 4 floats max(v1,v2) */
    #define simd_4f_max(v1,v2,v0)  v0.f[0]=( v2.f[0] >= v1.f[0] ? v2.f[0] : v1.f[0] ); \
    				  v0.f[1]=( v2.f[1] >= v1.f[1] ? v2.f[1] : v1.f[1] ); \
@@ -252,13 +252,13 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
 				  v0.f[3]=( v2.f[3] >= v1.f[3] ? v2.f[3] : v1.f[3] )
 
    /* compare masks */
-   
+
    /* v0 = (4 floats in v1 == 4 floats in v1) */
    #define simd_4f_meq(v1,v2,v0)  v0.i[0]=( v1.f[0] == v2.f[0] ? 0xFFFFFFFF : 0x00 ); \
    				  v0.i[1]=( v1.f[1] == v2.f[1] ? 0xFFFFFFFF : 0x00 ); \
    				  v0.i[2]=( v1.f[2] == v2.f[2] ? 0xFFFFFFFF : 0x00 ); \
 				  v0.i[3]=( v1.f[3] == v2.f[3] ? 0xFFFFFFFF : 0x00 )
-   
+
    /* v0 = (4 floats in v1 != 4 floats in v1) */
    #define simd_4f_mneq(v1,v2,v0) v0.i[0]=( v1.f[0] != v2.f[0] ? 0xFFFFFFFF : 0x00 ); \
    				  v0.i[1]=( v1.f[1] != v2.f[1] ? 0xFFFFFFFF : 0x00 ); \
@@ -304,7 +304,7 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
   are not available on an architecture, they
   are defined out, and won't hurt anything.
   If they are available, they will only help.
-  
+
 */
 
 #ifdef __UNK__EMU__  /* Unknown System/Emulation (defined out) */
@@ -313,7 +313,7 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
       the address "p".  On x86, one cache line is loaded.  There
       are three flavors for x86, on other procs they'll probably
       all be defined out or all set to the same type */
-   
+
    /* This is for data which will be accessed once
       (OTU = One Time Use */
    #define simd_ut_prefetchOTU(p)
@@ -323,6 +323,6 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
 
    /* Fetch into the L2 cache only */
    #define simd_ut_prefetchL2(p)
-   
+
 #endif /* __UNK__EMU__ */
 

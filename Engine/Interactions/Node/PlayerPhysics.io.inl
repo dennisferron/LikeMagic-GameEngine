@@ -18,7 +18,16 @@ method(NodeInteraction, Node, Avatar, Bullet, Time, Constants,
         jumpVel ::= 9
         vel := method(physBody getLinearVelocity)
 
+        debugVel := method(
+            writeln("debugVel")
+            writeln("vel getX is ", vel getX)
+            writeln("vel getX abs is ", vel getX abs)
+            writeln("debugVel done")
+        )
+
         right := method(
+            debugVel
+
             // Captured is a detail the player should resolve
             //if (player captured not,
                 if (vel getX < 10, physBody applyCentralForce(100 - (vel getX)*(vel getX abs), 0, 0))
@@ -27,6 +36,8 @@ method(NodeInteraction, Node, Avatar, Bullet, Time, Constants,
         )
 
         left := method(
+            debugVel
+
             //if (player captured not,
                 if (vel getX > -10, physBody applyCentralForce(-100 - (vel getX)*(vel getX abs), 0, 0))
             //)

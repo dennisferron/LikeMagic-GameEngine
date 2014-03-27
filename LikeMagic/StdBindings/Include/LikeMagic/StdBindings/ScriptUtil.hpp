@@ -43,6 +43,9 @@ public:
 
 class ScriptUtil
 {
+private:
+    static float float_const_ref_backing_store;
+
 public:
     static std::string ptr_addr_to_str(void const* p);
     static void* get_null_ptr();
@@ -52,6 +55,7 @@ public:
     static double get_double(double value);
     static int get_int(int value);
     static float get_float(float value);
+    static float const& get_float_const_ref(float value);
     static void* get_void_ptr(void* value);
 
     static std::string get_string(std::string const& value);

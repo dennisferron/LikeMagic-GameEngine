@@ -43,6 +43,15 @@ void ScriptUtil::print_float_array(float const* array, int width, int height)
     cout << endl;
 }
 
+float ScriptUtil::float_const_ref_backing_store = 1234.567;
+
+float const& ScriptUtil::get_float_const_ref(float value)
+{
+    //cout << "get_float_const_ref value = " << value << endl;
+    float_const_ref_backing_store = value;
+    return float_const_ref_backing_store;
+}
+
 float ScriptUtil::get_float(float value)
 {
     //cout << "get_float value = " << value << endl;

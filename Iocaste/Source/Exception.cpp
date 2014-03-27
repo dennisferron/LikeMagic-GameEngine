@@ -34,6 +34,10 @@ char const* Iocaste::Exception::what() const throw()
 ScriptException::ScriptException(IoObject* self_)
     : self(self_), errorText(getErrorText(self_)), backTraceString(getBackTraceString(self)), lineNumber(getLineNumber(self))
 {
+    cout << "ScriptException constructed "
+        << " errorText = " << errorText
+        << " lineNumber = " << lineNumber << endl
+        << " backtrace = " << backTraceString << endl;
 }
 
 ScriptException::~ScriptException() throw()

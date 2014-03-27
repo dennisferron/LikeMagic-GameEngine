@@ -3,8 +3,7 @@
 
 #include <vector>
 
-struct CollectorMarker;
-typedef CollectorMarker IoObject;
+struct IoObject;
 
 namespace Iocaste {
 

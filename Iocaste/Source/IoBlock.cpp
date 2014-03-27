@@ -34,11 +34,22 @@ IoBlock::IoBlock(IoVM* iovm_, IoObject* io_block_, IoObject* io_target_)
     // throw it in from-io-block type converter in FromScript.
     if (io_target && !io_target_->object)
         throw std::logic_error("Target has no object!");
+
+    if (io_block)
+        add_ref(io_block);
+
+    if (io_target)
+        add_ref(io_target);
 }
 
 IoBlock::IoBlock(IoBlock const& other)
     : iovm(other.iovm), io_block(other.io_block), io_target(other.io_target)
 {
+    if (io_block)
+        add_ref(io_block);
+
+    if (io_target)
+        add_ref(io_target);
 }
 
 IoBlock& IoBlock::operator =(IoBlock const& other)
@@ -53,6 +64,12 @@ IoBlock& IoBlock::operator =(IoBlock const& other)
 
 IoBlock::~IoBlock()
 {
+    if (io_block)
+        remove_ref(io_block);
+
+    if (io_target)
+        remove_ref(io_target);
+
     //cout << "IoBlock " << this << " destructed, target was " << this->io_target << endl;
     this->io_target = (IoObject*)0xA5A5A5A5;
 }

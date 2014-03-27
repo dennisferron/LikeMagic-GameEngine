@@ -682,7 +682,7 @@ IoTag* IoVM::get_io_tag(TypeIndex type) const
     }
     else
     {
-        IoTag* tag = IoTag_newWithName_(type.get_info().name.c_str());
+        IoTag* tag = IoTag_newWithName_(type.description().c_str());
         IoTag_state_(tag, state);
         IoTag_freeFunc_(tag, (IoTagFreeFunc*)API_io_free_expr);
         IoTag_cloneFunc_(tag, (IoTagCloneFunc*)API_io_rawClone);

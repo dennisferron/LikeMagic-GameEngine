@@ -107,7 +107,7 @@ struct ToNumberFromT : public AbstractTypeConverter
 
     static void add_conv()
     {
-        type_system->add_converter_simple(TypId<T*>::liberal(), ToIoTypeInfo::create_index(), new ToNumberFromT<T>());
+        type_system->add_converter_simple(TypId<T>::liberal(), ToIoTypeInfo::create_index(), new ToNumberFromT<T>());
     }
 
     virtual float cost() const { return 5.0f; }
@@ -171,7 +171,7 @@ struct PtrToIoObjectConv : public LM::AbstractTypeConverter
 
 void add_convs_to_script(IoVM* iovm)
 {
-    DECL_CONV(Number, double, IONUMBER(value))
+    //DECL_CONV(Number, double, IONUMBER(value))
     DECL_CONV(Bool, bool, value? IOTRUE(self) : IOFALSE(self))
     DECL_CONV(String, std::string, IOSEQ(reinterpret_cast<const unsigned char*>(value.c_str()), value.length()))
 
@@ -184,7 +184,11 @@ void add_convs_to_script(IoVM* iovm)
     type_system->add_converter_simple(TypId<IoObject*>::liberal(), ToIoTypeInfo::create_index(), new PtrToIoObjectConv);
 
     ToNumberFromT<double>::add_conv();
+    ToNumberFromT<double const>::add_conv();
+    ToNumberFromT<double const&>::add_conv();
     ToNumberFromT<float>::add_conv();
+    ToNumberFromT<float const>::add_conv();
+    ToNumberFromT<float const&>::add_conv();
 }
 
 }}

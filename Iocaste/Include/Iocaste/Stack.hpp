@@ -2,8 +2,7 @@
 #pragma once
 
 struct IoState;
-struct CollectorMarker;
-typedef CollectorMarker IoObject;
+struct IoObject;
 typedef IoObject IoMessage;
 typedef IoObject IoError;
 

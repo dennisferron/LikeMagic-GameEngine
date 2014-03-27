@@ -2,8 +2,7 @@
 
 #include "boost/unordered_map.hpp"
 
-struct CollectorMarker;
-typedef CollectorMarker IoObject;
+struct IoObject;
 
 namespace Iocaste {
 

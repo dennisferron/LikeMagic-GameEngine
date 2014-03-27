@@ -28,36 +28,21 @@
 
 typedef void (CollectorDoFunc)(void *);
 
-typedef struct CollectorMarker CollectorMarker;
-
-#define CollectorMarkerSansPointer \
-	CollectorMarker *prev; \
-	CollectorMarker *next; \
-	unsigned int color : 2; \
-	unsigned int hash1; \
-	unsigned int hash2;
-
-/*
-#if !defined(COLLECTOROBJECTTYPE)
-#define COLLECTOROBJECTTYPE void
-#endif
-*/
+typedef struct IoObject CollectorMarker;
 
 typedef struct IoObjectData IoObjectData;
 #define IoObjectDataDefined 1
 
-struct CollectorMarker
+struct IoObject
 {
-	CollectorMarkerSansPointer
+	IoObject *prev;
+	IoObject *next;
+	unsigned int color : 2;
+	unsigned int hash1;
+	unsigned int hash2;
 	IoObjectData *object;
+	int ref_count;
 };
-
-#define COLLECTOR_REF_TYPE(Type) \
-typedef struct \
-{ \
-	CollectorMarkerSansPointer; \
-	Type *object; \
-} Type ## Ref;
 
 #define CollectorMarker_setObject_(self, v) ((CollectorMarker *)self)->object = v;
 #define CollectorMarker_object(self)       (((CollectorMarker *)self)->object)

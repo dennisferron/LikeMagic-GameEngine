@@ -1,7 +1,6 @@
 
 struct IoState;
-struct CollectorMarker;
-typedef CollectorMarker IoObject;
+struct IoObject;
 typedef IoObject IoMessage;
 
 namespace Iocaste

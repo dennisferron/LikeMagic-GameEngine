@@ -165,6 +165,9 @@ struct IoState
 IOVM_API void IoState_new_atAddress(void* address, char const * bootstrap_path);
 IOVM_API void IoState_init(IoState *self);
 
+IOVM_API void add_ref(IoObject* io_obj);
+IOVM_API void remove_ref(IoObject* io_obj);
+
 void IoState_setupQuickAccessSymbols(IoState *self);
 void IoState_setupCachedMessages(IoState *self);
 void IoState_setupSingletons(IoState *self);

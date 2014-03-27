@@ -266,7 +266,7 @@ void IoList_checkIndex(IoList *self, IoMessage *m, char allowsExtending, int ind
 		max += 1;
 	}
 
-	if (index < 0 || (size_t)index >= max)
+	if (index < 0 || index >= max)
 	{
 		IoState_error_(IOSTATE, m, "index out of bounds\n");
 	}
@@ -557,7 +557,7 @@ IO_METHOD(IoList, reverseForeach)
 	IoObject *result = IONIL(self);
 	IoSymbol *slotName, *valueName;
 	IoMessage *doMessage;
-	size_t i;
+	long i;
 
 	IoMessage_foreachArgs(m, self, &slotName, &valueName, &doMessage);
 
@@ -780,7 +780,7 @@ IO_METHOD(IoList, removeAt)
 
 void IoList_rawAtPut(IoList *self, int i, IoObject *v)
 {
-	while (List_size(DATA(self)) < (size_t)i) /* not efficient */
+	while (List_size(DATA(self)) < i) /* not efficient */
 	{
 		List_append_(DATA(self), IONIL(self));
 	}

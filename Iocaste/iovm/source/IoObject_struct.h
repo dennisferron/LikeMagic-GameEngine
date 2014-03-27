@@ -14,15 +14,6 @@
 // Shortcut for method definitons in C code
 #define IO_METHOD(CLASS, NAME) IoObject * CLASS ## _ ## NAME (CLASS  *self, IoObject *locals, IoMessage *m)
 
-typedef struct CollectorMarker IoObject;
-//typedef struct IoObjectData IoObjectData;
-/*
-#ifndef CollectorObjectReference_DEFINED
-	#define CollectorObjectReference_DEFINED 1
-	typedef struct IoObjectData CollectorObjectReference;
-#endif
-*/
-
 #define IOOBJECT_PERSISTENCE 1
 
 struct IoObjectData

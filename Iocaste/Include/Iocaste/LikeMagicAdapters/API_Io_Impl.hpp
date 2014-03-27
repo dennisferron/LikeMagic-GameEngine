@@ -46,8 +46,7 @@ void API_io_willFree(IoObject *self);
 // Using forward declarations here so that user of IoVM class doesn't
 // actually need to include Io headers to create an IoVM object.
 struct IoState;
-struct CollectorMarker;
-typedef CollectorMarker IoObject;
+struct IoObject;
 
 namespace Iocaste { namespace LMAdapters {
 

@@ -53,15 +53,11 @@ SUITE(TestMapIntIoObject)
         std::string result = io_vm->get_expr<std::string>(std::string() +
             "m := namespace MapIntToIoObject tmp; " +
             "a := 99;" +
-            "o := Object clone do( v := \"y\" ); "
+            "o := Object clone do( v := \"saz\" ); "
             "m atPut(a, o); " +
             "r := m at(a); " +
             "r v"
         );
-        cout << endl;
-        cout << endl;
-        cout << "!!!!!!!!! Result is: " << result << endl;
-        cout << endl;
-        cout << endl;
+        CHECK_EQUAL("saz", result);
     }
 }

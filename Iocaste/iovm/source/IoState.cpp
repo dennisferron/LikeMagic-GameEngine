@@ -79,18 +79,6 @@ IoObject *IOBOOL(IoObject *self, int b)
 
 // collector --------------------------------------------------------
 
-IoObject *IoState_retain_(IoState *self, IoObject *v)
-{
-	IoObject_isReferenced_(v, 1);
-	Collector_retain_(self->collector, v);
-	return v;
-}
-
-void IoState_stopRetaining_(IoState *self, IoObject *v)
-{
-	Collector_stopRetaining_(self->collector, v);
-}
-
 void *IoState_unreferencedStackRetain_(IoState *self, IoObject *v)
 {
 	if (self->currentCoroutine)
@@ -879,4 +867,41 @@ void IoState_runCLI(IoState *self)
 IOVM_API int IoState_exitResult(IoState *self)
 {
 	return self->exitResult;
+}
+
+// TODO:  Move "retain" code here,
+// and change "retain" to just do an add_ref.
+
+IOVM_API void add_ref(IoObject* io_obj)
+{
+    ++(io_obj->ref_count);
+
+    IoState* state = (IoState*)IoObject_tag(io_obj)->state;
+	IoObject_isReferenced_(io_obj, 1);
+	Collector_retain_(state->collector, io_obj);
+}
+
+IOVM_API void remove_ref(IoObject* io_obj)
+{
+    if (io_obj->ref_count <= 0)
+    {
+        // throw exception
+    }
+
+    if (!--(io_obj->ref_count))
+    {
+        IoState* state = (IoState*)IoObject_tag(io_obj)->state;
+        Collector_stopRetaining_(state->collector, io_obj);
+    }
+}
+
+IoObject *IoState_retain_(IoState *self, IoObject *v)
+{
+    add_ref(v);
+    return v;
+}
+
+void IoState_stopRetaining_(IoState *self, IoObject *v)
+{
+    remove_ref(v);
 }

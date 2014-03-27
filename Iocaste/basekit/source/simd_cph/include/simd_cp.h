@@ -35,7 +35,7 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
       This is the main file and the only one an application should
    include.  It will find the correct (hopefully) SIMD_CPH
    dialect file to include.
-   
+
 
 */
 
@@ -60,24 +60,24 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
       #define __GNUC__X86__
       #define __FOUND
    #endif
-   
+
    #ifdef __amd64__
       #define __GNUC__X86__
       #define __FOUND
    #endif
-   
+
   /* PowerPC Compiler */
    #ifdef __ALTIVEC__
       #define __GNUC__RS6__
       #define __FOUND
       #define __SIMD_NO_SIMD /* No PPC intrinsics file right now */
    #endif
-   
+
    #ifdef __XSCALE__
       #define __GNUC__ARM_IWMMX__
       #define __FOUND
    #endif
-       
+
 #endif /* __GNUC__ */
 
 
@@ -90,11 +90,11 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
    #endif
 
    #ifdef _M_ALPHA /* for Compaq Alpha CPU */
-      #define __MSVC__AXP__ 
+      #define __MSVC__AXP__
       #define __FOUND
       #define __SIMD_NO_SIMD__
    #endif
-   
+
 #endif /* _WIN32 */
 
 
@@ -110,7 +110,7 @@ THE AUTHOR'S WRITTEN PERMISSION, WITH THE FOLLOWING EXCEPTIONS:
 /* Include the correct SIMD file */
 
 #if defined(__SIMD_NO_SIMD__) || defined(__SIMD_EMU__)
-   #warning Including Emulated SIMD support...
+   //#warning Including Emulated SIMD support...
    #define __UNK__EMU__
    #include <simd_cp_emu.h>
 #endif
