@@ -29,8 +29,13 @@ LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t 
 class TypeMirrorImpl : private TypeMirror
 {
 private:
-    struct Impl;
-    boost::shared_ptr<Impl> impl;
+    boost::unordered_map<std::string, TypeMirror const*> bases;
+    std::string name;
+    boost::unordered_map<std::string, std::map<int, CallTarget*>> methods;
+    TypeIndex class_type;
+    TypeIndex metaclass_type;
+    size_t instance_size;
+    std::unique_ptr<AbstractTermDeleter const> term_deleter;
 
     TypeMirrorImpl(TypeMirrorImpl const&) = delete;
     TypeMirrorImpl& operator =(TypeMirrorImpl const&) = delete;
@@ -64,6 +69,7 @@ public:
     virtual bool has_method_named(std::string method_name, bool in_base_class=false) const;
 
     virtual void mark() const;
+    virtual std::vector<std::pair<std::string, CallTarget*>> get_all_methods() const;
 };
 
 LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type)
@@ -71,24 +77,12 @@ LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t 
     return new TypeMirrorImpl(class_name, instance_size, class_type);
 }
 
-struct TypeMirrorImpl::Impl
-{
-    boost::unordered_map<std::string, TypeMirror const*> bases;
-    std::string name;
-    boost::unordered_map<std::string, std::map<int, CallTarget*>> methods;
-    TypeIndex class_type;
-    TypeIndex metaclass_type;
-    size_t instance_size;
-    std::unique_ptr<AbstractTermDeleter const> term_deleter;
-};
-
 TypeMirrorImpl::TypeMirrorImpl(std::string name, size_t instance_size, TypeIndex class_type)
-    : impl(new TypeMirrorImpl::Impl)
 {
-    impl->name = name;
-    impl->class_type = class_type;
-    impl->instance_size = instance_size;
-    impl->term_deleter = nullptr;
+    this->name = name;
+    this->class_type = class_type;
+    this->instance_size = instance_size;
+    this->term_deleter = nullptr;
 
     auto ptr_caster = new BottomPtrTarget();
     add_method("unsafe_ptr_cast", ptr_caster);
@@ -96,13 +90,13 @@ TypeMirrorImpl::TypeMirrorImpl(std::string name, size_t instance_size, TypeIndex
 
 void TypeMirrorImpl::set_deleter(std::unique_ptr<AbstractTermDeleter const> deleter)
 {
-    impl->term_deleter = std::move(deleter);
+    this->term_deleter = std::move(deleter);
 }
 
 TypeMirrorImpl::~TypeMirrorImpl()
 {
     /* Disabled until I solve the problem of the destructor of ExprTarget/Expr needing to access type mirror.
-    for (auto it=impl->methods.begin(); it != impl->methods.end(); it++)
+    for (auto it=this->methods.begin(); it != this->methods.end(); it++)
     {
         std::map<int, CallTarget*> const& overloads(it->second);
         for (auto it2=overloads.begin(); it2 != overloads.end(); it2++)
@@ -113,10 +107,10 @@ TypeMirrorImpl::~TypeMirrorImpl()
 
 void TypeMirrorImpl::try_delete(Expr const* expr) const
 {
-    if (impl->term_deleter == nullptr)
+    if (this->term_deleter == nullptr)
         throw std::logic_error("No deleter registered for " + this->get_class_type().description());
 
-    impl->term_deleter->delete_if_possible(expr->get_value_ptr().as_const);
+    this->term_deleter->delete_if_possible(expr->get_value_ptr().as_const);
 }
 
 void TypeMirrorImpl::add_method(std::string method_name, CallTarget* method)
@@ -126,29 +120,29 @@ void TypeMirrorImpl::add_method(std::string method_name, CallTarget* method)
     if (get_method(method_name, num_args))
     {
         std::cout <<
-                impl->name + "::" + method_name + " taking " + boost::lexical_cast<std::string>(num_args) + " arguments"
+                this->name + "::" + method_name + " taking " + boost::lexical_cast<std::string>(num_args) + " arguments"
                 + " has previously been registered."
                 + " (Method names can be overloaded, but only if they have different arg counts. You will have to give one"
                 + " of the methods a different name.)" << std::endl;
     }
     else
     {
-        //std::cout << impl->name + "::" + method_name
+        //std::cout << this->name + "::" + method_name
         //    + "(" + boost::lexical_cast<std::string>(num_args) + " args)" << std::endl;
-        impl->methods[method_name][num_args] = method;
+        this->methods[method_name][num_args] = method;
     }
 }
 
 void TypeMirrorImpl::suggest_method(std::string method_name, int num_args) const
 {
-    auto candidates = impl->methods.find(method_name);
+    auto candidates = this->methods.find(method_name);
 
-    if (candidates == impl->methods.end())
+    if (candidates == this->methods.end())
     {
-        bool has_c = impl->methods.find(method_name + "_c") != impl->methods.end();
-        bool has_nc = impl->methods.find(method_name + "_nc") != impl->methods.end();
+        bool has_c = this->methods.find(method_name + "_c") != this->methods.end();
+        bool has_nc = this->methods.find(method_name + "_nc") != this->methods.end();
 
-        bool has_get = impl->methods.find("get_" + method_name) != impl->methods.end();
+        bool has_get = this->methods.find("get_" + method_name) != this->methods.end();
 
         if (has_c || has_nc)
         {
@@ -193,11 +187,24 @@ void TypeMirrorImpl::suggest_method(std::string method_name, int num_args) const
     }
 }
 
+std::vector<std::pair<std::string, CallTarget*>> TypeMirrorImpl::get_all_methods() const
+{
+    std::vector<std::pair<std::string, CallTarget*>> result;
+    for (auto kv1 : methods)
+    {
+        for (auto kv2 : kv1.second)
+        {
+            result.push_back(std::make_pair(kv1.first, kv2.second));
+        }
+    }
+    return result;
+}
+
 CallTarget* TypeMirrorImpl::get_method(std::string method_name, int num_args, bool in_base_class) const
 {
     // First try to find the name and arg number method in this class.
-    auto name_iter = impl->methods.find(method_name);
-    if (name_iter != impl->methods.end())
+    auto name_iter = this->methods.find(method_name);
+    if (name_iter != this->methods.end())
     {
         auto overloads = name_iter->second;
         auto num_iter = overloads.find(num_args);
@@ -213,7 +220,7 @@ CallTarget* TypeMirrorImpl::get_method(std::string method_name, int num_args, bo
     }
 
     // Second try to find it in the bases.
-    for (auto it=impl->bases.begin(); it != impl->bases.end(); it++)
+    for (auto it=this->bases.begin(); it != this->bases.end(); it++)
     {
         if (it->second == this)
             throw std::logic_error("The class " + get_class_name() + " is registered as a base of itself!");
@@ -230,8 +237,8 @@ CallTarget* TypeMirrorImpl::get_method(std::string method_name, int num_args, bo
 bool TypeMirrorImpl::has_method_named(std::string method_name, bool in_base_class) const
 {
     // First try to find the name and arg number method in this class.
-    auto name_iter = impl->methods.find(method_name);
-    if (name_iter != impl->methods.end())
+    auto name_iter = this->methods.find(method_name);
+    if (name_iter != this->methods.end())
     {
         auto overloads = name_iter->second;
         for (auto method : overloads)
@@ -244,7 +251,7 @@ bool TypeMirrorImpl::has_method_named(std::string method_name, bool in_base_clas
     }
 
     // Second try to find it in the bases.
-    for (auto it=impl->bases.begin(); it != impl->bases.end(); it++)
+    for (auto it=this->bases.begin(); it != this->bases.end(); it++)
     {
         if (it->second == this)
             throw std::logic_error("The class " + get_class_name() + " is registered as a base of itself!");
@@ -259,7 +266,7 @@ bool TypeMirrorImpl::has_method_named(std::string method_name, bool in_base_clas
 
 bool TypeMirrorImpl::has_base(TypeMirror const* base) const
 {
-    for (auto it=impl->bases.begin(); it != impl->bases.end(); it++)
+    for (auto it=this->bases.begin(); it != this->bases.end(); it++)
         if (it->second == base || it->second->has_base(base))
             return true;
 
@@ -268,19 +275,19 @@ bool TypeMirrorImpl::has_base(TypeMirror const* base) const
 
 void TypeMirrorImpl::add_base(TypeMirror const* base)
 {
-    impl->bases[base->get_class_name()] = base;
+    this->bases[base->get_class_name()] = base;
 }
 
 std::string TypeMirrorImpl::get_class_name() const
 {
-    return impl->name;
+    return this->name;
 }
 
 std::string TypeMirrorImpl::description() const
 {
-    TypeInfo info = impl->class_type.get_info();
+    TypeInfo info = this->class_type.get_info();
     string system = info.system;
-    string name = impl->name;
+    string name = this->name;
 
     if (system == "namespace")
     {
@@ -297,20 +304,20 @@ std::string TypeMirrorImpl::description() const
 
 size_t TypeMirrorImpl::get_instance_size() const
 {
-    return impl->instance_size;
+    return this->instance_size;
 }
 
 TypeIndex TypeMirrorImpl::get_class_type() const
 {
-    return impl->class_type;
+    return this->class_type;
 }
 
 void TypeMirrorImpl::mark() const
 {
-    for (auto it1=impl->methods.begin(); it1 != impl->methods.end(); it1++)
+    for (auto it1=this->methods.begin(); it1 != this->methods.end(); it1++)
         for (auto it2=it1->second.begin(); it2 != it1->second.end(); it2++)
             it2->second->mark();
 
-    for (auto it=impl->bases.begin(); it != impl->bases.end(); it++)
+    for (auto it=this->bases.begin(); it != this->bases.end(); it++)
         it->second->mark();
 }

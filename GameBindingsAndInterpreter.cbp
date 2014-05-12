@@ -44,6 +44,7 @@
 					<Add library="bin\Debug\libIrrKlangBindings.a" />
 					<Add library="bin\Debug\libIrrlichtBindings.a" />
 					<Add library="bin\Debug\libMeshToolsBindings.a" />
+					<Add library="bin\Debug\libsqlite.a" />
 				</Linker>
 			</Target>
 			<Target title="Debug Linux">

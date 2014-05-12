@@ -41,6 +41,11 @@ public:
         return empty_arg_list;
     }
 
+    virtual TypeIndex get_return_type() const
+    {
+        return TypId<R&>::liberal();
+    }
+
     virtual bool is_inherited() const { return true; }
 
     virtual void mark() const { /* do nothing */ }

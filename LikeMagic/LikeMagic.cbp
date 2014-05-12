@@ -44,11 +44,16 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-Wall" />
+					<Add option="-pg" />
 					<Add option="-g" />
 					<Add option="-DUSE_DLL_BUILD" />
 					<Add option="-DNO_USE_DMALLOC" />
 					<Add option="-DBUILDING_LIKEMAGIC_DLL" />
 				</Compiler>
+				<Linker>
+					<Add option="-pg -lgmon" />
+					<Add library="..\bin\Debug\libsqlite.a" />
+				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
@@ -68,6 +73,8 @@
 			<Add directory="../Iocaste/iovm/source" />
 			<Add directory="../Iocaste/Include" />
 			<Add directory="Include" />
+			<Add directory="InterfaceGenerator/Include" />
+			<Add directory="../Common/sqlite" />
 		</Compiler>
 		<Unit filename="Include/LikeMagic/BindingMacros.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/ArrayFieldGetterTarget.hpp" />
@@ -127,6 +134,7 @@
 		<Unit filename="Include/LikeMagic/Utility/IsIterator.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/ScriptFunc.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/StripModifiers.hpp" />
+		<Unit filename="Include/LikeMagic/Utility/TraceDb.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TupleForEach.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeDescr.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/TypeIndex.hpp" />
@@ -134,6 +142,16 @@
 		<Unit filename="Include/LikeMagic/Utility/TypePack.hpp" />
 		<Unit filename="Include/LikeMagic/Utility/make_arg_list.hpp" />
 		<Unit filename="Include/LikeMagic/binding_functions.hpp" />
+		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/ArgGen.hpp" />
+		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/ClassGen.hpp" />
+		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/Generator.hpp" />
+		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/MethodGen.hpp" />
+		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/RetGen.hpp" />
+		<Unit filename="InterfaceGenerator/Source/ArgGen.cpp" />
+		<Unit filename="InterfaceGenerator/Source/ClassGen.cpp" />
+		<Unit filename="InterfaceGenerator/Source/Generator.cpp" />
+		<Unit filename="InterfaceGenerator/Source/MethodGen.cpp" />
+		<Unit filename="InterfaceGenerator/Source/RetGen.cpp" />
 		<Unit filename="Script/Io/bootstrap.io" />
 		<Unit filename="Script/TestScripts/debugtest.io" />
 		<Unit filename="Source/AbstractSharedArgMarshaller.cpp" />
@@ -149,6 +167,7 @@
 		<Unit filename="Source/MarkableObjGraph.cpp" />
 		<Unit filename="Source/RequestBroker.cpp" />
 		<Unit filename="Source/SharedArgTransporter.cpp" />
+		<Unit filename="Source/TraceDb.cpp" />
 		<Unit filename="Source/TypeConvGraph.cpp" />
 		<Unit filename="Source/TypeDescr.cpp" />
 		<Unit filename="Source/TypeInfo.cpp" />

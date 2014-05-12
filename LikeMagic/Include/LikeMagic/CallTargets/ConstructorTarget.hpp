@@ -49,6 +49,11 @@ public:
         return arg_types;
     }
 
+    virtual TypeIndex get_return_type() const
+    {
+        return TypId<ObjT>::liberal();
+    }
+
     virtual bool is_inherited() const { return false; }
 
     virtual void mark() const { /* do nothing */ }

@@ -1543,6 +1543,13 @@ IoObject *IOCLONE(IoObject *self)
 	IoTag* tag = IoObject_tag(self);
 	IoObject* newObject = (IoObject*)tag->cloneFunc(self);
 
+    // DLF For debugging
+	if ((void*)newObject == (void*)0x47f13c8)
+    {
+        int x = 1;
+        ++x;
+    }
+
     // This also puts it on the stack - why?
 	IoState_addValueIfNecessary_(state, newObject);
 

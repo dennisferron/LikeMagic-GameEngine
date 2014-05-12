@@ -33,9 +33,11 @@ public:
     virtual void add_converter_simple(TypeIndex from, TypeIndex to, p_conv_t conv) = 0;
     virtual ExprPtr try_conv(ExprPtr from_expr, TypeIndex to_type) const = 0;
     virtual bool has_conv(TypeIndex  from_type, TypeIndex to_type) const = 0;
+    virtual bool has_direct_conv(TypeIndex  from_type, TypeIndex to_type) const = 0;
     virtual TypeMirror& global_namespace() const = 0;
     virtual TypeMirror const* get_namespace(std::string full_name) const = 0;
     virtual bool has_type(TypeIndex type) const = 0;
+    virtual std::vector<TypeIndex> list_class_types() const = 0;
 };
 
 LIKEMAGIC_API extern TypeSystem* type_system;

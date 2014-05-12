@@ -58,6 +58,11 @@ public:
         return arg_types;
     }
 
+    virtual TypeIndex get_return_type() const
+    {
+        return TypId<void>::liberal();
+    }
+
     virtual bool is_inherited() const { return true; }
 
     virtual void mark() const { /* do nothing */ }
@@ -100,6 +105,11 @@ public:
     {
         static TypeInfoList arg_types = MakeArgList<Args...>::value();
         return arg_types;
+    }
+
+    virtual TypeIndex get_return_type() const
+    {
+        return TypId<void>::liberal();
     }
 
     virtual bool is_inherited() const { return true; }
@@ -145,6 +155,11 @@ public:
         return arg_types;
     }
 
+    virtual TypeIndex get_return_type() const
+    {
+        return TypId<R>::liberal();
+    }
+
     virtual bool is_inherited() const { return true; }
 
     virtual void mark() const { /* do nothing */ }
@@ -186,6 +201,11 @@ public:
     {
         static TypeInfoList arg_types = MakeArgList<Args...>::value();
         return arg_types;
+    }
+
+    virtual TypeIndex get_return_type() const
+    {
+        return TypId<R>::liberal();
     }
 
     virtual bool is_inherited() const { return true; }

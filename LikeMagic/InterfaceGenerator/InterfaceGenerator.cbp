@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="InterfaceGenerator" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Windows">
+				<Option output="InterfaceGenerator" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="..\..\bin\Debug\libLikeMagic-Windows.a" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-fexceptions" />
+			<Add option="--std=c++0x" />
+			<Add option="-Werror=return-type" />
+			<Add option="-Werror=implicit-function-declaration" />
+			<Add option="-fdiagnostics-show-option" />
+			<Add option="-Wno-unused-variable" />
+			<Add option="-Wno-unused-parameter" />
+			<Add option="-Wno-deprecated" />
+			<Add option="-Wno-ignored-qualifiers" />
+			<Add option="-Wno-unused-local-typedefs" />
+			<Add directory="../Include" />
+			<Add directory="Include" />
+			<Add directory="../../Common/boost_1_54_0" />
+		</Compiler>
+		<Unit filename="Include/InterfaceGenerator/Generator.hpp" />
+		<Unit filename="Source/Generator.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

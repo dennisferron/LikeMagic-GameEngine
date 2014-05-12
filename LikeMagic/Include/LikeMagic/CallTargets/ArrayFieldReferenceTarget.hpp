@@ -35,13 +35,19 @@ public:
         ExprPtr target_ward;
         Delegate& target_obj = eval_as_nonconst_target(target, actual_type, target_ward);
         return create_reference(
-            &((target_obj.*f_ptr)[EvalAs<size_t>::value(args[0], ward)]), TypId<R>::liberal(), target);
+            &((target_obj.*f_ptr)[EvalAs<size_t>::value(args[0], ward)]), TypId<R&>::liberal(), target);
     }
 
     virtual TypeInfoList const& get_arg_types() const
     {
         static TypeInfoList arg_types = MakeArgList<size_t>::value();
         return arg_types;
+    }
+
+    virtual TypeIndex get_return_type() const
+    {
+        typedef R RArray[];
+        return TypId<RArray&>::liberal();
     }
 
     virtual bool is_inherited() const { return true; }

@@ -1,14 +1,5 @@
 method(rootModule, namespace, Constants, FileSystem,
 
-    writeln("About to reference global namespace")
-    writeln(namespace)
-    writeln("About to reference namespace std")
-    writeln(namespace std)
-    writeln("About to reference namespace std type")
-    msg := namespace std type
-    writeln(msg)
-    writeln("Done referencing namespace std")
-
     rootModule lexicalDo(
 
         scripts := self scripts

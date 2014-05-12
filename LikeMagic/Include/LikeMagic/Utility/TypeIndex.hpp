@@ -107,3 +107,16 @@ TYPID_SPEC(T const*&,       PtrType::PtrToConst,    RefType::RefToNonconst)
 TYPID_SPEC(T const* const&, PtrType::PtrToConst,    RefType::RefToConst)
 
 }
+
+namespace std {
+
+  template <>
+  struct hash<LM::TypeIndex>
+  {
+    std::size_t operator()(const LM::TypeIndex& type) const
+    {
+        return std::hash<size_t>()(type.get_id());
+    }
+  };
+
+}

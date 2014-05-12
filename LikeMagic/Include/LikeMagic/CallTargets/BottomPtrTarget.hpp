@@ -31,6 +31,11 @@ public:
         return empty_arg_list;
     }
 
+    virtual TypeIndex get_return_type() const
+    {
+        return create_bottom_ptr_type_index();
+    }
+
     virtual bool is_inherited() const { return true; }
 
     virtual void mark() const { /* do nothing */ }

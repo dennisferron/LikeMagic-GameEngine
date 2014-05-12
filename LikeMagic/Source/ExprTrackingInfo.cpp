@@ -36,11 +36,13 @@ namespace LM
 {
     void track_expr(Expr* ptr)
     {
-        expr_tracking[ptr] = ExprTrackingInfo(ptr);
+        // Uncomment for debugging
+        //expr_tracking[ptr] = ExprTrackingInfo(ptr);
     }
 
     LIKEMAGIC_API void assert_expr(Expr* ptr)
     {
+        /* Uncomment for debugging
         if (ptr == nullptr)
             throw std::runtime_error("Expr* is null");
 
@@ -52,5 +54,6 @@ namespace LM
             cout << ss.str() << endl;
             throw std::runtime_error(ss.str());
         }
+        */
     }
 }

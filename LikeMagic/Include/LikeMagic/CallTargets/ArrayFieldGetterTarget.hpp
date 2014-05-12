@@ -44,6 +44,12 @@ public:
         return arg_types;
     }
 
+    virtual TypeIndex get_return_type() const
+    {
+        typedef R RArray[];
+        return TypId<RArray>::liberal();
+    }
+
     virtual bool is_inherited() const { return true; }
 
     virtual void mark() const { /* do nothing */ }

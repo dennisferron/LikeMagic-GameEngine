@@ -147,8 +147,33 @@ TypeConvGraph::vertex_t TypeConvGraph::add_type(TypeIndex type)
     return vertex_map[pos];
 }
 
+bool TypeConvGraph::has_direct_conv(TypeIndex from_type, TypeIndex to_type) const
+{
+    if (!has_type(from_type) || !has_type(to_type))
+        return false;
+
+    std::size_t from_pos = from_type.get_id();
+    auto from_vert = vertex_map[from_pos];
+    std::size_t to_pos = to_type.get_id();
+    auto to_vert = vertex_map[from_pos];
+    auto existing_edge = edge(from_vert, to_vert, graph);
+    return existing_edge.second;
+}
+
 void TypeConvGraph::add_conv(TypeIndex from, TypeIndex to, p_conv_t conv)
 {
+    if (!recheck_failed_convs)
+    {
+        std::string msg = "A type converter from "
+            + from.description() + " to " + to.description()
+            + " called " + conv->description()
+            + " was added after recheck_failed_convs flag was cleared."
+            + "  You must only clear recheck_failed_convs after all the "
+            + " type converters are done being added.";
+        cout << msg << endl;
+        throw std::logic_error(msg);
+    }
+
     if (from.get_info().ref_type == RefType::Metaclass)
     {
         std::string msg = "add_conv from_type is metaclass when adding type converter from "
@@ -193,19 +218,6 @@ void TypeConvGraph::add_conv(TypeIndex from, TypeIndex to, p_conv_t conv)
             << from.description() << " " << from.get_id() << " to " << to.description() << " " << to.get_id()
             << " called " << conv->description() << endl;
 */
-
-        if (!has_conv(from, to))
-        {
-            auto from_vert2 = add_type(from);
-            auto to_vert2 = add_type(to);
-            auto existing_edge2 = edge(from_vert2, to_vert2, graph);
-            bool test_again = existing_edge2.second;
-            stringstream msg;
-            msg << "double checked has conv is " << test_again << endl;
-            msg << "add_conv missing just-added conversion from " << from.description() << " " << from.get_id() << " to " << to.description() << " " << to.get_id() << " conv='" << conv->description() << "'";
-            cout << msg.str() << endl;
-            throw std::logic_error(msg.str());
-        }
     }
 }
 

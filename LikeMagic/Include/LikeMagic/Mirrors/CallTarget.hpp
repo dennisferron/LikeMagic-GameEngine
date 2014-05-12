@@ -22,7 +22,8 @@ public:
     virtual ~CallTarget() = 0;
 
     virtual ExprPtr call(ExprPtr target, ArgList args) const = 0;
-    virtual LM::TypeInfoList const& get_arg_types() const = 0;
+    virtual TypeInfoList const& get_arg_types() const = 0;
+    virtual TypeIndex get_return_type() const = 0;
 
     // Some methods (like constructors) should not be inherited.
     virtual bool is_inherited() const = 0;

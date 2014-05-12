@@ -95,6 +95,7 @@ public:
     void add_conv(TypeIndex from, TypeIndex to, p_conv_t conv);
     ExprPtr wrap_expr(ExprPtr from_expr, TypeIndex from, TypeIndex to) const;
     bool has_conv(TypeIndex from_type, TypeIndex to_type) const;
+    bool has_direct_conv(TypeIndex from_type, TypeIndex to_type) const;
     void print_graph() const;
     void print_conv_chain(TypeIndex from, TypeIndex to) const;
     void print_conv_chain(p_chain_t const& chain) const;

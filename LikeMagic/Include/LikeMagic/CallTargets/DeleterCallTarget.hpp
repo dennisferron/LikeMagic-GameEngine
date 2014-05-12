@@ -19,6 +19,7 @@ public:
     DeleterCallTarget();
     virtual ExprPtr call(ExprPtr target, ArgList args) const;
     virtual TypeInfoList const& get_arg_types() const;
+    virtual TypeIndex get_return_type() const;
     virtual bool is_inherited() const { return true; }
     virtual void mark() const { /* do nothing */ }
 };

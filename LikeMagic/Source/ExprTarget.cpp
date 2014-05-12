@@ -17,6 +17,11 @@ TypeInfoList const& ExprTarget::get_arg_types() const
     return empty_arg_list;
 }
 
+TypeIndex ExprTarget::get_return_type() const
+{
+    return expr->get_type();
+}
+
 namespace LM {
 LIKEMAGIC_API CallTarget* create_expr_target(ExprPtr expr)
 {

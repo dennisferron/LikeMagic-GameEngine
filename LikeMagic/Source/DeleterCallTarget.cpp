@@ -25,3 +25,8 @@ TypeInfoList const& DeleterCallTarget::get_arg_types() const
 {
     return empty_arg_list;
 }
+
+TypeIndex DeleterCallTarget::get_return_type() const
+{
+    return TypId<void>::liberal();
+}

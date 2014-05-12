@@ -3,6 +3,7 @@
 #include "LikeMagic/StdBindings/StdBindings.hpp"
 
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
+#include "LikeMagic/Utility/TraceDb.hpp"
 
 #include <iostream>
 
@@ -27,6 +28,9 @@ int main()
 {
     try
     {
+        trace_db->open();
+        trace_db->test();
+
         LM::type_system = LM::create_type_system();
         LM::add_bindings();
         add_binding_test_bindings();
@@ -37,6 +41,9 @@ int main()
         int result = UnitTest::RunAllTests();
         delete io_vm;
         delete LM::type_system;
+
+        trace_db->close();
+
         //std::cout << "Done" << std::endl;
         std::cout << "Press enter..." << std::endl;
         std::cin.ignore( 99, '\n' );
@@ -45,12 +52,14 @@ int main()
     catch (std::logic_error const& e)
     {
         std::cerr << "LikeMagic exited with exception '" << e.what() << "'" << std::endl;
+        trace_db->close();
         std::cout << "Error. Press enter..." << std::endl;
         std::cin.ignore( 99, '\n' );
         return -1;
     }
     catch (...)
     {
+        trace_db->close();
         std::cout << "Error. Press enter..." << std::endl;
         std::cin.ignore( 99, '\n' );
         return -1;
