@@ -24,11 +24,11 @@ void setup_io_vm()
     io_vm = create_iovm(bootstrap_path);
 }
 
-int main()
+int main(int argc, char const* argv[])
 {
     try
     {
-        trace_db->open();
+        trace_db->open(argv[0]);
         trace_db->test();
 
         LM::type_system = LM::create_type_system();
