@@ -1,5 +1,6 @@
 #include "LikeMagic/Exprs/ExprTrackingInfo.hpp"
 #include "LikeMagic/Exprs/Expr.hpp"
+#include "LikeMagic/Utility/TraceDb.hpp"
 
 #include "boost/unordered_map.hpp"
 
@@ -36,6 +37,11 @@ namespace LM
 {
     void track_expr(Expr* ptr)
     {
+        if (ptr == nullptr)
+            throw std::runtime_error("Expr* is null");
+
+        trace_db->new_Expr(ptr, ptr->get_type(), ptr->get_value_ptr().as_const);
+
         // Uncomment for debugging
         //expr_tracking[ptr] = ExprTrackingInfo(ptr);
     }
