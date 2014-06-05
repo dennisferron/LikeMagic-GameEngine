@@ -28,6 +28,9 @@ When cloned, an Object will call its init slot (with no arguments).
 #include <string.h>
 #include <stddef.h>
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 #include "Iocaste/LikeMagicAdapters/API_Io_Impl.hpp"
 using namespace Iocaste;
 using namespace Iocaste::LMAdapters;
@@ -785,7 +788,9 @@ void IoObject_addTaglessMethodTable_(IoObject *self, IoMethodTable *methodTable)
 IoObject *IoObject_new(void *state)
 {
 	IoObject *proto = IoState_protoWithId_((IoState *)state, protoName_Object);
-	return IOCLONE(proto);
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoName_Object, result->object->tag);
+	return result;
 }
 
 IoObject *IoObject_justClone(IoObject *self)
@@ -1106,6 +1111,8 @@ void IoObject_willFree(IoObject *self)
 
 void IoObject_free(IoObject *self) // prepare for io_free and possibly recycle
 {
+    trace_db->delete_IoObject(self);
+
 #ifdef IOSTATE_RECYCLING_ON
 	if(List_size(IOSTATE->recycledObjects) >= IOSTATE->maxRecycledObjects)
 #endif

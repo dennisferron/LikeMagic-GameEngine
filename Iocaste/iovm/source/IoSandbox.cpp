@@ -18,6 +18,9 @@ Sandbox can be used to run separate instances of Io within the same process.
 #include <errno.h>
 #include <stdio.h>
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 static const char *protoId = "Sandbox";
 #define DATA(self) ((IoState *)IoObject_dataPointer(self))
 
@@ -91,7 +94,9 @@ void IoSandbox_printCallback(void *voidSelf, const UArray *ba)
 IoSandbox *IoSandbox_new(void *state)
 {
 	IoObject *proto = IoState_protoWithId_((IoState *)state, protoId);
-	return IOCLONE(proto);
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 void IoSandbox_free(IoSandbox *self)

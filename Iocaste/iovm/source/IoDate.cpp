@@ -25,6 +25,10 @@ __MINGW_IMPORT long	_timezone;
 
 static const char *protoId = "Date";
 
+
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 #define DATA(self) ((Date *)IoObject_dataPointer(self))
 
 IoTag *IoDate_newTag(void *state)
@@ -112,7 +116,9 @@ IoDate *IoDate_rawClone(IoDate *proto)
 IOVM_API IoDate *IoDate_new(void *state)
 {
 	IoDate *proto = IoState_protoWithId_((IoState *)state, protoId);
-	return IOCLONE(proto);
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 IOVM_API IoDate *IoDate_newWithTime_(void *state, time_t t)

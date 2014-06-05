@@ -9,6 +9,9 @@ Contains methods related to the IoVM.
 #include <io.h>
 #endif
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 #include "IoSystem.h"
 #include "IoNumber.h"
 #include "IoMessage_parser.h"

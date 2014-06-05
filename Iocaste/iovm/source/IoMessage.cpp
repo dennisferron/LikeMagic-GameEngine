@@ -45,6 +45,9 @@ But the cost to performance seems to outweigh the need to cover this case for no
 #include "IoMessage_opShuffle.h"
 #include "IoVMCpp.h"
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 #define DATA(self) ((IoMessageData *)IoObject_dataPointer(self))
 
 static const char *protoId = "Message";
@@ -175,8 +178,9 @@ IoMessage *IoMessage_rawClone(IoMessage *proto)
 IoMessage *IoMessage_new(void *state)
 {
 	IoObject *proto = IoState_protoWithId_((IoState *)state, protoId);
-	IoObject *self = IOCLONE(proto);
-	return self;
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 // Message shallowCopy := method(Message clone setName(name) setArguments(arguments))
@@ -278,6 +282,8 @@ void IoMessage_mark(IoMessage *self)
 
 void IoMessage_free(IoMessage *self)
 {
+    trace_db->delete_IoMessage(self);
+
 	IoMessageData *d = (IoMessageData *)IoObject_dataPointer(self);
 
 	if (DATA(self)->args)

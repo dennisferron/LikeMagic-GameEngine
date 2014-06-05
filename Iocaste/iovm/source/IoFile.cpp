@@ -56,6 +56,9 @@ static char* getcwd(char* buf, int size) { return 0; }
 #endif
 
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 static const char *protoId = "File";
 
 #define DATA(self) ((IoFileData *)IoObject_dataPointer(self))
@@ -169,7 +172,9 @@ IoFile *IoFile_rawClone(IoFile *proto)
 IoFile *IoFile_new(void *state)
 {
 	IoObject *proto = IoState_protoWithId_((IoState *)state, protoId);
-	return IOCLONE(proto);
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 IoFile *IoFile_newWithPath_(void *state, IoSymbol *path)

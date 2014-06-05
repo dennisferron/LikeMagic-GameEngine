@@ -16,8 +16,9 @@ namespace LM
 
 struct DbNull {};
 
-typedef boost::variant<DbNull, int, double, std::string const&, sqlite3_int64> sqlite_value_type;
-typedef std::vector<std::pair<char const*, sqlite_value_type>> columns_and_values;
+typedef boost::variant<DbNull, int, double, std::string, sqlite3_int64, void const*> sqlite_value_type;
+typedef std::vector<std::pair<char const*, sqlite_value_type>> names_and_values;
+typedef std::vector<std::pair<char const*, char const*>> names_and_sql_code;
 
 class BinderVisitor : public boost::static_visitor<>
 {
@@ -49,7 +50,7 @@ public:
         handle(sqlite3_bind_double(stmt, index, value));
     }
 
-    void operator()(string const& value) const
+    void operator()(string value) const
     {
         handle(sqlite3_bind_text(stmt, index, value.c_str(), value.size(), SQLITE_TRANSIENT));
     }
@@ -57,6 +58,13 @@ public:
     void operator()(sqlite3_int64 value) const
     {
         handle(sqlite3_bind_int64(stmt, index, value));
+    }
+
+    void operator()(void const* value) const
+    {
+        stringstream valueSS;
+        valueSS <<  value;
+        operator()(valueSS.str());
     }
 };
 
@@ -67,32 +75,74 @@ private:
     sqlite3_stmt* insert_session;
     sqlite3_stmt* insert_type_index;
     sqlite3_stmt* insert_expr;
+    sqlite3_stmt* insert_io_tag;
+    sqlite3_stmt* insert_io_object;
+    sqlite3_stmt* update_io_object_data;
+    sqlite3_stmt* insert_io_message;
+    sqlite3_stmt* update_io_message_name;
+    sqlite3_stmt* update_io_message_label;
+    sqlite3_stmt* update_io_message_line;
+    sqlite3_stmt* update_io_message_character;
+    sqlite3_stmt* insert_io_call;
+    sqlite3_stmt* update_io_call_message;
+    sqlite3_stmt* insert_io_stack_object;
+    sqlite3_stmt* insert_io_stack_mark;
+    sqlite3_stmt* insert_io_stack_pop_mark;
+    sqlite3_stmt* update_expr_when_freed;
+    sqlite3_stmt* update_io_tag_when_freed;
+    sqlite3_stmt* update_io_object_when_freed;
+    sqlite3_stmt* update_io_message_when_freed;
+    sqlite3_stmt* update_io_call_when_freed;
 
-    sqlite3_int64 session_id;
+    sqlite3_int64 sequence;
     vector<bool> saved_type_indices;
 
     sqlite3_stmt* prepare(char const* sql_str, std::size_t str_len);
     void bind(sqlite3_stmt* stmt, int index, sqlite_value_type value);
-    void bind(sqlite3_stmt* stmt, columns_and_values values);
+    void bind(sqlite3_stmt* stmt, names_and_values values);
     void write_column_list(ostream& os, vector<string> columns, char const* prefix = nullptr);
+    void write_column_list(ostream& os, names_and_sql_code columns);
+    void write_value_list(ostream& os, names_and_sql_code values);
     void write_column_equals_list(ostream& os, vector<string> columns, char const* separator);
     sqlite3_stmt* prepare_insert(string table_name, vector<string> columns);
+    sqlite3_stmt* prepare_custom_insert(string table_name, names_and_sql_code values);
     sqlite3_stmt* prepare_select(string table_name,
         vector<string> select_columns,
         vector<string> where_columns,
         vector<string> order_by_columns);
-    void run_void(sqlite3_stmt* stmt, columns_and_values values);
+    sqlite3_stmt* prepare_update_last_address(string table_name,
+        vector<string> columns);
+    void run_void(sqlite3_stmt* stmt, names_and_values values);
     bool has_type_index(TypeIndex type);
     void set_has_type_index(TypeIndex type);
+    void truncate(string table_name);
 
     void prepare_all_statements();
+    void truncate_tables();
 
 public:
     virtual void open(string program_name);
     virtual void close();
-    virtual void test();
     virtual void register_type_index(TypeIndex type);
     virtual void new_Expr(void const* addr, TypeIndex type, void const* value_ptr);
+    virtual void new_IoTag(void const* addr, std::string name);
+    virtual void new_IoObject(void const* addr, void const* proto, char const* proto_name, void const* io_tag);
+    virtual void update_IoObject_data(void const* addr, void const* data);
+    virtual void new_IoMessage(void const* addr);
+    virtual void update_IoMessage_name(void const* addr, char const* name);
+    virtual void update_IoMessage_label(void const* addr, char const* label);
+    virtual void update_IoMessage_line(void const* addr, int line);
+    virtual void update_IoMessage_character(void const* addr, int character);
+    virtual void new_IoCall(void const* addr);
+    virtual void update_IoCall_message(void const* addr, void const* message);
+    virtual void IoStack_push_object(void const* object);
+    virtual void IoStack_set_mark(size_t mark);
+    virtual void IoStack_pop_mark(size_t mark);
+    virtual void delete_Expr(void const* addr);
+    virtual void delete_IoObject(void const* addr);
+    virtual void delete_IoMessage(void const* addr);
+    virtual void delete_IoCall(void const* addr);
+    virtual void delete_IoTag(void const* addr);
     TraceDbImpl();
 } instance;
 
@@ -103,7 +153,7 @@ LIKEMAGIC_API TraceDb* trace_db = &instance;
 using namespace LM;
 
 TraceDbImpl::TraceDbImpl()
-    : db(nullptr)
+    : db(nullptr), sequence(0)
 {
 }
 
@@ -121,22 +171,122 @@ void TraceDbImpl::open(std::string program_name)
         throw std::runtime_error(ss.str());
     }
 
+    sqlite3_extended_result_codes(db, 1);
+    truncate_tables();
     prepare_all_statements();
 
     run_void(insert_session, {{"Program", program_name}});
-    session_id = sqlite3_last_insert_rowid(db);
+    ++sequence = sqlite3_last_insert_rowid(db);
+}
+
+void TraceDbImpl::truncate_tables()
+{
+    truncate("LMTypeIndex");
+    truncate("LMExpr");
+    truncate("IoObject");
+    truncate("IoCall");
+    truncate("IoMessage");
+    truncate("IoStack");
+    truncate("IoTag");
 }
 
 void TraceDbImpl::prepare_all_statements()
 {
     insert_session = prepare_insert("Session", { "Program" });
-    insert_type_index = prepare_insert("TypeIndex",
+
+    insert_type_index = prepare_insert("LMTypeIndex",
     {
-        "SessionId", "Id", "Description"
+        "Id", "Description"
     });
-    insert_expr = prepare_insert("Expr",
+
+    insert_expr = prepare_insert("LMExpr",
     {
-        "SessionId", "Address", "TypeIndex", "ValuePtr"
+        "Sequence", "Address", "TypeIndex", "ValuePtr"
+    });
+
+    insert_io_tag = prepare_insert("IoTag",
+    {
+        "Sequence", "Address", "Name"
+    });
+
+    insert_io_object = prepare_insert("IoObject",
+    {
+        "Sequence", "Address", "IoTag", "Proto", "ProtoName"
+    });
+
+    update_io_object_data = prepare_update_last_address("IoObject",
+    {
+        "Data"
+    });
+
+    insert_io_message = prepare_insert("IoMessage",
+    {
+        "Sequence", "Address"
+    });
+
+    update_io_message_name = prepare_update_last_address("IoMessage",
+    {
+        "Name"
+    });
+
+    update_io_message_label = prepare_update_last_address("IoMessage",
+    {
+        "Label"
+    });
+
+    update_io_message_line = prepare_update_last_address("IoMessage",
+    {
+        "LineNumber"
+    });
+
+    update_io_message_character = prepare_update_last_address("IoMessage",
+    {
+        "CharacterNumber"
+    });
+
+    insert_io_call = prepare_insert("IoCall",
+    {
+        "Sequence", "Address"
+    });
+
+    update_io_call_message = prepare_update_last_address("IoCall",
+    {
+        "Message"
+    });
+
+    insert_io_stack_object = prepare_insert("IoStack",
+    {
+        "Sequence", "PushObject"
+    });
+
+    insert_io_stack_mark = prepare_insert("IoStack",
+    {
+        "Sequence", "SetMark"
+    });
+
+    insert_io_stack_pop_mark = prepare_insert("IoStack",
+    {
+        "Sequence", "PopMark"
+    });
+
+    update_expr_when_freed = prepare_update_last_address("LMExpr",
+    {
+        "WhenFreed"
+    });
+
+    update_io_object_when_freed = prepare_update_last_address("IoObject",
+    {
+        "WhenFreed"
+    });
+
+    update_io_message_when_freed = prepare_update_last_address("IoMessage",
+    {
+        "WhenFreed"
+    });
+
+    update_io_call_when_freed = prepare_update_last_address("IoCall",
+    {
+        "WhenFreed"
     });
 }
 
@@ -193,11 +343,13 @@ void TraceDbImpl::bind(sqlite3_stmt* stmt, int index, sqlite_value_type value)
     boost::apply_visitor<BinderVisitor, sqlite_value_type>(binder, value);
 }
 
-void TraceDbImpl::bind(sqlite3_stmt* stmt, columns_and_values values)
+void TraceDbImpl::bind(sqlite3_stmt* stmt, names_and_values values)
 {
-    for (int i = 0; i < (int)values.size(); ++i)
+    for (auto kv : values)
     {
-        bind(stmt, i+1, values[i].second);
+        string name = string() + "@" + kv.first;
+        int index = sqlite3_bind_parameter_index(stmt, name.c_str());
+        bind(stmt, index, kv.second);
     }
 }
 
@@ -226,6 +378,46 @@ void TraceDbImpl::write_column_list(ostream& os, vector<string> columns, char co
     }
 }
 
+
+void TraceDbImpl::write_column_list(ostream& os, names_and_sql_code columns)
+{
+    for (int i = 0; i < (int)columns.size(); ++i)
+    {
+        if (i > 0)
+            os << ",";
+
+        os << columns[i].first;
+    }
+}
+
+
+void TraceDbImpl::write_value_list(ostream& os, names_and_sql_code values)
+{
+    for (int i = 0; i < (int)values.size(); ++i)
+    {
+        if (i > 0)
+            os << ",";
+
+        os << values[i].second;
+    }
+}
+
+void TraceDbImpl::truncate(string table_name)
+{
+    stringstream ss;
+    ss << "delete from ";
+    ss << table_name;
+
+    string sql = ss.str();
+
+    // debug print
+    cout << sql << endl;
+
+    sqlite3_stmt* stmt = prepare(sql.c_str(), sql.length());
+    run_void(stmt, {});
+    sqlite3_finalize(stmt);
+}
+
 sqlite3_stmt* TraceDbImpl::prepare_insert(string table_name, vector<string> columns)
 {
     stringstream ss;
@@ -236,6 +428,45 @@ sqlite3_stmt* TraceDbImpl::prepare_insert(string table_name, vector<string> colu
     ss << ") values (";
     write_column_list(ss, columns, "@");
     ss << ")";
+
+    string sql = ss.str();
+
+    // debug print
+    cout << sql << endl;
+
+    return prepare(sql.c_str(), sql.length());
+}
+
+sqlite3_stmt* TraceDbImpl::prepare_custom_insert(string table_name, names_and_sql_code columns)
+{
+    stringstream ss;
+    ss << "insert into ";
+    ss << table_name;
+    ss << "(";
+    write_column_list(ss, columns);
+    ss << ") values (";
+    write_value_list(ss, columns);
+    ss << ")";
+
+    string sql = ss.str();
+
+    // debug print
+    cout << sql << endl;
+
+    return prepare(sql.c_str(), sql.length());
+}
+
+sqlite3_stmt* TraceDbImpl::prepare_update_last_address(string table_name,
+    vector<string> columns)
+{
+    stringstream ss;
+    ss << "update ";
+    ss << table_name;
+    ss << " set ";
+    write_column_equals_list(ss, columns, ",");
+    ss << " where Sequence = (select max(Sequence) from ";
+    ss << table_name;
+    ss << " where Address = @Address)";
 
     string sql = ss.str();
 
@@ -276,11 +507,13 @@ sqlite3_stmt* TraceDbImpl::prepare_select(
     return prepare(sql.c_str(), sql.length());
 }
 
-void TraceDbImpl::run_void(sqlite3_stmt* stmt, columns_and_values values)
+void TraceDbImpl::run_void(sqlite3_stmt* stmt, names_and_values values)
 {
     sqlite3_reset(stmt);
 
     bind(stmt, values);
+
+    int busy_counter = 100000L;
 
     int rc;
     while (true)
@@ -292,6 +525,11 @@ void TraceDbImpl::run_void(sqlite3_stmt* stmt, columns_and_values values)
             return;
         case SQLITE_ROW:
             continue;
+        case SQLITE_BUSY:
+            if (busy_counter--)
+                continue;
+            else
+                throw DbException(); // Unexpected return code
         default:
             throw DbException(); // Unexpected return code
         }
@@ -303,36 +541,12 @@ void TraceDbImpl::close()
     sqlite3_close(db);
 }
 
-static int callback(void *NotUsed, int argc, char **argv, char **azColName)
-{
-    int i;
-    for(i=0; i<argc; i++)
-    {
-        cout << azColName[i] << " = " << (argv[i] ? argv[i] : "NULL");
-    }
-    cout << endl;
-    return 0;
-}
-
-void TraceDbImpl::test()
-{
-    string sql_cmd = "select 1+2 columnA";
-    char *zErrMsg = 0;
-    int rc = sqlite3_exec(db, sql_cmd.c_str(), callback, 0, &zErrMsg);
-    if( rc!=SQLITE_OK )
-    {
-        cerr << "SQL error: " << zErrMsg << endl;
-        sqlite3_free(zErrMsg);
-    }
-}
-
 void TraceDbImpl::register_type_index(TypeIndex type)
 {
     if (!has_type_index(type))
     {
         run_void(insert_type_index,
         {
-            {"SessionId", session_id},
             {"Id", (int)type.get_id()},
             {"Description", type.description()}
         });
@@ -344,17 +558,179 @@ void TraceDbImpl::new_Expr(void const* addr, TypeIndex type, void const* value_p
 {
     register_type_index(type);
 
-    stringstream addrSS;
-    addrSS << addr;
-
-    stringstream valueSS;
-    valueSS << value_ptr;
-
     run_void(insert_expr,
     {
-        {"SessionId", session_id},
-        {"Address", addrSS.str()},
+        {"Sequence", ++sequence},
+        {"Address", addr},
         {"TypeIndex", (int)type.get_id()},
-        {"ValuePtr", valueSS.str()}
+        {"ValuePtr", value_ptr}
     });
 }
+
+void TraceDbImpl::new_IoTag(void const* addr, std::string name)
+{
+    run_void(insert_io_tag,
+    {
+        {"Sequence", ++sequence},
+        {"Address", addr},
+        {"Name", name}
+    });
+}
+
+void TraceDbImpl::new_IoObject(void const* addr, void const* proto, char const* proto_name, void const* io_tag)
+{
+    run_void(insert_io_object,
+    {
+        {"Sequence", ++sequence},
+        {"Address", addr},
+        {"IoTag", io_tag},
+        {"Proto", proto},
+        {"ProtoName", proto_name}
+    });
+}
+
+void TraceDbImpl::update_IoObject_data(void const* addr, void const* data)
+{
+    run_void(update_io_object_data,
+    {
+        {"Address", addr},
+        {"Data", data}
+    });
+}
+
+void TraceDbImpl::new_IoMessage(void const* addr)
+{
+    run_void(insert_io_message,
+    {
+        {"Sequence", ++sequence},
+        {"Address", addr}
+    });
+}
+
+void TraceDbImpl::update_IoMessage_name(void const* addr, char const* name)
+{
+    run_void(update_io_message_name,
+    {
+        {"Address", addr},
+        {"Name", name}
+    });
+}
+
+void TraceDbImpl::update_IoMessage_label(void const* addr, char const* label)
+{
+    run_void(update_io_message_label,
+    {
+        {"Address", addr},
+        {"Label", label}
+    });
+}
+
+void TraceDbImpl::update_IoMessage_line(void const* addr, int line)
+{
+    run_void(update_io_message_line,
+    {
+        {"Address", addr},
+        {"Line", line}
+    });
+}
+
+void TraceDbImpl::update_IoMessage_character(void const* addr, int character)
+{
+    run_void(update_io_message_character,
+    {
+        {"Address", addr},
+        {"Character", character}
+    });
+}
+
+void TraceDbImpl::new_IoCall(void const* addr)
+{
+    run_void(insert_io_message,
+    {
+        {"Sequence", ++sequence},
+        {"Address", addr}
+    });
+}
+
+void TraceDbImpl::update_IoCall_message(void const* addr, void const* message)
+{
+    run_void(update_io_message_character,
+    {
+        {"Address", addr},
+        {"Message", message}
+    });
+}
+
+void TraceDbImpl::IoStack_push_object(void const* object)
+{
+    run_void(insert_io_message,
+    {
+        {"Sequence", ++sequence},
+        {"Object", object}
+    });
+}
+
+void TraceDbImpl::IoStack_set_mark(size_t mark)
+{
+    run_void(insert_io_message,
+    {
+        {"Sequence", ++sequence},
+        {"SetMark", (sqlite_int64)mark}
+    });
+}
+
+void TraceDbImpl::IoStack_pop_mark(size_t mark)
+{
+    run_void(insert_io_message,
+    {
+        {"Sequence", ++sequence},
+        {"PopMark", (sqlite_int64)mark}
+    });
+}
+
+void TraceDbImpl::delete_Expr(void const* addr)
+{
+    run_void(update_expr_when_freed,
+    {
+        {"Address", addr},
+        {"WhenFreed", ++sequence}
+    });
+}
+
+void TraceDbImpl::delete_IoTag(void const* addr)
+{
+    run_void(update_io_tag_when_freed,
+    {
+        {"Address", addr},
+        {"WhenFreed", ++sequence}
+    });
+}
+
+void TraceDbImpl::delete_IoObject(void const* addr)
+{
+    run_void(update_io_object_when_freed,
+    {
+        {"Address", addr},
+        {"WhenFreed", ++sequence}
+    });
+}
+
+void TraceDbImpl::delete_IoMessage(void const* addr)
+{
+    run_void(update_io_message_when_freed,
+    {
+        {"Address", addr},
+        {"WhenFreed", ++sequence}
+    });
+}
+
+void TraceDbImpl::delete_IoCall(void const* addr)
+{
+    run_void(update_io_call_when_freed,
+    {
+        {"Address", addr},
+        {"WhenFreed", ++sequence}
+    });
+}
+
+

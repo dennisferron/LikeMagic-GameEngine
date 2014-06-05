@@ -3,11 +3,11 @@
 //metadoc WeakLink category Core
 
 /*metadoc WeakLink description
-	A WeakLink is a primitive that can hold a reference to 
-	an object without preventing the garbage collector from 
-	collecting it. The link reference is set with the setLink() method. 
-	After the garbage collector collects an object, it informs any 
-	(uncollected) WeakLink objects whose link value pointed to that 
+	A WeakLink is a primitive that can hold a reference to
+	an object without preventing the garbage collector from
+	collecting it. The link reference is set with the setLink() method.
+	After the garbage collector collects an object, it informs any
+	(uncollected) WeakLink objects whose link value pointed to that
 	object by calling their "collectedLink" method.
 */
 
@@ -16,6 +16,9 @@
 #include "IoState.h"
 #include "IoObject.h"
 #include "IoNumber.h"
+
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
 
 static const char *protoId = "WeakLink";
 #define DATA(self) ((IoWeakLinkData *)IoObject_dataPointer(self))
@@ -87,7 +90,9 @@ IoObject *IoWeakLink_rawClone(IoWeakLink *proto)
 IoObject *IoWeakLink_new(void *state)
 {
 	IoObject *proto = IoState_protoWithId_((IoState *)state, protoId);
-	return IOCLONE(proto);
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 void IoWeakLink_rawStopListening(IoWeakLink *self)

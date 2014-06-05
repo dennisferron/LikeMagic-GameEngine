@@ -11,6 +11,9 @@
 #include "LikeMagic/Mirrors/TypeMirror.hpp"
 #include "LikeMagic/Lang/LangBlock.hpp"
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
@@ -87,6 +90,8 @@ void ExprImpl::release()
 
 ExprImpl::~ExprImpl()
 {
+    trace_db->delete_Expr(this);
+
     //std::cout << "~Expr " << this << std::endl;
     if (ref_count)
     {

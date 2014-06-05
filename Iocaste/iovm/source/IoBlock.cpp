@@ -17,6 +17,11 @@ They are typically used to represent object methods.
 
 static const char *protoId = "Block";
 
+
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
+
 #define DATA(self) ((IoBlockData *)IoObject_dataPointer(self))
 
 IoTag *IoBlock_newTag(void *state)
@@ -149,7 +154,9 @@ IoBlock *IoBlock_rawClone(IoBlock *proto)
 IoBlock *IoBlock_new(IoState *state)
 {
 	IoObject *proto = IoState_protoWithId_((IoState *)state, protoId);
-	return IOCLONE(proto);
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 void IoBlock_rawPrint(IoBlock *self)

@@ -17,6 +17,11 @@ Object wrapper for an Io coroutine.
 
 //#define DEBUG
 
+
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
+
 static const char *protoId = "Coroutine";
 
 #define DATA(self) ((IoCoroutineData *)IoObject_dataPointer(self))
@@ -79,8 +84,9 @@ IoCoroutine *IoCoroutine_rawClone(IoCoroutine *proto)
 IoCoroutine *IoCoroutine_new(void *state)
 {
     IoObject *proto = IoState_protoWithId_((IoState *)state, protoId);
-	IoObject *self = IOCLONE(proto);
-	return self;
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 void IoCoroutine_free(IoCoroutine *self)

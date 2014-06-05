@@ -222,10 +222,14 @@ IoNumber *IoNumber_rawClone(IoNumber *proto)
 	return self;
 }
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 IoNumber *IoNumber_newWithDouble_(void *state, double n)
 {
 	IoNumber *proto = IoState_protoWithId_((IoState *)state, protoId);
 	IoNumber *self = IOCLONE(proto); // since Numbers have no refs, we can avoid IOCLONE
+    trace_db->new_IoObject(self, proto, protoId, self->object->tag);
 	DATA(self) = n;
 	return self;
 }
@@ -1334,7 +1338,7 @@ IO_METHOD(IoNumber, isNan)
 	Returns true if the receiver is not a number. Otherwise returns false.
 	*/
 
-	return IOBOOL(self, isnan(CNUMBER(self)));
+	return IOBOOL(self, std::isnan(CNUMBER(self)));
 }
 
 // looping ---------------------------------------------

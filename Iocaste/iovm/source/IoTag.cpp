@@ -10,6 +10,9 @@
 #include "IoState.h"
 #include <string.h>
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 // BEGIN IoTag_inline
 
 // state
@@ -186,12 +189,15 @@ IoTag *IoTag_new(void)
 IoTag *IoTag_newWithName_(const char *name)
 {
 	IoTag *self = IoTag_new();
+	trace_db->new_IoTag(self, name);
 	IoTag_name_(self, name);
 	return self;
 }
 
 void IoTag_free(IoTag *self)
 {
+    trace_db->delete_IoTag(self);
+
 	//printf("io_free tag %p\n", (void *)self);
 	//printf("%s\n", self->name ? self->name : "NULL");
 	if (--self->referenceCount > 0) {

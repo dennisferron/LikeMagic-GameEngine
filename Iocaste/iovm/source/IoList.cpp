@@ -16,6 +16,9 @@ A mutable array of values. The first index is 0.
 #include "IoBlock.h"
 #include <math.h>
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 static const char *protoId = "List";
 
 #define DATA(self) ((List *)(IoObject_dataPointer(self)))
@@ -134,7 +137,9 @@ IoList *IoList_rawClone(IoList *proto)
 IoList *IoList_new(void *state)
 {
 	IoObject *proto = IoState_protoWithId_((IoState *)state, protoId);
-	return IOCLONE(proto);
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 IoList *IoList_newWithList_(void *state, List *list)

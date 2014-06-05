@@ -19,6 +19,10 @@ Cygwin code by Mike Austin. WIN32 code by Daniel Vollmer.
 #include "IoFile.h"
 #include <sys/stat.h>
 
+
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 #if !defined(_MSC_VER) && !defined(__SYMBIAN32__)
 #include <unistd.h> /* ok, this isn't ANSI */
 #endif
@@ -237,7 +241,9 @@ IoDirectory *IoDirectory_rawClone(IoDirectory *proto)
 IoDirectory *IoDirectory_new(void *state)
 {
 	IoDirectory *proto = IoState_protoWithId_((IoState *)state, protoId);
-	return IOCLONE(proto);
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 // -----------------------------------------------------------

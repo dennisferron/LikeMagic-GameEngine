@@ -42,6 +42,10 @@
 
 #include "Iocaste/CShims/IoVMCpp.h"
 
+
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 using namespace std;
 using namespace Iocaste;
 using namespace Iocaste::LMAdapters;
@@ -282,13 +286,15 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     return;
 }
 
+static char const* protoId = "LikeMagic";
+
 IoObject* IoVM::create_likemagic_proto()
 {
     //std::cout << "Creating LikeMagic proto" <<std::endl;
 
     IoObject *self = IoObject_new(state);
 
-    IoTag* tag = IoTag_newWithName_("LikeMagic");
+    IoTag* tag = IoTag_newWithName_(protoId);
     IoTag_state_(tag, state);
     IoTag_freeFunc_(tag, (IoTagFreeFunc*)API_io_free_expr);
     IoTag_cloneFunc_(tag, (IoTagCloneFunc*)API_io_rawClone);
@@ -428,6 +434,7 @@ IoObject* IoVM::expr_to_io_obj(ExprPtr expr) const
     IoObject_tag_(clone, get_io_tag(expr->get_type()));
     IoObject_setDataPointer_(clone, expr.get());
     intrusive_ptr_add_ref(expr.get());
+    trace_db->new_IoObject(clone, proto, protoId, clone->object->tag);
     return clone;
 }
 

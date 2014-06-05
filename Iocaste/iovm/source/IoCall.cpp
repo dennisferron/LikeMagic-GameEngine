@@ -16,6 +16,10 @@ using namespace Iocaste::LMAdapters;
 
 static const char *protoId = "Call";
 
+
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 #define DATA(self) ((IoCallData *)IoObject_dataPointer(self))
 
 IoTag *IoCall_newTag(void *state)
@@ -102,6 +106,7 @@ IoCall *IoCall_new(IoState *state)
 
 	IoState_popCollectorPause(state);
 
+    trace_db->new_IoObject(newObject, proto, protoId, newObject->object->tag);
 	return newObject;
 
 	//return IOCLONE(proto);
@@ -145,6 +150,8 @@ void IoCall_mark(IoCall *self)
 
 void IoCall_free(IoCall *self)
 {
+    trace_db->delete_IoCall(self);
+
     // TODO:  Instead of freeing the data mark it as freed, or do nothing.
     // TODO:  Create an "IoCallDataReference" indirection that will allow
     // IoCall to do things like no longer reference old stack frame.

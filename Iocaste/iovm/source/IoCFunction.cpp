@@ -18,6 +18,10 @@ methods that require the speed of C or binding to a C library.
 
 static const char *protoId = "CFunction";
 
+
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 #define DATA(self) ((IoCFunctionData *)IoObject_dataPointer(self))
 
 IoTag *IoCFunction_newTag(void *state)
@@ -86,6 +90,7 @@ IoCFunction *IoCFunction_newWithFunctionPointer_tag_name_(void *state,
 	DATA(self)->typeTag = typeTag;
 	DATA(self)->func = func;
 	DATA(self)->uniqueName = IoState_symbolWithCString_((IoState *)state, funcName);
+    trace_db->new_IoObject(self, proto, protoId, self->object->tag);
 	return self;
 }
 

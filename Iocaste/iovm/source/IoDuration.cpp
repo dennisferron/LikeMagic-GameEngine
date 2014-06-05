@@ -13,6 +13,10 @@ A container for a duration of time.
 #include "IoNumber.h"
 #include <time.h>
 
+
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 static const char *protoId = "Duration";
 
 #define DATA(self) ((Duration *)IoObject_dataPointer(self))
@@ -89,7 +93,9 @@ IoDuration *IoDuration_rawClone(IoDuration *proto)
 IoDuration *IoDuration_new(void *state)
 {
 	IoDuration *proto = IoState_protoWithId_((IoState *)state, protoId);
-	return IOCLONE(proto);
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 IoDuration *IoDuration_newWithSeconds_(void *state, double s)

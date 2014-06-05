@@ -17,6 +17,9 @@ A DLL Loader by Kentaro A. Kurahone.
 #include "IoDynLib.h"
 #include "DynLib.h"
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 static const char *protoId = "DynLib";
 
 #define DATA(self) ((DynLib *)IoObject_dataPointer(self))
@@ -63,7 +66,9 @@ IoObject *IoDynLib_proto(void *state)
 IoDynLib *IoDynLib_new(void *state)
 {
 	IoDynLib *proto = IoState_protoWithId_((IoState *)state, protoId);
-	return IOCLONE(proto);
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 IoDynLib *IoDynLib_rawClone(IoDynLib *proto)

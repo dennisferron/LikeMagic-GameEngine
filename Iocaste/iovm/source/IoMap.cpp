@@ -16,6 +16,9 @@ A key/value dictionary appropriate for holding large key/value collections.
 #include "IoList.h"
 #include "IoBlock.h"
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 static const char *protoId = "Map";
 
 #define DATA(self) ((PHash *)IoObject_dataPointer(self))
@@ -103,7 +106,9 @@ IoMap *IoMap_rawClone(IoMap *proto)
 IoMap *IoMap_new(void *state)
 {
 	IoObject *proto = IoState_protoWithId_((IoState *)state, protoId);
-	return IOCLONE(proto);
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 void IoMap_free(IoMap *self)

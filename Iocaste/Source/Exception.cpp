@@ -7,6 +7,9 @@
 
 #include "IoObject.h"
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 #if (defined(__MINGW32__) || defined(__MINGW64__)) && (__GNUC__ == 4)
 #include <stddef.h>
 // workaround a mingw bug, http://sourceforge.net/tracker/index.php?func=detail&aid=2373234&group_id=2435&atid=102435

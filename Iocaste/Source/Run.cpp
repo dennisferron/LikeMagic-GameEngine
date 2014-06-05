@@ -11,6 +11,7 @@ using namespace Iocaste::LMAdapters;
 
 #include "boost/algorithm/string/trim.hpp"
 #include "LikeMagic/BindingMacros.hpp"
+#include "LikeMagic/Utility/TraceDb.hpp"
 #include "Iocaste/LikeMagicAdapters/IoVM.hpp"
 //#include "LikeMagic/StdBindings/ScriptUtil.hpp"
 #include "boost/program_options.hpp"
@@ -134,6 +135,9 @@ IOCASTE_API int Iocaste_run(int argc, const char *argv[], void (*add_bindings)()
         po::notify(var_map);    // throws on error, so do after help in case
                                 // there are any problems
 
+        trace_db->open(argv[0]);
+
+        // This is where the likemagic bindings are actually added.
         (*add_bindings)();
 
         cout << "Loading Io init files at " << bootstrap_path << endl;
@@ -150,6 +154,8 @@ IOCASTE_API int Iocaste_run(int argc, const char *argv[], void (*add_bindings)()
         vm=NULL;
         delete type_system;
         type_system=NULL;
+
+        trace_db->close();
 
         cout << "Press enter..." << std::endl;
         std::cin.ignore( 99, '\n' );
@@ -207,6 +213,8 @@ IOCASTE_API int Iocaste_run(int argc, const char *argv[], void (*add_bindings)()
 
     delete vm;
     delete type_system;
+
+    trace_db->close();
 
     cerr << "Press enter..." << std::endl;
     std::cin.ignore( 99, '\n' );

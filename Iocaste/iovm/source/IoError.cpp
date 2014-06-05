@@ -9,6 +9,9 @@ An object that contains error information and flow control based on errors.
 #include "IoState.h"
 #include "IoSeq.h"
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 static const char *protoId = "Error";
 
 IoTag *IoError_newTag(void *state)
@@ -44,7 +47,9 @@ IoError *IoError_rawClone(IoError *proto)
 IoError *IoError_new(void *state)
 {
 	IoError *proto = IoState_protoWithId_((IoState*)state, protoId);
-	return IOCLONE(proto);
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 /* ----------------------------------------------------------- */

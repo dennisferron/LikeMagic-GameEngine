@@ -12,6 +12,9 @@
 #include "IoSeq.h"
 #include <ctype.h>
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 #define DATA(self) ((UArray *)(IoObject_dataPointer(self)))
 //#define HASHIVAR(self) ((self)->extraData)
 static const char *protoId = "Sequence";
@@ -121,7 +124,9 @@ IoSeq *IoSeq_rawClone(IoSeq *proto)
 IoSeq *IoSeq_new(void *state)
 {
 	IoSeq *proto = IoState_protoWithId_((IoState *)state, protoId);
-	return IOCLONE(proto);
+	IoObject* result = IOCLONE(proto);
+    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    return result;
 }
 
 IoSeq *IoSeq_newWithData_length_(void *state, const unsigned char *s, size_t length)

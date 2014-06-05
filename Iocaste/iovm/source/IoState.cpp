@@ -37,6 +37,9 @@
 #include "Iocaste/CShims/Exception.h"
 #include "Iocaste/IoCallStack.hpp"
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 #include <stdlib.h>
 
 #include <iostream>
