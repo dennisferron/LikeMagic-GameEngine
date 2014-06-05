@@ -9,41 +9,29 @@ CREATE TABLE IoStack (
 );
 
 
--- Table: IoCall
-CREATE TABLE IoCall ( 
-    Sequence INTEGER PRIMARY KEY
-                     NOT NULL,
-    Address  TEXT    NOT NULL,
-    Message  TEXT 
-);
-
-
--- Table: ObjectAllocation
-CREATE TABLE ObjectAllocation ( 
-    Sequence    INTEGER PRIMARY KEY
-                        NOT NULL,
-    Address     TEXT    NOT NULL,
-    WhenFreed   INTEGER,
-    Description TEXT 
-);
-
-
--- Table: LMExpr
-CREATE TABLE LMExpr ( 
-    Sequence  INTEGER PRIMARY KEY
-                      NOT NULL,
-    Address   TEXT    NOT NULL,
-    TypeIndex INTEGER NOT NULL
-                      REFERENCES TypeIndex ( Id ),
-    ValuePtr  TEXT    NOT NULL 
-);
-
-
 -- Table: LMTypeIndex
 CREATE TABLE LMTypeIndex ( 
     Id          INTEGER PRIMARY KEY
                         NOT NULL,
     Description TEXT    NOT NULL 
+);
+
+
+-- Table: Session
+CREATE TABLE Session ( 
+    StartTime DATETIME NOT NULL
+                       DEFAULT ( CURRENT_TIMESTAMP ),
+    Program   TEXT 
+);
+
+
+-- Table: IoCall
+CREATE TABLE IoCall ( 
+    Sequence  INTEGER PRIMARY KEY
+                      NOT NULL,
+    Address   TEXT    NOT NULL,
+    Message   TEXT,
+    WhenFreed INTEGER 
 );
 
 
@@ -55,7 +43,8 @@ CREATE TABLE IoMessage (
     Name            TEXT,
     Label           TEXT,
     LineNumber      INTEGER,
-    CharacterNumber INTEGER 
+    CharacterNumber INTEGER,
+    WhenFreed       INTEGER 
 );
 
 
@@ -66,23 +55,29 @@ CREATE TABLE IoObject (
     IoTag     TEXT    NOT NULL,
     Data      TEXT,
     Proto     TEXT    NOT NULL,
-    ProtoName TEXT    NOT NULL 
+    ProtoName TEXT    NOT NULL,
+    WhenFreed INTEGER 
 );
 
 
 -- Table: IoTag
 CREATE TABLE IoTag ( 
-    Sequence INTEGER PRIMARY KEY
-                     NOT NULL,
-    Address  TEXT    NOT NULL,
-    Name     TEXT    NOT NULL 
+    Sequence  INTEGER PRIMARY KEY
+                      NOT NULL,
+    Address   TEXT    NOT NULL,
+    Name      TEXT    NOT NULL,
+    WhenFreed INTEGER 
 );
 
 
--- Table: Session
-CREATE TABLE Session ( 
-    StartTime DATETIME NOT NULL
-                       DEFAULT ( CURRENT_TIMESTAMP ),
-    Program   TEXT 
+-- Table: LMExpr
+CREATE TABLE LMExpr ( 
+    Sequence  INTEGER PRIMARY KEY
+                      NOT NULL,
+    Address   TEXT    NOT NULL,
+    TypeIndex INTEGER NOT NULL
+                      REFERENCES TypeIndex ( Id ),
+    ValuePtr  TEXT    NOT NULL,
+    WhenFreed INTEGER 
 );
 
