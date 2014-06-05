@@ -52,7 +52,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
-					<Add library="..\bin\Debug\libsqlite.a" />
+					<Add library="../bin/Debug/libsqlite.a" />
 				</Linker>
 			</Target>
 		</Build>

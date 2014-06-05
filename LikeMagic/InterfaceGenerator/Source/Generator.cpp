@@ -3,7 +3,7 @@
 #include "LikeMagic/Mirrors/TypeMirror.hpp"
 #include "LikeMagic/Mirrors/CallTarget.hpp"
 
-#include "LIkeMagic/Utility/TypeIndex.hpp"
+#include "LikeMagic/Utility/TypeIndex.hpp"
 
 #include "InterfaceGenerator/ClassGen.hpp"
 #include "InterfaceGenerator/MethodGen.hpp"
