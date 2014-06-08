@@ -14,14 +14,19 @@ using namespace Iocaste;
 #include <iostream>
 using namespace std;
 
+#include "LikeMagic/Utility/TraceDb.hpp"
+using namespace LM;
+
 void IoCallStack::retain_data(IoObject* io_obj)
 {
     items.push_back(io_obj);
+    trace_db->IoStack_push_object(io_obj);
 }
 
 void IoCallStack::retain_call(IoObject* io_call)
 {
     items.push_back(io_call);
+    trace_db->IoStack_push_object(io_call);
 }
 
 void IoCallStack::mark() const
@@ -33,6 +38,7 @@ void IoCallStack::mark() const
 IoCallStack::mark_type IoCallStack::push_mark(MarkReason reason)
 {
     marks.push_back({items.size(), reason});
+    trace_db->IoStack_pop_mark(items.size());
     return marks.size()-1;
 }
 
@@ -40,6 +46,7 @@ void IoCallStack::pop_to_mark_point(mark_type mark)
 {
     items.erase(items.begin() + marks[mark].index, items.end());
     marks.erase(marks.begin() + mark, marks.end());
+    trace_db->IoStack_pop_mark(mark);
 }
 
 void IoCallStack::pop_mark()

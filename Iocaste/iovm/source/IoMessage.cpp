@@ -180,6 +180,7 @@ IoMessage *IoMessage_new(void *state)
 	IoObject *proto = IoState_protoWithId_((IoState *)state, protoId);
 	IoObject* result = IOCLONE(proto);
     trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    trace_db->new_IoMessage(result);
     return result;
 }
 
@@ -282,6 +283,7 @@ void IoMessage_mark(IoMessage *self)
 
 void IoMessage_free(IoMessage *self)
 {
+    trace_db->delete_IoObject(self);
     trace_db->delete_IoMessage(self);
 
 	IoMessageData *d = (IoMessageData *)IoObject_dataPointer(self);
@@ -307,11 +309,13 @@ void IoMessage_rawSetCachedResult_(IoMessage *self, IoObject *v)
 void IoMessage_rawSetName_(IoMessage *self, IoObject *v)
 {
 	DATA(self)->name = v ? IOREF(v) : NULL;
+	trace_db->update_IoMessage_name(self, CSTRING(DATA(self)->name));
 }
 
 void IoMessage_rawSetLabel_(IoMessage *self, IoObject *v)
 {
 	DATA(self)->label = v ? IOREF(v) : NULL;
+	trace_db->update_IoMessage_label(self, CSTRING(DATA(self)->label));
 }
 
 void IoMessage_label_(IoMessage *self, IoSymbol *ioSymbol) /* sets label for children too */
@@ -333,11 +337,13 @@ int IoMessage_rawLineNumber(IoMessage *self)
 void IoMessage_rawSetLineNumber_(IoMessage *self, int n)
 {
 	DATA(self)->lineNumber = n;
+	trace_db->update_IoMessage_line(self, n);
 }
 
 void IoMessage_rawSetCharNumber_(IoMessage *self, int n)
 {
 	DATA(self)->charNumber = n;
+	trace_db->update_IoMessage_character(self, n);
 }
 
 int IoMessage_rawCharNumber(IoMessage *self)

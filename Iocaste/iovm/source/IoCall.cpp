@@ -92,6 +92,8 @@ IoCall *IoCall_new(IoState *state)
 	IoState_pushCollectorPause(state);
 
 	IoObject *newObject = IoObject_rawClonePrimitive(proto);
+    trace_db->new_IoObject(newObject, proto, protoId, newObject->object->tag);
+    trace_db->new_IoCall(newObject);
 
     //auto& stk = io_vm->io_call_stack;
 	//stk.push_back(IoCallData());
@@ -106,7 +108,6 @@ IoCall *IoCall_new(IoState *state)
 
 	IoState_popCollectorPause(state);
 
-    trace_db->new_IoObject(newObject, proto, protoId, newObject->object->tag);
 	return newObject;
 
 	//return IOCLONE(proto);
@@ -129,6 +130,8 @@ IoCall *IoCall_with(void *state,
 	DATA(self)->activated   = activated;
 	DATA(self)->coroutine   = coroutine;
 	DATA(self)->stopStatus  = MESSAGE_STOP_STATUS_NORMAL;
+
+    trace_db->update_IoCall_message(self, DATA(self)->message);
 
     // For debugging, collect after every operation.
     //size_t gc_count = Collector_collect(IOSTATE->collector);
