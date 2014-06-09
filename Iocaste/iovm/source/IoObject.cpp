@@ -789,7 +789,7 @@ IoObject *IoObject_new(void *state)
 {
 	IoObject *proto = IoState_protoWithId_((IoState *)state, protoName_Object);
 	IoObject* result = IOCLONE(proto);
-    trace_db->new_IoObject(result, proto, protoName_Object, result->object->tag);
+    IF_TRACE_DB(trace_db->new_IoObject(result, proto, protoName_Object, result->object->tag));
 	return result;
 }
 
@@ -1111,7 +1111,7 @@ void IoObject_willFree(IoObject *self)
 
 void IoObject_free(IoObject *self) // prepare for io_free and possibly recycle
 {
-    trace_db->delete_IoObject(self);
+    IF_TRACE_DB(trace_db->delete_IoObject(self));
 
 #ifdef IOSTATE_RECYCLING_ON
 	if(List_size(IOSTATE->recycledObjects) >= IOSTATE->maxRecycledObjects)

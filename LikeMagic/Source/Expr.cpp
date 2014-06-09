@@ -90,7 +90,7 @@ void ExprImpl::release()
 
 ExprImpl::~ExprImpl()
 {
-    trace_db->delete_Expr(this);
+    IF_TRACE_DB(trace_db->delete_Expr(this));
 
     //std::cout << "~Expr " << this << std::endl;
     if (ref_count)

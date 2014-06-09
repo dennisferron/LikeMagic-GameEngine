@@ -434,7 +434,7 @@ IoObject* IoVM::expr_to_io_obj(ExprPtr expr) const
     IoObject_tag_(clone, get_io_tag(expr->get_type()));
     IoObject_setDataPointer_(clone, expr.get());
     intrusive_ptr_add_ref(expr.get());
-    trace_db->new_IoObject(clone, proto, protoId, clone->object->tag);
+    IF_TRACE_DB(trace_db->new_IoObject(clone, proto, protoId, clone->object->tag));
     return clone;
 }
 

@@ -41,3 +41,11 @@ public:
 LIKEMAGIC_API extern TraceDb* trace_db;
 
 }
+
+#define NO_USE_TRACE_DB
+
+#ifdef USE_TRACE_DB
+#define IF_TRACE_DB(code) code
+#else
+#define IF_TRACE_DB(code)
+#endif
