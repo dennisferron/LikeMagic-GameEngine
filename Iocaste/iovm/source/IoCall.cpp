@@ -134,7 +134,7 @@ IoCall *IoCall_with(void *state,
     IF_TRACE_DB(trace_db->update_IoCall_message(self, DATA(self)->message));
 
     // For debugging, collect after every operation.
-    size_t gc_count = Collector_collect(IOSTATE->collector);
+    //size_t gc_count = Collector_collect(IOSTATE->collector);
 
 	return self;
 }
