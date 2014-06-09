@@ -12,16 +12,6 @@
 
 namespace LM {
 
-/*
-std::string wchar_to_string(wchar_t const* char_ptr)
-{
-    std::string result;
-
-    while (*char_ptr++)
-        result += (char)*char_ptr;
-
-    return result;
-}*/
 
 class CharConstPtrToStringConv : public AbstractTypeConverter
 {

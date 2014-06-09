@@ -6,7 +6,9 @@
 A container for a double (a 64bit floating point number on most platforms).
 */
 
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE // for round
+#endif
 
 #ifdef _MSC_VER
 #define _USE_MATH_DEFINES
@@ -229,7 +231,7 @@ IoNumber *IoNumber_newWithDouble_(void *state, double n)
 {
 	IoNumber *proto = IoState_protoWithId_((IoState *)state, protoId);
 	IoNumber *self = IOCLONE(proto); // since Numbers have no refs, we can avoid IOCLONE
-    trace_db->new_IoObject(self, proto, protoId, self->object->tag);
+    IF_TRACE_DB(trace_db->new_IoObject(self, proto, protoId, self->object->tag));
 	DATA(self) = n;
 	return self;
 }

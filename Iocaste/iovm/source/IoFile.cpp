@@ -173,7 +173,7 @@ IoFile *IoFile_new(void *state)
 {
 	IoObject *proto = IoState_protoWithId_((IoState *)state, protoId);
 	IoObject* result = IOCLONE(proto);
-    trace_db->new_IoObject(result, proto, protoId, result->object->tag);
+    IF_TRACE_DB(trace_db->new_IoObject(result, proto, protoId, result->object->tag));
     return result;
 }
 

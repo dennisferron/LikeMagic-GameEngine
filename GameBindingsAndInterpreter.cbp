@@ -74,6 +74,7 @@
 					<Add library="libDESteerBindings" />
 					<Add library="libIocaste-Linux" />
 					<Add library="Common/boost_1_54_0/stage/lib/libboost_program_options.a" />
+					<Add library="bin/Debug/libsqlite.so" />
 					<Add directory="bin/Debug" />
 				</Linker>
 				<ExtraCommands>

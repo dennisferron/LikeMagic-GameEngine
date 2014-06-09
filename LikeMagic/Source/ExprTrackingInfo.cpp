@@ -40,7 +40,7 @@ namespace LM
         if (ptr == nullptr)
             throw std::runtime_error("Expr* is null");
 
-        trace_db->new_Expr(ptr, ptr->get_type(), ptr->get_value_ptr().as_const);
+        IF_TRACE_DB(trace_db->new_Expr(ptr, ptr->get_type(), ptr->get_value_ptr().as_const));
 
         // Uncomment for debugging
         //expr_tracking[ptr] = ExprTrackingInfo(ptr);

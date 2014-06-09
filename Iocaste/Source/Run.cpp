@@ -135,7 +135,7 @@ IOCASTE_API int Iocaste_run(int argc, const char *argv[], void (*add_bindings)()
         po::notify(var_map);    // throws on error, so do after help in case
                                 // there are any problems
 
-        trace_db->open(argv[0]);
+        IF_TRACE_DB(trace_db->open(argv[0]));
 
         // This is where the likemagic bindings are actually added.
         (*add_bindings)();
@@ -155,7 +155,7 @@ IOCASTE_API int Iocaste_run(int argc, const char *argv[], void (*add_bindings)()
         delete type_system;
         type_system=NULL;
 
-        trace_db->close();
+        IF_TRACE_DB(trace_db->close());
 
         cout << "Press enter..." << std::endl;
         std::cin.ignore( 99, '\n' );
@@ -214,7 +214,7 @@ IOCASTE_API int Iocaste_run(int argc, const char *argv[], void (*add_bindings)()
     delete vm;
     delete type_system;
 
-    trace_db->close();
+    IF_TRACE_DB(trace_db->close());
 
     cerr << "Press enter..." << std::endl;
     std::cin.ignore( 99, '\n' );

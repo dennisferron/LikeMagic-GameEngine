@@ -226,14 +226,24 @@ void add_convs_from_script(IoVM* iovm)
             IoObject* io_obj = reinterpret_cast<IoObject*>(expr->get_value_ptr().as_nonconst);
             char const* src = IoSeq_asCString(io_obj);
 
-            ExprPtr result = Term<std::wstring>::create(std::wstring());
+            std::wstring* dst = new std::wstring();
 
-            std::wstring* dst =
-                reinterpret_cast<std::wstring*>(
-                    expr->get_value_ptr().as_nonconst);
+            while (true)
+            {
+                char c = *src;
 
-            while (*src++)
-                *dst += (wchar_t)*src;
+                if (c == 0)
+                    break;
+
+                wchar_t wc = (wchar_t)c;
+
+                (*dst) += wc;
+
+                src += 1;
+            }
+
+            ExprPtr result = Term<std::wstring const*>::create(dst);
+            result->set_auto_delete_ptr(true);
 
             return create_reference(dst->c_str(), TypId<wchar_t const*>::restricted(), result);
         }

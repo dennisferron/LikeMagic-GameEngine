@@ -90,7 +90,7 @@ IoCFunction *IoCFunction_newWithFunctionPointer_tag_name_(void *state,
 	DATA(self)->typeTag = typeTag;
 	DATA(self)->func = func;
 	DATA(self)->uniqueName = IoState_symbolWithCString_((IoState *)state, funcName);
-    trace_db->new_IoObject(self, proto, protoId, self->object->tag);
+    IF_TRACE_DB(trace_db->new_IoObject(self, proto, protoId, self->object->tag));
 	return self;
 }
 

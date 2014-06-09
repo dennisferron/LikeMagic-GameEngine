@@ -92,8 +92,19 @@ std::string wchar_to_string(wchar_t const* char_ptr)
 {
     std::string result;
 
-    while (*char_ptr++)
-        result += (char)*char_ptr;
+    while (true)
+    {
+        wchar_t wc = *char_ptr;
+
+        if (wc == 0)
+            break;
+
+        char c = (char)wc;
+
+        result += c;
+
+        char_ptr++;
+    }
 
     return result;
 }
