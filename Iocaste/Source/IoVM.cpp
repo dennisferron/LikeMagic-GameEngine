@@ -528,7 +528,7 @@ IoObject* IoVM::perform(IoObject *self, IoObject *locals, IoMessage *m)
         IoState_stackRetain_(IOSTATE, result_obj);
 
         // For debugging, collect after every operation.
-        //size_t gc_count = Collector_collect(IOSTATE->collector);
+        size_t gc_count = Collector_collect(IOSTATE->collector);
 
         return result_obj;
     }
