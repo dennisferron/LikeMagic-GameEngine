@@ -25,6 +25,7 @@ Camera := Object clone lexicalDo(
 
 Camera createNode := method(
 
+/*
 	cameraNode = smgr addCameraSceneNode(
 		nil, // parent
 		vector3df tmpWithXYZ(0, 0, distZ), // position
@@ -34,19 +35,20 @@ Camera createNode := method(
 	)
 
     cameraNode setFOV(0.1*TAU)
+*/
+    //Exception raise("Did we get to camera create node?")
 
-    /*
-	mayaCameraNode := smgr addCameraSceneNodeMaya(
+	cameraNode = smgr addCameraSceneNodeMaya(
         nil,    // parent
       -1000.0, // rotate speed
         200.0, // zoom speed
         150.0, // translation speed
         -1, // id
-        false // makeActive
+        70.0, // distance
+        true // makeActive
 	)
 
-	mayaCameraNode setPosition(vector3df tmp(0, 0, -350))
-	*/
+	cameraNode setPosition(vector3df tmp(0, 0, -350))
 
     self
 )
