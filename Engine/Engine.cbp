@@ -51,6 +51,7 @@
 		<Unit filename="Bullet/ShapeBuilder.io.inl" />
 		<Unit filename="Bullet/ShapeOffsets.io.inl" />
 		<Unit filename="Config.io.inl" />
+		<Unit filename="Demo/Config.io.inl" />
 		<Unit filename="Desteer/Config.io.inl" />
 		<Unit filename="Desteer/Steering.io.inl" />
 		<Unit filename="EditorGUI/Component.io.inl" />
@@ -111,6 +112,7 @@
 		<Unit filename="Model/Structure.io.inl" />
 		<Unit filename="Model/Time.io.inl" />
 		<Unit filename="Module.io.inl" />
+		<Unit filename="RunDemo.io.inl" />
 		<Unit filename="Scripts.io.inl" />
 		<Unit filename="SharedTypes/Color.io.inl" />
 		<Unit filename="SharedTypes/Config.io.inl" />

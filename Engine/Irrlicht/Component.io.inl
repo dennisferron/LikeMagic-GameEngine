@@ -25,7 +25,7 @@ method(module, namespace_irr, namespace_Custom, MainWindow, PredefinedValues, Sc
         ScriptUtil := ScriptUtil
 
         writeln("Engine io_vm get script path")
-        mediaPath := method(io_vm get_script_path .. "../")
+        mediaPath := method(io_vm get_path("assets"))
 
         events ::= nil
         eventDispatch ::= nil

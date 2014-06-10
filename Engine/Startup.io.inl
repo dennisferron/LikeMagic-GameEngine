@@ -52,7 +52,7 @@ RootModule lexicalDo (
 Number f := method(self)
 
 writeln("Loading scripts")
-rootScripts := rootLoader loadAllScriptsExcept(list("Startup.io.inl", "Module.io.inl", "LikeMagic", "Loader.io.inl", "Scripts.io.inl"))
+rootScripts := rootLoader loadAllScriptsExcept(list("Startup.io.inl", "Module.io.inl", "LikeMagic", "Loader.io.inl", "Scripts.io.inl", "RunDemo.io.inl"))
 writeln("Done loading scripts")
 
 writeln("Creating game protos")
@@ -113,16 +113,21 @@ graph addComponent(
 time := RootModule Model Time clone
 graph addComponent(time)
 
+props := RootModule LevelSystem Props clone
+props setGraph(graph)
+
 writeln("Done adding components to engine.")
 
-RootModule lexicalDo(
-    avatarCameraNode := graph addNode(Styles GameObjStyles EmptyStyle)
-    avatarCameraNode addAttribute(Avatar Camera clone)
+addPlayer := method(
+    RootModule lexicalDo(
+        avatarCameraNode := graph addNode(Styles GameObjStyles EmptyStyle)
+        avatarCameraNode addAttribute(Avatar Camera clone)
 
-    playerNode := graph addNode(Avatar PlayerStyle)
-    avatarComp attachControl(playerNode)
+        playerNode := graph addNode(Avatar PlayerStyle)
+        avatarComp attachControl(playerNode)
 
-    graph addLink(Styles LinkStyles LookAtStyle, avatarCameraNode, playerNode)
+        graph addLink(Styles LinkStyles LookAtStyle, avatarCameraNode, playerNode)
+    )
 )
 
 )
@@ -139,4 +144,5 @@ if (loadError != nil,
         )
     )
     loadError showStack
+    Exception raise("script loading may have failed")
 )

@@ -999,19 +999,20 @@ method(namespace_Bullet, namespace_irr, namespace_Custom, Structure, Styles,
 
     Props loadSkybox := method(
 
-        dawn := "Media/dawnsky.png"
-        night := "Media/NightMoon.png"
-        dummy1 := "Media/grass.jpg"
-        dummy2 := "Media/irrlicht2_dn.jpg"
-        dummy3 := "Media/mountaintop.jpg"
+        back := "irrlicht2_bk.jpg"
+        front := "irrlicht2_ft.jpg"
+        up := "irrlicht2_up.jpg"
+        down := "irrlicht2_dn.jpg"
+        left := "irrlicht2_lf.jpg"
+        right := "irrlicht2_rt.jpg"
 
         style := Styles SkyboxStyle clone lexicalDo(
-            textureMap atPut("back", dawn)
-            textureMap atPut("front", night)
-            textureMap atPut("up", dummy1)
-            textureMap atPut("down", dummy2)
-            textureMap atPut("left", dummy3)
-            textureMap atPut("right", dummy1)
+            textureMap atPut("back", back)
+            textureMap atPut("front", front)
+            textureMap atPut("up", up)
+            textureMap atPut("down", down)
+            textureMap atPut("left", left)
+            textureMap atPut("right", right)
         )
 
         skybox := graph addNode(style)

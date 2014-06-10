@@ -122,11 +122,11 @@ std::string IoVM::get_path(std::string path_identifier)
 
     return iter->second;
 }
+
 void IoVM::set_path(std::string path_identifier, std::string path_value)
 {
     paths[path_identifier] = path_value;
 }
-
 
 IoVM* IoVM::get(IoState* state)
 {
@@ -249,7 +249,7 @@ IoVM::IoVM(std::string bootstrap_path) : last_exception(0)
     LM_CLASS(global_ns, IoVM)
 
     LM_FUNC(IoVM, (run_cli)(do_string)(castToIoObjectPointer)(expr_to_io_obj)(setShowAllMessages)
-        (get_script_path)(set_script_path))
+        (get_script_path)(set_script_path)(get_path))
 
     LM_CLASS(global_ns, TypeSystem)
 
