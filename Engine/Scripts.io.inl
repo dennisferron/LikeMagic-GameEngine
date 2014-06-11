@@ -18,7 +18,7 @@ method(Module,
                 block(
                     scriptResult := env performWithArgList("doIt", call evalArgs)
                     if(getLocalSlot("scriptResult") isActivatable,
-                       Exception raise("Looks like you returned a method by mistake in script " .. name .. " " .. path)
+                       Exception raise("Looks like you returned a method by mistake in script " .. name .. " " .. path .. " (You should be returning a Module clone from the Config script.)")
                     ,
                         if (name != "Config" and scriptResult type != name,
                             Exception raise("Expected object of type " .. name .. " instead got object of type " .. scriptResult type .. " from " .. path)

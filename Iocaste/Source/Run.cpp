@@ -157,8 +157,8 @@ IOCASTE_API int Iocaste_run(int argc, const char *argv[], void (*add_bindings)()
 
         IF_TRACE_DB(trace_db->close());
 
-        cout << "Press enter..." << std::endl;
-        std::cin.ignore( 99, '\n' );
+        //cout << "Press enter..." << std::endl;
+        //std::cin.ignore( 99, '\n' );
 
         return SUCCESS;
     }

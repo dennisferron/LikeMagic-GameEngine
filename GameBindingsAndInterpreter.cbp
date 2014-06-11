@@ -54,7 +54,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="--language ../../Iocaste/iovm/io/ --engine ../../Engine/Startup.io.inl --game ../../Engine/RunDemo.io.inl --assets ../../Deps/irrlicht-1.8/media" />
+				<Option parameters="--language ../../Iocaste/iovm/io/ --engine ../../Engine/Startup.io.inl --game ../../../../superstition/Script/Startup.io.inl --assets ../../Deps/irrlicht-1.8/media" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-g" />
@@ -108,7 +108,6 @@
 			<Add directory="Deps/tps-1.2/Include" />
 			<Add directory="Interpreter/Include" />
 		</Compiler>
-		<Unit filename="Engine/Demo/Config.io.inl" />
 		<Unit filename="Interpreter/Include/Interpreter/Bindings.hpp" />
 		<Unit filename="Interpreter/Source/Bindings.cpp" />
 		<Unit filename="Interpreter/Source/main.cpp" />

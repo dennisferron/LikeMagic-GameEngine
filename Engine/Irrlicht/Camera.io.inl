@@ -55,6 +55,7 @@ Camera createNode := method(
 
 Camera update := method(
 
+/*
     if (targetIrrAttrib != nil,
 
         target := targetIrrAttrib sceneNode getAbsolutePosition
@@ -72,6 +73,8 @@ Camera update := method(
 
         draw
     )
+*/
+
 )
 
 Camera draw := method(
