@@ -130,6 +130,10 @@ void Generator::generate_all(ostream& os)
     {
         TypeMirror* type = type_system->get_class(t);
         classes[t] = new ClassGen(type, classes);
+
+        // Instead of doing this, need to create a lookup method that strips modifiers
+        // so that ArgGet and RetGen find the proper class type for & and for (end).
+        //classes[get_index(t.get_info().as_restricted())] = classes[t];
     }
 
     for (auto t : type_system->list_class_types())

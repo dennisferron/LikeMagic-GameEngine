@@ -55,7 +55,7 @@ method(namespace_irr, namespace_Custom, Constants,
             if (sceneNode != nil) then(
                 p := sceneNode getAbsolutePosition
                 o := Object clone
-                o x := p get_X; o y := p get_Y; o z := p get_Z
+                o x := p get_X; o y := p get_Y; o z := -p get_Z
                 return o
             )
             else(

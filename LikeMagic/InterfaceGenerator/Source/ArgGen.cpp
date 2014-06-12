@@ -30,6 +30,14 @@ void ArgGen::declare(std::ostream& os) const
         os << ", ";
 
     write_arg_type(os);
+}
+
+void ArgGen::define(std::ostream& os) const
+{
+    if (pos > 0)
+        os << ", ";
+
+    write_arg_type(os);
     os << " ";
     write_arg_name(os);
 }
@@ -41,5 +49,10 @@ void ArgGen::invoke(std::ostream& os) const
 
 ClassGen const* ArgGen::get_class() const
 {
-    return classes.find(get_arg_type())->second;
+    auto result = classes.find(get_arg_type());
+    if (result == classes.end())
+    {
+        throw std::logic_error("No ClassGen for type " + get_arg_type().description());
+    }
+    return result->second;
 }

@@ -24,8 +24,10 @@ void MethodGen::declare(std::ostream& os) const
 {
     os << name;
     os << "(";
+    for (auto& arg : args)
+        arg->declare(os);
     os << ") -> ";
-    //ret->declare(os);
+    ret->declare(os);
     os << ";" << endl;
 }
 
@@ -33,8 +35,10 @@ void MethodGen::define(std::ostream& os) const
 {
     os << name;
     os << "(";
+    for (auto& arg : args)
+        arg->define(os);
     os << ") -> ";
-    //ret->declare(os);
+    ret->define(os);
     os << "{" << endl;
     os << "}" << endl;
 }

@@ -34,7 +34,7 @@ method(namespace_irr, PredefinedValues,
                 shape,  // mesh
                 nil, // parent
                 0,         // id
-                vector3df tmp(style x, style y, style z),    // position
+                vector3df tmp(style x, style y, -style z),    // position
                 vector3df tmp,    // rotation
                 vector3df tmp(style dispScaleX, style dispScaleY, style dispScaleZ), // scale
                 false  // alsoAddIfMeshPointerZero
