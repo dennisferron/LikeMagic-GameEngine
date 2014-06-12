@@ -96,7 +96,7 @@ graph addComponent(
 irrComp setGraph(graph)
 
 graph addComponent(
-    RootModule Bullet Component clone
+    bltComp := RootModule Bullet Component clone
 )
 
 avatarComp := RootModule Avatar Component clone

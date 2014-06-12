@@ -24,6 +24,7 @@ private:
 public:
     ArgGen(TypeInfoList args_, int pos_, std::unordered_map<TypeIndex, ClassGen const*> const& classes_);
     void declare(std::ostream& os) const;
+    void define(std::ostream& os) const;
     void invoke(std::ostream& os) const;
     ClassGen const* get_class() const;
 };

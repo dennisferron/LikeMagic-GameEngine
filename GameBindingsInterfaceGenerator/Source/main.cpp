@@ -27,6 +27,8 @@ int main(int argc, const char *argv[])
     catch (std::exception const& ex)
     {
         cerr << ex.what() << endl;
+        cerr << "Press enter..." << std::endl;
+        std::cin.ignore( 99, '\n' );
         return -1;
     }
 }

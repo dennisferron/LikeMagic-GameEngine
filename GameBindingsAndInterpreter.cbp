@@ -15,7 +15,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
-				<Option parameters="--language ../../Iocaste/iovm/io/ --engine ../../Engine/Startup.io.inl --game ../../Engine/RunDemo.io.inl --assets ../../Deps/irrlicht-1.8/media" />
+				<Option parameters="--language ../../Iocaste/iovm/io/ --engine ../../Engine/Startup.io.inl --game ../../../../superstition/Script/Startup.io.inl --assets ../../Deps/irrlicht-1.8/media" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-Wno-unused-local-typedefs" />
@@ -31,20 +31,20 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-m32" />
-					<Add library="bin/Debug/libIocaste-Windows.a" />
-					<Add library="bin/Debug/libDESteerBindings.a" />
-					<Add library="bin/Debug/libStdBindings-Windows.a" />
-					<Add library="Common/boost_1_54_0/stage/lib/libboost_program_options-mgw48-mt-d-1_54.a" />
-					<Add library="bin/Debug/libLikeMagic-Windows.a" />
-					<Add library="../desteer/lib/libdesteer.a" />
-					<Add library="Deps/tps-1.2/ThinPlateSpline/bin/Debug/libThinPlateSpline.a" />
-					<Add library="./libBullet.a" />
-					<Add library="Deps/irrlicht-1.8/lib/Win32-gcc/libIrrlicht.a" />
-					<Add library="bin/Debug/libBulletBindings.a" />
-					<Add library="bin/Debug/libIrrKlangBindings.a" />
-					<Add library="bin/Debug/libIrrlichtBindings.a" />
-					<Add library="bin/Debug/libMeshToolsBindings.a" />
-					<Add library="bin/Debug/libsqlite.a" />
+					<Add library="bin\Debug\libIocaste-Windows.a" />
+					<Add library="bin\Debug\libDESteerBindings.a" />
+					<Add library="bin\Debug\libStdBindings-Windows.a" />
+					<Add library="Common\boost_1_54_0\stage\lib\libboost_program_options-mgw48-mt-d-1_54.a" />
+					<Add library="bin\Debug\libLikeMagic-Windows.a" />
+					<Add library="..\desteer\lib\libdesteer.a" />
+					<Add library="Deps\tps-1.2\ThinPlateSpline\bin\Debug\libThinPlateSpline.a" />
+					<Add library=".\libBullet.a" />
+					<Add library="Deps\irrlicht-1.8\lib\Win32-gcc\libIrrlicht.a" />
+					<Add library="bin\Debug\libBulletBindings.a" />
+					<Add library="bin\Debug\libIrrKlangBindings.a" />
+					<Add library="bin\Debug\libIrrlichtBindings.a" />
+					<Add library="bin\Debug\libMeshToolsBindings.a" />
+					<Add library="bin\Debug\libsqlite.a" />
 				</Linker>
 			</Target>
 			<Target title="Debug Linux">
@@ -73,8 +73,8 @@
 					<Add library="libIrrlicht" />
 					<Add library="libDESteerBindings" />
 					<Add library="libIocaste-Linux" />
-					<Add library="Common/boost_1_54_0/stage/lib/libboost_program_options.a" />
-					<Add library="bin/Debug/libsqlite.so" />
+					<Add library="Common\boost_1_54_0\stage\lib\libboost_program_options.a" />
+					<Add library="bin\Debug\libsqlite.so" />
 					<Add directory="bin/Debug" />
 				</Linker>
 				<ExtraCommands>
