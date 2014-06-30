@@ -7,7 +7,6 @@
 #include <vector>
 #include <memory>
 #include <ostream>
-#include <unordered_map>
 #include <unordered_set>
 
 namespace LM {
@@ -16,6 +15,7 @@ class CallTarget;
 class ArgGen;
 class RetGen;
 class ClassGen;
+class ClassGenList;
 
 class MethodGen
 {
@@ -24,13 +24,15 @@ private:
     CallTarget* call_target;
     std::unique_ptr<RetGen> ret;
     std::vector<std::unique_ptr<ArgGen>> args;
-    std::unordered_map<TypeIndex, ClassGen const*> const& classes;
+    ClassGenList const& classes;
 
 public:
-    MethodGen(std::string name_, CallTarget* call_target_, std::unordered_map<TypeIndex, ClassGen const*> const& classes_);
+    MethodGen(std::string name_, CallTarget* call_target_, ClassGenList const& classes_);
+    virtual ~MethodGen();
     void declare(std::ostream& os) const;
     void define(std::ostream& os) const;
-    std::unordered_set<ClassGen const*> get_referenced_types() const;
+    std::unordered_set<TypeIndex> get_referenced_types() const;
+    std::unordered_set<ClassGen const*> get_referenced_classes() const;
 };
 
 }

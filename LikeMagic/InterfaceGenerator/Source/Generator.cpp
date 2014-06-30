@@ -6,6 +6,7 @@
 #include "LikeMagic/Utility/TypeIndex.hpp"
 
 #include "InterfaceGenerator/ClassGen.hpp"
+#include "InterfaceGenerator/ClassGenList.hpp"
 #include "InterfaceGenerator/MethodGen.hpp"
 #include "InterfaceGenerator/RetGen.hpp"
 #include "InterfaceGenerator/ArgGen.hpp"
@@ -13,8 +14,15 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <fstream>
 #include <unordered_map>
 using namespace std;
+
+namespace LM {
+    class LangBlock;
+}
+using namespace LM;
+
 
 namespace LM {
 class Generator
@@ -124,27 +132,43 @@ void Generator::generate_all(ostream& os)
     if (type_system == nullptr)
         throw std::logic_error("type_system pointer not set");
 
-    std::unordered_map<TypeIndex, ClassGen const*> classes;
+    ClassGenList classes;
 
     for (auto t : type_system->list_class_types())
     {
-        TypeMirror* type = type_system->get_class(t);
-        classes[t] = new ClassGen(type, classes);
-
-        // Instead of doing this, need to create a lookup method that strips modifiers
-        // so that ArgGet and RetGen find the proper class type for & and for (end).
-        //classes[get_index(t.get_info().as_restricted())] = classes[t];
+        RefType ref_type = t.get_info().ref_type;
+        if (ref_type == RefType::Metaclass)
+            cout << "Skipping " << t.description() << endl;
+        else
+        {
+            TypeMirror* type = type_system->get_class(t);
+            classes.add_class(t, new TypeMirrorClassGen(type, classes));
+        }
     }
 
-    for (auto t : type_system->list_class_types())
-    {
-        classes[t]->forward_declare(os);
-        classes[t]->declare(os);
-        classes[t]->define(os);
-    }
+    auto bottom_ptr_class = new CustomClassGen("BottomPtr", {}, classes);
+    classes.add_class(create_bottom_ptr_type_index(), bottom_ptr_class);
+
+    auto lang_block_class = new CustomClassGen("LangBlockExpr", {}, classes);
+    classes.add_class(TypId<std::shared_ptr<LangBlock>>::liberal(), lang_block_class);
 
     for (auto t : type_system->list_class_types())
     {
-        delete classes[t];
+        try
+        {
+            auto _class = classes.get_class(t);
+            os << _class->get_name() << " ";
+            ofstream header(_class->get_name() + ".hpp");
+            for (auto ref_class : _class->get_referenced_classes())
+                ref_class->forward_declare(header);
+            header << endl;
+            _class->declare(header);
+            ofstream source(_class->get_name() + ".cpp");
+            _class->define(source);
+        }
+        catch (std::exception const& e)
+        {
+            cerr << endl << e.what() << endl;
+        }
     }
 }

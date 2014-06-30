@@ -52,7 +52,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
-					<Add library="../bin/Debug/libsqlite.a" />
+					<Add library="..\bin\Debug\libsqlite.a" />
 				</Linker>
 			</Target>
 		</Build>
@@ -144,16 +144,20 @@
 		<Unit filename="Include/LikeMagic/binding_functions.hpp" />
 		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/ArgGen.hpp" />
 		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/ClassGen.hpp" />
+		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/ClassGenList.hpp" />
 		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/Generator.hpp" />
 		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/MethodGen.hpp" />
+		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/NamespaceGen.hpp" />
+		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/NamespaceGenList.hpp" />
 		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/RetGen.hpp" />
 		<Unit filename="InterfaceGenerator/Source/ArgGen.cpp" />
 		<Unit filename="InterfaceGenerator/Source/ClassGen.cpp" />
+		<Unit filename="InterfaceGenerator/Source/ClassGenList.cpp" />
 		<Unit filename="InterfaceGenerator/Source/Generator.cpp" />
 		<Unit filename="InterfaceGenerator/Source/MethodGen.cpp" />
+		<Unit filename="InterfaceGenerator/Source/NamespaceGen.cpp" />
+		<Unit filename="InterfaceGenerator/Source/NamespaceGenList.cpp" />
 		<Unit filename="InterfaceGenerator/Source/RetGen.cpp" />
-		<Unit filename="Script/Io/bootstrap.io" />
-		<Unit filename="Script/TestScripts/debugtest.io" />
 		<Unit filename="Source/AbstractSharedArgMarshaller.cpp" />
 		<Unit filename="Source/AbstractTypeConverter.cpp" />
 		<Unit filename="Source/CallTarget.cpp" />

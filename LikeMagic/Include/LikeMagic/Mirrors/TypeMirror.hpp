@@ -37,10 +37,11 @@ public:
     virtual void set_deleter(std::unique_ptr<AbstractTermDeleter const> deleter) = 0;
     virtual bool has_method_named(std::string method_name, bool in_base_class=false) const = 0;
     virtual std::vector<std::pair<std::string, CallTarget*>> get_all_methods() const = 0;
+    virtual TypeIndex parent_namespace() const = 0;
 };
 
 inline TypeMirror::~TypeMirror() {}
 
-LIKEMAGIC_API TypeMirror* create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type);
+LIKEMAGIC_API TypeMirror* create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type, TypeIndex parent_namespace_);
 
 }

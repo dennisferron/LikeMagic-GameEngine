@@ -184,7 +184,7 @@ TypeMirror& register_class(std::string name, TypeMirror& namespace_)
         return *(type_system->get_class(class_type));
     else
     {
-        auto result = create_type_mirror(name, GetSizeOf<T>::value, class_type);
+        auto result = create_type_mirror(name, GetSizeOf<T>::value, class_type, namespace_.get_class_type());
         type_system->add_class(class_type, result, namespace_);
 
         result->set_deleter(

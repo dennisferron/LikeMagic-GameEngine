@@ -1,13 +1,16 @@
 #include "InterfaceGenerator/MethodGen.hpp"
 #include "InterfaceGenerator/RetGen.hpp"
 #include "InterfaceGenerator/ArgGen.hpp"
+#include "InterfaceGenerator/ClassGenList.hpp"
 
 #include "LikeMagic/Mirrors/CallTarget.hpp"
 
 using namespace LM;
 using namespace std;
 
-MethodGen::MethodGen(std::string name_, CallTarget* call_target_, std::unordered_map<TypeIndex, ClassGen const*> const& classes_)
+MethodGen::~MethodGen() {}
+
+MethodGen::MethodGen(std::string name_, CallTarget* call_target_, ClassGenList const& classes_)
     : name(name_), call_target(call_target_), classes(classes_)
 {
     TypeIndex rtype = call_target_->get_return_type();
@@ -39,17 +42,55 @@ void MethodGen::define(std::ostream& os) const
         arg->define(os);
     os << ") -> ";
     ret->define(os);
+    os << endl;
     os << "{" << endl;
+    os << "    ";
+    os << "return call(expr, \"" << name << "\"";
+    if (args.size() > 0)
+    {
+        os << ", ";
+        for (auto& arg : args)
+            arg->invoke(os);
+    }
+    os << ");" << endl;
     os << "}" << endl;
 }
 
-std::unordered_set<ClassGen const*> MethodGen::get_referenced_types() const
+std::unordered_set<ClassGen const*> MethodGen::get_referenced_classes() const
 {
     std::unordered_set<ClassGen const*> result;
 
     for (auto& arg : args)
-        result.insert(arg->get_class());
+    {
+        if (classes.has_class(arg->get_type()))
+        {
+            result.insert(arg->get_class());
+        }
+        else
+        {
+            cerr << endl << "No class for arg type " << arg->get_type().description() << " of method " << name << endl;
+        }
+    }
 
-    result.insert(ret->get_class());
+    if (classes.has_class(ret->get_type()))
+    {
+        result.insert(ret->get_class());
+    }
+    else
+    {
+        cerr << endl << "No class for ret type " << ret->get_type().description() << " of method " << name << endl;
+    }
+
+    return result;
+}
+
+std::unordered_set<TypeIndex> MethodGen::get_referenced_types() const
+{
+    std::unordered_set<TypeIndex> result;
+
+    for (auto& arg : args)
+        result.insert(arg->get_type());
+
+    result.insert(ret->get_type());
     return result;
 }

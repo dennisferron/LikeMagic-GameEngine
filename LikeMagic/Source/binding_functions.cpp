@@ -29,7 +29,7 @@ LM::TypeMirror& register_namespace(std::string name, TypeMirror& parent_namespac
     }
     else
     {
-        auto result = create_type_mirror(name, size_t(0), namespace_type);
+        auto result = create_type_mirror(name, size_t(0), namespace_type, parent_namespace_.get_class_type());
         type_system->add_class(namespace_type, result, parent_namespace_);
         return *result;
     }

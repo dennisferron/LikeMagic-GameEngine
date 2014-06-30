@@ -5,30 +5,64 @@
 
 #include <vector>
 #include <memory>
-#include <unordered_map>
 #include <unordered_set>
 
 namespace LM {
 
 class TypeMirror;
 class MethodGen;
+class ClassGenList;
 
 class ClassGen
 {
+public:
+    virtual ~ClassGen();
+    virtual void declare(std::ostream& os) const = 0;
+    virtual void define(std::ostream& os) const = 0;
+    virtual void forward_declare(std::ostream& os) const = 0;
+    virtual void write_name(std::ostream& os) const = 0;
+    virtual void write_class_name(std::ostream& os) const = 0;
+    virtual std::unordered_set<TypeIndex> get_referenced_types() const = 0;
+    virtual std::unordered_set<ClassGen const*> get_referenced_classes() const = 0;
+    virtual std::string get_name() const = 0;
+};
+
+class TypeMirrorClassGen : public ClassGen
+{
 private:
     TypeMirror* type_mirror;
-    std::unordered_map<TypeIndex, ClassGen const*> const& classes;
+    ClassGenList const& classes;
     std::vector<std::unique_ptr<MethodGen>> methods;
 
-    std::unordered_set<ClassGen const*> referenced_classes() const;
+public:
+    TypeMirrorClassGen(TypeMirror* type_mirror_, ClassGenList const& classes_);
+    virtual void declare(std::ostream& os) const;
+    virtual void define(std::ostream& os) const;
+    virtual void forward_declare(std::ostream& os) const;
+    virtual void write_name(std::ostream& os) const;
+    virtual void write_class_name(std::ostream& os) const;
+    virtual std::unordered_set<TypeIndex> get_referenced_types() const;
+    virtual std::unordered_set<ClassGen const*> get_referenced_classes() const;
+    virtual std::string get_name() const;
+};
+
+class CustomClassGen : public ClassGen
+{
+private:
+    ClassGenList const& classes;
+    std::string name;
+    std::vector<std::unique_ptr<MethodGen>> methods;
 
 public:
-    ClassGen(TypeMirror* type_mirror_, std::unordered_map<TypeIndex, ClassGen const*> const& classes_);
-    void declare(std::ostream& os) const;
-    void define(std::ostream& os) const;
-    void forward_declare(std::ostream& os) const;
-    void write_name(std::ostream& os) const;
-    void write_class_name(std::ostream& os) const;
+    CustomClassGen(std::string name_, std::vector<MethodGen*> methods_, ClassGenList const& classes_);
+    virtual void declare(std::ostream& os) const;
+    virtual void define(std::ostream& os) const;
+    virtual void forward_declare(std::ostream& os) const;
+    virtual void write_name(std::ostream& os) const;
+    virtual void write_class_name(std::ostream& os) const;
+    virtual std::unordered_set<TypeIndex> get_referenced_types() const;
+    virtual std::unordered_set<ClassGen const*> get_referenced_classes() const;
+    virtual std::string get_name() const;
 };
 
 }

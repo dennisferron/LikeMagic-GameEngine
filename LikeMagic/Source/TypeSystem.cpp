@@ -60,6 +60,9 @@ private:
         //add_conv_track<void>(bare);
         //add_conv_track<void const>(bare.as_const_value());
 
+        auto bottom_ptr_type = create_type_mirror("BottomPtr", size_t(0), create_bottom_ptr_type_index(), type_system->global_namespace().get_class_type());
+        type_system->add_class(create_bottom_ptr_type_index(), bottom_ptr_type, type_system->global_namespace());
+
         // allow unsafe_ptr_cast to convert to any type and nil (NULL) to any pointer type
         add_nochange_conv(create_bottom_ptr_type_info(), bare.as_ptr_to_nonconst(), "bottom ptr unsafe cast to any ptr");
         add_nochange_conv(create_bottom_ptr_type_info(), bare.as_ptr_to_const(), "bottom ptr unsafe cast to any const ptr");
@@ -114,7 +117,7 @@ TypeSystemInstance::TypeSystemInstance()
     create_type_info_cache();
 
     TypeIndex ns_type = create_namespace_type_index("");
-    this->global_namespace_ = create_type_mirror("", 0, ns_type);
+    this->global_namespace_ = create_type_mirror("", size_t(0), ns_type, ns_type);
     this->classes[ns_type.get_id()] = this->global_namespace_;
 
     // Allow conversions from nil to any pointer.

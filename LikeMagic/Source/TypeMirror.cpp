@@ -24,7 +24,7 @@ int swprintf (wchar_t *, size_t, const wchar_t *, ...);
 using namespace LM;
 using namespace std;
 
-LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type);
+LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type, TypeIndex namespace_);
 
 class TypeMirrorImpl : private TypeMirror
 {
@@ -36,16 +36,17 @@ private:
     TypeIndex metaclass_type;
     size_t instance_size;
     std::unique_ptr<AbstractTermDeleter const> term_deleter;
+    TypeIndex _parent_namespace;
 
     TypeMirrorImpl(TypeMirrorImpl const&) = delete;
     TypeMirrorImpl& operator =(TypeMirrorImpl const&) = delete;
 
     friend void suggest_method(TypeMirror& type_, std::string method_name, int num_args);
-    friend LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type);
+    friend LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type, TypeIndex parent_namespace_);
 
 public:
 
-    TypeMirrorImpl(std::string class_name, size_t instance_size, TypeIndex class_type);
+    TypeMirrorImpl(std::string class_name, size_t instance_size, TypeIndex class_type, TypeIndex parent_namespace);
     virtual ~TypeMirrorImpl();
 
     virtual std::string get_class_name() const;
@@ -70,22 +71,29 @@ public:
 
     virtual void mark() const;
     virtual std::vector<std::pair<std::string, CallTarget*>> get_all_methods() const;
+    virtual TypeIndex parent_namespace() const;
 };
 
-LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type)
+LIKEMAGIC_API TypeMirror* LM::create_type_mirror(std::string class_name, size_t instance_size, TypeIndex class_type, TypeIndex namespace_)
 {
-    return new TypeMirrorImpl(class_name, instance_size, class_type);
+    return new TypeMirrorImpl(class_name, instance_size, class_type, namespace_);
 }
 
-TypeMirrorImpl::TypeMirrorImpl(std::string name, size_t instance_size, TypeIndex class_type)
+TypeMirrorImpl::TypeMirrorImpl(std::string name, size_t instance_size, TypeIndex class_type, TypeIndex parent_namespace)
 {
     this->name = name;
     this->class_type = class_type;
     this->instance_size = instance_size;
     this->term_deleter = nullptr;
+    this->_parent_namespace = parent_namespace;
 
     auto ptr_caster = new BottomPtrTarget();
     add_method("unsafe_ptr_cast", ptr_caster);
+}
+
+TypeIndex TypeMirrorImpl::parent_namespace() const
+{
+    return _parent_namespace;
 }
 
 void TypeMirrorImpl::set_deleter(std::unique_ptr<AbstractTermDeleter const> deleter)
