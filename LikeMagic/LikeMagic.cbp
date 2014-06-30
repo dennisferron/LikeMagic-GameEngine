@@ -52,7 +52,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
-					<Add library="..\bin\Debug\libsqlite.a" />
+					<Add library="../bin/Debug/libsqlite.a" />
 				</Linker>
 			</Target>
 		</Build>
@@ -146,6 +146,7 @@
 		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/ClassGen.hpp" />
 		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/ClassGenList.hpp" />
 		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/Generator.hpp" />
+		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/HierarchyElement.hpp" />
 		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/MethodGen.hpp" />
 		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/NamespaceGen.hpp" />
 		<Unit filename="InterfaceGenerator/Include/InterfaceGenerator/NamespaceGenList.hpp" />
