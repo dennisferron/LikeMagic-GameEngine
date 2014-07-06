@@ -44,43 +44,26 @@ void TypeMirrorNamespaceGen::write_namespace_name(ostream& os) const
     write_name(os);
 }
 
-void TypeMirrorNamespaceGen::declare(ostream& os) const
+void TypeMirrorNamespaceGen::open(ostream& os) const
 {
     write_namespace_name(os);
     os << endl << "{" << endl;
+}
+
+void TypeMirrorNamespaceGen::close(ostream& os) const
+{
     os << "}" << endl;
 }
 
-void TypeMirrorNamespaceGen::define(ostream& os, std::set<ClassGen const*> classes_) const
+void TypeMirrorNamespaceGen::using_(ostream& os) const
 {
-    std::set<ClassGen const*> intersect = get_descendants(classes_);
-
-    if (intersect.size() > 0)
-    {
-        open(os);
-
-        for (auto child : children)
-        {
-            child->define(os, intersect);
-        }
-
-        for (auto class_ : intersect)
-        {
-            if (child_classes.find(class_) != child_classes.end())
-            {
-                class_->define(os);
-            }
-        }
-
-        close(os);
-    }
+    os << "using ";
+    write_namespace_name(os);
+    os << ";" << endl;
 }
 
 /* TODO:
-    1. Create HierarchyGen interface/base class
-    2. Create HierarchyVisitor which contains the algorithm below
-    3. Take the operation to do (forward declare, declare, or define) as a functoid.
-*/
+    Move this to Generator
 
 void TypeMirrorNamespaceGen::forward_declare(ostream& os, std::set<ClassGen const*> classes_) const
 {
@@ -110,18 +93,19 @@ void TypeMirrorNamespaceGen::forward_declare(ostream& os, std::set<ClassGen cons
     }
 }
 
-std::unordered_set<ClassGen const*> TypeMirrorNamespaceGen::get_referenced_classes() const
+std::set<ClassGen const*> TypeMirrorNamespaceGen::get_referenced_classes() const
 {
     throw std::logic_error("Not implemented");
 }
 
-std::unordered_set<TypeIndex> TypeMirrorNamespaceGen::get_referenced_types() const
+std::set<TypeIndex> TypeMirrorNamespaceGen::get_referenced_types() const
 {
     throw std::logic_error("Not implemented");
 }
 
-std::unordered_set<NamespaceGen const*> TypeMirrorNamespaceGen::get_referenced_namespaces() const
+std::set<NamespaceGen const*> TypeMirrorNamespaceGen::get_referenced_namespaces() const
 {
     throw std::logic_error("Not implemented");
 }
 
+*/
