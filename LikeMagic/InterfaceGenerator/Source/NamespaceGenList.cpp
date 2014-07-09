@@ -40,16 +40,29 @@ void NamespaceGenList::add_namespace(TypeIndex index, NamespaceGen* namespace_ge
     }
 }
 
-void NamespaceGenList::add_class(TypeIndex index, ClassGen const* class_gen)
+void NamespaceGenList::add_class(TypeIndex parent_namespace_type, ClassGen const* class_gen)
 {
-    auto result = namespaces.find(index);
+    auto result = namespaces.find(parent_namespace_type);
     if (result == namespaces.end())
     {
-        throw std::logic_error("Different NamespaceGen already registered for type " + index.description());
+        throw std::logic_error("No NamespaceGen found for type " + parent_namespace_type.description());
     }
     else
     {
-        namespaces[index]->add_class(class_gen);
+        namespaces[parent_namespace_type]->add_class(class_gen);
+    }
+}
+
+void NamespaceGenList::add_child_namespace(TypeIndex parent_namespace_type, NamespaceGen* namespace_gen)
+{
+    auto result = namespaces.find(parent_namespace_type);
+    if (result == namespaces.end())
+    {
+        throw std::logic_error("No NamespaceGen found for type " + parent_namespace_type.description());
+    }
+    else
+    {
+        namespaces[parent_namespace_type]->add_child(namespace_gen);
     }
 }
 
@@ -57,4 +70,14 @@ bool NamespaceGenList::has_namespace(TypeIndex index) const
 {
     auto result = namespaces.find(index);
     return result != namespaces.end();
+}
+
+std::set<NamespaceGen*> NamespaceGenList::get_all_namespaces() const
+{
+    std::set<NamespaceGen*> result;
+    for (auto i : namespaces)
+    {
+        result.insert(i.second);
+    }
+    return result;
 }

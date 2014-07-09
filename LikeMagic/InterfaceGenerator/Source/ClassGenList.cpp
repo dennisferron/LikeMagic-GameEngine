@@ -52,6 +52,16 @@ bool ClassGenList::has_class(TypeIndex index) const
     return result != classes.end();
 }
 
+std::set<ClassGen const*> ClassGenList::get_all_classes() const
+{
+    std::set<ClassGen const*> result;
+    for (auto i : classes)
+    {
+        result.insert(i.second);
+    }
+    return result;
+}
+
 
 ///// Example of return-by-value with forward declared classes.
 ///// Works because the methods are not used or defined until afterwards.

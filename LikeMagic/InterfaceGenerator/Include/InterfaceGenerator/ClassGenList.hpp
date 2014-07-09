@@ -21,6 +21,7 @@ public:
     ClassGen const* get_class(TypeIndex index) const;
     void add_class(TypeIndex index, ClassGen const* class_gen);
     bool has_class(TypeIndex index) const;
+    std::set<ClassGen const*> get_all_classes() const;
 };
 
 }

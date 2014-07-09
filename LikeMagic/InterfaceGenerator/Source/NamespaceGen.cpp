@@ -13,6 +13,8 @@ using namespace LM;
 
 NamespaceGen::~NamespaceGen() {}
 
+TypeMirrorNamespaceGen::~TypeMirrorNamespaceGen() {}
+
 TypeMirrorNamespaceGen::TypeMirrorNamespaceGen(TypeMirror* type_mirror_, ClassGenList const& classes_)
     : type_mirror(type_mirror_), classes(classes_)
 {
@@ -60,6 +62,21 @@ void TypeMirrorNamespaceGen::using_(ostream& os) const
     os << "using ";
     write_namespace_name(os);
     os << ";" << endl;
+}
+
+void TypeMirrorNamespaceGen::has_descendant_class(ClassGen const* class_gen)
+{
+    throw std::logic_error("Not implemented");
+}
+
+std::set<ClassGen const*> TypeMirrorNamespaceGen::get_child_classes() const
+{
+    throw std::logic_error("Not implemented");
+}
+
+TypeIndex TypeMirrorNamespaceGen::get_type() const
+{
+    return type_mirror->get_class_type();
 }
 
 /* TODO:

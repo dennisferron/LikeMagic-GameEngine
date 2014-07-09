@@ -95,14 +95,23 @@ std::unordered_set<TypeIndex> TypeMirrorClassGen::get_referenced_types() const
     return result;
 }
 
+TypeIndex TypeMirrorClassGen::get_type() const
+{
+    return type_mirror->get_class_type();
+}
 
-CustomClassGen::CustomClassGen(std::string name_, std::vector<MethodGen*> methods_, ClassGenList const& classes_)
-    : name(name_), classes(classes_)
+CustomClassGen::CustomClassGen(std::string name_, TypeIndex type_, std::vector<MethodGen*> methods_, ClassGenList const& classes_)
+    : name(name_), type(type_), classes(classes_)
 {
     for (auto m : methods_)
     {
         this->methods.push_back(std::move(std::unique_ptr<MethodGen>(m)));
     }
+}
+
+TypeIndex CustomClassGen::get_type() const
+{
+    return type;
 }
 
 void CustomClassGen::write_name(ostream& os) const
