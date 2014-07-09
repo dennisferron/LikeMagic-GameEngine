@@ -13,6 +13,21 @@ using namespace LM;
 
 NamespaceGen::~NamespaceGen() {}
 
+void NamespaceGen::dump(std::ostream& os, int depth) const
+{
+    for (int i=0; i<depth; i++)
+        os << "\t";
+
+    write_name(os);
+
+    os << endl;
+
+    for (auto child_ns : get_child_namespaces())
+    {
+        child_ns->dump(os, depth+1);
+    }
+}
+
 TypeMirrorNamespaceGen::~TypeMirrorNamespaceGen() {}
 
 TypeMirrorNamespaceGen::TypeMirrorNamespaceGen(TypeMirror* type_mirror_, ClassGenList const& classes_)
@@ -22,7 +37,7 @@ TypeMirrorNamespaceGen::TypeMirrorNamespaceGen(TypeMirror* type_mirror_, ClassGe
 
 void TypeMirrorNamespaceGen::add_child(NamespaceGen* child_ns)
 {
-    children.push_back(child_ns);
+    children.insert(child_ns);
 }
 
 void TypeMirrorNamespaceGen::add_class(ClassGen const* class_)
@@ -71,7 +86,12 @@ void TypeMirrorNamespaceGen::has_descendant_class(ClassGen const* class_gen)
 
 std::set<ClassGen const*> TypeMirrorNamespaceGen::get_child_classes() const
 {
-    throw std::logic_error("Not implemented");
+    return child_classes;
+}
+
+std::set<NamespaceGen*> TypeMirrorNamespaceGen::get_child_namespaces() const
+{
+    return children;
 }
 
 TypeIndex TypeMirrorNamespaceGen::get_type() const

@@ -73,24 +73,31 @@ void Generator::generate_all(ostream& os)
     if (type_system == nullptr)
         throw std::logic_error("type_system pointer not set");
 
+    TypeMirror& global_ns_mirror = type_system->global_namespace();
+    TypeIndex global_ns_type = global_ns_mirror.get_class_type();
+    NamespaceGen* global_ns = new TypeMirrorNamespaceGen(&global_ns_mirror, classes);
+    namespaces.add_namespace(global_ns_type, global_ns);
+    namespaces.set_root(global_ns);
+
     std::unordered_map<TypeIndex, TypeIndex> parent_ns_types;
 
     for (auto t : type_system->list_class_types())
     {
         TypeMirror* type = type_system->get_class(t);
-        parent_ns_types[t] = type->parent_namespace();
 
-        if (t.get_info().system == "namespace")
+        if (!(t == global_ns_type))
         {
-            namespaces.add_namespace(t, new TypeMirrorNamespaceGen(type, classes));
-        }
-        else
-        {
-            classes.add_class(t, new TypeMirrorClassGen(type, classes));
+            parent_ns_types[t] = type->parent_namespace();
+            if (t.get_info().system == "namespace")
+            {
+                namespaces.add_namespace(t, new TypeMirrorNamespaceGen(type, classes));
+            }
+            else
+            {
+                classes.add_class(t, new TypeMirrorClassGen(type, classes));
+            }
         }
     }
-
-    TypeIndex global_ns_type = type_system->global_namespace().get_class_type();
 
     TypeIndex bottom_ptr_type = create_bottom_ptr_type_index();
     parent_ns_types[bottom_ptr_type] = global_ns_type;
@@ -110,10 +117,17 @@ void Generator::generate_all(ostream& os)
 
     for (auto namespace_ : namespaces.get_all_namespaces())
     {
-        TypeIndex parent = parent_ns_types[namespace_->get_type()];
-        namespaces.add_child_namespace(parent, namespace_);
+        if (!(namespace_ == global_ns))
+        {
+            TypeIndex parent = parent_ns_types[namespace_->get_type()];
+            namespaces.add_child_namespace(parent, namespace_);
+        }
     }
 
+    NamespaceGen const* ns_root = namespaces.get_namespace(global_ns_type);
+    ns_root->dump(cout, 0);
+
+/*
     for (auto class_ : classes.get_all_classes())
     {
         try
@@ -132,4 +146,6 @@ void Generator::generate_all(ostream& os)
             cerr << endl << e.what() << endl;
         }
     }
+*/
 }
+

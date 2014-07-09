@@ -14,6 +14,7 @@ class NamespaceGenList
 {
 private:
     std::unordered_map<TypeIndex, NamespaceGen*> namespaces;
+    NamespaceGen* root;
 
 public:
     ~NamespaceGenList();
@@ -23,6 +24,7 @@ public:
     void add_child_namespace(TypeIndex parent_namespace_type, NamespaceGen* namespace_gen);
     bool has_namespace(TypeIndex ns_type) const;
     std::set<NamespaceGen*> get_all_namespaces() const;
+    void set_root(NamespaceGen* root_);
 };
 
 }

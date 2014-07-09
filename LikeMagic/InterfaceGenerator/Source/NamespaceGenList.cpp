@@ -8,6 +8,11 @@
 
 using namespace LM;
 
+void NamespaceGenList::set_root(NamespaceGen* root_)
+{
+    root = root_;
+}
+
 NamespaceGenList::~NamespaceGenList()
 {
     for (auto i : namespaces)
@@ -55,6 +60,9 @@ void NamespaceGenList::add_class(TypeIndex parent_namespace_type, ClassGen const
 
 void NamespaceGenList::add_child_namespace(TypeIndex parent_namespace_type, NamespaceGen* namespace_gen)
 {
+    if (namespace_gen == root)
+        throw std::logic_error("Cannot add root namespace as a child namespace.");
+
     auto result = namespaces.find(parent_namespace_type);
     if (result == namespaces.end())
     {
