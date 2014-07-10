@@ -10,6 +10,16 @@ using namespace LM;
 
 ClassGen::~ClassGen() {}
 
+void ClassGen::dump(std::ostream& os, int depth) const
+{
+    for (int i=0; i<depth; i++)
+        os << "\t";
+
+    write_name(os);
+
+    os << endl;
+}
+
 TypeMirrorClassGen::TypeMirrorClassGen(TypeMirror* type_mirror_, ClassGenList const& classes_)
     : type_mirror(type_mirror_), classes(classes_)
 {
@@ -63,8 +73,11 @@ void TypeMirrorClassGen::define(ostream& os) const
     os << endl;
 }
 
-void TypeMirrorClassGen::forward_declare(ostream& os) const
+void TypeMirrorClassGen::forward_declare(ostream& os, int depth) const
 {
+    for (int i=0; i<depth; i++)
+        os << "\t";
+
     write_class_name(os);
     os << ";" << endl;
 }
@@ -157,8 +170,10 @@ void CustomClassGen::define(ostream& os) const
     os << endl;
 }
 
-void CustomClassGen::forward_declare(ostream& os) const
+void CustomClassGen::forward_declare(ostream& os, int depth) const
 {
+    for (int i=0; i<depth; i++)
+        os << "\t";
     write_class_name(os);
     os << ";" << endl;
 }

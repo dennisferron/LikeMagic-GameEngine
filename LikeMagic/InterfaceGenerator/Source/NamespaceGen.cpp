@@ -8,6 +8,8 @@
 
 #include "LikeMagic/Mirrors/TypeMirror.hpp"
 
+#include <algorithm>
+
 using namespace std;
 using namespace LM;
 
@@ -18,9 +20,13 @@ void NamespaceGen::dump(std::ostream& os, int depth) const
     for (int i=0; i<depth; i++)
         os << "\t";
 
-    write_name(os);
-
+    write_namespace_name(os);
     os << endl;
+
+    for (auto class_ : get_child_classes())
+    {
+        class_->dump(os, depth+1);
+    }
 
     for (auto child_ns : get_child_namespaces())
     {
@@ -61,14 +67,21 @@ void TypeMirrorNamespaceGen::write_namespace_name(ostream& os) const
     write_name(os);
 }
 
-void TypeMirrorNamespaceGen::open(ostream& os) const
+void TypeMirrorNamespaceGen::open(ostream& os, int depth) const
 {
+    for (int i=0; i<depth; i++)
+        os << "\t";
     write_namespace_name(os);
-    os << endl << "{" << endl;
+    os << endl;
+    for (int i=0; i<depth; i++)
+        os << "\t";
+    os << "{" << endl;
 }
 
-void TypeMirrorNamespaceGen::close(ostream& os) const
+void TypeMirrorNamespaceGen::close(ostream& os, int depth) const
 {
+    for (int i=0; i<depth; i++)
+        os << "\t";
     os << "}" << endl;
 }
 
@@ -79,9 +92,23 @@ void TypeMirrorNamespaceGen::using_(ostream& os) const
     os << ";" << endl;
 }
 
-void TypeMirrorNamespaceGen::has_descendant_class(ClassGen const* class_gen)
+bool TypeMirrorNamespaceGen::has_descendant_class(std::set<ClassGen const*> class_gens) const
 {
-    throw std::logic_error("Not implemented");
+    for (auto c : child_classes)
+    {
+        if (class_gens.find(c) != class_gens.end())
+        {
+            return true;
+        }
+    }
+
+    for (auto ns : children)
+    {
+        if (ns->has_descendant_class(class_gens))
+            return true;
+    }
+
+    return false;
 }
 
 std::set<ClassGen const*> TypeMirrorNamespaceGen::get_child_classes() const

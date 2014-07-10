@@ -36,6 +36,9 @@ private:
     std::string generate_return_type(TypeIndex type);
     std::string generate_arg_type(TypeIndex type);
     std::string generate_arg_name(TypeInfoList types, int index);
+
+    void write_foward_declares(ostream& os, NamespaceGen const* ns, std::set<ClassGen const*> forward_types, int depth);
+
 public:
     void generate_all(std::ostream& os);
 };
@@ -127,6 +130,7 @@ void Generator::generate_all(ostream& os)
     NamespaceGen const* ns_root = namespaces.get_namespace(global_ns_type);
     ns_root->dump(cout, 0);
 
+    write_foward_declares(cout, ns_root, classes.get_all_classes(), 0);
 /*
     for (auto class_ : classes.get_all_classes())
     {
@@ -149,3 +153,22 @@ void Generator::generate_all(ostream& os)
 */
 }
 
+void Generator::write_foward_declares(ostream& os, NamespaceGen const* ns, std::set<ClassGen const*> forward_types, int depth)
+{
+    if (ns->has_descendant_class(forward_types))
+    {
+        ns->open(os, depth);
+
+        for (auto child_ns : ns->get_child_namespaces())
+            write_foward_declares(os, child_ns, forward_types, depth+1);
+
+        for (auto class_ : ns->get_child_classes())
+        {
+            if (forward_types.find(class_) != forward_types.end())
+                class_->forward_declare(os, depth+1);
+        }
+
+        ns->close(os, depth);
+        os << endl;
+    }
+}
