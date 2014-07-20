@@ -1,8 +1,8 @@
-# I prefer to use on standard line ending on every operating system, and that standard is LF.  Windows can piss off.
-*.h text eol=lf
-*.c text eol=lf
-*.hpp text eol=lf
-*.cpp text eol=lf
-*.io text eol=lf
-*.inl text eol=lf
-*.txt text eol=lf
+# Got tired of seeing the line end conversion warnings, so changed to not force lf
+*.h text
+*.c text
+*.hpp text
+*.cpp text
+*.io text
+*.inl text
+*.txt text

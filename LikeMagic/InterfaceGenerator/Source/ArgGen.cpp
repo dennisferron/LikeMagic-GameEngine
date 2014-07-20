@@ -59,6 +59,9 @@ void ArgGen::define(std::ostream& os) const
 
 void ArgGen::invoke(std::ostream& os) const
 {
+    if (pos > 0)
+        os << ", ";
+
     write_arg_name(os);
 }
 

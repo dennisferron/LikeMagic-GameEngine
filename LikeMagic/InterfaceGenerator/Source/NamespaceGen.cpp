@@ -58,7 +58,10 @@ void TypeMirrorNamespaceGen::write_name(ostream& os) const
 
 std::string TypeMirrorNamespaceGen::get_name() const
 {
-    return type_mirror->get_class_name();
+    if (type_mirror->get_class_name() == "")
+        return "GameBindings";
+    else
+        return type_mirror->get_class_name();
 }
 
 void TypeMirrorNamespaceGen::write_namespace_name(ostream& os) const

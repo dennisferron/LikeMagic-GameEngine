@@ -134,6 +134,15 @@ void CustomClassGen::write_name(ostream& os) const
 
 std::string CustomClassGen::get_name() const
 {
+    static std::set<string> reserved_names = {
+        "int", "double", "float", "char", "string"
+    };
+
+    if (reserved_names.find(name) != reserved_names.end())
+    {
+        return name + "_expr";
+    }
+
     return name;
 }
 

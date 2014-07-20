@@ -38,6 +38,8 @@ private:
     std::string generate_arg_name(TypeInfoList types, int index);
 
     void write_foward_declares(ostream& os, NamespaceGen const* ns, std::set<ClassGen const*> forward_types, int depth);
+    void open_namespaces(ostream& os, NamespaceGen const* ns, std::set<ClassGen const*> class_set, int depth);
+    void close_namespaces(ostream& os, NamespaceGen const* ns, std::set<ClassGen const*> class_set, int depth);
 
 public:
     void generate_all(std::ostream& os);
@@ -131,26 +133,57 @@ void Generator::generate_all(ostream& os)
     ns_root->dump(cout, 0);
 
     write_foward_declares(cout, ns_root, classes.get_all_classes(), 0);
-/*
+
     for (auto class_ : classes.get_all_classes())
     {
         try
         {
+            std::set<ClassGen const*> class_set;
+            class_set.insert(class_);
+
             os << class_->get_name() << " ";
+
+            // TODO:  Make a method that returns a vector of namespacegen
+            // to use for usings and for open namespace.
+
             ofstream header(class_->get_name() + ".hpp");
-            for (auto ref_class : class_->get_referenced_classes())
-                ref_class->forward_declare(header);
+            open_namespaces(header, ns_root, class_set, 0);
             header << endl;
             class_->declare(header);
+            header << endl << endl;
+            close_namespaces(header, ns_root, class_set, 0);
+
             ofstream source(class_->get_name() + ".cpp");
             class_->define(source);
+
         }
         catch (std::exception const& e)
         {
             cerr << endl << e.what() << endl;
         }
     }
-*/
+}
+
+void Generator::open_namespaces(ostream& os, NamespaceGen const* ns, std::set<ClassGen const*> class_set, int depth)
+{
+    if (ns->has_descendant_class(class_set))
+    {
+        ns->open(os, depth);
+
+        for (auto child_ns : ns->get_child_namespaces())
+            open_namespaces(os, child_ns, class_set, depth+1);
+    }
+}
+
+void Generator::close_namespaces(ostream& os, NamespaceGen const* ns, std::set<ClassGen const*> class_set, int depth)
+{
+    if (ns->has_descendant_class(class_set))
+    {
+        for (auto child_ns : ns->get_child_namespaces())
+            close_namespaces(os, child_ns, class_set, depth+1);
+
+        ns->close(os, depth);
+    }
 }
 
 void Generator::write_foward_declares(ostream& os, NamespaceGen const* ns, std::set<ClassGen const*> forward_types, int depth)

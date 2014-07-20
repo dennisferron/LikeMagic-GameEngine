@@ -23,9 +23,36 @@ MethodGen::MethodGen(std::string name_, CallTarget* call_target_, ClassGenList c
     }
 }
 
+std::string MethodGen::get_name() const
+{
+    static std::set<string> operators = {
+        "!", "=", "==", "!=",
+        "<", ">", "<=", ">=",
+        "*", "/", "+", "-",
+        "*=", "/=", "+=", "-=",
+        "++", "--", "~", "<<", ">>"
+    };
+
+    if (operators.find(name) != operators.end())
+    {
+        return "operator " + name;
+    }
+
+    static std::set<string> reserved_names = {
+        "new", "delete"
+    };
+
+    if (reserved_names.find(name) != reserved_names.end())
+    {
+        return "lm_" + name;
+    }
+
+    return name;
+}
+
 void MethodGen::declare(std::ostream& os) const
 {
-    os << name;
+    os << get_name();
     os << "(";
     for (auto& arg : args)
         arg->declare(os);
@@ -36,7 +63,7 @@ void MethodGen::declare(std::ostream& os) const
 
 void MethodGen::define(std::ostream& os) const
 {
-    os << name;
+    os << get_name();
     os << "(";
     for (auto& arg : args)
         arg->define(os);
