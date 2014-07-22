@@ -21,7 +21,7 @@ public:
     virtual ~RetGen();
     void declare(std::ostream& os) const;
     void define(std::ostream& os) const;
-    ClassGen const* get_class() const;
+    ClassGen* get_class() const;
     TypeIndex get_type() const;
 };
 

@@ -19,7 +19,7 @@ void RetGen::declare(std::ostream& os) const
     }
     else
     {
-        get_class()->write_name(os);
+        get_class()->write_full_name(os);
     }
 }
 
@@ -31,11 +31,11 @@ void RetGen::define(std::ostream& os) const
     }
     else
     {
-        get_class()->write_name(os);
+        get_class()->write_full_name(os);
     }
 }
 
-ClassGen const* RetGen::get_class() const
+ClassGen* RetGen::get_class() const
 {
     return classes.get_class(ret_type);
 }

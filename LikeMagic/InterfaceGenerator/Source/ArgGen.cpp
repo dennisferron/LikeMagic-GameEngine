@@ -29,7 +29,7 @@ void ArgGen::write_arg_type(std::ostream& os) const
     }
     else
     {
-        get_class()->write_name(os);
+        get_class()->write_full_name(os);
     }
 }
 
@@ -65,7 +65,7 @@ void ArgGen::invoke(std::ostream& os) const
     write_arg_name(os);
 }
 
-ClassGen const* ArgGen::get_class() const
+ClassGen* ArgGen::get_class() const
 {
     return classes.get_class(get_arg_type());
 }

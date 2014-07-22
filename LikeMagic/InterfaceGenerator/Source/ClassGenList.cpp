@@ -19,7 +19,7 @@ TypeIndex ClassGenList::get_class_type(TypeIndex index) const
     return get_index(index.get_info().class_type());
 }
 
-ClassGen const* ClassGenList::get_class(TypeIndex index) const
+ClassGen* ClassGenList::get_class(TypeIndex index) const
 {
     TypeIndex class_type = get_class_type(index);
     auto result = classes.find(class_type);
@@ -31,7 +31,7 @@ ClassGen const* ClassGenList::get_class(TypeIndex index) const
     return result->second;
 }
 
-void ClassGenList::add_class(TypeIndex index, ClassGen const* class_gen)
+void ClassGenList::add_class(TypeIndex index, ClassGen* class_gen)
 {
     TypeIndex class_type = get_class_type(index);
     auto result = classes.find(class_type);
@@ -52,9 +52,9 @@ bool ClassGenList::has_class(TypeIndex index) const
     return result != classes.end();
 }
 
-std::set<ClassGen const*> ClassGenList::get_all_classes() const
+std::set<ClassGen*> ClassGenList::get_all_classes() const
 {
-    std::set<ClassGen const*> result;
+    std::set<ClassGen*> result;
     for (auto i : classes)
     {
         result.insert(i.second);

@@ -45,7 +45,7 @@ void NamespaceGenList::add_namespace(TypeIndex index, NamespaceGen* namespace_ge
     }
 }
 
-void NamespaceGenList::add_class(TypeIndex parent_namespace_type, ClassGen const* class_gen)
+void NamespaceGenList::add_class(TypeIndex parent_namespace_type, ClassGen* class_gen)
 {
     auto result = namespaces.find(parent_namespace_type);
     if (result == namespaces.end())

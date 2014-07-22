@@ -83,9 +83,9 @@ void MethodGen::define(std::ostream& os) const
     os << "}" << endl;
 }
 
-std::unordered_set<ClassGen const*> MethodGen::get_referenced_classes() const
+std::unordered_set<ClassGen*> MethodGen::get_referenced_classes() const
 {
-    std::unordered_set<ClassGen const*> result;
+    std::unordered_set<ClassGen*> result;
 
     for (auto& arg : args)
     {

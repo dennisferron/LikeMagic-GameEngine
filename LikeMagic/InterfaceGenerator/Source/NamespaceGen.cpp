@@ -34,21 +34,45 @@ void NamespaceGen::dump(std::ostream& os, int depth) const
     }
 }
 
+std::vector<NamespaceGen const*> NamespaceGen::get_full_namespace() const
+{
+    std::vector<NamespaceGen const*> result;
+
+    if (get_parent_namespace() != nullptr && get_parent_namespace() != this)
+        result = get_parent_namespace()->get_full_namespace();
+
+    result.push_back(this);
+
+    return result;
+}
+
 TypeMirrorNamespaceGen::~TypeMirrorNamespaceGen() {}
 
 TypeMirrorNamespaceGen::TypeMirrorNamespaceGen(TypeMirror* type_mirror_, ClassGenList const& classes_)
-    : type_mirror(type_mirror_), classes(classes_)
+    : type_mirror(type_mirror_), classes(classes_), parent(nullptr)
 {
+}
+
+NamespaceGen* TypeMirrorNamespaceGen::get_parent_namespace() const
+{
+    return parent;
+}
+
+void TypeMirrorNamespaceGen::set_parent_namespace(NamespaceGen* ns_gen)
+{
+    parent = ns_gen;
 }
 
 void TypeMirrorNamespaceGen::add_child(NamespaceGen* child_ns)
 {
     children.insert(child_ns);
+    child_ns->set_parent_namespace(this);
 }
 
-void TypeMirrorNamespaceGen::add_class(ClassGen const* class_)
+void TypeMirrorNamespaceGen::add_class(ClassGen* class_)
 {
     child_classes.insert(class_);
+    class_->set_namespace(this);
 }
 
 void TypeMirrorNamespaceGen::write_name(ostream& os) const
@@ -95,7 +119,7 @@ void TypeMirrorNamespaceGen::using_(ostream& os) const
     os << ";" << endl;
 }
 
-bool TypeMirrorNamespaceGen::has_descendant_class(std::set<ClassGen const*> class_gens) const
+bool TypeMirrorNamespaceGen::has_descendant_class(std::set<ClassGen*> class_gens) const
 {
     for (auto c : child_classes)
     {
@@ -114,7 +138,7 @@ bool TypeMirrorNamespaceGen::has_descendant_class(std::set<ClassGen const*> clas
     return false;
 }
 
-std::set<ClassGen const*> TypeMirrorNamespaceGen::get_child_classes() const
+std::set<ClassGen*> TypeMirrorNamespaceGen::get_child_classes() const
 {
     return child_classes;
 }
@@ -128,51 +152,3 @@ TypeIndex TypeMirrorNamespaceGen::get_type() const
 {
     return type_mirror->get_class_type();
 }
-
-/* TODO:
-    Move this to Generator
-
-void TypeMirrorNamespaceGen::forward_declare(ostream& os, std::set<ClassGen const*> classes_) const
-{
-    std::set<ClassGen const*> descendants_intersect = get_descendants(classes_);
-
-    if (descendants_intersect.size() > 0)
-    {
-        open(os);
-
-        for (auto child : children)
-        {
-            child->forward_declare(os, intersect);
-        }
-
-        std::set<ClassGen const*> child_intersect;
-        set_intersection(
-            child_classes.begin(), child_classes.end(),
-            descendants_intersect.begin(), descendants_intersect.end(),
-            std::inserter(child_intersect, child_intersect.begin()));
-
-        for (auto direct_child : child_intersect)
-        {
-            direct_child->forward_declare(os);
-        }
-
-        close(os);
-    }
-}
-
-std::set<ClassGen const*> TypeMirrorNamespaceGen::get_referenced_classes() const
-{
-    throw std::logic_error("Not implemented");
-}
-
-std::set<TypeIndex> TypeMirrorNamespaceGen::get_referenced_types() const
-{
-    throw std::logic_error("Not implemented");
-}
-
-std::set<NamespaceGen const*> TypeMirrorNamespaceGen::get_referenced_namespaces() const
-{
-    throw std::logic_error("Not implemented");
-}
-
-*/

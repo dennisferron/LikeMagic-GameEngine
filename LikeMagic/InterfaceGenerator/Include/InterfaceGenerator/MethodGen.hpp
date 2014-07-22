@@ -32,7 +32,7 @@ public:
     void declare(std::ostream& os) const;
     void define(std::ostream& os) const;
     std::unordered_set<TypeIndex> get_referenced_types() const;
-    std::unordered_set<ClassGen const*> get_referenced_classes() const;
+    std::unordered_set<ClassGen*> get_referenced_classes() const;
     std::string get_name() const;
 };
 

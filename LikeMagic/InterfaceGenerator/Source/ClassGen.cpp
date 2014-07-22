@@ -2,6 +2,7 @@
 #include "InterfaceGenerator/MethodGen.hpp"
 #include "InterfaceGenerator/RetGen.hpp"
 #include "InterfaceGenerator/ArgGen.hpp"
+#include "InterfaceGenerator/NamespaceGen.hpp"
 
 #include "LikeMagic/Mirrors/TypeMirror.hpp"
 
@@ -18,6 +19,27 @@ void ClassGen::dump(std::ostream& os, int depth) const
     write_name(os);
 
     os << endl;
+}
+
+void ClassGen::write_full_name(ostream& os) const
+{
+    for (auto ns : get_namespace()->get_full_namespace())
+    {
+        ns->write_name(os);
+        os << "::";
+    }
+
+    write_name(os);
+}
+
+void ClassGen::set_namespace(NamespaceGen* ns_gen)
+{
+    parent_namespace = ns_gen;
+}
+
+NamespaceGen* ClassGen::get_namespace() const
+{
+    return parent_namespace;
 }
 
 TypeMirrorClassGen::TypeMirrorClassGen(TypeMirror* type_mirror_, ClassGenList const& classes_)
@@ -37,7 +59,20 @@ void TypeMirrorClassGen::write_name(ostream& os) const
 
 std::string TypeMirrorClassGen::get_name() const
 {
-    return type_mirror->get_class_name();
+    std::string name = type_mirror->get_class_name();
+
+    static std::set<string> reserved_names = {
+        "int", "double", "float", "char", "string", "bool",
+        "long", "short", "wchar_t", "uchar", "uint", "ushort",
+        "wstring"
+    };
+
+    if (reserved_names.find(name) != reserved_names.end())
+    {
+        return name + "_expr";
+    }
+
+    return name;
 }
 
 void TypeMirrorClassGen::write_class_name(ostream& os) const
@@ -82,9 +117,9 @@ void TypeMirrorClassGen::forward_declare(ostream& os, int depth) const
     os << ";" << endl;
 }
 
-std::unordered_set<ClassGen const*> TypeMirrorClassGen::get_referenced_classes() const
+std::unordered_set<ClassGen*> TypeMirrorClassGen::get_referenced_classes() const
 {
-    std::unordered_set<ClassGen const*> result;
+    std::unordered_set<ClassGen*> result;
 
     for (auto& method : methods)
     {
@@ -134,15 +169,6 @@ void CustomClassGen::write_name(ostream& os) const
 
 std::string CustomClassGen::get_name() const
 {
-    static std::set<string> reserved_names = {
-        "int", "double", "float", "char", "string"
-    };
-
-    if (reserved_names.find(name) != reserved_names.end())
-    {
-        return name + "_expr";
-    }
-
     return name;
 }
 
@@ -187,9 +213,9 @@ void CustomClassGen::forward_declare(ostream& os, int depth) const
     os << ";" << endl;
 }
 
-std::unordered_set<ClassGen const*> CustomClassGen::get_referenced_classes() const
+std::unordered_set<ClassGen*> CustomClassGen::get_referenced_classes() const
 {
-    std::unordered_set<ClassGen const*> result;
+    std::unordered_set<ClassGen*> result;
 
     for (auto& method : methods)
     {

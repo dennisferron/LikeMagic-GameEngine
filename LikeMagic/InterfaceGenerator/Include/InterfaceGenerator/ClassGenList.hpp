@@ -12,16 +12,16 @@ class ClassGen;
 class ClassGenList
 {
 private:
-    std::unordered_map<TypeIndex, ClassGen const*> classes;
+    std::unordered_map<TypeIndex, ClassGen*> classes;
 
     TypeIndex get_class_type(TypeIndex index) const;
 
 public:
     ~ClassGenList();
-    ClassGen const* get_class(TypeIndex index) const;
-    void add_class(TypeIndex index, ClassGen const* class_gen);
+    ClassGen* get_class(TypeIndex index) const;
+    void add_class(TypeIndex index, ClassGen* class_gen);
     bool has_class(TypeIndex index) const;
-    std::set<ClassGen const*> get_all_classes() const;
+    std::set<ClassGen*> get_all_classes() const;
 };
 
 }
