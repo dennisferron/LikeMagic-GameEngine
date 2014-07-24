@@ -135,7 +135,30 @@ void Generator::generate_all(ostream& os)
     try
     {
         ofstream header("forward_declares.hpp");
+        header << "#pragma once" << endl;
+        header << endl;
         write_foward_declares(header, ns_root, classes.get_all_classes(), 0);
+        header << endl;
+        header << "namespace GameBindings {" << endl;
+        header << "    struct MissingType;" << endl;
+        header << "}" << endl;
+        header.close();
+    }
+    catch (std::exception const& e)
+    {
+        cerr << endl << e.what() << endl;
+    }
+
+    try
+    {
+        ofstream header("MissingType.hpp");
+        header << "#pragma once" << endl;
+        header << endl;
+        header << "#include \"LikeMagic/Exprs/Expr.hpp\"" << endl;
+        header << endl;
+        header << "namespace GameBindings {" << endl;
+        header << "    struct MissingType { ::LM::ExprPtr expr; };" << endl;
+        header << "}" << endl;
         header.close();
     }
     catch (std::exception const& e)
@@ -152,17 +175,41 @@ void Generator::generate_all(ostream& os)
 
             os << class_->get_name() << " ";
 
-            ofstream header(class_->get_name() + ".hpp");
-            open_namespaces(header, ns_root, class_set, 0);
-            header << endl;
-            class_->declare(header);
-            header << endl << endl;
-            close_namespaces(header, ns_root, class_set, 0);
-            header.close();
+            {
+                ofstream header(class_->get_name() + ".hpp");
+                header << "#pragma once" << endl;
+                header << endl;
+                header << "#include \"forward_declares.hpp\"" << endl;
+                header << endl;
+                header << "#include \"LikeMagic/Exprs/Expr.hpp\"" << endl;
+                header << endl;
+                open_namespaces(header, ns_root, class_set, 0);
+                header << endl;
+                class_->declare(header);
+                header << endl << endl;
+                close_namespaces(header, ns_root, class_set, 0);
+                header.close();
+            }
 
-            ofstream source(class_->get_name() + ".cpp");
-            class_->define(source);
-            source.close();
+            {
+                ofstream source(class_->get_name() + ".cpp");
+                source << "#include \"forward_declares.hpp\"" << endl;
+                source << "#include \"MissingType.hpp\"" << endl;
+                source << "#include \"" << class_->get_name() << ".hpp\"" << endl;
+                source << endl;
+                source << "#include \"LikeMagic/Exprs/call_helper.hpp\"" << endl;
+                source << endl;
+                for (auto dependency : class_->get_referenced_classes())
+                {
+                    source << "#include \"" << dependency->get_name() << ".hpp\"" << endl;
+                }
+                source << endl;
+                open_namespaces(source, ns_root, class_set, 0);
+                source << endl;
+                class_->define(source);
+                close_namespaces(source, ns_root, class_set, 0);
+                source.close();
+            }
         }
         catch (std::exception const& e)
         {

@@ -64,7 +64,7 @@ std::string TypeMirrorClassGen::get_name() const
     static std::set<string> reserved_names = {
         "int", "double", "float", "char", "string", "bool",
         "long", "short", "wchar_t", "uchar", "uint", "ushort",
-        "wstring"
+        "wstring", "void"
     };
 
     if (reserved_names.find(name) != reserved_names.end())
@@ -85,7 +85,7 @@ void TypeMirrorClassGen::declare(ostream& os) const
 {
     write_class_name(os);
     os << endl << "{" << endl;
-    os << "    " << "ExprPtr expr;" << endl;
+    os << "    ::LM::ExprPtr expr;" << endl;
     for (auto& method : methods)
     {
         os << "    ";
@@ -182,7 +182,7 @@ void CustomClassGen::declare(ostream& os) const
 {
     write_class_name(os);
     os << endl << "{" << endl;
-    os << "    " << "ExprPtr expr;" << endl;
+    os << "    ::LM::ExprPtr expr;" << endl;
     for (auto& method : methods)
     {
         os << "    ";

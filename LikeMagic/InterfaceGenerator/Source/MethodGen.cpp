@@ -25,12 +25,19 @@ MethodGen::MethodGen(std::string name_, CallTarget* call_target_, ClassGenList c
 
 std::string MethodGen::get_name() const
 {
+    // "++" and "--" special-cased due to needing int arg instead of int_expr
+    // per a language rule.  For simplicity we'll just make them not be operators.
+    if (name == "++")
+        return "operator_increment";
+    else if (name == "--")
+        return "operator_decrement";
+
     static std::set<string> operators = {
         "!", "=", "==", "!=",
         "<", ">", "<=", ">=",
         "*", "/", "+", "-",
         "*=", "/=", "+=", "-=",
-        "++", "--", "~", "<<", ">>"
+        "~", "<<", ">>"
     };
 
     if (operators.find(name) != operators.end())
@@ -63,23 +70,26 @@ void MethodGen::declare(std::ostream& os) const
 
 void MethodGen::define(std::ostream& os) const
 {
-    os << get_name();
-    os << "(";
+    os << get_name() << "(";
     for (auto& arg : args)
         arg->define(os);
     os << ") -> ";
     ret->define(os);
     os << endl;
     os << "{" << endl;
-    os << "    ";
-    os << "return call(expr, \"" << name << "\"";
-    if (args.size() > 0)
-    {
-        os << ", ";
-        for (auto& arg : args)
-            arg->invoke(os);
-    }
-    os << ");" << endl;
+        os << "    ::LM::ExprPtr args[] = { ";
+            for (auto& arg : args)
+            {
+                arg->invoke(os);
+                os << ".expr";
+            }
+        os << " }; " << endl;
+        os << "    return { ::LM::call(";
+            os << "expr, ";
+            os << "\"" << name << "\", ";
+            os << "args, ";
+            os << args.size();
+        os << ") };" << endl;
     os << "}" << endl;
 }
 

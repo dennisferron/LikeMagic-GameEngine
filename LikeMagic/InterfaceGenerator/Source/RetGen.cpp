@@ -15,7 +15,7 @@ void RetGen::declare(std::ostream& os) const
 {
     if (!classes.has_class(ret_type))
     {
-        os << "Missing<" << ret_type.description() << ">";
+        os << "MissingType /* " << get_type().description() << " */ ";
     }
     else
     {
@@ -27,7 +27,7 @@ void RetGen::define(std::ostream& os) const
 {
     if (!classes.has_class(ret_type))
     {
-        os << "Missing<" << ret_type.description() << ">";
+        os << "MissingType /* " << get_type().description() << " */ ";
     }
     else
     {
