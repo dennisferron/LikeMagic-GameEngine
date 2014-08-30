@@ -44,14 +44,11 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-Wall" />
-					<Add option="-pg" />
-					<Add option="-g" />
 					<Add option="-DUSE_DLL_BUILD" />
 					<Add option="-DNO_USE_DMALLOC" />
 					<Add option="-DBUILDING_LIKEMAGIC_DLL" />
 				</Compiler>
 				<Linker>
-					<Add option="-pg -lgmon" />
 					<Add library="..\bin\Debug\libsqlite.a" />
 				</Linker>
 			</Target>

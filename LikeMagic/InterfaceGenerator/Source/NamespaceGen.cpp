@@ -38,12 +38,37 @@ std::vector<NamespaceGen const*> NamespaceGen::get_full_namespace() const
 {
     std::vector<NamespaceGen const*> result;
 
-    if (get_parent_namespace() != nullptr && get_parent_namespace() != this)
+    if (!is_root())
         result = get_parent_namespace()->get_full_namespace();
 
     result.push_back(this);
 
     return result;
+}
+
+std::string NamespaceGen::get_file_name() const
+{
+    if (this->is_root())
+    {
+        return "ns_global";
+    }
+    else
+    {
+        std::string result;
+        for (auto ns : get_full_namespace())
+        {
+            if (ns->is_root())
+                result = "ns";
+            else
+                result += "_" + ns->get_name();
+        }
+        return result;
+    }
+}
+
+bool NamespaceGen::is_root() const
+{
+    return get_parent_namespace() == nullptr || get_parent_namespace() == this;
 }
 
 TypeMirrorNamespaceGen::~TypeMirrorNamespaceGen() {}

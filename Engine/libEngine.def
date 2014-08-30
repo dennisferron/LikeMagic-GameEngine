@@ -1,0 +1,15 @@
+EXPORTS
+    _ZN12GameBindings3std16vector_of_stringC1Ev @1
+    _ZN12GameBindings3std16vector_of_stringD1Ev @2
+    _ZN13ExampleScriptC1Ev @3
+    _ZN13ExampleScriptC2Ev @4
+    _ZN13ExampleScriptD0Ev @5
+    _ZN13ExampleScriptD1Ev @6
+    _ZN13ExampleScriptD2Ev @7
+    _ZN5boost13intrusive_ptrIN2LM4ExprEEC1Ev @8
+    _ZN5boost13intrusive_ptrIN2LM4ExprEED1Ev @9
+    _ZTI13ExampleScript @10 DATA
+    _ZTS13ExampleScript @11 DATA
+    _ZTV13ExampleScript @12 DATA
+    _get_output_format @13
+    dummy @14 DATA

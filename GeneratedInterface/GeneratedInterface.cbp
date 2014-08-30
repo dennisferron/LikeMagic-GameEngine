@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="GeneratedInterface" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Windows">
+				<Option output="GeneratedInterface" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="GeneratedInterface" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-fexceptions" />
+			<Add option="--std=c++0x" />
+			<Add option="-Werror=return-type" />
+			<Add option="-Werror=implicit-function-declaration" />
+			<Add option="-fdiagnostics-show-option" />
+			<Add option="-Wno-unused-variable" />
+			<Add option="-Wno-unused-parameter" />
+			<Add option="-Wno-deprecated" />
+			<Add option="-Wno-ignored-qualifiers" />
+			<Add option="-Wno-unused-local-typedefs" />
+			<Add directory="../LikeMagic/Include" />
+			<Add directory="../Common/boost_1_54_0" />
+		</Compiler>
+		<Unit filename="MissingType.hpp" />
+		<Unit filename="forward_declares.hpp" />
+		<Unit filename="ns_Bindings.cpp" />
+		<Unit filename="ns_Bindings.hpp" />
+		<Unit filename="ns_Bindings_Bullet.cpp" />
+		<Unit filename="ns_Bindings_Bullet.hpp" />
+		<Unit filename="ns_Bindings_desteer.cpp" />
+		<Unit filename="ns_Bindings_desteer.hpp" />
+		<Unit filename="ns_Bullet.cpp" />
+		<Unit filename="ns_Bullet.hpp" />
+		<Unit filename="ns_Custom.cpp" />
+		<Unit filename="ns_Custom.hpp" />
+		<Unit filename="ns_LM.cpp" />
+		<Unit filename="ns_LM.hpp" />
+		<Unit filename="ns_TPS.cpp" />
+		<Unit filename="ns_TPS.hpp" />
+		<Unit filename="ns_desteer.cpp" />
+		<Unit filename="ns_desteer.hpp" />
+		<Unit filename="ns_desteer_behavior.cpp" />
+		<Unit filename="ns_desteer_behavior.hpp" />
+		<Unit filename="ns_desteer_controller.cpp" />
+		<Unit filename="ns_desteer_controller.hpp" />
+		<Unit filename="ns_desteer_entity.cpp" />
+		<Unit filename="ns_desteer_entity.hpp" />
+		<Unit filename="ns_global.cpp" />
+		<Unit filename="ns_global.hpp" />
+		<Unit filename="ns_irr.cpp" />
+		<Unit filename="ns_irr.hpp" />
+		<Unit filename="ns_irr_core.cpp" />
+		<Unit filename="ns_irr_core.hpp" />
+		<Unit filename="ns_irr_custom.cpp" />
+		<Unit filename="ns_irr_custom.hpp" />
+		<Unit filename="ns_irr_gui.cpp" />
+		<Unit filename="ns_irr_gui.hpp" />
+		<Unit filename="ns_irr_io.cpp" />
+		<Unit filename="ns_irr_io.hpp" />
+		<Unit filename="ns_irr_scene.cpp" />
+		<Unit filename="ns_irr_scene.hpp" />
+		<Unit filename="ns_irr_video.cpp" />
+		<Unit filename="ns_irr_video.hpp" />
+		<Unit filename="ns_std.cpp" />
+		<Unit filename="ns_std.hpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

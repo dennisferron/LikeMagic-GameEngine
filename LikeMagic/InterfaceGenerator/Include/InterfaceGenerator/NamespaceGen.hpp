@@ -35,6 +35,8 @@ public:
     virtual void set_parent_namespace(NamespaceGen* ns_gen) = 0;
     virtual void dump(std::ostream& os, int depth) const;
     virtual std::vector<NamespaceGen const*> get_full_namespace() const;
+    virtual std::string get_file_name() const;
+    virtual bool is_root() const;
 };
 
 class TypeMirrorNamespaceGen : public NamespaceGen

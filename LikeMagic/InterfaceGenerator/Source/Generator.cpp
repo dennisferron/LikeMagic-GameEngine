@@ -32,6 +32,8 @@ class Generator
 private:
     ClassGenList classes;
     NamespaceGenList namespaces;
+    NamespaceGen const* ns_root;
+    std::string path;
 
     std::string generate_return_type(TypeIndex type);
     std::string generate_arg_type(TypeIndex type);
@@ -40,6 +42,10 @@ private:
     void write_foward_declares(ostream& os, NamespaceGen const* ns, std::set<ClassGen*> forward_types, int depth);
     void open_namespaces(ostream& os, NamespaceGen const* ns, std::set<ClassGen*> class_set, int depth);
     void close_namespaces(ostream& os, NamespaceGen const* ns, std::set<ClassGen*> class_set, int depth);
+    void write_header(std::string name, std::set<ClassGen*> class_set);
+    void write_class(std::string name, std::set<ClassGen*> class_set);
+    void write_missing_type_header();
+    void write_foward_declares_header();
 
 public:
     void generate_all(std::ostream& os);
@@ -75,6 +81,8 @@ std::string Generator::generate_arg_name(TypeInfoList types, int index)
 
 void Generator::generate_all(ostream& os)
 {
+    path = "..\\..\\GeneratedInterface";
+
     if (type_system == nullptr)
         throw std::logic_error("type_system pointer not set");
 
@@ -83,6 +91,7 @@ void Generator::generate_all(ostream& os)
     NamespaceGen* global_ns = new TypeMirrorNamespaceGen(&global_ns_mirror, classes);
     namespaces.add_namespace(global_ns_type, global_ns);
     namespaces.set_root(global_ns);
+    ns_root = namespaces.get_namespace(global_ns_type);
 
     std::unordered_map<TypeIndex, TypeIndex> parent_ns_types;
 
@@ -129,12 +138,34 @@ void Generator::generate_all(ostream& os)
         }
     }
 
-    NamespaceGen const* ns_root = namespaces.get_namespace(global_ns_type);
     ns_root->dump(cout, 0);
 
+    write_missing_type_header();
+    write_foward_declares_header();
+
+    for (auto namespace_ : namespaces.get_all_namespaces())
+    {
+        try
+        {
+            std::set<ClassGen*> class_set = namespace_->get_child_classes();
+            std::string file_name = namespace_->get_file_name();
+            os << file_name << endl;
+
+            write_header(file_name, class_set);
+            write_class(file_name, class_set);
+        }
+        catch (std::exception const& e)
+        {
+            cerr << endl << e.what() << endl;
+        }
+    }
+}
+
+void Generator::write_foward_declares_header()
+{
     try
     {
-        ofstream header("forward_declares.hpp");
+        ofstream header(path + "\\" + "forward_declares.hpp");
         header << "#pragma once" << endl;
         header << endl;
         write_foward_declares(header, ns_root, classes.get_all_classes(), 0);
@@ -148,10 +179,13 @@ void Generator::generate_all(ostream& os)
     {
         cerr << endl << e.what() << endl;
     }
+}
 
+void Generator::write_missing_type_header()
+{
     try
     {
-        ofstream header("MissingType.hpp");
+        ofstream header(path + "\\" + "MissingType.hpp");
         header << "#pragma once" << endl;
         header << endl;
         header << "#include \"LikeMagic/Exprs/Expr.hpp\"" << endl;
@@ -165,57 +199,50 @@ void Generator::generate_all(ostream& os)
     {
         cerr << endl << e.what() << endl;
     }
+}
 
-    for (auto class_ : classes.get_all_classes())
-    {
-        try
-        {
-            std::set<ClassGen*> class_set;
-            class_set.insert(class_);
+void Generator::write_header(std::string name, std::set<ClassGen*> class_set)
+{
+    ofstream header(path + "\\" + name + ".hpp");
+    header << "#pragma once" << endl;
+    header << endl;
+    header << "#include \"forward_declares.hpp\"" << endl;
+    header << endl;
+    header << "#include \"LikeMagic/Exprs/Expr.hpp\"" << endl;
+    header << endl;
+    open_namespaces(header, ns_root, class_set, 0);
+    header << endl;
+    for (auto class_ : class_set)
+        class_->declare(header);
+    header << endl << endl;
+    close_namespaces(header, ns_root, class_set, 0);
+    header.close();
+}
 
-            os << class_->get_name() << " ";
+void Generator::write_class(std::string name, std::set<ClassGen*> class_set)
+{
+    ofstream source(path + "\\" + name + ".cpp");
+    source << "#include \"forward_declares.hpp\"" << endl;
+    source << "#include \"MissingType.hpp\"" << endl;
+    source << endl;
+    source << "#include \"LikeMagic/Exprs/call_helper.hpp\"" << endl;
+    source << endl;
+    std::set<NamespaceGen*> dependencies;
 
-            {
-                ofstream header(class_->get_name() + ".hpp");
-                header << "#pragma once" << endl;
-                header << endl;
-                header << "#include \"forward_declares.hpp\"" << endl;
-                header << endl;
-                header << "#include \"LikeMagic/Exprs/Expr.hpp\"" << endl;
-                header << endl;
-                open_namespaces(header, ns_root, class_set, 0);
-                header << endl;
-                class_->declare(header);
-                header << endl << endl;
-                close_namespaces(header, ns_root, class_set, 0);
-                header.close();
-            }
+    for (auto class_ : class_set)
+        for (auto class_dependency : class_->get_referenced_classes())
+            dependencies.insert(class_dependency->get_namespace());
 
-            {
-                ofstream source(class_->get_name() + ".cpp");
-                source << "#include \"forward_declares.hpp\"" << endl;
-                source << "#include \"MissingType.hpp\"" << endl;
-                source << "#include \"" << class_->get_name() << ".hpp\"" << endl;
-                source << endl;
-                source << "#include \"LikeMagic/Exprs/call_helper.hpp\"" << endl;
-                source << endl;
-                for (auto dependency : class_->get_referenced_classes())
-                {
-                    source << "#include \"" << dependency->get_name() << ".hpp\"" << endl;
-                }
-                source << endl;
-                open_namespaces(source, ns_root, class_set, 0);
-                source << endl;
-                class_->define(source);
-                close_namespaces(source, ns_root, class_set, 0);
-                source.close();
-            }
-        }
-        catch (std::exception const& e)
-        {
-            cerr << endl << e.what() << endl;
-        }
-    }
+    for (auto dependency : dependencies)
+        source << "#include \"" << dependency->get_file_name() << ".hpp\"" << endl;
+
+    source << endl;
+    open_namespaces(source, ns_root, class_set, 0);
+    source << endl;
+    for (auto class_ : class_set)
+        class_->define(source);
+    close_namespaces(source, ns_root, class_set, 0);
+    source.close();
 }
 
 void Generator::open_namespaces(ostream& os, NamespaceGen const* ns, std::set<ClassGen*> class_set, int depth)
