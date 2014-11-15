@@ -155,7 +155,6 @@
 		<Unit filename="UserInterface/Menu.io.inl" />
 		<Unit filename="UserInterface/UserInterfaceRepresentation.io.inl" />
 		<Unit filename="include/ExampleScript.h" />
-		<Unit filename="src/ExampleScript.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

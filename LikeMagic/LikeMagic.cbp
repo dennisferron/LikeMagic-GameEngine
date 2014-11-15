@@ -44,6 +44,7 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-Wall" />
+					<Add option="-g" />
 					<Add option="-DUSE_DLL_BUILD" />
 					<Add option="-DNO_USE_DMALLOC" />
 					<Add option="-DBUILDING_LIKEMAGIC_DLL" />
