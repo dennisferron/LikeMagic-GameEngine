@@ -45,7 +45,7 @@
 					<Add library="bin\Debug\libIrrlichtBindings.a" />
 					<Add library="bin\Debug\libMeshToolsBindings.a" />
 					<Add library="bin\Debug\libsqlite.a" />
-					<Add library="Engine\libEngine.a" />
+					<Add library="bin\Debug\libEngine.a" />
 				</Linker>
 			</Target>
 			<Target title="Debug Linux">
@@ -108,6 +108,7 @@
 			<Add directory="Iocaste/Include/Iocaste/CShims" />
 			<Add directory="Deps/tps-1.2/Include" />
 			<Add directory="Interpreter/Include" />
+			<Add directory="Engine/Include" />
 		</Compiler>
 		<Unit filename="Interpreter/Include/Interpreter/Bindings.hpp" />
 		<Unit filename="Interpreter/Source/Bindings.cpp" />

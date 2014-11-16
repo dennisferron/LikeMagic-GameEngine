@@ -12,8 +12,8 @@ ExprPtr call(ExprPtr expr, std::string name, ExprPtr args[], int size)
 
     if (!method)
     {
-        // Don't pass on to IoObject_perform if the problem is just wrong number of args;
-        // use suggest method to give a good error message instead.
+        // If the problem is just wrong number of args,
+        // use suggest method to give a good error message.
         if (type_mirror->has_method_named(name))
             type_mirror->suggest_method(name, size);
         else

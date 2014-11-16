@@ -6,7 +6,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
+			<Target title="Debug Windows">
 				<Option output="../bin/Debug/Engine" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="./" />
 				<Option object_output="obj/Debug/" />
@@ -17,25 +17,12 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add option="-DUSE_DLL_BUILD" />
+					<Add option="-DBUILDING_ENGINE_BINDINGS_DLL" />
 				</Compiler>
 				<Linker>
 					<Add library="..\GeneratedInterface\libGeneratedInterface.a" />
 					<Add library="..\bin\Debug\libLikeMagic-Windows.a" />
-				</Linker>
-			</Target>
-			<Target title="Release">
-				<Option output="Engine" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option object_output="obj/Release/" />
-				<Option type="2" />
-				<Option compiler="gcc" />
-				<Option createDefFile="1" />
-				<Compiler>
-					<Add option="-Wall" />
-					<Add option="-O2" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
 				</Linker>
 			</Target>
 		</Build>
@@ -53,6 +40,7 @@
 			<Add directory="../LikeMagic/Include" />
 			<Add directory="../Common/boost_1_54_0" />
 			<Add directory="../GeneratedInterface" />
+			<Add directory="Include" />
 		</Compiler>
 		<Unit filename="Avatar/Camera.io.inl" />
 		<Unit filename="Avatar/Component.io.inl" />
@@ -77,6 +65,8 @@
 		<Unit filename="EditorGUI/Component.io.inl" />
 		<Unit filename="EditorGUI/Config.io.inl" />
 		<Unit filename="EditorGUI/Toolbar.io.inl" />
+		<Unit filename="Include/Engine/Bindings.hpp" />
+		<Unit filename="Include/Engine/EngineBindingsDLL.hpp" />
 		<Unit filename="Interactions/Component/AvatarTime.io.inl" />
 		<Unit filename="Interactions/Component/BulletTime.io.inl" />
 		<Unit filename="Interactions/Component/ComponentInteraction.io.inl" />
@@ -138,6 +128,7 @@
 		<Unit filename="SharedTypes/Config.io.inl" />
 		<Unit filename="SharedTypes/EnumMap.io.inl" />
 		<Unit filename="SharedTypes/IdMap.io.inl" />
+		<Unit filename="Source/Bindings.cpp" />
 		<Unit filename="Startup.io.inl" />
 		<Unit filename="Styles/Config.io.inl" />
 		<Unit filename="Styles/ConstraintStyle.io.inl" />
@@ -154,7 +145,6 @@
 		<Unit filename="UserInterface/MainWindow.io.inl" />
 		<Unit filename="UserInterface/Menu.io.inl" />
 		<Unit filename="UserInterface/UserInterfaceRepresentation.io.inl" />
-		<Unit filename="include/ExampleScript.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

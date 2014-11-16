@@ -15,6 +15,7 @@
 #include "Bindings/Custom/Bindings.hpp"
 #include "Bindings/DESteer/Bindings.hpp"
 #include "Bindings/ThinPlateSpline/Bindings.hpp"
+#include "Engine/Bindings.hpp"
 
 #ifdef IRR_1_8
 //#include "Bindings/IrrlichtTest/Bindings.hpp"
@@ -47,6 +48,7 @@ void add_bindings()
     Bindings::Custom::add_bindings();
     Bindings::DESteer::add_bindings();
     Bindings::ThinPlateSpline::add_bindings();
+    Bindings::Engine::add_bindings();
 }
 
 }
