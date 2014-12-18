@@ -119,6 +119,7 @@ struct BottomPtr
     auto unsafe_ptr_cast() -> GameBindings::BottomPtr;
 };struct ScriptUtil
 {
+    static ::LM::TypeIndex type;
     ::LM::ExprPtr expr;
     auto is_nan(GameBindings::float_expr) -> GameBindings::bool_expr;
     auto get_null_ptr() -> GameBindings::void_expr;
@@ -151,7 +152,7 @@ struct BottomPtr
     auto lm_new() -> GameBindings::ScriptUtil;
     auto get_ucharp_field() -> GameBindings::uchar_expr;
     auto ref_voidp_field() -> GameBindings::void_expr;
-    auto tmp() -> GameBindings::ScriptUtil;
+    static auto tmp() -> GameBindings::ScriptUtil;
     auto set_intp_field(GameBindings::int_expr) -> GameBindings::int_expr;
     auto unsafe_ptr_cast() -> GameBindings::BottomPtr;
 };struct double_expr

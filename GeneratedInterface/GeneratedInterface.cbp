@@ -47,6 +47,7 @@
 			<Add option="-Wno-unused-local-typedefs" />
 			<Add directory="../LikeMagic/Include" />
 			<Add directory="../Common/boost_1_54_0" />
+			<Add directory="../LikeMagic/StdBindings/Include" />
 		</Compiler>
 		<Unit filename="MissingType.hpp" />
 		<Unit filename="forward_declares.hpp" />
