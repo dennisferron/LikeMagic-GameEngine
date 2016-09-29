@@ -35,7 +35,9 @@ REM Ideally, we should obtain the toolset that build.bat has
 REM guessed. However, it uses setlocal at the start and does
 REM export BOOST_JAM_TOOLSET, and I don't know how to do that
 REM properly. Default to msvc for now.
-set toolset=msvc
+REM set toolset=msvc
+REM Changed it to gcc -DLF
+set toolset=gcc
 
 ECHO import option ; > project-config.jam
 ECHO. >> project-config.jam

@@ -15,6 +15,8 @@
 				<Option compiler="gcc" />
 				<Option parameters="--language ../../Iocaste/iovm/io/ --engine ../../Engine/Startup.io.inl --game ../../../../wayup/Engine/Startup.io.inl --assets ../../../../wayup/Media/" />
 				<Compiler>
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 					<Add option="-g" />
 					<Add option="-Wno-unused-local-typedefs" />
 					<Add option="-DNO_USE_DMALLOC" />
@@ -27,7 +29,7 @@
 					<Add directory="Deps/irrlicht-1.8/include" />
 				</Compiler>
 				<Linker>
-					<Add option="-m32" />
+					<Add option="-m64" />
 					<Add library="bin/Debug/libIocaste-Windows.a" />
 					<Add library="bin/Debug/libDESteerBindings.a" />
 					<Add library="bin/Debug/libStdBindings-Windows.a" />

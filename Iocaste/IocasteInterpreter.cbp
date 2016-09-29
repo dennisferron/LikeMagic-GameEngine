@@ -8,9 +8,9 @@
 		<Build>
 			<Target title="Debug Mac">
 				<Option platforms="Mac;" />
-				<Option output="bin\Debug-Mac\IocasteDebugBuild" prefix_auto="1" extension_auto="1" />
-				<Option working_dir=".\" />
-				<Option object_output="obj\Debug-Mac\" />
+				<Option output="bin/Debug-Mac/IocasteDebugBuild" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="./" />
+				<Option object_output="obj/Debug-Mac/" />
 				<Option external_deps="libIoCaste-Mac.a;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -27,8 +27,8 @@
 					<Add option="-framework IOKit" />
 					<Add option="-ldl" />
 					<Add option="-lpthread" />
-					<Add library="..\LikeMagic\StdBindings\libStdBindings-Mac.a" />
-					<Add library="..\LikeMagic\libLikeMagic-Mac.a" />
+					<Add library="../LikeMagic/StdBindings/libStdBindings-Mac.a" />
+					<Add library="../LikeMagic/libLikeMagic-Mac.a" />
 					<Add library="libIocaste-Mac.a" />
 				</Linker>
 				<ExtraCommands>
@@ -38,9 +38,9 @@
 			</Target>
 			<Target title="Debug Linux">
 				<Option platforms="Unix;" />
-				<Option output="bin\Debug-Linux\IocasteDebugBuild" prefix_auto="1" extension_auto="1" />
-				<Option working_dir=".\" />
-				<Option object_output="obj\Debug-Linux\" />
+				<Option output="bin/Debug-Linux/IocasteDebugBuild" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="./" />
+				<Option object_output="obj/Debug-Linux/" />
 				<Option external_deps="libIoCaste-Linux.a;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -61,11 +61,11 @@
 					<Add option="-Xlinker --end-group" />
 				</Linker>
 			</Target>
-			<Target title="Debug Windows Static">
+			<Target title="Debug Windows">
 				<Option platforms="Windows;" />
-				<Option output="bin\Debug-Windows\IocasteDebugBuild" prefix_auto="1" extension_auto="1" />
-				<Option working_dir=".\" />
-				<Option object_output="obj\Debug-Windows\" />
+				<Option output="bin/Debug-Windows/IocasteDebugBuild" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="./" />
+				<Option object_output="obj/Debug-Windows/" />
 				<Option external_deps="libIoCaste-Linux.a;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -76,11 +76,14 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-msse" />
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 				</Compiler>
 				<Linker>
-					<Add library="..\LikeMagic\StdBindings\libStdBindings-Windows.a" />
-					<Add library="..\LikeMagic\libLikeMagic-Windows.a" />
+					<Add library="../LikeMagic/StdBindings/libStdBindings-Windows.a" />
+					<Add library="../LikeMagic/libLikeMagic-Windows.a" />
 					<Add library="libIocaste-Windows.a" />
+					<Add option="-m64" />
 				</Linker>
 			</Target>
 		</Build>
@@ -96,21 +99,21 @@
 			<Add option="-v" />
 			<Add option="--std=c++0x" />
 			<Add option="-DNO_USE_DMALLOC" />
-			<Add directory="basekit\source" />
-			<Add directory="coroutine\source" />
-			<Add directory="garbagecollector\source" />
-			<Add directory="iovm\source" />
+			<Add directory="basekit/source" />
+			<Add directory="coroutine/source" />
+			<Add directory="garbagecollector/source" />
+			<Add directory="iovm/source" />
 			<Add directory="Include" />
-			<Add directory="..\Interpreter\Include" />
-			<Add directory="..\LikeMagic\Include" />
-			<Add directory="..\Common\boost_1_49_0" />
-			<Add directory="..\GameBindings\bullet\src" />
-			<Add directory="..\GameBindings\irrlicht\include" />
-			<Add directory="Include\Iocaste\CShims" />
-			<Add directory="..\LikeMagic\StdBindings\Include" />
+			<Add directory="../Interpreter/Include" />
+			<Add directory="../LikeMagic/Include" />
+			<Add directory="../Common/boost_1_49_0" />
+			<Add directory="../GameBindings/bullet/src" />
+			<Add directory="../GameBindings/irrlicht/include" />
+			<Add directory="Include/Iocaste/CShims" />
+			<Add directory="../LikeMagic/StdBindings/Include" />
 		</Compiler>
 		<Linker>
-			<Add directory="..\Iocaste" />
+			<Add directory="../Iocaste" />
 		</Linker>
 		<Unit filename="Bindings.cpp" />
 		<Unit filename="IocasteInterpreter.cbp" />

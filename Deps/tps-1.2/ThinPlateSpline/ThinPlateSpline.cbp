@@ -69,16 +69,12 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 				</Compiler>
 				<Linker>
-					<Add option="-ldl" />
-					<Add option="-framework Foundation" />
-					<Add option="-framework AppKit" />
-					<Add option="-framework Cocoa" />
-					<Add option="-framework OpenGL" />
-					<Add option="-framework Carbon" />
-					<Add option="-framework IOKit" />
-					<Add option="-framework GLUT" />
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 				</Linker>
 			</Target>
 		</Build>

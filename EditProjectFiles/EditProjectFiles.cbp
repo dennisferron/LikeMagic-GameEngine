@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="EditProjectFiles" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Not a build target">
+				<Option output="bin/Debug/EditProjectFiles" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="../../desteer/DESteer.cbp" />
+		<Unit filename="../../desteer/bindings/DESteerBindings.cbp" />
+		<Unit filename="../Bullet.cbp" />
+		<Unit filename="../BulletBindings.cbp" />
+		<Unit filename="../Common/UnitTest++/TestUnitTest++.cbp" />
+		<Unit filename="../Common/UnitTest++/UnitTest++.cbp" />
+		<Unit filename="../Common/dmalloc/DMalloc.cbp" />
+		<Unit filename="../Common/segvcatch-0.9.1/segvcatch.cbp" />
+		<Unit filename="../Common/segvcatch-0.9.1/testsegvcatch.cbp" />
+		<Unit filename="../Common/sqlite/sqlite.cbp" />
+		<Unit filename="../DESteerBindings.cbp" />
+		<Unit filename="../Deps/irrlicht-1.8/source/Irrlicht/Irrlicht-gcc.cbp" />
+		<Unit filename="../Deps/tps-1.2/ThinPlateSpline/ThinPlateSpline.cbp" />
+		<Unit filename="../Engine/Engine.cbp" />
+		<Unit filename="../GameBindingsAndInterpreter.cbp" />
+		<Unit filename="../GameBindingsInterfaceGenerator.cbp" />
+		<Unit filename="../GameUnitTests.cbp" />
+		<Unit filename="../GeneratedInterface/GeneratedInterface.cbp" />
+		<Unit filename="../Iocaste/Debugger/Debugger.cbp" />
+		<Unit filename="../Iocaste/Iocaste.cbp" />
+		<Unit filename="../Iocaste/IocasteInterpreter.cbp" />
+		<Unit filename="../IrrKlangBindings.cbp" />
+		<Unit filename="../IrrlichtBindings.cbp" />
+		<Unit filename="../IrrlichtModule.cbp" />
+		<Unit filename="../IrrlichtTest/IrrlichtTest.cbp" />
+		<Unit filename="../LikeMagic/InterfaceGenerator/InterfaceGenerator.cbp" />
+		<Unit filename="../LikeMagic/InterprocessTest/InterprocessTest.cbp" />
+		<Unit filename="../LikeMagic/LikeMagic.cbp" />
+		<Unit filename="../LikeMagic/StdBindings/StdBindings.cbp" />
+		<Unit filename="../LikeMagic/UnitTests/LikeMagicUnitTests.cbp" />
+		<Unit filename="../Main.cbp" />
+		<Unit filename="../MeshToolsBindings.cbp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

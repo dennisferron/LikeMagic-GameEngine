@@ -37,21 +37,21 @@
 				<Option compiler="gcc" />
 				<Option parameters="parent call" />
 				<Compiler>
-					<Add option="-std=c++0x" />
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-fexceptions" />
 					<Add option="-DBOOST_DATE_TIME_NO_LIB" />
 				</Compiler>
 				<Linker>
+					<Add option="-m64" />
 					<Add library="..\StdBindings\libStdBindings-Windows.a" />
 					<Add library="..\libLikeMagic-Windows.a" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-std=c++11" />
-			<Add option="-std=c++0x" />
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="-DBOOST_DATE_TIME_NO_LIB" />

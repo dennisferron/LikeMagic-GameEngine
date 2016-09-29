@@ -17,6 +17,8 @@
 				<Option use_console_runner="0" />
 				<Option parameters="--assets ../../Deps/irrlicht-1.8/media" />
 				<Compiler>
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 					<Add option="-g" />
 					<Add option="-Wno-unused-local-typedefs" />
 					<Add option="-DNO_USE_DMALLOC" />
@@ -30,7 +32,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-m32" />
+					<Add option="-m64" />
 					<Add library="bin\Debug\libIocaste-Windows.a" />
 					<Add library="bin\Debug\libDESteerBindings.a" />
 					<Add library="bin\Debug\libStdBindings-Windows.a" />

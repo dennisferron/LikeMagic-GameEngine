@@ -182,7 +182,7 @@ IO_METHOD(IoObject, shellExecute)
 	LPCTSTR parameters;
 	LPCTSTR directory;
 	int displayFlag;
-	int result;
+	intptr_t result;
 
 	operation = CSTRING(IoMessage_locals_symbolArgAt_(m, locals, 0));
 	file = CSTRING(IoMessage_locals_symbolArgAt_(m, locals, 1));
@@ -190,7 +190,7 @@ IO_METHOD(IoObject, shellExecute)
 	directory = IoMessage_argCount(m) > 3 ? CSTRING(IoMessage_locals_symbolArgAt_(m, locals, 3)) : NULL;
 	displayFlag = IoMessage_argCount(m) > 4 ? IoMessage_locals_intArgAt_(m, locals, 4) : SW_SHOWNORMAL;
 
-	result = (int)ShellExecute(NULL, operation, file, parameters, directory, displayFlag);
+	result = (intptr_t)ShellExecute(NULL, operation, file, parameters, directory, displayFlag);
 
 	if(result > 32)
 	{

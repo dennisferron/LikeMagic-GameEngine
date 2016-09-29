@@ -16,8 +16,13 @@
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-Wall" />
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+					<Add option="-m64" />
+				</Linker>
 			</Target>
 			<Target title="Debug Mac">
 				<Option platforms="Mac;" />
@@ -56,7 +61,6 @@
 			<Add option="--std=c++0x" />
 			<Add option="-Werror=return-type" />
 			<Add option="-fdiagnostics-show-option" />
-			<Add option="-Wno-unused-variable" />
 			<Add option="-Wno-unused-parameter" />
 			<Add option="-Wno-deprecated" />
 			<Add option="-Wno-ignored-qualifiers" />
