@@ -3,11 +3,11 @@
 
 #include "LikeMagic/Exprs/call_helper.hpp"
 
-#include "ns_global.hpp"
+#include "ns_irr_video.hpp"
+#include "ns_irr_gui.hpp"
 #include "ns_irr_core.hpp"
 #include "ns_irr_scene.hpp"
-#include "ns_irr_gui.hpp"
-#include "ns_irr_video.hpp"
+#include "ns_global.hpp"
 #include "ns_irr_custom.hpp"
 
 namespace GameBindings
@@ -33,11 +33,6 @@ auto ScriptedSceneNode::getExampleVertices() -> GameBindings::irr::video::S3DVer
     ::LM::ExprPtr args[] = {  }; 
     return { ::LM::call(expr, "getExampleVertices", args, 0) };
 }
-auto ScriptedSceneNode::getExampleIndices() -> GameBindings::ushort_expr
-{
-    ::LM::ExprPtr args[] = {  }; 
-    return { ::LM::call(expr, "getExampleIndices", args, 0) };
-}
 auto ScriptedSceneNode::setOnGetMaterialCount(GameBindings::LangBlockExpr arg0) -> GameBindings::void_expr
 {
     ::LM::ExprPtr args[] = { arg0.expr }; 
@@ -47,11 +42,6 @@ auto ScriptedSceneNode::setOnGetBoundingBox(GameBindings::LangBlockExpr arg0) ->
 {
     ::LM::ExprPtr args[] = { arg0.expr }; 
     return { ::LM::call(expr, "setOnGetBoundingBox", args, 1) };
-}
-auto ScriptedSceneNode::setOnGetMaterial(GameBindings::LangBlockExpr arg0) -> GameBindings::void_expr
-{
-    ::LM::ExprPtr args[] = { arg0.expr }; 
-    return { ::LM::call(expr, "setOnGetMaterial", args, 1) };
 }
 auto ScriptedSceneNode::setOnRender(GameBindings::LangBlockExpr arg0) -> GameBindings::void_expr
 {
@@ -63,10 +53,20 @@ auto ScriptedSceneNode::setOnRegisterSceneNode(GameBindings::LangBlockExpr arg0)
     ::LM::ExprPtr args[] = { arg0.expr }; 
     return { ::LM::call(expr, "setOnRegisterSceneNode", args, 1) };
 }
+auto ScriptedSceneNode::getExampleIndices() -> GameBindings::ushort_expr
+{
+    ::LM::ExprPtr args[] = {  }; 
+    return { ::LM::call(expr, "getExampleIndices", args, 0) };
+}
 auto ScriptedSceneNode::tmp(GameBindings::irr::scene::ISceneNode arg0, GameBindings::irr::scene::ISceneManager arg1, GameBindings::int_expr arg2) -> GameBindings::irr::custom::ScriptedSceneNode
 {
     ::LM::ExprPtr args[] = { arg0.expr, arg1.expr, arg2.expr }; 
     return { ::LM::call(expr, "tmp", args, 3) };
+}
+auto ScriptedSceneNode::setOnGetMaterial(GameBindings::LangBlockExpr arg0) -> GameBindings::void_expr
+{
+    ::LM::ExprPtr args[] = { arg0.expr }; 
+    return { ::LM::call(expr, "setOnGetMaterial", args, 1) };
 }
 auto ScriptedSceneNode::lm_new(GameBindings::irr::scene::ISceneNode arg0, GameBindings::irr::scene::ISceneManager arg1, GameBindings::int_expr arg2) -> GameBindings::irr::custom::ScriptedSceneNode
 {
@@ -84,15 +84,15 @@ auto ScriptedSceneNode::unsafe_ptr_cast() -> GameBindings::BottomPtr
     return { ::LM::call(expr, "unsafe_ptr_cast", args, 0) };
 }
 
-auto OrientationHelperSceneNode::rotateZToDirectionCamera(GameBindings::irr::scene::ICameraSceneNode arg0) -> GameBindings::void_expr
-{
-    ::LM::ExprPtr args[] = { arg0.expr }; 
-    return { ::LM::call(expr, "rotateZToDirectionCamera", args, 1) };
-}
 auto OrientationHelperSceneNode::rotateZToDirectionCameraVector(GameBindings::irr::scene::ICameraSceneNode arg0, GameBindings::irr::core::vector3df arg1) -> GameBindings::void_expr
 {
     ::LM::ExprPtr args[] = { arg0.expr, arg1.expr }; 
     return { ::LM::call(expr, "rotateZToDirectionCameraVector", args, 2) };
+}
+auto OrientationHelperSceneNode::rotateZToDirectionCamera(GameBindings::irr::scene::ICameraSceneNode arg0) -> GameBindings::void_expr
+{
+    ::LM::ExprPtr args[] = { arg0.expr }; 
+    return { ::LM::call(expr, "rotateZToDirectionCamera", args, 1) };
 }
 auto OrientationHelperSceneNode::rotateZToDirectionVectorVector(GameBindings::irr::core::vector3df arg0, GameBindings::irr::core::vector3df arg1) -> GameBindings::void_expr
 {
@@ -120,15 +120,20 @@ auto OrientationHelperSceneNode::unsafe_ptr_cast() -> GameBindings::BottomPtr
     return { ::LM::call(expr, "unsafe_ptr_cast", args, 0) };
 }
 
+auto ScriptedEventReceiver::OnEvent(GameBindings::irr::gui::SEvent arg0) -> GameBindings::bool_expr
+{
+    ::LM::ExprPtr args[] = { arg0.expr }; 
+    return { ::LM::call(expr, "OnEvent", args, 1) };
+}
 auto ScriptedEventReceiver::isKeyDown(GameBindings::irr::gui::EKEY_CODE arg0) -> GameBindings::bool_expr
 {
     ::LM::ExprPtr args[] = { arg0.expr }; 
     return { ::LM::call(expr, "isKeyDown", args, 1) };
 }
-auto ScriptedEventReceiver::OnEvent(GameBindings::irr::gui::SEvent arg0) -> GameBindings::bool_expr
+auto ScriptedEventReceiver::setOnEvent(GameBindings::LangBlockExpr arg0) -> GameBindings::void_expr
 {
     ::LM::ExprPtr args[] = { arg0.expr }; 
-    return { ::LM::call(expr, "OnEvent", args, 1) };
+    return { ::LM::call(expr, "setOnEvent", args, 1) };
 }
 auto ScriptedEventReceiver::tmp(GameBindings::LangBlockExpr arg0) -> GameBindings::irr::custom::ScriptedEventReceiver
 {
@@ -139,11 +144,6 @@ auto ScriptedEventReceiver::lm_new(GameBindings::LangBlockExpr arg0) -> GameBind
 {
     ::LM::ExprPtr args[] = { arg0.expr }; 
     return { ::LM::call(expr, "new", args, 1) };
-}
-auto ScriptedEventReceiver::setOnEvent(GameBindings::LangBlockExpr arg0) -> GameBindings::void_expr
-{
-    ::LM::ExprPtr args[] = { arg0.expr }; 
-    return { ::LM::call(expr, "setOnEvent", args, 1) };
 }
 auto ScriptedEventReceiver::lm_delete() -> GameBindings::void_expr
 {

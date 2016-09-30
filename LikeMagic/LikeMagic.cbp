@@ -91,6 +91,7 @@
 		<Unit filename="Include/LikeMagic/CallTargets/FieldGetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldReferenceTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldSetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/MethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/StaticMethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Exceptions/Exception.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/Expr.hpp" />

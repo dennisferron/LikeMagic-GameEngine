@@ -24,8 +24,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="-m64" />
-					<Add library="..\GeneratedInterface\libGeneratedInterface.a" />
-					<Add library="..\bin\Debug\libLikeMagic-Windows.a" />
+					<Add library="../GeneratedInterface/libGeneratedInterface.a" />
+					<Add library="../bin/Debug/libLikeMagic-Windows.a" />
 				</Linker>
 			</Target>
 		</Build>
