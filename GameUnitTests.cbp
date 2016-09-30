@@ -33,23 +33,23 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-m64" />
-					<Add library="GeneratedInterface\libGeneratedInterface.a" />
-					<Add library="Common\UnitTest++\bin\Debug\libUnitTest++.a" />
-					<Add library="bin\Debug\libIocaste-Windows.a" />
-					<Add library="bin\Debug\libDESteerBindings.a" />
-					<Add library="bin\Debug\libStdBindings-Windows.a" />
-					<Add library="Common\boost_1_54_0\stage\lib\libboost_program_options-mgw48-mt-d-1_54.a" />
-					<Add library="bin\Debug\libLikeMagic-Windows.a" />
-					<Add library="..\desteer\lib\libdesteer.a" />
-					<Add library="Deps\tps-1.2\ThinPlateSpline\bin\Debug\libThinPlateSpline.a" />
-					<Add library=".\libBullet.a" />
-					<Add library="Deps\irrlicht-1.8\lib\Win32-gcc\libIrrlicht.a" />
-					<Add library="bin\Debug\libBulletBindings.a" />
-					<Add library="bin\Debug\libIrrKlangBindings.a" />
-					<Add library="bin\Debug\libIrrlichtBindings.a" />
-					<Add library="bin\Debug\libMeshToolsBindings.a" />
-					<Add library="bin\Debug\libsqlite.a" />
-					<Add library="bin\Debug\libEngine.a" />
+					<Add library="GeneratedInterface/libGeneratedInterface.a" />
+					<Add library="Common/UnitTest++/bin/Debug/libUnitTest++.a" />
+					<Add library="bin/Debug/libIocaste-Windows.a" />
+					<Add library="bin/Debug/libDESteerBindings.a" />
+					<Add library="bin/Debug/libStdBindings-Windows.a" />
+					<Add library="Common/boost_1_54_0/stage/lib/libboost_program_options-mgw51-mt-d-1_54.a" />
+					<Add library="bin/Debug/libLikeMagic-Windows.a" />
+					<Add library="../desteer/lib/libdesteer.a" />
+					<Add library="Deps/tps-1.2/ThinPlateSpline/bin/Debug/libThinPlateSpline.a" />
+					<Add library="./libBullet.a" />
+					<Add library="Deps/irrlicht-1.8/lib/Win32-gcc/libIrrlicht.a" />
+					<Add library="bin/Debug/libBulletBindings.a" />
+					<Add library="bin/Debug/libIrrKlangBindings.a" />
+					<Add library="bin/Debug/libIrrlichtBindings.a" />
+					<Add library="bin/Debug/libMeshToolsBindings.a" />
+					<Add library="bin/Debug/libsqlite.a" />
+					<Add library="bin/Debug/libEngine.a" />
 				</Linker>
 			</Target>
 			<Target title="Debug Linux">
@@ -69,7 +69,7 @@
 					<Add option="-pthread" />
 					<Add option="-Lbin/Debug" />
 					<Add option="-Wl,-rpath=./" />
-					<Add library="..\..\Common\UnitTest++\bin\Debug\libUnitTest++.a" />
+					<Add library="../../Common/UnitTest++/bin/Debug/libUnitTest++.a" />
 					<Add library="libMeshToolsBindings" />
 					<Add library="libIrrlichtBindings" />
 					<Add library="libBulletBindings" />
@@ -79,8 +79,8 @@
 					<Add library="libIrrlicht" />
 					<Add library="libDESteerBindings" />
 					<Add library="libIocaste-Linux" />
-					<Add library="Common\boost_1_54_0\stage\lib\libboost_program_options.a" />
-					<Add library="bin\Debug\libsqlite.so" />
+					<Add library="Common/boost_1_54_0/stage/lib/libboost_program_options.a" />
+					<Add library="bin/Debug/libsqlite.so" />
 					<Add directory="bin/Debug" />
 				</Linker>
 				<ExtraCommands>
@@ -116,6 +116,7 @@
 			<Add directory="Engine/Include" />
 			<Add directory="Common/UnitTest++/src" />
 			<Add directory="GeneratedInterface" />
+			<Add directory="Include" />
 		</Compiler>
 		<Unit filename="GameUnitTests/Include/UnitTests/ArgListHelpers.hpp" />
 		<Unit filename="GameUnitTests/Include/UnitTests/TestHelpers.hpp" />
