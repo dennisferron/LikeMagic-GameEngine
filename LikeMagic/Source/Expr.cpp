@@ -105,7 +105,10 @@ ExprImpl::~ExprImpl()
         if (type_mirror == nullptr)
         {
             cout << "Cannot delete term or expr because no class found for " + get_type().description() << endl;
-            throw std::logic_error("Cannot delete term or expr because no class found for " + get_type().description());
+
+            // Don't throw from destructor
+            return;
+            //throw std::logic_error("Cannot delete term or expr because no class found for " + get_type().description());
         }
 
         //cout << "try_delete " << type_mirror->get_class_name() << endl;

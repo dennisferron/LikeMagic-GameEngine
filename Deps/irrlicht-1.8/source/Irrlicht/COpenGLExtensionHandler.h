@@ -1234,6 +1234,7 @@ class COpenGLExtensionHandler
 		PFNGLGETOCCLUSIONQUERYIVNVPROC pGlGetOcclusionQueryivNV;
 		PFNGLGETOCCLUSIONQUERYUIVNVPROC pGlGetOcclusionQueryuivNV;
 		PFNGLBLENDEQUATIONEXTPROC pGlBlendEquationEXT;
+		typedef void (APIENTRYP PFNGLBLENDEQUATIONPROC) (GLenum mode);  // Temp fix until upgrade to latest Irrlicht.
 		PFNGLBLENDEQUATIONPROC pGlBlendEquation;
 		#if defined(WGL_EXT_swap_control)
 		PFNWGLSWAPINTERVALEXTPROC pWglSwapIntervalEXT;

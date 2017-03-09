@@ -39,7 +39,7 @@ namespace LM {
 LIKEMAGIC_API std::string create_constructor_name(std::string prefix, std::string method_name);
 
 template <typename From, typename To,
-    template <typename From, typename To>
+    template <typename F_, typename T_>
         class Converter>
 void add_conv(std::string conv_name)
 {
@@ -50,7 +50,7 @@ void add_conv(std::string conv_name)
 }
 
 template <typename From, typename To,
-    template <typename From, typename To>
+    template <typename F_, typename T_>
         class Converter>
 void add_conv()
 {
