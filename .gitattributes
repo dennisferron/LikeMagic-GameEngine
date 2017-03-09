@@ -1,4 +1,6 @@
 # Got tired of seeing the line end conversion warnings, so changed to not force lf
+* text=false
+
 *.h text
 *.c text
 *.hpp text
