@@ -67,8 +67,11 @@
 					<Add option="-DUSE_DLL_BUILD" />
 					<Add option="-DNO_USE_DMALLOC" />
 					<Add option="-DBUILDING_STD_BINDINGS_DLL" />
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 				</Compiler>
 				<Linker>
+					<Add option="-m64" />
 					<Add option="-Lbin/Debug" />
 					<Add option="-L../bin/Debug" />
 					<Add option="-L../../bin/Debug" />

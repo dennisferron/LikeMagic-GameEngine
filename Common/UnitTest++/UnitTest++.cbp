@@ -14,10 +14,14 @@
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
 				<Compiler>
-					<Add option="-std=c++11" />
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 					<Add option="-Wall" />
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+					<Add option="-m64" />
+				</Linker>
 			</Target>
 			<Target title="Debug Mac">
 				<Option output="bin/Debug/UnitTest++" prefix_auto="1" extension_auto="1" />

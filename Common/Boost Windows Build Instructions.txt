@@ -1,0 +1,64 @@
+Information about building boost on Windows
+
+This file has been placed one level up from boost_1_54_0 so it won't be lost if we update the boost version the readme won't be lost.
+
+I used TDM-GCC 5.1 64 bit for my MinGW.
+
+In order to get the boost files included in this repo to compile correctly on Windows, I had to do the following:
+
+I edited bootstrap.bat to default to "toolset=gcc" instead of "toolset=msvc".  (A comment in that file indicates it can't
+correctly pull forward the detected toolchain, so they were always using MSVC but we want to use gcc. You still have to
+pass "mingw" to the bat file as an arg, however.)
+(You do not need to edit it again because I checked in the change.)
+
+To get C++14 support I edited Jamroot to include "<toolset>gcc:<cxxflags>-std=c++14" (and also added clang for good measure).
+(You do not need to edit it again because I checked in the change.)
+
+To build boost, open a regular command.com prompt and type the following commands:
+cd path\to\repo\Common\boost_1_54_0
+bootstrap.bat mingw
+.\b2 -j9 -with-program_options -with-filesystem -with-system
+
+The -j9 sets how many compile steps to run in parallel. You can change to the number of CPUs you have +1, or omit the option
+for serial build.
+
+The -with-x options control which boost libraries are built.  We only use a few boost libraries and building all of them
+would take a long time. 
+
+If you compile all boost libraries, and depending on which version of MinGW / GCC you have, 
+you may get cc1plus.exe crashing while compiling the boost math library.
+This is caused by a long-unfixed known bug in the MinGW build of GCC which hardcodes precompiled headers to 128MB. 
+You can safely ignore those errors as we do not use the boost libraries which hit this limit, aside
+from the fact that you have to click through about 30 popups for each time the compiler crashes!  This is another
+reason why I added the -with-x options to .\b2 to avoid this issue by only building the libraries we need.
+
+If 
+
+The Boost C++ Libraries were successfully built!
+
+The following directory should be added to compiler include paths:
+
+    C:/code/LikeMagic-All/GameBindings/Common/boost_1_54_0
+
+The following directory should be added to linker library paths:
+
+    C:\code\LikeMagic-All\GameBindings\Common\boost_1_54_0\stage\lib
+
+Finally, due to the way boost creates the names of the libraries, the file name of the library changes
+whenever the compiler version used changes.  This means the Code::Blocks project may link to the
+wrong library name.  In this case I had to go in the Iocaste project Linker settings and change mgw48 to mgw51:
+
+..\Common\boost_1_54_0\stage\lib\libboost_program_options-mgw48-mt-d-1_54.a
+..\Common\boost_1_54_0\stage\lib\libboost_program_options-mgw51-mt-d-1_54.a
+
+I considered adding a Code::Blocks pre-build step to automatically copy all "over specific" file names to a less
+specific one that the project could link to instead.  However I decided against doing that for a few
+reasons.  One is which project to put that in, and what if one project contained the pre-build step 
+but another project started relying on it.  A more important concern is that sometimes it may
+really matter which file name you link; for instace if you upgrade your MinGW after having built
+boost and LikeMagic, you might want to really know which compiled version you're linking!  Granted
+you will still be wrong if you update the Code::Blocks toolchain executables but don't 
+rebuild boost and update the project link library setting, but it's better to be consistently
+wrong than inconsistently right. (Depending on which file gets overwritten last you might get
+the right version or the wrong version.)  Consistently wrong is easier to diagnose and correct
+than inconsistently right.

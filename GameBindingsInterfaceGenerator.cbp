@@ -15,6 +15,8 @@
 				<Option compiler="gcc" />
 				<Option parameters="--language ../../Iocaste/iovm/io/ --engine ../../Engine/Startup.io.inl --game ../../../../wayup/Engine/Startup.io.inl --assets ../../../../wayup/Media/" />
 				<Compiler>
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 					<Add option="-g" />
 					<Add option="-Wno-unused-local-typedefs" />
 					<Add option="-DNO_USE_DMALLOC" />
@@ -27,11 +29,11 @@
 					<Add directory="Deps/irrlicht-1.8/include" />
 				</Compiler>
 				<Linker>
-					<Add option="-m32" />
+					<Add option="-m64" />
 					<Add library="bin/Debug/libIocaste-Windows.a" />
 					<Add library="bin/Debug/libDESteerBindings.a" />
 					<Add library="bin/Debug/libStdBindings-Windows.a" />
-					<Add library="Common/boost_1_54_0/stage/lib/libboost_program_options-mgw48-mt-d-1_54.a" />
+					<Add library="Common/boost_1_54_0/stage/lib/libboost_program_options-mgw51-mt-d-1_54.a" />
 					<Add library="bin/Debug/libLikeMagic-Windows.a" />
 					<Add library="../desteer/lib/libdesteer.a" />
 					<Add library="Deps/tps-1.2/ThinPlateSpline/bin/Debug/libThinPlateSpline.a" />

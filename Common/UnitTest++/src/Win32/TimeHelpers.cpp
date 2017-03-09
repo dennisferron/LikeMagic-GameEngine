@@ -4,8 +4,8 @@
 namespace UnitTest {
 
 Timer::Timer()
-    : m_startTime(0)
-	, m_threadHandle(::GetCurrentThread())
+    : m_threadHandle(::GetCurrentThread())
+    , m_startTime(0)
 {
 #if defined(_MSC_VER) && (_MSC_VER == 1200) // VC6 doesn't have DWORD_PTR?
 	typedef unsigned long DWORD_PTR;
@@ -13,7 +13,7 @@ Timer::Timer()
 
     DWORD_PTR systemMask;
     ::GetProcessAffinityMask(GetCurrentProcess(), &m_processAffinityMask, &systemMask);
-    
+
     ::SetThreadAffinityMask(m_threadHandle, 1);
 	::QueryPerformanceFrequency(reinterpret_cast< LARGE_INTEGER* >(&m_frequency));
     ::SetThreadAffinityMask(m_threadHandle, m_processAffinityMask);

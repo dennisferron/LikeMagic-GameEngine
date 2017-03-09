@@ -14,7 +14,8 @@
 
 #include "LikeMagic/CallTargets/ExprTarget.hpp"
 #include "LikeMagic/CallTargets/ConstructorTarget.hpp"
-#include "LikeMagic/CallTargets/DelegateCallTarget.hpp"
+//#include "LikeMagic/CallTargets/DelegateCallTarget.hpp"
+#include "LikeMagic/CallTargets/MethodCallTarget.hpp"
 #include "LikeMagic/CallTargets/ExtensionMethodCallTarget.hpp"
 #include "LikeMagic/CallTargets/StaticMethodCallTarget.hpp"
 #include "LikeMagic/CallTargets/FieldSetterTarget.hpp"
@@ -38,7 +39,7 @@ namespace LM {
 LIKEMAGIC_API std::string create_constructor_name(std::string prefix, std::string method_name);
 
 template <typename From, typename To,
-    template <typename From, typename To>
+    template <typename F_, typename T_>
         class Converter>
 void add_conv(std::string conv_name)
 {
@@ -49,7 +50,7 @@ void add_conv(std::string conv_name)
 }
 
 template <typename From, typename To,
-    template <typename From, typename To>
+    template <typename F_, typename T_>
         class Converter>
 void add_conv()
 {
@@ -96,7 +97,7 @@ void add_base(TypeMirror& class_, TypeMirror const& base_class)
 template <typename ObjT, typename R, typename... Args>
 void bind_method(TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...))
 {
-    typedef LM::DelegateCallTarget<false, R, Args...> Target;
+    typedef LM::MethodCallTarget<false, R, ObjT, Args...> Target;
     class_.add_method(
         method_name,
         new Target(
@@ -107,7 +108,7 @@ void bind_method(TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args.
 template <typename ObjT, typename R, typename... Args>
 void bind_method(TypeMirror& class_, std::string method_name, R (ObjT::*f)(Args...) const)
 {
-    typedef LM::DelegateCallTarget<true, R, Args...> Target;
+    typedef LM::MethodCallTarget<true, R, ObjT, Args...> Target;
     class_.add_method(
         method_name,
         new Target(

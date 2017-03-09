@@ -21,8 +21,8 @@ LIKEMAGIC_API Delegate& eval_as_nonconst_target(ExprPtr target, TypeIndex from_t
     ExprPtr target_check = type_system->try_conv(target, target_type);
     Delegate& result = EvalAs<Delegate&>::value(target_check, target_ward);
 
-    if (&result == nullptr)
-        throw LM::Exception("Target of call is null!");
+    //if (&result == nullptr)
+    //    throw LM::Exception("Target of call is null!");
 
     return result;
 }
@@ -34,8 +34,8 @@ LIKEMAGIC_API Delegate const& eval_as_const_target(ExprPtr target, TypeIndex fro
     ExprPtr target_check = type_system->try_conv(target, target_type);
     Delegate const& result = EvalAs<Delegate const&>::value(target_check, target_ward);
 
-    if (&result == nullptr)
-        throw LM::Exception("Target of call is null!");
+    //if (&result == nullptr)
+    //    throw LM::Exception("Target of call is null!");
 
     return result;
 }

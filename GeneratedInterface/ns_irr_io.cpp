@@ -4,8 +4,8 @@
 #include "LikeMagic/Exprs/call_helper.hpp"
 
 #include "ns_irr_io.hpp"
-#include "ns_global.hpp"
 #include "ns_irr_scene.hpp"
+#include "ns_global.hpp"
 
 namespace GameBindings
 {
@@ -66,11 +66,6 @@ auto ScriptedDataSerializer::set_on_createUserData(GameBindings::LangBlockExpr a
     ::LM::ExprPtr args[] = { arg0.expr }; 
     return { ::LM::call(expr, "set_on_createUserData", args, 1) };
 }
-auto ScriptedDataSerializer::get_on_OnReadUserData() -> GameBindings::LangBlockExpr
-{
-    ::LM::ExprPtr args[] = {  }; 
-    return { ::LM::call(expr, "get_on_OnReadUserData", args, 0) };
-}
 auto ScriptedDataSerializer::set_on_OnReadUserData(GameBindings::LangBlockExpr arg0) -> GameBindings::LangBlockExpr
 {
     ::LM::ExprPtr args[] = { arg0.expr }; 
@@ -86,20 +81,25 @@ auto ScriptedDataSerializer::get_on_OnCreateNode() -> GameBindings::LangBlockExp
     ::LM::ExprPtr args[] = {  }; 
     return { ::LM::call(expr, "get_on_OnCreateNode", args, 0) };
 }
+auto ScriptedDataSerializer::ref_on_OnReadUserData() -> GameBindings::LangBlockExpr
+{
+    ::LM::ExprPtr args[] = {  }; 
+    return { ::LM::call(expr, "ref_on_OnReadUserData", args, 0) };
+}
 auto ScriptedDataSerializer::set_on_OnCreateNode(GameBindings::LangBlockExpr arg0) -> GameBindings::LangBlockExpr
 {
     ::LM::ExprPtr args[] = { arg0.expr }; 
     return { ::LM::call(expr, "set_on_OnCreateNode", args, 1) };
 }
+auto ScriptedDataSerializer::get_on_OnReadUserData() -> GameBindings::LangBlockExpr
+{
+    ::LM::ExprPtr args[] = {  }; 
+    return { ::LM::call(expr, "get_on_OnReadUserData", args, 0) };
+}
 auto ScriptedDataSerializer::lm_delete() -> GameBindings::void_expr
 {
     ::LM::ExprPtr args[] = {  }; 
     return { ::LM::call(expr, "delete", args, 0) };
-}
-auto ScriptedDataSerializer::ref_on_OnReadUserData() -> GameBindings::LangBlockExpr
-{
-    ::LM::ExprPtr args[] = {  }; 
-    return { ::LM::call(expr, "ref_on_OnReadUserData", args, 0) };
 }
 auto ScriptedDataSerializer::unsafe_ptr_cast() -> GameBindings::BottomPtr
 {

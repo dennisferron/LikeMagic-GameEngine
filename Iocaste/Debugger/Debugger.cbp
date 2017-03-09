@@ -51,7 +51,12 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DNO_LOAD_GDB" />
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 				</Compiler>
+				<Linker>
+					<Add option="-m64" />
+				</Linker>
 			</Target>
 		</Build>
 		<Compiler>

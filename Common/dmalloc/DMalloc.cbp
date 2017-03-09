@@ -27,7 +27,12 @@
 					<Add option="-DHAVE_SYS_CYGWIN_H=0" />
 					<Add option="-DHAVE_SIGNAL_H=1" />
 					<Add directory="../dmalloc" />
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 				</Compiler>
+				<Linker>
+					<Add option="-m64" />
+				</Linker>
 			</Target>
 		</Build>
 		<Unit filename="arg_check.c">

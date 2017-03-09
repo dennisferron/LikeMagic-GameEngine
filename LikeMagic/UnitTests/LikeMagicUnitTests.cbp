@@ -14,12 +14,14 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-std=c++11" />
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 					<Add option="-g" />
 					<Add option="-DUSE_DLL_BUILD" />
 					<Add option="-DNO_USE_DMALLOC" />
 				</Compiler>
 				<Linker>
+					<Add option="-m64" />
 					<Add library="../../Common/UnitTest++/bin/Debug/libUnitTest++.a" />
 					<Add library="../../bin/Debug/libStdBindings-Windows.a" />
 					<Add library="../../bin/Debug/libLikeMagic-Windows.a" />

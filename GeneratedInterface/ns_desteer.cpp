@@ -3,48 +3,27 @@
 
 #include "LikeMagic/Exprs/call_helper.hpp"
 
-#include "ns_global.hpp"
 #include "ns_desteer_entity.hpp"
 #include "ns_desteer.hpp"
+#include "ns_global.hpp"
 
 namespace GameBindings
 {
 	namespace desteer
 	{
 
-auto MobIterator::lm_delete() -> GameBindings::void_expr
+auto BehaviorIterator::lm_delete() -> GameBindings::void_expr
 {
     ::LM::ExprPtr args[] = {  }; 
     return { ::LM::call(expr, "delete", args, 0) };
 }
-auto MobIterator::unsafe_ptr_cast() -> GameBindings::BottomPtr
+auto BehaviorIterator::unsafe_ptr_cast() -> GameBindings::BottomPtr
 {
     ::LM::ExprPtr args[] = {  }; 
     return { ::LM::call(expr, "unsafe_ptr_cast", args, 0) };
 }
 
-auto EntityIterator::operator_increment(GameBindings::int_expr arg0) -> GameBindings::desteer::EntityIterator
-{
-    ::LM::ExprPtr args[] = { arg0.expr }; 
-    return { ::LM::call(expr, "++", args, 1) };
-}
-auto EntityIterator::lm_delete() -> GameBindings::void_expr
-{
-    ::LM::ExprPtr args[] = {  }; 
-    return { ::LM::call(expr, "delete", args, 0) };
-}
-auto EntityIterator::unsafe_ptr_cast() -> GameBindings::BottomPtr
-{
-    ::LM::ExprPtr args[] = {  }; 
-    return { ::LM::call(expr, "unsafe_ptr_cast", args, 0) };
-}
-
-auto EntityGroup::at_nc(GameBindings::uint_expr arg0) -> GameBindings::desteer::entity::IBaseEntity
-{
-    ::LM::ExprPtr args[] = { arg0.expr }; 
-    return { ::LM::call(expr, "at_nc", args, 1) };
-}
-auto EntityGroup::at_c(GameBindings::uint_expr arg0) -> GameBindings::desteer::entity::IBaseEntity
+auto EntityGroup::at_c(MissingType /* C++ unsigned long long (end) */  arg0) -> GameBindings::desteer::entity::IBaseEntity
 {
     ::LM::ExprPtr args[] = { arg0.expr }; 
     return { ::LM::call(expr, "at_c", args, 1) };
@@ -59,7 +38,7 @@ auto EntityGroup::clear() -> GameBindings::void_expr
     ::LM::ExprPtr args[] = {  }; 
     return { ::LM::call(expr, "clear", args, 0) };
 }
-auto EntityGroup::size() -> GameBindings::uint_expr
+auto EntityGroup::size() -> MissingType /* C++ unsigned long long */ 
 {
     ::LM::ExprPtr args[] = {  }; 
     return { ::LM::call(expr, "size", args, 0) };
@@ -68,6 +47,11 @@ auto EntityGroup::tmp() -> GameBindings::desteer::EntityGroup
 {
     ::LM::ExprPtr args[] = {  }; 
     return { ::LM::call(expr, "tmp", args, 0) };
+}
+auto EntityGroup::at_nc(MissingType /* C++ unsigned long long (end) */  arg0) -> GameBindings::desteer::entity::IBaseEntity
+{
+    ::LM::ExprPtr args[] = { arg0.expr }; 
+    return { ::LM::call(expr, "at_nc", args, 1) };
 }
 auto EntityGroup::lm_new() -> GameBindings::desteer::EntityGroup
 {
@@ -96,12 +80,28 @@ auto MobGroup::unsafe_ptr_cast() -> GameBindings::BottomPtr
     return { ::LM::call(expr, "unsafe_ptr_cast", args, 0) };
 }
 
-auto BehaviorIterator::lm_delete() -> GameBindings::void_expr
+auto MobIterator::lm_delete() -> GameBindings::void_expr
 {
     ::LM::ExprPtr args[] = {  }; 
     return { ::LM::call(expr, "delete", args, 0) };
 }
-auto BehaviorIterator::unsafe_ptr_cast() -> GameBindings::BottomPtr
+auto MobIterator::unsafe_ptr_cast() -> GameBindings::BottomPtr
+{
+    ::LM::ExprPtr args[] = {  }; 
+    return { ::LM::call(expr, "unsafe_ptr_cast", args, 0) };
+}
+
+auto EntityIterator::operator_increment(GameBindings::int_expr arg0) -> GameBindings::desteer::EntityIterator
+{
+    ::LM::ExprPtr args[] = { arg0.expr }; 
+    return { ::LM::call(expr, "++", args, 1) };
+}
+auto EntityIterator::lm_delete() -> GameBindings::void_expr
+{
+    ::LM::ExprPtr args[] = {  }; 
+    return { ::LM::call(expr, "delete", args, 0) };
+}
+auto EntityIterator::unsafe_ptr_cast() -> GameBindings::BottomPtr
 {
     ::LM::ExprPtr args[] = {  }; 
     return { ::LM::call(expr, "unsafe_ptr_cast", args, 0) };

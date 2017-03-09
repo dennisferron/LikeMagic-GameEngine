@@ -48,9 +48,12 @@
 					<Add option="-DUSE_DLL_BUILD" />
 					<Add option="-DNO_USE_DMALLOC" />
 					<Add option="-DBUILDING_LIKEMAGIC_DLL" />
+					<Add option="-std=c++14" />
+					<Add option="-m64" />
 				</Compiler>
 				<Linker>
-					<Add library="..\bin\Debug\libsqlite.a" />
+					<Add option="-m64" />
+					<Add library="../bin/Debug/libsqlite.a" />
 				</Linker>
 			</Target>
 		</Build>
@@ -88,6 +91,7 @@
 		<Unit filename="Include/LikeMagic/CallTargets/FieldGetterTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldReferenceTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/FieldSetterTarget.hpp" />
+		<Unit filename="Include/LikeMagic/CallTargets/MethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/CallTargets/StaticMethodCallTarget.hpp" />
 		<Unit filename="Include/LikeMagic/Exceptions/Exception.hpp" />
 		<Unit filename="Include/LikeMagic/Exprs/Expr.hpp" />
@@ -157,7 +161,10 @@
 		<Unit filename="InterfaceGenerator/Source/NamespaceGen.cpp" />
 		<Unit filename="InterfaceGenerator/Source/NamespaceGenList.cpp" />
 		<Unit filename="InterfaceGenerator/Source/RetGen.cpp" />
-		<Unit filename="Source/AbstractSharedArgMarshaller.cpp" />
+		<Unit filename="Source/AbstractSharedArgMarshaller.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="Source/AbstractTypeConverter.cpp" />
 		<Unit filename="Source/CallTarget.cpp" />
 		<Unit filename="Source/DeleterCallTarget.cpp" />
@@ -168,8 +175,14 @@
 		<Unit filename="Source/IMarkable.cpp" />
 		<Unit filename="Source/LangBlock.cpp" />
 		<Unit filename="Source/MarkableObjGraph.cpp" />
-		<Unit filename="Source/RequestBroker.cpp" />
-		<Unit filename="Source/SharedArgTransporter.cpp" />
+		<Unit filename="Source/RequestBroker.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Source/SharedArgTransporter.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="Source/TraceDb.cpp" />
 		<Unit filename="Source/TypeConvGraph.cpp" />
 		<Unit filename="Source/TypeDescr.cpp" />
